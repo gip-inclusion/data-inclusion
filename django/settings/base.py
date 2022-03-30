@@ -30,9 +30,11 @@ INSTALLED_APPS = [
     # 3rd parties
     "rest_framework",
     "corsheaders",
+    "django_filters",
+    "drf_spectacular",
     # 1st parties
-    "meta",
     "users",
+    "inclusion",
 ]
 
 MIDDLEWARE = [
@@ -149,5 +151,23 @@ CORS_URLS_REGEX = r"^/api/.*$"
 # https://www.django-rest-framework.org/api-guide/settings/
 
 REST_FRAMEWORK = {
-    "DEFAULT_RENDERER_CLASSES": ["rest_framework.renderers.JSONRenderer"],
+    "DEFAULT_FILTER_BACKENDS": [
+        "django_filters.rest_framework.DjangoFilterBackend",
+    ],
+    "DEFAULT_RENDERER_CLASSES": [
+        "rest_framework.renderers.JSONRenderer",
+        "rest_framework.renderers.BrowsableAPIRenderer",
+    ],
+    "DEFAULT_SCHEMA_CLASS": "drf_spectacular.openapi.AutoSchema",
+    "DEFAULT_VERSIONING_CLASS": "rest_framework.versioning.NamespaceVersioning",
+}
+
+# API documentation
+# https://drf-spectacular.readthedocs.io/en/latest/settings.html
+
+SPECTACULAR_SETTINGS = {
+    "TITLE": "data.inclusion API",
+    "DESCRIPTION": "API référentiel de l'offre d'insertion",
+    "VERSION": VERSION_NAME,
+    "SERVE_INCLUDE_SCHEMA": False,
 }
