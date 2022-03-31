@@ -52,23 +52,23 @@ RUN apt-get update \
     && apt-get clean -y \
     && rm -rf /var/lib/apt/lists/*
 
-RUN groupadd uwsgi
-RUN useradd --no-log-init -g uwsgi uwsgi
+RUN groupadd gunicorn
+RUN useradd --no-log-init -g gunicorn gunicorn
 
 # Copy venv with compiled dependencies
-COPY --chown=uwsgi:uwsgi --from=compile-image /srv/venv /srv/venv
+COPY --chown=gunicorn:gunicorn --from=compile-image /srv/venv /srv/venv
 
-COPY --chown=uwsgi:uwsgi ["docker-entrypoint.sh", "uwsgi.ini", "/srv/"]
-COPY --chown=uwsgi:uwsgi django /srv/django
-COPY --chown=uwsgi:uwsgi tests /srv/tests
+COPY --chown=gunicorn:gunicorn ["docker-entrypoint.sh", "/srv/"]
+COPY --chown=gunicorn:gunicorn django /srv/django
+COPY --chown=gunicorn:gunicorn tests /srv/tests
 RUN chmod +x docker-entrypoint.sh
 
 RUN mkdir -p /var/www
-RUN chown uwsgi:uwsgi /var/www
+RUN chown gunicorn:gunicorn /var/www
 
 VOLUME /var/www
 
-USER uwsgi
+USER gunicorn
 EXPOSE 8000
 
 HEALTHCHECK --start-period=1m \

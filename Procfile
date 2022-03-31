@@ -1,2 +1,2 @@
-web: uwsgi --chdir django --module wsgi --master --socket 127.0.0.1:8000
+web: gunicorn config.wsgi --log-file -
 postdeploy: python manage.py migrate
