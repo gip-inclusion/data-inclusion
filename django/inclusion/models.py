@@ -72,6 +72,6 @@ class StructureReport(BaseModel):
     source = TextField(blank=True, default="")
 
     def __str__(self) -> str:
-        return self.id
+        return f"{self.id}"
 
     objects = managers.StructureReportManager()
