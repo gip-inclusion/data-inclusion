@@ -1,2 +1,2 @@
-web: gunicorn config.wsgi --log-file -
+web: gunicorn --chdir django wsgi
 postdeploy: python manage.py migrate
