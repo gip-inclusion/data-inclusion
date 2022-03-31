@@ -16,12 +16,12 @@ from inclusion import managers
 
 
 class Structure(BaseModel):
-    siret = CharField(max_length=14, unique=True, db_index=True)
+    siret = CharField(max_length=14, unique=True)
     code_safir_pe = CharField(max_length=5, null=True, blank=True, db_index=True)
     name = CharField(max_length=255)
     ape = CharField(max_length=6)
-    address1 = CharField(max_length=255, blank=True)
-    address2 = CharField(max_length=255)
+    address1 = CharField(max_length=255)
+    address2 = CharField(max_length=255, blank=True, default="")
     city = CharField(max_length=255)
     city_code = CharField(max_length=5, db_index=True)
     postal_code = CharField(max_length=5)
