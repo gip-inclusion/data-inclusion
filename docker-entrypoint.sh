@@ -6,7 +6,6 @@ set -e
 # Trace execution
 [[ "${DEBUG}" ]] && set -x
 
-export DJANGO_SETTINGS_MODULE=settings."${ENV:-prod}"
 export STATIC_ROOT=/var/www/static
 
 if [[ "$#" -gt 0 ]]; then
