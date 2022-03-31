@@ -2,8 +2,8 @@
 
 ## [Usage](USAGE.md)
 
-## [Contributing](CONTRIBUTING.md)
+## [Contribuer](CONTRIBUTING.md)
 
-## [Authors](CODEOWNERS)
+## [Auteurs](CODEOWNERS)
 
-## [License](LICENSE)
+## [Licence](LICENSE)
