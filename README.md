@@ -1,4 +1,4 @@
-# `data-inclusion-api`
+# `data-inclusion`
 
 ## [Usage](USAGE.md)
 
