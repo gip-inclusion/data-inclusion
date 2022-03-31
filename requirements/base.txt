@@ -1,3 +1,4 @@
+dj-database-url==0.5.0
 Django==4.0.3
 django-cors-headers==3.11.0
 django-filter==21.1
