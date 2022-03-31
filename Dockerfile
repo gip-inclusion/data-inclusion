@@ -72,6 +72,6 @@ USER gunicorn
 EXPOSE 8000
 
 HEALTHCHECK --start-period=1m \
-    CMD curl --silent --show-error --head --output /dev/null 127.0.0.1:8000 || exit 1
+    CMD curl --silent --show-error --head --output /dev/null 127.0.0.1:8000/api/version/ || exit 1
 
 ENTRYPOINT ["/srv/docker-entrypoint.sh"]

@@ -35,6 +35,7 @@ INSTALLED_APPS = [
     "django_filters",
     "drf_spectacular",
     # 1st parties
+    "meta",
     "users",
     "inclusion",
 ]
