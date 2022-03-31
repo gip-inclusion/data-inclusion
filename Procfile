@@ -1,2 +1,2 @@
 web: gunicorn --chdir django wsgi
-postdeploy: python manage.py migrate
+postdeploy: python django/manage.py migrate

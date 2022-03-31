@@ -19,6 +19,6 @@ else
     python django/manage.py runserver 0.0.0.0:8000
   else
     python django/manage.py check --deploy
-    gunicorn --chdir django wsgi
+    gunicorn -b 0.0.0.0:8000 --chdir django wsgi
   fi
 fi
