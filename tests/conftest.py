@@ -1,4 +1,10 @@
+import faker
 import pytest
+
+
+@pytest.fixture(scope="session", autouse=True)
+def seed():
+    faker.Faker.seed(0)
 
 
 @pytest.fixture

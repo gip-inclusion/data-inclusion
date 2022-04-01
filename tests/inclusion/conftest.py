@@ -7,6 +7,8 @@ from pytest_factoryboy import register
 from . import factories
 
 register(factories.StructureFactory)
+register(factories.UserFactory)
+register(factories.StructureReportFactory)
 
 
 def get_factories():
