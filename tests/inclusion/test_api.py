@@ -90,7 +90,7 @@ def test_create_report(api_client, structure, user):
     }
 
 
-def test_list_structures(api_client, structure, structure_report):
+def test_retrieve_structure(api_client, structure, structure_report):
     url = reverse("v0:structures-detail", kwargs={"pk": structure.id})
     response = api_client.get(url)
 
