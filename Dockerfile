@@ -24,7 +24,7 @@ RUN python -m venv ${VIRTUAL_ENV}
 
 COPY requirements requirements
 RUN pip install --no-cache-dir --upgrade pip setuptools wheel
-RUN pip install --no-cache-dir -r requirements/prod.txt
+RUN pip install --no-cache-dir -r requirements/tests.txt
 
 
 ########
@@ -58,7 +58,7 @@ RUN useradd --no-log-init -g gunicorn gunicorn
 # Copy venv with compiled dependencies
 COPY --chown=gunicorn:gunicorn --from=compile-image /srv/venv /srv/venv
 
-COPY --chown=gunicorn:gunicorn ["docker-entrypoint.sh", "/srv/"]
+COPY --chown=gunicorn:gunicorn ["docker-entrypoint.sh", "pyproject.toml", "/srv/"]
 COPY --chown=gunicorn:gunicorn django /srv/django
 COPY --chown=gunicorn:gunicorn tests /srv/tests
 RUN chmod +x docker-entrypoint.sh

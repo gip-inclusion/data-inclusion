@@ -1,0 +1,13 @@
+# Python
+**/*.py[cod]
+**/__pycache__/
+**/.venv/
+**/build/
+**/dist/
+**/.tox/
+**/.pytest_cache/
+**/*.egg-info/
+**/db.sqlite3
+
+# VSCode
+**/.vscode/
