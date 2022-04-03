@@ -1,4 +1,4 @@
-from rest_framework import mixins, viewsets
+from rest_framework import mixins, pagination, viewsets
 
 from inclusion import models
 from inclusion.api import filters, serializers
@@ -10,6 +10,7 @@ class StructureViewSet(viewsets.ReadOnlyModelViewSet):
     ordering_fields = ["created_at"]
     ordering = ["created_at"]
     filterset_class = filters.StructureFilterSet
+    pagination_class = pagination.LimitOffsetPagination
 
 
 class StructureReportViewSet(
