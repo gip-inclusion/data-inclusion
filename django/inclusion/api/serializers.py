@@ -17,3 +17,13 @@ class StructureSerializer(serializers.ModelSerializer):
         fields = "__all__"
 
     latest_reports = StructureReportSerializer(many=True, default=[])
+
+
+class CreateStructureReportSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = models.StructureReport
+        fields = "__all__"
+
+    typology = serializers.SlugRelatedField(
+        slug_field="value", required=False, allow_null=True, queryset=models.StructureTypology.objects.all()
+    )

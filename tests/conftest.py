@@ -2,7 +2,7 @@ import faker
 import pytest
 
 
-@pytest.fixture(scope="session", autouse=True)
+@pytest.fixture(autouse=True)
 def seed():
     faker.Faker.seed(0)
 
