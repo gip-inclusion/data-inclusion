@@ -188,3 +188,10 @@ SPECTACULAR_SETTINGS = {
     "VERSION": VERSION_NAME,
     "SERVE_INCLUDE_SCHEMA": False,
 }
+
+# System checks
+# https://docs.djangoproject.com/en/4.0/topics/checks/
+
+SILENCED_SYSTEM_CHECKS = [
+    "rest_framework.W001",  # pagination_class on a per-view basis
+]
