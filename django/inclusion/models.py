@@ -70,6 +70,8 @@ class StructureReport(BaseModel):
     # valeur allant de 0 (pas pertinent) à 1 (pertinent)
     geocoding_score = FloatField(blank=True, null=True)
     source = TextField(blank=True, default="")
+    creation_date = models.DateTimeField(blank=True, null=True)
+    modification_date = models.DateTimeField(blank=True, null=True)
 
     def __str__(self) -> str:
         return f"{self.id}"

@@ -2,6 +2,7 @@ import factory
 import faker
 
 from django.conf import settings
+from django.utils import timezone
 
 fake = faker.Faker("fr_FR")
 
@@ -52,3 +53,5 @@ class StructureReportFactory(factory.django.DjangoModelFactory):
     longitude = factory.Faker("longitude")
     latitude = factory.Faker("latitude")
     geocoding_score = 0.5
+    creation_date = factory.LazyFunction(timezone.now)
+    modification_date = factory.LazyFunction(timezone.now)

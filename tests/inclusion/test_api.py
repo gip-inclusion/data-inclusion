@@ -71,6 +71,8 @@ def test_create_report(api_client, structure, user):
                 "structure": ANY,
                 "reporter": 1,
                 "parent": None,
+                "creation_date": ANY,
+                "modification_date": ANY,
             }
         ],
         "updated_at": ANY,
@@ -124,6 +126,8 @@ def test_retrieve_structure(api_client, structure, structure_report):
                 "structure": ANY,
                 "reporter": 1,
                 "parent": None,
+                "creation_date": ANY,
+                "modification_date": ANY,
             }
         ],
         "updated_at": ANY,
