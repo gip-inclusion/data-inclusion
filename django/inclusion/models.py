@@ -45,8 +45,12 @@ class StructureTypology(BaseModel):
 
 
 class StructureReport(BaseModel):
+    # métadonnées
+
     structure = ForeignKey(Structure, on_delete=models.CASCADE, related_name="reports")
     reporter = ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.PROTECT, related_name="reports")
+
+    # données de structure, selon le schéma de données normalisé
 
     branch_id = CharField(max_length=5, blank=True, default="")
     parent = ForeignKey("self", on_delete=models.CASCADE, blank=True, null=True, related_name="branches")

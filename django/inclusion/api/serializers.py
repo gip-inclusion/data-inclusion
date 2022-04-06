@@ -3,12 +3,21 @@ from rest_framework import serializers
 from inclusion import models
 
 
+class StructureDataSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = models.StructureReport
+        exclude = ["reporter", "created_at", "updated_at", "structure"]
+
+    typology = serializers.SlugRelatedField(slug_field="value", read_only=True)
+
+
 class StructureReportSerializer(serializers.ModelSerializer):
     class Meta:
         model = models.StructureReport
-        fields = "__all__"
+        fields = ["data", "reporter", "created_at", "updated_at"]
 
-    typology = serializers.SlugRelatedField(slug_field="value", read_only=True)
+    reporter = serializers.SlugRelatedField(slug_field="username", read_only=True)
+    data = StructureDataSerializer(source="*")
 
 
 class StructureSerializer(serializers.ModelSerializer):
