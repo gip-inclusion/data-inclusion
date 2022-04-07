@@ -15,16 +15,16 @@ services:
       - db
     restart: always
     ports:
-      - ${API_PORT}:8000
+      - ${API_PORT:-8000}:8000
     environment:
-      - DEBUG=${DEBUG}
-      - ENV=${ENV:-dev}
-      - POSTGRES_DB=${POSTGRES_DB}
-      - POSTGRES_USER=${POSTGRES_USER}
-      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+      - DEBUG=${DEBUG:-False}
+      - ENV=${ENV:-prod}
+      - POSTGRES_DB=${POSTGRES_DB:-dora}
+      - POSTGRES_USER=${POSTGRES_USER:-dora}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD:-USE_IN_DEVELOPMENT_ONLY}
       - POSTGRES_HOST=db
       - POSTGRES_PORT=5432
-      - SECRET_KEY=${SECRET_KEY}
+      - SECRET_KEY=${SECRET_KEY:-USE_IN_DEVELOPMENT_ONLY}
       - ALLOWED_HOSTS=${ALLOWED_HOSTS:-127.0.0.1}
       - DJANGO_SUPERUSER_USERNAME=${DJANGO_SUPERUSER_USERNAME}
       - DJANGO_SUPERUSER_EMAIL=${DJANGO_SUPERUSER_EMAIL}
@@ -36,11 +36,11 @@ services:
     image: postgres:14
     restart: always
     ports:
-      - ${POSTGRES_PORT}:5432
+      - ${POSTGRES_PORT:-5432}:5432
     environment:
-      - POSTGRES_DB=${POSTGRES_DB}
-      - POSTGRES_USER=${POSTGRES_USER}
-      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+      - POSTGRES_DB=${POSTGRES_DB:-dora}
+      - POSTGRES_USER=${POSTGRES_USER:-dora}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD:-USE_IN_DEVELOPMENT_ONLY}
 
 volumes:
   files-data:
