@@ -17,4 +17,4 @@ jobs:
       - name: up stack
         run: docker-compose up -d
       - name: run tests
-        run: docker-compose run --entrypoint pytest -p no:cacheprovider
+        run: docker-compose run --entrypoint pytest api -p no:cacheprovider
