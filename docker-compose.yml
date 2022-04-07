@@ -18,7 +18,7 @@ services:
       - ${API_PORT:-8000}:8000
     environment:
       - DEBUG=${DEBUG:-False}
-      - ENV=${ENV:-prod}
+      - ENV=${ENV:-tests}
       - POSTGRES_DB=${POSTGRES_DB:-dora}
       - POSTGRES_USER=${POSTGRES_USER:-dora}
       - POSTGRES_PASSWORD=${POSTGRES_PASSWORD:-USE_IN_DEVELOPMENT_ONLY}
