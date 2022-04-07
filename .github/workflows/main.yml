@@ -15,6 +15,8 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - name: up stack
-        run: docker-compose up -d
+        run: docker-compose up -d db
       - name: run tests
         run: docker-compose run --entrypoint pytest api -p no:cacheprovider
+        env:
+          ENV: tests
