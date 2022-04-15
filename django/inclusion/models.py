@@ -7,6 +7,7 @@ from django.db.models import (
     EmailField,
     FloatField,
     ForeignKey,
+    JSONField,
     SlugField,
     TextField,
     URLField,
@@ -77,6 +78,7 @@ class StructureReport(BaseModel):
     source = TextField(blank=True, default="")
     creation_date = DateTimeField(blank=True, null=True)
     modification_date = DateTimeField(blank=True, null=True)
+    extra = JSONField(blank=True, default=dict)
 
     def __str__(self) -> str:
         return f"{self.id}"
