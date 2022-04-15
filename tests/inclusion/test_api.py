@@ -45,6 +45,7 @@ def test_create_report(api_client, structure, user):
         "id": ANY,
         "latest_reports": [
             {
+                "id": ANY,
                 "data": {
                     "id": ANY,
                     "typology": None,
@@ -96,11 +97,13 @@ def test_create_report(api_client, structure, user):
 def test_retrieve_structure(api_client, structure, structure_report):
     url = reverse("v0:structures-detail", kwargs={"pk": structure.id})
     response = api_client.get(url)
+    rdata = response.json()
 
-    assert response.json() == {
+    assert rdata == {
         "id": ANY,
         "latest_reports": [
             {
+                "id": ANY,
                 "data": {
                     "id": ANY,
                     "typology": None,
@@ -147,3 +150,6 @@ def test_retrieve_structure(api_client, structure, structure_report):
         "longitude": 57.669186,
         "latitude": 49.9498015,
     }
+
+    # l'identifiant de la structure est utilisé dans ses représentations
+    assert rdata["latest_reports"][0]["data"]["id"] == rdata["id"]
