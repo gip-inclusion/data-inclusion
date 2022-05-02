@@ -12,6 +12,8 @@ def test_create_report(api_client, structure, user):
     data = {
         "typologie": None,
         "id_antenne": "",
+        "siret": structure.siret,
+        "rna": structure.rna,
         "nom": "Hebert",
         "presentation_resume": "Cependant sec.",
         "site_web": "https://www.gonzalez.net/",
@@ -28,7 +30,6 @@ def test_create_report(api_client, structure, user):
         "latitude": -56.7421445,
         "score_geocodage": 0.5,
         "source": "",
-        "structure": str(structure.id),
         "reporter": user.id,
         "structure_mere": None,
     }
@@ -46,6 +47,8 @@ def test_create_report(api_client, structure, user):
                 "id": ANY,
                 "data": {
                     "id": ANY,
+                    "siret": "60487647500499",
+                    "rna": "W382421948",
                     "typologie": None,
                     "id_antenne": "",
                     "nom": "Hebert",
@@ -92,6 +95,8 @@ def test_retrieve_structure(api_client, structure, structure_report):
                 "id": ANY,
                 "data": {
                     "id": ANY,
+                    "siret": "60487647500499",
+                    "rna": "W382421948",
                     "typologie": None,
                     "id_antenne": "",
                     "nom": "Ruiz Perrin et Fils",
