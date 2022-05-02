@@ -1,3 +1,5 @@
+from typing import Optional
+
 from django.db import models
 from django.db.models import F, Max, OuterRef, Prefetch, Subquery
 
@@ -13,6 +15,16 @@ class StructureManager(models.Manager):
                 to_attr="latest_reports",
             )
         )
+
+    def get_from_pivots(self, siret: Optional[str] = None, rna: Optional[str] = None):
+        qs = self.none()
+
+        if siret is not None:
+            qs = self.filter(siret=siret)
+        elif rna is not None:
+            qs = self.filter(rna=rna)
+
+        return qs.first()
 
 
 class StructureReportManager(models.Manager):
