@@ -8,11 +8,8 @@ class StructureDataSerializer(serializers.ModelSerializer):
         model = models.StructureReport
         exclude = ["reporter", "created_at", "updated_at", "structure"]
 
-    id = serializers.SerializerMethodField()
-    typology = serializers.SlugRelatedField(slug_field="value", read_only=True)
-
-    def get_id(self, obj):
-        return obj.structure.id
+    id = serializers.UUIDField(source="structure.id")
+    typologie = serializers.SlugRelatedField(slug_field="value", read_only=True)
 
 
 class StructureReportSerializer(serializers.ModelSerializer):
@@ -37,6 +34,6 @@ class CreateStructureReportSerializer(serializers.ModelSerializer):
         model = models.StructureReport
         fields = "__all__"
 
-    typology = serializers.SlugRelatedField(
+    typologie = serializers.SlugRelatedField(
         slug_field="value", required=False, allow_null=True, queryset=models.StructureTypology.objects.all()
     )
