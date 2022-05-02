@@ -12,6 +12,7 @@ class StructureFactory(factory.django.DjangoModelFactory):
         model = "inclusion.Structure"
 
     siret = factory.LazyFunction(lambda: fake.siret().replace(" ", ""))
+    rna = factory.Faker("bothify", text="W#########")
     name = factory.Faker("company", locale="fr_FR")
     ape = "84.11Z"
     address1 = factory.Faker("street_address", locale="fr_FR")

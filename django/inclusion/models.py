@@ -17,7 +17,8 @@ from inclusion import managers
 
 
 class Structure(BaseModel):
-    siret = CharField(max_length=14, unique=True)
+    siret = CharField(max_length=14, blank=True, null=True, unique=True)
+    rna = CharField(max_length=10, blank=True, null=True, unique=True)
     code_safir_pe = CharField(max_length=5, null=True, blank=True, db_index=True)
     name = CharField(max_length=255)
     ape = CharField(max_length=6)
@@ -29,6 +30,14 @@ class Structure(BaseModel):
     is_siege = BooleanField()
     longitude = FloatField(blank=True, null=True)
     latitude = FloatField(blank=True, null=True)
+
+    class Meta:
+        constraints = [
+            models.CheckConstraint(
+                name="has_pivot",
+                check=~models.Q(siret__isnull=True, rna__isnull=True),
+            )
+        ]
 
     def __str__(self) -> str:
         return self.siret
