@@ -8,7 +8,6 @@ from django.db.models import (
     FloatField,
     ForeignKey,
     JSONField,
-    SlugField,
     TextField,
     URLField,
 )
@@ -56,7 +55,6 @@ class StructureReport(BaseModel):
     id_antenne = CharField(max_length=5, blank=True, default="")
     structure_mere = ForeignKey("self", on_delete=models.CASCADE, blank=True, null=True, related_name="branches")
     typologie = ForeignKey(StructureTypology, null=True, blank=True, on_delete=models.PROTECT, related_name="reports")
-    slug = SlugField(blank=True, default="")
     nom = CharField(blank=True, default="", max_length=255)
     presentation_resume = CharField(blank=True, default="", max_length=280)
     site_web = URLField(blank=True, default="")
@@ -69,14 +67,12 @@ class StructureReport(BaseModel):
     departement = CharField(blank=True, default="", max_length=3)
     adresse = CharField(blank=True, default="", max_length=255)
     complement_adresse = CharField(blank=True, default="", max_length=255)
-    code_ape = CharField(blank=True, default="", max_length=6)
     longitude = FloatField(blank=True, null=True)
     latitude = FloatField(blank=True, null=True)
     # valeur indiquant la pertinence des valeurs lat/lon issues d'un géocodage
     # valeur allant de 0 (pas pertinent) à 1 (pertinent)
     score_geocodage = FloatField(blank=True, null=True)
     source = TextField(blank=True, default="")
-    date_creation = DateTimeField(blank=True, null=True)
     date_maj = DateTimeField(blank=True, null=True)
     extra = JSONField(blank=True, default=dict)
 

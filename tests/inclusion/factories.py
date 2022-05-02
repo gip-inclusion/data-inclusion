@@ -37,7 +37,6 @@ class StructureReportFactory(factory.django.DjangoModelFactory):
     structure = factory.SubFactory(StructureFactory)
     reporter = factory.SubFactory(UserFactory)
 
-    slug = factory.Faker("slug", locale="fr_FR")
     nom = factory.Faker("company", locale="fr_FR")
     presentation_resume = factory.Faker("text", max_nb_chars=20, locale="fr_FR")
     site_web = factory.Faker("url", locale="fr_FR")
@@ -49,9 +48,7 @@ class StructureReportFactory(factory.django.DjangoModelFactory):
     commune = factory.Faker("city", locale="fr_FR")
     departement = factory.Faker("department_number", locale="fr_FR")
     adresse = factory.Faker("street_address", locale="fr_FR")
-    code_ape = "84.11Z"
     longitude = factory.Faker("longitude")
     latitude = factory.Faker("latitude")
     score_geocodage = 0.5
-    date_creation = factory.LazyFunction(timezone.now)
     date_maj = factory.LazyFunction(timezone.now)
