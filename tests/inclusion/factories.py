@@ -13,15 +13,6 @@ class StructureFactory(factory.django.DjangoModelFactory):
 
     siret = factory.LazyFunction(lambda: fake.siret().replace(" ", ""))
     rna = factory.Faker("bothify", text="W#########")
-    name = factory.Faker("company", locale="fr_FR")
-    ape = "84.11Z"
-    address1 = factory.Faker("street_address", locale="fr_FR")
-    city = factory.Faker("city", locale="fr_FR")
-    city_code = factory.Faker("postcode", locale="fr_FR")
-    postal_code = factory.Faker("postcode", locale="fr_FR")
-    is_siege = True
-    longitude = factory.Faker("longitude")
-    latitude = factory.Faker("latitude")
 
 
 class UserFactory(factory.django.DjangoModelFactory):

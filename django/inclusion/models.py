@@ -1,7 +1,6 @@
 from django.conf import settings
 from django.db import models
 from django.db.models import (
-    BooleanField,
     CharField,
     DateTimeField,
     EmailField,
@@ -19,17 +18,6 @@ from inclusion import managers
 class Structure(BaseModel):
     siret = CharField(max_length=14, blank=True, null=True, unique=True)
     rna = CharField(max_length=10, blank=True, null=True, unique=True)
-    code_safir_pe = CharField(max_length=5, null=True, blank=True, db_index=True)
-    name = CharField(max_length=255)
-    ape = CharField(max_length=6)
-    address1 = CharField(max_length=255)
-    address2 = CharField(max_length=255, blank=True, default="")
-    city = CharField(max_length=255)
-    city_code = CharField(max_length=5, db_index=True)
-    postal_code = CharField(max_length=5)
-    is_siege = BooleanField()
-    longitude = FloatField(blank=True, null=True)
-    latitude = FloatField(blank=True, null=True)
 
     class Meta:
         constraints = [
