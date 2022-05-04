@@ -11,7 +11,7 @@ class StructureManager(models.Manager):
         return self.prefetch_related(
             Prefetch(
                 "reports",
-                queryset=StructureReport.objects.latest_by_reporter(),
+                queryset=StructureReport.objects.latest_by_source(),
                 to_attr="latest_reports",
             )
         )
@@ -28,10 +28,10 @@ class StructureManager(models.Manager):
 
 
 class StructureReportManager(models.Manager):
-    def latest_by_reporter(self):
+    def latest_by_source(self):
         return self.alias(
             latest=Subquery(
-                self.values("reporter")
+                self.values("source", "structure_id")
                 .annotate(latest=Max("created_at"))
                 .filter(latest=OuterRef("created_at"))
                 .values("latest")

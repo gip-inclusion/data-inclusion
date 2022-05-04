@@ -6,7 +6,7 @@ from inclusion.models import Structure, StructureReport, StructureTypology
 class StructureDataSerializer(serializers.ModelSerializer):
     class Meta:
         model = StructureReport
-        exclude = ["reporter", "created_at", "updated_at", "structure"]
+        exclude = ["created_at", "updated_at", "structure"]
 
     id = serializers.UUIDField(source="structure.id")
     siret = serializers.CharField(source="structure.siret")
@@ -17,9 +17,8 @@ class StructureDataSerializer(serializers.ModelSerializer):
 class StructureReportSerializer(serializers.ModelSerializer):
     class Meta:
         model = StructureReport
-        fields = ["id", "data", "reporter", "created_at", "updated_at"]
+        fields = ["id", "data", "created_at", "updated_at"]
 
-    reporter = serializers.SlugRelatedField(slug_field="username", read_only=True)
     data = StructureDataSerializer(source="*")
 
 

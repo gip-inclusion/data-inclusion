@@ -29,8 +29,7 @@ def test_create_report(api_client, structure, user):
         "longitude": -80.693947,
         "latitude": -56.7421445,
         "score_geocodage": 0.5,
-        "source": "",
-        "reporter": user.id,
+        "source": "dora",
         "structure_mere": None,
     }
     response = api_client.post(url, data, format="json")
@@ -66,12 +65,11 @@ def test_create_report(api_client, structure, user):
                     "longitude": -80.693947,
                     "latitude": -56.7421445,
                     "score_geocodage": 0.5,
-                    "source": "",
+                    "source": "dora",
                     "date_maj": None,
                     "extra": {},
                     "structure_mere": None,
                 },
-                "reporter": "",
                 "created_at": ANY,
                 "updated_at": ANY,
             }
@@ -105,8 +103,7 @@ def test_create_report_and_structure(api_client, user):
         "longitude": -80.693947,
         "latitude": -56.7421445,
         "score_geocodage": 0.5,
-        "source": "",
-        "reporter": user.id,
+        "source": "dora",
         "structure_mere": None,
     }
     response = api_client.post(url, data, format="json")
@@ -145,12 +142,11 @@ def test_create_report_and_structure(api_client, user):
                     "longitude": -80.693947,
                     "latitude": -56.7421445,
                     "score_geocodage": 0.5,
-                    "source": "",
+                    "source": "dora",
                     "date_maj": None,
                     "extra": {},
                     "structure_mere": None,
                 },
-                "reporter": "",
                 "created_at": ANY,
                 "updated_at": ANY,
             }
@@ -196,12 +192,11 @@ def test_retrieve_structure(api_client, structure, structure_report):
                     "longitude": -162.298069,
                     "latitude": 74.490046,
                     "score_geocodage": 0.5,
-                    "source": "",
+                    "source": "dora",
                     "date_maj": ANY,
                     "extra": {},
                     "structure_mere": None,
                 },
-                "reporter": "",
                 "created_at": ANY,
                 "updated_at": ANY,
             }

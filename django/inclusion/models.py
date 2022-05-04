@@ -1,4 +1,3 @@
-from django.conf import settings
 from django.db import models
 from django.db.models import (
     CharField,
@@ -45,7 +44,6 @@ class StructureReport(BaseModel):
     # métadonnées
 
     structure = ForeignKey(Structure, on_delete=models.CASCADE, related_name="reports")
-    reporter = ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.PROTECT, related_name="reports")
 
     # données de structure, selon le schéma de données normalisé
 

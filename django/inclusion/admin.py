@@ -10,4 +10,4 @@ class Structure(admin.ModelAdmin):
 
 @admin.register(models.StructureReport)
 class StructureReport(admin.ModelAdmin):
-    list_display = ("id", "nom", "reporter")
+    list_display = ("id", "nom")

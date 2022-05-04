@@ -27,7 +27,6 @@ class StructureReportFactory(factory.django.DjangoModelFactory):
         model = "inclusion.StructureReport"
 
     structure = factory.SubFactory(StructureFactory)
-    reporter = factory.SubFactory(UserFactory)
 
     nom = factory.Faker("company", locale="fr_FR")
     presentation_resume = factory.Faker("text", max_nb_chars=20, locale="fr_FR")
@@ -44,3 +43,4 @@ class StructureReportFactory(factory.django.DjangoModelFactory):
     latitude = factory.Faker("latitude")
     score_geocodage = 0.5
     date_maj = factory.LazyFunction(timezone.now)
+    source = factory.Iterator(["dora", "itou"])
