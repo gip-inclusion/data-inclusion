@@ -59,7 +59,6 @@ class StructureReport(BaseModel):
     code_postal = CharField(blank=True, default="", max_length=5)
     code_insee = CharField(blank=True, default="", max_length=5)
     commune = CharField(blank=True, default="", max_length=255)
-    departement = CharField(blank=True, default="", max_length=3)
     adresse = CharField(blank=True, default="", max_length=255)
     complement_adresse = CharField(blank=True, default="", max_length=255)
     longitude = FloatField(blank=True, null=True)

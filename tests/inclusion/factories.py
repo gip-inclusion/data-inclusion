@@ -37,7 +37,6 @@ class StructureReportFactory(factory.django.DjangoModelFactory):
     code_postal = factory.Faker("postcode", locale="fr_FR")
     code_insee = factory.Faker("postcode", locale="fr_FR")
     commune = factory.Faker("city", locale="fr_FR")
-    departement = factory.Faker("department_number", locale="fr_FR")
     adresse = factory.Faker("street_address", locale="fr_FR")
     longitude = factory.Faker("longitude")
     latitude = factory.Faker("latitude")
