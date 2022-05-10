@@ -35,19 +35,34 @@ class CreateStructureReportSerializer(serializers.ModelSerializer):
         model = StructureReport
         exclude = ["structure"]
 
-    siret = serializers.CharField(source="structure.siret", allow_null=True)
-    rna = serializers.CharField(source="structure.rna", allow_null=True)
+    siret = serializers.CharField(
+        source="structure.siret",
+        allow_null=True,
+        allow_blank=True,
+        max_length=14,
+        required=False,
+    )
+    rna = serializers.CharField(
+        source="structure.rna",
+        allow_null=True,
+        allow_blank=True,
+        max_length=10,
+        required=False,
+    )
     typologie = serializers.SlugRelatedField(
         slug_field="value", required=False, allow_null=True, queryset=StructureTypology.objects.all()
     )
 
     def create(self, data):
-        # Retrouve la structure à partir des données pivots
-        siret = data["structure"]["siret"]
-        rna = data["structure"]["rna"]
-
-        if siret is None and rna is None:
+        # Retrouve la structure à partir des données
+        if "structure" not in data:
             raise serializers.ValidationError("pivot(s) manquant(s): siret, rna, etc.")
+        else:
+            siret = data["structure"].get("siret", None)
+            rna = data["structure"].get("rna", None)
+
+            if siret is None and rna is None:
+                raise serializers.ValidationError("pivot(s) manquant(s): siret, rna, etc.")
 
         structure = Structure.objects.get_from_pivots(siret=siret, rna=rna)
 
