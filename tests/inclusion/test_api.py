@@ -29,6 +29,7 @@ def test_create_report(api_client, structure, user):
         "latitude": -56.7421445,
         "score_geocodage": 0.5,
         "source": "dora",
+        "date_maj": "2022-04-28T16:53:11Z",
         "structure_mere": None,
     }
     response = api_client.post(url, data, format="json")
@@ -64,7 +65,66 @@ def test_create_report(api_client, structure, user):
                     "latitude": -56.7421445,
                     "score_geocodage": 0.5,
                     "source": "dora",
-                    "date_maj": None,
+                    "date_maj": "2022-04-28T18:53:11+02:00",
+                    "extra": {},
+                    "structure_mere": None,
+                },
+                "created_at": ANY,
+                "updated_at": ANY,
+            }
+        ],
+        "updated_at": ANY,
+        "created_at": ANY,
+        "siret": "60487647500499",
+        "rna": "W382421948",
+    }
+
+
+def test_create_report_minimal(api_client, structure, user):
+    url = reverse("v0:reports-list")
+    data = {
+        "siret": structure.siret,
+        "nom": "Hebert",
+        "code_postal": "09891",
+        "code_insee": "13991",
+        "commune": "Robinboeuf",
+        "adresse": "rue de Leclercq",
+        "date_maj": "2022-04-28T16:53:11Z",
+    }
+    response = api_client.post(url, data, format="json")
+
+    assert response.status_code == 201
+
+    url = reverse("v0:structures-detail", kwargs={"pk": structure.id})
+    response = api_client.get(url)
+
+    assert response.json() == {
+        "id": ANY,
+        "latest_reports": [
+            {
+                "id": ANY,
+                "data": {
+                    "id": ANY,
+                    "siret": "60487647500499",
+                    "rna": "W382421948",
+                    "typologie": None,
+                    "id_antenne": "",
+                    "nom": "Hebert",
+                    "presentation_resume": "",
+                    "site_web": "",
+                    "presentation_detail": "",
+                    "telephone": "",
+                    "courriel": "",
+                    "code_postal": "09891",
+                    "code_insee": "13991",
+                    "commune": "Robinboeuf",
+                    "adresse": "rue de Leclercq",
+                    "complement_adresse": "",
+                    "longitude": None,
+                    "latitude": None,
+                    "score_geocodage": None,
+                    "source": "",
+                    "date_maj": "2022-04-28T18:53:11+02:00",
                     "extra": {},
                     "structure_mere": None,
                 },
