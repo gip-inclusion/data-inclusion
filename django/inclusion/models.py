@@ -1,3 +1,4 @@
+from django.core import exceptions
 from django.db import models
 from django.db.models import (
     CharField,
@@ -30,6 +31,12 @@ class Structure(BaseModel):
         return self.siret
 
     objects = managers.StructureManager()
+
+    def clean(self):
+        super().clean()
+        # Ensure at least one pivot has been set
+        if self.siret is None and self.rna is None:
+            raise exceptions.ValidationError("Précisez au moins un pivot (siret ou rna)")
 
 
 class StructureTypology(BaseModel):
