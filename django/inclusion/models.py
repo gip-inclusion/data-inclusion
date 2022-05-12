@@ -48,16 +48,42 @@ class StructureTypology(BaseModel):
 
 
 class StructureReport(BaseModel):
-    # métadonnées
+    # structure désigné par le rapport considéré
+    # peut être nul dans le cas où le rapport est inclu dans un autre
+    structure = ForeignKey(
+        Structure,
+        blank=True,
+        null=True,
+        on_delete=models.CASCADE,
+        related_name="reports",
+    )
 
-    structure = ForeignKey(Structure, on_delete=models.CASCADE, related_name="reports")
+    # autre rapport dans lequel le rapport considéré a été déclaré
+    # c'est le cas notamment pour documentés des antennes qui ne sont pas directement
+    # rattachables à une structure (pivots inexistants)
+    parent_report = ForeignKey(
+        "StructureReport",
+        blank=True,
+        null=True,
+        on_delete=models.CASCADE,
+        related_name="sub_reports",
+    )
 
-    # données de structure, selon le schéma de données normalisé
+    # identifiant de la structure dans la source
+    # utilisé notamment pour y rattacher des données d'antennes
+    id_in_source = TextField(blank=True, null=True)
 
-    id_antenne = CharField(max_length=5, blank=True, default="")
-    structure_mere = ForeignKey("self", on_delete=models.CASCADE, blank=True, null=True, related_name="branches")
-    typologie = ForeignKey(StructureTypology, null=True, blank=True, on_delete=models.PROTECT, related_name="reports")
+    # champs définis dans le schéma standard
+    typologie = ForeignKey(
+        StructureTypology,
+        blank=True,
+        null=True,
+        on_delete=models.PROTECT,
+        related_name="reports",
+    )
     nom = CharField(blank=True, default="", max_length=255)
+    siret = CharField(blank=True, null=True, max_length=14)
+    rna = CharField(blank=True, null=True, max_length=10)
     presentation_resume = CharField(blank=True, default="", max_length=280)
     site_web = URLField(blank=True, default="")
     presentation_detail = TextField(blank=True, default="")
@@ -70,14 +96,31 @@ class StructureReport(BaseModel):
     complement_adresse = CharField(blank=True, default="", max_length=255)
     longitude = FloatField(blank=True, null=True)
     latitude = FloatField(blank=True, null=True)
+    source = TextField(blank=True, default="")
+    date_maj = DateTimeField(blank=True, null=True)
+
     # valeur indiquant la pertinence des valeurs lat/lon issues d'un géocodage
     # valeur allant de 0 (pas pertinent) à 1 (pertinent)
     score_geocodage = FloatField(blank=True, null=True)
-    source = TextField(blank=True, default="")
-    date_maj = DateTimeField(blank=True, null=True)
     extra = JSONField(blank=True, default=dict)
+
+    class Meta:
+        constraints = [
+            models.CheckConstraint(
+                name="not_orphaned",
+                check=models.Q(structure__isnull=True, parent_report__isnull=False)
+                | models.Q(structure__isnull=False, parent_report__isnull=True),
+            )
+        ]
 
     def __str__(self) -> str:
         return f"{self.id}"
 
     objects = managers.StructureReportManager()
+
+    def clean(self):
+        super().clean()
+        if self.structure is None and self.parent_report is None:
+            raise exceptions.ValidationError(
+                "la donnée ne peut ni être rattachée à une structure, ni inclue comme une antenne"
+            )

@@ -29,6 +29,7 @@ class StructureReportViewSet(
 
         # l'identifiant de la structure est utilisé dans ses représentations
         data = serializer.data
-        data["id"] = serializer.instance.structure.id
+        if serializer.instance.structure is not None:
+            data["id"] = serializer.instance.structure.id
 
         return Response(data, status=status.HTTP_201_CREATED, headers=headers)

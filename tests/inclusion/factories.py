@@ -27,6 +27,10 @@ class StructureReportFactory(factory.django.DjangoModelFactory):
         model = "inclusion.StructureReport"
 
     structure = factory.SubFactory(StructureFactory)
+    id_in_source = factory.Faker("slug", locale="fr_FR")
+
+    siret = factory.SelfAttribute("structure.siret")
+    rna = factory.SelfAttribute("structure.rna")
 
     nom = factory.Faker("company", locale="fr_FR")
     presentation_resume = factory.Faker("text", max_nb_chars=20, locale="fr_FR")
