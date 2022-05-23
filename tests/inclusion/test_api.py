@@ -7,6 +7,7 @@ from django.urls import reverse
 pytestmark = pytest.mark.django_db
 
 
+@pytest.mark.as_user
 def test_create_report(api_client, structure):
     url = reverse("v0:reports-list")
     data = {
@@ -79,6 +80,7 @@ def test_create_report(api_client, structure):
     }
 
 
+@pytest.mark.as_user
 def test_create_report_minimal(api_client, structure):
     url = reverse("v0:reports-list")
     data = {
@@ -138,6 +140,7 @@ def test_create_report_minimal(api_client, structure):
     }
 
 
+@pytest.mark.as_user
 def test_create_report_and_structure(api_client):
     url = reverse("v0:reports-list")
     data = {
@@ -215,6 +218,7 @@ def test_create_report_and_structure(api_client):
     assert resp_data["latest_reports"][0]["data"]["id"] == resp_data["id"]
 
 
+@pytest.mark.as_user
 def test_retrieve_structure(api_client, structure, structure_report):
     url = reverse("v0:structures-detail", kwargs={"pk": structure.id})
     response = api_client.get(url)
@@ -264,6 +268,7 @@ def test_retrieve_structure(api_client, structure, structure_report):
     assert resp_data["latest_reports"][0]["data"]["id"] == resp_data["id"]
 
 
+@pytest.mark.as_user
 def test_create_antenne_report(api_client, structure, structure_report):
     url = reverse("v0:reports-list")
     data = {
@@ -356,3 +361,33 @@ def test_create_antenne_report(api_client, structure, structure_report):
     )
     # l'identifiant de l'antenne diffère de celui de la source
     assert resp_data["latest_reports"][0]["antennes_data"][0]["id"] != resp_data["id"]
+
+
+def test_create_report_unauthenticated(api_client, structure):
+    url = reverse("v0:reports-list")
+    data = {
+        "siret": structure.siret,
+        "nom": "Hebert",
+        "code_postal": "09891",
+        "code_insee": "13991",
+        "commune": "Robinboeuf",
+        "adresse": "rue de Leclercq",
+        "date_maj": "2022-04-28T16:53:11Z",
+    }
+    response = api_client.post(url, data, format="json")
+
+    assert response.status_code == 403
+
+
+def test_list_structures_unauthenticated(api_client, structure, structure_report):
+    url = reverse("v0:structures-list")
+    response = api_client.get(url)
+
+    assert response.status_code == 403
+
+
+def test_retrieve_structure_unauthenticated(api_client, structure, structure_report):
+    url = reverse("v0:structures-detail", kwargs={"pk": structure.id})
+    response = api_client.get(url)
+
+    assert response.status_code == 403

@@ -1,4 +1,5 @@
 import os
+from datetime import timedelta
 from pathlib import Path
 
 import dj_database_url
@@ -49,7 +50,7 @@ MIDDLEWARE = list(
         lambda s: s is not None,
         [
             "django.middleware.security.SecurityMiddleware",
-            "whitenoise.middleware.WhiteNoiseMiddleware" if ENV == "prod" else None,
+            "whitenoise.middleware.WhiteNoiseMiddleware" if ENV in ["prod", "staging"] else None,
             "django.contrib.sessions.middleware.SessionMiddleware",
             "corsheaders.middleware.CorsMiddleware",
             "django.middleware.common.CommonMiddleware",
@@ -174,9 +175,23 @@ REST_FRAMEWORK = {
         "rest_framework.renderers.JSONRenderer",
         "rest_framework.renderers.BrowsableAPIRenderer",
     ],
+    "DEFAULT_AUTHENTICATION_CLASSES": [
+        "rest_framework.authentication.SessionAuthentication",
+        "rest_framework_simplejwt.authentication.JWTAuthentication",
+    ],
+    "DEFAULT_PERMISSION_CLASSES": [
+        "rest_framework.permissions.IsAuthenticated" if ENV == "prod" else "rest_framework.permissions.AllowAny"
+    ],
     "DEFAULT_SCHEMA_CLASS": "drf_spectacular.openapi.AutoSchema",
     "DEFAULT_VERSIONING_CLASS": "rest_framework.versioning.NamespaceVersioning",
     "PAGE_SIZE": 100,
+}
+
+# Rest Framework simple JWT
+# https://django-rest-framework-simplejwt.readthedocs.io/en/latest/settings.html
+
+SIMPLE_JWT = {
+    "ACCESS_TOKEN_LIFETIME": timedelta(weeks=24),
 }
 
 # API documentation
