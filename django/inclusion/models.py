@@ -15,30 +15,6 @@ from common.models import BaseModel
 from inclusion import managers
 
 
-class Structure(BaseModel):
-    siret = CharField(max_length=14, blank=True, null=True, unique=True)
-    rna = CharField(max_length=10, blank=True, null=True, unique=True)
-
-    class Meta:
-        constraints = [
-            models.CheckConstraint(
-                name="has_pivot",
-                check=~models.Q(siret__isnull=True, rna__isnull=True),
-            )
-        ]
-
-    def __str__(self) -> str:
-        return self.siret
-
-    objects = managers.StructureManager()
-
-    def clean(self):
-        super().clean()
-        # Ensure at least one pivot has been set
-        if self.siret is None and self.rna is None:
-            raise exceptions.ValidationError("Précisez au moins un pivot (siret ou rna)")
-
-
 class StructureTypology(BaseModel):
     value = CharField(max_length=255, unique=True, db_index=True)
     label = CharField(max_length=255)
@@ -48,16 +24,6 @@ class StructureTypology(BaseModel):
 
 
 class StructureReport(BaseModel):
-    # structure désigné par le rapport considéré
-    # peut être nul dans le cas où le rapport est inclu dans un autre
-    structure = ForeignKey(
-        Structure,
-        blank=True,
-        null=True,
-        on_delete=models.CASCADE,
-        related_name="reports",
-    )
-
     # autre rapport dans lequel le rapport considéré a été déclaré
     # c'est le cas notamment pour documentés des antennes qui ne sont pas directement
     # rattachables à une structure (pivots inexistants)
@@ -108,8 +74,11 @@ class StructureReport(BaseModel):
         constraints = [
             models.CheckConstraint(
                 name="not_orphaned",
-                check=models.Q(structure__isnull=True, parent_report__isnull=False)
-                | models.Q(structure__isnull=False, parent_report__isnull=True),
+                check=~models.Q(
+                    siret__isnull=True,
+                    rna__isnull=True,
+                    parent_report__isnull=True,
+                ),
             )
         ]
 
@@ -120,7 +89,7 @@ class StructureReport(BaseModel):
 
     def clean(self):
         super().clean()
-        if self.structure is None and self.parent_report is None:
+        if self.siret is None and self.rna is None and self.parent_report is None:
             raise exceptions.ValidationError(
                 "la donnée ne peut ni être rattachée à une structure, ni inclue comme une antenne"
             )

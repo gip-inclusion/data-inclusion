@@ -1,39 +1,48 @@
-from typing import Optional
-
 from django.db import models
-from django.db.models import F, Max, OuterRef, Prefetch, Subquery
+from django.db.models import F, Max, OuterRef, Subquery
+from django.db.models.lookups import Exact
 
 
-class StructureManager(models.Manager):
-    def with_latest_reports(self):
-        from inclusion.models import StructureReport
-
-        return self.prefetch_related(
-            Prefetch(
-                "reports",
-                queryset=StructureReport.objects.latest_by_source(),
-                to_attr="latest_reports",
-            )
-        )
-
-    def get_from_pivots(self, siret: Optional[str] = None, rna: Optional[str] = None):
-        qs = self.none()
-
-        if siret is not None:
-            qs = self.filter(siret=siret)
-        elif rna is not None:
-            qs = self.filter(rna=rna)
-
-        return qs.first()
-
-
-class StructureReportManager(models.Manager):
-    def latest_by_source(self):
+class StructureReportQuerySet(models.QuerySet):
+    def with_is_latest_by_source(self):
         return self.alias(
             latest=Subquery(
-                self.values("source", "structure_id")
+                self.values("source", "id_in_source")
+                .annotate(latest=Max("created_at"))
+                .filter(latest=OuterRef("created_at"))
+                .values("latest")
+            )
+        ).annotate(is_latest=Exact(F("latest"), F("created_at")))
+
+    def latests_by_source(self):
+        return self.alias(
+            latest=Subquery(
+                self.values("source", "id_in_source")
                 .annotate(latest=Max("created_at"))
                 .filter(latest=OuterRef("created_at"))
                 .values("latest")
             )
         ).filter(created_at=F("latest"))
+
+    def antennes(self):
+        return self.filter(parent_report__isnull=False)
+
+    def sieges(self):
+        return self.filter(parent_report__isnull=True)
+
+
+class StructureReportManager(models.Manager):
+    def get_queryset(self):
+        return StructureReportQuerySet(self.model)
+
+    def with_is_latest_by_source(self):
+        return self.get_queryset().with_is_latest_by_source()
+
+    def latests_by_source(self):
+        return self.get_queryset().latests_by_source()
+
+    def antennes(self):
+        return self.get_queryset().antennes()
+
+    def sieges(self):
+        return self.get_queryset().sieges()

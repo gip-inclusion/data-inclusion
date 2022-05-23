@@ -7,14 +7,6 @@ from django.utils import timezone
 fake = faker.Faker("fr_FR")
 
 
-class StructureFactory(factory.django.DjangoModelFactory):
-    class Meta:
-        model = "inclusion.Structure"
-
-    siret = factory.LazyFunction(lambda: fake.siret().replace(" ", ""))
-    rna = factory.Faker("bothify", text="W#########")
-
-
 class UserFactory(factory.django.DjangoModelFactory):
     class Meta:
         model = settings.AUTH_USER_MODEL
@@ -26,11 +18,10 @@ class StructureReportFactory(factory.django.DjangoModelFactory):
     class Meta:
         model = "inclusion.StructureReport"
 
-    structure = factory.SubFactory(StructureFactory)
     id_in_source = factory.Faker("slug", locale="fr_FR")
 
-    siret = factory.SelfAttribute("structure.siret")
-    rna = factory.SelfAttribute("structure.rna")
+    siret = factory.LazyFunction(lambda: fake.siret().replace(" ", ""))
+    rna = factory.Faker("bothify", text="W#########")
 
     nom = factory.Faker("company", locale="fr_FR")
     presentation_resume = factory.Faker("text", max_nb_chars=20, locale="fr_FR")

@@ -1,35 +1,37 @@
-from rest_framework import mixins, pagination, status, viewsets
-from rest_framework.response import Response
+from rest_framework import mixins, pagination, viewsets
 
 from inclusion import models
 from inclusion.api import filters, serializers
 
 
-class StructureViewSet(viewsets.ReadOnlyModelViewSet):
-    queryset = models.Structure.objects.with_latest_reports()
-    serializer_class = serializers.StructureSerializer
-    ordering_fields = ["created_at"]
-    ordering = ["created_at"]
-    filterset_class = filters.StructureFilterSet
-    pagination_class = pagination.LimitOffsetPagination
-
-
 class StructureReportViewSet(
     mixins.CreateModelMixin,
+    mixins.RetrieveModelMixin,
+    mixins.ListModelMixin,
     viewsets.GenericViewSet,
 ):
-    queryset = models.StructureReport.objects.all()
-    serializer_class = serializers.CreateStructureReportSerializer
+    ordering_fields = ["created_at"]
+    ordering = ["created_at"]
+    filterset_class = filters.StructureReportFilterSet
+    pagination_class = pagination.LimitOffsetPagination
+
+    def get_queryset(self):
+        if self.action == "create":
+            return models.StructureReport.objects.all()
+        elif self.action in ["list", "retrieve"]:
+            return models.StructureReport.objects.latests_by_source()
+
+    def get_serializer_class(self):
+        if self.action == "create":
+            return serializers.CreateStructureReportSerializer
+        elif self.action in ["list", "retrieve"]:
+            return serializers.StructureReportSerializer
 
     def create(self, request, *args, **kwargs):
-        serializer = self.get_serializer(data=request.data)
-        serializer.is_valid(raise_exception=True)
-        self.perform_create(serializer)
-        headers = self.get_success_headers(serializer.data)
+        return super().create(request, *args, **kwargs)
 
-        # l'identifiant de la structure est utilisé dans ses représentations
-        data = serializer.data
-        if serializer.instance.structure is not None:
-            data["id"] = serializer.instance.structure.id
+    def list(self, request, *args, **kwargs):
+        return super().list(request, *args, **kwargs)
 
-        return Response(data, status=status.HTTP_201_CREATED, headers=headers)
+    def retrieve(self, request, *args, **kwargs):
+        return super().retrieve(request, *args, **kwargs)
