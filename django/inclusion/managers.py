@@ -6,23 +6,23 @@ from django.db.models.lookups import Exact
 class StructureReportQuerySet(models.QuerySet):
     def with_is_latest_by_source(self):
         return self.alias(
-            latest=Subquery(
+            id_latest=Subquery(
                 self.values("source", "id_in_source")
                 .annotate(latest=Max("created_at"))
                 .filter(latest=OuterRef("created_at"))
-                .values("latest")
+                .values("id")
             )
-        ).annotate(is_latest=Exact(F("latest"), F("created_at")))
+        ).annotate(is_latest=Exact(F("id"), F("id_latest")))
 
     def latests_by_source(self):
         return self.alias(
-            latest=Subquery(
+            id_latest=Subquery(
                 self.values("source", "id_in_source")
                 .annotate(latest=Max("created_at"))
                 .filter(latest=OuterRef("created_at"))
-                .values("latest")
+                .values("id")
             )
-        ).filter(created_at=F("latest"))
+        ).filter(id=F("id_latest"))
 
     def antennes(self):
         return self.filter(parent_report__isnull=False)
