@@ -24,6 +24,3 @@ class StructureReport(admin.ModelAdmin):
     list_display = ["id", "source", "id_in_source", "siret", "date_maj", "nom"]
     list_filter = [LatestsFilter, "source", "typologie"]
     search_fields = ["siret", "nom"]
-
-    def get_queryset(self, request):
-        return self.model.objects.with_is_latest_by_source()

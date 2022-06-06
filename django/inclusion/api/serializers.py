@@ -6,7 +6,7 @@ from inclusion.models import StructureReport, StructureTypology
 class AntenneDataSerializer(serializers.ModelSerializer):
     class Meta:
         model = StructureReport
-        exclude = ["created_at", "updated_at", "parent_report", "id_in_source"]
+        exclude = ["created_at", "updated_at", "parent_report", "id_in_source", "is_latest"]
 
     id = serializers.CharField(source="id_in_source")
     typologie = serializers.SlugRelatedField(slug_field="value", read_only=True)
@@ -16,7 +16,7 @@ class AntenneDataSerializer(serializers.ModelSerializer):
 class StructureDataSerializer(serializers.ModelSerializer):
     class Meta:
         model = StructureReport
-        exclude = ["created_at", "updated_at", "parent_report", "id_in_source"]
+        exclude = ["created_at", "updated_at", "parent_report", "id_in_source", "is_latest"]
 
     id = serializers.CharField(source="id_in_source")
     typologie = serializers.SlugRelatedField(slug_field="value", read_only=True)
@@ -38,7 +38,7 @@ class StructureReportSerializer(serializers.ModelSerializer):
 class CreateStructureReportSerializer(serializers.ModelSerializer):
     class Meta:
         model = StructureReport
-        exclude = ["id_in_source", "parent_report"]
+        exclude = ["id_in_source", "parent_report", "is_latest"]
 
     id = serializers.CharField(source="id_in_source", required=False)
     siret = serializers.CharField(

@@ -1,6 +1,7 @@
 from django.core import exceptions
-from django.db import models
+from django.db import models, transaction
 from django.db.models import (
+    BooleanField,
     CharField,
     DateTimeField,
     EmailField,
@@ -71,6 +72,9 @@ class StructureReport(BaseModel):
     score_geocodage = FloatField(blank=True, null=True)
     extra = JSONField(blank=True, default=dict)
 
+    # champs dénormalisé pour accélerer la récupération des dernières données remontées
+    is_latest = BooleanField(default=False)
+
     class Meta:
         constraints = [
             models.CheckConstraint(
@@ -94,3 +98,21 @@ class StructureReport(BaseModel):
             raise exceptions.ValidationError(
                 "la donnée ne peut ni être rattachée à une structure, ni inclue comme une antenne"
             )
+
+    def save(self, *args, **kwargs):
+        with transaction.atomic():
+            # mise à jour du champs is_latest
+            if self._state.adding:
+                latest_report_instance = StructureReport.objects.filter(
+                    source=self.source,
+                    id_in_source=self.id_in_source,
+                    is_latest=True,
+                ).first()
+
+                if latest_report_instance is not None and latest_report_instance.date_maj < self.date_maj:
+                    latest_report_instance.is_latest = False
+                    latest_report_instance.save()
+
+                self.is_latest = True
+
+            super().save(*args, **kwargs)

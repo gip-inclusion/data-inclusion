@@ -259,3 +259,55 @@ def test_retrieve_report_unauthenticated(api_client, structure_report):
     response = api_client.get(url)
 
     assert response.status_code == 403
+
+
+@pytest.mark.as_user
+def test_list_latest_reports(api_client, structure_report_factory):
+    earliest_report = structure_report_factory()
+    latest_report = structure_report_factory(
+        id_in_source=earliest_report.id_in_source,
+        source=earliest_report.source,
+    )
+
+    url = reverse("v0:reports-list")
+    response = api_client.get(url)
+    resp_data = response.json()
+
+    assert resp_data == {
+        "count": 1,
+        "next": None,
+        "previous": None,
+        "results": [
+            {
+                "id": str(latest_report.id),
+                "data": {
+                    "id": "matiere-nom-asseoir",
+                    "typologie": None,
+                    "structure_parente": None,
+                    "nom": "Ferreira",
+                    "siret": "56012309800219",
+                    "rna": "W101399161",
+                    "presentation_resume": "Arrêter sérieux.",
+                    "site_web": "http://www.voisin.com/",
+                    "presentation_detail": "Membre pain second.",
+                    "telephone": "0102030405",
+                    "courriel": "mfournier@example.org",
+                    "code_postal": "34579",
+                    "code_insee": "30225",
+                    "commune": "DeschampsBourg",
+                    "adresse": "12, avenue Hélène Grégoire",
+                    "complement_adresse": "",
+                    "longitude": -12.793704,
+                    "latitude": 84.196756,
+                    "source": "dora",
+                    "date_maj": ANY,
+                    "lien_source": "https://dora.fr/matiere-nom-asseoir",
+                    "score_geocodage": 0.5,
+                    "extra": {},
+                },
+                "created_at": ANY,
+                "updated_at": ANY,
+                "antennes_data": [],
+            }
+        ],
+    }
