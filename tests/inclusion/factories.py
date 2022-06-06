@@ -38,3 +38,4 @@ class StructureReportFactory(factory.django.DjangoModelFactory):
     score_geocodage = 0.5
     date_maj = factory.LazyFunction(timezone.now)
     source = factory.Iterator(["dora", "itou"])
+    lien_source = factory.LazyAttribute(lambda o: f"https://{o.source}.fr/{o.id_in_source}")

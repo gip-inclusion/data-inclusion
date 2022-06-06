@@ -32,6 +32,7 @@ def test_create_report_nominal(api_client):
         "source": "dora",
         "date_maj": "2022-04-28T16:53:11Z",
         "structure_parente": None,
+        "lien_source": "https://dora.fr/60487647500499-hebert/",
     }
     response = api_client.post(url, data, format="json")
 
@@ -42,6 +43,7 @@ def test_create_report_nominal(api_client):
         "rna": "W382421948",
         "typologie": None,
         "structure_parente": None,
+        "lien_source": "https://dora.fr/60487647500499-hebert/",
         "updated_at": ANY,
         "created_at": ANY,
         "nom": "Hebert",
@@ -86,6 +88,7 @@ def test_create_report_minimal(api_client):
         "rna": None,
         "typologie": None,
         "structure_parente": None,
+        "lien_source": "",
         "updated_at": ANY,
         "created_at": ANY,
         "nom": "Hebert",
@@ -137,6 +140,7 @@ def test_retrieve_report(api_client, structure_report):
             "latitude": 9.8741475,
             "source": "dora",
             "date_maj": ANY,
+            "lien_source": "https://dora.fr/matiere-nom-asseoir",
             "score_geocodage": 0.5,
             "extra": {},
         },
@@ -191,6 +195,7 @@ def test_create_antenne_report(api_client, structure_report):
             "latitude": 9.8741475,
             "source": "itou",
             "date_maj": ANY,
+            "lien_source": "https://itou.fr/matiere-nom-asseoir",
             "score_geocodage": 0.5,
             "extra": {},
         },
@@ -218,6 +223,7 @@ def test_create_antenne_report(api_client, structure_report):
                 "latitude": None,
                 "source": "itou",
                 "date_maj": ANY,
+                "lien_source": "",
                 "score_geocodage": None,
                 "extra": {},
             }
