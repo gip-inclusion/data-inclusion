@@ -33,6 +33,7 @@ def test_create_report_nominal(api_client):
         "date_maj": "2022-04-28T16:53:11Z",
         "structure_parente": None,
         "lien_source": "https://dora.fr/60487647500499-hebert/",
+        "horaires_ouverture": 'Mo-Fr 10:00-20:00 "sur rendez-vous"; PH off',
     }
     response = api_client.post(url, data, format="json")
 
@@ -44,6 +45,7 @@ def test_create_report_nominal(api_client):
         "typologie": None,
         "structure_parente": None,
         "lien_source": "https://dora.fr/60487647500499-hebert/",
+        "horaires_ouverture": 'Mo-Fr 10:00-20:00 "sur rendez-vous"; PH off',
         "updated_at": ANY,
         "created_at": ANY,
         "nom": "Hebert",
@@ -89,6 +91,7 @@ def test_create_report_minimal(api_client):
         "typologie": None,
         "structure_parente": None,
         "lien_source": "",
+        "horaires_ouverture": "",
         "updated_at": ANY,
         "created_at": ANY,
         "nom": "Hebert",
@@ -141,6 +144,7 @@ def test_retrieve_report(api_client, structure_report):
             "source": "dora",
             "date_maj": ANY,
             "lien_source": "https://dora.fr/matiere-nom-asseoir",
+            "horaires_ouverture": 'Mo-Fr 10:00-20:00 "sur rendez-vous"; PH off',
             "score_geocodage": 0.5,
             "extra": {},
         },
@@ -196,6 +200,7 @@ def test_create_antenne_report(api_client, structure_report):
             "source": "itou",
             "date_maj": ANY,
             "lien_source": "https://itou.fr/matiere-nom-asseoir",
+            "horaires_ouverture": 'Mo-Fr 10:00-20:00 "sur rendez-vous"; PH off',
             "score_geocodage": 0.5,
             "extra": {},
         },
@@ -224,6 +229,7 @@ def test_create_antenne_report(api_client, structure_report):
                 "source": "itou",
                 "date_maj": ANY,
                 "lien_source": "",
+                "horaires_ouverture": "",
                 "score_geocodage": None,
                 "extra": {},
             }
@@ -302,6 +308,7 @@ def test_list_latest_reports(api_client, structure_report_factory):
                     "source": "dora",
                     "date_maj": ANY,
                     "lien_source": "https://dora.fr/matiere-nom-asseoir",
+                    "horaires_ouverture": 'Mo-Fr 10:00-20:00 "sur rendez-vous"; PH off',
                     "score_geocodage": 0.5,
                     "extra": {},
                 },

@@ -39,3 +39,4 @@ class StructureReportFactory(factory.django.DjangoModelFactory):
     date_maj = factory.LazyFunction(timezone.now)
     source = factory.Iterator(["dora", "itou"])
     lien_source = factory.LazyAttribute(lambda o: f"https://{o.source}.fr/{o.id_in_source}")
+    horaires_ouverture = 'Mo-Fr 10:00-20:00 "sur rendez-vous"; PH off'

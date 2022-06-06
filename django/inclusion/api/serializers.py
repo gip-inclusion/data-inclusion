@@ -69,6 +69,11 @@ class CreateStructureReportSerializer(serializers.ModelSerializer):
         allow_blank=True,
         required=False,
     )
+    horaires_ouverture = serializers.CharField(
+        allow_null=True,
+        allow_blank=True,
+        required=False,
+    )
 
     def create(self, data):
         # Retrouve la structure à partir des données

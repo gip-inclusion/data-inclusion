@@ -66,6 +66,7 @@ class StructureReport(BaseModel):
     source = TextField(blank=True, default="")
     date_maj = DateTimeField(blank=True, null=True)
     lien_source = URLField(blank=True, default="")
+    horaires_ouverture = TextField(blank=True, default="")
 
     # valeur indiquant la pertinence des valeurs lat/lon issues d'un géocodage
     # valeur allant de 0 (pas pertinent) à 1 (pertinent)
