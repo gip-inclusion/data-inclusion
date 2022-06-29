@@ -4,12 +4,6 @@ from inclusion import models
 from inclusion.api import filters, serializers
 
 
-class CustomLimitOffsetPagination(pagination.LimitOffsetPagination):
-    def get_count(self, queryset):
-        # speed up the count
-        return models.StructureReport.objects.distinct("source", "id_in_source").count()
-
-
 class StructureReportViewSet(
     mixins.CreateModelMixin,
     mixins.RetrieveModelMixin,
@@ -19,7 +13,7 @@ class StructureReportViewSet(
     ordering_fields = ["created_at"]
     ordering = ["created_at"]
     filterset_class = filters.StructureReportFilterSet
-    pagination_class = CustomLimitOffsetPagination
+    pagination_class = pagination.LimitOffsetPagination
 
     def get_queryset(self):
         if self.action == "create":
