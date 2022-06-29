@@ -54,7 +54,7 @@ class StructureReport(BaseModel):
     presentation_resume = CharField(blank=True, default="", max_length=280)
     site_web = URLField(blank=True, default="")
     presentation_detail = TextField(blank=True, default="")
-    telephone = CharField(blank=True, default="", max_length=10)
+    telephone = TextField(blank=True, default="")
     courriel = EmailField(blank=True, default="")
     code_postal = CharField(blank=True, default="", max_length=5)
     code_insee = CharField(blank=True, default="", max_length=5)
