@@ -103,17 +103,23 @@ class StructureReport(BaseModel):
     def save(self, *args, **kwargs):
         with transaction.atomic():
             # mise à jour du champs is_latest
-            if self._state.adding:
-                latest_report_instance = StructureReport.objects.filter(
-                    source=self.source,
-                    id_in_source=self.id_in_source,
-                    is_latest=True,
-                ).first()
 
-                if latest_report_instance is not None and latest_report_instance.date_maj < self.date_maj:
-                    latest_report_instance.is_latest = False
-                    latest_report_instance.save()
+            latest_report_instance = StructureReport.objects.filter(
+                source=self.source,
+                id_in_source=self.id_in_source,
+                is_latest=True,
+            ).first()
 
+            if latest_report_instance is None:
+                # 1er signalement pour ce couple source/structure
                 self.is_latest = True
+            elif latest_report_instance.date_maj < self.date_maj:
+                # cette donnée est la plus récente
+                latest_report_instance.is_latest = False
+                latest_report_instance.save()
+                self.is_latest = True
+            else:
+                # cette donnée n'est pas la plus récente
+                self.is_latest = False
 
             super().save(*args, **kwargs)
