@@ -4,6 +4,8 @@ import faker
 from django.conf import settings
 from django.utils import timezone
 
+from inclusion import models
+
 fake = faker.Faker("fr_FR")
 
 
@@ -16,9 +18,10 @@ class UserFactory(factory.django.DjangoModelFactory):
 
 class StructureReportFactory(factory.django.DjangoModelFactory):
     class Meta:
-        model = "inclusion.StructureReport"
+        model = models.StructureReport
 
     id_in_source = factory.Faker("slug", locale="fr_FR")
+    typologie = factory.Iterator(models.StructureTypology.objects.all())
 
     siret = factory.LazyFunction(lambda: fake.siret().replace(" ", ""))
     rna = factory.Faker("bothify", text="W#########")

@@ -4,6 +4,8 @@ import pytest
 
 from django.urls import reverse
 
+from inclusion import models
+
 pytestmark = pytest.mark.django_db
 
 
@@ -124,7 +126,7 @@ def test_retrieve_report(api_client, structure_report):
         "id": ANY,
         "data": {
             "id": "matiere-nom-asseoir",
-            "typologie": None,
+            "typologie": "ACI",
             "structure_parente": None,
             "nom": "Pottier SARL",
             "siret": "76475938200654",
@@ -180,7 +182,7 @@ def test_create_antenne_report(api_client, structure_report):
         "id": ANY,
         "data": {
             "id": "matiere-nom-asseoir",
-            "typologie": None,
+            "typologie": "ACIPHC",
             "structure_parente": None,
             "nom": "Pottier SARL",
             "siret": "76475938200654",
@@ -288,7 +290,7 @@ def test_list_latest_reports(api_client, structure_report_factory):
                 "id": str(latest_report.id),
                 "data": {
                     "id": "matiere-nom-asseoir",
-                    "typologie": None,
+                    "typologie": "ASSO",
                     "structure_parente": None,
                     "nom": "Ferreira",
                     "siret": "56012309800219",
@@ -318,3 +320,55 @@ def test_list_latest_reports(api_client, structure_report_factory):
             }
         ],
     }
+
+
+@pytest.mark.as_user
+def test_filter_reports_by_typology(api_client, structure_report_factory):
+    structure_report_factory(typologie=models.StructureTypology.objects.get(value="ASSO"))
+    structure_report_factory(typologie=models.StructureTypology.objects.get(value="CCAS"))
+
+    url = reverse("v0:reports-list")
+    response = api_client.get(url, data={"typologie": "ASSO"})
+
+    assert response.json() == {
+        "count": 1,
+        "next": None,
+        "previous": None,
+        "results": [
+            {
+                "id": ANY,
+                "data": {
+                    "id": "matiere-nom-asseoir",
+                    "typologie": "ASSO",
+                    "structure_parente": None,
+                    "nom": "Pottier SARL",
+                    "siret": "76475938200654",
+                    "rna": "W219489241",
+                    "presentation_resume": "Peu répondre chant.",
+                    "site_web": "https://courtois.org/",
+                    "presentation_detail": "Or personne jambe.",
+                    "telephone": "0102030405",
+                    "courriel": "bonninveronique@example.net",
+                    "code_postal": "84833",
+                    "code_insee": "94775",
+                    "commune": "Sainte JulietteBourg",
+                    "adresse": "453, chemin Ferreira",
+                    "complement_adresse": "",
+                    "longitude": -61.64115,
+                    "latitude": 9.8741475,
+                    "source": "itou",
+                    "date_maj": ANY,
+                    "lien_source": "https://itou.fr/matiere-nom-asseoir",
+                    "horaires_ouverture": 'Mo-Fr 10:00-20:00 "sur rendez-vous"; PH off',
+                    "score_geocodage": 0.5,
+                    "extra": {},
+                },
+                "created_at": ANY,
+                "updated_at": ANY,
+                "antennes_data": [],
+            }
+        ],
+    }
+
+    response = api_client.get(url, data={"typologie": "MUNI"})
+    assert response.json() == {"count": 0, "next": None, "previous": None, "results": []}
