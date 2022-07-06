@@ -88,7 +88,8 @@ class CreateStructureReportSerializer(serializers.ModelSerializer):
             parent_report = StructureReport.objects.filter(
                 id_in_source=structure_parente,
                 source=source,
-            ).latest("created_at")
+                is_latest=True,
+            ).first()
             if parent_report is None:
                 raise serializers.ValidationError("veuillez d'abord référencer la structure parente")
             report = StructureReport.objects.create(**data, parent_report=parent_report)
