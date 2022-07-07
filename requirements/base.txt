@@ -5,8 +5,8 @@ django-filter==21.1
 djangorestframework==3.13.1
 djangorestframework-simplejwt==5.1.0
 drf-spectacular==0.22.0
-openpyxl==3.0.10
 pandas==1.4.3
 psycopg2==2.9.3
 python-dotenv==0.20.0
 requests==2.28.1
+xlsxwriter==3.0.3
