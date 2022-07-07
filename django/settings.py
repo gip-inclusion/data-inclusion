@@ -215,3 +215,13 @@ SPECTACULAR_SETTINGS = {
 SILENCED_SYSTEM_CHECKS = [
     "rest_framework.W001",  # pagination_class on a per-view basis
 ]
+
+# data.gouv.fr
+# https://doc.data.gouv.fr/api/intro/
+
+DATAGOUV_API_KEY = os.environ.get("DATAGOUV_API_KEY", None)
+DATAGOUV_API_URL = os.environ.get("DATAGOUV_API_URL", None)
+DATAGOUV_DI_DATASET_ID = os.environ.get("DATAGOUV_DI_DATASET_ID", None)
+DATAGOUV_DI_JSON_STRUCTURE_RESOURCE_ID = os.environ.get("DATAGOUV_DI_JSON_STRUCTURE_RESOURCE_ID", None)
+DATAGOUV_DI_CSV_STRUCTURE_RESOURCE_ID = os.environ.get("DATAGOUV_DI_CSV_STRUCTURE_RESOURCE_ID", None)
+DATAGOUV_DI_XLSX_STRUCTURE_RESOURCE_ID = os.environ.get("DATAGOUV_DI_XLSX_STRUCTURE_RESOURCE_ID", None)

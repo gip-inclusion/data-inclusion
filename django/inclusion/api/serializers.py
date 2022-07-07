@@ -23,7 +23,7 @@ class StructureDataSerializer(serializers.ModelSerializer):
     structure_parente = serializers.SerializerMethodField()
 
     def get_structure_parente(self, instance):
-        return None
+        return instance.parent_report.id_in_source if instance.parent_report is not None else None
 
 
 class StructureReportSerializer(serializers.ModelSerializer):
