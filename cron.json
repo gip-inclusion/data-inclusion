@@ -1,7 +1,8 @@
 {
     "jobs": [
         {
-            "command": "0 14 * * MON python django/manage.py update_datagouv_resources"
+            "command": "0 14 * * MON python django/manage.py update_datagouv_resources",
+            "size": "S"
         }
     ]
 }
