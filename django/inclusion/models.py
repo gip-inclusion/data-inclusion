@@ -1,3 +1,4 @@
+from django.contrib.postgres.fields import ArrayField
 from django.core import exceptions
 from django.db import models, transaction
 from django.db.models import (
@@ -8,6 +9,7 @@ from django.db.models import (
     FloatField,
     ForeignKey,
     JSONField,
+    ManyToManyField,
     TextField,
     URLField,
 )
@@ -22,6 +24,11 @@ class StructureTypology(BaseModel):
 
     def __str__(self) -> str:
         return self.label
+
+
+class StructureLabel(BaseModel):
+    value = CharField(max_length=255, unique=True, db_index=True)
+    label = CharField(max_length=255)
 
 
 class StructureReport(BaseModel):
@@ -67,6 +74,9 @@ class StructureReport(BaseModel):
     date_maj = DateTimeField(blank=True, null=True)
     lien_source = URLField(blank=True, default="")
     horaires_ouverture = TextField(blank=True, default="")
+    accessibilite = TextField(blank=True, default="")
+    labels_nationaux = ManyToManyField(StructureLabel, related_name="reports")
+    labels_autres = ArrayField(TextField(), default=list)
 
     # valeur indiquant la pertinence des valeurs lat/lon issues d'un géocodage
     # valeur allant de 0 (pas pertinent) à 1 (pertinent)

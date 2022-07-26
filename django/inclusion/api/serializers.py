@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from inclusion.models import StructureReport, StructureTypology
+from inclusion.models import StructureLabel, StructureReport, StructureTypology
 
 
 class AntenneDataSerializer(serializers.ModelSerializer):
@@ -11,6 +11,7 @@ class AntenneDataSerializer(serializers.ModelSerializer):
     id = serializers.CharField(source="id_in_source")
     typologie = serializers.SlugRelatedField(slug_field="value", read_only=True)
     structure_parente = serializers.UUIDField(source="parent_report.id_in_source")
+    labels_nationaux = serializers.SlugRelatedField(slug_field="value", read_only=True, many=True)
 
 
 class StructureDataSerializer(serializers.ModelSerializer):
@@ -21,6 +22,7 @@ class StructureDataSerializer(serializers.ModelSerializer):
     id = serializers.CharField(source="id_in_source")
     typologie = serializers.SlugRelatedField(slug_field="value", read_only=True)
     structure_parente = serializers.SerializerMethodField()
+    labels_nationaux = serializers.SlugRelatedField(slug_field="value", read_only=True, many=True)
 
     def get_structure_parente(self, instance):
         return instance.parent_report.id_in_source if instance.parent_report is not None else None
@@ -74,13 +76,26 @@ class CreateStructureReportSerializer(serializers.ModelSerializer):
         allow_blank=True,
         required=False,
     )
+    labels_nationaux = serializers.SlugRelatedField(
+        allow_null=True,
+        allow_empty=True,
+        many=True,
+        slug_field="value",
+        queryset=StructureLabel.objects.all(),
+        required=False,
+    )
 
     def create(self, data):
-        # Retrouve la structure à partir des données
+        # Overriden in order to deal with antenna reports
+        # Antenna report can have no siret or rna provided, and can reference only its
+        # parent structure. As such, antenna reports will be attached to their parent
+        # structure report.
+
         siret = data.get("siret", None)
         rna = data.get("rna", None)
         source = data.get("source", None)
         structure_parente = data.pop("structure_parente", None)
+        labels_nationaux = data.pop("labels_nationaux", None)
 
         if structure_parente is not None and source is None:
             raise serializers.ValidationError("veuillez préciser la source")
@@ -97,5 +112,8 @@ class CreateStructureReportSerializer(serializers.ModelSerializer):
             report = StructureReport.objects.create(**data)
         else:
             raise serializers.ValidationError("veuillez préciser un pivot ou référencer une structure parente")
+
+        if labels_nationaux is not None:
+            report.labels_nationaux.add(*labels_nationaux)
 
         return report

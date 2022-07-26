@@ -43,3 +43,15 @@ class StructureReportFactory(factory.django.DjangoModelFactory):
     source = factory.Iterator(["dora", "itou"])
     lien_source = factory.LazyAttribute(lambda o: f"https://{o.source}.fr/{o.id_in_source}")
     horaires_ouverture = 'Mo-Fr 10:00-20:00 "sur rendez-vous"; PH off'
+    accessibilite = factory.LazyAttribute(lambda o: f"https://acceslibre.beta.gouv.fr/app/{o.id_in_source}/")
+    labels_autres = ["SudLabs", "Nièvre médiation numérique"]
+
+    @factory.post_generation
+    def labels_nationaux(self, create, extracted, **kwargs):
+        if not create:
+            return
+
+        if extracted is not None:
+            self.labels_nationaux.add(*extracted)
+        else:
+            self.labels_nationaux.add(models.StructureLabel.objects.order_by("value").first())
