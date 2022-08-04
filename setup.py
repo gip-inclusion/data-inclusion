@@ -1,13 +1,5 @@
 from setuptools import find_namespace_packages, setup
 
-
-def requirements() -> list[str]:
-    with open("./requirements.txt") as f:
-        return [
-            line for line in f.read().splitlines() if not line.lstrip().startswith("#")
-        ]
-
-
 setup(
     author="vmttn",
     name="data-inclusion-api",
@@ -18,18 +10,32 @@ setup(
     entry_points={
         "console_scripts": ["data-inclusion-api=data_inclusion.api.entrypoints.cli:cli"]
     },
-    install_requires=requirements(),
+    install_requires=[
+        "click",
+        "faker",
+        "fastapi",
+        "fastapi-pagination",
+        "gunicorn",
+        "pandas",
+        "psycopg2",
+        "pydantic[email]",
+        "python-dotenv",
+        "python-jose[cryptography]",
+        "requests",
+        "sqlalchemy",
+        "uvicorn[standard]",
+    ],
     extras_require={
         "test": [
-            "pytest==7.1.2",
-            "faker==13.15.1",
-            "factory_boy==3.2.1",
-            "pytest-dotenv==0.5.2",
+            "pytest",
+            "faker",
+            "factory_boy",
+            "pytest-dotenv",
         ],
         "dev": [
-            "black==22.6.0",
-            "tox==3.25.1",
-            "pre-commit==2.20.0",
+            "black",
+            "tox",
+            "pre-commit",
         ],
     },
 )

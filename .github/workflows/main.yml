@@ -16,8 +16,5 @@ jobs:
       - uses: actions/checkout@v2
       - name: up stack
         run: docker-compose up -d db
-      # TODO: re-enable
-      # - name: run tests
-      #   run: docker-compose run --entrypoint pytest api -p no:cacheprovider
-      #   env:
-      #     ENV: tests
+      - name: run tests
+        run: docker-compose run --entrypoint pytest api -p no:cacheprovider -vv
