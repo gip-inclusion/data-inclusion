@@ -158,3 +158,61 @@ def test_list_structures_filter_by_label(api_client, structure_factory):
         url, params={"label_national": schema.LabelNational.AFPA.value}
     )
     assert response.json() == {"items": [], "total": 0, "page": 1, "size": 50}
+
+
+@pytest.mark.with_token
+def test_list_structures_filter_by_source(api_client, structure_factory):
+    structure_factory(source="itou")
+    structure_factory(source="dora")
+
+    url = "/api/v0/structures/"
+    response = api_client.get(url, params={"source": "itou"})
+
+    assert response.json() == {
+        "items": [
+            {
+                "id": "matiere-nom-asseoir",
+                "siret": "76475938200654",
+                "rna": "W219489241",
+                "nom": "Pottier SARL",
+                "commune": "VaillantBourg",
+                "code_postal": "65938",
+                "code_insee": "78408",
+                "adresse": "avenue Lacombe",
+                "complement_adresse": None,
+                "longitude": 178.712016,
+                "latitude": 77.843518,
+                "typologie": "AI",
+                "telephone": "0102030405",
+                "courriel": "raymondclemence@example.com",
+                "site_web": "http://aubert.net/",
+                "presentation_resume": "Espèce couler.",
+                "presentation_detail": "Or personne jambe.",
+                "source": "itou",
+                "date_maj": ANY,
+                "structure_parente": None,
+                "lien_source": "https://itou.fr/matiere-nom-asseoir",
+                "horaires_ouverture": 'Mo-Fr 10:00-20:00 "sur rendez-vous"; PH off',
+                "accessibilite": "https://acceslibre.beta.gouv.fr/app/matiere-nom-asseoir/",
+                "labels_nationaux": [],
+                "labels_autres": ["SudLabs", "Nièvre médiation numérique"],
+            }
+        ],
+        "total": 1,
+        "page": 1,
+        "size": 50,
+    }
+
+    response = api_client.get(url, params={"source": "siao"})
+    assert response.json() == {"items": [], "total": 0, "page": 1, "size": 50}
+
+
+@pytest.mark.with_token
+def test_list_sources(api_client, structure_factory):
+    structure_factory(source="itou")
+    structure_factory(source="dora")
+
+    url = "/api/v0/sources/"
+    response = api_client.get(url)
+
+    assert response.json() == ["dora", "itou"]

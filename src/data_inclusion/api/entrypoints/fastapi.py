@@ -14,12 +14,23 @@ from data_inclusion.api.core import db, jwt
 
 logger = logging.getLogger(__name__)
 
+description = """### Token
+* En production, un token d'accès est nécessaire et peut être obtenu en contactant
+l'équipe data.inclusion par mail ou sur leur mattermost betagouv.
+
+Le token doit être renseigné dans chaque requête via un header:
+`Authorization: Bearer <VOTRE_TOKEN>`.
+
+* En staging, l'accès est libre.
+"""
+
 
 def create_app() -> fastapi.FastAPI:
     db.init_db()
 
     app = fastapi.FastAPI(
         title="data.inclusion API",
+        description=description,
         docs_url="/api/v0/docs",
         contact={
             "name": "data.inclusion",
@@ -61,10 +72,14 @@ v0_api_router = fastapi.APIRouter(
 
 def list_structures(
     db_session: orm.Session,
+    source: Optional[str] = None,
     typologie: Optional[schema.Typologie] = None,
     label_national: Optional[schema.LabelNational] = None,
 ) -> list:
     query = db_session.query(models.Structure)
+
+    if source is not None:
+        query = query.filter_by(source=source)
 
     if typologie is not None:
         query = query.filter_by(typologie=typologie.value)
@@ -82,6 +97,7 @@ def list_structures(
     response_model=fastapi_pagination.Page[schema.Structure],
 )
 def list_structures_endpoint(
+    source: Optional[str] = None,
     typologie: Optional[schema.Typologie] = None,
     label_national: Optional[schema.LabelNational] = None,
     db_session=fastapi.Depends(db.get_session),
@@ -91,16 +107,6 @@ def list_structures_endpoint(
 
     Il s'agit du point d'entrée principal de l'API, permettant d'accéder finement au
     données publiées quotidiennemnt en open data sur data.gouv.
-
-    ### Token
-
-    En production, un token d'accès est nécessaire et peut être obtenu en contactant
-    l'équipe data.inclusion par mail ou sur leur mattermost betagouv.
-
-    Le token doit être renseigné dans chaque requête via un header
-    `Authorization: Bearer <VOTRE_TOKEN>`
-
-    En staging, l'accès est libre.
 
     ### Schéma de données
 
@@ -117,8 +123,30 @@ def list_structures_endpoint(
 
     return list_structures(
         db_session,
+        source=source,
         typologie=typologie,
         label_national=label_national,
+    )
+
+
+def list_sources(
+    db_session: orm.Session,
+) -> list[str]:
+    return [o.source for o in db_session.query(models.Structure.source).distinct()]
+
+
+@v0_api_router.get(
+    "/sources",
+    response_model=list[str],
+)
+def list_sources_endpoint(
+    db_session=fastapi.Depends(db.get_session),
+):
+    """
+    ## Lister les sources disponibles
+    """
+    return list_sources(
+        db_session,
     )
 
 
