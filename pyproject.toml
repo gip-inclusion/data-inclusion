@@ -1,3 +1,7 @@
+[build-system]
+build-backend = "setuptools.build_meta"
+requires = ["setuptools", "wheel"]
+
 [tool.isort]
 atomic = true
 combine_star = true
@@ -5,24 +9,20 @@ ensure_newline_before_comments = true
 force_grid_wrap = 0
 include_trailing_comma = true
 indent = 4
-known_django = "django,rest_framework"
-known_first_party = "common,users,inclusion,meta"
-line_length = 119
+known_fastapi = "fastapi,fastapi_pagination"
+known_first_party = "data_inclusion"
+line_length = 88
 multi_line_output = 3
 profile = "black"
-sections = "FUTURE,STDLIB,THIRDPARTY,DJANGO,FIRSTPARTY,LOCALFOLDER"
+sections = "FUTURE,STDLIB,THIRDPARTY,FASTAPI,FIRSTPARTY,LOCALFOLDER"
 skip_gitignore = true
 use_parentheses = true
 
 [tool.black]
-line-length = 119
-target-version = ["py39"]
+target-version = ["py310"]
 
 [tool.pytest.ini_options]
-DJANGO_SETTINGS_MODULE = "settings"
 markers = '''
-    as_user: force authenticate the api_client fixture to the user fixure
-    as_other_user: force authenticate the api_client fixture to the other_user fixture
+    with_token: inject token headers in test client
 '''
-pythonpath = "django"
 testpaths = "tests"
