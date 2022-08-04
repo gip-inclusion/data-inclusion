@@ -9,6 +9,8 @@ DATABASE_URL = os.environ["DATABASE_URL"]
 SECRET_KEY = os.environ["SECRET_KEY"]
 ACCESS_TOKEN_LIFETIME = timedelta(weeks=24)
 CORS_ALLOWED_ORIGINS = ["*"]
+TOKEN_ENABLED = os.environ.get("TOKEN_ENABLED") != "False"
+
 
 DATAGOUV_API_URL = os.environ.get("DATAGOUV_API_URL")
 DATAGOUV_DI_DATASET_ID = os.environ.get("DATAGOUV_DI_DATASET_ID")

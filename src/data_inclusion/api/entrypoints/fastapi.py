@@ -21,6 +21,11 @@ def create_app() -> fastapi.FastAPI:
     app = fastapi.FastAPI(
         title="data.inclusion API",
         docs_url="/api/v0/docs",
+        contact={
+            "name": "data.inclusion",
+            "email": "data.inclusion@beta.gouv.fr",
+            "url": "https://www.data.inclusion.beta.gouv.fr/",
+        },
     )
 
     app.add_middleware(
@@ -49,7 +54,8 @@ def authenticated(token: HTTPAuthorizationCredentials = fastapi.Depends(HTTPBear
 
 v0_api_router = fastapi.APIRouter(
     prefix="/api/v0",
-    dependencies=[fastapi.Depends(authenticated)],
+    dependencies=[fastapi.Depends(authenticated)] if settings.TOKEN_ENABLED else [],
+    tags=["Structures"],
 )
 
 
@@ -80,6 +86,35 @@ def list_structures_endpoint(
     label_national: Optional[schema.LabelNational] = None,
     db_session=fastapi.Depends(db.get_session),
 ):
+    """
+    ## Lister les structures consolidées par data.inclusion
+
+    Il s'agit du point d'entrée principal de l'API, permettant d'accéder finement au
+    données publiées quotidiennemnt en open data sur data.gouv.
+
+    ### Token
+
+    En production, un token d'accès est nécessaire et peut être obtenu en contactant
+    l'équipe data.inclusion par mail ou sur leur mattermost betagouv.
+
+    Le token doit être renseigné dans chaque requête via un header
+    `Authorization: Bearer <VOTRE_TOKEN>`
+
+    En staging, l'accès est libre.
+
+    ### Schéma de données
+
+    Les données respectent le schéma de data.inclusion. Plus d'informations sur le
+    [dépôt](https://github.com/betagouv/data-inclusion-schema) versionnant le schéma,
+    sur la [documentation officielle](https://www.data.inclusion.beta.gouv.fr/schemas-de-donnees-de-loffre/schema-des-structures-dinsertion)
+    ou sur la page [schema.gouv](https://schema.data.gouv.fr/betagouv/data-inclusion-schema/) du schéma.
+
+
+    ### Filtres
+
+    Les structures peuvent être filtrées par typologie, label, source, etc.
+    """  # noqa
+
     return list_structures(
         db_session,
         typologie=typologie,
