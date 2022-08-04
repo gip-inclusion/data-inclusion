@@ -2,445 +2,217 @@ from unittest.mock import ANY
 
 import pytest
 
-from django.urls import reverse
-
-from inclusion import models
-
-pytestmark = pytest.mark.django_db
+from data_inclusion.api import schema
 
 
-@pytest.mark.as_user
-def test_create_report_nominal(api_client):
-    url = reverse("v0:reports-list")
-    data = {
-        "typologie": None,
-        "id": "60487647500499-hebert",
-        "siret": "60487647500499",
-        "rna": "W382421948",
-        "nom": "Hebert",
-        "presentation_resume": "Cependant sec.",
-        "site_web": "https://www.gonzalez.net/",
-        "presentation_detail": "Entrée camarade noir espoir.",
-        "telephone": "0102030405",
-        "courriel": "aurelie01@example.org",
-        "code_postal": "09891",
-        "code_insee": "13991",
-        "commune": "Robinboeuf",
-        "adresse": "rue de Leclercq",
-        "complement_adresse": "",
-        "longitude": -80.693947,
-        "latitude": -56.7421445,
-        "score_geocodage": 0.5,
-        "source": "dora",
-        "date_maj": "2022-04-28T16:53:11Z",
-        "structure_parente": None,
-        "lien_source": "https://dora.fr/60487647500499-hebert/",
-        "horaires_ouverture": 'Mo-Fr 10:00-20:00 "sur rendez-vous"; PH off',
-        "accessibilite": (
-            "https://acceslibre.beta.gouv.fr"
-            "/app/29-lampaul-plouarzel/a/bibliotheque-mediatheque/erp/mediatheque-13/"
-        ),
-        "labels_nationaux": ["60000_REBONDS"],
-        "labels_autres": ["SudLabs", "Nièvre médiation numérique"],
-    }
-    response = api_client.post(url, data, format="json")
+def test_list_structures_unauthenticated(api_client):
+    url = "/api/v0/structures/"
+    response = api_client.get(url)
 
-    assert response.status_code == 201
-    assert response.json() == {
-        "id": "60487647500499-hebert",
-        "siret": "60487647500499",
-        "rna": "W382421948",
-        "typologie": None,
-        "structure_parente": None,
-        "lien_source": "https://dora.fr/60487647500499-hebert/",
-        "horaires_ouverture": 'Mo-Fr 10:00-20:00 "sur rendez-vous"; PH off',
-        "labels_nationaux": ["60000_REBONDS"],
-        "updated_at": ANY,
-        "created_at": ANY,
-        "nom": "Hebert",
-        "presentation_resume": "Cependant sec.",
-        "site_web": "https://www.gonzalez.net/",
-        "presentation_detail": "Entrée camarade noir espoir.",
-        "telephone": "0102030405",
-        "courriel": "aurelie01@example.org",
-        "code_postal": "09891",
-        "code_insee": "13991",
-        "commune": "Robinboeuf",
-        "adresse": "rue de Leclercq",
-        "complement_adresse": "",
-        "longitude": -80.693947,
-        "latitude": -56.7421445,
-        "source": "dora",
-        "date_maj": "2022-04-28T18:53:11+02:00",
-        "accessibilite": (
-            "https://acceslibre.beta.gouv.fr"
-            "/app/29-lampaul-plouarzel/a/bibliotheque-mediatheque/erp/mediatheque-13/"
-        ),
-        "labels_autres": ["SudLabs", "Nièvre médiation numérique"],
-        "score_geocodage": 0.5,
-        "extra": {},
-    }
+    assert response.status_code == 403
 
 
-@pytest.mark.as_user
-def test_create_report_minimal(api_client):
-    url = reverse("v0:reports-list")
-    data = {
-        "id": "60487647500499-hebert",
-        "siret": "60487647500499",
-        "nom": "Hebert",
-        "code_postal": "09891",
-        "code_insee": "13991",
-        "commune": "Robinboeuf",
-        "adresse": "rue de Leclercq",
-        "date_maj": "2022-04-28T16:53:11Z",
-    }
-    response = api_client.post(url, data, format="json")
+@pytest.mark.with_token
+def test_list_structures_all(api_client, structure_factory):
+    structure_factory()
 
-    assert response.status_code == 201
-    assert response.json() == {
-        "id": "60487647500499-hebert",
-        "siret": "60487647500499",
-        "rna": None,
-        "typologie": None,
-        "structure_parente": None,
-        "lien_source": "",
-        "horaires_ouverture": "",
-        "labels_nationaux": [],
-        "updated_at": ANY,
-        "created_at": ANY,
-        "nom": "Hebert",
-        "presentation_resume": "",
-        "site_web": "",
-        "presentation_detail": "",
-        "telephone": "",
-        "courriel": "",
-        "code_postal": "09891",
-        "code_insee": "13991",
-        "commune": "Robinboeuf",
-        "adresse": "rue de Leclercq",
-        "complement_adresse": "",
-        "longitude": None,
-        "latitude": None,
-        "source": "",
-        "date_maj": "2022-04-28T18:53:11+02:00",
-        "accessibilite": "",
-        "labels_autres": [],
-        "score_geocodage": None,
-        "extra": {},
-    }
+    url = "/api/v0/structures/"
 
-
-@pytest.mark.as_user
-def test_retrieve_report(api_client, structure_report):
-    url = reverse("v0:reports-detail", kwargs={"pk": structure_report.id})
     response = api_client.get(url)
     resp_data = response.json()
 
     assert resp_data == {
-        "id": ANY,
-        "data": {
-            "id": "matiere-nom-asseoir",
-            "typologie": "ACI",
-            "structure_parente": None,
-            "labels_nationaux": ["60000_REBONDS"],
-            "nom": "Pottier SARL",
-            "siret": "76475938200654",
-            "rna": "W219489241",
-            "presentation_resume": "Peu répondre chant.",
-            "site_web": "https://courtois.org/",
-            "presentation_detail": "Or personne jambe.",
-            "telephone": "0102030405",
-            "courriel": "bonninveronique@example.net",
-            "code_postal": "84833",
-            "code_insee": "94775",
-            "commune": "Sainte JulietteBourg",
-            "adresse": "453, chemin Ferreira",
-            "complement_adresse": "",
-            "longitude": -61.64115,
-            "latitude": 9.8741475,
-            "source": "dora",
-            "date_maj": ANY,
-            "lien_source": "https://dora.fr/matiere-nom-asseoir",
-            "horaires_ouverture": 'Mo-Fr 10:00-20:00 "sur rendez-vous"; PH off',
-            "accessibilite": "https://acceslibre.beta.gouv.fr/app/matiere-nom-asseoir/",
-            "labels_autres": ["SudLabs", "Nièvre médiation numérique"],
-            "score_geocodage": 0.5,
-            "extra": {},
-        },
-        "created_at": ANY,
-        "updated_at": ANY,
-        "antennes_data": [],
-    }
-
-
-@pytest.mark.as_user
-def test_create_antenne_report(api_client, structure_report):
-    url = reverse("v0:reports-list")
-    data = {
-        "id": "60487647500499-hebert-1",
-        "nom": "Hebert",
-        "code_postal": "09891",
-        "code_insee": "13991",
-        "commune": "Robinboeuf",
-        "adresse": "rue de Leclercq",
-        "date_maj": "2022-04-28T16:53:11Z",
-        "structure_parente": structure_report.id_in_source,
-        "source": structure_report.source,
-    }
-    response = api_client.post(url, data, format="json")
-
-    assert response.status_code == 201
-
-    url = reverse("v0:reports-list")
-    response = api_client.get(url)
-    resp_data = response.json()
-
-    assert resp_data == {
-        "count": 2,
-        "next": None,
-        "previous": None,
-        "results": [
+        "items": [
             {
-                "id": ANY,
-                "data": {
-                    "id": "matiere-nom-asseoir",
-                    "typologie": "ACIPHC",
-                    "structure_parente": None,
-                    "labels_nationaux": ["60000_REBONDS"],
-                    "nom": "Pottier SARL",
-                    "siret": "76475938200654",
-                    "rna": "W219489241",
-                    "presentation_resume": "Peu répondre chant.",
-                    "site_web": "https://courtois.org/",
-                    "presentation_detail": "Or personne jambe.",
-                    "telephone": "0102030405",
-                    "courriel": "bonninveronique@example.net",
-                    "code_postal": "84833",
-                    "code_insee": "94775",
-                    "commune": "Sainte JulietteBourg",
-                    "adresse": "453, chemin Ferreira",
-                    "complement_adresse": "",
-                    "longitude": -61.64115,
-                    "latitude": 9.8741475,
-                    "source": "itou",
-                    "date_maj": ANY,
-                    "lien_source": "https://itou.fr/matiere-nom-asseoir",
-                    "horaires_ouverture": 'Mo-Fr 10:00-20:00 "sur rendez-vous"; PH off',
-                    "accessibilite": "https://acceslibre.beta.gouv.fr/app/matiere-nom-asseoir/",
-                    "labels_autres": ["SudLabs", "Nièvre médiation numérique"],
-                    "score_geocodage": 0.5,
-                    "extra": {},
-                },
-                "created_at": ANY,
-                "updated_at": ANY,
-                "antennes_data": [
-                    {
-                        "id": "60487647500499-hebert-1",
-                        "typologie": None,
-                        "structure_parente": "matiere-nom-asseoir",
-                        "labels_nationaux": [],
-                        "nom": "Hebert",
-                        "siret": None,
-                        "rna": None,
-                        "presentation_resume": "",
-                        "site_web": "",
-                        "presentation_detail": "",
-                        "telephone": "",
-                        "courriel": "",
-                        "code_postal": "09891",
-                        "code_insee": "13991",
-                        "commune": "Robinboeuf",
-                        "adresse": "rue de Leclercq",
-                        "complement_adresse": "",
-                        "longitude": None,
-                        "latitude": None,
-                        "source": "itou",
-                        "date_maj": ANY,
-                        "lien_source": "",
-                        "horaires_ouverture": "",
-                        "accessibilite": "",
-                        "labels_autres": [],
-                        "score_geocodage": None,
-                        "extra": {},
-                    }
-                ],
-            },
-            {
-                "id": ANY,
-                "data": {
-                    "id": "60487647500499-hebert-1",
-                    "typologie": None,
-                    "structure_parente": "matiere-nom-asseoir",
-                    "labels_nationaux": [],
-                    "nom": "Hebert",
-                    "siret": None,
-                    "rna": None,
-                    "presentation_resume": "",
-                    "site_web": "",
-                    "presentation_detail": "",
-                    "telephone": "",
-                    "courriel": "",
-                    "code_postal": "09891",
-                    "code_insee": "13991",
-                    "commune": "Robinboeuf",
-                    "adresse": "rue de Leclercq",
-                    "complement_adresse": "",
-                    "longitude": None,
-                    "latitude": None,
-                    "source": "itou",
-                    "date_maj": ANY,
-                    "lien_source": "",
-                    "horaires_ouverture": "",
-                    "accessibilite": "",
-                    "labels_autres": [],
-                    "score_geocodage": None,
-                    "extra": {},
-                },
-                "created_at": ANY,
-                "updated_at": ANY,
-                "antennes_data": [],
-            },
+                "id": "matiere-nom-asseoir",
+                "siret": "76475938200654",
+                "rna": "W219489241",
+                "nom": "Pottier SARL",
+                "commune": "VaillantBourg",
+                "code_postal": "65938",
+                "code_insee": "78408",
+                "adresse": "avenue Lacombe",
+                "complement_adresse": None,
+                "longitude": 178.712016,
+                "latitude": 77.843518,
+                "typologie": "ACI",
+                "telephone": "0102030405",
+                "courriel": "raymondclemence@example.com",
+                "site_web": "http://aubert.net/",
+                "presentation_resume": "Espèce couler.",
+                "presentation_detail": "Or personne jambe.",
+                "source": "dora",
+                "date_maj": ANY,
+                "structure_parente": None,
+                "lien_source": "https://dora.fr/matiere-nom-asseoir",
+                "horaires_ouverture": 'Mo-Fr 10:00-20:00 "sur rendez-vous"; PH off',
+                "accessibilite": "https://acceslibre.beta.gouv.fr/app/matiere-nom-asseoir/",
+                "labels_nationaux": [],
+                "labels_autres": ["SudLabs", "Nièvre médiation numérique"],
+            }
         ],
+        "total": 1,
+        "page": 1,
+        "size": ANY,
     }
 
 
-def test_create_report_unauthenticated(api_client):
-    url = reverse("v0:reports-list")
-    data = {
-        "siret": "60487647500499",
-        "nom": "Hebert",
-        "code_postal": "09891",
-        "code_insee": "13991",
-        "commune": "Robinboeuf",
-        "adresse": "rue de Leclercq",
-        "date_maj": "2022-04-28T16:53:11Z",
+@pytest.mark.with_token
+def test_list_structures_filter_by_typology(api_client, structure_factory):
+    structure_factory(typologie=schema.Typologie.ASSO.value)
+    structure_factory(typologie=schema.Typologie.CCAS.value)
+
+    url = "/api/v0/structures/"
+    response = api_client.get(url, params={"typologie": schema.Typologie.ASSO.value})
+
+    assert response.json() == {
+        "items": [
+            {
+                "id": "matiere-nom-asseoir",
+                "siret": "76475938200654",
+                "rna": "W219489241",
+                "nom": "Pottier SARL",
+                "commune": "VaillantBourg",
+                "code_postal": "65938",
+                "code_insee": "78408",
+                "adresse": "avenue Lacombe",
+                "complement_adresse": None,
+                "longitude": 178.712016,
+                "latitude": 77.843518,
+                "typologie": "ASSO",
+                "telephone": "0102030405",
+                "courriel": "raymondclemence@example.com",
+                "site_web": "http://aubert.net/",
+                "presentation_resume": "Espèce couler.",
+                "presentation_detail": "Or personne jambe.",
+                "source": "itou",
+                "date_maj": ANY,
+                "structure_parente": None,
+                "lien_source": "https://itou.fr/matiere-nom-asseoir",
+                "horaires_ouverture": 'Mo-Fr 10:00-20:00 "sur rendez-vous"; PH off',
+                "accessibilite": "https://acceslibre.beta.gouv.fr/app/matiere-nom-asseoir/",
+                "labels_nationaux": [],
+                "labels_autres": ["SudLabs", "Nièvre médiation numérique"],
+            }
+        ],
+        "total": 1,
+        "page": 1,
+        "size": 50,
     }
-    response = api_client.post(url, data, format="json")
 
-    assert response.status_code == 403
-
-
-def test_list_reports_unauthenticated(api_client, structure_report):
-    url = reverse("v0:reports-list")
-    response = api_client.get(url)
-
-    assert response.status_code == 403
+    response = api_client.get(url, params={"typologie": schema.Typologie.MUNI.value})
+    assert response.json() == {"items": [], "total": 0, "page": 1, "size": 50}
 
 
-def test_retrieve_report_unauthenticated(api_client, structure_report):
-    url = reverse("v0:reports-detail", kwargs={"pk": structure_report.id})
-    response = api_client.get(url)
-
-    assert response.status_code == 403
-
-
-@pytest.mark.as_user
-def test_list_latest_reports(api_client, structure_report_factory):
-    earliest_report = structure_report_factory()
-    latest_report = structure_report_factory(
-        id_in_source=earliest_report.id_in_source,
-        source=earliest_report.source,
+@pytest.mark.with_token
+def test_list_structures_filter_by_label(api_client, structure_factory):
+    structure_factory(labels_nationaux=[schema.LabelNational.POLE_EMPLOI.value])
+    structure_factory(
+        labels_nationaux=[
+            schema.LabelNational.MOBIN.value,
+            schema.LabelNational.FRANCE_SERVICE.value,
+        ]
     )
 
-    url = reverse("v0:reports-list")
-    response = api_client.get(url)
-    resp_data = response.json()
-
-    assert resp_data == {
-        "count": 1,
-        "next": None,
-        "previous": None,
-        "results": [
-            {
-                "id": str(latest_report.id),
-                "data": {
-                    "id": "matiere-nom-asseoir",
-                    "typologie": "ASSO",
-                    "structure_parente": None,
-                    "labels_nationaux": ["60000_REBONDS"],
-                    "nom": "Ferreira",
-                    "siret": "56012309800219",
-                    "rna": "W101399161",
-                    "presentation_resume": "Arrêter sérieux.",
-                    "site_web": "http://www.voisin.com/",
-                    "presentation_detail": "Membre pain second.",
-                    "telephone": "0102030405",
-                    "courriel": "mfournier@example.org",
-                    "code_postal": "34579",
-                    "code_insee": "30225",
-                    "commune": "DeschampsBourg",
-                    "adresse": "12, avenue Hélène Grégoire",
-                    "complement_adresse": "",
-                    "longitude": -12.793704,
-                    "latitude": 84.196756,
-                    "source": "dora",
-                    "date_maj": ANY,
-                    "lien_source": "https://dora.fr/matiere-nom-asseoir",
-                    "horaires_ouverture": 'Mo-Fr 10:00-20:00 "sur rendez-vous"; PH off',
-                    "accessibilite": "https://acceslibre.beta.gouv.fr/app/matiere-nom-asseoir/",
-                    "labels_autres": ["SudLabs", "Nièvre médiation numérique"],
-                    "score_geocodage": 0.5,
-                    "extra": {},
-                },
-                "created_at": ANY,
-                "updated_at": ANY,
-                "antennes_data": [],
-            }
-        ],
-    }
-
-
-@pytest.mark.as_user
-def test_filter_reports_by_typology(api_client, structure_report_factory):
-    structure_report_factory(typologie=models.StructureTypology.objects.get(value="ASSO"))
-    structure_report_factory(typologie=models.StructureTypology.objects.get(value="CCAS"))
-
-    url = reverse("v0:reports-list")
-    response = api_client.get(url, data={"typologie": "ASSO"})
+    url = "/api/v0/structures/"
+    response = api_client.get(
+        url, params={"label_national": schema.LabelNational.FRANCE_SERVICE.value}
+    )
 
     assert response.json() == {
-        "count": 1,
-        "next": None,
-        "previous": None,
-        "results": [
+        "items": [
             {
-                "id": ANY,
-                "data": {
-                    "id": "matiere-nom-asseoir",
-                    "typologie": "ASSO",
-                    "structure_parente": None,
-                    "labels_nationaux": ["60000_REBONDS"],
-                    "nom": "Pottier SARL",
-                    "siret": "76475938200654",
-                    "rna": "W219489241",
-                    "presentation_resume": "Peu répondre chant.",
-                    "site_web": "https://courtois.org/",
-                    "presentation_detail": "Or personne jambe.",
-                    "telephone": "0102030405",
-                    "courriel": "bonninveronique@example.net",
-                    "code_postal": "84833",
-                    "code_insee": "94775",
-                    "commune": "Sainte JulietteBourg",
-                    "adresse": "453, chemin Ferreira",
-                    "complement_adresse": "",
-                    "longitude": -61.64115,
-                    "latitude": 9.8741475,
-                    "source": "itou",
-                    "date_maj": ANY,
-                    "lien_source": "https://itou.fr/matiere-nom-asseoir",
-                    "horaires_ouverture": 'Mo-Fr 10:00-20:00 "sur rendez-vous"; PH off',
-                    "accessibilite": "https://acceslibre.beta.gouv.fr/app/matiere-nom-asseoir/",
-                    "labels_autres": ["SudLabs", "Nièvre médiation numérique"],
-                    "score_geocodage": 0.5,
-                    "extra": {},
-                },
-                "created_at": ANY,
-                "updated_at": ANY,
-                "antennes_data": [],
+                "id": "cacher-violent",
+                "siret": "68483396900874",
+                "rna": "W775159179",
+                "nom": "Aubert",
+                "commune": "Durand",
+                "code_postal": "13525",
+                "code_insee": "01230",
+                "adresse": "191, rue Seguin",
+                "complement_adresse": None,
+                "longitude": 129.212387,
+                "latitude": -57.869491,
+                "typologie": "AFPA",
+                "telephone": "0102030405",
+                "courriel": "xrobin@example.org",
+                "site_web": "http://www.gonzalez.fr/",
+                "presentation_resume": "Écraser bas un an.",
+                "presentation_detail": "Lieu apparence bon voir.",
+                "source": "dora",
+                "date_maj": ANY,
+                "structure_parente": None,
+                "lien_source": "https://dora.fr/cacher-violent",
+                "horaires_ouverture": 'Mo-Fr 10:00-20:00 "sur rendez-vous"; PH off',
+                "accessibilite": "https://acceslibre.beta.gouv.fr/app/cacher-violent/",
+                "labels_nationaux": ["MOBIN", "FRANCE_SERVICE"],
+                "labels_autres": ["SudLabs", "Nièvre médiation numérique"],
             }
         ],
+        "total": 1,
+        "page": 1,
+        "size": 50,
     }
 
-    response = api_client.get(url, data={"typologie": "MUNI"})
-    assert response.json() == {"count": 0, "next": None, "previous": None, "results": []}
+    response = api_client.get(
+        url, params={"label_national": schema.LabelNational.AFPA.value}
+    )
+    assert response.json() == {"items": [], "total": 0, "page": 1, "size": 50}
+
+
+@pytest.mark.with_token
+def test_list_structures_filter_by_source(api_client, structure_factory):
+    structure_factory(source="itou")
+    structure_factory(source="dora")
+
+    url = "/api/v0/structures/"
+    response = api_client.get(url, params={"source": "itou"})
+
+    assert response.json() == {
+        "items": [
+            {
+                "id": "matiere-nom-asseoir",
+                "siret": "76475938200654",
+                "rna": "W219489241",
+                "nom": "Pottier SARL",
+                "commune": "VaillantBourg",
+                "code_postal": "65938",
+                "code_insee": "78408",
+                "adresse": "avenue Lacombe",
+                "complement_adresse": None,
+                "longitude": 178.712016,
+                "latitude": 77.843518,
+                "typologie": "AI",
+                "telephone": "0102030405",
+                "courriel": "raymondclemence@example.com",
+                "site_web": "http://aubert.net/",
+                "presentation_resume": "Espèce couler.",
+                "presentation_detail": "Or personne jambe.",
+                "source": "itou",
+                "date_maj": ANY,
+                "structure_parente": None,
+                "lien_source": "https://itou.fr/matiere-nom-asseoir",
+                "horaires_ouverture": 'Mo-Fr 10:00-20:00 "sur rendez-vous"; PH off',
+                "accessibilite": "https://acceslibre.beta.gouv.fr/app/matiere-nom-asseoir/",
+                "labels_nationaux": [],
+                "labels_autres": ["SudLabs", "Nièvre médiation numérique"],
+            }
+        ],
+        "total": 1,
+        "page": 1,
+        "size": 50,
+    }
+
+    response = api_client.get(url, params={"source": "siao"})
+    assert response.json() == {"items": [], "total": 0, "page": 1, "size": 50}
+
+
+@pytest.mark.with_token
+def test_list_sources(api_client, structure_factory):
+    structure_factory(source="itou")
+    structure_factory(source="dora")
+
+    url = "/api/v0/sources/"
+    response = api_client.get(url)
+
+    assert response.json() == ["dora", "itou"]

@@ -1,7 +1,7 @@
 ########
 # This image compile the dependencies
 ########
-FROM python:3.9-slim as compile-image
+FROM python:3.10-slim as compile-image
 
 ENV VIRTUAL_ENV /srv/venv
 ENV PATH "${VIRTUAL_ENV}/bin:${PATH}"
@@ -24,13 +24,16 @@ RUN python -m venv ${VIRTUAL_ENV}
 
 COPY requirements requirements
 RUN pip install --no-cache-dir --upgrade pip setuptools wheel
-RUN pip install --no-cache-dir -r requirements/tests.txt
+RUN pip install --no-cache-dir -r requirements/test-requirements.txt
+
+COPY . .
+RUN pip install --no-cache-dir . -c requirements/test-requirements.txt
 
 
 ########
 # This image is the runtime
 ########
-FROM python:3.9-slim as runtime-image
+FROM python:3.10-slim as runtime-image
 
 ARG VERSION_SHA
 ARG VERSION_NAME
@@ -59,19 +62,10 @@ RUN useradd --no-log-init -g gunicorn gunicorn
 COPY --chown=gunicorn:gunicorn --from=compile-image /srv/venv /srv/venv
 
 COPY --chown=gunicorn:gunicorn ["docker-entrypoint.sh", "pyproject.toml", "/srv/"]
-COPY --chown=gunicorn:gunicorn django /srv/django
 COPY --chown=gunicorn:gunicorn tests /srv/tests
 RUN chmod +x docker-entrypoint.sh
 
-RUN mkdir -p /var/www
-RUN chown gunicorn:gunicorn /var/www
-
-VOLUME /var/www
-
 USER gunicorn
 EXPOSE 8000
-
-HEALTHCHECK --start-period=1m \
-    CMD curl --silent --show-error --head --output /dev/null 127.0.0.1:8000/api/version/ || exit 1
 
 ENTRYPOINT ["/srv/docker-entrypoint.sh"]

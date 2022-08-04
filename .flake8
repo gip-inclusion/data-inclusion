@@ -1,9 +1,6 @@
 [flake8]
-max-line-length = 119
+max-line-length = 99
 max-doc-length = 88
-extend-exclude = .venv/ .github/ .vscode/ migrations
-extend-ignore = E203, W503
+extend-exclude = .venv/ .github/ .vscode/
 per-file-ignores =
-    django/manage.py:F401
-    django/**/apps.py:F401
-    django/**/migrations/*:E501
+    src/data_inclusion/api/schema.py:F722

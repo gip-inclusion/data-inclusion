@@ -6,8 +6,8 @@ set -e
 # Trace execution
 [[ "${DEBUG}" ]] && set -x
 
+pip install -e .
 gunicorn data_inclusion.api.entrypoints.fastapi:app \
-    --bind 0.0.0.0 \
     --workers 4 \
     --worker-class uvicorn.workers.UvicornWorker \
     --access-logfile '-'

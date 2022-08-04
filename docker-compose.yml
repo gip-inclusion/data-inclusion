@@ -18,29 +18,15 @@ services:
       - ${API_PORT:-8000}:8000
     environment:
       - DEBUG=${DEBUG:-False}
-      - ENV=${ENV:-tests}
-      - POSTGRES_DB=${POSTGRES_DB:-dora}
-      - POSTGRES_USER=${POSTGRES_USER:-dora}
-      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD:-USE_IN_DEVELOPMENT_ONLY}
-      - POSTGRES_HOST=db
-      - POSTGRES_PORT=5432
+      - DATABASE_URL=postgresql://${POSTGRES_DB:-data_inclusion_api}:${POSTGRES_PASSWORD:-USE_IN_DEVELOPMENT_ONLY}@db:5432/${POSTGRES_DB:-data_inclusion_api}
       - SECRET_KEY=${SECRET_KEY:-USE_IN_DEVELOPMENT_ONLY}
-      - ALLOWED_HOSTS=${ALLOWED_HOSTS:-127.0.0.1}
-      - DJANGO_SUPERUSER_USERNAME=${DJANGO_SUPERUSER_USERNAME}
-      - DJANGO_SUPERUSER_EMAIL=${DJANGO_SUPERUSER_EMAIL}
-      - DJANGO_SUPERUSER_PASSWORD=${DJANGO_SUPERUSER_PASSWORD}
-    volumes:
-      - files-data:/var/www
 
   db:
     image: postgres:14
-    restart: always
+    restart: on-failure
     ports:
       - ${POSTGRES_PORT:-5432}:5432
     environment:
-      - POSTGRES_DB=${POSTGRES_DB:-dora}
-      - POSTGRES_USER=${POSTGRES_USER:-dora}
+      - POSTGRES_DB=${POSTGRES_DB:-data_inclusion_api}
+      - POSTGRES_USER=${POSTGRES_USER:-data_inclusion_api}
       - POSTGRES_PASSWORD=${POSTGRES_PASSWORD:-USE_IN_DEVELOPMENT_ONLY}
-
-volumes:
-  files-data:
