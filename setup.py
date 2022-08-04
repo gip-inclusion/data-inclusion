@@ -1,5 +1,13 @@
 from setuptools import find_namespace_packages, setup
 
+
+def requirements() -> list[str]:
+    with open("./requirements.txt") as f:
+        return [
+            line for line in f.read().splitlines() if not line.lstrip().startswith("#")
+        ]
+
+
 setup(
     author="vmttn",
     name="data-inclusion-api",
@@ -10,6 +18,7 @@ setup(
     entry_points={
         "console_scripts": ["data-inclusion-api=data_inclusion.api.entrypoints.cli:cli"]
     },
+    install_requires=requirements(),
     extras_require={
         "test": [
             "pytest==7.1.2",

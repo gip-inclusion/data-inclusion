@@ -7,4 +7,7 @@ set -e
 [[ "${DEBUG}" ]] && set -x
 
 pip install -e .
-gunicorn data_inclusion.api.entrypoints.fastapi:app --workers 4 --worker-class uvicorn.workers.UvicornWorker
+gunicorn data_inclusion.api.entrypoints.fastapi:app \
+    --workers 4 \
+    --worker-class uvicorn.workers.UvicornWorker \
+    --accesslog '-'
