@@ -6,7 +6,9 @@ from data_inclusion.api.core import db
 
 class Structure(db.Base):
     index = sqla.Column(sqla.Integer(), primary_key=True)
-    created_at = sqla.Column(sqla.DateTime(timezone=True))
+    created_at = sqla.Column(
+        sqla.DateTime(timezone=True), server_default=sqla.func.now()
+    )
     id = sqla.Column(sqla.Text(), nullable=True)
     siret = sqla.Column(sqla.Text(), nullable=True)
     rna = sqla.Column(sqla.Text(), nullable=True)
