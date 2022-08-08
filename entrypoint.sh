@@ -6,6 +6,10 @@ set -e
 # Trace execution
 [[ "${DEBUG}" ]] && set -x
 
+# The `DATABASE_URL` env var is automatically set by Scalingo and uses the depreciated
+# scheme `postgres://`. Replace it.
+export DATABASE_URL="${DATABASE_URL/postgres\:\/\//postgresql\:\/\/}"
+
 pip install -e .
 gunicorn data_inclusion.api.entrypoints.fastapi:app \
     --workers 4 \
