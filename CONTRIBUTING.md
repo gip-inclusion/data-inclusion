@@ -47,7 +47,7 @@ cp .template.env .env
 docker-compose up -d db
 
 # Start the development server
-uvicorn data_inclusion.api.entrypoints.fastapi:app
+uvicorn data_inclusion.api.entrypoints.fastapi:app --reload
 ```
 
 ## Running the test suite

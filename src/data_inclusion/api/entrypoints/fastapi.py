@@ -75,11 +75,27 @@ def list_structures(
     source: Optional[str] = None,
     typologie: Optional[schema.Typologie] = None,
     label_national: Optional[schema.LabelNational] = None,
+    departement: Optional[schema.DepartementCOG] = None,
+    departement_slug: Optional[schema.DepartementSlug] = None,
+    code_postal: Optional[schema.CodePostal] = None,
 ) -> list:
     query = db_session.query(models.Structure)
 
     if source is not None:
         query = query.filter_by(source=source)
+
+    if departement is not None:
+        query = query.filter(models.Structure.code_insee.startswith(departement.value))
+
+    if departement_slug is not None:
+        query = query.filter(
+            models.Structure.code_insee.startswith(
+                schema.DepartementCOG[departement_slug.name].value
+            )
+        )
+
+    if code_postal is not None:
+        query = query.filter_by(code_postal=code_postal)
 
     if typologie is not None:
         query = query.filter_by(typologie=typologie.value)
@@ -100,6 +116,9 @@ def list_structures_endpoint(
     source: Optional[str] = None,
     typologie: Optional[schema.Typologie] = None,
     label_national: Optional[schema.LabelNational] = None,
+    departement: Optional[schema.DepartementCOG] = None,
+    departement_slug: Optional[schema.DepartementSlug] = None,
+    code_postal: Optional[schema.CodePostal] = None,
     db_session=fastapi.Depends(db.get_session),
 ):
     """
@@ -126,6 +145,9 @@ def list_structures_endpoint(
         source=source,
         typologie=typologie,
         label_national=label_national,
+        departement=departement,
+        departement_slug=departement_slug,
+        code_postal=code_postal,
     )
 
 
