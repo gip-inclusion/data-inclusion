@@ -26,8 +26,6 @@ Le token doit être renseigné dans chaque requête via un header:
 
 
 def create_app() -> fastapi.FastAPI:
-    db.init_db()
-
     app = fastapi.FastAPI(
         title="data.inclusion API",
         description=description,

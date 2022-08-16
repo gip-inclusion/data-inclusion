@@ -11,6 +11,10 @@ set -e
 export DATABASE_URL="${DATABASE_URL/postgres\:\/\//postgresql\:\/\/}"
 
 pip install -e .
+
+# Running database migrations
+alembic upgrade head
+
 gunicorn data_inclusion.api.entrypoints.fastapi:app \
     --workers 4 \
     --worker-class uvicorn.workers.UvicornWorker \

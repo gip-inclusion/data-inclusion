@@ -4,6 +4,8 @@
 #
 #    pip-compile --extra=dev --output-file=requirements/dev-requirements.txt --strip-extras
 #
+alembic==1.8.1
+    # via data-inclusion-api (setup.py)
 anyio==3.6.1
     # via
     #   starlette
@@ -60,6 +62,10 @@ idna==3.3
     #   anyio
     #   email-validator
     #   requests
+mako==1.2.1
+    # via alembic
+markupsafe==2.1.1
+    # via mako
 mypy-extensions==0.4.3
     # via black
 nodeenv==1.7.0
@@ -125,7 +131,9 @@ six==1.16.0
 sniffio==1.2.0
     # via anyio
 sqlalchemy==1.4.39
-    # via data-inclusion-api (setup.py)
+    # via
+    #   alembic
+    #   data-inclusion-api (setup.py)
 starlette==0.19.1
     # via fastapi
 toml==0.10.2

@@ -11,6 +11,7 @@ setup(
         "console_scripts": ["data-inclusion-api=data_inclusion.api.entrypoints.cli:cli"]
     },
     install_requires=[
+        "alembic",
         "click",
         "faker",
         "fastapi",

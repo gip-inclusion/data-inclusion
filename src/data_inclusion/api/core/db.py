@@ -23,8 +23,5 @@ def init_db(engine=default_db_engine):
 
 
 def get_session():
-    session = SessionLocal()
-    try:
+    with SessionLocal() as session:
         yield session
-    finally:
-        session.close()

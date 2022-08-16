@@ -46,6 +46,9 @@ cp .template.env .env
 # Launch the database
 docker-compose up -d db
 
+# Running the migrations
+alembic upgrade head
+
 # Start the development server
 uvicorn data_inclusion.api.entrypoints.fastapi:app --reload
 ```

@@ -6,6 +6,9 @@ set -e
 # Trace execution
 [[ "${DEBUG}" ]] && set -x
 
+# Running database migrations
+alembic upgrade head
+
 gunicorn data_inclusion.api.entrypoints.fastapi:app \
     --bind 0.0.0.0 \
     --workers 4 \

@@ -32,5 +32,5 @@ class Structure(db.Base):
     lien_source = sqla.Column(sqla.Text, nullable=True)
     horaires_ouverture = sqla.Column(sqla.Text, nullable=True)
     accessibilite = sqla.Column(sqla.Text, nullable=True)
-    labels_nationaux = sqla.Column(ARRAY(sqla.Text()), default=list)
-    labels_autres = sqla.Column(ARRAY(sqla.Text()), default=list)
+    labels_nationaux = sqla.Column(ARRAY(sqla.Text), default=list)
+    labels_autres = sqla.Column(ARRAY(sqla.Text), default=list)

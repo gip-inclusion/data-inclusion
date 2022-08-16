@@ -36,13 +36,15 @@ def force_authenticate(request, api_client):
 
 
 @pytest.fixture(scope="session")
-def db_engine():
+def test_database_url():
     import sqlalchemy as sqla
 
     from data_inclusion.api import settings
-    from data_inclusion.api.core import db
 
     default_database_url = sqla.engine.make_url(settings.DATABASE_URL)
+    test_database_url = default_database_url.set(
+        database=f"{default_database_url.database}_test"
+    )
 
     default_db_engine = sqla.create_engine(
         default_database_url, isolation_level="AUTOCOMMIT"
@@ -51,23 +53,39 @@ def db_engine():
     # Connect to the db and creates a new test database
     with default_db_engine.connect() as default_db_conn:
         default_db_conn.execute(
-            f"DROP DATABASE IF EXISTS {default_database_url.database}_test;"
+            f"DROP DATABASE IF EXISTS {test_database_url.database};"
         )
-        default_db_conn.execute(f"CREATE DATABASE {default_database_url.database}_test")
+        default_db_conn.execute(f"CREATE DATABASE {test_database_url.database};")
 
-    # Create a new connection pool for the test database
-    test_db_engine = sqla.create_engine(f"{settings.DATABASE_URL}_test")
-
-    # Create tables once
-    db.init_db(engine=test_db_engine)
-
-    yield test_db_engine
+    yield test_database_url
 
     # Teardown test database
     with default_db_engine.connect() as default_db_conn:
         default_db_conn.execute(
-            f"DROP DATABASE IF EXISTS {default_database_url.database}_test WITH (FORCE);"
+            f"DROP DATABASE IF EXISTS {test_database_url.database} WITH (FORCE);"
         )
+
+
+@pytest.fixture(scope="session")
+def apply_db_migrations(test_database_url):
+    from alembic import command
+    from alembic.config import Config
+
+    config = Config()
+    config.set_main_option("script_location", "src/alembic/")
+    config.set_main_option("sqlalchemy.url", str(test_database_url))
+
+    command.upgrade(config, "head")
+    yield
+    command.downgrade(config, "base")
+
+
+@pytest.fixture(scope="session")
+def db_engine(apply_db_migrations, test_database_url):
+    import sqlalchemy as sqla
+
+    # Create a new connection pool for the test database
+    yield sqla.create_engine(test_database_url)
 
 
 @pytest.fixture(scope="function")
