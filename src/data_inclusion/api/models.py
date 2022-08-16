@@ -5,10 +5,14 @@ from data_inclusion.api.core import db
 
 
 class Structure(db.Base):
+    # metadata
     index = sqla.Column(sqla.Integer, primary_key=True)
     created_at = sqla.Column(
         sqla.DateTime(timezone=True), server_default=sqla.func.now()
     )
+    batch_id = sqla.Column(sqla.Text)
+
+    # structure data
     id = sqla.Column(sqla.Text, nullable=True)
     siret = sqla.Column(sqla.Text, nullable=True)
     rna = sqla.Column(sqla.Text, nullable=True)
