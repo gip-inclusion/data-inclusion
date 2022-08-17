@@ -11,6 +11,7 @@ class Structure(db.Base):
         sqla.DateTime(timezone=True), server_default=sqla.func.now()
     )
     batch_id = sqla.Column(sqla.Text)
+    src_url = sqla.Column(sqla.Text)
 
     # structure data
     id = sqla.Column(sqla.Text, nullable=True)
