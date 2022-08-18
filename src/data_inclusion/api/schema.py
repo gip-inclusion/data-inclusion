@@ -283,6 +283,15 @@ class LabelNational(str, Enum):
     UNIS_CITE = "UNIS_CITE"
 
 
+class Thematique(str, Enum):
+    CHOISIR_UN_METIER = "choisir-un-metier"
+    CREATION_ACTIVITE = "creation-activite"
+    MOBILITE = "mobilite"
+    NUMERIQUE = "numerique"
+    PREPARER_SA_CANDIDATURE = "preparer-sa-candidature"
+    TROUVER_UN_EMPLOI = "trouver-un-emploi"
+
+
 CodePostal: TypeAlias = constr(min_length=5, max_length=5, regex=r"^\d{5}$")
 
 
@@ -312,6 +321,7 @@ class Structure(BaseModel):
     accessibilite: Optional[HttpUrl]
     labels_nationaux: Optional[list[LabelNational]]
     labels_autres: Optional[list[str]]
+    thematiques: Optional[list[Thematique]]
 
     class Config:
         orm_mode = True

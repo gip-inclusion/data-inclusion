@@ -49,6 +49,7 @@ def test_list_structures_all(api_client, structure_factory):
                 "accessibilite": "https://acceslibre.beta.gouv.fr/app/matiere-nom-asseoir/",
                 "labels_nationaux": [],
                 "labels_autres": ["SudLabs", "Nièvre médiation numérique"],
+                "thematiques": ["choisir-un-metier", "creation-activite"],
             }
         ],
         "total": 1,
@@ -93,11 +94,12 @@ def test_list_structures_filter_by_typology(api_client, structure_factory):
                 "accessibilite": "https://acceslibre.beta.gouv.fr/app/matiere-nom-asseoir/",
                 "labels_nationaux": [],
                 "labels_autres": ["SudLabs", "Nièvre médiation numérique"],
+                "thematiques": ["creation-activite", "mobilite"],
             }
         ],
         "total": 1,
         "page": 1,
-        "size": 50,
+        "size": ANY,
     }
 
     response = api_client.get(url, params={"typologie": schema.Typologie.MUNI.value})
@@ -147,11 +149,12 @@ def test_list_structures_filter_by_label(api_client, structure_factory):
                 "accessibilite": "https://acceslibre.beta.gouv.fr/app/cacher-violent/",
                 "labels_nationaux": ["MOBIN", "FRANCE_SERVICE"],
                 "labels_autres": ["SudLabs", "Nièvre médiation numérique"],
+                "thematiques": ["preparer-sa-candidature", "trouver-un-emploi"],
             }
         ],
         "total": 1,
         "page": 1,
-        "size": 50,
+        "size": ANY,
     }
 
     response = api_client.get(
@@ -196,11 +199,12 @@ def test_list_structures_filter_by_source(api_client, structure_factory):
                 "accessibilite": "https://acceslibre.beta.gouv.fr/app/matiere-nom-asseoir/",
                 "labels_nationaux": [],
                 "labels_autres": ["SudLabs", "Nièvre médiation numérique"],
+                "thematiques": ["choisir-un-metier", "creation-activite"],
             }
         ],
         "total": 1,
         "page": 1,
-        "size": 50,
+        "size": ANY,
     }
 
     response = api_client.get(url, params={"source": "siao"})
@@ -254,13 +258,13 @@ def test_list_structures_filter_by_departement_cog(api_client, structure_factory
                 "accessibilite": "https://acceslibre.beta.gouv.fr/app/matiere-nom-asseoir/",
                 "labels_nationaux": [],
                 "labels_autres": ["SudLabs", "Nièvre médiation numérique"],
+                "thematiques": ["preparer-sa-candidature", "trouver-un-emploi"],
             }
         ],
         "total": 1,
         "page": 1,
-        "size": 50,
+        "size": ANY,
     }
-
     response = api_client.get(url, params={"departement": "62"})
     assert response.json() == {"items": [], "total": 0, "page": 1, "size": 50}
 
@@ -301,11 +305,12 @@ def test_list_structures_filter_by_departement_slug(api_client, structure_factor
                 "accessibilite": "https://acceslibre.beta.gouv.fr/app/matiere-nom-asseoir/",
                 "labels_nationaux": [],
                 "labels_autres": ["SudLabs", "Nièvre médiation numérique"],
+                "thematiques": ["creation-activite", "mobilite"],
             }
         ],
         "total": 1,
         "page": 1,
-        "size": 50,
+        "size": ANY,
     }
 
     response = api_client.get(url, params={"departement_slug": "pas-de-calais"})
@@ -348,12 +353,76 @@ def test_list_structures_filter_by_code_postal(api_client, structure_factory):
                 "accessibilite": "https://acceslibre.beta.gouv.fr/app/matiere-nom-asseoir/",
                 "labels_nationaux": [],
                 "labels_autres": ["SudLabs", "Nièvre médiation numérique"],
+                "thematiques": ["numerique", "preparer-sa-candidature"],
             }
         ],
         "total": 1,
         "page": 1,
-        "size": 50,
+        "size": ANY,
     }
 
     response = api_client.get(url, params={"code_postal": "59512"})
+    assert response.json() == {"items": [], "total": 0, "page": 1, "size": 50}
+
+
+@pytest.mark.with_token
+def test_list_structures_filter_by_thematique(api_client, structure_factory):
+    structure_factory(
+        thematiques=[
+            schema.Thematique.MOBILITE.value,
+            schema.Thematique.NUMERIQUE.value,
+        ]
+    )
+    structure_factory(
+        thematiques=[
+            schema.Thematique.TROUVER_UN_EMPLOI.value,
+            schema.Thematique.NUMERIQUE.value,
+        ]
+    )
+    structure_factory(thematiques=[])
+
+    url = "/api/v0/structures/"
+    response = api_client.get(
+        url, params={"thematique": schema.Thematique.MOBILITE.value}
+    )
+
+    assert response.json() == {
+        "items": [
+            {
+                "id": "matiere-nom-asseoir",
+                "siret": "76475938200654",
+                "rna": "W219489241",
+                "nom": "Pottier SARL",
+                "commune": "VaillantBourg",
+                "code_postal": "65938",
+                "code_insee": "78408",
+                "adresse": "avenue Lacombe",
+                "complement_adresse": None,
+                "longitude": 178.712016,
+                "latitude": 77.843518,
+                "typologie": "CAVA",
+                "telephone": "0102030405",
+                "courriel": "raymondclemence@example.com",
+                "site_web": "http://aubert.net/",
+                "presentation_resume": "Espèce couler.",
+                "presentation_detail": "Or personne jambe.",
+                "source": "itou",
+                "date_maj": ANY,
+                "structure_parente": None,
+                "lien_source": "https://itou.fr/matiere-nom-asseoir",
+                "horaires_ouverture": 'Mo-Fr 10:00-20:00 "sur rendez-vous"; PH off',
+                "accessibilite": "https://acceslibre.beta.gouv.fr/app/matiere-nom-asseoir/",
+                "labels_nationaux": [],
+                "labels_autres": ["SudLabs", "Nièvre médiation numérique"],
+                "thematiques": ["mobilite", "numerique"],
+            }
+        ],
+        "total": 1,
+        "page": 1,
+        "size": ANY,
+    }
+
+    response = api_client.get(
+        url, params={"thematique": schema.Thematique.PREPARER_SA_CANDIDATURE.value}
+    )
     assert response.json() == {"items": [], "total": 0, "page": 1, "size": 50}

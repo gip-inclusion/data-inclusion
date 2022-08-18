@@ -76,6 +76,7 @@ def list_structures(
     departement: Optional[schema.DepartementCOG] = None,
     departement_slug: Optional[schema.DepartementSlug] = None,
     code_postal: Optional[schema.CodePostal] = None,
+    thematique: Optional[schema.Thematique] = None,
 ) -> list:
     query = db_session.query(models.Structure)
 
@@ -103,6 +104,9 @@ def list_structures(
             models.Structure.labels_nationaux.contains([label_national.value])
         )
 
+    if thematique is not None:
+        query = query.filter(models.Structure.thematiques.contains([thematique.value]))
+
     return list(paginate(query))
 
 
@@ -114,6 +118,7 @@ def list_structures_endpoint(
     source: Optional[str] = None,
     typologie: Optional[schema.Typologie] = None,
     label_national: Optional[schema.LabelNational] = None,
+    thematique: Optional[schema.Thematique] = None,
     departement: Optional[schema.DepartementCOG] = None,
     departement_slug: Optional[schema.DepartementSlug] = None,
     code_postal: Optional[schema.CodePostal] = None,
@@ -135,7 +140,7 @@ def list_structures_endpoint(
 
     ### Filtres
 
-    Les structures peuvent être filtrées par typologie, label, source, etc.
+    Les structures peuvent être filtrées par thematique, typologie, label, source, etc.
     """  # noqa
 
     return list_structures(
@@ -146,6 +151,7 @@ def list_structures_endpoint(
         departement=departement,
         departement_slug=departement_slug,
         code_postal=code_postal,
+        thematique=thematique,
     )
 
 

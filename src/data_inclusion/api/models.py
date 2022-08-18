@@ -39,3 +39,4 @@ class Structure(db.Base):
     accessibilite = sqla.Column(sqla.Text, nullable=True)
     labels_nationaux = sqla.Column(ARRAY(sqla.Text), default=list)
     labels_autres = sqla.Column(ARRAY(sqla.Text), default=list)
+    thematiques = sqla.Column(ARRAY(sqla.Text), default=list)

@@ -1,4 +1,5 @@
 from datetime import datetime
+from itertools import tee
 
 import factory
 import faker
@@ -7,6 +8,12 @@ import pytz
 from data_inclusion.api import models, schema
 
 fake = faker.Faker("fr_FR")
+
+
+def pairwise(iterable):
+    a, b = tee(iterable)
+    next(b, None)
+    return zip(a, b)
 
 
 class StructureFactory(factory.Factory):
@@ -38,3 +45,7 @@ class StructureFactory(factory.Factory):
     )
     labels_nationaux = []
     labels_autres = ["SudLabs", "Nièvre médiation numérique"]
+    thematiques = factory.Iterator(
+        pairwise(schema.Thematique),
+        getter=lambda l: list(map(lambda t: t.value, l)),
+    )
