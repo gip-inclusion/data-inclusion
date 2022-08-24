@@ -50,6 +50,7 @@ def test_list_structures_all(api_client, structure_factory):
                 "labels_nationaux": [],
                 "labels_autres": ["SudLabs", "Nièvre médiation numérique"],
                 "thematiques": ["choisir-un-metier", "creation-activite"],
+                "services": [],
             }
         ],
         "total": 1,
@@ -95,6 +96,7 @@ def test_list_structures_filter_by_typology(api_client, structure_factory):
                 "labels_nationaux": [],
                 "labels_autres": ["SudLabs", "Nièvre médiation numérique"],
                 "thematiques": ["creation-activite", "mobilite"],
+                "services": [],
             }
         ],
         "total": 1,
@@ -150,6 +152,7 @@ def test_list_structures_filter_by_label(api_client, structure_factory):
                 "labels_nationaux": ["MOBIN", "FRANCE_SERVICE"],
                 "labels_autres": ["SudLabs", "Nièvre médiation numérique"],
                 "thematiques": ["preparer-sa-candidature", "trouver-un-emploi"],
+                "services": [],
             }
         ],
         "total": 1,
@@ -200,6 +203,7 @@ def test_list_structures_filter_by_source(api_client, structure_factory):
                 "labels_nationaux": [],
                 "labels_autres": ["SudLabs", "Nièvre médiation numérique"],
                 "thematiques": ["choisir-un-metier", "creation-activite"],
+                "services": [],
             }
         ],
         "total": 1,
@@ -259,6 +263,7 @@ def test_list_structures_filter_by_departement_cog(api_client, structure_factory
                 "labels_nationaux": [],
                 "labels_autres": ["SudLabs", "Nièvre médiation numérique"],
                 "thematiques": ["preparer-sa-candidature", "trouver-un-emploi"],
+                "services": [],
             }
         ],
         "total": 1,
@@ -306,6 +311,7 @@ def test_list_structures_filter_by_departement_slug(api_client, structure_factor
                 "labels_nationaux": [],
                 "labels_autres": ["SudLabs", "Nièvre médiation numérique"],
                 "thematiques": ["creation-activite", "mobilite"],
+                "services": [],
             }
         ],
         "total": 1,
@@ -354,6 +360,7 @@ def test_list_structures_filter_by_code_postal(api_client, structure_factory):
                 "labels_nationaux": [],
                 "labels_autres": ["SudLabs", "Nièvre médiation numérique"],
                 "thematiques": ["numerique", "preparer-sa-candidature"],
+                "services": [],
             }
         ],
         "total": 1,
@@ -415,6 +422,7 @@ def test_list_structures_filter_by_thematique(api_client, structure_factory):
                 "labels_nationaux": [],
                 "labels_autres": ["SudLabs", "Nièvre médiation numérique"],
                 "thematiques": ["mobilite", "numerique"],
+                "services": [],
             }
         ],
         "total": 1,

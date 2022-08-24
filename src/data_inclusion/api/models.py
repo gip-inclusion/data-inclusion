@@ -1,10 +1,16 @@
 import sqlalchemy as sqla
+from sqlalchemy import orm
 from sqlalchemy.dialects.postgresql import ARRAY
 
-from data_inclusion.api.core import db
+from data_inclusion.api.core.db import Base
+
+# all fields are nullable or have a default value. These models will only be used to
+# query valid data coming from the data pipeline.
 
 
-class Structure(db.Base):
+class Structure(Base):
+    __tablename__ = "structure"
+
     # metadata
     index = sqla.Column(sqla.Integer, primary_key=True)
     created_at = sqla.Column(
@@ -40,3 +46,21 @@ class Structure(db.Base):
     labels_nationaux = sqla.Column(ARRAY(sqla.Text), default=list)
     labels_autres = sqla.Column(ARRAY(sqla.Text), default=list)
     thematiques = sqla.Column(ARRAY(sqla.Text), default=list)
+    services = orm.relationship("Service", backref="structure", cascade="all, delete")
+
+
+class Service(Base):
+    __tablename__ = "service"
+
+    # metadata
+    index = sqla.Column(sqla.Integer, primary_key=True)
+    structure_index = sqla.Column(sqla.Integer, sqla.ForeignKey("structure.index"))
+
+    # service data
+    nom = sqla.Column(sqla.Text, nullable=True)
+    presentation_resume = sqla.Column(sqla.Text, nullable=True)
+    types = sqla.Column(ARRAY(sqla.Text), default=list)
+    thematiques = sqla.Column(ARRAY(sqla.Text), default=list)
+    prise_rdv = sqla.Column(sqla.Text, nullable=True)
+    frais = sqla.Column(ARRAY(sqla.Text), default=list)
+    frais_autres = sqla.Column(sqla.Text, nullable=True)

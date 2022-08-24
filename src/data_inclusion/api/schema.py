@@ -292,6 +292,40 @@ class Thematique(str, Enum):
     TROUVER_UN_EMPLOI = "trouver-un-emploi"
 
 
+class TypologieService(str, Enum):
+    ACCOMPAGNEMENT = "accompagnement"
+    ACCUEIL = "accueil"
+    AIDE_FINANCIERE = "aide-financiere"
+    AIDE_MATERIELLE = "aide-materielle"
+    ATELIER = "atelier"
+    FORMATION = "formation"
+    INFORMATION = "information"
+    NUMÉRIQUE = "numerique"
+    AUTONOMIE = "autonomie"
+    DELEGATION = "delegation"
+    FINANCEMENT = "financement"
+
+
+class Frais(str, Enum):
+    GRATUIT = "gratuit"
+    GRATUIT_SOUS_CONDITIONS = "gratuit-sous-conditions"
+    PAYANT = "payant"
+    ADHESION = "adhesion"
+
+
+class Service(BaseModel):
+    nom: str
+    presentation_resume: Optional[constr(max_length=280)]
+    types: Optional[list[TypologieService]]
+    thematiques: Optional[list[Thematique]]
+    prise_rdv: Optional[HttpUrl]
+    frais: Optional[list[Frais]]
+    frais_autres: Optional[str]
+
+    class Config:
+        orm_mode = True
+
+
 CodePostal: TypeAlias = constr(min_length=5, max_length=5, regex=r"^\d{5}$")
 
 
@@ -322,6 +356,7 @@ class Structure(BaseModel):
     labels_nationaux: Optional[list[LabelNational]]
     labels_autres: Optional[list[str]]
     thematiques: Optional[list[Thematique]]
+    services: Optional[list[Service]]
 
     class Config:
         orm_mode = True
