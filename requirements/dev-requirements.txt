@@ -10,59 +10,59 @@ anyio==3.6.1
     # via
     #   starlette
     #   watchfiles
-black==22.6.0
+black==22.8.0
     # via data-inclusion-api (setup.py)
-certifi==2022.6.15
+certifi==2022.9.24
     # via requests
 cffi==1.15.1
     # via cryptography
 cfgv==3.3.1
     # via pre-commit
-charset-normalizer==2.1.0
+charset-normalizer==2.1.1
     # via requests
 click==8.1.3
     # via
     #   black
     #   data-inclusion-api (setup.py)
     #   uvicorn
-cryptography==37.0.4
+cryptography==38.0.1
     # via python-jose
-distlib==0.3.5
+distlib==0.3.6
     # via virtualenv
 dnspython==2.2.1
     # via email-validator
 ecdsa==0.18.0
     # via python-jose
-email-validator==1.2.1
+email-validator==1.3.0
     # via pydantic
-faker==13.15.1
+faker==15.0.0
     # via data-inclusion-api (setup.py)
-fastapi==0.79.0
+fastapi==0.85.0
     # via
     #   data-inclusion-api (setup.py)
     #   fastapi-pagination
-fastapi-pagination==0.9.3
+fastapi-pagination==0.10.0
     # via data-inclusion-api (setup.py)
-filelock==3.7.1
+filelock==3.8.0
     # via
     #   tox
     #   virtualenv
-greenlet==1.1.2
+greenlet==1.1.3
     # via sqlalchemy
 gunicorn==20.1.0
     # via data-inclusion-api (setup.py)
-h11==0.13.0
+h11==0.14.0
     # via uvicorn
-httptools==0.4.0
+httptools==0.5.0
     # via uvicorn
-identify==2.5.3
+identify==2.5.6
     # via pre-commit
-idna==3.3
+idna==3.4
     # via
     #   anyio
     #   email-validator
     #   requests
-mako==1.2.1
+mako==1.2.3
     # via alembic
 markupsafe==2.1.1
     # via mako
@@ -70,13 +70,13 @@ mypy-extensions==0.4.3
     # via black
 nodeenv==1.7.0
     # via pre-commit
-numpy==1.23.1
+numpy==1.23.3
     # via pandas
 packaging==21.3
     # via tox
-pandas==1.4.3
+pandas==1.5.0
     # via data-inclusion-api (setup.py)
-pathspec==0.9.0
+pathspec==0.10.1
     # via black
 platformdirs==2.5.2
     # via
@@ -96,7 +96,7 @@ pyasn1==0.4.8
     #   rsa
 pycparser==2.21
     # via cffi
-pydantic==1.9.1
+pydantic==1.10.2
     # via
     #   data-inclusion-api (setup.py)
     #   fastapi
@@ -107,13 +107,13 @@ python-dateutil==2.8.2
     # via
     #   faker
     #   pandas
-python-dotenv==0.20.0
+python-dotenv==0.21.0
     # via
     #   data-inclusion-api (setup.py)
     #   uvicorn
 python-jose==3.3.0
     # via data-inclusion-api (setup.py)
-pytz==2022.1
+pytz==2022.4
     # via pandas
 pyyaml==6.0
     # via
@@ -128,35 +128,35 @@ six==1.16.0
     #   ecdsa
     #   python-dateutil
     #   tox
-sniffio==1.2.0
+sniffio==1.3.0
     # via anyio
-sqlalchemy==1.4.39
+sqlalchemy==1.4.41
     # via
     #   alembic
     #   data-inclusion-api (setup.py)
-starlette==0.19.1
+starlette==0.20.4
     # via fastapi
 toml==0.10.2
-    # via
-    #   pre-commit
-    #   tox
+    # via pre-commit
 tomli==2.0.1
-    # via black
-tox==3.25.1
+    # via
+    #   black
+    #   tox
+tox==3.26.0
     # via data-inclusion-api (setup.py)
 typing-extensions==4.3.0
     # via pydantic
-urllib3==1.26.11
+urllib3==1.26.12
     # via requests
-uvicorn==0.18.2
+uvicorn==0.18.3
     # via data-inclusion-api (setup.py)
-uvloop==0.16.0
+uvloop==0.17.0
     # via uvicorn
-virtualenv==20.16.2
+virtualenv==20.16.5
     # via
     #   pre-commit
     #   tox
-watchfiles==0.16.1
+watchfiles==0.17.0
     # via uvicorn
 websockets==10.3
     # via uvicorn
