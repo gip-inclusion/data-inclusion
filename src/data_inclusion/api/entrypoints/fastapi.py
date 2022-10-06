@@ -22,7 +22,16 @@ Le token doit être renseigné dans chaque requête via un header:
 `Authorization: Bearer <VOTRE_TOKEN>`.
 
 * En staging, l'accès est libre.
-"""
+
+### Schémas de données
+
+Les données respectent les schémas (structures et services) de data.inclusion.
+
+Plus d'informations sur le
+[dépôt](https://github.com/betagouv/data-inclusion-schema) versionnant le schéma,
+sur la [documentation officielle](https://www.data.inclusion.beta.gouv.fr/schemas-de-donnees-de-loffre/schema-des-structures-dinsertion)
+ou sur la page [schema.gouv](https://schema.data.gouv.fr/betagouv/data-inclusion-schema/) du schéma.
+"""  # noqa: E501
 
 
 def create_app() -> fastapi.FastAPI:
@@ -133,20 +142,20 @@ def list_structures_endpoint(
     ## Lister les structures consolidées par data.inclusion
 
     Il s'agit du point d'entrée principal de l'API, permettant d'accéder finement au
-    données publiées quotidiennemnt en open data sur data.gouv.
+    données structures publiées régulièrement en open data sur data.gouv.
 
-    ### Schéma de données
+    ### Filtres disponibles
 
-    Les données respectent le schéma de data.inclusion. Plus d'informations sur le
-    [dépôt](https://github.com/betagouv/data-inclusion-schema) versionnant le schéma,
-    sur la [documentation officielle](https://www.data.inclusion.beta.gouv.fr/schemas-de-donnees-de-loffre/schema-des-structures-dinsertion)
-    ou sur la page [schema.gouv](https://schema.data.gouv.fr/betagouv/data-inclusion-schema/) du schéma.
+    Les structures peuvent être filtrées par thematique, typologie, label, source, id,
+    etc.
 
+    ### Identification des structures
 
-    ### Filtres
+    Les structures sont identifiées de manière unique par le couple :
+    * `source` : slug précisant la source de manière unique
+    * `id` : l'identifiant local dans la source
 
-    Les structures peuvent être filtrées par thematique, typologie, label, source, etc.
-    """  # noqa
+    """
 
     return list_structures(
         db_session,
@@ -206,6 +215,16 @@ def list_services(
 def list_services_endpoint(
     db_session=fastapi.Depends(db.get_session),
 ):
+    """
+    ## Liste les services consolidées par data.inclusion
+
+    ### Retrouver la structure associée à un service donné
+
+    Pour un service donné, il est possible de récupérer les informations de la structure
+    associée en filtrant les structures par source et identifiant local:
+
+    `/api/v0/structures/?source=<source>&id=<id>`
+    """
     return list_services(db_session)
 
 
