@@ -50,7 +50,6 @@ def test_list_structures_all(api_client, structure_factory):
                 "labels_nationaux": [],
                 "labels_autres": ["SudLabs", "Nièvre médiation numérique"],
                 "thematiques": ["choisir-un-metier", "creation-activite"],
-                "services": [],
             }
         ],
         "total": 1,
@@ -96,7 +95,6 @@ def test_list_structures_filter_by_typology(api_client, structure_factory):
                 "labels_nationaux": [],
                 "labels_autres": ["SudLabs", "Nièvre médiation numérique"],
                 "thematiques": ["creation-activite", "mobilite"],
-                "services": [],
             }
         ],
         "total": 1,
@@ -152,7 +150,6 @@ def test_list_structures_filter_by_label(api_client, structure_factory):
                 "labels_nationaux": ["MOBIN", "FRANCE_SERVICE"],
                 "labels_autres": ["SudLabs", "Nièvre médiation numérique"],
                 "thematiques": ["preparer-sa-candidature", "trouver-un-emploi"],
-                "services": [],
             }
         ],
         "total": 1,
@@ -203,7 +200,6 @@ def test_list_structures_filter_by_source(api_client, structure_factory):
                 "labels_nationaux": [],
                 "labels_autres": ["SudLabs", "Nièvre médiation numérique"],
                 "thematiques": ["choisir-un-metier", "creation-activite"],
-                "services": [],
             }
         ],
         "total": 1,
@@ -263,7 +259,6 @@ def test_list_structures_filter_by_departement_cog(api_client, structure_factory
                 "labels_nationaux": [],
                 "labels_autres": ["SudLabs", "Nièvre médiation numérique"],
                 "thematiques": ["preparer-sa-candidature", "trouver-un-emploi"],
-                "services": [],
             }
         ],
         "total": 1,
@@ -311,7 +306,6 @@ def test_list_structures_filter_by_departement_slug(api_client, structure_factor
                 "labels_nationaux": [],
                 "labels_autres": ["SudLabs", "Nièvre médiation numérique"],
                 "thematiques": ["creation-activite", "mobilite"],
-                "services": [],
             }
         ],
         "total": 1,
@@ -360,7 +354,6 @@ def test_list_structures_filter_by_code_postal(api_client, structure_factory):
                 "labels_nationaux": [],
                 "labels_autres": ["SudLabs", "Nièvre médiation numérique"],
                 "thematiques": ["numerique", "preparer-sa-candidature"],
-                "services": [],
             }
         ],
         "total": 1,
@@ -422,7 +415,6 @@ def test_list_structures_filter_by_thematique(api_client, structure_factory):
                 "labels_nationaux": [],
                 "labels_autres": ["SudLabs", "Nièvre médiation numérique"],
                 "thematiques": ["mobilite", "numerique"],
-                "services": [],
             }
         ],
         "total": 1,
@@ -434,3 +426,88 @@ def test_list_structures_filter_by_thematique(api_client, structure_factory):
         url, params={"thematique": schema.Thematique.PREPARER_SA_CANDIDATURE.value}
     )
     assert response.json() == {"items": [], "total": 0, "page": 1, "size": 50}
+
+
+@pytest.mark.with_token
+def test_list_structures_filter_by_source_and_id(api_client, structure_factory):
+    structure_factory(source="itou", id="foo")
+    structure_factory(source="dora", id="foo")
+    structure_factory(source="dora", id="bar")
+
+    url = "/api/v0/structures/"
+
+    response = api_client.get(url, params={"source": "dora", "id": "foo"})
+    resp_data = response.json()
+
+    assert resp_data == {
+        "items": [
+            {
+                "id": "foo",
+                "siret": "86848339600109",
+                "rna": "W477515917",
+                "nom": "Aubert",
+                "commune": "Durand",
+                "code_postal": "13525",
+                "code_insee": "01230",
+                "adresse": "191, rue Seguin",
+                "complement_adresse": None,
+                "longitude": 129.212387,
+                "latitude": -57.869491,
+                "typologie": "CD",
+                "telephone": "0102030405",
+                "courriel": "xrobin@example.org",
+                "site_web": "http://www.gonzalez.fr/",
+                "presentation_resume": "Écraser bas un an.",
+                "presentation_detail": "Lieu apparence bon voir.",
+                "source": "dora",
+                "date_maj": ANY,
+                "structure_parente": None,
+                "lien_source": "https://dora.fr/foo",
+                "horaires_ouverture": 'Mo-Fr 10:00-20:00 "sur rendez-vous"; PH off',
+                "accessibilite": "https://acceslibre.beta.gouv.fr/app/foo/",
+                "labels_nationaux": [],
+                "labels_autres": ["SudLabs", "Nièvre médiation numérique"],
+                "thematiques": ["creation-activite", "mobilite"],
+            }
+        ],
+        "total": 1,
+        "page": 1,
+        "size": 50,
+    }
+
+
+def test_list_services_unauthenticated(api_client):
+    url = "/api/v0/services/"
+    response = api_client.get(url)
+
+    assert response.status_code == 403
+
+
+@pytest.mark.with_token
+def test_list_services_all(api_client, service_factory):
+    service_factory()
+
+    url = "/api/v0/services/"
+
+    response = api_client.get(url)
+    resp_data = response.json()
+
+    assert resp_data == {
+        "items": [
+            {
+                "id": "cacher-violent",
+                "source": "dora",
+                "structure_id": "matiere-nom-asseoir",
+                "nom": "Munoz",
+                "presentation_resume": "Puissant fine.",
+                "types": ["accompagnement", "accueil"],
+                "thematiques": ["choisir-un-metier", "creation-activite"],
+                "prise_rdv": "http://www.delorme.org/",
+                "frais": ["gratuit", "gratuit-sous-conditions"],
+                "frais_autres": "Parmi position ton.",
+            }
+        ],
+        "total": 1,
+        "page": 1,
+        "size": 50,
+    }

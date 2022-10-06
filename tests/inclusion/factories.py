@@ -49,3 +49,26 @@ class StructureFactory(factory.Factory):
         pairwise(schema.Thematique),
         getter=lambda l: list(map(lambda t: t.value, l)),
     )
+
+
+class ServiceFactory(factory.Factory):
+    class Meta:
+        model = models.Service
+
+    id = factory.Faker("slug", locale="fr_FR")
+    nom = factory.Faker("company", locale="fr_FR")
+    presentation_resume = factory.Faker("text", max_nb_chars=20, locale="fr_FR")
+    types = factory.Iterator(
+        pairwise(schema.TypologieService),
+        getter=lambda l: list(map(lambda t: t.value, l)),
+    )
+    thematiques = factory.Iterator(
+        pairwise(schema.Thematique),
+        getter=lambda l: list(map(lambda t: t.value, l)),
+    )
+    prise_rdv = factory.Faker("url", locale="fr_FR")
+    frais = factory.Iterator(
+        pairwise(schema.Frais),
+        getter=lambda l: list(map(lambda t: t.value, l)),
+    )
+    frais_autres = factory.Faker("text", max_nb_chars=20, locale="fr_FR")

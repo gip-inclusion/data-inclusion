@@ -314,6 +314,9 @@ class Frais(str, Enum):
 
 
 class Service(BaseModel):
+    id: str
+    structure_id: str
+    source: str
     nom: str
     presentation_resume: Optional[constr(max_length=280)]
     types: Optional[list[TypologieService]]
@@ -347,7 +350,7 @@ class Structure(BaseModel):
     site_web: Optional[HttpUrl]
     presentation_resume: Optional[constr(max_length=280)]
     presentation_detail: Optional[str]
-    source: Optional[str]
+    source: str
     date_maj: date | datetime
     structure_parente: Optional[str]
     lien_source: Optional[HttpUrl]
@@ -356,7 +359,6 @@ class Structure(BaseModel):
     labels_nationaux: Optional[list[LabelNational]]
     labels_autres: Optional[list[str]]
     thematiques: Optional[list[Thematique]]
-    services: Optional[list[Service]]
 
     class Config:
         orm_mode = True

@@ -71,6 +71,7 @@ v0_api_router = fastapi.APIRouter(
 def list_structures(
     db_session: orm.Session,
     source: Optional[str] = None,
+    id_: Optional[str] = None,
     typologie: Optional[schema.Typologie] = None,
     label_national: Optional[schema.LabelNational] = None,
     departement: Optional[schema.DepartementCOG] = None,
@@ -82,6 +83,9 @@ def list_structures(
 
     if source is not None:
         query = query.filter_by(source=source)
+
+    if id_ is not None:
+        query = query.filter_by(id=id_)
 
     if departement is not None:
         query = query.filter(models.Structure.code_insee.startswith(departement.value))
@@ -116,6 +120,7 @@ def list_structures(
 )
 def list_structures_endpoint(
     source: Optional[str] = None,
+    id: Optional[str] = None,
     typologie: Optional[schema.Typologie] = None,
     label_national: Optional[schema.LabelNational] = None,
     thematique: Optional[schema.Thematique] = None,
@@ -146,6 +151,7 @@ def list_structures_endpoint(
     return list_structures(
         db_session,
         source=source,
+        id_=id,
         typologie=typologie,
         label_national=label_national,
         departement=departement,
@@ -171,9 +177,36 @@ def list_sources_endpoint(
     """
     ## Lister les sources disponibles
     """
-    return list_sources(
-        db_session,
-    )
+    return list_sources(db_session)
+
+
+def list_services(
+    db_session: orm.Session,
+):
+    query = db_session.query(
+        models.Structure.source,
+        models.Structure.id.label("structure_id"),
+        models.Service.id,
+        models.Service.nom,
+        models.Service.presentation_resume,
+        models.Service.types,
+        models.Service.thematiques,
+        models.Service.prise_rdv,
+        models.Service.frais,
+        models.Service.frais_autres,
+    ).join(models.Service.structure)
+
+    return list(paginate(query))
+
+
+@v0_api_router.get(
+    "/services",
+    response_model=fastapi_pagination.Page[schema.Service],
+)
+def list_services_endpoint(
+    db_session=fastapi.Depends(db.get_session),
+):
+    return list_services(db_session)
 
 
 app = create_app()

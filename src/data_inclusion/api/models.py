@@ -11,7 +11,7 @@ from data_inclusion.api.core.db import Base
 class Structure(Base):
     __tablename__ = "structure"
 
-    # metadata
+    # internal metadata
     index = sqla.Column(sqla.Integer, primary_key=True)
     created_at = sqla.Column(
         sqla.DateTime(timezone=True), server_default=sqla.func.now()
@@ -52,11 +52,12 @@ class Structure(Base):
 class Service(Base):
     __tablename__ = "service"
 
-    # metadata
+    # internal metadata
     index = sqla.Column(sqla.Integer, primary_key=True)
     structure_index = sqla.Column(sqla.Integer, sqla.ForeignKey("structure.index"))
 
     # service data
+    id = sqla.Column(sqla.Text, nullable=True)
     nom = sqla.Column(sqla.Text, nullable=True)
     presentation_resume = sqla.Column(sqla.Text, nullable=True)
     types = sqla.Column(ARRAY(sqla.Text), default=list)

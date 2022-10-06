@@ -33,3 +33,18 @@ def structure_factory(db_session):
         return structure_db_obj
 
     return factory
+
+
+@pytest.fixture
+def service_factory(db_session, structure_factory):
+    def factory(**kwargs):
+        structure = structure_factory()
+        service_db_obj = factories.ServiceFactory(
+            structure_index=structure.index, **kwargs
+        )
+        db_session.add(service_db_obj)
+        db_session.commit()
+        db_session.refresh(service_db_obj)
+        return service_db_obj
+
+    return factory
