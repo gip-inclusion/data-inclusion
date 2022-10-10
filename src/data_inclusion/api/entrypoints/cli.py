@@ -33,7 +33,6 @@ def log_and_raise(resp: requests.Response, *args, **kwargs):
     try:
         resp.raise_for_status()
     except requests.HTTPError as err:
-        breakpoint()
         logger.error(resp.json())
         raise err
 
