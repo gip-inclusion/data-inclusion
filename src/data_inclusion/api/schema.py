@@ -420,6 +420,7 @@ class Frais(str, Enum):
     GRATUIT_SOUS_CONDITIONS = "gratuit-sous-conditions"
     PAYANT = "payant"
     ADHESION = "adhesion"
+    PASS_NUMERIQUE = "pass-numerique"  # nosec: B105
 
 
 class Service(BaseModel):
