@@ -46,7 +46,13 @@ class StructureFactory(factory.Factory):
     labels_nationaux = []
     labels_autres = ["SudLabs", "Nièvre médiation numérique"]
     thematiques = factory.Iterator(
-        pairwise(schema.Thematique),
+        pairwise(
+            [
+                schema.Thematique.CHOISIR_UN_METIER,
+                schema.Thematique.CREATION_ACTIVITE,
+                schema.Thematique.MOBILITE,
+            ]
+        ),
         getter=lambda l: list(map(lambda t: t.value, l)),
     )
 
@@ -63,7 +69,13 @@ class ServiceFactory(factory.Factory):
         getter=lambda l: list(map(lambda t: t.value, l)),
     )
     thematiques = factory.Iterator(
-        pairwise(schema.Thematique),
+        pairwise(
+            [
+                schema.Thematique.CHOISIR_UN_METIER,
+                schema.Thematique.CREATION_ACTIVITE,
+                schema.Thematique.MOBILITE,
+            ]
+        ),
         getter=lambda l: list(map(lambda t: t.value, l)),
     )
     prise_rdv = factory.Faker("url", locale="fr_FR")

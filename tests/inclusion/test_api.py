@@ -149,7 +149,7 @@ def test_list_structures_filter_by_label(api_client, structure_factory):
                 "accessibilite": "https://acceslibre.beta.gouv.fr/app/cacher-violent/",
                 "labels_nationaux": ["MOBIN", "FRANCE_SERVICE"],
                 "labels_autres": ["SudLabs", "Nièvre médiation numérique"],
-                "thematiques": ["preparer-sa-candidature", "trouver-un-emploi"],
+                "thematiques": ["choisir-un-metier", "creation-activite"],
             }
         ],
         "total": 1,
@@ -199,7 +199,7 @@ def test_list_structures_filter_by_source(api_client, structure_factory):
                 "accessibilite": "https://acceslibre.beta.gouv.fr/app/matiere-nom-asseoir/",
                 "labels_nationaux": [],
                 "labels_autres": ["SudLabs", "Nièvre médiation numérique"],
-                "thematiques": ["choisir-un-metier", "creation-activite"],
+                "thematiques": ["creation-activite", "mobilite"],
             }
         ],
         "total": 1,
@@ -258,7 +258,7 @@ def test_list_structures_filter_by_departement_cog(api_client, structure_factory
                 "accessibilite": "https://acceslibre.beta.gouv.fr/app/matiere-nom-asseoir/",
                 "labels_nationaux": [],
                 "labels_autres": ["SudLabs", "Nièvre médiation numérique"],
-                "thematiques": ["preparer-sa-candidature", "trouver-un-emploi"],
+                "thematiques": ["creation-activite", "mobilite"],
             }
         ],
         "total": 1,
@@ -353,7 +353,7 @@ def test_list_structures_filter_by_code_postal(api_client, structure_factory):
                 "accessibilite": "https://acceslibre.beta.gouv.fr/app/matiere-nom-asseoir/",
                 "labels_nationaux": [],
                 "labels_autres": ["SudLabs", "Nièvre médiation numérique"],
-                "thematiques": ["numerique", "preparer-sa-candidature"],
+                "thematiques": ["creation-activite", "mobilite"],
             }
         ],
         "total": 1,
@@ -467,7 +467,7 @@ def test_list_structures_filter_by_source_and_id(api_client, structure_factory):
                 "accessibilite": "https://acceslibre.beta.gouv.fr/app/foo/",
                 "labels_nationaux": [],
                 "labels_autres": ["SudLabs", "Nièvre médiation numérique"],
-                "thematiques": ["creation-activite", "mobilite"],
+                "thematiques": ["choisir-un-metier", "creation-activite"],
             }
         ],
         "total": 1,
