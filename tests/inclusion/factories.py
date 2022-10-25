@@ -36,7 +36,7 @@ class StructureFactory(factory.Factory):
     site_web = factory.Faker("url", locale="fr_FR")
     presentation_resume = factory.Faker("text", max_nb_chars=20, locale="fr_FR")
     presentation_detail = factory.Faker("text", max_nb_chars=30, locale="fr_FR")
-    source = factory.Iterator(["dora", "itou"])
+    source = factory.Iterator(["dora", "emplois-de-linclusion"])
     date_maj = factory.LazyFunction(lambda: datetime.now(tz=pytz.UTC))
     lien_source = factory.LazyAttribute(lambda o: f"https://{o.source}.fr/{o.id}")
     horaires_ouverture = 'Mo-Fr 10:00-20:00 "sur rendez-vous"; PH off'

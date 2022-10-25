@@ -86,10 +86,10 @@ def test_list_structures_filter_by_typology(api_client, structure_factory):
                 "site_web": "http://aubert.net/",
                 "presentation_resume": "Espèce couler.",
                 "presentation_detail": "Or personne jambe.",
-                "source": "itou",
+                "source": "emplois-de-linclusion",
                 "date_maj": ANY,
                 "structure_parente": None,
-                "lien_source": "https://itou.fr/matiere-nom-asseoir",
+                "lien_source": "https://emplois-de-linclusion.fr/matiere-nom-asseoir",
                 "horaires_ouverture": 'Mo-Fr 10:00-20:00 "sur rendez-vous"; PH off',
                 "accessibilite": "https://acceslibre.beta.gouv.fr/app/matiere-nom-asseoir/",
                 "labels_nationaux": [],
@@ -165,11 +165,11 @@ def test_list_structures_filter_by_label(api_client, structure_factory):
 
 @pytest.mark.with_token
 def test_list_structures_filter_by_source(api_client, structure_factory):
-    structure_factory(source="itou")
+    structure_factory(source="emplois-de-linclusion")
     structure_factory(source="dora")
 
     url = "/api/v0/structures/"
-    response = api_client.get(url, params={"source": "itou"})
+    response = api_client.get(url, params={"source": "emplois-de-linclusion"})
 
     assert response.json() == {
         "items": [
@@ -191,10 +191,10 @@ def test_list_structures_filter_by_source(api_client, structure_factory):
                 "site_web": "http://aubert.net/",
                 "presentation_resume": "Espèce couler.",
                 "presentation_detail": "Or personne jambe.",
-                "source": "itou",
+                "source": "emplois-de-linclusion",
                 "date_maj": ANY,
                 "structure_parente": None,
-                "lien_source": "https://itou.fr/matiere-nom-asseoir",
+                "lien_source": "https://emplois-de-linclusion.fr/matiere-nom-asseoir",
                 "horaires_ouverture": 'Mo-Fr 10:00-20:00 "sur rendez-vous"; PH off',
                 "accessibilite": "https://acceslibre.beta.gouv.fr/app/matiere-nom-asseoir/",
                 "labels_nationaux": [],
@@ -213,13 +213,13 @@ def test_list_structures_filter_by_source(api_client, structure_factory):
 
 @pytest.mark.with_token
 def test_list_sources(api_client, structure_factory):
-    structure_factory(source="itou")
+    structure_factory(source="emplois-de-linclusion")
     structure_factory(source="dora")
 
     url = "/api/v0/sources/"
     response = api_client.get(url)
 
-    assert response.json() == ["dora", "itou"]
+    assert response.json() == ["emplois-de-linclusion", "dora"]
 
 
 @pytest.mark.with_token
@@ -250,10 +250,10 @@ def test_list_structures_filter_by_departement_cog(api_client, structure_factory
                 "site_web": "http://aubert.net/",
                 "presentation_resume": "Espèce couler.",
                 "presentation_detail": "Or personne jambe.",
-                "source": "itou",
+                "source": "emplois-de-linclusion",
                 "date_maj": ANY,
                 "structure_parente": None,
-                "lien_source": "https://itou.fr/matiere-nom-asseoir",
+                "lien_source": "https://emplois-de-linclusion.fr/matiere-nom-asseoir",
                 "horaires_ouverture": 'Mo-Fr 10:00-20:00 "sur rendez-vous"; PH off',
                 "accessibilite": "https://acceslibre.beta.gouv.fr/app/matiere-nom-asseoir/",
                 "labels_nationaux": [],
@@ -297,10 +297,10 @@ def test_list_structures_filter_by_departement_slug(api_client, structure_factor
                 "site_web": "http://aubert.net/",
                 "presentation_resume": "Espèce couler.",
                 "presentation_detail": "Or personne jambe.",
-                "source": "itou",
+                "source": "emplois-de-linclusion",
                 "date_maj": ANY,
                 "structure_parente": None,
-                "lien_source": "https://itou.fr/matiere-nom-asseoir",
+                "lien_source": "https://emplois-de-linclusion.fr/matiere-nom-asseoir",
                 "horaires_ouverture": 'Mo-Fr 10:00-20:00 "sur rendez-vous"; PH off',
                 "accessibilite": "https://acceslibre.beta.gouv.fr/app/matiere-nom-asseoir/",
                 "labels_nationaux": [],
@@ -345,10 +345,10 @@ def test_list_structures_filter_by_code_postal(api_client, structure_factory):
                 "site_web": "http://www.lacombe.com/",
                 "presentation_resume": "Signer possible.",
                 "presentation_detail": "Revenir honte avis ensemble.",
-                "source": "itou",
+                "source": "emplois-de-linclusion",
                 "date_maj": ANY,
                 "structure_parente": None,
-                "lien_source": "https://itou.fr/matiere-nom-asseoir",
+                "lien_source": "https://emplois-de-linclusion.fr/matiere-nom-asseoir",
                 "horaires_ouverture": 'Mo-Fr 10:00-20:00 "sur rendez-vous"; PH off',
                 "accessibilite": "https://acceslibre.beta.gouv.fr/app/matiere-nom-asseoir/",
                 "labels_nationaux": [],
@@ -406,10 +406,10 @@ def test_list_structures_filter_by_thematique(api_client, structure_factory):
                 "site_web": "http://aubert.net/",
                 "presentation_resume": "Espèce couler.",
                 "presentation_detail": "Or personne jambe.",
-                "source": "itou",
+                "source": "emplois-de-linclusion",
                 "date_maj": ANY,
                 "structure_parente": None,
-                "lien_source": "https://itou.fr/matiere-nom-asseoir",
+                "lien_source": "https://emplois-de-linclusion.fr/matiere-nom-asseoir",
                 "horaires_ouverture": 'Mo-Fr 10:00-20:00 "sur rendez-vous"; PH off',
                 "accessibilite": "https://acceslibre.beta.gouv.fr/app/matiere-nom-asseoir/",
                 "labels_nationaux": [],
@@ -430,7 +430,7 @@ def test_list_structures_filter_by_thematique(api_client, structure_factory):
 
 @pytest.mark.with_token
 def test_list_structures_filter_by_source_and_id(api_client, structure_factory):
-    structure_factory(source="itou", id="foo")
+    structure_factory(source="emplois-de-linclusion", id="foo")
     structure_factory(source="dora", id="foo")
     structure_factory(source="dora", id="bar")
 
