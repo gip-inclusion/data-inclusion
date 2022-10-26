@@ -6,7 +6,7 @@
 #
 alembic==1.8.1
     # via data-inclusion-api (setup.py)
-anyio==3.6.1
+anyio==3.6.2
     # via
     #   starlette
     #   watchfiles
@@ -28,15 +28,15 @@ ecdsa==0.18.0
     # via python-jose
 email-validator==1.3.0
     # via pydantic
-faker==15.0.0
+faker==15.1.1
     # via data-inclusion-api (setup.py)
-fastapi==0.85.0
+fastapi==0.85.1
     # via
     #   data-inclusion-api (setup.py)
     #   fastapi-pagination
 fastapi-pagination==0.10.0
     # via data-inclusion-api (setup.py)
-greenlet==1.1.3
+greenlet==1.1.3.post0
     # via sqlalchemy
 gunicorn==20.1.0
     # via data-inclusion-api (setup.py)
@@ -53,11 +53,11 @@ mako==1.2.3
     # via alembic
 markupsafe==2.1.1
     # via mako
-numpy==1.23.3
+numpy==1.23.4
     # via pandas
-pandas==1.5.0
+pandas==1.5.1
     # via data-inclusion-api (setup.py)
-psycopg2==2.9.3
+psycopg2==2.9.5
     # via data-inclusion-api (setup.py)
 pyasn1==0.4.8
     # via
@@ -80,7 +80,7 @@ python-dotenv==0.21.0
     #   uvicorn
 python-jose==3.3.0
     # via data-inclusion-api (setup.py)
-pytz==2022.4
+pytz==2022.5
     # via pandas
 pyyaml==6.0
     # via uvicorn
@@ -94,23 +94,23 @@ six==1.16.0
     #   python-dateutil
 sniffio==1.3.0
     # via anyio
-sqlalchemy==1.4.41
+sqlalchemy==1.4.42
     # via
     #   alembic
     #   data-inclusion-api (setup.py)
 starlette==0.20.4
     # via fastapi
-typing-extensions==4.3.0
+typing-extensions==4.4.0
     # via pydantic
 urllib3==1.26.12
     # via requests
-uvicorn==0.18.3
+uvicorn==0.19.0
     # via data-inclusion-api (setup.py)
 uvloop==0.17.0
     # via uvicorn
-watchfiles==0.17.0
+watchfiles==0.18.0
     # via uvicorn
-websockets==10.3
+websockets==10.4
     # via uvicorn
 
 # The following packages are considered to be unsafe in a requirements file:
