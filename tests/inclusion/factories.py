@@ -84,3 +84,13 @@ class ServiceFactory(factory.Factory):
         getter=lambda l: list(map(lambda t: t.value, l)),
     )
     frais_autres = factory.Faker("text", max_nb_chars=20, locale="fr_FR")
+    profils = factory.Iterator(
+        pairwise(
+            [
+                schema.Profil.FEMMES,
+                schema.Profil.JEUNES_16_26,
+                schema.Profil.SENIORS_65,
+            ]
+        ),
+        getter=lambda l: list(map(lambda t: t.value, l)),
+    )

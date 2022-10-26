@@ -505,6 +505,7 @@ def test_list_services_all(api_client, service_factory):
                 "prise_rdv": "http://www.delorme.org/",
                 "frais": ["gratuit", "gratuit-sous-conditions"],
                 "frais_autres": "Parmi position ton.",
+                "profils": ["femmes", "jeunes-16-26"],
             }
         ],
         "total": 1,

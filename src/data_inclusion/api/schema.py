@@ -424,6 +424,20 @@ class Frais(str, Enum):
     PASS_NUMERIQUE = "pass-numerique"  # nosec: B105
 
 
+class Profil(str, Enum):
+    SENIORS_65 = "seniors-65"
+    FAMILLES_ENFANTS = "familles-enfants"
+    ADULTES = "adultes"
+    JEUNES_16_26 = "jeunes-16-26"
+    PUBLIC_LANGUES_ETRANGERES = "public-langues-etrangeres"
+    DEFICIENCE_VISUELLE = "deficience-visuelle"
+    SURDITE = "surdite"
+    HANDICAPS_PSYCHIQUES = "handicaps-psychiques"
+    HANDICAPS_MENTAUX = "handicaps-mentaux"
+    FEMMES = "femmes"
+    PERSONNES_EN_SITUATION_ILLETTRISME = "personnes-en-situation-illettrisme"
+
+
 class Service(BaseModel):
     id: str
     structure_id: str
@@ -435,6 +449,7 @@ class Service(BaseModel):
     prise_rdv: Optional[HttpUrl]
     frais: Optional[list[Frais]]
     frais_autres: Optional[str]
+    profils: Optional[list[Profil]]
 
     class Config:
         orm_mode = True

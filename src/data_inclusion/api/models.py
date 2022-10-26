@@ -65,3 +65,4 @@ class Service(Base):
     prise_rdv = sqla.Column(sqla.Text, nullable=True)
     frais = sqla.Column(ARRAY(sqla.Text), default=list)
     frais_autres = sqla.Column(sqla.Text, nullable=True)
+    profils = sqla.Column(ARRAY(sqla.Text), default=list)

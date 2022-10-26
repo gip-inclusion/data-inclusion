@@ -203,6 +203,7 @@ def list_services(
         models.Service.prise_rdv,
         models.Service.frais,
         models.Service.frais_autres,
+        models.Service.profils,
     ).join(models.Service.structure)
 
     return list(paginate(query))
