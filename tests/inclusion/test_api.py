@@ -147,7 +147,7 @@ def test_list_structures_filter_by_label(api_client, structure_factory):
                 "lien_source": "https://dora.fr/cacher-violent",
                 "horaires_ouverture": 'Mo-Fr 10:00-20:00 "sur rendez-vous"; PH off',
                 "accessibilite": "https://acceslibre.beta.gouv.fr/app/cacher-violent/",
-                "labels_nationaux": ["MOBIN", "FRANCE_SERVICE"],
+                "labels_nationaux": ["mobin", "france-service"],
                 "labels_autres": ["SudLabs", "Nièvre médiation numérique"],
                 "thematiques": ["choisir-un-metier", "creation-activite"],
             }
