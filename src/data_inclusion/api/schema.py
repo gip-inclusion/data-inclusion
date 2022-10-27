@@ -359,8 +359,8 @@ class Thematique(str, Enum):
     NUMERIQUE_S_EQUIPER_EN_MATERIEL_INFORMATIQUE = (
         "numerique-s-equiper-en-materiel-informatique"
     )
-    NUMERIQUE_CREER_ET_DEVELOPPER_MON_ENTREPRIES = (
-        "numerique-creer-et-developper-mon-entrepries"
+    NUMERIQUE_CREER_ET_DEVELOPPER_MON_ENTREPRISE = (
+        "numerique-creer-et-developper-mon-entreprise"
     )
     NUMERIQUE_CREER_AVEC_LE_NUMERIQUE = "numerique-creer-avec-le-numerique"
     NUMERIQUE_ACCOMPAGNER_LES_DEMARCHES_DE_SANTE = (
