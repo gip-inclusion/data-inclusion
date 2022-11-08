@@ -16,6 +16,7 @@ RUN apt-get update \
     binutils \
     build-essential \
     libpq-dev \
+    git \
     && apt-get autoremove --purge -y \
     && apt-get clean -y \
     && rm -rf /var/lib/apt/lists/*
