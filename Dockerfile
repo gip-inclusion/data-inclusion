@@ -28,7 +28,7 @@ RUN pip install --no-cache-dir --upgrade pip setuptools wheel
 RUN pip install --no-cache-dir -r requirements/test-requirements.txt
 
 COPY . .
-RUN pip install --no-cache-dir . -c requirements/test-requirements.txt
+RUN pip install --no-cache-dir .
 
 
 ########
