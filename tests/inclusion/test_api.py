@@ -135,7 +135,7 @@ def test_list_structures_filter_by_label(api_client, structure_factory):
                 "complement_adresse": None,
                 "longitude": 129.212387,
                 "latitude": -57.869491,
-                "typologie": "AFPA",
+                "typologie": "PE",
                 "telephone": "0102030405",
                 "courriel": "xrobin@example.org",
                 "site_web": "http://www.gonzalez.fr/",
@@ -185,7 +185,7 @@ def test_list_structures_filter_by_source(api_client, structure_factory):
                 "complement_adresse": None,
                 "longitude": 178.712016,
                 "latitude": 77.843518,
-                "typologie": "AI",
+                "typologie": "ACI",
                 "telephone": "0102030405",
                 "courriel": "raymondclemence@example.com",
                 "site_web": "http://aubert.net/",
@@ -244,7 +244,7 @@ def test_list_structures_filter_by_departement_cog(api_client, structure_factory
                 "complement_adresse": None,
                 "longitude": -129.925049,
                 "latitude": 17.058379,
-                "typologie": "Autre",
+                "typologie": "MUNI",
                 "telephone": "0102030405",
                 "courriel": "raymondclemence@example.com",
                 "site_web": "http://aubert.net/",
@@ -291,7 +291,7 @@ def test_list_structures_filter_by_departement_slug(api_client, structure_factor
                 "complement_adresse": None,
                 "longitude": -129.925049,
                 "latitude": 17.058379,
-                "typologie": "CAARUD",
+                "typologie": "ACI",
                 "telephone": "0102030405",
                 "courriel": "raymondclemence@example.com",
                 "site_web": "http://aubert.net/",
@@ -339,7 +339,7 @@ def test_list_structures_filter_by_code_postal(api_client, structure_factory):
                 "complement_adresse": None,
                 "longitude": 116.633888,
                 "latitude": 38.046336,
-                "typologie": "CAF",
+                "typologie": "PE",
                 "telephone": "0102030405",
                 "courriel": "qdijoux@example.org",
                 "site_web": "http://www.lacombe.com/",
@@ -400,7 +400,7 @@ def test_list_structures_filter_by_thematique(api_client, structure_factory):
                 "complement_adresse": None,
                 "longitude": 178.712016,
                 "latitude": 77.843518,
-                "typologie": "CAVA",
+                "typologie": "MUNI",
                 "telephone": "0102030405",
                 "courriel": "raymondclemence@example.com",
                 "site_web": "http://aubert.net/",
@@ -453,7 +453,7 @@ def test_list_structures_filter_by_source_and_id(api_client, structure_factory):
                 "complement_adresse": None,
                 "longitude": 129.212387,
                 "latitude": -57.869491,
-                "typologie": "CD",
+                "typologie": "PE",
                 "telephone": "0102030405",
                 "courriel": "xrobin@example.org",
                 "site_web": "http://www.gonzalez.fr/",
@@ -472,7 +472,7 @@ def test_list_structures_filter_by_source_and_id(api_client, structure_factory):
         ],
         "total": 1,
         "page": 1,
-        "size": 50,
+        "size": ANY,
     }
 
 
@@ -496,11 +496,11 @@ def test_list_services_all(api_client, service_factory):
         "items": [
             {
                 "id": "cacher-violent",
-                "source": "dora",
                 "structure_id": "matiere-nom-asseoir",
+                "source": "dora",
                 "nom": "Munoz",
                 "presentation_resume": "Puissant fine.",
-                "types": ["accompagnement", "accueil"],
+                "types": ["formation", "numerique"],
                 "thematiques": ["choisir-un-metier", "creation-activite"],
                 "prise_rdv": "http://www.delorme.org/",
                 "frais": ["gratuit", "gratuit-sous-conditions"],
@@ -510,5 +510,60 @@ def test_list_services_all(api_client, service_factory):
         ],
         "total": 1,
         "page": 1,
-        "size": 50,
+        "size": ANY,
     }
+
+
+@pytest.mark.with_token
+def test_list_labels_nationaux(api_client):
+    url = "/api/v0/doc/labels_nationaux/"
+
+    response = api_client.get(url)
+    resp_data = response.json()
+
+    assert response.status_code == 200
+    assert resp_data[0] == {"value": ANY, "label": ANY, "description": ANY}
+
+
+@pytest.mark.with_token
+def test_list_thematiques(api_client):
+    url = "/api/v0/doc/thematiques/"
+
+    response = api_client.get(url)
+    resp_data = response.json()
+
+    assert response.status_code == 200
+    assert resp_data[0] == {"value": ANY, "label": ANY, "description": ANY}
+
+
+@pytest.mark.with_token
+def test_list_typologies_services(api_client):
+    url = "/api/v0/doc/typologies_services/"
+
+    response = api_client.get(url)
+    resp_data = response.json()
+
+    assert response.status_code == 200
+    assert resp_data[0] == {"value": ANY, "label": ANY, "description": ANY}
+
+
+@pytest.mark.with_token
+def test_list_frais(api_client):
+    url = "/api/v0/doc/frais/"
+
+    response = api_client.get(url)
+    resp_data = response.json()
+
+    assert response.status_code == 200
+    assert resp_data[0] == {"value": ANY, "label": ANY, "description": ANY}
+
+
+@pytest.mark.with_token
+def test_list_profils(api_client):
+    url = "/api/v0/doc/profils/"
+
+    response = api_client.get(url)
+    resp_data = response.json()
+
+    assert response.status_code == 200
+    assert resp_data[0] == {"value": ANY, "label": ANY, "description": ANY}

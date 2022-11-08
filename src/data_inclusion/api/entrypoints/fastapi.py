@@ -55,6 +55,7 @@ def create_app() -> fastapi.FastAPI:
     )
 
     app.include_router(v0_api_router)
+    app.include_router(v0_doc_api_router)
 
     fastapi_pagination.add_pagination(app)
 
@@ -73,8 +74,10 @@ def authenticated(token: HTTPAuthorizationCredentials = fastapi.Depends(HTTPBear
 v0_api_router = fastapi.APIRouter(
     prefix="/api/v0",
     dependencies=[fastapi.Depends(authenticated)] if settings.TOKEN_ENABLED else [],
-    tags=["Structures"],
+    tags=["Données"],
 )
+
+v0_doc_api_router = fastapi.APIRouter(prefix="/api/v0/doc", tags=["Documentation"])
 
 
 def list_structures(
@@ -126,6 +129,7 @@ def list_structures(
 @v0_api_router.get(
     "/structures",
     response_model=fastapi_pagination.Page[schema.Structure],
+    summary="Lister les structures consolidées",
 )
 def list_structures_endpoint(
     source: Optional[str] = None,
@@ -179,12 +183,13 @@ def list_sources(
 @v0_api_router.get(
     "/sources",
     response_model=list[str],
+    summary="Lister les sources consolidées",
 )
 def list_sources_endpoint(
     db_session=fastapi.Depends(db.get_session),
 ):
     """
-    ## Lister les sources disponibles
+    ## Lister les sources consolidées
     """
     return list_sources(db_session)
 
@@ -212,6 +217,7 @@ def list_services(
 @v0_api_router.get(
     "/services",
     response_model=fastapi_pagination.Page[schema.Service],
+    summary="Liste les services consolidées",
 )
 def list_services_endpoint(
     db_session=fastapi.Depends(db.get_session),
@@ -227,6 +233,66 @@ def list_services_endpoint(
     `/api/v0/structures/?source=<source>&id=<id>`
     """
     return list_services(db_session)
+
+
+@v0_doc_api_router.get(
+    "/labels_nationaux",
+    response_model=list[schema.EnhancedEnumMember],
+    summary="Documente les labels nationaux",
+)
+def list_labels_nationaux_endpoint():
+    """
+    ## Documente les labels nationaux
+    """
+    return schema.LabelNational.as_dict_list()
+
+
+@v0_doc_api_router.get(
+    "/thematiques",
+    response_model=list[schema.EnhancedEnumMember],
+    summary="Documente les thématiques",
+)
+def list_thematiques_endpoint():
+    """
+    ## Documente les thématiques
+    """
+    return schema.Thematique.as_dict_list()
+
+
+@v0_doc_api_router.get(
+    "/typologies_services",
+    response_model=list[schema.EnhancedEnumMember],
+    summary="Documente les typologies de services",
+)
+def list_typologies_services_endpoint():
+    """
+    ## Documente les typologies de services
+    """
+    return schema.TypologieService.as_dict_list()
+
+
+@v0_doc_api_router.get(
+    "/frais",
+    response_model=list[schema.EnhancedEnumMember],
+    summary="Documente les frais",
+)
+def list_frais_endpoint():
+    """
+    ## Documente les frais
+    """
+    return schema.Frais.as_dict_list()
+
+
+@v0_doc_api_router.get(
+    "/profils",
+    response_model=list[schema.EnhancedEnumMember],
+    summary="Documente les profils de publics",
+)
+def list_profils_endpoint():
+    """
+    ## Documente les profils de publics
+    """
+    return schema.Profil.as_dict_list()
 
 
 app = create_app()

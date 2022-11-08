@@ -30,7 +30,13 @@ class StructureFactory(factory.Factory):
     adresse = factory.Faker("street_address", locale="fr_FR")
     longitude = factory.Faker("longitude")
     latitude = factory.Faker("latitude")
-    typologie = factory.Iterator(schema.Typologie)
+    typologie = factory.Iterator(
+        [
+            schema.Typologie.ACI,
+            schema.Typologie.MUNI,
+            schema.Typologie.PE,
+        ]
+    )
     telephone = "0102030405"
     courriel = factory.Faker("email", locale="fr_FR")
     site_web = factory.Faker("url", locale="fr_FR")
@@ -65,7 +71,12 @@ class ServiceFactory(factory.Factory):
     nom = factory.Faker("company", locale="fr_FR")
     presentation_resume = factory.Faker("text", max_nb_chars=20, locale="fr_FR")
     types = factory.Iterator(
-        pairwise(schema.TypologieService),
+        pairwise(
+            [
+                schema.TypologieService.FORMATION,
+                schema.TypologieService.NUMÉRIQUE,
+            ]
+        ),
         getter=lambda l: list(map(lambda t: t.value, l)),
     )
     thematiques = factory.Iterator(
