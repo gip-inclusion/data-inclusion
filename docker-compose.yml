@@ -13,7 +13,7 @@ services:
     build: .
     depends_on:
       - db
-    restart: always
+    restart: on-failure
     ports:
       - ${API_PORT:-8000}:8000
     environment:
