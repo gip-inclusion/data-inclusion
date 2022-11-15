@@ -182,7 +182,7 @@ class Structure(BaseModel):
     presentation_detail: Optional[str]
     source: str
     date_maj: date | datetime
-    structure_parente: Optional[str]
+    antenne: bool = False
     lien_source: Optional[HttpUrl]
     horaires_ouverture: Optional[str]
     accessibilite: Optional[HttpUrl]

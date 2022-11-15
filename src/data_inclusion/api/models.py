@@ -39,7 +39,7 @@ class Structure(Base):
     presentation_detail = sqla.Column(sqla.Text, nullable=True)
     source = sqla.Column(sqla.Text, nullable=True)
     date_maj = sqla.Column(sqla.DateTime(timezone=True), nullable=True)
-    structure_parente = sqla.Column(sqla.Text, nullable=True)
+    antenne = sqla.Column(sqla.Boolean, default=False)
     lien_source = sqla.Column(sqla.Text, nullable=True)
     horaires_ouverture = sqla.Column(sqla.Text, nullable=True)
     accessibilite = sqla.Column(sqla.Text, nullable=True)

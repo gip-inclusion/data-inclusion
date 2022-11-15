@@ -25,10 +25,7 @@ setup(
         "requests",
         "sqlalchemy",
         "uvicorn[standard]",
-        (
-            "data-inclusion-schema"
-            "@git+https://github.com/betagouv/data-inclusion-schema.git@v0.4.0"
-        ),
+        "data-inclusion-schema==0.5.0",
     ],
     extras_require={
         "test": [
