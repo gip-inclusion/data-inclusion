@@ -516,7 +516,7 @@ def test_list_services_all(api_client, service_factory):
 
 @pytest.mark.with_token
 def test_list_labels_nationaux(api_client):
-    url = "/api/v0/doc/labels_nationaux/"
+    url = "/api/v0/doc/labels-nationaux/"
 
     response = api_client.get(url)
     resp_data = response.json()
@@ -538,7 +538,7 @@ def test_list_thematiques(api_client):
 
 @pytest.mark.with_token
 def test_list_typologies_services(api_client):
-    url = "/api/v0/doc/typologies_services/"
+    url = "/api/v0/doc/typologies-services/"
 
     response = api_client.get(url)
     resp_data = response.json()
@@ -571,7 +571,7 @@ def test_list_profils(api_client):
 
 @pytest.mark.with_token
 def test_list_typologies_structures(api_client):
-    url = "/api/v0/doc/typologies_structures/"
+    url = "/api/v0/doc/typologies-structures/"
 
     response = api_client.get(url)
     resp_data = response.json()

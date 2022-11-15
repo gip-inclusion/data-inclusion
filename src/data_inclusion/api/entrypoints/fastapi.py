@@ -236,7 +236,7 @@ def list_services_endpoint(
 
 
 @v0_doc_api_router.get(
-    "/labels_nationaux",
+    "/labels-nationaux",
     response_model=list[schema.EnhancedEnumMember],
     summary="Documente les labels nationaux",
 )
@@ -260,7 +260,7 @@ def list_thematiques_endpoint():
 
 
 @v0_doc_api_router.get(
-    "/typologies_services",
+    "/typologies-services",
     response_model=list[schema.EnhancedEnumMember],
     summary="Documente les typologies de services",
 )
@@ -296,7 +296,7 @@ def list_profils_endpoint():
 
 
 @v0_doc_api_router.get(
-    "/typologies_structures",
+    "/typologies-structures",
     response_model=list[schema.EnhancedEnumMember],
     summary="Documente les typologies de structures",
 )
