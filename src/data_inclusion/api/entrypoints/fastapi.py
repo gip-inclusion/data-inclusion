@@ -295,4 +295,16 @@ def list_profils_endpoint():
     return schema.Profil.as_dict_list()
 
 
+@v0_doc_api_router.get(
+    "/typologies_structures",
+    response_model=list[schema.EnhancedEnumMember],
+    summary="Documente les typologies de structures",
+)
+def list_typologies_structures_endpoint():
+    """
+    ## Documente les typologies de structures
+    """
+    return schema.Typologie.as_dict_list()
+
+
 app = create_app()

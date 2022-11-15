@@ -567,3 +567,14 @@ def test_list_profils(api_client):
 
     assert response.status_code == 200
     assert resp_data[0] == {"value": ANY, "label": ANY, "description": ANY}
+
+
+@pytest.mark.with_token
+def test_list_typologies_structures(api_client):
+    url = "/api/v0/doc/typologies_structures/"
+
+    response = api_client.get(url)
+    resp_data = response.json()
+
+    assert response.status_code == 200
+    assert resp_data[0] == {"value": ANY, "label": ANY, "description": ANY}

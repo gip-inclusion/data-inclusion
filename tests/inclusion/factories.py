@@ -35,7 +35,8 @@ class StructureFactory(factory.Factory):
             schema.Typologie.ACI,
             schema.Typologie.MUNI,
             schema.Typologie.PE,
-        ]
+        ],
+        getter=lambda t: t.value,
     )
     telephone = "0102030405"
     courriel = factory.Faker("email", locale="fr_FR")
