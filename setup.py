@@ -17,6 +17,7 @@ setup(
         "fastapi",
         "fastapi-pagination",
         "gunicorn",
+        "httpx",
         "psycopg2",
         "pydantic[email]",
         "python-dotenv",
