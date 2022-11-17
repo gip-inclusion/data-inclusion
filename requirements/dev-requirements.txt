@@ -27,7 +27,7 @@ click==8.1.3
     #   uvicorn
 cryptography==38.0.1
     # via python-jose
-data-inclusion-schema @ git+https://github.com/betagouv/data-inclusion-schema.git@v0.4.0
+data-inclusion-schema==0.5.0
     # via data-inclusion-api (setup.py)
 distlib==0.3.6
     # via virtualenv
