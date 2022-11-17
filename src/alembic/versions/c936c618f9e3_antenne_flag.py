@@ -31,6 +31,8 @@ def upgrade() -> None:
 
     parent_structure_tbl = orm.aliased(structure_tbl)
 
+    op.execute(structure_tbl.update().values(antenne=False))
+
     op.execute(
         structure_tbl.update()
         .values(
