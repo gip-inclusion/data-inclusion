@@ -67,3 +67,14 @@ tox
 ## Contribution
 
 Issues and PRs are welcome.
+
+## Updating the requirements
+
+```bash
+# 1. edit the requirements in setup.py
+
+# 2. compile dependencies
+pip-compile --output-file=requirements/requirements.txt
+pip-compile --extra=dev --output-file=requirements/dev-requirements.txt
+pip-compile --extra=test --output-file=requirements/test-requirements.txt
+```
