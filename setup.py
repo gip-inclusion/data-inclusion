@@ -26,7 +26,7 @@ setup(
         "requests",
         "sqlalchemy",
         "uvicorn[standard]",
-        "data-inclusion-schema==0.5.0",
+        "data-inclusion-schema==0.6.0",
     ],
     extras_require={
         "test": [
