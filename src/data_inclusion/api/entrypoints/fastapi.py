@@ -197,19 +197,27 @@ def list_sources_endpoint(
 def list_services(
     db_session: orm.Session,
 ):
-    query = db_session.query(
-        models.Structure.source,
-        models.Structure.id.label("structure_id"),
-        models.Service.id,
-        models.Service.nom,
-        models.Service.presentation_resume,
-        models.Service.types,
-        models.Service.thematiques,
-        models.Service.prise_rdv,
-        models.Service.frais,
-        models.Service.frais_autres,
-        models.Service.profils,
-    ).join(models.Service.structure)
+    query = (
+        db_session.query(
+            models.Structure.source,
+            models.Structure.id.label("structure_id"),
+            models.Service.id,
+            models.Service.nom,
+            models.Service.presentation_resume,
+            models.Service.types,
+            models.Service.thematiques,
+            models.Service.prise_rdv,
+            models.Service.frais,
+            models.Service.frais_autres,
+            models.Service.profils,
+        )
+        .join(models.Service)
+        .order_by(
+            models.Structure.created_at,
+            models.Structure.source,
+            models.Structure.id,
+        )
+    )
 
     return list(paginate(query))
 
