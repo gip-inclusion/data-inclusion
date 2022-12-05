@@ -123,6 +123,12 @@ def list_structures(
     if thematique is not None:
         query = query.filter(models.Structure.thematiques.contains([thematique.value]))
 
+    query = query.order_by(
+        models.Structure.created_at,
+        models.Structure.source,
+        models.Structure.id,
+    )
+
     return list(paginate(query))
 
 
@@ -216,6 +222,7 @@ def list_services(
             models.Structure.created_at,
             models.Structure.source,
             models.Structure.id,
+            models.Service.id,
         )
     )
 
