@@ -24,6 +24,7 @@ setup(
         "python-jose[cryptography]",
         "pytz",
         "requests",
+        "sentry-sdk[fastapi]",
         "sqlalchemy",
         "uvicorn[standard]",
         "data-inclusion-schema==0.6.0",

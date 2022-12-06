@@ -10,3 +10,5 @@ SECRET_KEY = os.environ["SECRET_KEY"]
 ACCESS_TOKEN_LIFETIME = timedelta(weeks=24)
 CORS_ALLOWED_ORIGINS = ["*"]
 TOKEN_ENABLED = os.environ.get("TOKEN_ENABLED") != "False"
+SENTRY_DSN = os.environ.get("SENTRY_DSN")
+ENV = os.environ.get("ENV", "prod")

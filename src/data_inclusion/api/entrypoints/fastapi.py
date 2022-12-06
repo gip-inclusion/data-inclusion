@@ -1,6 +1,7 @@
 import logging
 from typing import Optional
 
+import sentry_sdk
 from sqlalchemy import orm
 
 import fastapi
@@ -35,6 +36,13 @@ ou sur la page [schema.gouv](https://schema.data.gouv.fr/betagouv/data-inclusion
 
 
 def create_app() -> fastapi.FastAPI:
+    # sentry must be initialized before app
+    sentry_sdk.init(
+        dsn=settings.SENTRY_DSN,
+        traces_sample_rate=0,
+        environment=settings.ENV,
+    )
+
     app = fastapi.FastAPI(
         title="data.inclusion API",
         description=description,
