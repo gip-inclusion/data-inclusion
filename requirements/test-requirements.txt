@@ -18,6 +18,7 @@ certifi==2022.9.24
     #   httpcore
     #   httpx
     #   requests
+    #   sentry-sdk
 cffi==1.15.1
     # via cryptography
 charset-normalizer==2.1.1
@@ -48,6 +49,7 @@ fastapi==0.87.0
     # via
     #   data-inclusion-api (setup.py)
     #   fastapi-pagination
+    #   sentry-sdk
 fastapi-pagination==0.10.0
     # via data-inclusion-api (setup.py)
 greenlet==2.0.1
@@ -121,6 +123,8 @@ rfc3986[idna2008]==1.5.0
     # via httpx
 rsa==4.9
     # via python-jose
+sentry-sdk[fastapi]==1.11.1
+    # via data-inclusion-api (setup.py)
 six==1.16.0
     # via
     #   ecdsa
@@ -141,7 +145,9 @@ tomli==2.0.1
 typing-extensions==4.4.0
     # via pydantic
 urllib3==1.26.12
-    # via requests
+    # via
+    #   requests
+    #   sentry-sdk
 uvicorn[standard]==0.19.0
     # via data-inclusion-api (setup.py)
 uvloop==0.17.0
