@@ -520,9 +520,11 @@ def test_list_labels_nationaux(api_client):
     url = "/api/v0/doc/labels-nationaux/"
 
     response = api_client.get(url)
-    resp_data = response.json()
 
     assert response.status_code == 200
+
+    resp_data = response.json()
+
     assert resp_data[0] == {"value": ANY, "label": ANY, "description": ANY}
 
 
@@ -531,9 +533,11 @@ def test_list_thematiques(api_client):
     url = "/api/v0/doc/thematiques/"
 
     response = api_client.get(url)
-    resp_data = response.json()
 
     assert response.status_code == 200
+
+    resp_data = response.json()
+
     assert resp_data[0] == {"value": ANY, "label": ANY, "description": ANY}
 
 
@@ -542,9 +546,11 @@ def test_list_typologies_services(api_client):
     url = "/api/v0/doc/typologies-services/"
 
     response = api_client.get(url)
-    resp_data = response.json()
 
     assert response.status_code == 200
+
+    resp_data = response.json()
+
     assert resp_data[0] == {"value": ANY, "label": ANY, "description": ANY}
 
 
@@ -553,9 +559,11 @@ def test_list_frais(api_client):
     url = "/api/v0/doc/frais/"
 
     response = api_client.get(url)
-    resp_data = response.json()
 
     assert response.status_code == 200
+
+    resp_data = response.json()
+
     assert resp_data[0] == {"value": ANY, "label": ANY, "description": ANY}
 
 
@@ -564,9 +572,11 @@ def test_list_profils(api_client):
     url = "/api/v0/doc/profils/"
 
     response = api_client.get(url)
-    resp_data = response.json()
 
     assert response.status_code == 200
+
+    resp_data = response.json()
+
     assert resp_data[0] == {"value": ANY, "label": ANY, "description": ANY}
 
 
@@ -575,9 +585,11 @@ def test_list_typologies_structures(api_client):
     url = "/api/v0/doc/typologies-structures/"
 
     response = api_client.get(url)
-    resp_data = response.json()
 
     assert response.status_code == 200
+
+    resp_data = response.json()
+
     assert resp_data[0] == {"value": ANY, "label": ANY, "description": ANY}
 
 
@@ -588,9 +600,11 @@ def test_list_structures_null_siret(api_client, structure_factory):
     url = "/api/v0/structures/"
 
     response = api_client.get(url)
-    resp_data = response.json()
 
     assert response.status_code == 200
+
+    resp_data = response.json()
+
     assert resp_data["items"][0]["id"] == structure.id
     assert resp_data["items"][0]["siret"] is None
 
@@ -602,9 +616,11 @@ def test_list_structures_null_code_insee(api_client, structure_factory):
     url = "/api/v0/structures/"
 
     response = api_client.get(url)
-    resp_data = response.json()
 
     assert response.status_code == 200
+
+    resp_data = response.json()
+
     assert resp_data["items"][0]["id"] == structure.id
     assert resp_data["items"][0]["code_insee"] is None
 
@@ -619,9 +635,11 @@ def test_list_structures_null_code_insee_filter_by_departement_cog(
     url = "/api/v0/structures/"
 
     response = api_client.get(url, params={"departement": "2A"})
-    resp_data = response.json()
 
     assert response.status_code == 200
+
+    resp_data = response.json()
+
     assert len(resp_data["items"]) == 1
     assert resp_data["items"][0]["id"] == structure.id
 
@@ -636,9 +654,11 @@ def test_list_structures_null_code_insee_filter_by_departement_slug(
     url = "/api/v0/structures/"
 
     response = api_client.get(url, params={"departement_slug": "cotes-d-armor"})
-    resp_data = response.json()
 
     assert response.status_code == 200
+
+    resp_data = response.json()
+
     assert len(resp_data["items"]) == 1
     assert resp_data["items"][0]["id"] == structure.id
 
