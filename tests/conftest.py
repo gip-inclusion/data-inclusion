@@ -53,16 +53,16 @@ def test_database_url():
     # Connect to the db and creates a new test database
     with default_db_engine.connect() as default_db_conn:
         default_db_conn.execute(
-            f"DROP DATABASE IF EXISTS {test_database_url.database};"
+            f'DROP DATABASE IF EXISTS "{test_database_url.database}";'
         )
-        default_db_conn.execute(f"CREATE DATABASE {test_database_url.database};")
+        default_db_conn.execute(f'CREATE DATABASE "{test_database_url.database}";')
 
     yield test_database_url
 
     # Teardown test database
     with default_db_engine.connect() as default_db_conn:
         default_db_conn.execute(
-            f"DROP DATABASE IF EXISTS {test_database_url.database} WITH (FORCE);"
+            f'DROP DATABASE IF EXISTS "{test_database_url.database}" WITH (FORCE);'
         )
 
 
