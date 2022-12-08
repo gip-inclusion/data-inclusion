@@ -578,3 +578,65 @@ def test_list_typologies_structures(api_client):
 
     assert response.status_code == 200
     assert resp_data[0] == {"value": ANY, "label": ANY, "description": ANY}
+
+
+@pytest.mark.with_token
+def test_list_structures_null_siret(api_client, structure_factory):
+    structure = structure_factory(siret=None)
+
+    url = "/api/v0/structures/"
+
+    response = api_client.get(url)
+    resp_data = response.json()
+
+    assert response.status_code == 200
+    assert resp_data["items"][0]["id"] == structure.id
+    assert resp_data["items"][0]["siret"] is None
+
+
+@pytest.mark.with_token
+def test_list_structures_null_code_insee(api_client, structure_factory):
+    structure = structure_factory(code_insee=None)
+
+    url = "/api/v0/structures/"
+
+    response = api_client.get(url)
+    resp_data = response.json()
+
+    assert response.status_code == 200
+    assert resp_data["items"][0]["id"] == structure.id
+    assert resp_data["items"][0]["code_insee"] is None
+
+
+@pytest.mark.with_token
+def test_list_structures_null_code_insee_filter_by_departement_cog(
+    api_client, structure_factory
+):
+    structure_factory(code_insee=None)
+    structure = structure_factory(code_insee="2A247")
+
+    url = "/api/v0/structures/"
+
+    response = api_client.get(url, params={"departement": "2A"})
+    resp_data = response.json()
+
+    assert response.status_code == 200
+    assert len(resp_data["items"]) == 1
+    assert resp_data["items"][0]["id"] == structure.id
+
+
+@pytest.mark.with_token
+def test_list_structures_null_code_insee_filter_by_departement_slug(
+    api_client, structure_factory
+):
+    structure_factory(code_insee=None)
+    structure = structure_factory(code_insee="22247")
+
+    url = "/api/v0/structures/"
+
+    response = api_client.get(url, params={"departement_slug": "cotes-d-armor"})
+    resp_data = response.json()
+
+    assert response.status_code == 200
+    assert len(resp_data["items"]) == 1
+    assert resp_data["items"][0]["id"] == structure.id
