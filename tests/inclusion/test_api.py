@@ -1,3 +1,4 @@
+from datetime import datetime, timedelta
 from unittest.mock import ANY
 
 import pytest
@@ -640,3 +641,27 @@ def test_list_structures_null_code_insee_filter_by_departement_slug(
     assert response.status_code == 200
     assert len(resp_data["items"]) == 1
     assert resp_data["items"][0]["id"] == structure.id
+
+
+@pytest.mark.with_token
+def test_list_structures_order(api_client, structure_factory):
+    today_dt = datetime.now()
+    yesterday_dt = datetime.now() - timedelta(days=1)
+
+    structure_1 = structure_factory(created_at=yesterday_dt, source="alpha", id="2")
+    structure_2 = structure_factory(created_at=yesterday_dt, source="alpha", id="3")
+    structure_3 = structure_factory(created_at=yesterday_dt, source="beta", id="1")
+    structure_4 = structure_factory(created_at=today_dt, source="alpha", id="1")
+
+    url = "/api/v0/structures/"
+
+    response = api_client.get(url)
+
+    assert response.status_code == 200
+
+    resp_data = response.json()
+
+    assert resp_data["items"][0]["id"] == structure_1.id
+    assert resp_data["items"][1]["id"] == structure_2.id
+    assert resp_data["items"][2]["id"] == structure_3.id
+    assert resp_data["items"][3]["id"] == structure_4.id
