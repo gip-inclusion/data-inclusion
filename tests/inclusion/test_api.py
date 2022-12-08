@@ -103,7 +103,7 @@ def test_list_structures_filter_by_typology(api_client, structure_factory):
     }
 
     response = api_client.get(url, params={"typologie": schema.Typologie.MUNI.value})
-    assert response.json() == {"items": [], "total": 0, "page": 1, "size": 50}
+    assert response.json() == {"items": [], "total": 0, "page": 1, "size": ANY}
 
 
 @pytest.mark.with_token
@@ -160,7 +160,7 @@ def test_list_structures_filter_by_label(api_client, structure_factory):
     response = api_client.get(
         url, params={"label_national": schema.LabelNational.AFPA.value}
     )
-    assert response.json() == {"items": [], "total": 0, "page": 1, "size": 50}
+    assert response.json() == {"items": [], "total": 0, "page": 1, "size": ANY}
 
 
 @pytest.mark.with_token
@@ -208,7 +208,7 @@ def test_list_structures_filter_by_source(api_client, structure_factory):
     }
 
     response = api_client.get(url, params={"source": "siao"})
-    assert response.json() == {"items": [], "total": 0, "page": 1, "size": 50}
+    assert response.json() == {"items": [], "total": 0, "page": 1, "size": ANY}
 
 
 @pytest.mark.with_token
@@ -266,7 +266,7 @@ def test_list_structures_filter_by_departement_cog(api_client, structure_factory
         "size": ANY,
     }
     response = api_client.get(url, params={"departement": "62"})
-    assert response.json() == {"items": [], "total": 0, "page": 1, "size": 50}
+    assert response.json() == {"items": [], "total": 0, "page": 1, "size": ANY}
 
 
 @pytest.mark.with_token
@@ -314,7 +314,7 @@ def test_list_structures_filter_by_departement_slug(api_client, structure_factor
     }
 
     response = api_client.get(url, params={"departement_slug": "pas-de-calais"})
-    assert response.json() == {"items": [], "total": 0, "page": 1, "size": 50}
+    assert response.json() == {"items": [], "total": 0, "page": 1, "size": ANY}
 
 
 @pytest.mark.with_token
@@ -362,7 +362,7 @@ def test_list_structures_filter_by_code_postal(api_client, structure_factory):
     }
 
     response = api_client.get(url, params={"code_postal": "59512"})
-    assert response.json() == {"items": [], "total": 0, "page": 1, "size": 50}
+    assert response.json() == {"items": [], "total": 0, "page": 1, "size": ANY}
 
 
 @pytest.mark.with_token
@@ -425,7 +425,7 @@ def test_list_structures_filter_by_thematique(api_client, structure_factory):
     response = api_client.get(
         url, params={"thematique": schema.Thematique.PREPARER_SA_CANDIDATURE.value}
     )
-    assert response.json() == {"items": [], "total": 0, "page": 1, "size": 50}
+    assert response.json() == {"items": [], "total": 0, "page": 1, "size": ANY}
 
 
 @pytest.mark.with_token

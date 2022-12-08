@@ -12,6 +12,7 @@ from fastapi_pagination.ext.sqlalchemy import paginate
 
 from data_inclusion.api import models, schema, settings
 from data_inclusion.api.core import db, jwt
+from data_inclusion.api.utils import pagination
 
 logger = logging.getLogger(__name__)
 
@@ -142,7 +143,7 @@ def list_structures(
 
 @v0_api_router.get(
     "/structures",
-    response_model=fastapi_pagination.Page[schema.Structure],
+    response_model=pagination.Page[schema.Structure],
     summary="Lister les structures consolidées",
 )
 def list_structures_endpoint(
@@ -239,7 +240,7 @@ def list_services(
 
 @v0_api_router.get(
     "/services",
-    response_model=fastapi_pagination.Page[schema.Service],
+    response_model=pagination.Page[schema.Service],
     summary="Liste les services consolidées",
 )
 def list_services_endpoint(
