@@ -6,12 +6,14 @@ from sqlalchemy import orm
 
 import fastapi
 import fastapi_pagination
+from fastapi import middleware, requests
 from fastapi.middleware import cors
 from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
 from fastapi_pagination.ext.sqlalchemy import paginate
 
 from data_inclusion.api import models, schema, settings
 from data_inclusion.api.core import db, jwt
+from data_inclusion.api.core.request.middleware import RequestMiddleware
 from data_inclusion.api.utils import pagination
 
 logger = logging.getLogger(__name__)
@@ -53,14 +55,16 @@ def create_app() -> fastapi.FastAPI:
             "email": "data.inclusion@beta.gouv.fr",
             "url": "https://www.data.inclusion.beta.gouv.fr/",
         },
-    )
-
-    app.add_middleware(
-        cors.CORSMiddleware,
-        allow_origins=settings.CORS_ALLOWED_ORIGINS,
-        allow_credentials=True,
-        allow_methods=["*"],
-        allow_headers=["*"],
+        middleware=[
+            middleware.Middleware(
+                cors.CORSMiddleware,
+                allow_origins=settings.CORS_ALLOWED_ORIGINS,
+                allow_credentials=True,
+                allow_methods=["*"],
+                allow_headers=["*"],
+            ),
+            middleware.Middleware(RequestMiddleware),
+        ],
     )
 
     app.include_router(v0_api_router)
@@ -71,13 +75,20 @@ def create_app() -> fastapi.FastAPI:
     return app
 
 
-def authenticated(token: HTTPAuthorizationCredentials = fastapi.Depends(HTTPBearer())):
+def authenticated(
+    request: requests.Request,
+    token: HTTPAuthorizationCredentials = fastapi.Depends(HTTPBearer()),
+):
     payload = jwt.verify_token(token.credentials)
     if payload is None:
         raise fastapi.HTTPException(
             status_code=fastapi.status.HTTP_403_FORBIDDEN,
             detail="Not authenticated",
         )
+
+    # attach username to the request
+    # TODO: https://www.starlette.io/authentication/ instead
+    request.scope["user"] = payload["sub"]
 
 
 v0_api_router = fastapi.APIRouter(

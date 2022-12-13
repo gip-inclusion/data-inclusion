@@ -94,7 +94,8 @@ def db_session(db_engine):
 
     connection = db_engine.connect()
     connection.begin()
-    db_session = db.SessionLocal(bind=connection)
+    db.SessionLocal.configure(bind=connection)
+    db_session = db.SessionLocal()
     yield db_session
     db_session.rollback()
     connection.close()

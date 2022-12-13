@@ -15,7 +15,7 @@ class Base:
 
     @declared_attr
     def __tablename__(cls) -> str:
-        return cls.__name__.lower()
+        return f"api_{cls.__name__.lower()}"
 
 
 def init_db(engine=default_db_engine):
@@ -23,5 +23,8 @@ def init_db(engine=default_db_engine):
 
 
 def get_session():
-    with SessionLocal() as session:
+    session = SessionLocal()
+    try:
         yield session
+    finally:
+        session.close()
