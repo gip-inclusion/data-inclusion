@@ -88,7 +88,12 @@ def authenticated(
 
     # attach username to the request
     # TODO: https://www.starlette.io/authentication/ instead
-    request.scope["user"] = payload["sub"]
+    if "sub" in payload:
+        request.scope["user"] = payload["sub"]
+    elif "user_id" in payload:
+        # legacy token generated before the migration from django to fastapi
+        request.scope["user"] = payload["user_id"]
+        logger.warning("Deprecated token")
 
 
 v0_api_router = fastapi.APIRouter(
