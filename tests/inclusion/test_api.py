@@ -685,3 +685,20 @@ def test_list_structures_order(api_client, structure_factory):
     assert resp_data["items"][1]["id"] == structure_2.id
     assert resp_data["items"][2]["id"] == structure_3.id
     assert resp_data["items"][3]["id"] == structure_4.id
+
+
+@pytest.mark.with_token
+def test_list_services_filter_by_source(api_client, service_factory):
+    service_1 = service_factory(structure__source="emplois-de-linclusion")
+    service_factory(structure__source="dora")
+
+    url = "/api/v0/services/"
+    response = api_client.get(url, params={"source": "emplois-de-linclusion"})
+
+    assert response.status_code == 200
+
+    resp_data = response.json()
+
+    assert len(resp_data["items"]) == 1
+    assert resp_data["items"][0]["id"] == service_1.id
+    assert resp_data["items"][0]["source"] == service_1.structure.source
