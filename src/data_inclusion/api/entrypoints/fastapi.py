@@ -227,28 +227,30 @@ def list_sources_endpoint(
 
 def list_services(
     db_session: orm.Session,
+    source: Optional[str] = None,
 ):
-    query = (
-        db_session.query(
-            models.Structure.source,
-            models.Structure.id.label("structure_id"),
-            models.Service.id,
-            models.Service.nom,
-            models.Service.presentation_resume,
-            models.Service.types,
-            models.Service.thematiques,
-            models.Service.prise_rdv,
-            models.Service.frais,
-            models.Service.frais_autres,
-            models.Service.profils,
-        )
-        .join(models.Service)
-        .order_by(
-            models.Structure.created_at,
-            models.Structure.source,
-            models.Structure.id,
-            models.Service.id,
-        )
+    query = db_session.query(
+        models.Structure.source,
+        models.Structure.id.label("structure_id"),
+        models.Service.id,
+        models.Service.nom,
+        models.Service.presentation_resume,
+        models.Service.types,
+        models.Service.thematiques,
+        models.Service.prise_rdv,
+        models.Service.frais,
+        models.Service.frais_autres,
+        models.Service.profils,
+    ).join(models.Service)
+
+    if source is not None:
+        query = query.filter(models.Structure.source == source)
+
+    query = query.order_by(
+        models.Structure.created_at,
+        models.Structure.source,
+        models.Structure.id,
+        models.Service.id,
     )
 
     return list(paginate(query))
@@ -261,6 +263,7 @@ def list_services(
 )
 def list_services_endpoint(
     db_session=fastapi.Depends(db.get_session),
+    source: Optional[str] = None,
 ):
     """
     ## Liste les services consolidées par data.inclusion
@@ -272,7 +275,10 @@ def list_services_endpoint(
 
     `/api/v0/structures/?source=<source>&id=<id>`
     """
-    return list_services(db_session)
+    return list_services(
+        db_session,
+        source=source,
+    )
 
 
 @v0_doc_api_router.get(

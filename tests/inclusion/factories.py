@@ -68,6 +68,7 @@ class ServiceFactory(factory.Factory):
     class Meta:
         model = models.Service
 
+    structure = factory.SubFactory(StructureFactory)
     id = factory.Faker("slug", locale="fr_FR")
     nom = factory.Faker("company", locale="fr_FR")
     presentation_resume = factory.Faker("text", max_nb_chars=20, locale="fr_FR")
