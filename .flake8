@@ -1,6 +1,0 @@
-[flake8]
-max-line-length = 99
-max-doc-length = 88
-extend-exclude = .venv/ .github/ .vscode/
-per-file-ignores =
-    src/data_inclusion/api/schema.py:F722

@@ -1,19 +1,59 @@
 repos:
+  # api
   - repo: https://github.com/psf/black
     rev: 22.3.0
     hooks:
       - id: black
+        args: [--config=api/pyproject.toml]
+        files: ^api
   - repo: https://github.com/pycqa/isort
     rev: 5.10.1
     hooks:
       - id: isort
+        args: [--settings=api/pyproject.toml]
+        files: ^api
   - repo: https://gitlab.com/pycqa/flake8
     rev: 4.0.1
     hooks:
       - id: flake8
-        args: [--config=.flake8]
+        args: [--config=api/.flake8]
+        files: ^api
   - repo: https://github.com/pycqa/bandit
     rev: 1.7.4
     hooks:
       - id: bandit
-        exclude: ^tests/
+        exclude: ^api/tests/
+        files: ^api
+
+  # pipeline
+  - repo: https://github.com/psf/black
+    rev: 22.10.0
+    hooks:
+      - id: black
+        args: [--config=pipeline/pyproject.toml]
+        files: ^pipeline
+  - repo: https://github.com/pycqa/isort
+    rev: 5.10.1
+    hooks:
+      - id: isort
+        args: [--settings=pipeline/pyproject.toml]
+        files: ^pipeline
+  - repo: https://gitlab.com/pycqa/flake8
+    rev: 4.0.1
+    hooks:
+      - id: flake8
+        args: [--config=pipeline/.flake8]
+        files: ^pipeline
+  - repo: https://github.com/pycqa/bandit
+    rev: 1.7.4
+    hooks:
+      - id: bandit
+        exclude: ^pipeline/(tests|dags)/
+        files: ^pipeline
+  - repo: https://github.com/sqlfluff/sqlfluff
+    rev: 1.4.1
+    hooks:
+      - id: sqlfluff-lint
+        files: ^(pipeline/dags/sql)
+      - id: sqlfluff-fix
+        files: ^(pipeline/dags/sql)

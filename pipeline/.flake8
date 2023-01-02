@@ -1,0 +1,8 @@
+[flake8]
+max-line-length = 88
+max-doc-length = 88
+extend-exclude = .venv/ .vscode/
+extend-ignore = E203, W503
+per-file-ignores =
+    pipeline/src/data_inclusion/schema/models.py:F722
+    pipeline/tests/unit/test_*.py:E501

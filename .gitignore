@@ -3,15 +3,9 @@
 __pycache__/
 *.egg-info
 
-# Django
-db.sqlite3
-
 # VSCode
 .vscode/
 !.vscode/settings.json
-
-# Idea
-.idea/
 
 # Virtualenv
 .venv/
@@ -21,3 +15,9 @@ venv/
 *.env
 !.template.env
 .tmp/
+.tox/
+.pytest_cache
+airflow/
+*.DS_Store
+*.drawio.bkp
+data/

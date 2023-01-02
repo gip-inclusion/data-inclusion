@@ -1,0 +1,29 @@
+name: pipeline
+
+defaults:
+  run:
+    working-directory: pipeline
+
+on:
+  push:
+    branches:
+      - "main"
+    paths:
+      - "pipeline/**"
+  pull_request:
+    branches:
+      - "main"
+    paths:
+      - "pipeline/**"
+
+jobs:
+  tests:
+    runs-on: ubuntu-20.04
+
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-python@v4
+        with:
+          python-version: '3.10' 
+      - run: pip install tox
+      - run: tox -- -vv

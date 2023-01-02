@@ -1,0 +1,21 @@
+-c constraints.txt
+
+apache-airflow[amazon,postgres]==2.4.2
+
+click
+GeoAlchemy2
+geopandas
+openpyxl
+pandas
+psycopg2
+pyairtable
+pydantic[email]
+pyproj
+requests
+SQLAlchemy
+tenacity
+tqdm
+urllib3
+xlsxwriter
+
+data-inclusion-schema==0.7.0
