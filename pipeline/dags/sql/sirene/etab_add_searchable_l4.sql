@@ -1,6 +1,9 @@
 BEGIN;
 
+CREATE EXTENSION IF NOT EXISTS pg_trgm;
+
 DROP TABLE IF EXISTS sirene_etablissement_searchable_l4;
+
 
 CREATE TABLE sirene_etablissement_searchable_l4 AS
 SELECT
