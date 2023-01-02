@@ -13,7 +13,7 @@ anyio==3.6.2
     #   watchfiles
 black==22.10.0
     # via data-inclusion-api (setup.py)
-certifi==2022.9.24
+certifi==2022.12.7
     # via
     #   httpcore
     #   httpx
