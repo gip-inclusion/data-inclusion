@@ -37,6 +37,9 @@ git clone git@github.com:betagouv/data-inclusion.git
 
 # Setup code quality tools
 pre-commit install
+
+# Open workspace in vscode
+code -n data-inclusion
 ```
 
 ## Contribution
