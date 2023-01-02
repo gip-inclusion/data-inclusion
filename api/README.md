@@ -9,7 +9,7 @@ Ce dépôt de code contient l'api de data.inclusion.
 
 
 * L'api est essentiellement en lecture seule.
-* La base de données est alimentée via une pipeline (voir ce [dépôt](https://github.com/betagouv/data-inclusion-scripts/)).
+* Les données exposées par l'api sont chargées via la pipeline de données.
 * L'api est basée sur le framework fastapi.
 
 ## [Usage](USAGE.md)

@@ -4,10 +4,6 @@ Ce dépôt contient des workflows (airflow) pour le traitement des données de l
 
 ### Pipeline
 
-![pipeline](./docs/img/data-inclusion-pipeline.jpg)
-
-## Architecture
-
-![architecture](./docs/img/architecture-data-inclusion.png)
+![pipeline](../docs/img/data-inclusion-pipeline.jpg)
 
 ## [Contribuer](CONTRIBUTING.md)
