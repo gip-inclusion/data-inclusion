@@ -1,0 +1,21 @@
+[build-system]
+build-backend = "setuptools.build_meta"
+requires = ["setuptools", "wheel"]
+
+[tool.isort]
+atomic = true
+combine_star = true
+ensure_newline_before_comments = true
+force_grid_wrap = 0
+include_trailing_comma = true
+indent = 4
+known_first_party = "data_inclusion"
+line_length = 88
+multi_line_output = 3
+profile = "black"
+sections = "FUTURE,STDLIB,THIRDPARTY,FIRSTPARTY,LOCALFOLDER"
+skip_gitignore = true
+use_parentheses = true
+
+[tool.black]
+target-version = ["py310"]

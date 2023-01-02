@@ -1,0 +1,12 @@
+black[jupyter]
+matplotlib
+notebook
+openpyxl
+pandas
+psycopg2
+python-dotenv
+requests
+SQLAlchemy
+seaborn
+pyairtable
+pyproj

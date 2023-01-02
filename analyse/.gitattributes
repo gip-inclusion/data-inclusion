@@ -1,0 +1,3 @@
+# https://janakiev.com/blog/jupyter-git-remove-output/
+# https://zhauniarovich.com/post/2020/2020-10-clearing-jupyter-output-p3/
+*.ipynb filter=remove-nb-output

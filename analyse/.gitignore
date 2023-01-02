@@ -1,0 +1,31 @@
+# Python
+*.py[cod]
+__pycache__/
+
+# VSCode
+.vscode/
+!.vscode/settings.json
+
+# Idea
+.idea/
+
+# Virtualenv
+.venv/
+venv/
+
+# Misc
+*.env
+!.template.env
+.tmp/
+
+# Jupyter
+.ipynb_checkpoints
+
+# Mac Users
+.DS_Store
+
+# data
+*.csv
+*.json
+*.zip
+*.bz2
