@@ -4,17 +4,20 @@
 #
 #    pip-compile --extra=dev --output-file=requirements/dev-requirements.txt
 #
-alembic==1.8.1
+alembic==1.9.1
     # via data-inclusion-api (setup.py)
 anyio==3.6.2
     # via
     #   httpcore
     #   starlette
     #   watchfiles
-black==22.10.0
+black==22.12.0
     # via data-inclusion-api (setup.py)
-certifi==2022.9.24
+cachetools==5.2.0
+    # via tox
+certifi==2022.12.7
     # via
+    #   data-inclusion-api (setup.py)
     #   httpcore
     #   httpx
     #   requests
@@ -23,6 +26,8 @@ cffi==1.15.1
     # via cryptography
 cfgv==3.3.1
     # via pre-commit
+chardet==5.1.0
+    # via tox
 charset-normalizer==2.1.1
     # via requests
 click==8.1.3
@@ -30,8 +35,12 @@ click==8.1.3
     #   black
     #   data-inclusion-api (setup.py)
     #   uvicorn
-cryptography==38.0.1
-    # via python-jose
+colorama==0.4.6
+    # via tox
+cryptography==39.0.0
+    # via
+    #   data-inclusion-api (setup.py)
+    #   python-jose
 data-inclusion-schema==0.7.0
     # via data-inclusion-api (setup.py)
 distlib==0.3.6
@@ -42,34 +51,34 @@ ecdsa==0.18.0
     # via python-jose
 email-validator==1.3.0
     # via pydantic
-faker==15.1.1
+faker==15.3.4
     # via data-inclusion-api (setup.py)
-fastapi==0.85.1
+fastapi==0.88.0
     # via
     #   data-inclusion-api (setup.py)
     #   fastapi-pagination
     #   sentry-sdk
-fastapi-pagination==0.10.0
+fastapi-pagination==0.11.1
     # via data-inclusion-api (setup.py)
-filelock==3.8.0
+filelock==3.9.0
     # via
     #   tox
     #   virtualenv
-greenlet==1.1.3.post0
+greenlet==2.0.1
     # via sqlalchemy
 gunicorn==20.1.0
     # via data-inclusion-api (setup.py)
-h11==0.12.0
+h11==0.14.0
     # via
     #   httpcore
     #   uvicorn
-httpcore==0.15.0
+httpcore==0.16.3
     # via httpx
 httptools==0.5.0
     # via uvicorn
-httpx==0.23.0
+httpx==0.23.2
     # via data-inclusion-api (setup.py)
-identify==2.5.7
+identify==2.5.11
     # via pre-commit
 idna==3.4
     # via
@@ -77,7 +86,7 @@ idna==3.4
     #   email-validator
     #   requests
     #   rfc3986
-mako==1.2.3
+mako==1.2.4
     # via alembic
 markupsafe==2.1.1
     # via mako
@@ -85,36 +94,37 @@ mypy-extensions==0.4.3
     # via black
 nodeenv==1.7.0
     # via pre-commit
-packaging==21.3
-    # via tox
-pathspec==0.10.1
+packaging==22.0
+    # via
+    #   pyproject-api
+    #   tox
+pathspec==0.10.3
     # via black
-platformdirs==2.5.2
+platformdirs==2.6.2
     # via
     #   black
+    #   tox
     #   virtualenv
 pluggy==1.0.0
     # via tox
-pre-commit==2.20.0
+pre-commit==2.21.0
     # via data-inclusion-api (setup.py)
 psycopg2==2.9.5
     # via data-inclusion-api (setup.py)
-py==1.11.0
-    # via tox
 pyasn1==0.4.8
     # via
     #   python-jose
     #   rsa
 pycparser==2.21
     # via cffi
-pydantic[email]==1.10.2
+pydantic[email]==1.10.4
     # via
     #   data-inclusion-api (setup.py)
     #   data-inclusion-schema
     #   fastapi
     #   fastapi-pagination
-pyparsing==3.0.9
-    # via packaging
+pyproject-api==1.2.1
+    # via tox
 python-dateutil==2.8.2
     # via faker
 python-dotenv==0.21.0
@@ -123,7 +133,7 @@ python-dotenv==0.21.0
     #   uvicorn
 python-jose[cryptography]==3.3.0
     # via data-inclusion-api (setup.py)
-pytz==2022.6
+pytz==2022.7
     # via data-inclusion-api (setup.py)
 pyyaml==6.0
     # via
@@ -135,47 +145,45 @@ rfc3986[idna2008]==1.5.0
     # via httpx
 rsa==4.9
     # via python-jose
-sentry-sdk[fastapi]==1.11.1
+sentry-sdk[fastapi]==1.12.1
     # via data-inclusion-api (setup.py)
 six==1.16.0
     # via
     #   ecdsa
     #   python-dateutil
-    #   tox
 sniffio==1.3.0
     # via
     #   anyio
     #   httpcore
     #   httpx
-sqlalchemy==1.4.42
+sqlalchemy==1.4.45
     # via
     #   alembic
     #   data-inclusion-api (setup.py)
-starlette==0.20.4
+starlette==0.22.0
     # via fastapi
-toml==0.10.2
-    # via pre-commit
 tomli==2.0.1
     # via
     #   black
+    #   pyproject-api
     #   tox
-tox==3.27.0
+tox==4.1.2
     # via data-inclusion-api (setup.py)
 typing-extensions==4.4.0
     # via pydantic
-urllib3==1.26.12
+urllib3==1.26.13
     # via
     #   requests
     #   sentry-sdk
-uvicorn[standard]==0.19.0
+uvicorn[standard]==0.20.0
     # via data-inclusion-api (setup.py)
 uvloop==0.17.0
     # via uvicorn
-virtualenv==20.16.6
+virtualenv==20.17.1
     # via
     #   pre-commit
     #   tox
-watchfiles==0.18.0
+watchfiles==0.18.1
     # via uvicorn
 websockets==10.4
     # via uvicorn

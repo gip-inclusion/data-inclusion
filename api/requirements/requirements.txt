@@ -11,8 +11,9 @@ anyio==3.6.2
     #   httpcore
     #   starlette
     #   watchfiles
-certifi==2022.9.24
+certifi==2022.12.7
     # via
+    #   data-inclusion-api (setup.py)
     #   httpcore
     #   httpx
     #   requests
@@ -26,7 +27,9 @@ click==8.1.3
     #   data-inclusion-api (setup.py)
     #   uvicorn
 cryptography==38.0.3
-    # via python-jose
+    # via
+    #   data-inclusion-api (setup.py)
+    #   python-jose
 data-inclusion-schema==0.7.0
     # via data-inclusion-api (setup.py)
 dnspython==2.2.1

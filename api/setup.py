@@ -12,7 +12,9 @@ setup(
     },
     install_requires=[
         "alembic",
+        "certifi>=2022.12.7",
         "click",
+        "cryptography>=38.0.3",
         "faker",
         "fastapi",
         "fastapi-pagination",
