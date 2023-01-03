@@ -284,72 +284,6 @@ def _geocode(
             conn.execute("DROP TABLE tmp;")
 
 
-def _siretize(
-    src_url: str,
-    run_id: str,
-):
-    from data_inclusion.scripts.tasks import siretisation, utils
-
-    pg_hook = postgres.PostgresHook(postgres_conn_id="pg")
-
-    # fetch from pg today's data for the given src_url
-    df = pg_hook.get_pandas_df(
-        sql=textwrap.dedent(
-            """
-                SELECT
-                    data
-                FROM
-                    datawarehouse
-                WHERE
-                    batch_id = %(batch_id)s
-                    AND src_url = %(src_url)s
-                    AND data ? 'siret';
-            """
-        ),
-        parameters={"batch_id": run_id, "src_url": src_url},
-    )
-    df = utils.deserialize_df_data(df)
-
-    df = siretisation.siretize_normalized_dataframe(
-        df, sirene_database_url=pg_hook.get_uri()
-    )
-
-    engine = pg_hook.get_sqlalchemy_engine()
-    with engine.connect() as conn:
-        with conn.begin():
-            df[["id", "siret", "antenne"]].to_sql(
-                "tmp", con=conn, if_exists="append", index=False
-            )
-            conn.execute(
-                textwrap.dedent(
-                    """
-                    UPDATE
-                        datawarehouse as dwh
-                    SET
-                        data_normalized =
-                        data_normalized
-                        || JSONB_BUILD_OBJECT(
-                            'siret',
-                            tmp.siret
-                        )
-                        || JSONB_BUILD_OBJECT(
-                            'antenne',
-                            tmp.antenne
-                        )
-                    FROM
-                        tmp
-                    WHERE
-                        dwh.batch_id = %(batch_id)s
-                        AND dwh.src_url = %(src_url)s
-                        AND dwh.data ? 'siret'
-                        AND dwh.data->>'id' = tmp.id;
-                    """
-                ),
-                {"batch_id": run_id, "src_url": src_url},
-            )
-            conn.execute("DROP TABLE tmp;")
-
-
 def _validate(
     src_url: str,
     run_id: str,
@@ -478,7 +412,6 @@ class SourceConfig:
     token: Optional[str] = None
     user_agent: Optional[str] = None
     skip_post_processing: bool = False
-    siretize: bool = False
 
     def as_op_kwargs(self):
         # to pass the config to airflow operators (as op_kwargs), the instance must be
@@ -505,7 +438,6 @@ SRC_CONFIGS_LIST = [
         src_url=Variable.get("MES_AIDES_GARAGES_URL", None),
         src_type=SourceType.MES_AIDES,
         token=Variable.get("MES_AIDES_AIRTABLE_KEY", None),
-        siretize=True,
     ),
     SourceConfig(
         src_alias="dora",
@@ -528,7 +460,6 @@ SRC_CONFIGS_LIST = [
         src_alias="cd35",
         src_url=Variable.get("CD35_FILE_URL", None),
         src_type=SourceType.CD35,
-        siretize=True,
     ),
     SourceConfig(
         src_alias="finess",
@@ -544,7 +475,6 @@ SRC_CONFIGS_LIST = [
         src_alias="odspep",
         src_url=Variable.get("ODSPEP_FILE_URL", None),
         src_type=SourceType.ODSPEP,
-        siretize=True,
     ),
     SourceConfig(
         src_alias="etab_pub",
@@ -632,7 +562,6 @@ with airflow.DAG(
                     sql="sql/flag_personal_emails.sql",
                     params={"src_url": src_config.src_url},
                 )
-                reshape >> [check_sirets, flag_personal_emails]
                 geocode = python.PythonOperator(
                     task_id="geocode",
                     python_callable=_geocode,
@@ -644,15 +573,6 @@ with airflow.DAG(
                     python_callable=_validate,
                     op_kwargs=src_config.as_op_kwargs(),
                 )
-                load >> reshape >> geocode
-                if src_config.siretize:
-                    siretize = python.PythonOperator(
-                        task_id="siretize",
-                        python_callable=_siretize,
-                        op_kwargs=src_config.as_op_kwargs(),
-                    )
-                    geocode >> siretize >> validate
-                else:
-                    geocode >> validate
 
-                validate
+                reshape >> [check_sirets, flag_personal_emails]
+                load >> reshape >> geocode >> validate
