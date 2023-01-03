@@ -3,7 +3,7 @@ version: "3.9"
 services:
   airflow:
     build:
-      context: .
+      context: pipeline
       dockerfile: docker/airflow/Dockerfile
     command: standalone
     restart: on-failure
@@ -61,13 +61,13 @@ services:
       - AIRFLOW_VAR_SOLIGUIDE_API_USER_AGENT=${SOLIGUIDE_API_USER_AGENT}
       - AIRFLOW_VAR_UN_JEUNE_UNE_SOLUTION_API_URL=${UN_JEUNE_UNE_SOLUTION_API_URL}
     volumes:
-      - ./dags:/opt/airflow/dags
-      - ./src:/opt/airflow/data-inclusion/src
-      - ./setup.py:/opt/airflow/data-inclusion/setup.py
+      - ./pipeline/dags:/opt/airflow/dags
+      - ./pipeline/src:/opt/airflow/data-inclusion/src
+      - ./pipeline/setup.py:/opt/airflow/data-inclusion/setup.py
 
   airflow-extra:
     build:
-      context: .
+      context: pipeline
       dockerfile: docker/airflow/Dockerfile
     command: pools set base_adresse_nationale_api 1 "Limit access to the ban api"
     depends_on:
@@ -79,12 +79,20 @@ services:
   airflow-db:
     image: postgres:14
     restart: on-failure
-    ports:
-      - ${AIRFLOW_POSTGRES_PORT:-5432}:5432
     environment:
-      - POSTGRES_DB=${AIRFLOW_POSTGRES_DB:-airflow}
-      - POSTGRES_USER=${AIRFLOW_POSTGRES_USER:-airflow}
-      - POSTGRES_PASSWORD=${AIRFLOW_POSTGRES_PASSWORD:-airflow}
+      - POSTGRES_DB=airflow
+      - POSTGRES_USER=airflow
+      - POSTGRES_PASSWORD=airflow
+
+  minio:
+    image: minio/minio:RELEASE.2022-10-08T20-11-00Z
+    command: server /data
+    restart: on-failure
+    environment:
+      - MINIO_ROOT_USER=minioadmin
+      - MINIO_ROOT_PASSWORD=minioadmin
+    volumes:
+      - minio-data:/data
 
   target-db:
     image: postgis/postgis:14-3.3
@@ -92,25 +100,56 @@ services:
     ports:
       - ${TARGET_POSTGRES_PORT:-5433}:5432
     environment:
-      - POSTGRES_DB=${TARGET_POSTGRES_DB:-data-inclusion}
-      - POSTGRES_USER=${TARGET_POSTGRES_USER:-data-inclusion}
-      - POSTGRES_PASSWORD=${TARGET_POSTGRES_PASSWORD:-data-inclusion}
+      - POSTGRES_DB=data-inclusion
+      - POSTGRES_USER=data-inclusion
+      - POSTGRES_PASSWORD=data-inclusion
     volumes:
       - pg-data:/var/lib/postgresql/data
 
-  minio:
-    image: minio/minio:RELEASE.2022-10-08T20-11-00Z
-    command: server /data
+  api:
+    image: data-inclusion/api
+    build: api
+    depends_on:
+      - target-db
     restart: on-failure
     ports:
-      - ${MINIO_API_PORT:-9000}:9000
-      - ${MINIO_UI_PORT:-9090}:9090
+      - ${API_PORT:-8000}:8000
     environment:
-      - MINIO_ROOT_USER=${MINIO_ROOT_USER:-minioadmin}
-      - MINIO_ROOT_PASSWORD=${MINIO_ROOT_PASSWORD:-minioadmin}
+      - ENV=${API_ENV:-dev}
+      - DEBUG=${API_DEBUG:-False}
+      - DATABASE_URL=postgresql://data-inclusion:data-inclusion@target-db:5432/data-inclusion
+      - SECRET_KEY=USE_IN_DEVELOPMENT_ONLY
+
+  siretisation-ui:
+    image: data-inclusion/siretisation-ui
+    build: siretisation
+    depends_on:
+      - target-db
+    restart: on-failure
+    ports:
+      - ${SIRETISATION_UI_PORT:-8005}:8000
+    environment:
+      - ENV=${SIRETISATION_UI_ENV:-dev}
+      - DEBUG=${SIRETISATION_UI_DEBUG}
+      - POSTGRES_DB=data-inclusion
+      - POSTGRES_USER=data-inclusion
+      - POSTGRES_PASSWORD=data-inclusion
+      - POSTGRES_HOST=target-db
+      - POSTGRES_PORT=5432
+      - SECRET_KEY=USE_IN_DEVELOPMENT_ONLY
+      - ALLOWED_HOSTS=127.0.0.1,localhost
+      - DJANGO_SUPERUSER_USERNAME=admin
+      - DJANGO_SUPERUSER_EMAIL=admin@admin.admin
+      - DJANGO_SUPERUSER_PASSWORD=admin
     volumes:
-      - minio-data:/data
+      - files-data:/var/www
 
 volumes:
   pg-data:
   minio-data:
+  files-data:
+
+
+networks:
+  default:
+    name: data-inclusion

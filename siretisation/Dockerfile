@@ -47,7 +47,10 @@ WORKDIR /srv
 RUN apt-get update \
     && apt-get upgrade -y \
     && apt-get install -y --no-install-recommends \
-    curl libpq-dev \
+    binutils \
+    libpq-dev \
+    libproj-dev \
+    gdal-bin \
     && apt-get autoremove --purge -y \
     && apt-get clean -y \
     && rm -rf /var/lib/apt/lists/*

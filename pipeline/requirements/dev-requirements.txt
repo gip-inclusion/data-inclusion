@@ -606,7 +606,7 @@ pycparser==2.21
     #   -c requirements/constraints.txt
     #   -r requirements/requirements.txt
     #   cffi
-pydantic[email]==1.10.2
+pydantic[email]==1.10.4
     # via
     #   -r requirements/requirements.txt
     #   data-inclusion-schema
@@ -887,7 +887,7 @@ wtforms==3.0.1
     #   -r requirements/requirements.txt
     #   flask-appbuilder
     #   flask-wtf
-xlsxwriter==3.0.3
+xlsxwriter==3.0.5
     # via -r requirements/requirements.txt
 
 # The following packages are considered to be unsafe in a requirements file:
