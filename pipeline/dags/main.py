@@ -493,80 +493,80 @@ class SourceConfig:
 
 
 SRC_CONFIGS_LIST = [
-    # SourceConfig(
-    #     src_alias="mes_aides_aides",
-    #     src_url=Variable.get("MES_AIDES_AIDES_URL", None),
-    #     src_type=SourceType.MES_AIDES,
-    #     token=Variable.get("MES_AIDES_AIRTABLE_KEY", None),
-    #     skip_post_processing=True,
-    # ),
-    # SourceConfig(
-    #     src_alias="mes_aides_garages",
-    #     src_url=Variable.get("MES_AIDES_GARAGES_URL", None),
-    #     src_type=SourceType.MES_AIDES,
-    #     token=Variable.get("MES_AIDES_AIRTABLE_KEY", None),
-    #     siretize=True,
-    # ),
-    # SourceConfig(
-    #     src_alias="dora",
-    #     src_url=Variable.get("DORA_API_URL", None),
-    #     src_type=SourceType.DORA,
-    # ),
-    # SourceConfig(
-    #     src_alias="emplois_siae",
-    #     src_url=Variable.get("EMPLOIS_API_URL", None) + "?type=siae",
-    #     src_type=SourceType.EMPLOIS,
-    #     token=Variable.get("EMPLOIS_API_TOKEN", None),
-    # ),
-    # SourceConfig(
-    #     src_alias="emplois_orga",
-    #     src_url=Variable.get("EMPLOIS_API_URL", None) + "?type=orga",
-    #     src_type=SourceType.EMPLOIS,
-    #     token=Variable.get("EMPLOIS_API_TOKEN", None),
-    # ),
-    # SourceConfig(
-    #     src_alias="cd35",
-    #     src_url=Variable.get("CD35_FILE_URL", None),
-    #     src_type=SourceType.CD35,
-    #     siretize=True,
-    # ),
-    # SourceConfig(
-    #     src_alias="finess",
-    #     src_url=Variable.get("FINESS_FILE_URL", None),
-    #     src_type=SourceType.FINESS,
-    # ),
-    # SourceConfig(
-    #     src_alias="siao",
-    #     src_url=Variable.get("SIAO_FILE_URL", None),
-    #     src_type=SourceType.SIAO,
-    # ),
+    SourceConfig(
+        src_alias="mes_aides_aides",
+        src_url=Variable.get("MES_AIDES_AIDES_URL", None),
+        src_type=SourceType.MES_AIDES,
+        token=Variable.get("MES_AIDES_AIRTABLE_KEY", None),
+        skip_post_processing=True,
+    ),
+    SourceConfig(
+        src_alias="mes_aides_garages",
+        src_url=Variable.get("MES_AIDES_GARAGES_URL", None),
+        src_type=SourceType.MES_AIDES,
+        token=Variable.get("MES_AIDES_AIRTABLE_KEY", None),
+        siretize=True,
+    ),
+    SourceConfig(
+        src_alias="dora",
+        src_url=Variable.get("DORA_API_URL", None),
+        src_type=SourceType.DORA,
+    ),
+    SourceConfig(
+        src_alias="emplois_siae",
+        src_url=Variable.get("EMPLOIS_API_URL", None) + "?type=siae",
+        src_type=SourceType.EMPLOIS,
+        token=Variable.get("EMPLOIS_API_TOKEN", None),
+    ),
+    SourceConfig(
+        src_alias="emplois_orga",
+        src_url=Variable.get("EMPLOIS_API_URL", None) + "?type=orga",
+        src_type=SourceType.EMPLOIS,
+        token=Variable.get("EMPLOIS_API_TOKEN", None),
+    ),
+    SourceConfig(
+        src_alias="cd35",
+        src_url=Variable.get("CD35_FILE_URL", None),
+        src_type=SourceType.CD35,
+        siretize=True,
+    ),
+    SourceConfig(
+        src_alias="finess",
+        src_url=Variable.get("FINESS_FILE_URL", None),
+        src_type=SourceType.FINESS,
+    ),
+    SourceConfig(
+        src_alias="siao",
+        src_url=Variable.get("SIAO_FILE_URL", None),
+        src_type=SourceType.SIAO,
+    ),
     SourceConfig(
         src_alias="odspep",
         src_url=Variable.get("ODSPEP_FILE_URL", None),
         src_type=SourceType.ODSPEP,
         siretize=True,
     ),
-    # SourceConfig(
-    #     src_alias="etab_pub",
-    #     src_url=Variable.get("ETAB_PUB_FILE_URL", None),
-    #     src_type=SourceType.ETAB_PUBLICS,
-    # ),
-    # SourceConfig(
-    #     src_alias="cd72",
-    #     src_url=Variable.get("CD72_FILE_URL", None),
-    #     src_type=SourceType.CD72,
-    # ),
-    # SourceConfig(
-    #     src_alias="1jeune1solution",
-    #     src_url=Variable.get("UN_JEUNE_UNE_SOLUTION_API_URL", None),
-    #     src_type=SourceType.UN_JEUNE_UNE_SOLUTION,
-    #     skip_post_processing=True,
-    # ),
-    # SourceConfig(
-    #     src_alias="conseiller-numerique",
-    #     src_url=Variable.get("CONSEILLER_NUMERIQUE_FILE_URL", None),
-    #     src_type=SourceType.CONSEILLER_NUMERIQUE,
-    # ),
+    SourceConfig(
+        src_alias="etab_pub",
+        src_url=Variable.get("ETAB_PUB_FILE_URL", None),
+        src_type=SourceType.ETAB_PUBLICS,
+    ),
+    SourceConfig(
+        src_alias="cd72",
+        src_url=Variable.get("CD72_FILE_URL", None),
+        src_type=SourceType.CD72,
+    ),
+    SourceConfig(
+        src_alias="1jeune1solution",
+        src_url=Variable.get("UN_JEUNE_UNE_SOLUTION_API_URL", None),
+        src_type=SourceType.UN_JEUNE_UNE_SOLUTION,
+        skip_post_processing=True,
+    ),
+    SourceConfig(
+        src_alias="conseiller-numerique",
+        src_url=Variable.get("CONSEILLER_NUMERIQUE_FILE_URL", None),
+        src_type=SourceType.CONSEILLER_NUMERIQUE,
+    ),
 ]
 
 
