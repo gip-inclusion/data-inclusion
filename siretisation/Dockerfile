@@ -1,7 +1,7 @@
 ########
 # This image compile the dependencies
 ########
-FROM python:3.9-slim as compile-image
+FROM python:3.10-slim as compile-image
 
 ENV VIRTUAL_ENV /srv/venv
 ENV PATH "${VIRTUAL_ENV}/bin:${PATH}"
@@ -30,7 +30,7 @@ RUN pip install --no-cache-dir -r requirements/tests.txt
 ########
 # This image is the runtime
 ########
-FROM python:3.9-slim as runtime-image
+FROM python:3.10-slim as runtime-image
 
 ARG VERSION_SHA
 ARG VERSION_NAME
