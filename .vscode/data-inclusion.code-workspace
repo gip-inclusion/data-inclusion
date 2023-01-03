@@ -1,0 +1,19 @@
+{
+	"folders": [
+		{
+			"path": ".."
+		},
+		{
+			"path": "../api"
+		},
+		{
+			"path": "../pipeline"
+		},
+		{
+			"path": "../analyse"
+		},
+		{
+			"path": "../siretisation"
+		}
+	]
+}
