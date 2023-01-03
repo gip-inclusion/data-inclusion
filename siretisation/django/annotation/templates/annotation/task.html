@@ -1,0 +1,134 @@
+<section class="section" id="task">
+    <div id="task-metadata">
+        <input name="row_instance_id" type="hidden" value="{{ row_instance.id }}" />
+    </div>
+    <div class="tile is-ancestor">
+        <div class="tile is-parent is-4 is-vertical">
+            <div class="tile is-child box">
+                <p class="heading">Dataset</p>
+                <p class="title">{{ dataset_instance.label }}</p>
+            </div>
+            <div class="tile is-child box">
+                <p class="heading">Avancement</p>
+                <p class="title">{{ progress_str }}</p>
+            </div>
+        </div>
+        <div class="tile is-child box">
+            <h1 class="title is-5">Formulaire de recherche</h1>
+            <form id="search_data">
+                <div class="columns">
+                    <div class="column is-half">
+                        <div class="field">
+                            <div class="control">
+                                <label class="label" for="nom">Nom:</label>
+                                <input class="input" type="search" id="nom" name="nom" placeholder="..."
+                                    hx-post="/partials/search" hx-target="#search-results" hx-swap="outerHTML"
+                                    hx-include="#search_data" hx-indicator="#search-indicator"
+                                    hx-trigger="keyup changed delay:500ms, search" hx-sync="closest form:replace"
+                                    value="{{ row_instance.data.nom|default_if_none:'' }}" />
+                            </div>
+                        </div>
+                        <div class="field">
+                            <div class="control">
+                                <label class="label" for="siret">SIRET:</label>
+                                <input class="input" type="search" id="siret" name="siret" placeholder="..."
+                                    hx-post="/partials/search" hx-target="#search-results" hx-swap="outerHTML"
+                                    hx-include="#search_data" hx-indicator="#search-indicator"
+                                    hx-trigger="keyup changed delay:500ms, search" hx-sync="closest form:replace" />
+                            </div>
+                        </div>
+                        <div class="field">
+                            <div class="control">
+                                <label class="label" for="adresse">Adresse:</label>
+                                <input class="input" type="search" id="adresse" name="adresse" placeholder="..."
+                                    hx-post="/partials/search" hx-target="#search-results" hx-swap="outerHTML"
+                                    hx-include="#search_data" hx-indicator="#search-indicator"
+                                    hx-trigger="keyup changed delay:500ms, search" hx-sync="closest form:replace"
+                                    value="{{ row_instance.similar_address|default:row_instance.data.adresse }}" />
+                            </div>
+                        </div>
+                        <div class="field">
+                            <div class="control">
+                                <label class="label" for="code_postal">Code postal:</label>
+                                <input class="input" type="search" id="code_postal" name="code_postal" placeholder="..."
+                                    hx-post="/partials/search" hx-target="#search-results" hx-swap="outerHTML"
+                                    hx-include="#search_data" hx-indicator="#search-indicator"
+                                    hx-trigger="keyup changed delay:500ms, search" hx-sync="closest form:replace"
+                                    value="{{ row_instance.data.code_postal|default_if_none:'' }}" />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="column is-half">
+                        <div class="field">
+                            <div class="control">
+                                <label class="label" for="naf_activities">Activité:</label>
+                                <div class="select is-multiple">
+                                    <select multiple size={{ activity_dict|length }} id="naf_activities" name="naf_activities"
+                                        hx-post="/partials/search" hx-target="#search-results" hx-swap="outerHTML"
+                                        hx-include="#search_data" hx-indicator="#search-indicator"
+                                        hx-sync="closest form:replace">
+                                        <option selected value="">Toutes</option>
+                                        {% for activity_dict in activity_list|dictsort:"label" %}
+                                            <option title="{{ activity_dict.label }}" value="{{ activity_dict.level.value }},{{ activity_dict.code }}">
+                                                {{ activity_dict.label }}
+                                            </option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+    <div class="tile is-ancestor">
+        <div class="tile is-parent">
+            <div class="tile is-child box is-4">
+                <h1 class="title is-5">Données de départ</h1>
+                <table class="table is-fullwidth">
+                    <thead>
+                        <tr>
+                            <th>Champs</th>
+                            <th>Valeur</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for key, value in row_instance.task_data.items %}
+                            <tr>
+                                <td>{{ key }}</td>
+                                <td>
+                                    {% if key == 'lien source' and value is not None %}
+                                        <a href="{{ value }}" target="_blank">{{ value|truncatechars:600 }}</a>
+                                    {% else %}
+                                        {{ value|default_if_none:''|truncatechars:600 }}
+                                    {% endif %}
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            <div class="tile is-child box">
+                <h1 class="title is-5">Résultats <span id="search-indicator" class="htmx-indicator">
+                    <i class="fas fa-spinner fa-pulse"></i>
+                </span></h1>
+                {% if dataset_instance.show_nearby_cnfs_permanences %}
+                    {% include "annotation/nearby_cnfs.html" %}
+                {% endif %}
+                {% include "annotation/search.html" %}
+
+                <div class="block is-flex is-justify-content-center">
+                    <div class="buttons">
+                        <button class="button" hx-post="/partials/submit" hx-include="#dataset-metadata, #task-metadata"
+                            hx-swap="outerHTML" hx-vals='{"skipped": true}'>Passer au suivant ⏩</button>
+                        <button class="button" hx-post="/partials/submit" hx-include="#dataset-metadata, #task-metadata"
+                            hx-swap="outerHTML" hx-vals='{"closed": true}'>Structure fermée ❌</button>
+                        <button class="button" hx-post="/partials/submit" hx-include="#dataset-metadata, #task-metadata"
+                            hx-swap="outerHTML" hx-vals='{"irrelevant": true}'>Ne pas conserver 🙅</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>

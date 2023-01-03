@@ -1,0 +1,51 @@
+{% extends "base.html" %}
+
+
+{% block body_content %}
+
+    <section class="section">
+        <div class="container">
+            {% if form.errors %}
+                <div class="notification is-danger">
+                    <p>Les identifiants renseignés sont incorrects.</p>
+                </div>
+            {% endif %}
+
+            {% if next %}
+                {% if user.is_authenticated %}
+                    <div class="notification is-warning">
+                        <p>Vous ne pouvez pas accéder à cette page.</p>
+                    </div>
+                {% else %}
+                    <div class="notification is-warning">
+                        <p>Vous devez vous connecter pour voir cette page.</p>
+                    </div>
+                {% endif %}
+            {% endif %}
+            <div class="box">
+                <form method="post" action="{% url 'login' %}">
+                    {% csrf_token %}
+                    <input type="hidden" name="next" value="{{ next }}" />
+                    <div class="field">
+                        <label class="label" for="id_username"></label>
+                        <div class="control">
+                            <input class="input" id="id_username" name="username" type="text"
+                                placeholder="john.doe@gouv.fr" />
+                        </div>
+                    </div>
+                    <div class="field">
+                        <label class="label" for="id_password"></label>
+                        <div class="control">
+                            <input class="input" id="id_password" name="password" type="password"
+                                placeholder="**********" />
+                        </div>
+                    </div>
+                    <div class="control">
+                        <button class="button is-link" type="submit">Se connecter</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </section>
+
+{% endblock %}

@@ -1,0 +1,47 @@
+# This compose file is not suited for production. It is intended for
+# development.
+#
+# Setting the environment should be done in the root dotenv file, to prevent
+# this file from appearing as modified in git. Variables are documented in the
+# dotenv file template.
+
+version: "3.9"
+
+services:
+  api:
+    image: data-inclusion-siretisation
+    build: .
+    depends_on:
+      - db
+    restart: always
+    ports:
+      - ${API_PORT}:8000
+    environment:
+      - DEBUG=${DEBUG}
+      - ENV=${ENV:-dev}
+      - POSTGRES_DB=${POSTGRES_DB}
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+      - POSTGRES_HOST=db
+      - POSTGRES_PORT=5432
+      - SECRET_KEY=${SECRET_KEY}
+      - ALLOWED_HOSTS=${ALLOWED_HOSTS:-127.0.0.1}
+      - DJANGO_SUPERUSER_USERNAME=${DJANGO_SUPERUSER_USERNAME}
+      - DJANGO_SUPERUSER_EMAIL=${DJANGO_SUPERUSER_EMAIL}
+      - DJANGO_SUPERUSER_PASSWORD=${DJANGO_SUPERUSER_PASSWORD}
+      - SENTRY_DSN=${SENTRY_DSN}
+    volumes:
+      - files-data:/var/www
+
+  db:
+    image: postgis/postgis:14-3.2
+    restart: always
+    ports:
+      - ${POSTGRES_PORT}:5432
+    environment:
+      - POSTGRES_DB=${POSTGRES_DB}
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+
+volumes:
+  files-data:

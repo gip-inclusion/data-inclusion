@@ -1,0 +1,29 @@
+
+[tool.isort]
+atomic = true
+combine_star = true
+ensure_newline_before_comments = true
+force_grid_wrap = 0
+include_trailing_comma = true
+indent = 4
+known_django = "django,rest_framework"
+known_first_party = "annotation,common,meta,users,sirene"
+line_length = 119
+multi_line_output = 3
+profile = "black"
+sections = "FUTURE,STDLIB,THIRDPARTY,DJANGO,FIRSTPARTY,LOCALFOLDER"
+skip_gitignore = true
+use_parentheses = true
+
+[tool.black]
+line-length = 119
+target-version = ["py310"]
+
+[tool.pytest.ini_options]
+DJANGO_SETTINGS_MODULE = "settings"
+pythonpath = "django"
+testpaths = "tests"
+markers = '''
+    as_user: force authenticate the api_client fixture to the user fixure
+    as_other_user: force authenticate the api_client fixture to the other_user fixture
+'''

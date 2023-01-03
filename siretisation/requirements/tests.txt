@@ -1,0 +1,8 @@
+-r prod.txt
+
+factory_boy==3.2.1
+pytest==7.1.3
+pytest-django==4.5.2
+pytest-dotenv==0.5.2
+pytest-factoryboy==2.5.0
+tox==3.26.0

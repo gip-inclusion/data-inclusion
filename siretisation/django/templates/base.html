@@ -1,0 +1,26 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="fr">
+
+    <head>
+        {% block title %}<title>SIRETisation</title>{% endblock %}
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="stylesheet" href="{% static 'vendor/bulma-0.9.4/bulma.min.css' %}">
+        <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.15.4/css/all.css"
+            integrity="sha384-DyZ88mC6Up2uqS4h/KRgHuoeGwBcD4Ng9SiP4dIRy0EXTlnuz47vAwmeGwVChigm" crossorigin="anonymous" />
+
+        {% if debug %}
+            <script src="{% static 'vendor/htmx-1.8.4/htmx.min.js' %}" defer></script>
+        {% else %}
+            <script src="{% static 'vendor/htmx-1.8.4/htmx.js' %}" defer></script>
+        {% endif %}
+    </head>
+
+    <body>
+        {% block body_content %}
+        {% endblock %}
+    </body>
+
+</html>

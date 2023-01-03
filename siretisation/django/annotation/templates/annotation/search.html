@@ -1,0 +1,55 @@
+<div id="search-results">
+    <div class="block">
+        <table class="table is-hoverable is-fullwidth is-striped is-narrow">
+            <thead>
+                <tr>
+                    <th>SIRET</th>
+                    <th>Siège&nbsp;?</th>
+                    <th>Nom</th>
+                    <th>Adresse</th>
+                    <th>Ville</th>
+                    <th></th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for establishment_instance in establishment_queryset|slice:":10" %}
+                    <tr>
+                        <td>{{ establishment_instance.siret }}<a title="ouvrir l'annuaire entreprises" target="_blank"
+                            href="https://annuaire-entreprises.data.gouv.fr/etablissement/{{ establishment_instance.siret }}">&nbsp;ℹ️</a>
+                        </td>
+                        <td>{{ establishment_instance.is_siege|yesno:"X," }}</td>
+                        <td>{{ establishment_instance.name }}</td>
+                        <td>{{ establishment_instance.address1 }}</td>
+                        <td>{{ establishment_instance.city }}</td>
+                        <td><button class="button" hx-post="/partials/submit" hx-include="#dataset-metadata, #task-metadata"
+                            hx-swap="outerHTML" hx-vals='{"siret": "{{ establishment_instance.siret }}"}'>C'est la
+                            structure
+                            ✅</button></td>
+                        <td><button class="button" hx-post="/partials/submit" hx-include="#dataset-metadata, #task-metadata"
+                            hx-swap="outerHTML"
+                            hx-vals='{"siret": "{{ establishment_instance.siret }}", "is_parent": true}'>Structure
+                            mère 💯</button></td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    {% if establishment_queryset|length == 0 %}
+        <div class="block is-flex is-justify-content-center">
+            <article class="message is-info">
+                <div class="message-header">Aucun résultat!</div>
+                <div class="message-body content">
+                    💡 Vous pouvez essayer:
+                    <ul>
+                        <li>de retirer le numéro dans l'adresse</li>
+                        <li>de retirer les 3 derniers chiffres du code postal</li>
+                        <li>de supprimer l'adresse en gardant le nom</li>
+                        <li>de supprimer le nom en gardant l'adresse</li>
+                    </ul>
+                </div>
+            </article>
+        </div>
+    {% endif %}
+</div>
