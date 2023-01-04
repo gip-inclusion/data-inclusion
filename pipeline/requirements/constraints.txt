@@ -65,7 +65,7 @@ apache-airflow-providers-apache-cassandra==3.0.0
 apache-airflow-providers-apache-drill==2.2.1
 apache-airflow-providers-apache-druid==3.2.1
 apache-airflow-providers-apache-hdfs==3.1.0
-apache-airflow-providers-apache-hive==4.0.1
+apache-airflow-providers-apache-hive==5.0.0
 apache-airflow-providers-apache-kylin==3.0.0
 apache-airflow-providers-apache-livy==3.1.0
 apache-airflow-providers-apache-pig==3.0.0
