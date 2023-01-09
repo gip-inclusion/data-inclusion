@@ -76,7 +76,7 @@ annotations AS (
         AND NOT annotation_annotation.skipped
         AND annotation_dataset.source != ''
     ORDER BY
-        annotation_annotation.source ASC,
+        annotation_dataset.source ASC,
         annotation_annotation.data ->> 'id' ASC,
         annotation_annotation.created_at DESC
 ),
