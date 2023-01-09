@@ -23,7 +23,7 @@ class BaseAdresseNationaleBackend(GeocodingBackend):
         self.base_url = base_url.strip("/")
 
     def _geocode(self, df: pd.DataFrame) -> pd.DataFrame:
-        df = df[["id", "source", "adresse", "code_postal", "commune"]]
+        df = df[["id", "adresse", "code_postal", "commune"]]
 
         with io.BytesIO() as buf:
             df.to_csv(buf, index=False, quoting=csv.QUOTE_ALL, sep="|")
