@@ -40,7 +40,7 @@ WITH valid_staging_structures_flat AS (
             presentation_detail TEXT,
             source TEXT,
             date_maj TIMESTAMP WITH TIME ZONE,
-            antenne BOOL,
+            antenne BOOLEAN,
             lien_source TEXT,
             horaires_ouverture TEXT,
             accessibilite TEXT,
@@ -49,7 +49,7 @@ WITH valid_staging_structures_flat AS (
             thematiques TEXT []
         )
     WHERE
-        (datawarehouse.data_normalized ->> 'is_valid')::BOOL
+        (datawarehouse.data_normalized ->> 'is_valid')::BOOLEAN
         AND datawarehouse.data ? 'siret'
         -- exclude soliguide data from rollout
         AND datawarehouse.data ->> 'source' != 'soliguide'
@@ -77,7 +77,7 @@ annotations AS (
         AND annotation_dataset.source != ''
     ORDER BY
         annotation_dataset.source ASC,
-        annotation_annotation.data ->> 'id' ASC,
+        annotation_datasetrow.data ->> 'id' ASC,
         annotation_annotation.created_at DESC
 ),
 
@@ -155,13 +155,13 @@ structure (
     presentation_detail,
     source,
     date_maj,
-    antenne,
     lien_source,
     horaires_ouverture,
     accessibilite,
     batch_id,
     created_at,
     src_url,
+    antenne,
     siret,
     code_insee,
     labels_nationaux,
@@ -183,7 +183,7 @@ WITH valid_staging_services_with_structure_index AS (
             AND structure.src_url = datawarehouse.src_url
             AND structure.id = (datawarehouse.data ->> 'structure_id')
     WHERE
-        (datawarehouse.data_normalized ->> 'is_valid')::BOOL
+        (datawarehouse.data_normalized ->> 'is_valid')::BOOLEAN
         AND datawarehouse.data ? 'structure_id'
 ),
 

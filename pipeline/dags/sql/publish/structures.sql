@@ -19,7 +19,7 @@ WITH valid_structures_flat AS (
         -- remove personal emails
         CASE
             WHEN
-                (data_normalized ->> 'has_personal_email')::BOOL THEN NULL
+                (data_normalized ->> 'has_personal_email')::BOOLEAN THEN NULL
             ELSE data ->> 'courriel'
         END AS "courriel",
         data ->> 'site_web' AS "site_web",
@@ -27,7 +27,7 @@ WITH valid_structures_flat AS (
         data ->> 'presentation_detail' AS "presentation_detail",
         data ->> 'source' AS "source",
         data ->> 'date_maj' AS "date_maj",
-        (data ->> 'antenne')::BOOL AS "antenne",
+        (data ->> 'antenne')::BOOLEAN AS "antenne",
         data ->> 'lien_source' AS "lien_source",
         data ->> 'horaires_ouverture' AS "horaires_ouverture",
         data ->> 'accessibilite' AS "accessibilite",
@@ -61,7 +61,7 @@ WITH valid_structures_flat AS (
     FROM
         datawarehouse
     WHERE
-        (data_normalized ->> 'is_valid')::BOOL
+        (data_normalized ->> 'is_valid')::BOOLEAN
         AND data ? 'siret'
         -- exclude soliguide data
         AND data ->> 'source' != 'soliguide'
@@ -89,7 +89,7 @@ annotations AS (
         AND annotation_dataset.source != ''
     ORDER BY
         annotation_dataset.source ASC,
-        annotation_annotation.data ->> 'id' ASC,
+        annotation_datasetrow.data ->> 'id' ASC,
         annotation_annotation.created_at DESC
 ),
 
@@ -120,16 +120,18 @@ valid_structures_final AS (
         valid_structures_flat.labels_autres,
         valid_structures_flat.thematiques,
         COALESCE(valid_structures_flat.siret, annotations.siret) AS "siret",
-        COALESCE(
-            valid_structures_flat.antenne, annotations.is_parent
-        ) AS "antenne"
+        CASE
+            WHEN valid_structures_flat.siret IS NULL
+                AND annotations.siret IS NOT NULL
+                THEN annotations.is_parent
+            ELSE valid_structures_flat.antenne
+        END AS "antenne"
     FROM
         valid_structures_flat
     LEFT JOIN
         annotations ON
             valid_structures_flat.src_alias = annotations.source
             AND valid_structures_flat.id = annotations.id
-
 )
 
 SELECT *
