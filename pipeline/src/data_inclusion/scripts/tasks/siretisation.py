@@ -78,7 +78,6 @@ WHERE
     AND l4_similarity > 0.3
 ORDER BY 4 DESC
 LIMIT 1;
-
 """
     )
 )
@@ -122,17 +121,21 @@ SEARCH_MUNI_STMT = sqla.text(
     textwrap.dedent(
         """
 -- 1. filter for active entreprises with categorie juridique of interest
-WITH entreprise_filtered AS (SELECT
-    siren,
-    "nicSiegeUniteLegale"
+WITH entreprise_filtered AS (
+    SELECT
+        siren,
+        "nicSiegeUniteLegale",
+        "categorieJuridiqueUniteLegale"
     FROM sirene_stock_unite_legale
     WHERE "etatAdministratifUniteLegale" = 'A'
-        AND "categorieJuridiqueUniteLegale" IN ('7210', '7313', '7312')
+        AND "categorieJuridiqueUniteLegale" IN ('7210', '7312')
 ),
 
 -- 2. get the associated etablishments within 10km and with activity of interest
 etablissement_filtered AS (
-    SELECT sirene_etablissement_geocode.*
+    SELECT
+        sirene_etablissement_geocode.*,
+        entreprise_filtered."categorieJuridiqueUniteLegale"
     FROM sirene_etablissement_geocode
     INNER JOIN entreprise_filtered
         ON
@@ -149,28 +152,26 @@ etablissement_filtered AS (
         = '84.11Z'
 ),
 
--- 3. enhance with searchable fields
-etablissement_with_searchable_fields AS (SELECT
-    etablissement_filtered.siret,
-    sirene_etablissement_searchable_name.searchable_name
-    FROM etablissement_filtered
-    INNER JOIN sirene_etablissement_searchable_name
-        ON etablissement_filtered.siret
-           = sirene_etablissement_searchable_name.siret
-),
-
--- 4. annotate with similarity
+-- 3. annotate with similarity
 etablissement_with_similarities AS (
     SELECT
         siret,
-        WORD_SIMILARITY(searchable_name, :normalized_commune_str) AS name_similarity
-    FROM etablissement_with_searchable_fields
+        "categorieJuridiqueUniteLegale",
+        SIMILARITY("libelleCommuneEtablissement", :normalized_commune_str)
+            AS commune_name_similarity
+    FROM etablissement_filtered
 )
 
--- 3. compute score and get highest
-SELECT *
+-- 4. compute score and get highest
+SELECT
+    siret,
+    commune_name_similarity AS score
 FROM etablissement_with_similarities
-ORDER BY name_similarity DESC;
+WHERE commune_name_similarity > 0.7
+ORDER BY
+    commune_name_similarity DESC,
+    -- Communes (7210) before Communes Associées (7312)
+    "categorieJuridiqueUniteLegale" ASC;
 """
     )
 )

@@ -351,6 +351,16 @@ def _import_stock_etablissement_geocode():
                 )
             )
 
+            conn.execute(
+                textwrap.dedent(
+                    f"""
+                        CREATE INDEX sirene_etablissement_geocode_commune_trgm_idx
+                        ON {target_table}
+                        USING gin ("libelleCommuneEtablissement" gin_trgm_ops);
+                    """
+                )
+            )
+
 
 with airflow.DAG(
     dag_id="import_sirene",
