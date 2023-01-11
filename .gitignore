@@ -17,7 +17,7 @@ venv/
 .tmp/
 .tox/
 .pytest_cache
-airflow/
+./airflow/
 *.DS_Store
 *.drawio.bkp
 data/
