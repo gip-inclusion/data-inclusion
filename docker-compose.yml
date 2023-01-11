@@ -94,6 +94,12 @@ services:
     volumes:
       - minio-data:/data
 
+  minio-extra:
+    image: minio/mc:RELEASE.2022-12-24T15-21-38Z
+    command: mb docker/data-inclusion-lake
+    environment:
+      - MC_HOSTS_DOCKER=http://minioadmin:minioadmin@minio:9000
+
   target-db:
     image: postgis/postgis:14-3.3
     restart: on-failure
