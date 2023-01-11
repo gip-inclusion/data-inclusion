@@ -17,12 +17,11 @@ pip install -e .
 
 ## Running the api locally
 
+Make sure the `target-db` container is up and running. See instructions [here](../CONTRIBUTING.md#docker).
+
 ```bash
 # Copy (and optionally edit) the template .env
 cp .template.env .env
-
-# Launch the database
-docker-compose up -d db
 
 # Running the migrations
 alembic upgrade head

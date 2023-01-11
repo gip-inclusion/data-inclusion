@@ -21,32 +21,6 @@ pip install -r requirements/dev-requirements.txt
 tox
 ```
 
-## Running airflow locally
-
-```bash
-# Copy the template .env
-cp .template.env .env
-
-# Edit the content of dotenv file to your needs
-
-# Start the stack
-docker-compose up -d
-```
-
-After a few seconds, the Airflow UI should be available at [http://localhost:8080](http://localhost:8080).
-
-The default credentials are `airflow` / `airflow`.
-
-The dags and `data_inclusion.scripts` package should be in editable mode : live modifications will be taken into account.
-
-## Code quality
-
-`pre-commit` hooks are provided and should be used !
-
-## Contribution
-
-Issues and PRs are welcome.
-
 ## Updating the requirements
 
 ```bash
