@@ -13,6 +13,7 @@ from data_inclusion.scripts.tasks.sources import (
     emplois,
     etab_publics,
     finess,
+    mediation_numerique,
     mes_aides,
     odspep,
     siao,
@@ -35,6 +36,7 @@ READ_BY_SOURCE_TYPE = {
     constants.SourceType.ETAB_PUBLICS: etab_publics.read_data,
     constants.SourceType.UN_JEUNE_UNE_SOLUTION: un_jeune_une_solution.read_data,
     constants.SourceType.CONSEILLER_NUMERIQUE: conseiller_numerique.read_data,
+    constants.SourceType.MEDIATION_NUMERIQUE: mediation_numerique.read_data,
 }
 
 

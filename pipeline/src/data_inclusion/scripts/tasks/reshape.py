@@ -11,6 +11,7 @@ from data_inclusion.scripts.tasks.sources import (
     emplois,
     etab_publics,
     finess,
+    mediation_numerique,
     mes_aides,
     odspep,
     siao,
@@ -31,6 +32,7 @@ RESHAPE_BY_SOURCE_TYPE = {
     constants.SourceType.FINESS: finess.transform_data,
     constants.SourceType.ETAB_PUBLICS: etab_publics.transform_data,
     constants.SourceType.CONSEILLER_NUMERIQUE: conseiller_numerique.transform_data,
+    constants.SourceType.MEDIATION_NUMERIQUE: mediation_numerique.transform_data,
 }
 
 

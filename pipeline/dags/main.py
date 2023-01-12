@@ -497,6 +497,21 @@ SRC_CONFIGS_LIST = [
         src_url=Variable.get("CONSEILLER_NUMERIQUE_FILE_URL", None),
         src_type=SourceType.CONSEILLER_NUMERIQUE,
     ),
+    SourceConfig(
+        src_alias="mednum-hinaura",
+        src_url=Variable.get("MEDIATION_NUMERIQUE_HINAURA_DATASET_URL", None),
+        src_type=SourceType.MEDIATION_NUMERIQUE,
+    ),
+    SourceConfig(
+        src_alias="mednum-cd49",
+        src_url=Variable.get("MEDIATION_NUMERIQUE_CD49_DATASET_URL", None),
+        src_type=SourceType.MEDIATION_NUMERIQUE,
+    ),
+    SourceConfig(
+        src_alias="mednum-assembleurs",
+        src_url=Variable.get("MEDIATION_NUMERIQUE_ASSEMBLEURS_DATASET_URL", None),
+        src_type=SourceType.MEDIATION_NUMERIQUE,
+    ),
 ]
 
 
