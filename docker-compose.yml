@@ -29,7 +29,7 @@ services:
       - _AIRFLOW_WWW_USER_PASSWORD=airflow
       - _PIP_ADDITIONAL_REQUIREMENTS=-e /opt/airflow/data-inclusion
       # Connections
-      - AIRFLOW_CONN_S3=aws://@/datalake?endpoint_url=http://minio:9000&aws_access_key_id=minioadmin&aws_secret_access_key=minioadmin
+      - AIRFLOW_CONN_S3=aws://@/data-inclusion-lake?endpoint_url=http://minio:9000&aws_access_key_id=minioadmin&aws_secret_access_key=minioadmin
       - AIRFLOW_CONN_PG=postgresql://data-inclusion:data-inclusion@target-db:5432/data-inclusion
       # Variables
       - AIRFLOW_VAR_BAN_API_URL=${BAN_API_URL}
@@ -96,9 +96,11 @@ services:
 
   minio-extra:
     image: minio/mc:RELEASE.2022-12-24T15-21-38Z
-    command: mb docker/data-inclusion-lake
-    environment:
-      - MC_HOSTS_DOCKER=http://minioadmin:minioadmin@minio:9000
+    entrypoint: /bin/bash -c
+    command:
+      - |
+        mc alias set tmp http://minio:9000 minioadmin minioadmin
+        mc mb tmp/data-inclusion-lake
 
   target-db:
     image: postgis/postgis:14-3.3
