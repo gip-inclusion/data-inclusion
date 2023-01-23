@@ -23,7 +23,7 @@ Flask-SQLAlchemy==2.5.1
 Flask-Session==0.4.0
 Flask-WTF==1.0.1
 Flask==2.2.2
-GitPython==3.1.29
+GitPython==3.1.30
 HeapDict==1.0.1
 JPype1==1.4.0
 JayDeBeApi==1.2.3
