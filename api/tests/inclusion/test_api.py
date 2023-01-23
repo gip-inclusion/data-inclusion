@@ -702,3 +702,56 @@ def test_list_services_filter_by_source(api_client, service_factory):
     assert len(resp_data["items"]) == 1
     assert resp_data["items"][0]["id"] == service_1.id
     assert resp_data["items"][0]["source"] == service_1.structure.source
+
+
+@pytest.mark.with_token
+def test_list_services_filter_by_thematique(api_client, service_factory):
+    # use predefined timestamp to order results
+    today_dt = datetime.now()
+    yesterday_dt = datetime.now() - timedelta(days=1)
+
+    service_1 = service_factory(
+        structure__created_at=yesterday_dt,
+        thematiques=[
+            schema.Thematique.MOBILITE.value,
+            schema.Thematique.NUMERIQUE.value,
+        ],
+    )
+    service_2 = service_factory(
+        structure__created_at=today_dt,
+        thematiques=[
+            schema.Thematique.TROUVER_UN_EMPLOI.value,
+            schema.Thematique.NUMERIQUE.value,
+        ],
+    )
+    service_factory(thematiques=[])
+
+    url = "/api/v0/services/"
+
+    response = api_client.get(
+        url, params={"thematique": schema.Thematique.MOBILITE.value}
+    )
+
+    assert response.status_code == 200
+    resp_data = response.json()
+    assert len(resp_data["items"]) == 1
+    assert resp_data["items"][0]["id"] == service_1.id
+    assert resp_data["items"][0]["source"] == service_1.structure.source
+
+    response = api_client.get(
+        url, params={"thematique": schema.Thematique.NUMERIQUE.value}
+    )
+
+    assert response.status_code == 200
+    resp_data = response.json()
+    assert len(resp_data["items"]) == 2
+    assert resp_data["items"][0]["id"] == service_1.id
+    assert resp_data["items"][0]["source"] == service_1.structure.source
+    assert resp_data["items"][1]["id"] == service_2.id
+    assert resp_data["items"][1]["source"] == service_2.structure.source
+
+    response = api_client.get(
+        url, params={"thematique": schema.Thematique.PREPARER_SA_CANDIDATURE.value}
+    )
+    assert response.status_code == 200
+    assert response.json() == {"items": [], "total": 0, "page": 1, "size": ANY}

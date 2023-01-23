@@ -228,6 +228,7 @@ def list_sources_endpoint(
 def list_services(
     db_session: orm.Session,
     source: Optional[str] = None,
+    thematique: Optional[schema.Thematique] = None,
 ):
     query = db_session.query(
         models.Structure.source,
@@ -245,6 +246,9 @@ def list_services(
 
     if source is not None:
         query = query.filter(models.Structure.source == source)
+
+    if thematique is not None:
+        query = query.filter(models.Service.thematiques.contains([thematique.value]))
 
     query = query.order_by(
         models.Structure.created_at,
@@ -264,6 +268,7 @@ def list_services(
 def list_services_endpoint(
     db_session=fastapi.Depends(db.get_session),
     source: Optional[str] = None,
+    thematique: Optional[schema.Thematique] = None,
 ):
     """
     ## Liste les services consolidées par data.inclusion
@@ -278,6 +283,7 @@ def list_services_endpoint(
     return list_services(
         db_session,
         source=source,
+        thematique=thematique,
     )
 
 
