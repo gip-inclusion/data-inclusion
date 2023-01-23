@@ -53,7 +53,7 @@ WITH valid_staging_structures_flat AS (
         AND datawarehouse.data ? 'siret'
         -- exclude soliguide data from rollout
         AND datawarehouse.data ->> 'source' != 'soliguide'
-        AND datawarehouse.logical_date = '2023-01-02'
+        AND datawarehouse.logical_date = '{{ dag_run.conf.logical_date }}'
 ),
 
 annotations AS (
