@@ -3,8 +3,7 @@ from django.db import models
 
 class Datalake(models.Model):
     class Meta:
-        # TODO: faire en sorte que la table se mette à jour tous les jours
-        db_table = "datalake_2023_01_23"
+        db_table = "datalake_latest"
         managed = False
 
     id = models.UUIDField(primary_key=True)
