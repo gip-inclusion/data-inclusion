@@ -9,9 +9,8 @@ def index(request: http.HttpRequest):
     context = {
         "left_dataset_label_str": "1jeune1solution",
         "right_dataset_label_str": "mes_aides_aides",
-        "left_row_instance": Datalake.objects.filter(src_alias="1jeune1solution").first(),
-        "right_rows_qs": Datalake.objects.filter(src_alias="mes_aides_aides"),
-        "column_names": ["id", "slug", "label"],
+        "left_row_instance": Datalake.objects.filter(src_alias="1jeune1solution", file__contains="benefits").first(),
+        "column_names": ["id", "fields.Nom Organisme", "fields.Nom"],
     }
 
     return render(request, "annotation_v2/index.html", context)
@@ -27,7 +26,8 @@ def search_view(request: http.HttpRequest):
     limit = int(request.GET["length"])
     unsafe_search_str = request.GET["search[value]"]
 
-    qs = Datalake.objects.filter(src_alias="1jeune1solution")
+    initial_qs = Datalake.objects.filter(src_alias="mes_aides_aides")
+    qs = initial_qs
 
     if unsafe_search_str:
         qs = qs.annotate(search=search.SearchVector("data")).filter(search=unsafe_search_str)
@@ -39,7 +39,7 @@ def search_view(request: http.HttpRequest):
     return http.JsonResponse(
         data={
             "draw": request.GET["draw"],
-            "recordsTotal": len(Datalake.objects.filter(src_alias="1jeune1solution")),
+            "recordsTotal": len(initial_qs),
             "recordsFiltered": len(qs),
             "data": data,
         }
