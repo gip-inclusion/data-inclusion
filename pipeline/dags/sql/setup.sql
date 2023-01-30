@@ -1,3 +1,19 @@
+/*
+The "datalake" table stores the raw data collected each day.
+
+Each row corresponds to a row in a source.
+
+The only transformation done at this point should be the conversion to json,
+when the source data is stored in a non json format (csv, excel, etc.).
+This is required for storage in a schemaless jsonb column.
+
+* "src_alias": name for the datasource
+* "src_url": url to the datasource
+* "file": ressource path in the datalake bucket on s3. The stream associated to
+a given row can be deduced from this column.
+* "data": raw data
+* "data_normalized": used to store source row id
+*/
 CREATE TABLE IF NOT EXISTS datalake (
     created_at TIMESTAMP WITH TIME ZONE DEFAULT now(),
     logical_date DATE,
@@ -14,6 +30,13 @@ CREATE INDEX IF NOT EXISTS datalake_id_idx ON datalake (
 );
 CREATE INDEX IF NOT EXISTS datalake_batch_id_idx ON datalake (batch_id);
 CREATE INDEX IF NOT EXISTS datalake_src_alias_idx ON datalake (src_alias);
+
+-- Alias the latest datalake partition for convenience
+CREATE OR REPLACE VIEW datalake_latest AS (
+    SELECT * -- noqa: L044
+    FROM datalake
+    WHERE logical_date = '{{ dag_run.logical_date.astimezone(dag.timezone)|ds|replace("-", "_") }}' -- noqa: L016
+);
 
 CREATE TABLE IF NOT EXISTS datawarehouse (
     created_at TIMESTAMP WITH TIME ZONE DEFAULT now(),
