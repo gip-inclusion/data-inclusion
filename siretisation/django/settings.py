@@ -44,7 +44,7 @@ INSTALLED_APPS = [
     "meta",
     "users",
     "annotation",
-    "annotation_v2",
+    "matching",
     "sirene",
     "cnfs",
 ]

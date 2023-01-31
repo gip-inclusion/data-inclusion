@@ -2,7 +2,7 @@ from django.contrib import admin
 from django.urls import include, path
 
 import annotation.views
-import annotation_v2.views
+import matching.views
 
 urlpatterns = [
     path("admin/", admin.site.urls),
@@ -12,6 +12,7 @@ urlpatterns = [
     path("partials/search", annotation.views.partial_search),
     path("partials/task", annotation.views.partial_task),
     path("partials/submit", annotation.views.partial_submit),
-    path("v2", annotation_v2.views.index),
-    path("search", annotation_v2.views.search_view),
+    path("matching", matching.views.index, name="matching"),
+    path("search", matching.views.search_view),
+    path("partials/matching", matching.views.partial_matching),
 ]
