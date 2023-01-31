@@ -152,7 +152,11 @@ def partial_matching(request: http.HttpRequest):
         return http.HttpResponseBadRequest()
 
     right_row_instance_list = [
-        models.Datalake.objects.filter(id=row_id).first() for row_id in unsafe_right_row_id_list
+        models.Datalake.objects.filter(
+            id=row_id,
+            logical_date=timezone.now().date() - timedelta(days=1),
+        ).first()
+        for row_id in unsafe_right_row_id_list
     ]
     if None in right_row_instance_list:
         return http.HttpResponseBadRequest()
