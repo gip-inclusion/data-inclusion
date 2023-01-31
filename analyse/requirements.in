@@ -10,3 +10,4 @@ SQLAlchemy
 seaborn
 pyairtable
 pyproj
+minio
