@@ -144,7 +144,10 @@ def partial_matching(request: http.HttpRequest):
     if right_stream_instance is None:
         return http.HttpResponseBadRequest()
 
-    left_row_instance = models.Datalake.objects.filter(id=unsafe_left_row_id).first()
+    left_row_instance = models.Datalake.objects.filter(
+        id=unsafe_left_row_id,
+        logical_date=timezone.now().date() - timedelta(days=1),
+    ).first()
     if left_row_instance is None:
         return http.HttpResponseBadRequest()
 
