@@ -64,7 +64,7 @@ def index(request: http.HttpRequest):
             {
                 "left_datasource_name": left_datasource_instance.name,
                 "left_stream_name": left_stream_instance.name,
-                "logical_date": "2023-01-30",
+                "logical_date": timezone.now().date() - timedelta(days=1),
             },
         )[0]
     else:
