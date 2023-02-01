@@ -106,13 +106,12 @@ def search_view(request: http.HttpRequest):
         src_alias=right_stream_instance.datasource.name,
         file__contains=right_stream_instance.name,
     )
-    qs = initial_qs
-    qs = qs.order_by("id")
 
+    qs = initial_qs
     if unsafe_search_str:
         qs = qs.annotate(search=search.SearchVector("data")).filter(search=unsafe_search_str)
-
     qs = qs.values("id", "data")
+    qs = qs.order_by("id")
 
     data = [{"DT_RowId": row_instance["id"], **row_instance["data"]} for row_instance in qs[offset : offset + limit]]
 
@@ -146,6 +145,7 @@ def partial_matching(request: http.HttpRequest):
 
     left_row_instance = models.Datalake.objects.filter(
         id=unsafe_left_row_id,
+        src_alias=left_stream_instance.datasource.name,
         logical_date=timezone.now().date() - timedelta(days=1),
     ).first()
     if left_row_instance is None:
@@ -154,6 +154,7 @@ def partial_matching(request: http.HttpRequest):
     right_row_instance_list = [
         models.Datalake.objects.filter(
             id=row_id,
+            src_alias=right_stream_instance.datasource.name,
             logical_date=timezone.now().date() - timedelta(days=1),
         ).first()
         for row_id in unsafe_right_row_id_list
