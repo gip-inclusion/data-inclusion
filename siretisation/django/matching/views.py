@@ -10,7 +10,7 @@ from furl import furl
 
 from matching import models
 
-
+@login_required()
 def index(request: http.HttpRequest):
     unsafe_left_datasource_slug = request.GET.get("left_datasource_slug", None)
     unsafe_left_stream_slug = request.GET.get("left_stream_slug", None)
@@ -85,7 +85,7 @@ def index(request: http.HttpRequest):
 
     return shortcuts.render(request, "matching/index.html", context)
 
-
+@login_required()
 def search_view(request: http.HttpRequest):
     """DataTables search endpoint.
 
@@ -124,7 +124,7 @@ def search_view(request: http.HttpRequest):
         }
     )
 
-
+@login_required()
 def partial_matching(request: http.HttpRequest):
     if not request.htmx:
         return http.HttpResponseNotFound()
