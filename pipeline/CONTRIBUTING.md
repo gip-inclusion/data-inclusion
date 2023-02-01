@@ -35,3 +35,56 @@ vim requirements/requirements.in
 pip-compile requirements/requirements.in > requirements/requirements.txt
 pip-compile requirements/dev-requirements.in > requirements/dev-requirements.txt
 ```
+
+## Running the containers
+
+You must have followed the Setup steps above.
+
+Depending on how you installed docker, you may use either `docker-compose` or `docker compose`.
+
+Run all commands from the repository root directory (same level as `docker-compose.yml`)
+
+You can check the status of the containers with 
+
+```shell
+docker compose ps
+```
+
+You can check the logs of a single container with
+
+```shell
+docker compose logs [airflow | minio | target-db | ... ]
+```
+
+### Database
+
+```shell
+docker compose up -d target-db
+```
+
+### Airflow
+
+Build (if necessary) and start Airflow (Web service + task scheduler):
+
+```shell
+docker compose up -d airflow
+```
+
+Airflow Web service will be available at http://localhost:8080
+
+### API
+
+```shell
+docker compose up -d api
+```
+
+The API front will be running at http://localhost:8000 (e.g. http://localhost:8000/api/v0/docs)
+
+### minio
+
+We use minio to mock our remote S3 for local development.
+
+```shell
+docker compose up -d minio
+docker compose up minio-extra
+```
