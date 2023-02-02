@@ -1,9 +1,6 @@
 {
 	"folders": [
 		{
-			"path": ".."
-		},
-		{
 			"path": "../api"
 		},
 		{
@@ -14,6 +11,9 @@
 		},
 		{
 			"path": "../siretisation"
+		},
+		{
+			"path": ".."
 		}
 	]
 }
