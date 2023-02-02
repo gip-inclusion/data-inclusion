@@ -1,6 +1,6 @@
 -c constraints.txt
 
-apache-airflow[amazon,postgres]==2.4.2
+apache-airflow[amazon,postgres]==2.5.1
 
 click
 GeoAlchemy2

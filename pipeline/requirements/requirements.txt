@@ -4,7 +4,7 @@
 #
 #    pip-compile requirements/requirements.in
 #
-alembic==1.8.1
+alembic==1.9.2
     # via
     #   -c requirements/constraints.txt
     #   apache-airflow
@@ -12,39 +12,39 @@ anyio==3.6.2
     # via
     #   -c requirements/constraints.txt
     #   httpcore
-apache-airflow[amazon,postgres]==2.4.2
+apache-airflow[amazon,postgres]==2.5.1
     # via
     #   -r requirements/requirements.in
     #   apache-airflow-providers-amazon
     #   apache-airflow-providers-postgres
-apache-airflow-providers-amazon==6.0.0
+apache-airflow-providers-amazon==7.1.0
     # via
     #   -c requirements/constraints.txt
     #   apache-airflow
-apache-airflow-providers-common-sql==1.2.0
+apache-airflow-providers-common-sql==1.3.3
     # via
     #   -c requirements/constraints.txt
     #   apache-airflow
     #   apache-airflow-providers-amazon
     #   apache-airflow-providers-postgres
     #   apache-airflow-providers-sqlite
-apache-airflow-providers-ftp==3.1.0
+apache-airflow-providers-ftp==3.3.0
     # via
     #   -c requirements/constraints.txt
     #   apache-airflow
-apache-airflow-providers-http==4.0.0
+apache-airflow-providers-http==4.1.1
     # via
     #   -c requirements/constraints.txt
     #   apache-airflow
-apache-airflow-providers-imap==3.0.0
+apache-airflow-providers-imap==3.1.1
     # via
     #   -c requirements/constraints.txt
     #   apache-airflow
-apache-airflow-providers-postgres==5.2.2
+apache-airflow-providers-postgres==5.4.0
     # via
     #   -c requirements/constraints.txt
     #   apache-airflow
-apache-airflow-providers-sqlite==3.2.1
+apache-airflow-providers-sqlite==3.3.1
     # via
     #   -c requirements/constraints.txt
     #   apache-airflow
@@ -60,14 +60,14 @@ asn1crypto==1.5.1
     # via
     #   -c requirements/constraints.txt
     #   scramp
-attrs==22.1.0
+attrs==22.2.0
     # via
     #   -c requirements/constraints.txt
     #   apache-airflow
     #   cattrs
     #   fiona
     #   jsonschema
-babel==2.10.3
+babel==2.11.0
     # via
     #   -c requirements/constraints.txt
     #   flask-babel
@@ -79,13 +79,13 @@ blinker==1.5
     # via
     #   -c requirements/constraints.txt
     #   apache-airflow
-boto3==1.24.94
+boto3==1.26.51
     # via
     #   -c requirements/constraints.txt
     #   apache-airflow-providers-amazon
     #   redshift-connector
     #   watchtower
-botocore==1.27.94
+botocore==1.29.51
     # via
     #   -c requirements/constraints.txt
     #   boto3
@@ -100,7 +100,7 @@ cattrs==22.2.0
     # via
     #   -c requirements/constraints.txt
     #   apache-airflow
-certifi==2022.9.24
+certifi==2022.12.7
     # via
     #   -c requirements/constraints.txt
     #   fiona
@@ -136,7 +136,7 @@ clickclick==20.10.2
     #   connexion
 cligj==0.7.2
     # via fiona
-colorama==0.4.5
+colorama==0.4.6
     # via
     #   -c requirements/constraints.txt
     #   flask-appbuilder
@@ -152,19 +152,19 @@ configupdater==3.1.1
     # via
     #   -c requirements/constraints.txt
     #   apache-airflow
-connexion[flask,swagger-ui]==2.14.1
+connexion[flask]==2.14.1
     # via
     #   -c requirements/constraints.txt
     #   apache-airflow
-cron-descriptor==1.2.31
+cron-descriptor==1.2.32
     # via
     #   -c requirements/constraints.txt
     #   apache-airflow
-croniter==1.3.7
+croniter==1.3.8
     # via
     #   -c requirements/constraints.txt
     #   apache-airflow
-cryptography==36.0.2
+cryptography==38.0.4
     # via
     #   -c requirements/constraints.txt
     #   apache-airflow
@@ -182,7 +182,7 @@ dill==0.3.1.1
     # via
     #   -c requirements/constraints.txt
     #   apache-airflow
-dnspython==2.2.1
+dnspython==2.3.0
     # via
     #   -c requirements/constraints.txt
     #   email-validator
@@ -197,11 +197,11 @@ email-validator==1.3.0
     #   pydantic
 et-xmlfile==1.1.0
     # via openpyxl
-exceptiongroup==1.0.0rc9
+exceptiongroup==1.1.0
     # via
     #   -c requirements/constraints.txt
     #   cattrs
-fiona==1.8.22
+fiona==1.9.0
     # via geopandas
 flask==2.2.2
     # via
@@ -224,7 +224,7 @@ flask-babel==2.0.0
     # via
     #   -c requirements/constraints.txt
     #   flask-appbuilder
-flask-caching==2.0.1
+flask-caching==2.0.2
     # via
     #   -c requirements/constraints.txt
     #   apache-airflow
@@ -245,12 +245,12 @@ flask-sqlalchemy==2.5.1
     # via
     #   -c requirements/constraints.txt
     #   flask-appbuilder
-flask-wtf==1.0.1
+flask-wtf==1.1.1
     # via
     #   -c requirements/constraints.txt
     #   apache-airflow
     #   flask-appbuilder
-geoalchemy2==0.12.5
+geoalchemy2==0.13.1
     # via -r requirements/requirements.in
 geopandas==0.12.2
     # via -r requirements/requirements.in
@@ -258,7 +258,7 @@ graphviz==0.20.1
     # via
     #   -c requirements/constraints.txt
     #   apache-airflow
-greenlet==1.1.3.post0
+greenlet==2.0.1
     # via
     #   -c requirements/constraints.txt
     #   sqlalchemy
@@ -266,15 +266,15 @@ gunicorn==20.1.0
     # via
     #   -c requirements/constraints.txt
     #   apache-airflow
-h11==0.12.0
+h11==0.14.0
     # via
     #   -c requirements/constraints.txt
     #   httpcore
-httpcore==0.15.0
+httpcore==0.16.3
     # via
     #   -c requirements/constraints.txt
     #   httpx
-httpx==0.23.0
+httpx==0.23.3
     # via
     #   -c requirements/constraints.txt
     #   apache-airflow
@@ -303,7 +303,6 @@ jinja2==3.1.2
     #   flask
     #   flask-babel
     #   python-nvd3
-    #   swagger-ui-bundle
 jmespath==0.10.0
     # via
     #   -c requirements/constraints.txt
@@ -313,13 +312,13 @@ jsonpath-ng==1.5.3
     # via
     #   -c requirements/constraints.txt
     #   apache-airflow-providers-amazon
-jsonschema==4.16.0
+jsonschema==4.17.3
     # via
     #   -c requirements/constraints.txt
     #   apache-airflow
     #   connexion
     #   flask-appbuilder
-lazy-object-proxy==1.7.1
+lazy-object-proxy==1.9.0
     # via
     #   -c requirements/constraints.txt
     #   apache-airflow
@@ -332,11 +331,11 @@ lockfile==0.12.2
     #   -c requirements/constraints.txt
     #   apache-airflow
     #   python-daemon
-lxml==4.9.1
+lxml==4.9.2
     # via
     #   -c requirements/constraints.txt
     #   redshift-connector
-mako==1.2.3
+mako==1.2.4
     # via
     #   -c requirements/constraints.txt
     #   alembic
@@ -349,7 +348,7 @@ markdown-it-py==2.1.0
     #   -c requirements/constraints.txt
     #   apache-airflow
     #   mdit-py-plugins
-markupsafe==2.1.1
+markupsafe==2.1.2
     # via
     #   -c requirements/constraints.txt
     #   apache-airflow
@@ -357,7 +356,7 @@ markupsafe==2.1.1
     #   mako
     #   werkzeug
     #   wtforms
-marshmallow==3.18.0
+marshmallow==3.19.0
     # via
     #   -c requirements/constraints.txt
     #   flask-appbuilder
@@ -376,7 +375,7 @@ marshmallow-sqlalchemy==0.26.1
     # via
     #   -c requirements/constraints.txt
     #   flask-appbuilder
-mdit-py-plugins==0.3.1
+mdit-py-plugins==0.3.3
     # via
     #   -c requirements/constraints.txt
     #   apache-airflow
@@ -386,15 +385,15 @@ mdurl==0.1.2
     #   markdown-it-py
 munch==2.5.0
     # via fiona
-mypy-boto3-appflow==1.24.90
+mypy-boto3-appflow==1.26.32
     # via
     #   -c requirements/constraints.txt
     #   apache-airflow-providers-amazon
-mypy-boto3-rds==1.24.76
+mypy-boto3-rds==1.26.47
     # via
     #   -c requirements/constraints.txt
     #   apache-airflow-providers-amazon
-mypy-boto3-redshift-data==1.24.36.post1
+mypy-boto3-redshift-data==1.26.30
     # via
     #   -c requirements/constraints.txt
     #   apache-airflow-providers-amazon
@@ -403,7 +402,7 @@ numpy==1.22.4
     #   -c requirements/constraints.txt
     #   pandas
     #   shapely
-openpyxl==3.0.10
+openpyxl==3.1.0
     # via -r requirements/requirements.in
 packaging==21.3
     # via
@@ -415,11 +414,10 @@ packaging==21.3
     #   marshmallow
     #   redshift-connector
     #   sqlalchemy-redshift
-pandas==1.5.1
+pandas==1.5.2
     # via
     #   -c requirements/constraints.txt
     #   -r requirements/requirements.in
-    #   apache-airflow-providers-amazon
     #   geopandas
 pathspec==0.9.0
     # via
@@ -441,14 +439,17 @@ prison==0.2.1
     # via
     #   -c requirements/constraints.txt
     #   flask-appbuilder
-psutil==5.9.3
+psutil==5.9.4
     # via
     #   -c requirements/constraints.txt
     #   apache-airflow
-psycopg2==2.9.4
+psycopg2==2.9.5
     # via
     #   -c requirements/constraints.txt
     #   -r requirements/requirements.in
+psycopg2-binary==2.9.5
+    # via
+    #   -c requirements/constraints.txt
     #   apache-airflow-providers-postgres
 pyairtable==1.4.0
     # via -r requirements/requirements.in
@@ -458,9 +459,10 @@ pycparser==2.21
     #   cffi
 pydantic[email]==1.10.4
     # via
+    #   -c requirements/constraints.txt
     #   -r requirements/requirements.in
     #   data-inclusion-schema
-pygments==2.13.0
+pygments==2.14.0
     # via
     #   -c requirements/constraints.txt
     #   apache-airflow
@@ -479,11 +481,11 @@ pyproj==3.4.1
     # via
     #   -r requirements/requirements.in
     #   geopandas
-pyrsistent==0.18.1
+pyrsistent==0.19.3
     # via
     #   -c requirements/constraints.txt
     #   jsonschema
-python-daemon==2.3.1
+python-daemon==2.3.2
     # via
     #   -c requirements/constraints.txt
     #   apache-airflow
@@ -500,12 +502,12 @@ python-nvd3==0.15.0
     # via
     #   -c requirements/constraints.txt
     #   apache-airflow
-python-slugify==6.1.2
+python-slugify==7.0.0
     # via
     #   -c requirements/constraints.txt
     #   apache-airflow
     #   python-nvd3
-pytz==2022.5
+pytz==2022.7.1
     # via
     #   -c requirements/constraints.txt
     #   babel
@@ -526,7 +528,7 @@ redshift-connector==2.0.909
     # via
     #   -c requirements/constraints.txt
     #   apache-airflow-providers-amazon
-requests==2.28.1
+requests==2.28.2
     # via
     #   -c requirements/constraints.txt
     #   -r requirements/requirements.in
@@ -535,7 +537,7 @@ requests==2.28.1
     #   pyairtable
     #   redshift-connector
     #   requests-toolbelt
-requests-toolbelt==0.10.0
+requests-toolbelt==0.10.1
     # via
     #   -c requirements/constraints.txt
     #   apache-airflow-providers-http
@@ -543,7 +545,7 @@ rfc3986[idna2008]==1.5.0
     # via
     #   -c requirements/constraints.txt
     #   httpx
-rich==12.6.0
+rich==13.1.0
     # via
     #   -c requirements/constraints.txt
     #   apache-airflow
@@ -551,7 +553,7 @@ s3transfer==0.6.0
     # via
     #   -c requirements/constraints.txt
     #   boto3
-scramp==1.4.1
+scramp==1.4.4
     # via
     #   -c requirements/constraints.txt
     #   redshift-connector
@@ -559,12 +561,11 @@ setproctitle==1.3.2
     # via
     #   -c requirements/constraints.txt
     #   apache-airflow
-shapely==2.0.0
+shapely==2.0.1
     # via geopandas
 six==1.16.0
     # via
     #   -c requirements/constraints.txt
-    #   fiona
     #   jsonpath-ng
     #   munch
     #   prison
@@ -579,7 +580,7 @@ soupsieve==2.3.2.post1
     # via
     #   -c requirements/constraints.txt
     #   beautifulsoup4
-sqlalchemy==1.4.27
+sqlalchemy==1.4.46
     # via
     #   -c requirements/constraints.txt
     #   -r requirements/requirements.in
@@ -592,15 +593,15 @@ sqlalchemy==1.4.27
     #   sqlalchemy-jsonfield
     #   sqlalchemy-redshift
     #   sqlalchemy-utils
-sqlalchemy-jsonfield==1.0.0
+sqlalchemy-jsonfield==1.0.1.post0
     # via
     #   -c requirements/constraints.txt
     #   apache-airflow
-sqlalchemy-redshift==0.8.11
+sqlalchemy-redshift==0.8.12
     # via
     #   -c requirements/constraints.txt
     #   apache-airflow-providers-amazon
-sqlalchemy-utils==0.38.3
+sqlalchemy-utils==0.39.0
     # via
     #   -c requirements/constraints.txt
     #   flask-appbuilder
@@ -608,10 +609,6 @@ sqlparse==0.4.3
     # via
     #   -c requirements/constraints.txt
     #   apache-airflow-providers-common-sql
-swagger-ui-bundle==0.0.9
-    # via
-    #   -c requirements/constraints.txt
-    #   connexion
 tabulate==0.9.0
     # via
     #   -c requirements/constraints.txt
@@ -621,7 +618,7 @@ tenacity==8.1.0
     #   -c requirements/constraints.txt
     #   -r requirements/requirements.in
     #   apache-airflow
-termcolor==2.0.1
+termcolor==2.2.0
     # via
     #   -c requirements/constraints.txt
     #   apache-airflow
@@ -649,7 +646,7 @@ unicodecsv==0.14.1
     # via
     #   -c requirements/constraints.txt
     #   apache-airflow
-urllib3==1.26.12
+urllib3==1.26.14
     # via
     #   -c requirements/constraints.txt
     #   -r requirements/requirements.in
@@ -676,7 +673,7 @@ wtforms==3.0.1
     #   -c requirements/constraints.txt
     #   flask-appbuilder
     #   flask-wtf
-xlsxwriter==3.0.5
+xlsxwriter==3.0.7
     # via -r requirements/requirements.in
 
 # The following packages are considered to be unsafe in a requirements file:

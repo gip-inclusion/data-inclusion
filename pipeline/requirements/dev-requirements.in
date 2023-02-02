@@ -6,7 +6,7 @@ pytest
 black
 pre-commit
 # As of writing,
-# * airflow>2.4 requires cachetools==4
+# * airflow>2.5 requires cachetools==4
 # * tox>4 requires cachetools>=5
 # Therefore, constrain the tox version
 tox<4
