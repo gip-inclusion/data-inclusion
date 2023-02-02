@@ -62,6 +62,10 @@ apispec[yaml]==3.3.2
     #   -c requirements/constraints.txt
     #   -r requirements/requirements.txt
     #   flask-appbuilder
+appdirs==1.4.4
+    # via
+    #   -c requirements/constraints.txt
+    #   sqlfluff
 argcomplete==2.0.0
     # via
     #   -c requirements/constraints.txt
@@ -143,6 +147,11 @@ cfgv==3.3.1
     # via
     #   -c requirements/constraints.txt
     #   pre-commit
+chardet==4.0.0
+    # via
+    #   -c requirements/constraints.txt
+    #   diff-cover
+    #   sqlfluff
 charset-normalizer==2.1.1
     # via
     #   -c requirements/constraints.txt
@@ -159,6 +168,7 @@ click==8.1.3
     #   fiona
     #   flask
     #   flask-appbuilder
+    #   sqlfluff
 click-plugins==1.1.1
     # via
     #   -c requirements/constraints.txt
@@ -178,6 +188,7 @@ colorama==0.4.6
     #   -c requirements/constraints.txt
     #   -r requirements/requirements.txt
     #   flask-appbuilder
+    #   sqlfluff
 colorlog==4.8.0
     # via
     #   -c requirements/constraints.txt
@@ -225,6 +236,8 @@ deprecated==1.2.13
     #   -c requirements/constraints.txt
     #   -r requirements/requirements.txt
     #   apache-airflow
+diff-cover==7.4.0
+    # via sqlfluff
 dill==0.3.1.1
     # via
     #   -c requirements/constraints.txt
@@ -392,9 +405,11 @@ jinja2==3.1.2
     #   -c requirements/constraints.txt
     #   -r requirements/requirements.txt
     #   apache-airflow
+    #   diff-cover
     #   flask
     #   flask-babel
     #   python-nvd3
+    #   sqlfluff
 jmespath==0.10.0
     # via
     #   -c requirements/constraints.txt
@@ -551,6 +566,7 @@ pathspec==0.9.0
     #   -r requirements/requirements.txt
     #   apache-airflow
     #   black
+    #   sqlfluff
 pendulum==2.1.2
     # via
     #   -c requirements/constraints.txt
@@ -566,6 +582,7 @@ pluggy==1.0.0
     #   -c requirements/constraints.txt
     #   -r requirements/requirements.txt
     #   apache-airflow
+    #   diff-cover
     #   pytest
     #   tox
 ply==3.11
@@ -618,6 +635,7 @@ pygments==2.14.0
     #   -c requirements/constraints.txt
     #   -r requirements/requirements.txt
     #   apache-airflow
+    #   diff-cover
     #   rich
 pyjwt==2.6.0
     # via
@@ -644,6 +662,7 @@ pytest==6.2.5
     # via
     #   -c requirements/constraints.txt
     #   -r requirements/dev-requirements.in
+    #   sqlfluff
 python-daemon==2.3.2
     # via
     #   -c requirements/constraints.txt
@@ -691,11 +710,16 @@ pyyaml==6.0
     #   clickclick
     #   connexion
     #   pre-commit
+    #   sqlfluff
 redshift-connector==2.0.909
     # via
     #   -c requirements/constraints.txt
     #   -r requirements/requirements.txt
     #   apache-airflow-providers-amazon
+regex==2022.10.31
+    # via
+    #   -c requirements/constraints.txt
+    #   sqlfluff
 requests==2.28.2
     # via
     #   -c requirements/constraints.txt
@@ -788,6 +812,8 @@ sqlalchemy-utils==0.39.0
     #   -c requirements/constraints.txt
     #   -r requirements/requirements.txt
     #   flask-appbuilder
+sqlfluff==1.4.5
+    # via -r requirements/dev-requirements.in
 sqlparse==0.4.3
     # via
     #   -c requirements/constraints.txt
@@ -798,6 +824,10 @@ tabulate==0.9.0
     #   -c requirements/constraints.txt
     #   -r requirements/requirements.txt
     #   apache-airflow
+tblib==1.7.0
+    # via
+    #   -c requirements/constraints.txt
+    #   sqlfluff
 tenacity==8.1.0
     # via
     #   -c requirements/constraints.txt
@@ -817,6 +847,7 @@ toml==0.10.2
     # via
     #   -c requirements/constraints.txt
     #   pytest
+    #   sqlfluff
 tomli==2.0.1
     # via
     #   -c requirements/constraints.txt
@@ -828,6 +859,7 @@ tqdm==4.64.1
     # via
     #   -c requirements/constraints.txt
     #   -r requirements/requirements.txt
+    #   sqlfluff
 typing-extensions==4.4.0
     # via
     #   -c requirements/constraints.txt
@@ -837,6 +869,7 @@ typing-extensions==4.4.0
     #   mypy-boto3-rds
     #   mypy-boto3-redshift-data
     #   pydantic
+    #   sqlfluff
 uc-micro-py==1.0.1
     # via
     #   -c requirements/constraints.txt

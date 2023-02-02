@@ -10,3 +10,4 @@ pre-commit
 # * tox>4 requires cachetools>=5
 # Therefore, constrain the tox version
 tox<4
+sqlfluff
