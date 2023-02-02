@@ -20,7 +20,7 @@ black[jupyter]==22.8.0
     # via -r requirements.in
 bleach==5.0.1
     # via nbconvert
-certifi==2022.9.24
+certifi==2022.12.7
     # via
     #   minio
     #   pyproj
@@ -222,8 +222,6 @@ terminado==0.15.0
 tinycss2==1.1.1
     # via nbconvert
 tokenize-rt==4.2.1
-    # via black
-tomli==2.0.1
     # via black
 tornado==6.2
     # via
