@@ -1,0 +1,12 @@
+{
+    "editor.rulers": [
+        88, // Max comment length
+        88, // Max line length
+    ],
+    "python.formatting.provider": "black",
+    "python.formatting.blackPath": ".venv/bin/black",
+    "python.defaultInterpreterPath": ".venv/bin/python",
+    "python.analysis.typeCheckingMode": "basic",
+    "python.testing.pytestEnabled": true,
+    "python.testing.unittestEnabled": false,
+}
