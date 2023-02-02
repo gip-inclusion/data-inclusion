@@ -52,7 +52,7 @@ WITH valid_staging_structures_flat AS (
         (datawarehouse.data_normalized ->> 'is_valid')::BOOLEAN
         AND datawarehouse.data ? 'siret'
         -- exclude soliguide data from rollout
-        AND datawarehouse.data ->> 'source' != 'soliguide'
+        AND datawarehouse.data ->> 'source' NOT IN ('soliguide', 'etab_publics')
         AND datawarehouse.logical_date = '{{ dag_run.conf.logical_date }}'
 ),
 

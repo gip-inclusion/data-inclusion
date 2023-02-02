@@ -64,7 +64,7 @@ WITH valid_structures_flat AS (
         (data_normalized ->> 'is_valid')::BOOLEAN
         AND data ? 'siret'
         -- exclude soliguide data
-        AND data ->> 'source' != 'soliguide'
+        AND data ->> 'source' NOT IN ('soliguide', 'etab_publics')
         AND logical_date = '{{ dag_run.conf.logical_date }}'
 ),
 
