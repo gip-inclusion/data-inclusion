@@ -13,7 +13,8 @@ import pendulum
 from airflow.models import DAG, DagRun, Variable
 from airflow.operators import empty, python
 from airflow.providers.amazon.aws.hooks import s3
-from airflow.providers.postgres.operators import postgres
+from airflow.providers.postgres.hooks.postgres import PostgresHook
+from airflow.providers.postgres.operators.postgres import PostgresOperator
 from airflow.utils.task_group import TaskGroup
 
 from data_inclusion.scripts.tasks.constants import SourceType
@@ -84,7 +85,7 @@ def _load(
 
     from data_inclusion.scripts.tasks import read
 
-    pg_hook = postgres.PostgresHook(postgres_conn_id="pg")
+    pg_hook = PostgresHook(postgres_conn_id="pg")
 
     logical_date_ds = pendulum.instance(
         dag_run.logical_date.astimezone(dag.timezone)
@@ -168,7 +169,7 @@ def _reshape(
 
     from data_inclusion.scripts.tasks import reshape
 
-    pg_hook = postgres.PostgresHook(postgres_conn_id="pg")
+    pg_hook = PostgresHook(postgres_conn_id="pg")
 
     logical_date_ds = pendulum.instance(
         dag_run.logical_date.astimezone(dag.timezone)
@@ -225,7 +226,7 @@ def _geocode(
 ):
     from data_inclusion.scripts.tasks import geocoding
 
-    pg_hook = postgres.PostgresHook(postgres_conn_id="pg")
+    pg_hook = PostgresHook(postgres_conn_id="pg")
 
     df = pg_hook.get_pandas_df(
         sql=textwrap.dedent(
@@ -290,7 +291,7 @@ def _validate(
 ):
     from data_inclusion.scripts.tasks import validate
 
-    pg_hook = postgres.PostgresHook(postgres_conn_id="pg")
+    pg_hook = PostgresHook(postgres_conn_id="pg")
 
     # structures
     structures_df = pg_hook.get_pandas_df(
@@ -524,7 +525,7 @@ with airflow.DAG(
 ) as dag:
     start = empty.EmptyOperator(task_id="start")
 
-    setup = postgres.PostgresOperator(
+    setup = PostgresOperator(
         task_id="setup",
         postgres_conn_id="pg",
         sql="sql/setup.sql",
@@ -550,7 +551,7 @@ with airflow.DAG(
             setup >> extract
             extract >> load
 
-            compute_flux = postgres.PostgresOperator(
+            compute_flux = PostgresOperator(
                 task_id="compute_flux",
                 postgres_conn_id="pg",
                 sql="sql/compute_flux.sql",
@@ -565,13 +566,13 @@ with airflow.DAG(
                     python_callable=_reshape,
                     op_kwargs=src_config.as_op_kwargs(),
                 )
-                check_sirets = postgres.PostgresOperator(
+                check_sirets = PostgresOperator(
                     task_id="check_sirets",
                     postgres_conn_id="pg",
                     sql="sql/join_dwh_sirene.sql",
                     params={"src_url": src_config.src_url},
                 )
-                flag_personal_emails = postgres.PostgresOperator(
+                flag_personal_emails = PostgresOperator(
                     task_id="flag_personal_emails",
                     postgres_conn_id="pg",
                     sql="sql/flag_personal_emails.sql",

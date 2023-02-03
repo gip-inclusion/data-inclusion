@@ -7,7 +7,7 @@ import pandas as pd
 import pendulum
 from airflow.models import Variable
 from airflow.operators import empty, python
-from airflow.providers.postgres.operators import postgres
+from airflow.providers.postgres.hooks import postgres
 
 logger = logging.getLogger(__name__)
 
