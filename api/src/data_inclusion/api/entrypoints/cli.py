@@ -16,12 +16,20 @@ def cli(verbose: int):
 
 
 @cli.command(name="generate_token")
-@click.argument("username", type=click.STRING)
+@click.argument("email", type=click.STRING)
+@click.option(
+    "--admin",
+    is_flag=True,
+    show_default=True,
+    default=False,
+    help="Generate an admin token",
+)
 def generate_token_for_user(
-    username: str,
+    email: str,
+    admin: bool,
 ):
-    """Generate a token associated with the given username."""
-    click.echo(jwt.create_access_token(username))
+    """Generate a token associated with the given email."""
+    click.echo(jwt.create_access_token(subject=email, admin=admin))
 
 
 if __name__ == "__main__":
