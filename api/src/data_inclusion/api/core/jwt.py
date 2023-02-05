@@ -1,4 +1,3 @@
-from datetime import datetime
 from typing import Any, Optional, Union
 
 import jose
@@ -9,12 +8,14 @@ from data_inclusion.api import settings
 ALGORITHM = "HS256"
 
 
-def create_access_token(subject: Union[str, Any]) -> str:
-    expire = datetime.utcnow() + settings.ACCESS_TOKEN_LIFETIME
+def create_access_token(
+    subject: Union[str, Any],
+    admin: Optional[bool] = False,
+) -> str:
     encoded_jwt = jwt.encode(
         claims={
-            "exp": expire,
             "sub": str(subject),
+            "admin": admin,
         },
         key=settings.SECRET_KEY,
         algorithm=ALGORITHM,

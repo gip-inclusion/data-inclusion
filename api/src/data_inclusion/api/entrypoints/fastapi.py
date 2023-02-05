@@ -78,7 +78,7 @@ def create_app() -> fastapi.FastAPI:
 def authenticated(
     request: requests.Request,
     token: HTTPAuthorizationCredentials = fastapi.Depends(HTTPBearer()),
-):
+) -> Optional[dict]:
     payload = jwt.verify_token(token.credentials)
     if payload is None:
         raise fastapi.HTTPException(
@@ -90,10 +90,9 @@ def authenticated(
     # TODO: https://www.starlette.io/authentication/ instead
     if "sub" in payload:
         request.scope["user"] = payload["sub"]
-    elif "user_id" in payload:
-        # legacy token generated before the migration from django to fastapi
-        request.scope["user"] = payload["user_id"]
-        logger.warning("Deprecated token")
+        request.scope["admin"] = payload.get("admin", False)
+
+    return payload
 
 
 v0_api_router = fastapi.APIRouter(
@@ -357,6 +356,28 @@ def list_typologies_structures_endpoint():
     ## Documente les typologies de structures
     """
     return schema.Typologie.as_dict_list()
+
+
+def create_token(email: str) -> schema.Token:
+    return schema.Token(access=jwt.create_access_token(subject=email))
+
+
+@v0_api_router.post(
+    "/create_token",
+    response_model=schema.Token,
+    include_in_schema=False,
+)
+def create_token_endpoint(
+    token_creation_data: schema.TokenCreationData,
+    request: fastapi.Request,
+):
+    if request.scope.get("admin"):
+        return create_token(email=token_creation_data.email)
+    else:
+        raise fastapi.HTTPException(
+            status_code=fastapi.status.HTTP_401_UNAUTHORIZED,
+            detail="Unauthorized.",
+        )
 
 
 app = create_app()

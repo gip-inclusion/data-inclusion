@@ -192,3 +192,11 @@ class Structure(BaseModel):
 
     class Config:
         orm_mode = True
+
+
+class TokenCreationData(BaseModel):
+    email: str
+
+
+class Token(BaseModel):
+    access: str

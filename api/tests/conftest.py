@@ -29,10 +29,15 @@ def force_authenticate(request, api_client):
     """
     from data_inclusion.api.core import jwt
 
+    token = None
+
     if request.node.get_closest_marker("with_token"):
-        api_client.headers.update(
-            {"Authorization": f"Bearer {jwt.create_access_token('some_user')}"}
-        )
+        token = jwt.create_access_token("some_user")
+    elif request.node.get_closest_marker("with_admin_token"):
+        token = jwt.create_access_token("admin_user", admin=True)
+
+    if token is not None:
+        api_client.headers.update({"Authorization": f"Bearer {token}"})
 
 
 @pytest.fixture(scope="session")

@@ -24,5 +24,6 @@ target-version = ["py310"]
 [tool.pytest.ini_options]
 markers = '''
     with_token: inject token headers in test client
+    with_admin_token: inject admin token headers in test client
 '''
 testpaths = "tests"
