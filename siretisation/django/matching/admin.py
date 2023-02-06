@@ -1,6 +1,6 @@
-from django.contrib import admin
-
 from matching import models
+
+from django.contrib import admin
 
 
 @admin.register(models.Datasource)
@@ -22,8 +22,9 @@ class MatchingAdmin(admin.ModelAdmin):
         "right_stream",
         "right_row_natural_id",
         "skipped",
+        "no_matching_row",
         "created_by",
     ]
-    list_filter = ["left_stream", "right_stream", "created_by", "skipped"]
+    list_filter = ["left_stream", "right_stream", "created_by", "skipped", "no_matching_row"]
     search_fields = ["left_row_data", "right_row_data"]
     ordering = ["-created_at"]

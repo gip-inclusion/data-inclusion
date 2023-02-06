@@ -62,5 +62,6 @@ class Matching(BaseModel):
     right_row_data = models.JSONField(null=True)
 
     skipped = models.BooleanField(default=False)
+    no_matching_row = models.BooleanField(default=False)
 
     created_by = models.ForeignKey(User, on_delete=models.PROTECT)

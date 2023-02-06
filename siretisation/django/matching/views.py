@@ -1,14 +1,13 @@
 from datetime import timedelta
 
+from django_htmx.http import HttpResponseClientRedirect
+from furl import furl
+from matching import models
+
 from django import http, shortcuts, urls
 from django.contrib.auth.decorators import login_required
 from django.contrib.postgres import search
 from django.utils import timezone
-
-from django_htmx.http import HttpResponseClientRedirect
-from furl import furl
-
-from matching import models
 
 
 @login_required()
@@ -137,6 +136,7 @@ def partial_matching(request: http.HttpRequest):
     unsafe_left_row_id = request.POST.get("left_row_id", None)
     unsafe_right_row_id_list = request.POST.getlist("right_row_id_list", [])
     unsafe_skipped = request.POST.get("skipped", None)
+    unsafe_no_matching_row = request.POST.get("no_matching_row", None)
 
     left_stream_instance = models.Stream.objects.filter(id=unsafe_left_stream_id).first()
     if left_stream_instance is None:
@@ -154,38 +154,37 @@ def partial_matching(request: http.HttpRequest):
     if left_row_instance is None:
         return http.HttpResponseBadRequest()
 
-    right_row_instance_list = [
-        models.Datalake.objects.filter(
-            id=row_id,
-            src_alias=right_stream_instance.datasource.name,
-            logical_date=timezone.now().date() - timedelta(days=1),
-        ).first()
-        for row_id in unsafe_right_row_id_list
-    ]
-    if None in right_row_instance_list:
+    try:
+        right_row_instance_list = [
+            models.Datalake.objects.get(
+                id=row_id,
+                src_alias=right_stream_instance.datasource.name,
+                logical_date=timezone.now().date() - timedelta(days=1),
+            )
+            for row_id in unsafe_right_row_id_list
+        ]
+    except models.Datalake.DoesNotExist:
         return http.HttpResponseBadRequest()
 
+    base_matching_data = {
+        "left_stream": left_stream_instance,
+        "right_stream": right_stream_instance,
+        "left_row_natural_id": left_row_instance.data_normalized["id"],
+        "left_row_data": left_row_instance.data,
+        "logical_date": left_row_instance.logical_date,
+        "created_by": request.user,
+    }
+
     if bool(unsafe_skipped):
-        models.Matching.objects.create(
-            left_stream=left_stream_instance,
-            right_stream=right_stream_instance,
-            left_row_natural_id=left_row_instance.data_normalized["id"],
-            left_row_data=left_row_instance.data,
-            skipped=True,
-            logical_date=left_row_instance.logical_date,
-            created_by=request.user,
-        )
+        models.Matching.objects.create(**base_matching_data, skipped=True)
+    elif bool(unsafe_no_matching_row):
+        models.Matching.objects.create(**base_matching_data, no_matching_row=True)
     else:
         for right_row_instance in right_row_instance_list:
             models.Matching.objects.create(
-                left_stream=left_stream_instance,
-                right_stream=right_stream_instance,
-                left_row_natural_id=left_row_instance.data_normalized["id"],
-                left_row_data=left_row_instance.data,
+                **base_matching_data,
                 right_row_natural_id=right_row_instance.data_normalized["id"],
                 right_row_data=right_row_instance.data,
-                logical_date=left_row_instance.logical_date,
-                created_by=request.user,
             )
 
     url = furl(urls.reverse("matching"))

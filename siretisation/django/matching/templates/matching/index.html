@@ -1,141 +1,146 @@
 {% extends "base.html" %}
 
 {% block body_content %}
-<div class="is-size-7">
-    <div hx-headers='{"X-CSRFToken": "{{ csrf_token }}"}'>
-        <section class="section" id="task">
-            <div class="tile is-ancestor">
-                <div class="tile is-4 is-parent">
-                    <div class="tile is-child">
-                        <div id="left-stream">
-                            <div class="box">
-                                <div class="columns">
-                                    <div class="column">
-                                        <p class="heading">Datasource</p>
-                                        <p class="title">{{ left_stream_instance.datasource.name }}</p>
-                                    </div>
-                                    <div class="column">
-                                        <p class="heading">Stream</p>
-                                        <p class="title">{{ left_stream_instance.name }}</p>
-                                        <input name="left_stream_id" type="hidden"
-                                            value="{{ left_stream_instance.id }}" />
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="tile is-4 is-parent">
-                    <div class="tile is-child">
-                        <div id="right-stream">
-                            <div class="box">
-                                <div class="columns">
-                                    <div class="column">
-                                        <p class="heading">Datasource</p>
-                                        <p class="title">{{ right_stream_instance.datasource.name }}</p>
-                                    </div>
-                                    <div class="column">
-                                        <p class="heading">Stream</p>
-                                        <p class="title">{{ right_stream_instance.name }}</p>
-                                        <input name="right_stream_id" type="hidden"
-                                            value="{{ right_stream_instance.id }}" />
+    <div class="is-size-7">
+        <div hx-headers='{"X-CSRFToken": "{{ csrf_token }}"}'>
+            <section class="section" id="task">
+                <div class="tile is-ancestor">
+                    <div class="tile is-4 is-parent">
+                        <div class="tile is-child">
+                            <div id="left-stream">
+                                <div class="box">
+                                    <div class="columns">
+                                        <div class="column">
+                                            <p class="heading">Datasource</p>
+                                            <p class="title">{{ left_stream_instance.datasource.name }}</p>
+                                        </div>
+                                        <div class="column">
+                                            <p class="heading">Stream</p>
+                                            <p class="title">{{ left_stream_instance.name }}</p>
+                                            <input name="left_stream_id" type="hidden"
+                                                value="{{ left_stream_instance.id }}" />
+                                        </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </div>
-                </div>
-                <div class="tile is-4 is-parent">
-                    <div class="tile is-child">
-                        <div class="box">
-                            <div class="content">
-                                <span id="count"></span> ligne(s) sélectionnée(s)
+                    <div class="tile is-4 is-parent">
+                        <div class="tile is-child">
+                            <div id="right-stream">
+                                <div class="box">
+                                    <div class="columns">
+                                        <div class="column">
+                                            <p class="heading">Datasource</p>
+                                            <p class="title">{{ right_stream_instance.datasource.name }}</p>
+                                        </div>
+                                        <div class="column">
+                                            <p class="heading">Stream</p>
+                                            <p class="title">{{ right_stream_instance.name }}</p>
+                                            <input name="right_stream_id" type="hidden"
+                                                value="{{ right_stream_instance.id }}" />
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
-                            <div class="buttons">
-                                <button id="validate" class="button" hx-post="/partials/matching" hx-swap="none"
-                                    hx-vals="js:{'right_row_id_list': [...window.dataTableInput.rowIdSet]}"
-                                    hx-include="#left-stream, #left-row, #right-stream">Valider ✅</i>
+                        </div>
+                    </div>
+                    <div class="tile is-4 is-parent">
+                        <div class="tile is-child">
+                            <div class="box">
+                                <div class="content">
+                                    <span id="count"></span> ligne(s) sélectionnée(s)
+                                </div>
+                                <div class="buttons">
+                                    <button id="validate" class="button" hx-post="/partials/matching" hx-swap="none"
+                                        hx-vals="js:{'right_row_id_list': [...window.dataTableInput.rowIdSet]}"
+                                        hx-include="#left-stream, #left-row, #right-stream">Valider ✅</i>
                                 </button>
                                 <button id="skip" class="button" hx-post="/partials/matching" hx-swap="none"
                                     hx-vals="js:{'skipped': true}"
-                                    hx-include="#left-stream, #left-row, #right-stream">Passer au suivant
-                                    ⏩</i>
-                                </button>
-                            </div>
-                        </div>
+                                    hx-include="#left-stream, #left-row, #right-stream">Je ne sais pas 🤷</i>
+                            </button>
+                            <button id="no_match" class="button" hx-post="/partials/matching" hx-swap="none"
+                                hx-vals="js:{'no_matching_row': true}"
+                                hx-include="#left-stream, #left-row, #right-stream">Cette ligne n'existe pas ❌</i>
+                        </button>
                     </div>
                 </div>
             </div>
-
-            <div class="tile is-ancestor">
-                <div class="tile is-4 is-parent">
-                    <div class="tile is-child" style="width: 100%;">
-                        <div id="left-row">
-                            <div class="box">
-                                <h1 class="title is-5">Données de départ</h1>
-                                <pre><code>{{ left_row_instance.data|pprint }}</code></pre>
-                                <input name="left_row_id" type="hidden" value="{{ left_row_instance.id }}" />
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="tile is-8 is-vertical is-parent">
-                    <div class="tile is-child">
-                        <div class="box">
-                            <table class="table is-unselectable is-clickable" id="datatable"></table>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </section>
+        </div>
     </div>
-</div>
 
-{{ datatable_column_name_list|json_script:"datatable-selected-column-name-list" }}
+    <div class="tile is-ancestor">
+        <div class="tile is-4 is-parent">
+            <div class="tile is-child" style="width: 100%;">
+                <div id="left-row">
+                    <div class="box">
+                        <h1 class="title is-5">Données de départ</h1>
+                        <pre><code>{{ left_row_instance.data|pprint }}</code></pre>
+                        <input name="left_row_id" type="hidden" value="{{ left_row_instance.id }}" />
+                    </div>
+                </div>
+            </div>
+        </div>
 
-<script>
-    $(document).ready(() => {
-        window.dataTableInput = { rowIdSet: new Set() };
-        $("#count").text([...window.dataTableInput.rowIdSet].length);
-        $("#validate").hide();
+        <div class="tile is-8 is-vertical is-parent">
+            <div class="tile is-child">
+                <div class="box">
+                    <table class="table is-unselectable is-clickable" id="datatable"></table>
+                </div>
+            </div>
+        </div>
+    </div>
+    </section>
+    </div>
+    </div>
 
-        $('#datatable').DataTable({
-            ajax: {
-                url: '/search',
-                data: (d) => {
-                    d.right_stream_id = '{{ right_stream_instance.id }}';
-                }
-            },
-            columns: JSON.parse($("#datatable-selected-column-name-list").text()).map(
-                column_str => ({ title: column_str, data: column_str, defaultContent: '' })
-            ),
-            ordering: false,
-            lengthChange: false,
-            pageLength: 25,
-            processing: true,
-            serverSide: true,
-        });
+    {{ datatable_column_name_list|json_script:"datatable-selected-column-name-list" }}
 
-        $('#datatable tbody').on('click', 'tr', function () {
-            $(this).toggleClass('is-selected');
-            window.dataTableInput.rowIdSet.has($(this).attr('id')) ? window.dataTableInput.rowIdSet.delete($(this).attr('id')) : window.dataTableInput.rowIdSet.add($(this).attr('id'));
+    <script>
+        $(document).ready(() => {
+            window.dataTableInput = { rowIdSet: new Set() };
             $("#count").text([...window.dataTableInput.rowIdSet].length);
+            $("#validate").hide();
 
-            if ([...window.dataTableInput.rowIdSet].length > 0) {
-                $("#skip").hide();
-                $("#validate").show();
-            } else {
-                $("#skip").show();
-                $("#validate").hide();
-            }
-        });
-
-        $('#datatable').on('draw.dt', () => {
-            window.dataTableInput.rowIdSet.forEach(rowId => {
-                $(`#${rowId}`).toggleClass('is-selected');
+            $('#datatable').DataTable({
+                ajax: {
+                    url: '/search',
+                    data: (d) => {
+                        d.right_stream_id = '{{ right_stream_instance.id }}';
+                    }
+                },
+                columns: JSON.parse($("#datatable-selected-column-name-list").text()).map(
+                    column_str => ({ title: column_str, data: column_str, defaultContent: '' })
+                ),
+                ordering: false,
+                lengthChange: false,
+                pageLength: 25,
+                processing: true,
+                serverSide: true,
             });
-        });
-    })
-</script>
+
+            $('#datatable tbody').on('click', 'tr', function () {
+                $(this).toggleClass('is-selected');
+                window.dataTableInput.rowIdSet.has($(this).attr('id')) ? window.dataTableInput.rowIdSet.delete($(this).attr('id')) : window.dataTableInput.rowIdSet.add($(this).attr('id'));
+                $("#count").text([...window.dataTableInput.rowIdSet].length);
+
+                if ([...window.dataTableInput.rowIdSet].length > 0) {
+                    $("#skip").hide();
+                    $("#no_match").hide();
+                    $("#validate").show();
+                } else {
+                    $("#skip").show();
+                    $("#no_match").show();
+                    $("#validate").hide();
+                }
+            });
+
+            $('#datatable').on('draw.dt', () => {
+                window.dataTableInput.rowIdSet.forEach(rowId => {
+                    $(`#${rowId}`).toggleClass('is-selected');
+                });
+            });
+        })
+    </script>
 {% endblock %}
