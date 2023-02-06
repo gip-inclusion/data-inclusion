@@ -1,8 +1,4 @@
-from furl import furl
-
 from django.contrib import admin
-from django.urls import reverse
-from django.utils import html, text
 
 from matching import models
 
@@ -19,4 +15,15 @@ class StreamAdmin(admin.ModelAdmin):
 
 @admin.register(models.Matching)
 class MatchingAdmin(admin.ModelAdmin):
-    list_display = ["id"]
+    list_display = [
+        "id",
+        "left_stream",
+        "left_row_natural_id",
+        "right_stream",
+        "right_row_natural_id",
+        "skipped",
+        "created_by",
+    ]
+    list_filter = ["left_stream", "right_stream", "created_by", "skipped"]
+    search_fields = ["left_row_data", "right_row_data"]
+    ordering = ["-created_at"]
