@@ -22,8 +22,8 @@ repos:
     rev: 1.7.4
     hooks:
       - id: bandit
-        exclude: ^api/tests/
         files: ^api
+        exclude: ^api/tests/
 
   # pipeline
   - repo: https://github.com/psf/black
@@ -48,8 +48,8 @@ repos:
     rev: 1.7.4
     hooks:
       - id: bandit
-        exclude: ^pipeline/(tests|dags)/
         files: ^pipeline
+        exclude: ^pipeline/(tests|dags)/
   - repo: https://github.com/sqlfluff/sqlfluff
     rev: 1.4.1
     hooks:
@@ -57,3 +57,44 @@ repos:
         files: ^(pipeline/dags/sql)
       - id: sqlfluff-fix
         files: ^(pipeline/dags/sql)
+
+  # siretisation
+  - repo: https://github.com/rtts/djhtml
+    rev: v1.5.2
+    hooks:
+      - id: djhtml
+        files: ^siretisation
+        exclude: ^siretisation/django(/.*)*/static/vendor
+      - id: djcss
+        files: ^siretisation
+        exclude: ^siretisation/django(/.*)*/static/vendor
+      - id: djjs
+        files: ^siretisation
+        exclude: ^siretisation/django(/.*)*/static/vendor
+  - repo: https://github.com/psf/black
+    rev: 22.10.0
+    hooks:
+      - id: black
+        args: [--config=siretisation/pyproject.toml]
+        files: ^siretisation
+        exclude: ^siretisation/django(/.*)*/static/vendor
+  - repo: https://github.com/pycqa/isort
+    rev: 5.10.1
+    hooks:
+      - id: isort
+        args: [--settings=siretisation/pyproject.toml]
+        files: ^siretisation
+        exclude: ^siretisation/django(/.*)*/static/vendor
+  - repo: https://gitlab.com/pycqa/flake8
+    rev: 4.0.1
+    hooks:
+      - id: flake8
+        args: [--config=siretisation/.flake8]
+        files: ^siretisation
+        exclude: ^siretisation/django(/.*)*/static/vendor
+  - repo: https://github.com/pycqa/bandit
+    rev: 1.7.4
+    hooks:
+      - id: bandit
+        files: ^siretisation
+        exclude: ^(siretisation/django(/.*)*/static/vendor|tests)
