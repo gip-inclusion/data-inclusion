@@ -1,6 +1,6 @@
 from datetime import timedelta
 
-from django import http, shortcuts
+from django import http, shortcuts, urls
 from django.contrib.auth.decorators import login_required
 from django.contrib.postgres import search
 from django.utils import timezone
@@ -188,7 +188,7 @@ def partial_matching(request: http.HttpRequest):
                 created_by=request.user,
             )
 
-    url = furl(shortcuts.reverse("matching"))
+    url = furl(urls.reverse("matching"))
     url.set(
         {
             "left_datasource_slug": left_stream_instance.datasource.slug,
