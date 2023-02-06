@@ -7,7 +7,8 @@ import pandas as pd
 import pendulum
 from airflow.models import Variable
 from airflow.operators import empty, python
-from airflow.providers.postgres.hooks import postgres
+from airflow.providers.postgres.hooks.postgres import PostgresHook
+from airflow.providers.postgres.operators.postgres import PostgresOperator
 
 logger = logging.getLogger(__name__)
 
@@ -18,14 +19,13 @@ def _import_stock_etablissement_historique():
     import sqlalchemy as sqla
     import tqdm
 
-    pg_hook = postgres.PostgresHook(postgres_conn_id="pg")
+    pg_hook = PostgresHook(postgres_conn_id="pg")
 
     target_table = "sirene_etablissement_historique"
 
     engine = pg_hook.get_sqlalchemy_engine()
     with engine.connect() as conn:
         with conn.begin():
-
             # process the csv file by chunk
             with pd.read_csv(
                 Variable.get("SIRENE_STOCK_ETAB_HIST_FILE_URL"),
@@ -42,9 +42,7 @@ def _import_stock_etablissement_historique():
                 encoding="utf-8",
                 compression="zip",
             ) as reader:
-
                 with tqdm.tqdm() as pbar:
-
                     for chunck_df in reader:
                         chunck_df.to_sql(
                             target_table,
@@ -70,14 +68,13 @@ def _import_stock_etablissement_liens_succession():
     import sqlalchemy as sqla
     import tqdm
 
-    pg_hook = postgres.PostgresHook(postgres_conn_id="pg")
+    pg_hook = PostgresHook(postgres_conn_id="pg")
 
     target_table = "sirene_etablissement_succession"
 
     engine = pg_hook.get_sqlalchemy_engine()
     with engine.connect() as conn:
         with conn.begin():
-
             # process the csv file by chunk
             with pd.read_csv(
                 Variable.get("SIRENE_STOCK_ETAB_LIENS_SUCCESSION_URL"),
@@ -98,9 +95,7 @@ def _import_stock_etablissement_liens_succession():
                 encoding="utf-8",
                 compression="zip",
             ) as reader:
-
                 with tqdm.tqdm() as pbar:
-
                     for chunck_df in reader:
                         chunck_df.to_sql(
                             target_table,
@@ -125,14 +120,13 @@ def _import_stock_etablissement_liens_succession():
 def _import_stock_unite_legale():
     import tqdm
 
-    pg_hook = postgres.PostgresHook(postgres_conn_id="pg")
+    pg_hook = PostgresHook(postgres_conn_id="pg")
 
     target_table = "sirene_stock_unite_legale"
 
     engine = pg_hook.get_sqlalchemy_engine()
     with engine.connect() as conn:
         with conn.begin():
-
             # process the csv file by chunk
             with pd.read_csv(
                 Variable.get("SIRENE_STOCK_UNITE_LEGALE_FILE_URL"),
@@ -163,9 +157,7 @@ def _import_stock_unite_legale():
                 encoding="utf-8",
                 compression="zip",
             ) as reader:
-
                 with tqdm.tqdm() as pbar:
-
                     for chunck_df in reader:
                         chunck_df.to_sql(
                             target_table,
@@ -198,14 +190,13 @@ def _import_stock_unite_legale():
 def _import_stock_etablissement_geocode():
     import tqdm
 
-    pg_hook = postgres.PostgresHook(postgres_conn_id="pg")
+    pg_hook = PostgresHook(postgres_conn_id="pg")
 
     target_table = "sirene_etablissement_geocode"
 
     engine = pg_hook.get_sqlalchemy_engine()
     with engine.connect() as conn:
         with conn.begin():
-
             # process the csv file by chunk
             with pd.read_csv(
                 Variable.get("SIRENE_STOCK_ETAB_GEOCODE_FILE_URL"),
@@ -292,9 +283,7 @@ def _import_stock_etablissement_geocode():
                 chunksize=10000,
                 encoding="utf-8",
             ) as reader:
-
                 with tqdm.tqdm() as pbar:
-
                     for chunck_df in reader:
                         # Add geometry from lon/lat
                         # Computing it now rather than later (unlike searchable fields),
@@ -392,13 +381,13 @@ with airflow.DAG(
         python_callable=_import_stock_etablissement_geocode,
     )
 
-    add_stock_etablissement_searchable_name = postgres.PostgresOperator(
+    add_stock_etablissement_searchable_name = PostgresOperator(
         task_id="add_stock_etablissement_searchable_name",
         postgres_conn_id="pg",
         sql="sql/sirene/etab_add_searchable_name.sql",
     )
 
-    add_stock_etablissement_searchable_l4 = postgres.PostgresOperator(
+    add_stock_etablissement_searchable_l4 = PostgresOperator(
         task_id="add_stock_etablissement_searchable_l4",
         postgres_conn_id="pg",
         sql="sql/sirene/etab_add_searchable_l4.sql",
