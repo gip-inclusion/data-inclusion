@@ -60,6 +60,8 @@ def index(request: http.HttpRequest):
                 AND datalake.file ~ %(left_stream_name)s
                 AND datalake.logical_date = %(logical_date)s
                 AND enhanced_matching.id IS NULL
+            -- this allow concurrent users to work without too much overlap
+            ORDER BY random()
             LIMIT 1""",
             {
                 "left_datasource_name": left_datasource_instance.name,
