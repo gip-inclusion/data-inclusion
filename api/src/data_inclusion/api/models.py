@@ -12,12 +12,7 @@ class Structure(Base):
     __tablename__ = "structure"
 
     # internal metadata
-    index = sqla.Column(sqla.Integer, primary_key=True)
-    created_at = sqla.Column(
-        sqla.DateTime(timezone=True), server_default=sqla.func.now()
-    )
-    batch_id = sqla.Column(sqla.Text)
-    src_url = sqla.Column(sqla.Text)
+    surrogate_id = sqla.Column(sqla.Text, primary_key=True)
 
     # structure data
     id = sqla.Column(sqla.Text, nullable=True)
@@ -27,6 +22,8 @@ class Structure(Base):
     commune = sqla.Column(sqla.Text, nullable=True)
     code_postal = sqla.Column(sqla.Text, nullable=True)
     code_insee = sqla.Column(sqla.Text, nullable=True)
+    geocodage_code_insee = sqla.Column(sqla.Text, nullable=True)
+    geocodage_score = sqla.Column(sqla.Float, nullable=True)
     adresse = sqla.Column(sqla.Text, nullable=True)
     complement_adresse = sqla.Column(sqla.Text, nullable=True)
     longitude = sqla.Column(sqla.Float, nullable=True)
@@ -38,7 +35,7 @@ class Structure(Base):
     presentation_resume = sqla.Column(sqla.Text, nullable=True)
     presentation_detail = sqla.Column(sqla.Text, nullable=True)
     source = sqla.Column(sqla.Text, nullable=True)
-    date_maj = sqla.Column(sqla.DateTime(timezone=True), nullable=True)
+    date_maj = sqla.Column(sqla.Date(), nullable=True)
     antenne = sqla.Column(sqla.Boolean, default=False)
     lien_source = sqla.Column(sqla.Text, nullable=True)
     horaires_ouverture = sqla.Column(sqla.Text, nullable=True)
@@ -53,11 +50,13 @@ class Service(Base):
     __tablename__ = "service"
 
     # internal metadata
-    index = sqla.Column(sqla.Integer, primary_key=True)
-    structure_index = sqla.Column(sqla.Integer, sqla.ForeignKey("structure.index"))
+    surrogate_id = sqla.Column(sqla.Text, primary_key=True)
+    structure_surrogate_id = sqla.Column(sqla.ForeignKey("structure.surrogate_id"))
 
     # service data
     id = sqla.Column(sqla.Text, nullable=True)
+    structure_id = sqla.Column(sqla.Text, nullable=True)
+    source = sqla.Column(sqla.Text, nullable=True)
     nom = sqla.Column(sqla.Text, nullable=True)
     presentation_resume = sqla.Column(sqla.Text, nullable=True)
     types = sqla.Column(ARRAY(sqla.Text), default=list)

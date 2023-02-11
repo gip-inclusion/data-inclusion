@@ -90,7 +90,6 @@ def search_establishment_by_similarities(
     latitude: Optional[float] = None,
     longitude: Optional[float] = None,
 ) -> Optional[dict]:
-
     if nom is None or adresse is None or latitude is None or longitude is None:
         logger.debug("Missing data")
         return None
@@ -267,9 +266,6 @@ def siretize_normalized_dataframe(
 
     output_df = structures_df
     output_df = output_df.assign(siret=establishments_df.siret)
-    output_df = output_df.assign(
-        antenne=establishments_df.antenne if "antenne" in establishments_df else None
-    )
 
     utils.log_df_info(output_df, logger)
 

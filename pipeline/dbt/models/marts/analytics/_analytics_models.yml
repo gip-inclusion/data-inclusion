@@ -1,0 +1,5 @@
+version: 2
+
+models:
+  - name: stats__deprecated_sirets_by_source
+  - name: stats__structure_count_by_source

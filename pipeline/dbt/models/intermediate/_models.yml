@@ -1,0 +1,63 @@
+version: 2
+
+models:
+  - name: int__services
+  - name: int__structures
+  - name: int__plausible_personal_emails
+  - name: int__deprecated_sirets
+  - name: int__enhanced_structures
+
+  - name: int__validated_structures
+    columns:
+      - name: surrogate_id
+        tests:
+          - not_null
+          - unique
+      - name: source
+        tests:
+          - not_null
+      - name: id
+        tests:
+          - not_null
+      - name: nom
+        tests:
+          - not_null
+      - name: commune
+        tests:
+          - not_null
+      - name: adresse
+        tests:
+          - not_null
+      - name: date_maj
+        tests:
+          - not_null
+
+  - name: int__validated_services
+    tests:
+      - dbt_utils.unique_combination_of_columns:
+          combination_of_columns:
+            - source
+            - id
+    columns:
+      - name: structure_surrogate_id
+        tests:
+          - relationships:
+              to: ref('int__validated_structures')
+              field: surrogate_id
+      - name: surrogate_id
+        tests:
+          - not_null
+          - unique
+      - name: source
+        tests:
+          - not_null
+      - name: structure_id
+        tests:
+          - not_null
+      - name: id
+        tests:
+          - not_null
+      - name: nom
+        tests:
+          - not_null
+      

@@ -3,7 +3,7 @@ from datetime import date, datetime
 from enum import Enum
 from typing import Optional, TypeAlias
 
-from pydantic import BaseModel, EmailStr, HttpUrl, constr
+from pydantic import BaseModel, EmailStr, constr
 
 from data_inclusion.schema.models import (
     Frais,
@@ -150,7 +150,7 @@ class Service(BaseModel):
     presentation_resume: Optional[constr(max_length=280)]
     types: Optional[list[TypologieService]]
     thematiques: Optional[list[Thematique]]
-    prise_rdv: Optional[HttpUrl]
+    prise_rdv: Optional[str]
     frais: Optional[list[Frais]]
     frais_autres: Optional[str]
     profils: Optional[list[Profil]]
@@ -177,15 +177,15 @@ class Structure(BaseModel):
     typologie: Optional[Typologie]
     telephone: Optional[str]
     courriel: Optional[EmailStr]
-    site_web: Optional[HttpUrl]
+    site_web: Optional[str]
     presentation_resume: Optional[constr(max_length=280)]
     presentation_detail: Optional[str]
     source: str
     date_maj: date | datetime
-    antenne: bool = False
-    lien_source: Optional[HttpUrl]
+    antenne: Optional[bool]
+    lien_source: Optional[str]
     horaires_ouverture: Optional[str]
-    accessibilite: Optional[HttpUrl]
+    accessibilite: Optional[str]
     labels_nationaux: Optional[list[LabelNational]]
     labels_autres: Optional[list[str]]
     thematiques: Optional[list[Thematique]]

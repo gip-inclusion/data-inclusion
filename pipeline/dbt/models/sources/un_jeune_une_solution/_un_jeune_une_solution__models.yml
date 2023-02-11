@@ -1,0 +1,5 @@
+version: 2
+
+models:
+  - name: stg_un_jeune_une_solution__benefits
+  - name: stg_un_jeune_une_solution__institutions

@@ -1,0 +1,4 @@
+*
+
+!dbt/models/
+!dbt/snapshots/

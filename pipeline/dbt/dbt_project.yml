@@ -1,0 +1,56 @@
+name: 'data_inclusion'
+version: '1.0.0'
+config-version: 2
+
+profile: 'data_inclusion'
+
+model-paths: ["models"]
+analysis-paths: ["analyses"]
+test-paths: ["tests"]
+seed-paths: ["seeds"]
+macro-paths: ["macros"]
+snapshot-paths: ["snapshots"]
+
+target-path: "target"
+clean-targets:
+  - "target"
+  - "dbt_packages"
+
+vars:
+  logical_date: "{{ env_var('LOGICAL_DATE', '2000-01-01') }}"
+
+# Configuring models
+# Full documentation: https://docs.getdbt.com/docs/configuring-models
+
+models:
+  data_inclusion:
+    sources:
+      +schema: sources
+      +materialized: table
+
+    intermediate:
+      +schema: intermediate
+      +materialized: table
+
+    marts:
+      analytics:
+        +schema: analytics
+        +materialized: table
+
+      api:
+        +materialized: table
+      
+      opendata:
+        +schema: opendata
+        +materialized: view
+
+# https://docs.getdbt.com/reference/seed-configs
+seeds:
+  data_inclusion:
+    schema:
+      +schema: schema
+      +column_types:
+        value: text
+        label: text
+        description: text
+

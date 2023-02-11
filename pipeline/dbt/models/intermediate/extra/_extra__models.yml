@@ -1,0 +1,5 @@
+version: 2
+
+models:
+  - name: int_extra__insee_prenoms_filtered
+  - name: int_extra__geocoded_results

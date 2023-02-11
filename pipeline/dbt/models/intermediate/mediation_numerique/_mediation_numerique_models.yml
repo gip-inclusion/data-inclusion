@@ -1,0 +1,5 @@
+version: 2
+
+models:
+  - name: int_mediation_numerique__services
+  - name: int_mediation_numerique__structures

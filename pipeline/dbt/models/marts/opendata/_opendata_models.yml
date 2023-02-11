@@ -1,0 +1,5 @@
+version: 2
+
+models:
+  - name: opendata_structures
+  - name: opendata_services

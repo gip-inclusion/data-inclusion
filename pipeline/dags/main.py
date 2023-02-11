@@ -11,7 +11,7 @@ from typing import Optional
 import airflow
 import pendulum
 from airflow.models import DAG, DagRun, Variable
-from airflow.operators import empty, python
+from airflow.operators import bash, empty, python
 from airflow.providers.amazon.aws.hooks import s3
 from airflow.providers.postgres.hooks.postgres import PostgresHook
 from airflow.providers.postgres.operators.postgres import PostgresOperator
@@ -21,7 +21,18 @@ from data_inclusion.scripts.tasks.constants import SourceType
 
 logger = logging.getLogger(__name__)
 
-default_args = {}
+default_args = {
+    "env": {
+        "DBT_PROFILES_DIR": Variable.get("DBT_PROJECT_DIR"),
+        "POSTGRES_HOST": "{{ conn.pg.host }}",
+        "POSTGRES_PORT": "{{ conn.pg.port }}",
+        "POSTGRES_USER": "{{ conn.pg.login }}",
+        "POSTGRES_PASSWORD": "{{ conn.pg.password }}",
+        "POSTGRES_DB": "{{ conn.pg.schema }}",
+        "LOGICAL_DATE": "{{ ds }}",
+    },
+    "cwd": Variable.get("DBT_PROJECT_DIR"),
+}
 
 
 def get_key_prefix(
@@ -157,250 +168,54 @@ def _load(
         load_to_postgres(input_path=Path(tmp_filename), s3_key=key)
 
 
-def _reshape(
-    src_url: str,
-    src_type: str,
-    src_alias: str,
-    run_id: str,
-    dag: DAG,
-    dag_run: DagRun,
-):
-    import numpy as np
+def _geocode():
+    import sqlalchemy as sqla
 
-    from data_inclusion.scripts.tasks import reshape
+    from data_inclusion.scripts.tasks import geocoding, utils
 
     pg_hook = PostgresHook(postgres_conn_id="pg")
 
-    logical_date_ds = pendulum.instance(
-        dag_run.logical_date.astimezone(dag.timezone)
-    ).to_date_string()
-
-    df = pg_hook.get_pandas_df(
-        sql=textwrap.dedent(
-            """
-                SELECT
-                    file,
-                    data
-                FROM
-                    datalake
-                WHERE
-                    batch_id = %(batch_id)s
-                    AND src_url = %(src_url)s;
-            """
-        ),
-        parameters={"batch_id": run_id, "src_url": src_url},
+    # 1. Retrieve input data
+    input_df = pg_hook.get_pandas_df(
+        sql="""
+            SELECT
+                surrogate_id,
+                adresse,
+                code_postal,
+                commune
+            FROM public_intermediate.int__structures;
+        """
     )
-    df = df.replace({np.nan: None})
 
-    # reshape df
-    df = reshape.reshape(df, src_type=SourceType(src_type))
+    utils.log_df_info(input_df, logger=logger)
 
-    # load results back to pg
-    df = df.assign(batch_id=run_id)
-    df = df.assign(src_url=src_url)
-    df = df.assign(src_alias=src_alias)
-    df = df.assign(logical_date=logical_date_ds)
+    geocoding_backend = geocoding.BaseAdresseNationaleBackend(
+        base_url=Variable.get("BAN_API_URL")
+    )
 
+    # 2. Geocode
+    output_df = geocoding_backend.geocode(input_df)
+
+    utils.log_df_info(output_df, logger=logger)
+
+    # 3. Write result back
     engine = pg_hook.get_sqlalchemy_engine()
+
     with engine.connect() as conn:
         with conn.begin():
-            conn.execute(
-                textwrap.dedent(
-                    """
-                    DELETE
-                    FROM
-                        datawarehouse
-                    WHERE
-                        batch_id = %(batch_id)s
-                        AND src_url = %(src_url)s;
-                """
-                ),
-                {"batch_id": run_id, "src_url": src_url},
+            conn.execute("TRUNCATE extra__geocoded_results;")
+
+            output_df.to_sql(
+                "extra__geocoded_results",
+                con=conn,
+                if_exists="append",
+                index=False,
+                dtype={
+                    "latitude": sqla.Float,
+                    "longitude": sqla.Float,
+                    "result_score": sqla.Float,
+                },
             )
-            df.to_sql("datawarehouse", con=conn, if_exists="append", index=False)
-
-
-def _geocode(
-    src_url: str,
-    run_id: str,
-):
-    from data_inclusion.scripts.tasks import geocoding
-
-    pg_hook = PostgresHook(postgres_conn_id="pg")
-
-    df = pg_hook.get_pandas_df(
-        sql=textwrap.dedent(
-            """
-                SELECT
-                    data
-                FROM
-                    datawarehouse
-                WHERE
-                    batch_id = %(batch_id)s
-                    AND src_url = %(src_url)s
-                    AND data ? 'siret';
-            """
-        ),
-        parameters={"batch_id": run_id, "src_url": src_url},
-    )
-
-    df = geocoding.geocode_data(
-        df,
-        geocoding_backend=geocoding.BaseAdresseNationaleBackend(
-            base_url=Variable.get("BAN_API_URL")
-        ),
-    )
-
-    engine = pg_hook.get_sqlalchemy_engine()
-    with engine.connect() as conn:
-        with conn.begin():
-            df[["id", "result_citycode"]].to_sql(
-                "tmp", con=conn, if_exists="append", index=False
-            )
-            conn.execute(
-                textwrap.dedent(
-                    """
-                    UPDATE
-                        datawarehouse as dwh
-                    SET
-                        data_normalized = jsonb_set(
-                            COALESCE(
-                                data_normalized,
-                                '{}'
-                            ),
-                            '{code_insee}',
-                            to_jsonb(tmp.result_citycode)
-                        )
-                    FROM
-                        tmp
-                    WHERE
-                        dwh.batch_id = %(batch_id)s
-                        AND dwh.src_url = %(src_url)s
-                        AND dwh.data ? 'siret'
-                        AND dwh.data->>'id' = tmp.id;
-                    """
-                ),
-                {"batch_id": run_id, "src_url": src_url},
-            )
-            conn.execute("DROP TABLE tmp;")
-
-
-def _validate(
-    src_url: str,
-    run_id: str,
-):
-    from data_inclusion.scripts.tasks import validate
-
-    pg_hook = PostgresHook(postgres_conn_id="pg")
-
-    # structures
-    structures_df = pg_hook.get_pandas_df(
-        sql=textwrap.dedent(
-            """
-                SELECT
-                    data,
-                    data_normalized
-                FROM
-                    datawarehouse
-                WHERE
-                    batch_id = %(batch_id)s
-                    AND src_url = %(src_url)s
-                    AND data ? 'siret';
-            """
-        ),
-        parameters={"batch_id": run_id, "src_url": src_url},
-    )
-
-    structures_df = validate.validate_structure_dataframe(structures_df)
-
-    engine = pg_hook.get_sqlalchemy_engine()
-    with engine.connect() as conn:
-        with conn.begin():
-            structures_df[["id", "is_valid"]].to_sql(
-                "tmp", con=conn, if_exists="append", index=False
-            )
-            conn.execute(
-                textwrap.dedent(
-                    """
-                    UPDATE
-                        datawarehouse as dwh
-                    SET
-                        data_normalized = jsonb_set(
-                            COALESCE(
-                                data_normalized,
-                                '{}'
-                            ),
-                            '{is_valid}',
-                            to_jsonb(tmp.is_valid)
-                        )
-                    FROM
-                        tmp
-                    WHERE
-                        dwh.batch_id = %(batch_id)s
-                        AND dwh.src_url = %(src_url)s
-                        AND dwh.data ? 'siret'
-                        AND dwh.data->>'id' = tmp.id;
-                    """
-                ),
-                {"batch_id": run_id, "src_url": src_url},
-            )
-            conn.execute("DROP TABLE tmp;")
-
-    # services
-    services_df = pg_hook.get_pandas_df(
-        sql=textwrap.dedent(
-            """
-                SELECT
-                    data,
-                    data_normalized
-                FROM
-                    datawarehouse
-                WHERE
-                    batch_id = %(batch_id)s
-                    AND src_url = %(src_url)s
-                    AND NOT data ? 'siret';
-            """
-        ),
-        parameters={"batch_id": run_id, "src_url": src_url},
-    )
-
-    if len(services_df) == 0:
-        return
-
-    services_df = validate.validate_service_dataframe(services_df)
-
-    engine = pg_hook.get_sqlalchemy_engine()
-    with engine.connect() as conn:
-        with conn.begin():
-            services_df[["id", "is_valid"]].to_sql(
-                "tmp", con=conn, if_exists="append", index=False
-            )
-            conn.execute(
-                textwrap.dedent(
-                    """
-                    UPDATE
-                        datawarehouse as dwh
-                    SET
-                        data_normalized = jsonb_set(
-                            COALESCE(
-                                data_normalized,
-                                '{}'
-                            ),
-                            '{is_valid}',
-                            to_jsonb(tmp.is_valid)
-                        )
-                    FROM
-                        tmp
-                    WHERE
-                        dwh.batch_id = %(batch_id)s
-                        AND dwh.src_url = %(src_url)s
-                        AND NOT dwh.data ? 'siret'
-                        AND dwh.data->>'id' = tmp.id;
-                    """
-                ),
-                {"batch_id": run_id, "src_url": src_url},
-            )
-            conn.execute("DROP TABLE tmp;")
 
 
 @dataclasses.dataclass(frozen=True)
@@ -412,7 +227,6 @@ class SourceConfig:
     src_type: SourceType
     token: Optional[str] = None
     user_agent: Optional[str] = None
-    skip_post_processing: bool = False
 
     def as_op_kwargs(self):
         # to pass the config to airflow operators (as op_kwargs), the instance must be
@@ -432,7 +246,6 @@ SRC_CONFIGS_LIST = [
         src_url=Variable.get("MES_AIDES_AIDES_URL", None),
         src_type=SourceType.MES_AIDES,
         token=Variable.get("MES_AIDES_AIRTABLE_KEY", None),
-        skip_post_processing=True,
     ),
     SourceConfig(
         src_alias="mes_aides_garages",
@@ -473,11 +286,6 @@ SRC_CONFIGS_LIST = [
         src_type=SourceType.SIAO,
     ),
     SourceConfig(
-        src_alias="odspep",
-        src_url=Variable.get("ODSPEP_FILE_URL", None),
-        src_type=SourceType.ODSPEP,
-    ),
-    SourceConfig(
         src_alias="etab_pub",
         src_url=Variable.get("ETAB_PUB_FILE_URL", None),
         src_type=SourceType.ETAB_PUBLICS,
@@ -491,12 +299,6 @@ SRC_CONFIGS_LIST = [
         src_alias="1jeune1solution",
         src_url=Variable.get("UN_JEUNE_UNE_SOLUTION_API_URL", None),
         src_type=SourceType.UN_JEUNE_UNE_SOLUTION,
-        skip_post_processing=True,
-    ),
-    SourceConfig(
-        src_alias="conseiller-numerique",
-        src_url=Variable.get("CONSEILLER_NUMERIQUE_FILE_URL", None),
-        src_type=SourceType.CONSEILLER_NUMERIQUE,
     ),
     SourceConfig(
         src_alias="mednum-hinaura",
@@ -524,6 +326,8 @@ with airflow.DAG(
     catchup=False,
 ) as dag:
     start = empty.EmptyOperator(task_id="start")
+    end_load = empty.EmptyOperator(task_id="end_load")
+    end = empty.EmptyOperator(task_id="end")
 
     setup = PostgresOperator(
         task_id="setup",
@@ -548,9 +352,6 @@ with airflow.DAG(
                 op_kwargs=src_config.as_op_kwargs(),
             )
 
-            setup >> extract
-            extract >> load
-
             compute_flux = PostgresOperator(
                 task_id="compute_flux",
                 postgres_conn_id="pg",
@@ -558,37 +359,54 @@ with airflow.DAG(
                 params={"src_url": src_config.src_url},
             )
 
-            load >> compute_flux
+            setup >> extract >> load >> compute_flux >> end_load
 
-            if not src_config.skip_post_processing:
-                reshape = python.PythonOperator(
-                    task_id="reshape",
-                    python_callable=_reshape,
-                    op_kwargs=src_config.as_op_kwargs(),
-                )
-                check_sirets = PostgresOperator(
-                    task_id="check_sirets",
-                    postgres_conn_id="pg",
-                    sql="sql/join_dwh_sirene.sql",
-                    params={"src_url": src_config.src_url},
-                )
-                flag_personal_emails = PostgresOperator(
-                    task_id="flag_personal_emails",
-                    postgres_conn_id="pg",
-                    sql="sql/flag_personal_emails.sql",
-                    params={"src_url": src_config.src_url},
-                )
-                geocode = python.PythonOperator(
-                    task_id="geocode",
-                    python_callable=_geocode,
-                    op_kwargs=src_config.as_op_kwargs(),
-                    pool="base_adresse_nationale_api",
-                )
-                validate = python.PythonOperator(
-                    task_id="validate",
-                    python_callable=_validate,
-                    op_kwargs=src_config.as_op_kwargs(),
-                )
+    dbt_seed = bash.BashOperator(
+        task_id="dbt_seed",
+        bash_command="{{ var.value.pipx_bin }} run --spec dbt-postgres dbt seed",
+    )
 
-                reshape >> [check_sirets, flag_personal_emails]
-                load >> reshape >> geocode >> validate
+    # run what does not depend on geocoding results
+    dbt_run_before_geocoding = bash.BashOperator(
+        task_id="dbt_run_before_geocoding",
+        bash_command=(
+            "{{ var.value.pipx_bin }} run --spec dbt-postgres"
+            " dbt run --exclude int_extra__geocoded_results+"
+        ),
+    )
+
+    python_geocode = python.PythonOperator(
+        task_id="python_geocode",
+        python_callable=_geocode,
+        pool="base_adresse_nationale_api",
+    )
+
+    # run remaining models
+    dbt_run_after_geocoding = bash.BashOperator(
+        task_id="dbt_run_after_geocoding",
+        bash_command=(
+            "{{ var.value.pipx_bin }} run --spec dbt-postgres"
+            " dbt run --select int_extra__geocoded_results+"
+        ),
+    )
+
+    dbt_test = bash.BashOperator(
+        task_id="dbt_test",
+        bash_command="{{ var.value.pipx_bin }} run --spec dbt-postgres dbt test",
+    )
+
+    dbt_snapshot = bash.BashOperator(
+        task_id="dbt_snapshot",
+        bash_command="{{ var.value.pipx_bin }} run --spec dbt-postgres dbt snapshot",
+    )
+
+    (
+        end_load
+        >> dbt_seed
+        >> dbt_run_before_geocoding
+        >> python_geocode
+        >> dbt_run_after_geocoding
+        >> dbt_test
+        >> dbt_snapshot
+        >> end
+    )

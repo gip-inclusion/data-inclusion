@@ -33,6 +33,7 @@ export AIRFLOW__DATABASE__SQL_ALCHEMY_CONN="${DATABASE_URL}"
 export AIRFLOW_CONN_S3="${AIRFLOW_CONN_S3}"
 export AIRFLOW_CONN_PG="${AIRFLOW_CONN_PG}"
 
+pip install pipx
 pip install .
 
 

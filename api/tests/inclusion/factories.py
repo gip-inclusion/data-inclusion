@@ -1,9 +1,8 @@
-from datetime import datetime
+from datetime import date
 from itertools import tee
 
 import factory
 import faker
-import pytz
 
 from data_inclusion.api import models, schema
 
@@ -20,6 +19,7 @@ class StructureFactory(factory.Factory):
     class Meta:
         model = models.Structure
 
+    surrogate_id = factory.Faker("uuid4")
     id = factory.Faker("slug", locale="fr_FR")
     siret = factory.LazyFunction(lambda: fake.siret().replace(" ", ""))
     rna = factory.Faker("bothify", text="W#########")
@@ -44,7 +44,7 @@ class StructureFactory(factory.Factory):
     presentation_resume = factory.Faker("text", max_nb_chars=20, locale="fr_FR")
     presentation_detail = factory.Faker("text", max_nb_chars=30, locale="fr_FR")
     source = factory.Iterator(["dora", "emplois-de-linclusion"])
-    date_maj = factory.LazyFunction(lambda: datetime.now(tz=pytz.UTC))
+    date_maj = factory.LazyFunction(lambda: date(2023, 1, 1))
     lien_source = factory.LazyAttribute(lambda o: f"https://{o.source}.fr/{o.id}")
     horaires_ouverture = 'Mo-Fr 10:00-20:00 "sur rendez-vous"; PH off'
     accessibilite = factory.LazyAttribute(
@@ -68,8 +68,11 @@ class ServiceFactory(factory.Factory):
     class Meta:
         model = models.Service
 
+    surrogate_id = factory.Faker("uuid4")
     structure = factory.SubFactory(StructureFactory)
     id = factory.Faker("slug", locale="fr_FR")
+    structure_id = factory.SelfAttribute("structure.id")
+    source = factory.SelfAttribute("structure.source")
     nom = factory.Faker("company", locale="fr_FR")
     presentation_resume = factory.Faker("text", max_nb_chars=20, locale="fr_FR")
     types = factory.Iterator(

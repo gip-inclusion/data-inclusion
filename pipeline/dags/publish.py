@@ -1,29 +1,18 @@
 import itertools
 import logging
-import pathlib
 
 import airflow
 import pendulum
 from airflow.models import Variable
 from airflow.operators import empty, python
 from airflow.providers.postgres.hooks import postgres
-from airflow.utils import helpers
 
 logger = logging.getLogger(__name__)
 
 default_args = {}
 
 
-def render_template(filepath: pathlib.Path) -> str:
-    with filepath.open() as f:
-        _, template = helpers.parse_template_string(f.read())
-
-    return helpers.render_template_to_string(template, python.get_current_context())
-
-
-def _publish_to_datagouv(
-    dag: airflow.DAG,
-):
+def _publish_to_datagouv():
     import io
 
     from data_inclusion.scripts.tasks import datagouv
@@ -51,12 +40,12 @@ def _publish_to_datagouv(
 
     # 1. fetch data
     structures_df = pg_hook.get_pandas_df(
-        sql=render_template(pathlib.Path(dag.folder) / "sql/publish/structures.sql")
+        sql="SELECT * FROM public_opendata.opendata_structures",
     )
     log_df_info(structures_df, logger)
 
     services_df = pg_hook.get_pandas_df(
-        sql=render_template(pathlib.Path(dag.folder) / "sql/publish/services.sql")
+        sql="SELECT * FROM public_opendata.opendata_services",
     )
     log_df_info(services_df, logger)
 

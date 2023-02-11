@@ -29,3 +29,36 @@ markers = '''
 [tool.sqlfluff.core]
 dialect = "postgres"
 ignore = "templating"
+exclude_rules = "L016"
+templater = "jinja"
+
+[tool.sqlfluff.layout.type.alias_expression]
+# https://docs.sqlfluff.com/en/stable/layout.html#aligned-elements
+# We want non-default spacing _before_ the alias expressions.
+spacing_before = "align"
+# We want to align them within the next outer select clause.
+# This means for example that alias expressions within the FROM
+# or JOIN clause would _not_ be aligned with them.
+align_within = "select_clause"
+# The point at which to stop searching outward for siblings, which
+# in this example would likely be the boundary of a CTE. Stopping
+# when we hit brackets is usually a good rule of thumb for this
+# configuration.
+align_scope = "bracketed"
+
+
+[tool.sqlfluff.rules.L010]
+# Keywords
+capitalisation_policy = "upper"
+
+[tool.sqlfluff.rules.L030]
+# Function names
+extended_capitalisation_policy = "upper"
+
+[tool.sqlfluff.rules.L040]
+# Null & Boolean Literals
+capitalisation_policy = "upper"
+
+[tool.sqlfluff.templater.dbt]
+project_dir = "./dbt"
+profiles_dir = "./dbt"

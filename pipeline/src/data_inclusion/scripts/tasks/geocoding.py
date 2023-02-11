@@ -8,8 +8,6 @@ import requests
 import tenacity
 from tenacity import before, stop, wait
 
-from data_inclusion.scripts.tasks import utils
-
 logger = logging.getLogger(__name__)
 
 
@@ -23,8 +21,6 @@ class BaseAdresseNationaleBackend(GeocodingBackend):
         self.base_url = base_url.strip("/")
 
     def _geocode(self, df: pd.DataFrame) -> pd.DataFrame:
-        df = df[["id", "adresse", "code_postal", "commune"]]
-
         with io.BytesIO() as buf:
             df.to_csv(buf, index=False, quoting=csv.QUOTE_ALL, sep="|")
 
@@ -63,7 +59,7 @@ class BaseAdresseNationaleBackend(GeocodingBackend):
         # drop rows with missing input values
         # if not done, the BAN api will fail the entire batch
         df = df.dropna(subset=["adresse", "code_postal", "commune"], how="all")
-        df = df.sort_values(by="id")
+        df = df.sort_values(by="surrogate_id")
         df = df.assign(adresse=df.adresse.str.replace("-", " "))
 
         logger.info(f"Only {len(df)} rows can be geocoded.")
@@ -98,16 +94,3 @@ class BaseAdresseNationaleBackend(GeocodingBackend):
             np.arange(len(df)) // batch_size,
             group_keys=False,
         ).apply(_geocode_with_retry)
-
-
-def geocode_data(
-    df: pd.DataFrame,
-    geocoding_backend: GeocodingBackend,
-) -> pd.DataFrame:
-    df = utils.deserialize_df_data(df)
-
-    utils.log_df_info(df, logger)
-    results_df = geocoding_backend.geocode(df)
-    utils.log_df_info(results_df, logger)
-
-    return results_df

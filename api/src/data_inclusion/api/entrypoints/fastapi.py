@@ -2,6 +2,7 @@ import logging
 from typing import Optional
 
 import sentry_sdk
+import sqlalchemy as sqla
 from sqlalchemy import orm
 
 import fastapi
@@ -124,7 +125,12 @@ def list_structures(
         query = query.filter_by(id=id_)
 
     if departement is not None:
-        query = query.filter(models.Structure.code_insee.startswith(departement.value))
+        query = query.filter(
+            sqla.or_(
+                models.Structure.code_insee.startswith(departement.value),
+                models.Structure.geocodage_code_insee.startswith(departement.value),
+            )
+        )
 
     if departement_slug is not None:
         query = query.filter(
@@ -148,7 +154,6 @@ def list_structures(
         query = query.filter(models.Structure.thematiques.contains([thematique.value]))
 
     query = query.order_by(
-        models.Structure.created_at,
         models.Structure.source,
         models.Structure.id,
     )
@@ -250,9 +255,7 @@ def list_services(
         query = query.filter(models.Service.thematiques.contains([thematique.value]))
 
     query = query.order_by(
-        models.Structure.created_at,
-        models.Structure.source,
-        models.Structure.id,
+        models.Service.source,
         models.Service.id,
     )
 
