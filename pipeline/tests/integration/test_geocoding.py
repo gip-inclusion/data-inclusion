@@ -19,14 +19,14 @@ def sample_df() -> pd.DataFrame:
         data=[
             {
                 "source": "dora",
-                "id": "1",
+                "surrogate_id": "1",
                 "adresse": "17 rue Malus",
                 "code_postal": "59000",
                 "commune": "Lille",
             },
             {
                 "source": "dora",
-                "id": "2",
+                "surrogate_id": "2",
                 "adresse": None,
                 "code_postal": None,
                 "commune": None,
@@ -41,7 +41,8 @@ def test_ban_geocode(
 ):
     assert ban_backend.geocode(sample_df).to_dict(orient="records") == [
         {
-            "id": "1",
+            "surrogate_id": "1",
+            "source": "dora",
             "adresse": "17 rue Malus",
             "code_postal": "59000",
             "commune": "Lille",
