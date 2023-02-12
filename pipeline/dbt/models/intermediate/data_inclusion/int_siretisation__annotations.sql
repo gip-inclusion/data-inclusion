@@ -11,11 +11,10 @@ annotation_annotation AS (
 ),
 
 final AS (
-    SELECT DISTINCT ON (1, 4)
-        annotation_dataset.source,
-        annotation_annotation.siret,
-        annotation_annotation.is_parent,
-        annotation_datasetrow.data ->> 'id' AS "id"
+    SELECT DISTINCT ON (3)
+        annotation_annotation.siret                                                     AS "siret",
+        annotation_annotation.is_parent                                                 AS "antenne",
+        annotation_dataset.source || '-' || (annotation_datasetrow.data ->> 'id')::TEXT AS "surrogate_id"
     FROM
         annotation_annotation
     INNER JOIN
@@ -30,8 +29,7 @@ final AS (
         AND NOT annotation_annotation.skipped
         AND annotation_dataset.source != ''
     ORDER BY
-        annotation_dataset.source ASC,
-        annotation_datasetrow.data ->> 'id' ASC,
+        3 ASC,
         annotation_annotation.created_at DESC
 )
 
