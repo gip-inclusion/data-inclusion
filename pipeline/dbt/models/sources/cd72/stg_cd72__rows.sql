@@ -13,7 +13,7 @@ final AS (
         data ->> 'SIRET'               AS "siret",
         data ->> 'Nom Structure'       AS "nom_structure",
         data ->> 'Ville'               AS "ville",
-        data ->> 'Code Postal'         AS "code_postal",
+        data ->> 'Code postal'         AS "code_postal",
         data ->> 'Adresse'             AS "adresse",
         data ->> 'Typologie Structure' AS "typologie_structure",
         data ->> 'Téléphone accueil'   AS "telephone_accueil",

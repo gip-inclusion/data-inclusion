@@ -152,7 +152,7 @@ def test_list_sources(api_client, structure_factory):
     url = "/api/v0/sources/"
     response = api_client.get(url)
 
-    assert response.json() == ["emplois-de-linclusion", "dora"]
+    assert response.json() == ["dora", "emplois-de-linclusion"]
 
 
 @pytest.mark.with_token

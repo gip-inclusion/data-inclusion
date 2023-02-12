@@ -212,7 +212,9 @@ def list_structures_endpoint(
 def list_sources(
     db_session: orm.Session,
 ) -> list[str]:
-    return [o.source for o in db_session.query(models.Structure.source).distinct()]
+    query = db_session.query(models.Structure.source).distinct()
+    query = query.order_by(models.Structure.source)
+    return [o.source for o in query]
 
 
 @v0_api_router.get(

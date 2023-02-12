@@ -1,9 +1,3 @@
-{{
-    config(
-        post_hook="ALTER TABLE {{ this }} ADD PRIMARY KEY (id)"
-    )
-}}
-
 WITH services AS (
     SELECT * FROM {{ ref('stg_dora__services') }}
 ),

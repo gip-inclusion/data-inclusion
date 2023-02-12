@@ -1,9 +1,3 @@
-{{
-    config(
-        post_hook="ALTER TABLE {{ this }} ADD PRIMARY KEY (id)"
-    )
-}}
-
 WITH garages AS (
     SELECT * FROM {{ ref('stg_mes_aides__garages') }}
 ),

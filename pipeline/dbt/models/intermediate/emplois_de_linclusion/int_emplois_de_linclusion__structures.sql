@@ -1,9 +1,3 @@
-{{
-    config(
-        post_hook="ALTER TABLE {{ this }} ADD PRIMARY KEY (id)"
-    )
-}}
-
 WITH siaes AS (
     SELECT * FROM {{ ref('stg_emplois_de_linclusion__siaes') }}
 ),
@@ -20,32 +14,32 @@ structures AS (
 
 final AS (
     SELECT
-        id,
-        siret,
-        antenne,
-        rna,
-        nom,
-        commune,
-        code_postal,
-        code_insee,
-        adresse,
-        complement_adresse,
-        longitude,
-        latitude,
-        telephone,
-        courriel,
-        site_web,
-        'emplois-de-linclusion' AS source,
-        lien_source,
-        horaires_ouverture,
-        accessibilite,
-        labels_nationaux,
-        labels_autres,
-        thematiques,
-        typologie,
-        presentation_resume,
-        presentation_detail,
-        date_maj
+        id                              AS "id",
+        antenne                         AS "antenne",
+        longitude                       AS "longitude",
+        latitude                        AS "latitude",
+        'emplois-de-linclusion'         AS "source",
+        labels_nationaux                AS "labels_nationaux",
+        labels_autres                   AS "labels_autres",
+        thematiques                     AS "thematiques",
+        typologie                       AS "typologie",
+        date_maj                        AS "date_maj",
+        NULLIF(siret, '')               AS "siret",
+        NULLIF(nom, '')                 AS "nom",
+        NULLIF(lien_source, '')         AS "lien_source",
+        NULLIF(horaires_ouverture, '')  AS "horaires_ouverture",
+        NULLIF(accessibilite, '')       AS "accessibilite",
+        NULLIF(rna, '')                 AS "rna",
+        NULLIF(complement_adresse, '')  AS "complement_adresse",
+        NULLIF(presentation_resume, '') AS "presentation_resume",
+        NULLIF(presentation_detail, '') AS "presentation_detail",
+        NULLIF(adresse, '')             AS "adresse",
+        NULLIF(telephone, '')           AS "telephone",
+        NULLIF(courriel, '')            AS "courriel",
+        NULLIF(site_web, '')            AS "site_web",
+        NULLIF(commune, '')             AS "commune",
+        NULLIF(code_postal, '')         AS "code_postal",
+        NULLIF(code_insee, '')          AS "code_insee"
     FROM structures
 )
 

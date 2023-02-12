@@ -2,8 +2,10 @@ version: 2
 
 models:
   - name: api_structure
-    alias: structure
     description: '{{ doc("api_structures") }}'
+    config:
+      alias: structure
   - name: api_service
-    alias: service
     description: '{{ doc("api_services") }}'
+    config:
+      alias: service
