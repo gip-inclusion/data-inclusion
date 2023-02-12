@@ -25,7 +25,7 @@ validated_structures AS (
 filtered_services AS (
     SELECT services.*
     FROM services
-    INNER JOIN validated_structures ON services.structure_surrogate_id = validated_structures.surrogate_id
+    INNER JOIN validated_structures ON services._di_structure_surrogate_id = validated_structures._di_surrogate_id
 ),
 
 final AS (

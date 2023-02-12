@@ -3,7 +3,7 @@ WITH structures AS (
 ),
 
 final AS (
-    -- obfuscate PII
+    -- obfuscate email if it contains PII
     SELECT
         {{
             dbt_utils.star(
@@ -12,7 +12,7 @@ final AS (
                 except=['courriel'])
         }},
         CASE
-            WHEN email_is_pii THEN '***'
+            WHEN _di_email_is_pii THEN '***'
             ELSE courriel
         END AS "courriel"
     FROM structures

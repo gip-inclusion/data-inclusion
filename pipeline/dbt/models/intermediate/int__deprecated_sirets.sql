@@ -14,7 +14,7 @@ sirene_etablissement_succession AS (
 
 structures_with_states_updates AS (
     SELECT
-        structures.surrogate_id,
+        structures._di_surrogate_id,
         structures.siret,
         sirene_etablissement_historique."dateDebut"                      AS "sirene_date_debut",
         sirene_etablissement_historique."etatAdministratifEtablissement" AS "sirene_etat_admin_etablissement"
@@ -28,7 +28,7 @@ structures_with_states_updates AS (
 
 latest_debut_date_by_siret AS (
     SELECT
-        surrogate_id,
+        _di_surrogate_id,
         MAX(sirene_date_debut) AS closure_date
     FROM structures_with_states_updates
     GROUP BY 1
@@ -36,14 +36,14 @@ latest_debut_date_by_siret AS (
 
 structures_with_latest_state AS (
     SELECT
-        structures_with_states_updates.surrogate_id,
+        structures_with_states_updates._di_surrogate_id,
         structures_with_states_updates.siret,
         structures_with_states_updates.sirene_date_debut AS "sirene_date_fermeture",
         structures_with_states_updates.sirene_etat_admin_etablissement
     FROM structures_with_states_updates
     INNER JOIN
         latest_debut_date_by_siret ON
-            structures_with_states_updates.surrogate_id = latest_debut_date_by_siret.surrogate_id
+            structures_with_states_updates._di_surrogate_id = latest_debut_date_by_siret._di_surrogate_id
     WHERE
         structures_with_states_updates.sirene_date_debut = latest_debut_date_by_siret.closure_date
 ),

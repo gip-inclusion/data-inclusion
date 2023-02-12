@@ -1,6 +1,6 @@
 {{
     config(
-        post_hook="ALTER TABLE {{ this }} ADD PRIMARY KEY (surrogate_id)",
+        post_hook="ALTER TABLE {{ this }} ADD PRIMARY KEY (_di_surrogate_id)",
     )
 }}
 

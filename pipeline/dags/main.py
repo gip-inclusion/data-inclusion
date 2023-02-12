@@ -179,7 +179,7 @@ def _geocode():
     input_df = pg_hook.get_pandas_df(
         sql="""
             SELECT
-                surrogate_id,
+                _di_surrogate_id,
                 adresse,
                 code_postal,
                 commune
@@ -203,12 +203,10 @@ def _geocode():
 
     with engine.connect() as conn:
         with conn.begin():
-            conn.execute("TRUNCATE extra__geocoded_results;")
-
             output_df.to_sql(
                 "extra__geocoded_results",
                 con=conn,
-                if_exists="append",
+                if_exists="replace",
                 index=False,
                 dtype={
                     "latitude": sqla.Float,
@@ -313,6 +311,28 @@ SRC_CONFIGS_LIST = [
     SourceConfig(
         src_alias="mednum-assembleurs",
         src_url=Variable.get("MEDIATION_NUMERIQUE_ASSEMBLEURS_DATASET_URL", None),
+        src_type=SourceType.MEDIATION_NUMERIQUE,
+    ),
+    SourceConfig(
+        src_alias="mednum-francilin",
+        src_url=Variable.get("MEDIATION_NUMERIQUE_FRANCILIN_DATASET_URL", None),
+        src_type=SourceType.MEDIATION_NUMERIQUE,
+    ),
+    SourceConfig(
+        src_alias="mednum-france-tiers-lieux",
+        src_url=Variable.get(
+            "MEDIATION_NUMERIQUE_FRANCE_TIERS_LIEUX_DATASET_URL", None
+        ),
+        src_type=SourceType.MEDIATION_NUMERIQUE,
+    ),
+    SourceConfig(
+        src_alias="mednum-angers",
+        src_url=Variable.get("MEDIATION_NUMERIQUE_ANGERS_DATASET_URL", None),
+        src_type=SourceType.MEDIATION_NUMERIQUE,
+    ),
+    SourceConfig(
+        src_alias="mednum-france-services",
+        src_url=Variable.get("MEDIATION_NUMERIQUE_FRANCE_SERVICES_DATASET_URL", None),
         src_type=SourceType.MEDIATION_NUMERIQUE,
     ),
 ]

@@ -22,7 +22,7 @@ WITH structures AS (
 final AS (
     SELECT
         *,
-        source || '-' || id AS "surrogate_id"
+        source || '-' || id AS "_di_surrogate_id"
     FROM structures
 )
 

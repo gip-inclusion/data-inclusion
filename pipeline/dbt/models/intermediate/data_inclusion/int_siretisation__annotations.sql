@@ -14,7 +14,7 @@ final AS (
     SELECT DISTINCT ON (3)
         annotation_annotation.siret                                                     AS "siret",
         annotation_annotation.is_parent                                                 AS "antenne",
-        annotation_dataset.source || '-' || (annotation_datasetrow.data ->> 'id')::TEXT AS "surrogate_id"
+        annotation_dataset.source || '-' || (annotation_datasetrow.data ->> 'id')::TEXT AS "_di_surrogate_id"
     FROM
         annotation_annotation
     INNER JOIN

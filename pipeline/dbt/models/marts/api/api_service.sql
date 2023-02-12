@@ -1,8 +1,8 @@
 {{
     config(
         post_hook=[
-            "ALTER TABLE {{ this }} ADD PRIMARY KEY (surrogate_id)",
-            "ALTER TABLE {{ this }} ADD CONSTRAINT services_structure_surrogate_id_fk FOREIGN KEY (structure_surrogate_id) REFERENCES {{ ref('api_structure') }} (surrogate_id)"
+            "ALTER TABLE {{ this }} ADD PRIMARY KEY (_di_surrogate_id)",
+            "ALTER TABLE {{ this }} ADD CONSTRAINT services_structure_surrogate_id_fk FOREIGN KEY (_di_structure_surrogate_id) REFERENCES {{ ref('api_structure') }} (_di_surrogate_id)"
         ]
     )
 }}

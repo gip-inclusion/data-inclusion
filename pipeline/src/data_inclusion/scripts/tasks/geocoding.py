@@ -59,7 +59,7 @@ class BaseAdresseNationaleBackend(GeocodingBackend):
         # drop rows with missing input values
         # if not done, the BAN api will fail the entire batch
         df = df.dropna(subset=["adresse", "code_postal", "commune"], how="all")
-        df = df.sort_values(by="surrogate_id")
+        df = df.sort_values(by="_di_surrogate_id")
         df = df.assign(adresse=df.adresse.str.replace("-", " "))
 
         logger.info(f"Only {len(df)} rows can be geocoded.")

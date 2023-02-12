@@ -9,7 +9,7 @@ models:
 
   - name: int__validated_structures
     columns:
-      - name: surrogate_id
+      - name: _di_surrogate_id
         tests:
           - not_null
           - unique
@@ -39,12 +39,12 @@ models:
             - source
             - id
     columns:
-      - name: structure_surrogate_id
+      - name: _di_structure_surrogate_id
         tests:
           - relationships:
               to: ref('int__validated_structures')
-              field: surrogate_id
-      - name: surrogate_id
+              field: _di_surrogate_id
+      - name: _di_surrogate_id
         tests:
           - not_null
           - unique

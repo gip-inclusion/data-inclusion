@@ -12,7 +12,9 @@ class Structure(Base):
     __tablename__ = "structure"
 
     # internal metadata
-    surrogate_id = sqla.Column(sqla.Text, primary_key=True)
+    _di_surrogate_id = sqla.Column(sqla.Text, primary_key=True)
+    _di_geocodage_code_insee = sqla.Column(sqla.Text, nullable=True)
+    _di_geocodage_score = sqla.Column(sqla.Float, nullable=True)
 
     # structure data
     id = sqla.Column(sqla.Text, nullable=True)
@@ -22,8 +24,6 @@ class Structure(Base):
     commune = sqla.Column(sqla.Text, nullable=True)
     code_postal = sqla.Column(sqla.Text, nullable=True)
     code_insee = sqla.Column(sqla.Text, nullable=True)
-    geocodage_code_insee = sqla.Column(sqla.Text, nullable=True)
-    geocodage_score = sqla.Column(sqla.Float, nullable=True)
     adresse = sqla.Column(sqla.Text, nullable=True)
     complement_adresse = sqla.Column(sqla.Text, nullable=True)
     longitude = sqla.Column(sqla.Float, nullable=True)
@@ -50,8 +50,10 @@ class Service(Base):
     __tablename__ = "service"
 
     # internal metadata
-    surrogate_id = sqla.Column(sqla.Text, primary_key=True)
-    structure_surrogate_id = sqla.Column(sqla.ForeignKey("structure.surrogate_id"))
+    _di_surrogate_id = sqla.Column(sqla.Text, primary_key=True)
+    _di_structure_surrogate_id = sqla.Column(
+        sqla.ForeignKey("structure._di_surrogate_id")
+    )
 
     # service data
     id = sqla.Column(sqla.Text, nullable=True)

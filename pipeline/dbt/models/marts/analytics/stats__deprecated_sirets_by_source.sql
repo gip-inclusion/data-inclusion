@@ -5,8 +5,8 @@ WITH structures AS (
 final AS (
     SELECT
         source,
-        COUNT(*) FILTER (WHERE has_deprecated_siret)                    AS "deprecated_count",
-        100.0 * COUNT(*) FILTER (WHERE has_deprecated_siret) / COUNT(*) AS "deprecated_percentage"
+        COUNT(*) FILTER (WHERE _di_has_deprecated_siret)                    AS "deprecated_count",
+        100.0 * COUNT(*) FILTER (WHERE _di_has_deprecated_siret) / COUNT(*) AS "deprecated_percentage"
     FROM structures
     GROUP BY 1
     ORDER BY 3 DESC

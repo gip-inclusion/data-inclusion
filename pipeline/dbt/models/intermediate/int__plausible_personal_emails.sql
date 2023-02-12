@@ -8,7 +8,7 @@ prenoms AS (
 
 structures_with_suspect_emails AS (
     SELECT
-        surrogate_id,
+        _di_surrogate_id,
         courriel,
         nom,
         LOWER(SPLIT_PART(courriel, '@', 1)) AS courriel_local_part,
@@ -36,7 +36,7 @@ structures_with_suspect_emails AS (
 
 plausible_personal_emails AS (
     SELECT
-        structures_with_suspect_emails.surrogate_id,
+        structures_with_suspect_emails._di_surrogate_id,
         structures_with_suspect_emails.courriel
     FROM
         structures_with_suspect_emails,

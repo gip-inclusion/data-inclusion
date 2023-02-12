@@ -19,8 +19,8 @@ WITH services AS (
 final AS (
     SELECT
         *,
-        source || '-' || id           AS "surrogate_id",
-        source || '-' || structure_id AS "structure_surrogate_id"
+        source || '-' || id           AS "_di_surrogate_id",
+        source || '-' || structure_id AS "_di_structure_surrogate_id"
     FROM services
 )
 

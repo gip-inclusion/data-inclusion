@@ -21,5 +21,4 @@ class SourceType(str, enum.Enum):
     FINESS = "finess"
     ETAB_PUBLICS = "etab-publics"
     UN_JEUNE_UNE_SOLUTION = "1jeune1solution"
-    CONSEILLER_NUMERIQUE = "conseiller-numerique"
     MEDIATION_NUMERIQUE = "mediation_numerique"

@@ -128,7 +128,7 @@ def list_structures(
         query = query.filter(
             sqla.or_(
                 models.Structure.code_insee.startswith(departement.value),
-                models.Structure.geocodage_code_insee.startswith(departement.value),
+                models.Structure._di_geocodage_code_insee.startswith(departement.value),
             )
         )
 

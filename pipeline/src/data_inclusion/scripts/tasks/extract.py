@@ -6,7 +6,6 @@ from data_inclusion.scripts.tasks import constants
 from data_inclusion.scripts.tasks.sources import (
     cd35,
     cd72,
-    conseiller_numerique,
     dora,
     emplois,
     etab_publics,
@@ -33,7 +32,6 @@ EXTRACT_BY_SOURCE_TYPE = {
     constants.SourceType.FINESS: finess.extract_data,
     constants.SourceType.ETAB_PUBLICS: etab_publics.extract_data,
     constants.SourceType.UN_JEUNE_UNE_SOLUTION: un_jeune_une_solution.extract_data,
-    constants.SourceType.CONSEILLER_NUMERIQUE: conseiller_numerique.extract_data,
     constants.SourceType.MEDIATION_NUMERIQUE: mediation_numerique.extract_data,
 }
 

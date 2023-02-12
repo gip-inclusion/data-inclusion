@@ -19,7 +19,7 @@ class StructureFactory(factory.Factory):
     class Meta:
         model = models.Structure
 
-    surrogate_id = factory.Faker("uuid4")
+    _di_surrogate_id = factory.Faker("uuid4")
     id = factory.Faker("slug", locale="fr_FR")
     siret = factory.LazyFunction(lambda: fake.siret().replace(" ", ""))
     rna = factory.Faker("bothify", text="W#########")
@@ -68,7 +68,7 @@ class ServiceFactory(factory.Factory):
     class Meta:
         model = models.Service
 
-    surrogate_id = factory.Faker("uuid4")
+    _di_surrogate_id = factory.Faker("uuid4")
     structure = factory.SubFactory(StructureFactory)
     id = factory.Faker("slug", locale="fr_FR")
     structure_id = factory.SelfAttribute("structure.id")
