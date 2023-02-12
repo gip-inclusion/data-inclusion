@@ -2,64 +2,13 @@ import functools
 import re
 from typing import Optional
 
-import tqdm
-from cnfs.models import Permanence
-
 from django.contrib.gis import geos, measure
 from django.contrib.gis.db.models.functions import GeometryDistance
 from django.contrib.postgres import search
-from django.db import models, transaction
+from django.db import models
 
-from annotation.models import Dataset, DatasetRow
+from cnfs.models import Permanence
 from sirene.models import Establishment
-
-
-def import_dataset(
-    dataset_rows_list: list[dict],
-    dataset_label: str,
-    organization_id: str,
-):
-    with transaction.atomic():
-        dataset_instance, _ = Dataset.objects.get_or_create(
-            label=dataset_label,
-            organization_id=organization_id,
-        )
-
-        for dataset_row_dict in tqdm.tqdm(dataset_rows_list):
-            row_instance = DatasetRow.objects.create(dataset=dataset_instance, data=dataset_row_dict)
-
-            if "adresse" in row_instance.data:
-                similar_address = search_similar_address(
-                    address=row_instance.data["adresse"],
-                    postal_code=row_instance.data["code_postal"],
-                )
-                if similar_address is not None:
-                    row_instance.similar_address = similar_address
-                    row_instance.save()
-
-
-def search_similar_address(
-    address: Optional[str],
-    postal_code: Optional[str],
-) -> Optional[str]:
-    if postal_code is None or address is None:
-        return None
-
-    establishment_qs = Establishment.objects.filter(postal_code__startswith=postal_code[:2])
-
-    establishment_qs = establishment_qs.annotate(
-        address_similarity=search.TrigramWordSimilarity(address, "address1")
-    ).order_by("-address_similarity")
-
-    establishment_data = establishment_qs.first()
-
-    if establishment_data is None:
-        return None
-
-    if establishment_data.address_similarity < 0.4:
-        return None
-
-    return re.sub(r"^\d* ", "", establishment_data.address1)
 
 
 def search_sirene(

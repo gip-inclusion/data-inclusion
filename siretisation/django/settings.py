@@ -47,6 +47,7 @@ INSTALLED_APPS = [
     "matching",
     "sirene",
     "cnfs",
+    "data_inclusion",
 ]
 
 MIDDLEWARE = list(

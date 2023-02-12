@@ -8,8 +8,6 @@ from . import factories
 
 register(factories.GroupFactory)
 register(factories.DatasetFactory)
-register(factories.DatasetRowFactory)
-register(factories.AnnotationFactory)
 
 
 def get_factories():

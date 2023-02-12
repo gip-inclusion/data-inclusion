@@ -1,5 +1,3 @@
-import uuid
-
 import factory
 import faker
 
@@ -20,19 +18,3 @@ class DatasetFactory(factory.django.DjangoModelFactory):
         model = models.Dataset
 
     organization = factory.SubFactory(GroupFactory)
-
-
-class DatasetRowFactory(factory.django.DjangoModelFactory):
-    class Meta:
-        model = models.DatasetRow
-
-    dataset = factory.SubFactory(DatasetFactory)
-    data = factory.LazyFunction(lambda: {"id": str(uuid.uuid4())})
-
-
-class AnnotationFactory(factory.django.DjangoModelFactory):
-    class Meta:
-        model = models.Annotation
-
-    siret = factory.LazyFunction(lambda: fake.siret().replace(" ", ""))
-    row = factory.SubFactory(DatasetRowFactory)

@@ -1,10 +1,10 @@
 from django import http
 from django.contrib.auth.decorators import login_required
-from django.db.models import Case, Count, Value, When
 from django.shortcuts import render
 
 from annotation import services
-from annotation.models import Annotation, Dataset, DatasetRow
+from annotation.models import Annotation, Dataset
+from data_inclusion.models import Structure
 from sirene.models import CodeNAF
 from sirene.services import get_naf_data_by_code
 
@@ -23,7 +23,6 @@ def index(request: http.HttpRequest):
 
     context = {
         "dataset_instance": dataset_instance,
-        "annotation_queryset": Annotation.objects.filter(created_by=request.user),
     }
 
     return render(request, "annotation/index.html", context)
@@ -41,46 +40,43 @@ def partial_task(request: http.HttpRequest):
     except Dataset.DoesNotExist:
         return http.HttpResponseNotFound()
 
-    # select next row instance:
-    # exclude annotated rows
-    qs = (
-        DatasetRow.objects.annotate(Count("annotations"))
-        .filter(dataset_id=unsafe_dataset_instance_id)
-        .exclude(annotations__count__gt=0)
-    )
+    structure_instance = Structure.objects.raw(
+        """
+            WITH enhanced_annotation AS (
+                SELECT
+                    annotation_annotation.*,
+                    annotation_dataset.source AS "source"
+                FROM annotation_annotation
+                INNER JOIN annotation_dataset ON annotation_annotation.dataset_id = annotation_dataset.id
+            )
+            SELECT
+                api_structure.*
+            FROM api_structure
+            LEFT JOIN enhanced_annotation ON
+                api_structure.source = enhanced_annotation.source
+                AND api_structure._di_surrogate_id = enhanced_annotation.di_surrogate_id
+            WHERE
+                api_structure.source = %(dataset_source)s
+                AND enhanced_annotation.id IS NULL
+            -- this allow concurrent users to work without too much overlap
+            ORDER BY random()
+            LIMIT 1""",
+        {
+            "dataset_source": dataset_instance.source,
+        },
+    )[0]
 
-    # optionally prioritize rows based on their code_postal prefix
-    high_priority_postcode_prefix = dataset_instance.priority_settings.get("postcode_prefix", "not_a_prefix")
-
-    qs = qs.annotate(
-        has_high_priority=Case(
-            When(data__code_postal__startswith=high_priority_postcode_prefix, then=Value(True)),
-            default=Value(False),
-        )
-    )
-
-    row_instance = qs.order_by("-has_high_priority", "?").first()
-
-    progress_current = (
-        DatasetRow.objects.annotate(Count("annotations"))
-        .filter(dataset_id=unsafe_dataset_instance_id)
-        .filter(annotations__count__gt=0)
-        .count()
-    )
-    progress_total = DatasetRow.objects.filter(dataset_id=unsafe_dataset_instance_id).count()
-
-    if row_instance is None:
+    if structure_instance is None:
         return http.HttpResponse("Vous avez terminé ! :)")
 
     context = {
         "dataset_instance": dataset_instance,
-        "progress_str": f"{progress_current} / {progress_total}",
-        "row_instance": row_instance,
+        "structure_instance": structure_instance,
         "establishment_queryset": services.search_sirene(
-            adresse=row_instance.task_data["similar_address"] or row_instance.task_data["adresse"],
-            name=row_instance.task_data["nom"],
-            postal_code=row_instance.task_data["code_postal"],
-            siret=row_instance.task_data["siret"],
+            adresse=structure_instance.adresse,
+            name=structure_instance.nom,
+            postal_code=structure_instance.code_postal,
+            siret=structure_instance.siret,
         ),
         "activity_list": [
             get_naf_data_by_code(level, code)
@@ -94,9 +90,9 @@ def partial_task(request: http.HttpRequest):
 
     if dataset_instance.show_nearby_cnfs_permanences:
         context["permanence_queryset"] = services.search_cnfs(
-            siret=row_instance.task_data["siret"],
-            longitude=row_instance.data["longitude"],
-            latitude=row_instance.data["latitude"],
+            siret=structure_instance.siret,
+            longitude=structure_instance.longitude,
+            latitude=structure_instance.latitude,
         )
 
     return render(request, "annotation/task.html", context)
@@ -132,18 +128,22 @@ def partial_submit(request: http.HttpRequest):
         return http.HttpResponseNotFound()
 
     unsafe_dataset_instance_id = request.POST.get("dataset_instance_id", None)
-    unsafe_row_instance_id = request.POST.get("row_instance_id", None)
+    unsafe_structure_surrogate_id = request.POST.get("structure_surrogate_id", None)
     unsafe_skipped = request.POST.get("skipped", None)
     unsafe_closed = request.POST.get("closed", None)
     unsafe_irrelevant = request.POST.get("irrelevant", None)
     unsafe_is_parent = request.POST.get("is_parent", None)
     unsafe_siret = request.POST.get("siret", None)
 
-    if not DatasetRow.objects.filter(dataset_id=unsafe_dataset_instance_id).filter(id=unsafe_row_instance_id).exists():
+    if not Dataset.objects.filter(id=unsafe_dataset_instance_id).exists():
+        return http.HttpResponseBadRequest()
+
+    if not Structure.objects.filter(di_surrogate_id=unsafe_structure_surrogate_id).exists():
         return http.HttpResponseBadRequest()
 
     Annotation.objects.create(
-        row_id=unsafe_row_instance_id,
+        dataset_id=unsafe_dataset_instance_id,
+        di_surrogate_id=unsafe_structure_surrogate_id,
         skipped=bool(unsafe_skipped),
         closed=bool(unsafe_closed),
         irrelevant=bool(unsafe_irrelevant),
