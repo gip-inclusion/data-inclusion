@@ -15,7 +15,7 @@ final AS (
         (data ->> 'date_maj')::TIMESTAMP WITH TIME ZONE                                               AS "date_maj",
         data ->> 'id'                                                                                 AS "id",
         data ->> 'nom'                                                                                AS "nom",
-        data ->> 'siret'                                                                              AS "siret",
+        NULLIF(data ->> 'siret', REPEAT('0', 14))                                                     AS "siret",
         data ->> 'source'                                                                             AS "source",
         data ->> 'adresse'                                                                            AS "adresse",
         data ->> 'commune'                                                                            AS "commune",
