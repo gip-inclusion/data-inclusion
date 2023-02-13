@@ -335,6 +335,13 @@ SRC_CONFIGS_LIST = [
         src_url=Variable.get("MEDIATION_NUMERIQUE_FRANCE_SERVICES_DATASET_URL", None),
         src_type=SourceType.MEDIATION_NUMERIQUE,
     ),
+    SourceConfig(
+        src_alias="mednum-conseiller-numerique",
+        src_url=Variable.get(
+            "MEDIATION_NUMERIQUE_CONSEILLER_NUMERIQUE_DATASET_URL", None
+        ),
+        src_type=SourceType.MEDIATION_NUMERIQUE,
+    ),
 ]
 
 
