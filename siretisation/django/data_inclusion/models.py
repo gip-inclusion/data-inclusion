@@ -4,7 +4,7 @@ from django.db import models
 
 class Structure(models.Model):
     class Meta:
-        db_table = "api_structure"
+        db_table = "structure"
         managed = False
 
     di_surrogate_id = models.TextField(db_column="_di_surrogate_id", primary_key=True)
