@@ -388,6 +388,11 @@ with airflow.DAG(
 
             setup >> extract >> load >> compute_flux >> end_load
 
+    dbt_deps = bash.BashOperator(
+        task_id="dbt_deps",
+        bash_command="{{ var.value.pipx_bin }} run --spec dbt-postgres dbt deps",
+    )
+
     dbt_seed = bash.BashOperator(
         task_id="dbt_seed",
         bash_command="{{ var.value.pipx_bin }} run --spec dbt-postgres dbt seed",
@@ -429,6 +434,7 @@ with airflow.DAG(
 
     (
         end_load
+        >> dbt_deps
         >> dbt_seed
         >> dbt_run_before_geocoding
         >> python_geocode

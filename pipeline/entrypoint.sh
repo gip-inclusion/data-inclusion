@@ -30,12 +30,8 @@ export AIRFLOW__CORE__FERNET_KEY="${SECRET_KEY}"
 export AIRFLOW__CORE__LOAD_DEFAULT_CONNECTIONS=False
 export AIRFLOW__CORE__LOAD_EXAMPLES=False
 export AIRFLOW__DATABASE__SQL_ALCHEMY_CONN="${DATABASE_URL}"
-export AIRFLOW_CONN_S3="${AIRFLOW_CONN_S3}"
-export AIRFLOW_CONN_PG="${AIRFLOW_CONN_PG}"
 
-pip install pipx
 pip install .
-
 
 airflow db upgrade
 airflow users create \
