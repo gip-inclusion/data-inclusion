@@ -50,13 +50,13 @@ def partial_task(request: http.HttpRequest):
                 INNER JOIN annotation_dataset ON annotation_annotation.dataset_id = annotation_dataset.id
             )
             SELECT
-                api_structure.*
-            FROM api_structure
+                structure.*
+            FROM structure
             LEFT JOIN enhanced_annotation ON
-                api_structure.source = enhanced_annotation.source
-                AND api_structure._di_surrogate_id = enhanced_annotation.di_surrogate_id
+                structure.source = enhanced_annotation.source
+                AND structure._di_surrogate_id = enhanced_annotation.di_surrogate_id
             WHERE
-                api_structure.source = %(dataset_source)s
+                structure.source = %(dataset_source)s
                 AND enhanced_annotation.id IS NULL
             -- this allow concurrent users to work without too much overlap
             ORDER BY random()
