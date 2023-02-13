@@ -11,7 +11,7 @@ def migrate_data(apps, _) -> None:
         annotation_instance.di_surrogate_id = (
             annotation_instance.row.dataset.source + "-" + annotation_instance.row.data["id"]
         )
-        annotation_instance.save(update_fields=["di_surrogate_id"])
+        annotation_instance.save()
 
 
 class Migration(migrations.Migration):
