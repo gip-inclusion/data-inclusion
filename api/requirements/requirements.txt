@@ -118,7 +118,7 @@ sqlalchemy==1.4.43
     # via
     #   alembic
     #   data-inclusion-api (setup.py)
-starlette==0.20.4
+starlette==0.25.0
     # via fastapi
 typing-extensions==4.4.0
     # via pydantic

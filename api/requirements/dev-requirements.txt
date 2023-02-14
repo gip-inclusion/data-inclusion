@@ -160,7 +160,7 @@ sqlalchemy==1.4.45
     # via
     #   alembic
     #   data-inclusion-api (setup.py)
-starlette==0.22.0
+starlette==0.25.0
     # via fastapi
 tomli==2.0.1
     # via
