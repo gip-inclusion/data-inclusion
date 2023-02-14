@@ -1,4 +1,31 @@
 version: 2
 
 models:
+
   - name: stg_odspep__adresses
+    columns:
+      - name: id_adr
+        tests:
+          - not_null
+          - unique
+
+  - name: stg_odspep__contacts
+    columns:
+      - name: id_ctc
+        tests:
+          - not_null
+          - unique
+
+  - name: stg_odspep__horaires
+    columns:
+      - name: id_hor
+        tests:
+          - not_null
+          - unique
+
+  - name: stg_odspep__res_partenariales
+    columns:
+      - name: id_res
+        tests:
+          - not_null
+          - unique

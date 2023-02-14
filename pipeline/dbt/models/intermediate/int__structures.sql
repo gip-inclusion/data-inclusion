@@ -8,6 +8,7 @@ WITH structures AS (
                 ref('int_emplois_de_linclusion__structures'),
                 ref('int_mes_aides__structures'),
                 ref('int_mediation_numerique__structures'),
+                ref('int_odspep__deduplicated_structures'),
             ],
             column_override={
                 "thematiques": "TEXT[]",
