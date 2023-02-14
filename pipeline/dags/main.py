@@ -388,23 +388,19 @@ with airflow.DAG(
 
             setup >> extract >> load >> compute_flux >> end_load
 
-    dbt_deps = bash.BashOperator(
-        task_id="dbt_deps",
-        bash_command="{{ var.value.pipx_bin }} run --spec dbt-postgres dbt deps",
-    )
+    dbt = "{{ var.value.pipx_bin }} run --spec dbt-postgres dbt"
+    # this ensure deps are installed (if instance has been recreated)
+    dbt = f"{dbt} deps && {dbt}"
 
     dbt_seed = bash.BashOperator(
         task_id="dbt_seed",
-        bash_command="{{ var.value.pipx_bin }} run --spec dbt-postgres dbt seed",
+        bash_command=f"{dbt} seed",
     )
 
     # run what does not depend on geocoding results
     dbt_run_before_geocoding = bash.BashOperator(
         task_id="dbt_run_before_geocoding",
-        bash_command=(
-            "{{ var.value.pipx_bin }} run --spec dbt-postgres"
-            " dbt run --exclude int_extra__geocoded_results+"
-        ),
+        bash_command=f"{dbt} run --exclude int_extra__geocoded_results+",
     )
 
     python_geocode = python.PythonOperator(
@@ -416,25 +412,21 @@ with airflow.DAG(
     # run remaining models
     dbt_run_after_geocoding = bash.BashOperator(
         task_id="dbt_run_after_geocoding",
-        bash_command=(
-            "{{ var.value.pipx_bin }} run --spec dbt-postgres"
-            " dbt run --select int_extra__geocoded_results+"
-        ),
+        bash_command=f"{dbt} run --select int_extra__geocoded_results+",
     )
 
     dbt_test = bash.BashOperator(
         task_id="dbt_test",
-        bash_command="{{ var.value.pipx_bin }} run --spec dbt-postgres dbt test",
+        bash_command=f"{dbt} test",
     )
 
     dbt_snapshot = bash.BashOperator(
         task_id="dbt_snapshot",
-        bash_command="{{ var.value.pipx_bin }} run --spec dbt-postgres dbt snapshot",
+        bash_command=f"{dbt} snapshot",
     )
 
     (
         end_load
-        >> dbt_deps
         >> dbt_seed
         >> dbt_run_before_geocoding
         >> python_geocode
