@@ -17,7 +17,9 @@ croisements AS (
         other_sirets.source AS "other_source"
     FROM sirets
     LEFT JOIN sirets AS other_sirets ON sirets.siren = other_sirets.siren
-    WHERE sirets.siret != other_sirets.siret
+    WHERE
+        sirets.source != other_sirets.source
+        AND sirets.siret != other_sirets.siret
 ),
 
 final AS (

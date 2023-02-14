@@ -16,6 +16,7 @@ croisements AS (
         other_sirens.source AS "other_source"
     FROM sirens
     LEFT JOIN sirens AS other_sirens ON sirens.siren = other_sirens.siren
+    WHERE sirens.source != other_sirens.source
 ),
 
 final AS (
