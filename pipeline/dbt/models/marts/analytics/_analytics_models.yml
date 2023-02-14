@@ -3,3 +3,6 @@ version: 2
 models:
   - name: stats__deprecated_sirets_by_source
   - name: stats__structure_count_by_source
+  - name: stats__croisements_siret
+  - name: stats__croisements_siren
+  - name: stats__croisements_siren_only
