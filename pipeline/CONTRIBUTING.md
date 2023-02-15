@@ -35,3 +35,24 @@ vim requirements/requirements.in
 pip-compile requirements/requirements.in > requirements/requirements.txt
 pip-compile requirements/dev-requirements.in > requirements/dev-requirements.txt
 ```
+
+## dbt
+
+* dbt in configure to target the `target-db` postgres container (see the root `docker-compose`).
+* all dbt commands must be run in the in the `pipeline/dbt` directory.
+
+```bash
+# install pipx
+pip install pipx
+
+# alias dbt
+alias dbt="pipx run --spec dbt-postgres dbt"
+
+# install extra dbt packages (e.g. dbt_utils)
+dbt deps
+
+# run commands
+dbt run --select sources
+dbt run --select intermediate
+dbt run --select marts
+```
