@@ -237,6 +237,28 @@ def test_list_structures_filter_by_thematique(api_client, structure_factory):
 
 
 @pytest.mark.with_token
+def test_list_structures_filter_by_categorie_thematique(api_client, structure_factory):
+    structure = structure_factory(
+        thematiques=[
+            schema.Thematique.MOBILITE__ACHETER_UN_VEHICULE_MOTORISE.value,
+        ],
+    )
+    structure_factory(thematiques=[])
+
+    url = "/api/v0/structures/"
+
+    response = api_client.get(
+        url, params={"thematique": schema.Thematique.MOBILITE.value}
+    )
+
+    assert response.status_code == 200
+    resp_data = response.json()
+    assert len(resp_data["items"]) == 1
+    assert resp_data["items"][0]["source"] == structure.source
+    assert resp_data["items"][0]["id"] == structure.id
+
+
+@pytest.mark.with_token
 def test_list_structures_filter_by_source_and_id(api_client, structure_factory):
     structure_factory(source="emplois-de-linclusion", id="foo")
     structure_2 = structure_factory(source="dora", id="foo")
@@ -523,3 +545,27 @@ def test_list_services_filter_by_thematique(api_client, service_factory):
     )
     assert response.status_code == 200
     assert response.json() == {"items": [], "total": 0, "page": 1, "size": ANY}
+
+
+@pytest.mark.with_token
+def test_list_services_filter_by_categorie_thematique(api_client, service_factory):
+    service = service_factory(
+        source="alpha",
+        id="1",
+        thematiques=[
+            schema.Thematique.MOBILITE__ACHETER_UN_VEHICULE_MOTORISE.value,
+        ],
+    )
+    service_factory(thematiques=[])
+
+    url = "/api/v0/services/"
+
+    response = api_client.get(
+        url, params={"thematique": schema.Thematique.MOBILITE.value}
+    )
+
+    assert response.status_code == 200
+    resp_data = response.json()
+    assert len(resp_data["items"]) == 1
+    assert resp_data["items"][0]["source"] == service.structure.source
+    assert resp_data["items"][0]["id"] == service.id

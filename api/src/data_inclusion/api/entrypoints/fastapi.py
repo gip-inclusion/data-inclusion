@@ -151,7 +151,16 @@ def list_structures(
         )
 
     if thematique is not None:
-        query = query.filter(models.Structure.thematiques.contains([thematique.value]))
+        filter_stmt = """\
+        EXISTS(
+            SELECT
+            FROM unnest(thematiques) thematique
+            WHERE thematique ~ ('^' || :thematique)
+        )
+        """
+        query = query.filter(
+            sqla.text(filter_stmt).bindparams(thematique=thematique.value)
+        )
 
     query = query.order_by(
         models.Structure.source,
@@ -254,7 +263,16 @@ def list_services(
         query = query.filter(models.Structure.source == source)
 
     if thematique is not None:
-        query = query.filter(models.Service.thematiques.contains([thematique.value]))
+        filter_stmt = """\
+        EXISTS(
+            SELECT
+            FROM unnest(service.thematiques) thematique
+            WHERE thematique ~ ('^' || :thematique)
+        )
+        """
+        query = query.filter(
+            sqla.text(filter_stmt).bindparams(thematique=thematique.value)
+        )
 
     query = query.order_by(
         models.Service.source,
