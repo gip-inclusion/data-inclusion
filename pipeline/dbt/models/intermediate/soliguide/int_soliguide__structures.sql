@@ -17,7 +17,7 @@ final AS (
         NULL::TEXT[]                AS "thematiques",
         NULL                        AS "typologie",
         updated_at                  AS "date_maj",
-        siret                       AS "siret",
+        NULL                        AS "siret",
         name                        AS "nom",
         seo_url                     AS "lien_source",
         position_complement_adresse AS "complement_adresse",
