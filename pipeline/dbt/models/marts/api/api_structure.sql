@@ -11,6 +11,7 @@ WITH structures AS (
 final AS (
     SELECT *
     FROM structures
+    WHERE source != 'soliguide'
 )
 
 SELECT * FROM final

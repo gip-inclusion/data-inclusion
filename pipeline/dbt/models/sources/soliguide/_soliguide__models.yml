@@ -1,0 +1,9 @@
+version: 2
+
+models:
+  - name: stg_soliguide__places
+    columns:
+      - name: lieu_id
+        tests:
+          - not_null
+          - unique

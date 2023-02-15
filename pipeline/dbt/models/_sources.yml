@@ -37,3 +37,8 @@ sources:
       - name: DD009_REGION_RESSOURCE_2
       - name: DD009_REGION_SUGGESTION
       - name: DD009_RES_PARTENARIALE
+
+  - name: soliguide
+    schema: soliguide
+    tables:
+      - name: places

@@ -16,6 +16,7 @@ final AS (
             ELSE courriel
         END AS "courriel"
     FROM structures
+    WHERE source != 'soliguide'
 )
 
 SELECT * FROM final

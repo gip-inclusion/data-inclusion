@@ -14,6 +14,7 @@ WITH services AS (
 final AS (
     SELECT *
     FROM services
+    WHERE source != 'soliguide'
 )
 
 SELECT * FROM final
