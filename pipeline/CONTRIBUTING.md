@@ -52,7 +52,16 @@ alias dbt="pipx run --spec dbt-postgres dbt"
 dbt deps
 
 # run commands
+
+#sources, basic processing/mapping:
+#- retrieve data from datalake table
+#- retrieve data from raw dedicated source tables
+#- retrieve data from the Soliguide S3 
 dbt run --select sources
+
+# intermediate, specific transformations
 dbt run --select intermediate
+
+# marts, last touch
 dbt run --select marts
 ```
