@@ -22,7 +22,7 @@ final AS (
         NULL               AS "lien_source",
         horaires_ouverture AS "horaires_ouverture",
         NULL               AS "accessibilite",
-        labels_nationaux       AS "labels_nationaux",
+        labels_nationaux   AS "labels_nationaux",
         NULL::TEXT[]       AS "labels_autres",
         thematiques        AS "thematiques",
         NULL               AS "typologie",
