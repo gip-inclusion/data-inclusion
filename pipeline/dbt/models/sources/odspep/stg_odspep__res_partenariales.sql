@@ -18,7 +18,7 @@ final AS (
         "RESPONSABLE_RSP"                                AS "responsable",
         "COMMENTAIRES_HORAIRE_RSP"                       AS "commentaires_horaire",
         "NUMERO_RSP"                                     AS "numero",
-        "PRESCRIPTIBLE_RSP"                              AS "prescriptible",
+        "PRESCRIPTIBLE_RSP"::BOOLEAN                     AS "prescriptible",
         "TYPE_RES_PART_RSP"                              AS "type_res_part",
         "PROPRIETAIRE_RSP"                               AS "proprietaire",
         "CREATEUR_RSP"                                   AS "createur",
