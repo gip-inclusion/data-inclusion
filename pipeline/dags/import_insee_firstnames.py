@@ -31,7 +31,7 @@ with airflow.DAG(
     dag_id="import_insee_firstnames",
     start_date=pendulum.datetime(2022, 1, 1, tz="Europe/Paris"),
     default_args=default_args,
-    schedule_interval=None,
+    schedule_interval="@once",
     catchup=False,
 ) as dag:
     start = empty.EmptyOperator(task_id="start")
