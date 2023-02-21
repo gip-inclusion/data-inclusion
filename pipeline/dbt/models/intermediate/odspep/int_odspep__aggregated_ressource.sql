@@ -36,6 +36,15 @@ bassins AS (
     FROM {{ ref('stg_odspep__bassins') }}
 ),
 
+dir_territoriale_ofii AS (
+    SELECT
+        id,
+        id_res,
+        code_dit  AS code,
+        'DT OFII' AS type_code
+    FROM {{ ref('stg_odspep__dir_territoriale_ofii') }}
+),
+
 final AS (
 
     SELECT * FROM regions
@@ -45,6 +54,8 @@ final AS (
     SELECT * FROM communes
     UNION
     SELECT * FROM bassins
+    UNION
+    SELECT * FROM dir_territoriale_ofii
 )
 
 SELECT * FROM final
