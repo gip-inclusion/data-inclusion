@@ -33,6 +33,18 @@ models:
         comment: id_res are not unique in this table
         tests:
           - not_null
+  - name: stg_odspep__communes
+    columns:
+      - name: id_res
+        comment: id_res are not unique in this table
+        tests:
+          - not_null
+  - name: stg_odspep__bassins
+    columns:
+      - name: id_res
+        comment: id_res are not unique in this table
+        tests:
+          - not_null
   - name: stg_odspep__res_partenariales
     columns:
       - name: id_res
