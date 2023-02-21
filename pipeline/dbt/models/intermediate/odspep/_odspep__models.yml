@@ -1,6 +1,7 @@
 version: 2
 
 models:
+  - name: int_odspep__aggregated_ressource
   - name: int_odspep__enhanced_res_partenariales
   - name: int_odspep__structures
   - name: int_odspep__services

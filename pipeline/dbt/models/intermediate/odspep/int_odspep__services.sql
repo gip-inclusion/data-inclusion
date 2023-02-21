@@ -20,8 +20,10 @@ final AS (
             WHEN '6' THEN ARRAY['accompagnement-social-et-professionnel-personnalise']::TEXT[]
             WHEN '8' THEN ARRAY['mobilite']::TEXT[]
             WHEN '9' THEN ARRAY['numerique']::TEXT[]
-        END                 AS "thematiques"
-    -- TODO: map the columns perimetre_geo with zone_de_diffusion (https://github.com/betagouv/data-inclusion/issues/30)
+        END                 AS "thematiques",
+        -- TODO: map the columns perimetre_geo with zone_de_diffusion (https://github.com/betagouv/data-inclusion/issues/30)
+        code                AS zone_diffusion_code,
+        type_code           AS zone_diffusion_type
 
     FROM ressources_partenariales
     ORDER BY 1

@@ -15,14 +15,24 @@ models:
         tests:
           - not_null
           - unique
-
   - name: stg_odspep__horaires
     columns:
       - name: id_hor
         tests:
           - not_null
           - unique
-
+  - name: stg_odspep__regions
+    columns:
+      - name: id_res
+        comment: id_res are not unique in this table
+        tests:
+          - not_null
+  - name: stg_odspep__departements
+    columns:
+      - name: id_res
+        comment: id_res are not unique in this table
+        tests:
+          - not_null
   - name: stg_odspep__res_partenariales
     columns:
       - name: id_res
