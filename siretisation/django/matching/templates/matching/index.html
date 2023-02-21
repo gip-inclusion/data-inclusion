@@ -48,51 +48,57 @@
                     <div class="tile is-4 is-parent">
                         <div class="tile is-child">
                             <div class="box">
-                                <div class="content">
-                                    <span id="count"></span> ligne(s) sélectionnée(s)
+                                {% if left_row_instance is None %}
+                                    <div class="message is-success">
+                                        <div class="message-header">Travail terminé :)</div>
+                                    </div>
+                                {% else %}
+                                    <div class="content">
+                                        <span id="count"></span> ligne(s) sélectionnée(s)
+                                    </div>
+                                    <div class="buttons">
+                                        <button id="validate" class="button" hx-post="/partials/matching" hx-swap="none"
+                                            hx-vals="js:{'right_row_id_list': [...window.dataTableInput.rowIdSet]}"
+                                            hx-include="#left-stream, #left-row, #right-stream">Valider ✅</i>
+                                    </button>
+                                    <button id="skip" class="button" hx-post="/partials/matching" hx-swap="none"
+                                        hx-vals="js:{'skipped': true}"
+                                        hx-include="#left-stream, #left-row, #right-stream">Je ne sais pas 🤷</i>
+                                    </button>
+                                    <button id="no_match" class="button" hx-post="/partials/matching" hx-swap="none"
+                                        hx-vals="js:{'no_matching_row': true}"
+                                        hx-include="#left-stream, #left-row, #right-stream">Cette ligne n'existe pas ❌</i>
+                                    </button>
+                                    </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="tile is-ancestor">
+                    <div class="tile is-4 is-parent">
+                        <div class="tile is-child" style="width: 100%;">
+                            <div id="left-row">
+                                <div class="box">
+                                    <h1 class="title is-5">Données de départ</h1>
+                                    <pre><code>{{ left_row_instance.data|pprint }}</code></pre>
+                                    <input name="left_row_id" type="hidden" value="{{ left_row_instance.id }}" />
                                 </div>
-                                <div class="buttons">
-                                    <button id="validate" class="button" hx-post="/partials/matching" hx-swap="none"
-                                        hx-vals="js:{'right_row_id_list': [...window.dataTableInput.rowIdSet]}"
-                                        hx-include="#left-stream, #left-row, #right-stream">Valider ✅</i>
-                                </button>
-                                <button id="skip" class="button" hx-post="/partials/matching" hx-swap="none"
-                                    hx-vals="js:{'skipped': true}"
-                                    hx-include="#left-stream, #left-row, #right-stream">Je ne sais pas 🤷</i>
-                            </button>
-                            <button id="no_match" class="button" hx-post="/partials/matching" hx-swap="none"
-                                hx-vals="js:{'no_matching_row': true}"
-                                hx-include="#left-stream, #left-row, #right-stream">Cette ligne n'existe pas ❌</i>
-                        </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="tile is-8 is-vertical is-parent">
+                        <div class="tile is-child">
+                            <div class="box">
+                                <table class="table is-unselectable is-clickable" id="datatable"></table>
+                            </div>
+                        </div>
                     </div>
                 </div>
-            </div>
+            </section>
         </div>
-    </div>
-
-    <div class="tile is-ancestor">
-        <div class="tile is-4 is-parent">
-            <div class="tile is-child" style="width: 100%;">
-                <div id="left-row">
-                    <div class="box">
-                        <h1 class="title is-5">Données de départ</h1>
-                        <pre><code>{{ left_row_instance.data|pprint }}</code></pre>
-                        <input name="left_row_id" type="hidden" value="{{ left_row_instance.id }}" />
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <div class="tile is-8 is-vertical is-parent">
-            <div class="tile is-child">
-                <div class="box">
-                    <table class="table is-unselectable is-clickable" id="datatable"></table>
-                </div>
-            </div>
-        </div>
-    </div>
-    </section>
-    </div>
     </div>
 
     {{ datatable_column_name_list|json_script:"datatable-selected-column-name-list" }}
