@@ -7,3 +7,16 @@ models:
         tests:
           - not_null
           - unique
+  - name: stg_soliguide__services
+    columns:
+      - name: id
+        tests:
+          - not_null:
+              config:
+                severity: warn
+      - name: lieu_id
+        tests:
+          - not_null
+          - relationships:
+              to: ref('stg_soliguide__places')
+              field: lieu_id

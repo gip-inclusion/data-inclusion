@@ -6,3 +6,5 @@ models:
   - name: stats__croisements_siret
   - name: stats__croisements_siren
   - name: stats__croisements_siren_only
+  - name: stats__soliguide_siaes_cd67
+  - name: stats__siretisation_progress

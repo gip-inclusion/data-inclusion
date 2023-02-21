@@ -2,6 +2,10 @@ WITH places AS (
     SELECT * FROM {{ ref('stg_soliguide__places') }}
 ),
 
+services AS (
+    SELECT * FROM {{ ref('stg_soliguide__services') }}
+),
+
 final AS (
     SELECT
         lieu_id                     AS "id",

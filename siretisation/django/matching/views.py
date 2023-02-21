@@ -2,12 +2,13 @@ from datetime import timedelta
 
 from django_htmx.http import HttpResponseClientRedirect
 from furl import furl
-from matching import models
 
 from django import http, shortcuts, urls
 from django.contrib.auth.decorators import login_required
 from django.contrib.postgres import search
 from django.utils import timezone
+
+from matching import models
 
 
 @login_required()
@@ -37,7 +38,7 @@ def index(request: http.HttpRequest):
     if unsafe_row_natural_id is None:
         # select next row instance
         # exclude annotated rows
-        left_row_instance = models.Datalake.objects.raw(
+        datalake_qs = models.Datalake.objects.raw(
             """
             WITH enhanced_matching AS (
                 SELECT
@@ -68,7 +69,8 @@ def index(request: http.HttpRequest):
                 "left_stream_name": left_stream_instance.name,
                 "logical_date": timezone.now().date() - timedelta(days=1),
             },
-        )[0]
+        )
+        left_row_instance = next((row for row in datalake_qs), None)
     else:
         # user has provided a natural id, use it
         left_row_instance = models.Datalake.objects.filter(

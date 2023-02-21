@@ -5,8 +5,8 @@ WITH source AS (
 
 final AS (
     SELECT
-        "lieu_id"                                          AS "id",
-        "lieu_id"                                          AS "lieu_id",
+        "lieu_id"::TEXT                                    AS "id",
+        "lieu_id"::TEXT                                    AS "lieu_id",
         "name"                                             AS "name",
         "ville"                                            AS "ville",
         "description"                                      AS "description",

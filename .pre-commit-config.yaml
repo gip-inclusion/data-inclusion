@@ -63,10 +63,10 @@ repos:
     hooks:
       - id: sqlfluff-lint
         name: pipeline|sqlfluff-lint
-        files: ^(pipeline/dags/sql)
+        files: ^(pipeline/(dags|dbt)/)
       - id: sqlfluff-fix
         name: pipeline|sqlfluff-fix
-        files: ^(pipeline/dags/sql)
+        files: ^(pipeline/(dags|dbt)/)
 
   # siretisation
   - repo: https://github.com/rtts/djhtml
