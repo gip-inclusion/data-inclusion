@@ -18,7 +18,7 @@ final AS (
         "position" ->> 'codePostal'                        AS "position_code_postal",
         "position" ->> 'adresse'                           AS "position_adresse",
         "position" ->> 'complementAdresse'                 AS "position_complement_adresse",
-        "entity" ->> 'mail'                                AS "entity_mail",
+        NULLIF("entity" ->> 'mail', '')                    AS "entity_mail",
         "entity" ->> 'website'                             AS "entity_website"
     FROM source
 )
