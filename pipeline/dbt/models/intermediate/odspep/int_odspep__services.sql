@@ -12,6 +12,7 @@ final AS (
         date_derniere_modif AS "date_modification",
         code                AS zone_diffusion_code,
         type_code           AS zone_diffusion_type,
+        label               AS zone_diffusion_nom,
         CASE WHEN prescriptible
             THEN ARRAY['demandeur-demploi']::TEXT[]
         END                 AS "profils",

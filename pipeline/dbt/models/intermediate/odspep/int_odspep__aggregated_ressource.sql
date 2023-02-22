@@ -4,6 +4,7 @@ WITH regions AS (
     SELECT
         id,
         id_res,
+        label,
         code_region_reg AS code,
         'Région'        AS type_code
     FROM {{ ref('stg_odspep__regions') }}
@@ -13,6 +14,7 @@ departements AS (
     SELECT
         id,
         id_res,
+        label,
         code_departement_dpt AS code,
         'Département'        AS type_code
     FROM {{ ref('stg_odspep__departements') }}
@@ -22,6 +24,7 @@ communes AS (
     SELECT
         id,
         id_res,
+        label,
         code_commune_com AS code,
         'Commune'        AS type_code
     FROM {{ ref('stg_odspep__communes') }}
@@ -31,6 +34,7 @@ bassins AS (
     SELECT
         id,
         id_res,
+        NULL            AS "label",
         code_bassin_bas AS code,
         'Bassin'        AS type_code
     FROM {{ ref('stg_odspep__bassins') }}
@@ -40,10 +44,12 @@ dir_territoriale_ofii AS (
     SELECT
         id,
         id_res,
+        NULL      AS "label",
         code_dit  AS code,
         'DT OFII' AS type_code
     FROM {{ ref('stg_odspep__dir_territoriale_ofii') }}
 ),
+
 
 final AS (
 

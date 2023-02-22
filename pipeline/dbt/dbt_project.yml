@@ -56,4 +56,5 @@ seeds:
         value: text
         label: text
         description: text
+        code: text
 
