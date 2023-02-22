@@ -5,13 +5,13 @@ WITH ressources_partenariales AS (
 final AS (
     SELECT
         id_res              AS "id",
-        "service"           AS "nom",
+        service           AS "nom",
         'odspep'            AS "source",
         service_description AS "presentation_resume",
         date_fin_valid      AS "date_suspension",
         date_derniere_modif AS "date_modification",
-        code                AS zone_diffusion_code,
-        type_code           AS zone_diffusion_type,
+        code                AS "zone_diffusion_code",
+        type_code           AS "zone_diffusion_type",
         CASE WHEN prescriptible
             THEN ARRAY['demandeur-demploi']::TEXT[]
         END                 AS "profils",
