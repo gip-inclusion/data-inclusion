@@ -2,6 +2,7 @@ version: 2
 
 models:
   - name: int_odspep__aggregated_ressource
+    description: This model aggregates all the *_RESSOURCE ODSPEP tables in the same table, aligned on a common set of columns
   - name: int_odspep__enhanced_res_partenariales
   - name: int_odspep__structures
   - name: int_odspep__services
