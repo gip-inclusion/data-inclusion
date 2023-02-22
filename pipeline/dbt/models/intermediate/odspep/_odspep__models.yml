@@ -2,6 +2,16 @@ version: 2
 
 models:
   - name: int_odspep__aggregated_ressource
+    columns:
+      - name: id
+        tests:
+          - not_null
+          - unique
   - name: int_odspep__enhanced_res_partenariales
   - name: int_odspep__structures
   - name: int_odspep__services
+     columns:
+      - name: id
+        tests:
+          - not_null
+          - unique
