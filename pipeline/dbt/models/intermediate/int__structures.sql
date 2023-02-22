@@ -11,6 +11,7 @@ WITH structures AS (
                 ref('int_odspep__deduplicated_structures'),
                 ref('int_soliguide__structures'),
                 ref('int_siao__structures'),
+                ref('int_finess__structures'),
             ],
             column_override={
                 "thematiques": "TEXT[]",

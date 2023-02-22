@@ -21,6 +21,7 @@ final AS (
         data ->> 'commune'                    AS "commune",
         data ->> 'compldistrib'               AS "compldistrib",
         data ->> 'numvoie'                    AS "numvoie",
+        data ->> 'compvoie'                   AS "compvoie",
         data ->> 'typvoie'                    AS "typvoie",
         data ->> 'voie'                       AS "voie",
         data ->> 'lieuditbp'                  AS "lieuditbp",
