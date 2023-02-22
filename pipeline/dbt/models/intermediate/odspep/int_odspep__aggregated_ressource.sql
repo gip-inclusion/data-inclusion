@@ -1,4 +1,4 @@
--- This model aggregates all the *_RESSOURCE ODSPEP tables in the same table, aligned on a common set of columns
+-- This model concatenates the ODSPEP tables related to the geographic scopes of ressources/prestations and using the DN001 referential
 
 WITH regions AS (
     SELECT
