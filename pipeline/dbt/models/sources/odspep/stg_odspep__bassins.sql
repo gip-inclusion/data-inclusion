@@ -6,10 +6,9 @@ WITH source AS (
 
 final AS (
     SELECT
-        "ID_BAS"                 AS "id_bas",
-        "ID_RES"                 AS "id_res",
-        "CODE_BASSIN_BAS"        AS "code_bassin_bas",
-        CONCAT('bassin_ressource_', "ID_BAS") AS "id"
+        "ID_BAS"          AS "id",
+        "ID_RES"          AS "id_res",
+        "CODE_BASSIN_BAS" AS "code_bassin_bas"
 
     FROM source
 )

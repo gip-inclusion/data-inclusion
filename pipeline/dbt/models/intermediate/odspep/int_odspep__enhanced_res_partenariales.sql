@@ -32,9 +32,12 @@ final AS (
                 from=ref('stg_odspep__contacts'),
                 except=['id', 'id_ctc', 'id_res'])
         }},
-        aggregated_ressource."code",
-        aggregated_ressource."type_code",
-        aggregated_ressource."id" AS "unique_code"
+        {{ dbt_utils.star(
+                relation_alias='aggregated_ressource',
+                from=ref('int_odspep__aggregated_ressource'),
+                except=['id', 'id_res'],
+                )
+        }}
     FROM ressources_partenariales
     LEFT JOIN adresses ON ressources_partenariales.id_adr = adresses.id
     LEFT JOIN contacts ON ressources_partenariales.id_ctc = contacts.id
