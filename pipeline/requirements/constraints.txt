@@ -336,7 +336,7 @@ inflection==0.5.1
 influxdb-client==1.35.0
 iniconfig==2.0.0
 ipdb==0.13.11
-ipython==8.8.0
+ipython==8.10.0
 isodate==0.6.1
 isort==5.11.2
 itsdangerous==2.1.2
