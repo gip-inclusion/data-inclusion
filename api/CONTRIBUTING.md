@@ -37,13 +37,24 @@ uvicorn data_inclusion.api.entrypoints.fastapi:app --reload
 tox
 ```
 
-## Updating the requirements
+## Managing the app requirements
+
+### 1. Adding/removing packages
 
 ```bash
-# 1. edit the requirements in setup.py
+# 1. add/remove packages from the requirements in setup.py
 
 # 2. compile dependencies
 pip-compile --output-file=requirements/requirements.txt
 pip-compile --extra=dev --output-file=requirements/dev-requirements.txt
 pip-compile --extra=test --output-file=requirements/test-requirements.txt
+```
+
+### 2. Upgrading packages
+
+```bash
+# 1. compile dependencies with the upgrade flag set
+pip-compile --upgrade --output-file=requirements/requirements.txt && \
+    pip-compile --upgrade --extra=dev --output-file=requirements/dev-requirements.txt && \
+    pip-compile --upgrade --extra=test --output-file=requirements/test-requirements.txt
 ```
