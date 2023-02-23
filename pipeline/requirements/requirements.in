@@ -11,12 +11,9 @@ pipx
 psycopg2
 pyairtable
 pydantic[email]
-pyproj
 requests
 SQLAlchemy
 tenacity
 tqdm
 urllib3
 xlsxwriter
-
-data-inclusion-schema==0.7.0
