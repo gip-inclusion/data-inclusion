@@ -35,7 +35,7 @@ final AS (
         {{ dbt_utils.star(
                 relation_alias='aggregated_ressource',
                 from=ref('int_odspep__aggregated_ressource'),
-                except=['id', 'id_res'],
+                except=['id_res'],
                 )
         }}
     FROM ressources_partenariales

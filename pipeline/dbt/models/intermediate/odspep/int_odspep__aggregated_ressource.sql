@@ -3,20 +3,18 @@
 WITH regions AS (
     SELECT
         id_res,
-        code_region_reg                             AS "code",
-        'Région'                                    AS "type_code",
-        CONCAT('region', code_region_reg)           AS "unique_code",
-        CONCAT(id_res, '_region_', code_region_reg) AS "id"
+        code_region_reg                   AS "code",
+        'Région'                          AS "type_code",
+        CONCAT('region', code_region_reg) AS "unique_code"
     FROM {{ ref('stg_odspep__regions') }}
 ),
 
 departements AS (
     SELECT
         id_res,
-        code_departement_dpt                                  AS "code",
-        'Département'                                         AS "type_code",
-        CONCAT('departement_', code_departement_dpt)          AS "unique_code",
-        CONCAT(id_res, '_departement_', code_departement_dpt) AS "id"
+        code_departement_dpt                         AS "code",
+        'Département'                                AS "type_code",
+        CONCAT('departement_', code_departement_dpt) AS "unique_code"
 
     FROM {{ ref('stg_odspep__departements') }}
 ),
@@ -24,30 +22,27 @@ departements AS (
 communes AS (
     SELECT
         id_res,
-        code_commune_com                              AS "code",
-        'Commune'                                     AS "type_code",
-        CONCAT('commune_', code_commune_com)          AS "unique_code",
-        CONCAT(id_res, '_commune_', code_commune_com) AS "id"
+        code_commune_com                     AS "code",
+        'Commune'                            AS "type_code",
+        CONCAT('commune_', code_commune_com) AS "unique_code"
     FROM {{ ref('stg_odspep__communes') }}
 ),
 
 bassins AS (
     SELECT
         id_res,
-        code_bassin_bas                             AS "code",
-        'Bassin'                                    AS "type_code",
-        CONCAT('bassin_', code_bassin_bas)          AS "unique_code",
-        CONCAT(id_res, '_bassin_', code_bassin_bas) AS "id"
+        code_bassin_bas                    AS "code",
+        'Bassin'                           AS "type_code",
+        CONCAT('bassin_', code_bassin_bas) AS "unique_code"
     FROM {{ ref('stg_odspep__bassins') }}
 ),
 
 dir_territoriale_ofii AS (
     SELECT
         id_res,
-        code_dit                           AS "code",
-        'DT OFII'                          AS "type_code",
-        CONCAT('ofii_', code_dit)          AS "unique_code",
-        CONCAT(id_res, '_ofii_', code_dit) AS "id"
+        code_dit                  AS "code",
+        'DT OFII'                 AS "type_code",
+        CONCAT('ofii_', code_dit) AS "unique_code"
     FROM {{ ref('stg_odspep__dir_territoriale_ofii') }}
 ),
 
