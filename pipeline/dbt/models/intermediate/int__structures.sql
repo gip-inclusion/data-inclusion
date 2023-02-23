@@ -9,6 +9,7 @@ WITH structures AS (
                 ref('int_mes_aides__structures'),
                 ref('int_mediation_numerique__structures'),
                 ref('int_soliguide__structures'),
+                ref('int_odspep__structures'),
             ],
             column_override={
                 "thematiques": "TEXT[]",
