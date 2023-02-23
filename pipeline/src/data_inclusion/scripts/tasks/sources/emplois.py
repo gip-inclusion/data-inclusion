@@ -67,26 +67,3 @@ def extract_data(src: str, token: str, **kwargs) -> dict[str, io.BytesIO]:
 def read_data(path: Path) -> tuple[pd.DataFrame, Optional[pd.Series]]:
     df = utils.read_json(path)
     return df, df.id
-
-
-def transform_data(input_df: pd.DataFrame) -> pd.DataFrame:
-    raw_structures_df = utils.deserialize_df_data(input_df)
-
-    utils.log_df_info(raw_structures_df)
-    structures_df = transform_structure_dataframe(raw_structures_df)
-    utils.log_df_info(structures_df)
-
-    return utils.serialize_df_data(structures_df)
-
-
-def transform_structure_dataframe(input_df: pd.DataFrame) -> pd.DataFrame:
-    input_df = input_df.replace("", None)
-
-    # data exposed by les emplois should be serialized in the data.inclusion schema
-    # so start from there
-    output_df = input_df.copy(deep=True)
-
-    # source
-    output_df = output_df.assign(source=EMPLOIS_SOURCE_STR)
-
-    return output_df

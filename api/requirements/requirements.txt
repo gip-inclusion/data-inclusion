@@ -4,7 +4,7 @@
 #
 #    pip-compile --output-file=requirements/requirements.txt
 #
-alembic==1.8.1
+alembic==1.9.4
     # via data-inclusion-api (setup.py)
 anyio==3.6.2
     # via
@@ -20,46 +20,46 @@ certifi==2022.12.7
     #   sentry-sdk
 cffi==1.15.1
     # via cryptography
-charset-normalizer==2.1.1
+charset-normalizer==3.0.1
     # via requests
 click==8.1.3
     # via
     #   data-inclusion-api (setup.py)
     #   uvicorn
-cryptography==38.0.3
+cryptography==39.0.1
     # via
     #   data-inclusion-api (setup.py)
     #   python-jose
 data-inclusion-schema==0.7.0
     # via data-inclusion-api (setup.py)
-dnspython==2.2.1
+dnspython==2.3.0
     # via email-validator
 ecdsa==0.18.0
     # via python-jose
-email-validator==1.3.0
+email-validator==1.3.1
     # via pydantic
-faker==15.3.1
+faker==17.0.0
     # via data-inclusion-api (setup.py)
-fastapi==0.86.0
+fastapi==0.92.0
     # via
     #   data-inclusion-api (setup.py)
     #   fastapi-pagination
     #   sentry-sdk
-fastapi-pagination==0.10.0
+fastapi-pagination==0.11.4
     # via data-inclusion-api (setup.py)
-greenlet==2.0.1
+greenlet==2.0.2
     # via sqlalchemy
 gunicorn==20.1.0
     # via data-inclusion-api (setup.py)
-h11==0.12.0
+h11==0.14.0
     # via
     #   httpcore
     #   uvicorn
-httpcore==0.15.0
+httpcore==0.16.3
     # via httpx
 httptools==0.5.0
     # via uvicorn
-httpx==0.23.0
+httpx==0.23.3
     # via data-inclusion-api (setup.py)
 idna==3.4
     # via
@@ -67,9 +67,9 @@ idna==3.4
     #   email-validator
     #   requests
     #   rfc3986
-mako==1.2.3
+mako==1.2.4
     # via alembic
-markupsafe==2.1.1
+markupsafe==2.1.2
     # via mako
 psycopg2==2.9.5
     # via data-inclusion-api (setup.py)
@@ -79,7 +79,7 @@ pyasn1==0.4.8
     #   rsa
 pycparser==2.21
     # via cffi
-pydantic[email]==1.10.2
+pydantic[email]==1.10.5
     # via
     #   data-inclusion-api (setup.py)
     #   data-inclusion-schema
@@ -87,23 +87,23 @@ pydantic[email]==1.10.2
     #   fastapi-pagination
 python-dateutil==2.8.2
     # via faker
-python-dotenv==0.21.0
+python-dotenv==0.21.1
     # via
     #   data-inclusion-api (setup.py)
     #   uvicorn
 python-jose[cryptography]==3.3.0
     # via data-inclusion-api (setup.py)
-pytz==2022.6
+pytz==2022.7.1
     # via data-inclusion-api (setup.py)
 pyyaml==6.0
     # via uvicorn
-requests==2.28.1
+requests==2.28.2
     # via data-inclusion-api (setup.py)
 rfc3986[idna2008]==1.5.0
     # via httpx
 rsa==4.9
     # via python-jose
-sentry-sdk[fastapi]==1.11.1
+sentry-sdk[fastapi]==1.15.0
     # via data-inclusion-api (setup.py)
 six==1.16.0
     # via
@@ -114,19 +114,21 @@ sniffio==1.3.0
     #   anyio
     #   httpcore
     #   httpx
-sqlalchemy==1.4.43
+sqlalchemy==2.0.4
     # via
     #   alembic
     #   data-inclusion-api (setup.py)
-starlette==0.20.4
+starlette==0.25.0
     # via fastapi
-typing-extensions==4.4.0
-    # via pydantic
-urllib3==1.26.12
+typing-extensions==4.5.0
+    # via
+    #   pydantic
+    #   sqlalchemy
+urllib3==1.26.14
     # via
     #   requests
     #   sentry-sdk
-uvicorn[standard]==0.19.0
+uvicorn[standard]==0.20.0
     # via data-inclusion-api (setup.py)
 uvloop==0.17.0
     # via uvicorn

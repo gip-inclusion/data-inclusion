@@ -10,6 +10,8 @@ WITH structures AS (
                 ref('int_mediation_numerique__structures'),
                 ref('int_soliguide__structures'),
                 ref('int_odspep__structures'),
+                ref('int_siao__structures'),
+                ref('int_finess__structures'),
             ],
             column_override={
                 "thematiques": "TEXT[]",

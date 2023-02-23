@@ -25,10 +25,10 @@ def test_list_structures_all(api_client, structure_factory):
         "items": [
             {
                 "id": "nom-asseoir",
-                "siret": "76475938200654",
-                "rna": "W219489241",
-                "nom": "Pottier SARL",
-                "commune": "VaillantBourg",
+                "siret": "76475938700658",
+                "rna": "W242194892",
+                "nom": "Perrin",
+                "commune": "Sainte CharlotteBourg",
                 "code_postal": "65938",
                 "code_insee": "78408",
                 "adresse": "avenue Lacombe",
@@ -54,7 +54,25 @@ def test_list_structures_all(api_client, structure_factory):
         ],
         "total": 1,
         "page": 1,
+        "pages": 1,
         "size": ANY,
+    }
+
+
+def assert_paginated_response_data(
+    data,
+    items=ANY,
+    total=ANY,
+    page=ANY,
+    pages=ANY,
+    size=ANY,
+):
+    assert data == {
+        "items": items,
+        "total": total,
+        "page": page,
+        "pages": pages,
+        "size": size,
     }
 
 
@@ -96,11 +114,11 @@ def test_list_structures_filter_by_typology(api_client, structure_factory):
     response = api_client.get(url, params={"typologie": schema.Typologie.ASSO.value})
 
     resp_data = response.json()
-    assert resp_data == {"items": ANY, "total": 1, "page": 1, "size": ANY}
+    assert_paginated_response_data(response.json(), total=1)
     assert_structure_data(structure_1, resp_data["items"][0])
 
     response = api_client.get(url, params={"typologie": schema.Typologie.MUNI.value})
-    assert response.json() == {"items": [], "total": 0, "page": 1, "size": ANY}
+    assert_paginated_response_data(response.json(), total=0)
 
 
 @pytest.mark.with_token
@@ -119,13 +137,13 @@ def test_list_structures_filter_by_label(api_client, structure_factory):
     )
 
     resp_data = response.json()
-    assert resp_data == {"items": ANY, "total": 1, "page": 1, "size": ANY}
+    assert_paginated_response_data(response.json(), total=1)
     assert_structure_data(structure_2, resp_data["items"][0])
 
     response = api_client.get(
         url, params={"label_national": schema.LabelNational.AFPA.value}
     )
-    assert response.json() == {"items": [], "total": 0, "page": 1, "size": ANY}
+    assert_paginated_response_data(response.json(), total=0)
 
 
 @pytest.mark.with_token
@@ -137,11 +155,11 @@ def test_list_structures_filter_by_source(api_client, structure_factory):
     response = api_client.get(url, params={"source": "emplois-de-linclusion"})
 
     resp_data = response.json()
-    assert resp_data == {"items": ANY, "total": 1, "page": 1, "size": ANY}
+    assert_paginated_response_data(response.json(), total=1)
     assert_structure_data(structure_1, resp_data["items"][0])
 
     response = api_client.get(url, params={"source": "siao"})
-    assert response.json() == {"items": [], "total": 0, "page": 1, "size": ANY}
+    assert_paginated_response_data(response.json(), total=0)
 
 
 @pytest.mark.with_token
@@ -164,11 +182,11 @@ def test_list_structures_filter_by_departement_cog(api_client, structure_factory
     response = api_client.get(url, params={"departement": "2A"})
 
     resp_data = response.json()
-    assert resp_data == {"items": ANY, "total": 1, "page": 1, "size": ANY}
+    assert_paginated_response_data(response.json(), total=1)
     assert_structure_data(structure_1, resp_data["items"][0])
 
     response = api_client.get(url, params={"departement": "62"})
-    assert response.json() == {"items": [], "total": 0, "page": 1, "size": ANY}
+    assert_paginated_response_data(response.json(), total=0)
 
 
 @pytest.mark.with_token
@@ -180,11 +198,11 @@ def test_list_structures_filter_by_departement_slug(api_client, structure_factor
     response = api_client.get(url, params={"departement_slug": "cotes-d-armor"})
 
     resp_data = response.json()
-    assert resp_data == {"items": ANY, "total": 1, "page": 1, "size": ANY}
+    assert_paginated_response_data(response.json(), total=1)
     assert_structure_data(structure_1, resp_data["items"][0])
 
     response = api_client.get(url, params={"departement_slug": "pas-de-calais"})
-    assert response.json() == {"items": [], "total": 0, "page": 1, "size": ANY}
+    assert_paginated_response_data(response.json(), total=0)
 
 
 @pytest.mark.with_token
@@ -198,11 +216,11 @@ def test_list_structures_filter_by_code_postal(api_client, structure_factory):
     response = api_client.get(url, params={"code_postal": "59100"})
 
     resp_data = response.json()
-    assert resp_data == {"items": ANY, "total": 1, "page": 1, "size": ANY}
+    assert_paginated_response_data(response.json(), total=1)
     assert_structure_data(structure_1, resp_data["items"][0])
 
     response = api_client.get(url, params={"code_postal": "59512"})
-    assert response.json() == {"items": [], "total": 0, "page": 1, "size": ANY}
+    assert_paginated_response_data(response.json(), total=0)
 
 
 @pytest.mark.with_token
@@ -227,13 +245,13 @@ def test_list_structures_filter_by_thematique(api_client, structure_factory):
     )
 
     resp_data = response.json()
-    assert resp_data == {"items": ANY, "total": 1, "page": 1, "size": ANY}
+    assert_paginated_response_data(response.json(), total=1)
     assert_structure_data(structure_1, resp_data["items"][0])
 
     response = api_client.get(
         url, params={"thematique": schema.Thematique.PREPARER_SA_CANDIDATURE.value}
     )
-    assert response.json() == {"items": [], "total": 0, "page": 1, "size": ANY}
+    assert_paginated_response_data(response.json(), total=0)
 
 
 @pytest.mark.with_token
@@ -270,7 +288,7 @@ def test_list_structures_filter_by_source_and_id(api_client, structure_factory):
     resp_data = response.json()
 
     resp_data = response.json()
-    assert resp_data == {"items": ANY, "total": 1, "page": 1, "size": ANY}
+    assert_paginated_response_data(response.json(), total=1)
     assert_structure_data(structure_2, resp_data["items"][0])
 
 
@@ -308,6 +326,7 @@ def test_list_services_all(api_client, service_factory):
         ],
         "total": 1,
         "page": 1,
+        "pages": 1,
         "size": ANY,
     }
 
@@ -544,7 +563,7 @@ def test_list_services_filter_by_thematique(api_client, service_factory):
         url, params={"thematique": schema.Thematique.PREPARER_SA_CANDIDATURE.value}
     )
     assert response.status_code == 200
-    assert response.json() == {"items": [], "total": 0, "page": 1, "size": ANY}
+    assert_paginated_response_data(response.json(), total=0)
 
 
 @pytest.mark.with_token
