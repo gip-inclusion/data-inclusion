@@ -402,7 +402,7 @@ numpy==1.22.4
     #   -c requirements/constraints.txt
     #   pandas
     #   shapely
-openpyxl==3.1.1
+openpyxl==3.1.0
     # via -r requirements/requirements.in
 packaging==21.3
     # via

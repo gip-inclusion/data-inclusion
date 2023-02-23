@@ -5,7 +5,7 @@ apache-airflow[amazon,postgres]==2.5.1
 click
 GeoAlchemy2
 geopandas
-openpyxl
+openpyxl!=3.1.1
 pandas
 pipx
 psycopg2
