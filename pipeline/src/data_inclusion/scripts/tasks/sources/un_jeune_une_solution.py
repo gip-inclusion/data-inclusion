@@ -9,9 +9,6 @@ import requests
 
 from data_inclusion.scripts.tasks import utils
 
-UN_JEUNE_UNE_SOLUTION_SOURCE_STR = "1jeune1solution"
-
-
 logger = logging.getLogger(__name__)
 
 
