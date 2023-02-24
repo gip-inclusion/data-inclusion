@@ -3,7 +3,8 @@ WITH services AS (
         dbt_utils.union_relations(
             relations=[
                 ref('int_dora__services'),
-                ref('int_mediation_numerique__services')
+                ref('int_mediation_numerique__services'),
+                ref('int_odspep__services'),
             ],
             column_override={
                 "types": "TEXT[]",

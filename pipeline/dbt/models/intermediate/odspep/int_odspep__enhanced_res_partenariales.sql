@@ -10,6 +10,11 @@ contacts AS (
     SELECT * FROM {{ ref('stg_odspep__contacts') }}
 ),
 
+zones_diffusion AS (
+    SELECT * FROM {{ ref('int_odspep__zones_diffusion') }}
+),
+
+
 final AS (
     SELECT
         {{ dbt_utils.star(
@@ -26,10 +31,18 @@ final AS (
                 relation_alias='contacts',
                 from=ref('stg_odspep__contacts'),
                 except=['id', 'id_ctc', 'id_res'])
+        }},
+        {{ dbt_utils.star(
+                relation_alias='zones_diffusion',
+                from=ref('int_odspep__zones_diffusion'),
+                except=['id_res'],
+                )
         }}
     FROM ressources_partenariales
     LEFT JOIN adresses ON ressources_partenariales.id_adr = adresses.id
     LEFT JOIN contacts ON ressources_partenariales.id_ctc = contacts.id
+    -- this duplicates ressources (i.e. id_res)
+    LEFT JOIN zones_diffusion ON ressources_partenariales.id_res = zones_diffusion.id_res
 )
 
 SELECT * FROM final
