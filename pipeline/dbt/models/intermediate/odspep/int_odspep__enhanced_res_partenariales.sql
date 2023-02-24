@@ -41,6 +41,7 @@ final AS (
     FROM ressources_partenariales
     LEFT JOIN adresses ON ressources_partenariales.id_adr = adresses.id
     LEFT JOIN contacts ON ressources_partenariales.id_ctc = contacts.id
+    -- this duplicates ressources (i.e. id_res)
     LEFT JOIN zones_diffusion ON ressources_partenariales.id_res = zones_diffusion.id_res
 )
 
