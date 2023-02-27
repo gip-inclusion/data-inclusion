@@ -170,8 +170,6 @@ cryptography==38.0.4
     # via
     #   -c requirements/constraints.txt
     #   apache-airflow
-data-inclusion-schema==0.7.0
-    # via -r requirements/requirements.in
 decorator==5.1.1
     # via
     #   -c requirements/constraints.txt
@@ -468,7 +466,6 @@ pydantic[email]==1.10.4
     # via
     #   -c requirements/constraints.txt
     #   -r requirements/requirements.in
-    #   data-inclusion-schema
 pygments==2.14.0
     # via
     #   -c requirements/constraints.txt
@@ -485,9 +482,7 @@ pyparsing==3.0.9
     #   -c requirements/constraints.txt
     #   packaging
 pyproj==3.4.1
-    # via
-    #   -r requirements/requirements.in
-    #   geopandas
+    # via geopandas
 pyrsistent==0.19.3
     # via
     #   -c requirements/constraints.txt

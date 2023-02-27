@@ -16,7 +16,7 @@ final AS (
             ELSE courriel
         END AS "courriel"
     FROM structures
-    WHERE source != 'soliguide'
+    WHERE source NOT IN ('soliguide', 'siao', 'finess')
 )
 
 SELECT * FROM final

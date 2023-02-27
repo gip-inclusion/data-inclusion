@@ -32,8 +32,8 @@ curl https://raw.githubusercontent.com/apache/airflow/constraints-${AIRFLOW_VERS
 vim requirements/requirements.in
 
 # compile the udpated requirements
-pip-compile requirements/requirements.in > requirements/requirements.txt
-pip-compile requirements/dev-requirements.in > requirements/dev-requirements.txt
+pip-compile requirements/requirements.in > requirements/requirements.txt && \
+    pip-compile requirements/dev-requirements.in > requirements/dev-requirements.txt
 ```
 
 ## dbt

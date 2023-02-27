@@ -226,8 +226,6 @@ cryptography==38.0.4
     #   -c requirements/constraints.txt
     #   -r requirements/requirements.txt
     #   apache-airflow
-data-inclusion-schema==0.7.0
-    # via -r requirements/requirements.txt
 decorator==5.1.1
     # via
     #   -c requirements/constraints.txt
@@ -238,7 +236,7 @@ deprecated==1.2.13
     #   -c requirements/constraints.txt
     #   -r requirements/requirements.txt
     #   apache-airflow
-diff-cover==7.4.0
+diff-cover==7.5.0
     # via sqlfluff
 dill==0.3.1.1
     # via
@@ -636,7 +634,6 @@ pydantic[email]==1.10.4
     # via
     #   -c requirements/constraints.txt
     #   -r requirements/requirements.txt
-    #   data-inclusion-schema
 pygments==2.14.0
     # via
     #   -c requirements/constraints.txt
