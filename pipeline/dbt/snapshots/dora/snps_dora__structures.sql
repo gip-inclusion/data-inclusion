@@ -1,4 +1,4 @@
-{% snapshot snps_un_jeune_une_solution__benefits %}
+{% snapshot snps_dora__structures %}
 
 {{
     config(
@@ -15,6 +15,6 @@ SELECT
     _di_logical_date                        AS "_di_logical_date",
     data                                    AS "data",
     _di_source_id || '-' || (data ->> 'id') AS "_di_surrogate_id"
-FROM {{ source('un_jeune_une_solution', 'benefits') }}
+FROM {{ source('dora', 'structures') }}
 
 {% endsnapshot %}

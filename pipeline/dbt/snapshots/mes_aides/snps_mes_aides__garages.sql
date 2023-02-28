@@ -3,18 +3,18 @@
 {{
     config(
       target_schema='snapshots',
-      unique_key='id',
+      unique_key='_di_surrogate_id',
       strategy='check',
       invalidate_hard_deletes=True,
       updated_at='_di_logical_date',
-      check_cols=['id', 'data']
+      check_cols=['data']
     )
 }}
 
 SELECT
-    _di_logical_date       AS "_di_logical_date",
-    data                   AS "data",
-    data #>> '{fields,ID}' AS "id"
+    _di_logical_date                                 AS "_di_logical_date",
+    data                                             AS "data",
+    _di_source_id || '-' || (data #>> '{fields,ID}') AS "_di_surrogate_id"
 FROM {{ source('mes_aides', 'garages') }}
 
 
