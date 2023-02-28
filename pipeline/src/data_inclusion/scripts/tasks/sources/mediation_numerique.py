@@ -1,11 +1,4 @@
-import io
-from pathlib import Path
-from typing import Optional
-
-import pandas as pd
 import requests
-
-from data_inclusion.scripts.tasks import utils
 
 
 def get_resources_url_from_dataset_url(dataset_url: str) -> dict[str, str]:
@@ -32,22 +25,6 @@ def get_resources_url_from_dataset_url(dataset_url: str) -> dict[str, str]:
     }
 
 
-def extract_data(src: str, **kwargs) -> dict[str, io.BytesIO]:
-    urls = get_resources_url_from_dataset_url(src)
-
-    ret = {}
-
-    # structures
-    response = requests.get(urls["structures"])
-    ret["structures.json"] = io.BytesIO(response.content)
-
-    # services
-    response = requests.get(urls["services"])
-    ret["services.json"] = io.BytesIO(response.content)
-
-    return ret
-
-
-def read_data(path: Path) -> tuple[pd.DataFrame, Optional[pd.Series]]:
-    df = utils.read_json(path)
-    return df, df.id
+def extract(id: str, url: str, **kwargs) -> bytes:
+    urls = get_resources_url_from_dataset_url(dataset_url=url)
+    return requests.get(urls[id]).content

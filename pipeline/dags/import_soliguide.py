@@ -79,6 +79,7 @@ with airflow.DAG(
     default_args=default_args,
     schedule_interval="@once",
     catchup=False,
+    tags=["source"],
 ) as dag:
     start = empty.EmptyOperator(task_id="start")
     end = empty.EmptyOperator(task_id="end")

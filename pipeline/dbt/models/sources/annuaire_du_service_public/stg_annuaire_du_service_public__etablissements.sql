@@ -1,9 +1,5 @@
 WITH source AS (
-    SELECT *
-    FROM {{ source('data_inclusion', 'datalake') }}
-    WHERE
-        logical_date = '{{ var('logical_date') }}'
-        AND src_alias = 'etab_pub'
+    SELECT * FROM {{ source('annuaire_du_service_public', 'etablissements') }}
 ),
 
 final AS (

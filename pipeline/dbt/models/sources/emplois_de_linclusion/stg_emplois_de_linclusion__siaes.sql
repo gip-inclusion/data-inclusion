@@ -1,9 +1,5 @@
 WITH source AS (
-    SELECT *
-    FROM {{ source('data_inclusion', 'datalake') }}
-    WHERE
-        logical_date = '{{ var('logical_date') }}'
-        AND src_alias = 'emplois_siae'
+    SELECT * FROM {{ source('emplois_de_linclusion', 'siaes') }}
 ),
 
 final AS (

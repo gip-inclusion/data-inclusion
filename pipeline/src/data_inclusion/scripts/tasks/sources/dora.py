@@ -1,14 +1,9 @@
 import io
 import json
 import logging
-from pathlib import Path
-from typing import Optional
 
-import pandas as pd
 import requests
 from tqdm import tqdm
-
-from data_inclusion.scripts.tasks import utils
 
 logger = logging.getLogger(__name__)
 
@@ -59,28 +54,9 @@ class DoraClient:
         return self._list_paginated_endpoint("/services/")
 
 
-def extract_data(src: str, **kwargs) -> dict[str, io.BytesIO]:
-    dora_client = DoraClient(base_url=src)
-
-    ret = {}
-
-    # raw structures
-    data = dora_client.list_structures()
-
+def extract(id: str, url: str, **kwargs) -> bytes:
+    dora_client = DoraClient(base_url=url)
+    data = getattr(dora_client, f"list_{id}")()
     with io.StringIO() as buf:
         json.dump(data, buf)
-        ret["structures.json"] = io.BytesIO(buf.getvalue().encode())
-
-    # raw services
-    data = dora_client.list_services()
-
-    with io.StringIO() as buf:
-        json.dump(data, buf)
-        ret["services.json"] = io.BytesIO(buf.getvalue().encode())
-
-    return ret
-
-
-def read_data(path: Path) -> tuple[pd.DataFrame, Optional[pd.Series]]:
-    df = utils.read_json(path)
-    return df, df.id
+        return buf.getvalue().encode()

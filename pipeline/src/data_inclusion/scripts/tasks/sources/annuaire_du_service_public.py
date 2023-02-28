@@ -1,11 +1,8 @@
-import io
 import json
 import tarfile
 from pathlib import Path
-from typing import Optional
 
 import pandas as pd
-import requests
 
 pivots_of_interest = [
     "agefiph",
@@ -50,17 +47,11 @@ pivots_of_interest = [
 ]
 
 
-def extract_data(src: str, **kwargs) -> dict[str, io.BytesIO]:
-    response = requests.get(src)
-    return {"data.tar.bz2": io.BytesIO(response.content)}
-
-
-def read_data(path: Path) -> tuple[pd.DataFrame, Optional[pd.Series]]:
+def read(path: Path) -> pd.DataFrame:
     with tarfile.open(path, "r:bz2") as tar:
         tar.extractall(path=path.parent)
 
     with next(path.parent.glob("*.gouv_local.json")).open() as f:
         data = json.load(f)
 
-    df = pd.json_normalize(data["service"], max_level=0)
-    return df, df.id
+    return pd.json_normalize(data["service"], max_level=0)

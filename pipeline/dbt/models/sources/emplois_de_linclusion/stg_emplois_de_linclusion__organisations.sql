@@ -1,10 +1,7 @@
 WITH source AS (
-    SELECT *
-    FROM {{ source('data_inclusion', 'datalake') }}
-    WHERE
-        logical_date = '{{ var('logical_date') }}'
-        AND src_alias = 'emplois_orga'
+    SELECT * FROM {{ source('emplois_de_linclusion', 'organisations') }}
 ),
+
 
 final AS (
     SELECT

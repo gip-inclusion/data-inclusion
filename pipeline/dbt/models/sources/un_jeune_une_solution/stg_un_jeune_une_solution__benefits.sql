@@ -1,15 +1,9 @@
 WITH source AS (
-    SELECT *
-    FROM {{ source('data_inclusion', 'datalake') }}
-    WHERE
-        logical_date = '{{ var('logical_date') }}'
-        AND src_alias = '1jeune1solution'
-        AND file ~ 'benefits'
+    SELECT * FROM {{ source('un_jeune_une_solution', 'benefits') }}
 ),
 
 final AS (
     SELECT
-        logical_date,
         data ->> 'id'               AS "id",
         data ->> 'slug'             AS "slug",
         data ->> 'label'            AS "label",

@@ -9,6 +9,7 @@ from typing import Optional
 import numpy as np
 import pandas as pd
 import pytz
+import requests
 
 from data_inclusion.scripts import settings
 
@@ -77,3 +78,7 @@ def serialize_df_data(df: pd.DataFrame) -> pd.DataFrame:
     df = df.apply(lambda row: json.dumps(row.to_dict()), axis="columns")
     df = pd.DataFrame().assign(data=df)
     return df
+
+
+def extract_http_content(url: str, **kwargs) -> bytes:
+    return requests.get(url).content
