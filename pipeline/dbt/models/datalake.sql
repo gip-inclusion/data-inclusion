@@ -9,12 +9,12 @@ WITH source AS (
         dbt_utils.union_relations(
             relations=[
                 source('annuaire_du_service_public', 'etablissements'),
-                source('cd35', 'organisations')
+                source('cd35', 'organisations'),
                 source('cd72', 'rows'),
                 source('dora', 'structures'),
                 source('dora', 'services'),
-                source('emplois-de-linclusion', 'structures'),
-                source('emplois-de-linclusion', 'services'),
+                source('emplois_de_linclusion', 'siaes'),
+                source('emplois_de_linclusion', 'organisations'),
                 source('finess', 'etablissements'),
                 source('mediation_numerique_angers', 'structures'),
                 source('mediation_numerique_angers', 'services'),
