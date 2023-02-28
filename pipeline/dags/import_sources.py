@@ -22,7 +22,7 @@ default_args = {}
 def get_stream_s3_key(
     logical_date: datetime,
     source_id: str,
-    stream_id: str,
+    filename: str,
     batch_id: str,
     timezone,
 ) -> str:
@@ -30,7 +30,7 @@ def get_stream_s3_key(
         logical_date.astimezone(timezone)
     ).to_date_string()
 
-    return f"data/raw/{logical_date_ds}/{source_id}/{batch_id}/{stream_id}"
+    return f"data/raw/{logical_date_ds}/{source_id}/{batch_id}/{filename}"
 
 
 def _extract(
@@ -49,7 +49,7 @@ def _extract(
             key=get_stream_s3_key(
                 logical_date=dag_run.logical_date,
                 source_id=source_config["id"],
-                stream_id=stream_config["id"],
+                filename=stream_config["filename"],
                 batch_id=run_id,
                 timezone=dag.timezone,
             ),
@@ -80,7 +80,7 @@ def _load(
     stream_s3_key = get_stream_s3_key(
         logical_date=dag_run.logical_date,
         source_id=source_config["id"],
-        stream_id=stream_config["id"],
+        filename=stream_config["filename"],
         batch_id=run_id,
         timezone=dag.timezone,
     )
