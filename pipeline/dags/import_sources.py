@@ -33,6 +33,23 @@ def get_stream_s3_key(
     return f"data/raw/{logical_date_ds}/{source_id}/{batch_id}/{filename}"
 
 
+def _setup(source_config: dict):
+    pg_hook = PostgresHook(postgres_conn_id="pg")
+    pg_engine = pg_hook.get_sqlalchemy_engine()
+    schema_name = source_config["id"].replace("-", "_")
+
+    with pg_engine.connect() as conn:
+        with conn.begin():
+            conn.execute(f"CREATE SCHEMA IF NOT EXISTS {schema_name};")
+            conn.execute(f"GRANT USAGE ON SCHEMA {schema_name} TO PUBLIC;")
+            conn.execute(
+                f"""\
+                    ALTER DEFAULT PRIVILEGES IN SCHEMA {schema_name}
+                    GRANT SELECT ON TABLES TO PUBLIC;
+                """
+            )
+
+
 def _extract(
     stream_config: dict,
     source_config: dict,
@@ -132,6 +149,12 @@ for source_config in SOURCES_CONFIGS:
         start = empty.EmptyOperator(task_id="start")
         end = empty.EmptyOperator(task_id="end")
 
+        setup = python.PythonOperator(
+            task_id="setup",
+            python_callable=_setup,
+            op_kwargs={"source_config": source_config},
+        )
+
         for stream_config in source_config["streams"]:
             with TaskGroup(group_id=stream_config["id"]):
                 extract = python.PythonOperator(
@@ -152,6 +175,6 @@ for source_config in SOURCES_CONFIGS:
                     },
                 )
 
-                start >> extract >> load >> end
+                start >> setup >> extract >> load >> end
 
     globals()[dag_id] = dag
