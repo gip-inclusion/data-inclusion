@@ -94,8 +94,8 @@ SOURCES_CONFIGS = [
     {
         "id": "emplois-de-linclusion",
         "schedule_interval": "@daily",
-        "read_fn": "data_inclusion.scripts.tasks.sources.emplois_de_linclusion.read",
-        "extract_fn": "data_inclusion.scripts.tasks.utils.extract_http_content",
+        "read_fn": "data_inclusion.scripts.tasks.utils.read_json",
+        "extract_fn": "data_inclusion.scripts.tasks.sources.emplois_de_linclusion.extract",
         "streams": [
             {
                 "id": "siaes",
