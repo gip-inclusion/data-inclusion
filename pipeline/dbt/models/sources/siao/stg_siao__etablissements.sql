@@ -4,6 +4,7 @@ WITH source AS (
 
 final AS (
     SELECT
+        _di_source_id                                                                             AS "_di_source_id",
         -- there is no proper index in the data, this is very problematic.
         -- for analytical use, annotate with the row number if the default ordering.
         ROW_NUMBER() OVER ()                                                                      AS "id",

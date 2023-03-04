@@ -18,7 +18,7 @@ final AS (
         antenne                         AS "antenne",
         longitude                       AS "longitude",
         latitude                        AS "latitude",
-        'emplois-de-linclusion'         AS "source",
+        _di_source_id                   AS "source",
         labels_nationaux                AS "labels_nationaux",
         labels_autres                   AS "labels_autres",
         thematiques                     AS "thematiques",

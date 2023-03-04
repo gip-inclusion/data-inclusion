@@ -4,6 +4,7 @@ WITH source AS (
 
 final AS (
     SELECT
+        _di_source_id         AS "_di_source_id",
         ARRAY(
             SELECT * FROM JSONB_ARRAY_ELEMENTS_TEXT(
                 (

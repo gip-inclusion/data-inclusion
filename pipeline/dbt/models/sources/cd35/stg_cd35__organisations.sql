@@ -5,6 +5,7 @@ WITH source AS (
 
 final AS (
     SELECT
+        _di_source_id                                    AS "_di_source_id",
         (TRIM('|' FROM data ->> 'ORG_LONGITUDE'))::FLOAT AS "org_longitude",
         (TRIM('|' FROM data ->> 'ORG_LATITUDE'))::FLOAT  AS "org_latitude",
         TO_DATE(data ->> 'ORG_DATEMAJ', 'DD-MM-YYYY')    AS "org_datemaj",

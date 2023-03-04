@@ -4,6 +4,7 @@ WITH source AS (
 
 final AS (
     SELECT
+        _di_source_id                  AS "_di_source_id",
         data ->> 'ID Structure'        AS "id",
         data ->> 'ID Structure'        AS "id_structure",
         data ->> 'SIRET'               AS "siret",

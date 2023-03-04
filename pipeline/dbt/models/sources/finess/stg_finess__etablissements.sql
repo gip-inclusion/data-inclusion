@@ -5,6 +5,7 @@ WITH source AS (
 
 final AS (
     SELECT
+        _di_source_id                         AS "_di_source_id",
         (data ->> 'coordxet')::FLOAT          AS "coordxet",
         (data ->> 'coordyet')::FLOAT          AS "coordyet",
         data ->> 'nofinesset'                 AS "id",

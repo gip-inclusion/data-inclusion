@@ -41,7 +41,7 @@ final AS (
         telephone                                                         AS "telephone",
         NULL                                                              AS "courriel",
         NULL                                                              AS "site_web",
-        'finess'                                                          AS "source",
+        _di_source_id                                                     AS "source",
         NULL                                                              AS "lien_source",
         NULL                                                              AS "horaires_ouverture",
         NULL                                                              AS "accessibilite",

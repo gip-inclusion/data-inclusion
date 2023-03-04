@@ -9,7 +9,7 @@ final AS (
         NULL                       AS "rna",
         longitude                  AS "longitude",
         latitude                   AS "latitude",
-        'dora'                     AS "source",
+        _di_source_id              AS "source",
         NULL                       AS "horaires_ouverture",
         NULL                       AS "accessibilite",
         NULL::TEXT[]               AS "labels_nationaux",

@@ -4,6 +4,7 @@ WITH source AS (
 
 final AS (
     SELECT
+        _di_source_id                                              AS "_di_source_id",
         (data #>> '{fields,Ville Longitude}')::FLOAT               AS "ville_longitude",
         (data #>> '{fields,Ville Latitude}')::FLOAT                AS "ville_latitude",
         (data #>> '{fields,Modifié le}')::TIMESTAMP WITH TIME ZONE AS "modifie_le",

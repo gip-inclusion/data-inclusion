@@ -4,6 +4,7 @@ WITH source AS (
 
 final AS (
     SELECT
+        _di_source_id                                                  AS "_di_source_id",
         (data #>> '{fields,Créé le}')::TIMESTAMP WITH TIME ZONE        AS "cree_le",
         (data #>> '{fields,Modifié le}')::TIMESTAMP WITH TIME ZONE     AS "modifie_le",
         (data #>> '{fields,En Ligne}')::BOOLEAN                        AS "en_ligne",

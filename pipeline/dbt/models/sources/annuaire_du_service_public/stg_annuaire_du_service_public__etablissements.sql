@@ -4,6 +4,7 @@ WITH source AS (
 
 final AS (
     SELECT
+        _di_source_id                                                                      AS "_di_source_id",
         ARRAY(SELECT * FROM JSONB_ARRAY_ELEMENTS_TEXT(data -> 'adresse_courriel'))::TEXT[] AS "adresse_courriel",
         data ->> 'id'                                                                      AS "id",
         data ->> 'siret'                                                                   AS "siret",

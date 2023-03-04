@@ -18,6 +18,7 @@ WITH source AS (
 
 final AS (
     SELECT
+        _di_source_id                                                                                 AS "_di_source_id",
         ARRAY(SELECT * FROM JSONB_ARRAY_ELEMENTS_TEXT(NULLIF(data -> 'types', 'null')))::TEXT[]       AS "types",
         ARRAY(SELECT * FROM JSONB_ARRAY_ELEMENTS_TEXT(NULLIF(data -> 'profils', 'null')))::TEXT[]     AS "profils",
         ARRAY(SELECT * FROM JSONB_ARRAY_ELEMENTS_TEXT(NULLIF(data -> 'thematiques', 'null')))::TEXT[] AS "thematiques",
