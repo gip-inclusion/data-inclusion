@@ -111,11 +111,6 @@ with airflow.DAG(
         bash_command=f"{dbt} test",
     )
 
-    dbt_snapshot = bash.BashOperator(
-        task_id="dbt_snapshot",
-        bash_command=f"{dbt} snapshot",
-    )
-
     (
         start
         >> dbt_seed
@@ -123,6 +118,5 @@ with airflow.DAG(
         >> python_geocode
         >> dbt_run_after_geocoding
         >> dbt_test
-        >> dbt_snapshot
         >> end
     )
