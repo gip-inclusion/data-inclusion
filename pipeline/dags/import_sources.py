@@ -2,6 +2,7 @@ import io
 import logging
 from datetime import datetime
 from pathlib import Path
+from typing import Optional
 
 import airflow
 import pendulum
@@ -175,6 +176,34 @@ def _load(
             )
 
 
+def dbt_operator_factory(
+    task_id: str,
+    command: str,
+    selector: Optional[str] = None,
+) -> bash.BashOperator:
+    dbt = "{{ var.value.pipx_bin }} run --spec dbt-postgres dbt"
+    # this ensure deps are installed (if instance has been recreated)
+    dbt = f"{dbt} deps && {dbt}"
+
+    bash_command = f"{dbt} {command}"
+    if selector is not None:
+        bash_command += f" -s {selector}"
+
+    return bash.BashOperator(
+        task_id=task_id,
+        bash_command=bash_command,
+        env={
+            "DBT_PROFILES_DIR": Variable.get("DBT_PROJECT_DIR"),
+            "POSTGRES_HOST": "{{ conn.pg.host }}",
+            "POSTGRES_PORT": "{{ conn.pg.port }}",
+            "POSTGRES_USER": "{{ conn.pg.login }}",
+            "POSTGRES_PASSWORD": "{{ conn.pg.password }}",
+            "POSTGRES_DB": "{{ conn.pg.schema }}",
+        },
+        cwd=Variable.get("DBT_PROJECT_DIR"),
+    )
+
+
 for source_config in SOURCES_CONFIGS:
     dag_id = f"import_{source_config['id']}".replace("-", "_")
     dag = airflow.DAG(
@@ -186,10 +215,6 @@ for source_config in SOURCES_CONFIGS:
         tags=["source"],
     )
 
-    dbt = "{{ var.value.pipx_bin }} run --spec dbt-postgres dbt"
-    # this ensure deps are installed (if instance has been recreated)
-    dbt = f"{dbt} deps && {dbt}"
-
     with dag:
         start = empty.EmptyOperator(task_id="start")
         end = empty.EmptyOperator(task_id="end")
@@ -200,24 +225,20 @@ for source_config in SOURCES_CONFIGS:
             op_kwargs={"source_config": source_config},
         )
 
+        dbt_test_source = dbt_operator_factory(
+            task_id="dbt_test_source",
+            command="test",
+            selector="source:data_inclusion." + source_config["id"].replace("-", "_"),
+        )
+
         if source_config["snapshot"]:
-            dbt_snapshot = bash.BashOperator(
-                task_id="dbt_snapshot",
-                bash_command=f"\
-                    {dbt} snapshot \
-                    -s {source_config['id'].replace('-', '_')}",
-                env={
-                    "DBT_PROFILES_DIR": Variable.get("DBT_PROJECT_DIR"),
-                    "POSTGRES_HOST": "{{ conn.pg.host }}",
-                    "POSTGRES_PORT": "{{ conn.pg.port }}",
-                    "POSTGRES_USER": "{{ conn.pg.login }}",
-                    "POSTGRES_PASSWORD": "{{ conn.pg.password }}",
-                    "POSTGRES_DB": "{{ conn.pg.schema }}",
-                },
-                cwd=Variable.get("DBT_PROJECT_DIR"),
+            dbt_snapshot_source = dbt_operator_factory(
+                task_id="dbt_snapshot_source",
+                command="snapshot",
+                selector=source_config["id"].replace("-", "_"),
             )
         else:
-            dbt_snapshot = None
+            dbt_snapshot_source = None
 
         for stream_config in source_config["streams"]:
             with TaskGroup(group_id=stream_config["id"]) as stream_task_group:
@@ -241,9 +262,11 @@ for source_config in SOURCES_CONFIGS:
 
                 start >> setup >> extract >> load
 
-            if dbt_snapshot is not None:
-                stream_task_group >> dbt_snapshot >> end
+            stream_task_group >> dbt_test_source
+
+            if dbt_snapshot_source is not None:
+                dbt_test_source >> dbt_snapshot_source >> end
             else:
-                stream_task_group >> end
+                dbt_test_source >> end
 
     globals()[dag_id] = dag
