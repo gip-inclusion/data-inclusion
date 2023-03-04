@@ -5,7 +5,7 @@ from pathlib import Path
 
 import airflow
 import pendulum
-from airflow.models import DAG, DagRun
+from airflow.models import DAG, DagRun, Variable
 from airflow.operators import bash, empty, python
 from airflow.providers.amazon.aws.hooks import s3
 from airflow.providers.postgres.hooks.postgres import PostgresHook
@@ -165,6 +165,15 @@ for source_config in SOURCES_CONFIGS:
                 bash_command=f"\
                     {dbt} snapshot \
                     -s {source_config['id'].replace('-', '_')}",
+                env={
+                    "DBT_PROFILES_DIR": Variable.get("DBT_PROJECT_DIR"),
+                    "POSTGRES_HOST": "{{ conn.pg.host }}",
+                    "POSTGRES_PORT": "{{ conn.pg.port }}",
+                    "POSTGRES_USER": "{{ conn.pg.login }}",
+                    "POSTGRES_PASSWORD": "{{ conn.pg.password }}",
+                    "POSTGRES_DB": "{{ conn.pg.schema }}",
+                },
+                cwd=Variable.get("DBT_PROJECT_DIR"),
             )
         else:
             dbt_snapshot = None
