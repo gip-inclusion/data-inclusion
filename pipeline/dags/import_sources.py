@@ -56,12 +56,12 @@ def _extract(
     dag: DAG,
     dag_run: DagRun,
 ):
-    from data_inclusion.scripts.tasks import utils
-    from data_inclusion.scripts.tasks.sources import (
+    from data_inclusion.scripts.tasks import (
         dora,
         emplois_de_linclusion,
         mediation_numerique,
         mes_aides,
+        utils,
     )
 
     EXTRACT_FN_BY_SOURCE_ID = {
@@ -108,8 +108,7 @@ def _load(
     import sqlalchemy as sqla
     from sqlalchemy.dialects.postgresql import JSONB
 
-    from data_inclusion.scripts.tasks import utils
-    from data_inclusion.scripts.tasks.sources import annuaire_du_service_public
+    from data_inclusion.scripts.tasks import annuaire_du_service_public, utils
 
     READ_FN_BY_SOURCE_ID = {
         "annuaire-du-service-public": annuaire_du_service_public.read,
