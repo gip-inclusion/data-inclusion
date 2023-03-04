@@ -16,7 +16,6 @@ default_args = {
         "POSTGRES_USER": "{{ conn.pg.login }}",
         "POSTGRES_PASSWORD": "{{ conn.pg.password }}",
         "POSTGRES_DB": "{{ conn.pg.schema }}",
-        "LOGICAL_DATE": "{{ dag_run.logical_date.astimezone(dag.timezone)|ds }}",
     },
     "cwd": Variable.get("DBT_PROJECT_DIR"),
 }
