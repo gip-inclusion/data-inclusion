@@ -14,7 +14,8 @@
 SELECT
     _di_logical_date                        AS "_di_logical_date",
     data                                    AS "data",
-    _di_source_id || '-' || (data ->> 'id') AS "_di_surrogate_id"
+    _di_source_id || '-' || (data ->> 'id') AS "_di_surrogate_id",
+    _di_source_id                           AS "_di_source_id"
 FROM {{ source('un_jeune_une_solution', 'benefits') }}
 
 {% endsnapshot %}
