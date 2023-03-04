@@ -6,7 +6,7 @@ from pathlib import Path
 import airflow
 import pendulum
 from airflow.models import DAG, DagRun
-from airflow.operators import empty, python
+from airflow.operators import bash, empty, python
 from airflow.providers.amazon.aws.hooks import s3
 from airflow.providers.postgres.hooks.postgres import PostgresHook
 from airflow.utils.module_loading import import_string
@@ -145,6 +145,10 @@ for source_config in SOURCES_CONFIGS:
         tags=["source"],
     )
 
+    dbt = "{{ var.value.pipx_bin }} run --spec dbt-postgres dbt"
+    # this ensure deps are installed (if instance has been recreated)
+    dbt = f"{dbt} deps && {dbt}"
+
     with dag:
         start = empty.EmptyOperator(task_id="start")
         end = empty.EmptyOperator(task_id="end")
@@ -155,8 +159,18 @@ for source_config in SOURCES_CONFIGS:
             op_kwargs={"source_config": source_config},
         )
 
+        if source_config["snapshot"]:
+            dbt_snapshot = bash.BashOperator(
+                task_id="dbt_snapshot",
+                bash_command=f"\
+                    {dbt} snapshot \
+                    -s {source_config['id'].replace('-', '_')}",
+            )
+        else:
+            dbt_snapshot = None
+
         for stream_config in source_config["streams"]:
-            with TaskGroup(group_id=stream_config["id"]):
+            with TaskGroup(group_id=stream_config["id"]) as stream_task_group:
                 extract = python.PythonOperator(
                     task_id="extract",
                     python_callable=_extract,
@@ -175,6 +189,11 @@ for source_config in SOURCES_CONFIGS:
                     },
                 )
 
-                start >> setup >> extract >> load >> end
+                start >> setup >> extract >> load
+
+            if dbt_snapshot is not None:
+                stream_task_group >> dbt_snapshot >> end
+            else:
+                stream_task_group >> end
 
     globals()[dag_id] = dag

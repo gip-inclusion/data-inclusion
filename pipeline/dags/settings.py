@@ -4,6 +4,7 @@ SOURCES_CONFIGS = [
     {
         "id": "dora",
         "schedule_interval": "@daily",
+        "snapshot": True,
         "read_fn": "data_inclusion.scripts.tasks.utils.read_json",
         "extract_fn": "data_inclusion.scripts.tasks.sources.dora.extract",
         "streams": [
@@ -22,6 +23,7 @@ SOURCES_CONFIGS = [
     {
         "id": "mes-aides",
         "schedule_interval": "@daily",
+        "snapshot": True,
         "read_fn": "data_inclusion.scripts.tasks.utils.read_json",
         "extract_fn": "data_inclusion.scripts.tasks.sources.mes_aides.extract",
         "streams": [
@@ -42,6 +44,7 @@ SOURCES_CONFIGS = [
     {
         "id": "siao",
         "schedule_interval": "@once",
+        "snapshot": False,
         "read_fn": "data_inclusion.scripts.tasks.utils.read_excel",
         "extract_fn": "data_inclusion.scripts.tasks.utils.extract_http_content",
         "streams": [
@@ -55,6 +58,7 @@ SOURCES_CONFIGS = [
     {
         "id": "finess",
         "schedule_interval": "@daily",
+        "snapshot": True,
         "read_fn": "data_inclusion.scripts.tasks.sources.finess.read",
         "extract_fn": "data_inclusion.scripts.tasks.utils.extract_http_content",
         "streams": [
@@ -68,6 +72,7 @@ SOURCES_CONFIGS = [
     {
         "id": "cd35",
         "schedule_interval": "@daily",
+        "snapshot": True,
         "read_fn": "data_inclusion.scripts.tasks.sources.cd35.read",
         "extract_fn": "data_inclusion.scripts.tasks.utils.extract_http_content",
         "streams": [
@@ -81,6 +86,7 @@ SOURCES_CONFIGS = [
     {
         "id": "cd72",
         "schedule_interval": "@once",
+        "snapshot": False,
         "read_fn": "data_inclusion.scripts.tasks.sources.cd72.read",
         "extract_fn": "data_inclusion.scripts.tasks.utils.extract_http_content",
         "streams": [
@@ -94,6 +100,7 @@ SOURCES_CONFIGS = [
     {
         "id": "emplois-de-linclusion",
         "schedule_interval": "@daily",
+        "snapshot": True,
         "read_fn": "data_inclusion.scripts.tasks.utils.read_json",
         "extract_fn": "data_inclusion.scripts.tasks.sources.emplois_de_linclusion.extract",
         "streams": [
@@ -114,6 +121,7 @@ SOURCES_CONFIGS = [
     {
         "id": "un-jeune-une-solution",
         "schedule_interval": "@daily",
+        "snapshot": True,
         "read_fn": "data_inclusion.scripts.tasks.utils.read_json",
         "extract_fn": "data_inclusion.scripts.tasks.utils.extract_http_content",
         "streams": [
@@ -134,6 +142,7 @@ SOURCES_CONFIGS = [
     {
         "id": "annuaire-du-service-public",
         "schedule_interval": "@daily",
+        "snapshot": True,
         "read_fn": "data_inclusion.scripts.tasks.sources.annuaire_du_service_public.read",
         "extract_fn": "data_inclusion.scripts.tasks.utils.extract_http_content",
         "streams": [
@@ -148,6 +157,7 @@ SOURCES_CONFIGS = [
         {
             "id": f"mediation-numerique-{source_id}",
             "schedule_interval": "@daily",
+            "snapshot": False,
             "read_fn": "data_inclusion.scripts.tasks.utils.read_json",
             "extract_fn": "data_inclusion.scripts.tasks.sources.mediation_numerique.extract",
             "streams": [
