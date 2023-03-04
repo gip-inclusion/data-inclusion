@@ -9,7 +9,6 @@ from airflow.models import DAG, DagRun, Variable
 from airflow.operators import bash, empty, python
 from airflow.providers.amazon.aws.hooks import s3
 from airflow.providers.postgres.hooks.postgres import PostgresHook
-from airflow.utils.module_loading import import_string
 from airflow.utils.task_group import TaskGroup
 from settings import SOURCES_CONFIGS
 
@@ -57,7 +56,31 @@ def _extract(
     dag: DAG,
     dag_run: DagRun,
 ):
-    extract_fn = import_string(source_config["extract_fn"])
+    from data_inclusion.scripts.tasks import utils
+    from data_inclusion.scripts.tasks.sources import (
+        dora,
+        emplois_de_linclusion,
+        mediation_numerique,
+        mes_aides,
+    )
+
+    EXTRACT_FN_BY_SOURCE_ID = {
+        "annuaire-du-service-public": utils.extract_http_content,
+        "cd35": utils.extract_http_content,
+        "cd72": utils.extract_http_content,
+        "dora": dora.extract,
+        "emplois-de-linclusion": emplois_de_linclusion.extract,
+        "finess": utils.extract_http_content,
+        "mes-aides": mes_aides.extract,
+        "siao": utils.extract_http_content,
+        "un-jeune-une-solution": utils.extract_http_content,
+    }
+
+    if source_config["id"].startswith("mediation-numerique-"):
+        extract_fn = mediation_numerique.extract
+    else:
+        extract_fn = EXTRACT_FN_BY_SOURCE_ID[source_config["id"]]
+
     s3_hook = s3.S3Hook(aws_conn_id="s3")
 
     with io.BytesIO(extract_fn(**stream_config)) as buf:
@@ -85,7 +108,26 @@ def _load(
     import sqlalchemy as sqla
     from sqlalchemy.dialects.postgresql import JSONB
 
-    read_fn = import_string(source_config["read_fn"])
+    from data_inclusion.scripts.tasks import utils
+    from data_inclusion.scripts.tasks.sources import annuaire_du_service_public
+
+    READ_FN_BY_SOURCE_ID = {
+        "annuaire-du-service-public": annuaire_du_service_public.read,
+        "cd35": lambda path: utils.read_csv(path, sep=";"),
+        "cd72": lambda path: utils.read_excel(path, sheet_name="Structures"),
+        "dora": utils.read_json,
+        "emplois-de-linclusion": utils.read_json,
+        "finess": lambda path: utils.read_csv(path, sep=","),
+        "mes-aides": utils.read_json,
+        "siao": utils.read_excel,
+        "un-jeune-une-solution": utils.read_json,
+    }
+
+    if source_config["id"].startswith("mediation-numerique-"):
+        read_fn = utils.read_json
+    else:
+        read_fn = READ_FN_BY_SOURCE_ID[source_config["id"]]
+
     s3_hook = s3.S3Hook(aws_conn_id="s3")
     pg_hook = PostgresHook(postgres_conn_id="pg")
     pg_engine = pg_hook.get_sqlalchemy_engine()
