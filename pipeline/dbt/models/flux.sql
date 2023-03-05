@@ -42,8 +42,8 @@ snapshots_with_init_date AS (
 
 final AS (
     SELECT
-        _di_logical_date                                                                AS "_di_logical_date",
-        _di_source_id                                                                   AS "_di_source_id",
+        snapshots._di_logical_date                                                      AS "_di_logical_date",
+        snapshots._di_source_id                                                         AS "_di_source_id",
         snapshots.data                                                                  AS "data_next",
         snapshots_with_init_date.data                                                   AS "data_prev",
         COALESCE(snapshots._di_surrogate_id, snapshots_with_init_date._di_surrogate_id) AS "_di_surrogate_id",
