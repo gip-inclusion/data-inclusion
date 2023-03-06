@@ -1,13 +1,10 @@
 WITH source AS (
-    SELECT *
-    FROM {{ source('data_inclusion', 'datalake') }}
-    WHERE
-        logical_date = '{{ var('logical_date') }}'
-        AND src_alias = 'etab_pub'
+    SELECT * FROM {{ source('annuaire_du_service_public', 'etablissements') }}
 ),
 
 final AS (
     SELECT
+        _di_source_id                                                                      AS "_di_source_id",
         ARRAY(SELECT * FROM JSONB_ARRAY_ELEMENTS_TEXT(data -> 'adresse_courriel'))::TEXT[] AS "adresse_courriel",
         data ->> 'id'                                                                      AS "id",
         data ->> 'siret'                                                                   AS "siret",

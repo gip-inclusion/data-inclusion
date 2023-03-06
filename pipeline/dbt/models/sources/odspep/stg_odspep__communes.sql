@@ -13,7 +13,7 @@ final AS (
         source."ID_COM"           AS "id_com",
         source."ID_RES"           AS "id_res",
         source."CODE_COMMUNE_COM" AS "code_commune_com",
-        insee_communes.label
+        insee_communes.label      AS "label"
 
     FROM source
     LEFT JOIN insee_communes ON source."CODE_COMMUNE_COM" = insee_communes.code

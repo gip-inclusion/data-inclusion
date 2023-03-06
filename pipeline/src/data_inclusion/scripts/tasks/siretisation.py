@@ -1,6 +1,5 @@
 import logging
 import textwrap
-from pathlib import Path
 from typing import Optional
 
 import pandas as pd
@@ -9,14 +8,11 @@ from sqlalchemy import exc as sqla_exc
 from sqlalchemy.engine import Engine
 from tqdm import tqdm
 
-from data_inclusion.schema import models
 from data_inclusion.scripts.tasks import utils
 
 logger = logging.getLogger(__name__)
 
 tqdm.pandas()
-
-DIR = Path(__file__).parent
 
 
 NEAREST_ESTABLISHMENTS_STMT = sqla.text(
@@ -214,16 +210,15 @@ def search_establishment(
     adresse: Optional[str] = None,
     latitude: Optional[float] = None,
     longitude: Optional[float] = None,
-    typologie: Optional[models.Typologie] = None,
+    typologie: Optional[str] = None,
 ):
-    if typologie == models.Typologie.MUNI:
+    if typologie == "MUNI":
         return search_municipality(
             commune=commune,
             latitude=latitude,
             longitude=longitude,
             engine=engine,
         )
-
     return search_establishment_by_similarities(
         nom=nom,
         adresse=adresse,
@@ -241,14 +236,6 @@ def siretize_normalized_dataframe(
 
     engine = sqla.create_engine(sirene_database_url)
 
-    def get_typologie(value: Optional[str]) -> Optional[models.Typologie]:
-        if value is None:
-            return None
-        return next(
-            (typologie for typologie in models.Typologie if typologie.value == value),
-            None,
-        )
-
     establishments_df = structures_df.progress_apply(
         lambda row: search_establishment(
             engine=engine,
@@ -257,7 +244,7 @@ def siretize_normalized_dataframe(
             latitude=row.latitude,
             longitude=row.longitude,
             commune=row.commune,
-            typologie=get_typologie(row.typologie),
+            typologie=row.typologie,
         )
         or {"siret": None},
         axis="columns",

@@ -58,16 +58,20 @@ def test_database_url():
     # Connect to the db and creates a new test database
     with default_db_engine.connect() as default_db_conn:
         default_db_conn.execute(
-            f'DROP DATABASE IF EXISTS "{test_database_url.database}";'
+            sqla.text(f'DROP DATABASE IF EXISTS "{test_database_url.database}";')
         )
-        default_db_conn.execute(f'CREATE DATABASE "{test_database_url.database}";')
+        default_db_conn.execute(
+            sqla.text(f'CREATE DATABASE "{test_database_url.database}";')
+        )
 
     yield test_database_url
 
     # Teardown test database
     with default_db_engine.connect() as default_db_conn:
         default_db_conn.execute(
-            f'DROP DATABASE IF EXISTS "{test_database_url.database}" WITH (FORCE);'
+            sqla.text(
+                f'DROP DATABASE IF EXISTS "{test_database_url.database}" WITH (FORCE);'
+            )
         )
 
 
@@ -78,7 +82,9 @@ def apply_db_migrations(test_database_url):
 
     config = Config()
     config.set_main_option("script_location", "src/alembic/")
-    config.set_main_option("sqlalchemy.url", str(test_database_url))
+    config.set_main_option(
+        "sqlalchemy.url", test_database_url.render_as_string(hide_password=False)
+    )
 
     command.upgrade(config, "head")
     yield

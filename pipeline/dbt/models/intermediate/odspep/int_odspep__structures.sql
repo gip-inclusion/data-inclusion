@@ -3,7 +3,9 @@ WITH ressources_partenariales AS (
 ),
 
 final AS (
-    SELECT
+    -- remove duplication introduced by us
+    -- in the int_odspep__enhanced_res_partenariales model
+    SELECT DISTINCT ON (1)
         id_res                 AS "id",
         NULL                   AS "antenne",
         NULL                   AS "rna",

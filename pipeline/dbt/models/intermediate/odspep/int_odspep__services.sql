@@ -2,29 +2,38 @@ WITH ressources_partenariales AS (
     SELECT * FROM {{ ref('int_odspep__enhanced_res_partenariales') }}
 ),
 
+di_thematique_by_odspep_type_res_part AS (
+    SELECT x.*
+    FROM (
+        VALUES
+        -- Mapping: https://www.notion.so/dora-beta/Explorer-ODSPEP-du-23-01-22-48e1d505c7cb4fdb9e3ec789449e7ca7#24743be5aac94306b6261e8e6c2f748c
+        ('3', 'creation-dactivite'),
+        ('5', 'handicap'),
+        ('6', 'accompagnement-social-et-professionnel-personnalise'),
+        ('8', 'mobilite'),
+        ('9', 'numerique')
+    ) AS x(type_res_part, thematique)
+),
+
 final AS (
     SELECT
-        id_res              AS "id",
-        "service"           AS "nom",
-        'odspep'            AS "source",
-        service_description AS "presentation_resume",
-        date_fin_valid      AS "date_suspension",
-        date_derniere_modif AS "date_modification",
-        code                AS zone_diffusion_code,
-        type_code           AS zone_diffusion_type,
-        label               AS zone_diffusion_nom,
+        service                          AS "nom",
+        'odspep'                         AS "source",
+        service_description              AS "presentation_resume",
+        date_fin_valid                   AS "date_suspension",
+        date_derniere_modif              AS "date_modification",
+        code                             AS "zone_diffusion_code",
+        type_code                        AS "zone_diffusion_type",
+        label                            AS "zone_diffusion_nom",
+        CONCAT(id_res, '_', unique_code) AS "id",
         CASE WHEN prescriptible
             THEN ARRAY['demandeur-demploi']::TEXT[]
-        END                 AS "profils",
-        -- Mapping: https://www.notion.so/dora-beta/Explorer-ODSPEP-du-23-01-22-48e1d505c7cb4fdb9e3ec789449e7ca7#24743be5aac94306b6261e8e6c2f748c
-        CASE type_res_part
-            WHEN '3' THEN ARRAY['creation-dactivite']::TEXT[]
-            WHEN '5' THEN ARRAY['handicap']::TEXT[]
-            WHEN '6' THEN ARRAY['accompagnement-social-et-professionnel-personnalise']::TEXT[]
-            WHEN '8' THEN ARRAY['mobilite']::TEXT[]
-            WHEN '9' THEN ARRAY['numerique']::TEXT[]
-        END                 AS "thematiques"
-
+        END                              AS "profils",
+        ARRAY(
+            SELECT di_thematique_by_odspep_type_res_part.thematique
+            FROM di_thematique_by_odspep_type_res_part
+            WHERE ressources_partenariales.type_res_part = di_thematique_by_odspep_type_res_part.type_res_part
+        )::TEXT[]                        AS "thematiques"
     FROM ressources_partenariales
     ORDER BY 1
 

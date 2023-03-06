@@ -1,13 +1,11 @@
 WITH source AS (
-    SELECT *
-    FROM {{ source('data_inclusion', 'datalake') }}
-    WHERE
-        logical_date = '{{ var('logical_date') }}'
-        AND src_alias = 'finess'
+    SELECT * FROM {{ source('finess', 'etablissements') }}
 ),
+
 
 final AS (
     SELECT
+        _di_source_id                         AS "_di_source_id",
         (data ->> 'coordxet')::FLOAT          AS "coordxet",
         (data ->> 'coordyet')::FLOAT          AS "coordyet",
         data ->> 'nofinesset'                 AS "id",
@@ -21,6 +19,7 @@ final AS (
         data ->> 'commune'                    AS "commune",
         data ->> 'compldistrib'               AS "compldistrib",
         data ->> 'numvoie'                    AS "numvoie",
+        data ->> 'compvoie'                   AS "compvoie",
         data ->> 'typvoie'                    AS "typvoie",
         data ->> 'voie'                       AS "voie",
         data ->> 'lieuditbp'                  AS "lieuditbp",

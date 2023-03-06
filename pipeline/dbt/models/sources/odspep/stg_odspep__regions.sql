@@ -17,8 +17,8 @@ final AS (
         source."ID_REG"          AS "id_reg",
         source."ID_RES"          AS "id_res",
         source."CODE_REGION_REG" AS "code_region_reg",
-        'Région'                 AS zone_diffusion_type,
-        insee_regions.label
+        'Région'                 AS "zone_diffusion_type",
+        insee_regions.label      AS "label"
 
     FROM source
     LEFT JOIN insee_regions ON source."CODE_REGION_REG" = insee_regions.code

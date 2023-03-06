@@ -24,7 +24,7 @@ final AS (
         NULL::FLOAT                                      AS "latitude",
         email_accueil                                    AS "courriel",
         site_internet                                    AS "site_web",
-        'cd72'                                           AS "source",
+        _di_source_id                                    AS "source",
         NULL                                             AS "lien_source",
         horaires                                         AS "horaires_ouverture",
         NULL                                             AS "accessibilite",

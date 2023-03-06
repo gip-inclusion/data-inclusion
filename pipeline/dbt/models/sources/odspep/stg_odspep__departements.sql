@@ -13,7 +13,7 @@ final AS (
         source."ID_DPT"               AS "id_dpt",
         source."ID_RES"               AS "id_res",
         source."CODE_DEPARTEMENT_DPT" AS "code_departement_dpt",
-        insee_departements.label
+        insee_departements.label      AS "label"
 
     FROM source
     LEFT JOIN insee_departements ON source."CODE_DEPARTEMENT_DPT" = insee_departements.code
