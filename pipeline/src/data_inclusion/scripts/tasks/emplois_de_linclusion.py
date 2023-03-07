@@ -1,25 +1,18 @@
 import io
 import json
 import logging
-from pathlib import Path
-from typing import Optional
 
-import pandas as pd
 import requests
 from requests.adapters import HTTPAdapter
 from tqdm import tqdm
 from urllib3.util.retry import Retry
 
-from data_inclusion.scripts.tasks import utils
-
-EMPLOIS_SOURCE_STR = "emplois-de-linclusion"
-
 logger = logging.getLogger(__name__)
 
 
 class EmploisClient:
-    def __init__(self, url: str, token: str) -> None:
-        self.url = url
+    def __init__(self, base_url: str, token: str) -> None:
+        self.base_url = base_url.rstrip("/") + "/"
         self.session = requests.Session()
         adapter = HTTPAdapter(
             max_retries=Retry(total=2, backoff_factor=120, status_forcelist=[429])
@@ -28,8 +21,8 @@ class EmploisClient:
         self.session.mount("https://", adapter)
         self.session.headers.update({"Authorization": f"Token {token}"})
 
-    def list_structures(self) -> list:
-        next_url = self.url
+    def _list_paginated_endpoint(self, url_path: str) -> list:
+        next_url = f"{self.base_url}{url_path}"
         structures_data = []
 
         pbar = None
@@ -47,23 +40,26 @@ class EmploisClient:
             if next_url is None:
                 break
 
+            break
+
         if pbar is not None:
             pbar.close()
 
         return structures_data
 
+    def list_siaes(self) -> list:
+        return self._list_paginated_endpoint("?type=siae")
 
-def extract_data(src: str, token: str, **kwargs) -> dict[str, io.BytesIO]:
-    client = EmploisClient(url=src, token=token)
+    def list_organisations(self) -> list:
+        return self._list_paginated_endpoint("?type=orga")
+
+
+def extract(id: str, url: str, token: str, **kwargs) -> bytes:
+    client = EmploisClient(base_url=url, token=token)
 
     # raw structures
-    data = client.list_structures()
+    data = getattr(client, f"list_{id}")()
 
     with io.StringIO() as buf:
         json.dump(data, buf)
-        return {"data.json": io.BytesIO(buf.getvalue().encode())}
-
-
-def read_data(path: Path) -> tuple[pd.DataFrame, Optional[pd.Series]]:
-    df = utils.read_json(path)
-    return df, df.id
+        return buf.getvalue().encode()

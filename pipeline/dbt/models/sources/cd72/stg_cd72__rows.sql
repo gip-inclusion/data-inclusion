@@ -1,13 +1,10 @@
 WITH source AS (
-    SELECT *
-    FROM {{ source('data_inclusion', 'datalake') }}
-    WHERE
-        logical_date = '{{ var('logical_date') }}'
-        AND src_alias = 'cd72'
+    SELECT * FROM {{ source('cd72', 'rows') }}
 ),
 
 final AS (
     SELECT
+        _di_source_id                  AS "_di_source_id",
         data ->> 'ID Structure'        AS "id",
         data ->> 'ID Structure'        AS "id_structure",
         data ->> 'SIRET'               AS "siret",

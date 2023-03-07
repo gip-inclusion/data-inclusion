@@ -19,7 +19,7 @@ final AS (
         org_tel                             AS "telephone",
         org_mail                            AS "courriel",
         org_web                             AS "site_web",
-        'cd35'                              AS "source",
+        _di_source_id                       AS "source",
         url                                 AS "lien_source",
         org_horaire                         AS "horaires_ouverture",
         NULL                                AS "accessibilite",

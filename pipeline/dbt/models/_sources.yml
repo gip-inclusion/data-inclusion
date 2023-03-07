@@ -4,7 +4,6 @@ sources:
   - name: data_inclusion
     schema: public
     tables:
-      - name: datalake
       - name: annotation_dataset
       - name: annotation_datasetrow
       - name: annotation_annotation
@@ -12,6 +11,103 @@ sources:
       - name: sirene_etablissement_historique
       - name: sirene_etablissement_succession
       - name: extra__geocoded_results
+
+  - name: dora
+    schema: dora
+    tables:
+      - name: structures
+      - name: services
+
+  - name: finess
+    schema: finess
+    tables:
+      - name: etablissements
+
+  - name: siao
+    schema: siao
+    tables:
+      - name: etablissements
+
+  - name: un_jeune_une_solution
+    schema: un_jeune_une_solution
+    tables:
+      - name: institutions
+      - name: benefits
+
+  - name: mes_aides
+    schema: mes_aides
+    tables:
+      - name: garages
+      - name: aides
+
+  - name: annuaire_du_service_public
+    schema: annuaire_du_service_public
+    tables:
+      - name: etablissements
+
+  - name: cd35
+    schema: cd35
+    tables:
+      - name: organisations
+
+  - name: cd72
+    schema: cd72
+    tables:
+      - name: rows
+
+  - name: emplois_de_linclusion
+    schema: emplois_de_linclusion
+    tables:
+      - name: siaes
+      - name: organisations
+
+  - name: mediation_numerique_angers
+    schema: mediation_numerique_angers
+    tables:
+      - name: structures
+      - name: services
+
+  - name: mediation_numerique_assembleurs
+    schema: mediation_numerique_assembleurs
+    tables:
+      - name: structures
+      - name: services
+
+  - name: mediation_numerique_cd49
+    schema: mediation_numerique_cd49
+    tables:
+      - name: structures
+      - name: services
+
+  - name: mediation_numerique_conseiller_numerique
+    schema: mediation_numerique_conseiller_numerique
+    tables:
+      - name: structures
+      - name: services
+
+  - name: mediation_numerique_france_services
+    schema: mediation_numerique_france_services
+    tables:
+      - name: structures
+      - name: services
+
+  - name: mediation_numerique_france_tiers_lieux
+    schema: mediation_numerique_france_tiers_lieux
+    tables:
+      - name: structures
+      - name: services
+
+  - name: mediation_numerique_francilin
+    schema: mediation_numerique_francilin
+    tables:
+      - name: structures
+      - name: services
+
+  - name: mediation_numerique_hinaura
+    schema: mediation_numerique_hinaura
+    tables:
+      - name: structures
+      - name: services
 
   - name: odspep
     schema: odspep

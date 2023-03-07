@@ -5,7 +5,7 @@ WITH services AS (
 final AS (
     SELECT
         id,
-        'dora'                                                  AS "source",
+        _di_source_id                                           AS "source",
         name                                                    AS "nom",
         short_desc                                              AS "presentation_resume",
         kinds                                                   AS "types",

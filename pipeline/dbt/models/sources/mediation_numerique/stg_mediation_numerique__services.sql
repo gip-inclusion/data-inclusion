@@ -1,14 +1,24 @@
 WITH source AS (
-    SELECT *
-    FROM {{ source('data_inclusion', 'datalake') }}
-    WHERE
-        logical_date = '{{ var('logical_date') }}'
-        AND src_alias ~ 'mednum'
-        AND file ~ 'services'
+    {{
+        dbt_utils.union_relations(
+            relations=[
+                source('mediation_numerique_angers', 'services'),
+                source('mediation_numerique_assembleurs', 'services'),
+                source('mediation_numerique_cd49', 'services'),
+                source('mediation_numerique_conseiller_numerique', 'services'),
+                source('mediation_numerique_france_services', 'services'),
+                source('mediation_numerique_france_tiers_lieux', 'services'),
+                source('mediation_numerique_francilin', 'services'),
+                source('mediation_numerique_hinaura', 'services'),
+            ],
+            source_column_name=None
+        )
+    }}
 ),
 
 final AS (
     SELECT
+        _di_source_id                                                                                 AS "_di_source_id",
         ARRAY(SELECT * FROM JSONB_ARRAY_ELEMENTS_TEXT(NULLIF(data -> 'types', 'null')))::TEXT[]       AS "types",
         ARRAY(SELECT * FROM JSONB_ARRAY_ELEMENTS_TEXT(NULLIF(data -> 'profils', 'null')))::TEXT[]     AS "profils",
         ARRAY(SELECT * FROM JSONB_ARRAY_ELEMENTS_TEXT(NULLIF(data -> 'thematiques', 'null')))::TEXT[] AS "thematiques",
