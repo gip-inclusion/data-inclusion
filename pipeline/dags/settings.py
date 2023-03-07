@@ -1,3 +1,8 @@
+"""This declarative module lists the sources and their streams.
+
+It is used as a source of truth in general and to generate dedicated dags in particular.
+"""
+
 from airflow.models import Variable
 
 SOURCES_CONFIGS = [

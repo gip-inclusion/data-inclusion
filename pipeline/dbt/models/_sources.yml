@@ -12,13 +12,6 @@ sources:
       - name: sirene_etablissement_succession
       - name: extra__geocoded_results
 
-  - name: insee
-    schema: insee
-    tables:
-      - name: regions
-      - name: departements
-      - name: communes
-
   - name: dora
     schema: dora
     tables:
