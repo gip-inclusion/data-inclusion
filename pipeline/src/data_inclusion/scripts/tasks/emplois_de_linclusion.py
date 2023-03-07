@@ -40,6 +40,8 @@ class EmploisClient:
             if next_url is None:
                 break
 
+            break
+
         if pbar is not None:
             pbar.close()
 

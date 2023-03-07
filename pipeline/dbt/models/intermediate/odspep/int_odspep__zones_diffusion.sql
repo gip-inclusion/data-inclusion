@@ -4,7 +4,8 @@ WITH regions AS (
     SELECT
         id_res,
         code_region_reg                   AS "code",
-        'Région'                          AS "type_code",
+        'Région'                          AS "type",
+        libelle                           AS "libelle",
         CONCAT('region', code_region_reg) AS "unique_code"
     FROM {{ ref('stg_odspep__regions') }}
 ),
@@ -13,9 +14,9 @@ departements AS (
     SELECT
         id_res,
         code_departement_dpt                         AS "code",
-        'Département'                                AS "type_code",
+        'Département'                                AS "type",
+        libelle                                      AS "libelle",
         CONCAT('departement_', code_departement_dpt) AS "unique_code"
-
     FROM {{ ref('stg_odspep__departements') }}
 ),
 
@@ -23,7 +24,8 @@ communes AS (
     SELECT
         id_res,
         code_commune_com                     AS "code",
-        'Commune'                            AS "type_code",
+        'Commune'                            AS "type",
+        libelle                              AS "libelle",
         CONCAT('commune_', code_commune_com) AS "unique_code"
     FROM {{ ref('stg_odspep__communes') }}
 ),
@@ -32,7 +34,8 @@ bassins AS (
     SELECT
         id_res,
         code_bassin_bas                    AS "code",
-        'Bassin'                           AS "type_code",
+        'Bassin'                           AS "type",
+        NULL                               AS "libelle",
         CONCAT('bassin_', code_bassin_bas) AS "unique_code"
     FROM {{ ref('stg_odspep__bassins') }}
 ),
@@ -41,7 +44,8 @@ dir_territoriale_ofii AS (
     SELECT
         id_res,
         code_dit                  AS "code",
-        'DT OFII'                 AS "type_code",
+        'DT OFII'                 AS "type",
+        NULL                      AS "libelle",
         CONCAT('ofii_', code_dit) AS "unique_code"
     FROM {{ ref('stg_odspep__dir_territoriale_ofii') }}
 ),
