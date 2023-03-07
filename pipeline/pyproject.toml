@@ -30,7 +30,7 @@ markers = '''
 dialect = "postgres"
 ignore = "templating"
 exclude_rules = "L016"
-templater = "jinja"
+templater = "dbt"
 
 [tool.sqlfluff.layout.type.alias_expression]
 # https://docs.sqlfluff.com/en/stable/layout.html#aligned-elements
@@ -60,5 +60,5 @@ extended_capitalisation_policy = "upper"
 capitalisation_policy = "upper"
 
 [tool.sqlfluff.templater.dbt]
-project_dir = "./dbt"
-profiles_dir = "./dbt"
+project_dir = "./pipeline/dbt"
+profiles_dir = "./pipeline/dbt"
