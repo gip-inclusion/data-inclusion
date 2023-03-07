@@ -7,8 +7,8 @@ WITH source AS (
 
 ),
 
-insee_regions AS (
-    SELECT * FROM {{ ref('insee_regions') }}
+regions AS (
+    SELECT * FROM {{ source('insee', 'regions') }}
 ),
 
 final AS (
@@ -17,11 +17,11 @@ final AS (
         source."ID_REG"          AS "id_reg",
         source."ID_RES"          AS "id_res",
         source."CODE_REGION_REG" AS "code_region_reg",
-        'Région'                 AS "zone_diffusion_type",
-        insee_regions.label      AS "label"
+        'Région'                AS "zone_diffusion_type",
+        regions."LIBELLE"        AS "libelle"
 
     FROM source
-    LEFT JOIN insee_regions ON source."CODE_REGION_REG" = insee_regions.code
+    LEFT JOIN regions ON source."CODE_REGION_REG" = regions."REG"
 
 )
 

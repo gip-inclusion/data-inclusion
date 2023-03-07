@@ -17,23 +17,23 @@ di_thematique_by_odspep_type_res_part AS (
 
 final AS (
     SELECT
-        service                          AS "nom",
-        'odspep'                         AS "source",
-        service_description              AS "presentation_resume",
-        date_fin_valid                   AS "date_suspension",
-        date_derniere_modif              AS "date_modification",
-        code                             AS "zone_diffusion_code",
-        type_code                        AS "zone_diffusion_type",
-        label                            AS "zone_diffusion_nom",
-        CONCAT(id_res, '_', unique_code) AS "id",
+        service                                         AS "nom",
+        'odspep'                                        AS "source",
+        service_description                             AS "presentation_resume",
+        date_fin_valid                                  AS "date_suspension",
+        date_derniere_modif                             AS "date_modification",
+        zone_diffusion_code                             AS "zone_diffusion_code",
+        zone_diffusion_type                             AS "zone_diffusion_type",
+        zone_diffusion_libelle                          AS "zone_diffusion_nom",
+        CONCAT(id_res, '_', zone_diffusion_unique_code) AS "id",
         CASE WHEN prescriptible
             THEN ARRAY['demandeur-demploi']::TEXT[]
-        END                              AS "profils",
+        END                                             AS "profils",
         ARRAY(
             SELECT di_thematique_by_odspep_type_res_part.thematique
             FROM di_thematique_by_odspep_type_res_part
             WHERE ressources_partenariales.type_res_part = di_thematique_by_odspep_type_res_part.type_res_part
-        )::TEXT[]                        AS "thematiques"
+        )::TEXT[]                                       AS "thematiques"
     FROM ressources_partenariales
     ORDER BY 1
 

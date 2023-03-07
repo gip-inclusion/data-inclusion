@@ -3,8 +3,8 @@ WITH source AS (
     FROM {{ source('odspep', 'DD009_COMMUNE_RESSOURCE') }}
 ),
 
-insee_communes AS (
-    SELECT * FROM {{ ref('insee_communes') }}
+communes AS (
+    SELECT * FROM {{ source('insee', 'communes') }}
 ),
 
 final AS (
@@ -13,10 +13,10 @@ final AS (
         source."ID_COM"           AS "id_com",
         source."ID_RES"           AS "id_res",
         source."CODE_COMMUNE_COM" AS "code_commune_com",
-        insee_communes.label      AS "label"
+        communes."LIBELLE"        AS "libelle"
 
     FROM source
-    LEFT JOIN insee_communes ON source."CODE_COMMUNE_COM" = insee_communes.code
+    LEFT JOIN communes ON source."CODE_COMMUNE_COM" = communes."COM"
 )
 
 SELECT * FROM final
