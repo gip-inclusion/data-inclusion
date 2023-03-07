@@ -26,6 +26,8 @@ def get_stream_s3_key(
     batch_id: str,
     timezone,
 ) -> str:
+    """Compute the s3 bucket key under which the stream data is stored."""
+
     logical_date_ds = pendulum.instance(
         logical_date.astimezone(timezone)
     ).to_date_string()
@@ -34,19 +36,20 @@ def get_stream_s3_key(
 
 
 def _setup(source_config: dict):
+    """Ensure the db objects (schema, permissions) subsequently required exist."""
+
     pg_hook = PostgresHook(postgres_conn_id="pg")
     pg_engine = pg_hook.get_sqlalchemy_engine()
     schema_name = source_config["id"].replace("-", "_")
 
     with pg_engine.connect() as conn:
         with conn.begin():
-            conn.execute(f"CREATE SCHEMA IF NOT EXISTS {schema_name};")
-            conn.execute(f"GRANT USAGE ON SCHEMA {schema_name} TO PUBLIC;")
             conn.execute(
                 f"""\
-                    ALTER DEFAULT PRIVILEGES IN SCHEMA {schema_name}
-                    GRANT SELECT ON TABLES TO PUBLIC;
-                """
+                CREATE SCHEMA IF NOT EXISTS {schema_name};
+                GRANT USAGE ON SCHEMA {schema_name} TO PUBLIC;
+                ALTER DEFAULT PRIVILEGES IN SCHEMA {schema_name}
+                GRANT SELECT ON TABLES TO PUBLIC;"""
             )
 
 
@@ -57,6 +60,8 @@ def _extract(
     dag: DAG,
     dag_run: DagRun,
 ):
+    """Extract raw data from source and store it into datalake bucket."""
+
     from data_inclusion.scripts.tasks import (
         dora,
         emplois_de_linclusion,
@@ -105,6 +110,8 @@ def _load(
     dag: DAG,
     dag_run: DagRun,
 ):
+    """Pull raw data from datalake bucket and load it with metadata to postgres."""
+
     import pandas as pd
     import sqlalchemy as sqla
     from sqlalchemy.dialects.postgresql import JSONB
@@ -181,6 +188,8 @@ def dbt_operator_factory(
     command: str,
     selector: Optional[str] = None,
 ) -> bash.BashOperator:
+    """A basic factory for bash operators operating dbt commands."""
+
     dbt = "{{ var.value.pipx_bin }} run --spec dbt-postgres dbt"
     # this ensure deps are installed (if instance has been recreated)
     dbt = f"{dbt} deps && {dbt}"
@@ -204,6 +213,7 @@ def dbt_operator_factory(
     )
 
 
+# generate a dedicated DAG for every configured sources
 for source_config in SOURCES_CONFIGS:
     dag_id = f"import_{source_config['id']}".replace("-", "_")
     dag = airflow.DAG(
@@ -225,12 +235,15 @@ for source_config in SOURCES_CONFIGS:
             op_kwargs={"source_config": source_config},
         )
 
+        # tests here can detect impacting changes on the source data
+        # before anything happens to the previously existing data
         dbt_test_source = dbt_operator_factory(
             task_id="dbt_test_source",
             command="test",
             selector="source:data_inclusion." + source_config["id"].replace("-", "_"),
         )
 
+        # historization of the raw data, if that makes sense
         if source_config["snapshot"]:
             dbt_snapshot_source = dbt_operator_factory(
                 task_id="dbt_snapshot_source",
@@ -240,6 +253,7 @@ for source_config in SOURCES_CONFIGS:
         else:
             dbt_snapshot_source = None
 
+        # create dedicated embranchments for the extract/load of every streams in source
         for stream_config in source_config["streams"]:
             with TaskGroup(group_id=stream_config["id"]) as stream_task_group:
                 extract = python.PythonOperator(
