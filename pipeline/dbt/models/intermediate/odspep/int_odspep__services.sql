@@ -29,6 +29,7 @@ final AS (
         zone_diffusion_code                             AS "zone_diffusion_code",
         zone_diffusion_type                             AS "zone_diffusion_type",
         zone_diffusion_libelle                          AS "zone_diffusion_nom",
+        id_res                                          AS "structure_id",
         CONCAT(id_res, '_', zone_diffusion_unique_code) AS "id",
         CASE WHEN prescriptible
             THEN ARRAY['demandeur-demploi']::TEXT[]
