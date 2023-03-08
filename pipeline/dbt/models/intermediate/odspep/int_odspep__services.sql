@@ -30,10 +30,8 @@ final AS (
         zone_diffusion_type                             AS "zone_diffusion_type",
         zone_diffusion_libelle                          AS "zone_diffusion_nom",
         id_res                                          AS "structure_id",
+        NULL::TEXT[]                                    AS "profils",
         CONCAT(id_res, '_', zone_diffusion_unique_code) AS "id",
-        CASE WHEN prescriptible
-            THEN ARRAY['demandeur-demploi']::TEXT[]
-        END                                             AS "profils",
         ARRAY(
             SELECT di_thematique_by_odspep_type_res_part.thematique
             FROM di_thematique_by_odspep_type_res_part
