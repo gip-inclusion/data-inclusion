@@ -75,6 +75,7 @@ class ServiceFactory(factory.Factory):
     source = factory.SelfAttribute("structure.source")
     nom = factory.Faker("company", locale="fr_FR")
     presentation_resume = factory.Faker("text", max_nb_chars=20, locale="fr_FR")
+    presentation_detail = factory.Faker("text", max_nb_chars=20, locale="fr_FR")
     types = factory.Iterator(
         pairwise(
             [
@@ -110,3 +111,35 @@ class ServiceFactory(factory.Factory):
         ),
         getter=lambda l: list(map(lambda t: t.value, l)),
     )
+    pre_requis = None
+    cumulable = False
+    justificatifs = None
+    formulaire_en_ligne = None
+    commune = factory.Faker("city", locale="fr_FR")
+    code_postal = factory.Faker("postcode", locale="fr_FR")
+    code_insee = factory.Faker("postcode", locale="fr_FR")
+    adresse = factory.Faker("street_address", locale="fr_FR")
+    complement_adresse = None
+    longitude = factory.Faker("longitude")
+    latitude = factory.Faker("latitude")
+    recurrence = None
+    date_creation = factory.Faker("past_date")
+    date_suspension = factory.Faker("future_date")
+    lien_source = factory.LazyAttribute(lambda o: f"https://{o.source}.fr/{o.id}")
+    telephone = "0102030405"
+    courriel = factory.Faker("email", locale="fr_FR")
+    contact_public = None
+    date_maj = factory.LazyFunction(lambda: date(2023, 1, 1))
+    modes_accueil = factory.Iterator(
+        [
+            [schema.ModeAccueil.A_DISTANCE.value],
+            [schema.ModeAccueil.EN_PRESENTIEL.value],
+            [
+                schema.ModeAccueil.A_DISTANCE.value,
+                schema.ModeAccueil.EN_PRESENTIEL.value,
+            ],
+        ]
+    )
+    zone_diffusion_type = schema.TypeCOG.COMMUNE.value
+    zone_diffusion_code = "59350"
+    zone_diffusion_nom = "Lille"
