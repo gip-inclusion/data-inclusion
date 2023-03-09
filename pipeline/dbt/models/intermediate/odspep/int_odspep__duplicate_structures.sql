@@ -1,3 +1,6 @@
+-- remove duplication introduced by us, when we joined the perimetre/zone_de_diffusion with 
+-- the services (1 service, n zone_de_diffusion) the int_odspep__enhanced_res_partenariales model
+
 WITH ressources_partenariales AS (
     SELECT * FROM {{ ref('int_odspep__enhanced_res_partenariales') }}
 ),
