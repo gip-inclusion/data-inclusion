@@ -7,6 +7,10 @@ from airflow.models import DagRun, Variable
 from airflow.operators import empty, python
 from airflow.providers.amazon.aws.hooks import s3
 from airflow.providers.postgres.hooks import postgres
+from airflow.models import Variable
+
+
+from mattermost import mm_failed_task
 
 logger = logging.getLogger(__name__)
 
@@ -66,6 +70,7 @@ with airflow.DAG(
     default_args=default_args,
     schedule_interval="@once",
     catchup=False,
+    on_failure_callback=mm_failed_task,
 ) as dag:
     start = empty.EmptyOperator(task_id="start")
     end = empty.EmptyOperator(task_id="end")
