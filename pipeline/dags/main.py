@@ -1,28 +1,21 @@
 import logging
+from typing import Optional
 
 import airflow
 import pendulum
 from airflow.models import Variable
 from airflow.operators import bash, empty, python
-from airflow.providers.postgres.hooks.postgres import PostgresHook
+from virtualenvs import DBT_PYTHON_BIN_PATH, PYTHON_BIN_PATH
 
 logger = logging.getLogger(__name__)
 
-default_args = {
-    "env": {
-        "DBT_PROFILES_DIR": Variable.get("DBT_PROJECT_DIR"),
-        "POSTGRES_HOST": "{{ conn.pg.host }}",
-        "POSTGRES_PORT": "{{ conn.pg.port }}",
-        "POSTGRES_USER": "{{ conn.pg.login }}",
-        "POSTGRES_PASSWORD": "{{ conn.pg.password }}",
-        "POSTGRES_DB": "{{ conn.pg.schema }}",
-    },
-    "cwd": Variable.get("DBT_PROJECT_DIR"),
-}
+default_args = {}
 
 
 def _geocode():
     import sqlalchemy as sqla
+    from airflow.models import Variable
+    from airflow.providers.postgres.hooks.postgres import PostgresHook
 
     from data_inclusion.scripts.tasks import geocoding, utils
 
@@ -69,6 +62,35 @@ def _geocode():
             )
 
 
+def dbt_operator_factory(
+    task_id: str,
+    command: str,
+    select: Optional[str] = None,
+    exclude: Optional[str] = None,
+) -> bash.BashOperator:
+    """A basic factory for bash operators operating dbt commands."""
+
+    dbt_args = command
+    if select is not None:
+        dbt_args += f" --select {exclude}"
+    if exclude is not None:
+        dbt_args += f" --exclude {exclude}"
+
+    return bash.BashOperator(
+        task_id=task_id,
+        bash_command=f"{DBT_PYTHON_BIN_PATH.parent / 'dbt'} {dbt_args}",
+        env={
+            "DBT_PROFILES_DIR": Variable.get("DBT_PROJECT_DIR"),
+            "POSTGRES_HOST": "{{ conn.pg.host }}",
+            "POSTGRES_PORT": "{{ conn.pg.port }}",
+            "POSTGRES_USER": "{{ conn.pg.login }}",
+            "POSTGRES_PASSWORD": "{{ conn.pg.password }}",
+            "POSTGRES_DB": "{{ conn.pg.schema }}",
+        },
+        cwd=Variable.get("DBT_PROJECT_DIR"),
+    )
+
+
 with airflow.DAG(
     dag_id="main",
     start_date=pendulum.datetime(2022, 1, 1, tz="Europe/Paris"),
@@ -79,36 +101,35 @@ with airflow.DAG(
     start = empty.EmptyOperator(task_id="start")
     end = empty.EmptyOperator(task_id="end")
 
-    dbt = "{{ var.value.pipx_bin }} run --spec dbt-postgres dbt"
-    # this ensure deps are installed (if instance has been recreated)
-    dbt = f"{dbt} deps && {dbt}"
-
-    dbt_seed = bash.BashOperator(
+    dbt_seed = dbt_operator_factory(
         task_id="dbt_seed",
-        bash_command=f"{dbt} seed",
+        command="seed",
     )
 
     # run what does not depend on geocoding results
-    dbt_run_before_geocoding = bash.BashOperator(
+    dbt_run_before_geocoding = dbt_operator_factory(
         task_id="dbt_run_before_geocoding",
-        bash_command=f"{dbt} run --exclude int_extra__geocoded_results+",
+        command="run",
+        exclude="int_extra__geocoded_results+",
     )
 
-    python_geocode = python.PythonOperator(
+    python_geocode = python.ExternalPythonOperator(
         task_id="python_geocode",
+        python=str(PYTHON_BIN_PATH),
         python_callable=_geocode,
         pool="base_adresse_nationale_api",
     )
 
     # run remaining models
-    dbt_run_after_geocoding = bash.BashOperator(
+    dbt_run_after_geocoding = dbt_operator_factory(
         task_id="dbt_run_after_geocoding",
-        bash_command=f"{dbt} run --select int_extra__geocoded_results+",
+        command="run",
+        select="int_extra__geocoded_results+",
     )
 
-    dbt_test = bash.BashOperator(
+    dbt_test = dbt_operator_factory(
         task_id="dbt_test",
-        bash_command=f"{dbt} test",
+        command="test",
     )
 
     (

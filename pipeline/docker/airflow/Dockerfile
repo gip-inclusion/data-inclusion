@@ -15,4 +15,24 @@ RUN apt-get update \
 USER airflow
 
 COPY requirements requirements
-RUN pip install --no-cache-dir -r requirements/requirements.txt
+
+# disable `--user` flag for the next commands
+# cf https://airflow.apache.org/docs/docker-stack/build.html#important-notes-for-the-base-images
+ENV PIP_USER false
+
+# create a isolated virtualenvs for python task execution
+RUN python -m venv venvs/python/venv
+RUN venvs/python/venv/bin/python -m pip install --no-cache-dir -U pip setuptools wheel
+RUN venvs/python/venv/bin/python -m pip install --no-cache-dir -r requirements/tasks/python/requirements.txt
+
+RUN python -m venv venvs/dbt/venv
+RUN venvs/dbt/venv/bin/python -m pip install --no-cache-dir -U pip setuptools wheel
+RUN venvs/dbt/venv/bin/python -m pip install --no-cache-dir -r requirements/tasks/dbt/requirements.txt
+
+# install dbt packages (not python packages)
+RUN venvs/dbt/venv/bin/dbt deps
+
+ENV PIP_USER true
+
+# make the data_inclusion package available in editable mode
+ENV PYTHONPATH "${PYTHONPATH}:/opt/airflow/data-inclusion/src"

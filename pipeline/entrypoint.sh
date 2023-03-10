@@ -31,7 +31,20 @@ export AIRFLOW__CORE__LOAD_DEFAULT_CONNECTIONS=False
 export AIRFLOW__CORE__LOAD_EXAMPLES=False
 export AIRFLOW__DATABASE__SQL_ALCHEMY_CONN="${DATABASE_URL}"
 
-pip install .
+# Create additional virtualenvs for isolated task executions
+VIRTUAL_ENV=venvs/python/venv
+python -m "${VIRTUAL_ENV}"
+"${VIRTUAL_ENV}/bin/python" -m pip install -U pip setuptools wheel
+"${VIRTUAL_ENV}/bin/python" -m pip install -r requirements/tasks/python/requirements.txt
+"${VIRTUAL_ENV}/bin/python" -m pip install .
+
+VIRTUAL_ENV=venvs/dbt/venv
+python -m "${VIRTUAL_ENV}"
+"${VIRTUAL_ENV}/bin/python" -m pip install -U pip setuptools wheel
+"${VIRTUAL_ENV}/bin/python" -m pip install -r requirements/tasks/dbt/requirements.txt
+
+# Install dbt packages (not python packages)
+"${VIRTUAL_ENV}/bin/dbt" deps
 
 airflow db upgrade
 airflow users create \
