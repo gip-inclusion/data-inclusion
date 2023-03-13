@@ -24,7 +24,6 @@ unique_id_res AS (
 select_duplicates AS (
     SELECT
         *,
-        '1'::BOOLEAN                                                                                                                                                     AS "duplicate",
         COUNT(id_res) OVER(PARTITION BY group_key) AS "count_duplicates"
 
     FROM unique_id_res
