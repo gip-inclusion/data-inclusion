@@ -8,8 +8,10 @@ from pydantic import BaseModel, EmailStr, constr
 from data_inclusion.schema.models import (
     Frais,
     LabelNational,
+    ModeAccueil,
     Profil,
     Thematique,
+    TypeCOG,
     Typologie,
     TypologieService,
 )
@@ -148,12 +150,40 @@ class Service(BaseModel):
     source: str
     nom: str
     presentation_resume: Optional[constr(max_length=280)]
+    presentation_detail: Optional[str]
     types: Optional[list[TypologieService]]
     thematiques: Optional[list[Thematique]]
     prise_rdv: Optional[str]
     frais: Optional[list[Frais]]
     frais_autres: Optional[str]
     profils: Optional[list[Profil]]
+    pre_requis: Optional[str]
+    cumulable: Optional[bool]
+    justificatifs: Optional[str]
+    formulaire_en_ligne: Optional[str]
+    commune: Optional[str]
+    code_postal: Optional[constr(min_length=5, max_length=5, regex=r"^\d{5}$")]
+    code_insee: Optional[constr(min_length=5, max_length=5)]
+    adresse: Optional[str]
+    complement_adresse: Optional[str]
+    longitude: Optional[float]
+    latitude: Optional[float]
+    recurrence: Optional[str]
+    date_creation: Optional[date]
+    date_suspension: Optional[date]
+    lien_source: Optional[str]
+    telephone: Optional[str]
+    courriel: Optional[EmailStr]
+    contact_public: Optional[bool]
+    date_maj: Optional[date | datetime]
+    modes_accueil: Optional[list[ModeAccueil]]
+    zone_diffusion_type: Optional[TypeCOG]
+    zone_diffusion_code: Optional[
+        constr(regex=r"^\w{5}$")  # code commune
+        | constr(regex=r"^\w{2,3}$")  # code departement
+        | constr(regex=r"^\d{2}$")  # code region
+    ]
+    zone_diffusion_nom: Optional[str]
 
     class Config:
         orm_mode = True

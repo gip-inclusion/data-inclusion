@@ -85,7 +85,7 @@ with airflow.DAG(
 
     dbt_seed = bash.BashOperator(
         task_id="dbt_seed",
-        bash_command=f"{dbt} seed",
+        bash_command=f"{dbt} seed --full-refresh",
     )
 
     # run what does not depend on geocoding results
