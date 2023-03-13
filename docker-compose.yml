@@ -1,101 +1,140 @@
 version: "3.9"
 
+x-airflow-common:
+  &airflow-common
+  build:
+    context: pipeline
+    dockerfile: docker/airflow/Dockerfile
+
+  environment:
+    &airflow-common-environment
+    AIRFLOW__CORE__DEFAULT_TIMEZONE: Europe/Paris
+    AIRFLOW__CORE__EXECUTOR: LocalExecutor
+    # AIRFLOW__CORE__FERNET_KEY:
+    AIRFLOW__CORE__LOAD_EXAMPLES: 'false'
+    AIRFLOW__CORE__LOAD_DEFAULT_CONNECTIONS: 'false'
+    AIRFLOW__DATABASE__SQL_ALCHEMY_CONN: postgresql://airflow:airflow@airflow-db:5432/airflow
+    AIRFLOW__SCHEDULER__MIN_FILE_PROCESS_INTERVAL: 60
+    AIRFLOW__WEBSERVER__WORKERS: 1
+
+    # Connections
+    AIRFLOW_CONN_S3: aws://@/data-inclusion-lake?endpoint_url=http://minio:9000&aws_access_key_id=minioadmin&aws_secret_access_key=minioadmin
+    AIRFLOW_CONN_S3_SOURCES: ${AIRFLOW_CONN_S3_SOURCES}
+    AIRFLOW_CONN_PG: postgresql://data-inclusion:data-inclusion@target-db:5432/data-inclusion
+
+    # Variables
+    AIRFLOW_VAR_DBT_PROJECT_DIR: /opt/airflow/dbt
+    AIRFLOW_VAR_BAN_API_URL: ${BAN_API_URL}
+    AIRFLOW_VAR_CD35_FILE_URL: ${CD35_FILE_URL}
+    AIRFLOW_VAR_CD72_FILE_URL: ${CD72_FILE_URL}
+    AIRFLOW_VAR_DATAGOUV_API_KEY: ${DATAGOUV_API_KEY}
+    AIRFLOW_VAR_DATAGOUV_API_URL: ${DATAGOUV_API_URL}
+    AIRFLOW_VAR_DATAGOUV_DI_DATASET_ID: ${DATAGOUV_DI_DATASET_ID}
+    AIRFLOW_VAR_DATAGOUV_DI_RESOURCE_IDS: ${DATAGOUV_DI_RESOURCE_IDS}
+    AIRFLOW_VAR_DORA_API_URL: ${DORA_API_URL}
+    AIRFLOW_VAR_EMPLOIS_API_TOKEN: ${EMPLOIS_API_TOKEN}
+    AIRFLOW_VAR_EMPLOIS_API_URL: ${EMPLOIS_API_URL}
+    AIRFLOW_VAR_ETAB_PUB_FILE_URL: ${ETAB_PUB_FILE_URL}
+    AIRFLOW_VAR_FINESS_FILE_URL: ${FINESS_FILE_URL}
+    AIRFLOW_VAR_INSEE_FIRSTNAME_FILE_URL: ${INSEE_FIRSTNAME_FILE_URL}
+    AIRFLOW_VAR_INSEE_COG_DATASET_URL: ${INSEE_COG_DATASET_URL}
+    AIRFLOW_VAR_MEDIATION_NUMERIQUE_CONSEILLER_NUMERIQUE_DATASET_URL: ${MEDIATION_NUMERIQUE_CONSEILLER_NUMERIQUE_DATASET_URL}
+    AIRFLOW_VAR_MEDIATION_NUMERIQUE_HINAURA_DATASET_URL: ${MEDIATION_NUMERIQUE_HINAURA_DATASET_URL}
+    AIRFLOW_VAR_MEDIATION_NUMERIQUE_CD49_DATASET_URL: ${MEDIATION_NUMERIQUE_CD49_DATASET_URL}
+    AIRFLOW_VAR_MEDIATION_NUMERIQUE_ASSEMBLEURS_DATASET_URL: ${MEDIATION_NUMERIQUE_ASSEMBLEURS_DATASET_URL}
+    AIRFLOW_VAR_MEDIATION_NUMERIQUE_FRANCILIN_DATASET_URL: ${MEDIATION_NUMERIQUE_FRANCILIN_DATASET_URL}
+    AIRFLOW_VAR_MEDIATION_NUMERIQUE_FRANCE_TIERS_LIEUX_DATASET_URL: ${MEDIATION_NUMERIQUE_FRANCE_TIERS_LIEUX_DATASET_URL}
+    AIRFLOW_VAR_MEDIATION_NUMERIQUE_ANGERS_DATASET_URL: ${MEDIATION_NUMERIQUE_ANGERS_DATASET_URL}
+    AIRFLOW_VAR_MEDIATION_NUMERIQUE_FRANCE_SERVICES_DATASET_URL: ${MEDIATION_NUMERIQUE_FRANCE_SERVICES_DATASET_URL}
+    AIRFLOW_VAR_MES_AIDES_AIDES_URL: ${MES_AIDES_AIDES_URL}
+    AIRFLOW_VAR_MES_AIDES_AIRTABLE_KEY: ${MES_AIDES_AIRTABLE_KEY}
+    AIRFLOW_VAR_MES_AIDES_GARAGES_URL: ${MES_AIDES_GARAGES_URL}
+    AIRFLOW_VAR_ODSPEP_S3_KEY_PREFIX: ${ODSPEP_S3_KEY_PREFIX}
+    AIRFLOW_VAR_SIAO_FILE_URL: ${SIAO_FILE_URL}
+    AIRFLOW_VAR_SIRENE_STOCK_ETAB_GEOCODE_FILE_URL: ${SIRENE_STOCK_ETAB_GEOCODE_FILE_URL}
+    AIRFLOW_VAR_SIRENE_STOCK_ETAB_HIST_FILE_URL: ${SIRENE_STOCK_ETAB_HIST_FILE_URL}
+    AIRFLOW_VAR_SIRENE_STOCK_ETAB_LIENS_SUCCESSION_URL: ${SIRENE_STOCK_ETAB_LIENS_SUCCESSION_URL}
+    AIRFLOW_VAR_SIRENE_STOCK_UNITE_LEGALE_FILE_URL: ${SIRENE_STOCK_UNITE_LEGALE_FILE_URL}
+    AIRFLOW_VAR_SOLIGUIDE_API_TOKEN: ${SOLIGUIDE_API_TOKEN}
+    AIRFLOW_VAR_SOLIGUIDE_API_URL: ${SOLIGUIDE_API_URL}
+    AIRFLOW_VAR_SOLIGUIDE_API_USER_AGENT: ${SOLIGUIDE_API_USER_AGENT}
+    AIRFLOW_VAR_SOLIGUIDE_S3_KEY_PREFIX: ${SOLIGUIDE_S3_KEY_PREFIX}
+    AIRFLOW_VAR_UN_JEUNE_UNE_SOLUTION_API_URL: ${UN_JEUNE_UNE_SOLUTION_API_URL}
+
+  volumes:
+    - ./pipeline/dbt:/opt/airflow/dbt
+    - ./pipeline/dags:/opt/airflow/dags
+    - ./pipeline/logs:/opt/airflow/logs
+    - ./pipeline/src:/opt/airflow/data-inclusion/src
+
+  user: ${AIRFLOW_UID:-50000}:0
+
+  depends_on:
+    &airflow-common-depends-on
+    airflow-db:
+      condition: service_healthy
+
+  profiles:
+    - airflow
+
 services:
-  airflow:
-    build:
-      context: pipeline
-      dockerfile: docker/airflow/Dockerfile
-    command: standalone
-    restart: on-failure
-    ports:
-      - ${AIRFLOW_UI_PORT:-8080}:8080
-    depends_on:
-      - airflow-db
-      - target-db
-      - minio
-    user: ${AIRFLOW_UID:-50000}:0
-    environment:
-      - AIRFLOW__CORE__DEFAULT_TIMEZONE=Europe/Paris
-      - AIRFLOW__CORE__EXECUTOR=LocalExecutor
-      # - AIRFLOW__CORE__FERNET_KEY=
-      - AIRFLOW__CORE__LOAD_DEFAULT_CONNECTIONS=False
-      - AIRFLOW__CORE__LOAD_EXAMPLES=False
-      - AIRFLOW__DATABASE__LOAD_DEFAULT_CONNECTIONS=False
-      - AIRFLOW__DATABASE__SQL_ALCHEMY_CONN=postgresql://airflow:airflow@airflow-db:5432/airflow
-      - AIRFLOW__SCHEDULER__MIN_FILE_PROCESS_INTERVAL=60
-      - AIRFLOW__WEBSERVER__WORKERS=1
-      # Additional variables for development only
-      - _AIRFLOW_DB_UPGRADE=True
-      - _AIRFLOW_WWW_USER_CREATE=True
-      - _AIRFLOW_WWW_USER_USERNAME=airflow
-      - _AIRFLOW_WWW_USER_PASSWORD=airflow
-      # Connections
-      - AIRFLOW_CONN_S3=aws://@/data-inclusion-lake?endpoint_url=http://minio:9000&aws_access_key_id=minioadmin&aws_secret_access_key=minioadmin
-      - AIRFLOW_CONN_S3_SOURCES=${AIRFLOW_CONN_S3_SOURCES}
-      - AIRFLOW_CONN_PG=postgresql://data-inclusion:data-inclusion@target-db:5432/data-inclusion
-      # Variables
-      - AIRFLOW_VAR_DBT_PROJECT_DIR=/opt/airflow/dbt
-      - AIRFLOW_VAR_BAN_API_URL=${BAN_API_URL}
-      - AIRFLOW_VAR_CD35_FILE_URL=${CD35_FILE_URL}
-      - AIRFLOW_VAR_CD72_FILE_URL=${CD72_FILE_URL}
-      - AIRFLOW_VAR_DATAGOUV_API_KEY=${DATAGOUV_API_KEY}
-      - AIRFLOW_VAR_DATAGOUV_API_URL=${DATAGOUV_API_URL}
-      - AIRFLOW_VAR_DATAGOUV_DI_DATASET_ID=${DATAGOUV_DI_DATASET_ID}
-      - |
-        AIRFLOW_VAR_DATAGOUV_DI_RESOURCE_IDS=${DATAGOUV_DI_RESOURCE_IDS}
-      - AIRFLOW_VAR_DORA_API_URL=${DORA_API_URL}
-      - AIRFLOW_VAR_EMPLOIS_API_TOKEN=${EMPLOIS_API_TOKEN}
-      - AIRFLOW_VAR_EMPLOIS_API_URL=${EMPLOIS_API_URL}
-      - AIRFLOW_VAR_ETAB_PUB_FILE_URL=${ETAB_PUB_FILE_URL}
-      - AIRFLOW_VAR_FINESS_FILE_URL=${FINESS_FILE_URL}
-      - AIRFLOW_VAR_INSEE_FIRSTNAME_FILE_URL=${INSEE_FIRSTNAME_FILE_URL}
-      - AIRFLOW_VAR_INSEE_COG_DATASET_URL=${INSEE_COG_DATASET_URL}
-      - AIRFLOW_VAR_MEDIATION_NUMERIQUE_CONSEILLER_NUMERIQUE_DATASET_URL=${MEDIATION_NUMERIQUE_CONSEILLER_NUMERIQUE_DATASET_URL}
-      - AIRFLOW_VAR_MEDIATION_NUMERIQUE_HINAURA_DATASET_URL=${MEDIATION_NUMERIQUE_HINAURA_DATASET_URL}
-      - AIRFLOW_VAR_MEDIATION_NUMERIQUE_CD49_DATASET_URL=${MEDIATION_NUMERIQUE_CD49_DATASET_URL}
-      - AIRFLOW_VAR_MEDIATION_NUMERIQUE_ASSEMBLEURS_DATASET_URL=${MEDIATION_NUMERIQUE_ASSEMBLEURS_DATASET_URL}
-      - AIRFLOW_VAR_MEDIATION_NUMERIQUE_FRANCILIN_DATASET_URL=${MEDIATION_NUMERIQUE_FRANCILIN_DATASET_URL}
-      - AIRFLOW_VAR_MEDIATION_NUMERIQUE_FRANCE_TIERS_LIEUX_DATASET_URL=${MEDIATION_NUMERIQUE_FRANCE_TIERS_LIEUX_DATASET_URL}
-      - AIRFLOW_VAR_MEDIATION_NUMERIQUE_ANGERS_DATASET_URL=${MEDIATION_NUMERIQUE_ANGERS_DATASET_URL}
-      - AIRFLOW_VAR_MEDIATION_NUMERIQUE_FRANCE_SERVICES_DATASET_URL=${MEDIATION_NUMERIQUE_FRANCE_SERVICES_DATASET_URL}
-      - AIRFLOW_VAR_MES_AIDES_AIDES_URL=${MES_AIDES_AIDES_URL}
-      - AIRFLOW_VAR_MES_AIDES_AIRTABLE_KEY=${MES_AIDES_AIRTABLE_KEY}
-      - AIRFLOW_VAR_MES_AIDES_GARAGES_URL=${MES_AIDES_GARAGES_URL}
-      - AIRFLOW_VAR_ODSPEP_S3_KEY_PREFIX=${ODSPEP_S3_KEY_PREFIX}
-      - AIRFLOW_VAR_SIAO_FILE_URL=${SIAO_FILE_URL}
-      - AIRFLOW_VAR_SIRENE_STOCK_ETAB_GEOCODE_FILE_URL=${SIRENE_STOCK_ETAB_GEOCODE_FILE_URL}
-      - AIRFLOW_VAR_SIRENE_STOCK_ETAB_HIST_FILE_URL=${SIRENE_STOCK_ETAB_HIST_FILE_URL}
-      - AIRFLOW_VAR_SIRENE_STOCK_ETAB_LIENS_SUCCESSION_URL=${SIRENE_STOCK_ETAB_LIENS_SUCCESSION_URL}
-      - AIRFLOW_VAR_SIRENE_STOCK_UNITE_LEGALE_FILE_URL=${SIRENE_STOCK_UNITE_LEGALE_FILE_URL}
-      - AIRFLOW_VAR_SOLIGUIDE_API_TOKEN=${SOLIGUIDE_API_TOKEN}
-      - AIRFLOW_VAR_SOLIGUIDE_API_URL=${SOLIGUIDE_API_URL}
-      - AIRFLOW_VAR_SOLIGUIDE_API_USER_AGENT=${SOLIGUIDE_API_USER_AGENT}
-      - AIRFLOW_VAR_SOLIGUIDE_S3_KEY_PREFIX=${SOLIGUIDE_S3_KEY_PREFIX}
-      - AIRFLOW_VAR_UN_JEUNE_UNE_SOLUTION_API_URL=${UN_JEUNE_UNE_SOLUTION_API_URL}
-    volumes:
-      - ./pipeline/dbt:/opt/airflow/dbt
-      - ./pipeline/dags:/opt/airflow/dags
-      - ./pipeline/src:/opt/airflow/data-inclusion/src
-      - ./pipeline/setup.py:/opt/airflow/data-inclusion/setup.py
-
-  airflow-extra:
-    build:
-      context: pipeline
-      dockerfile: docker/airflow/Dockerfile
-    command: pools set base_adresse_nationale_api 1 "Limit access to the ban api"
-    depends_on:
-      - airflow
-    user: ${AIRFLOW_UID:-50000}:0
-    environment:
-      - AIRFLOW__DATABASE__SQL_ALCHEMY_CONN=postgresql://airflow:airflow@airflow-db:5432/airflow
-
   airflow-db:
     image: postgres:14
     restart: on-failure
+    healthcheck:
+      test: [ "CMD", "pg_isready", "-U", "airflow" ]
+      interval: 5s
+      retries: 5
     environment:
       - POSTGRES_DB=airflow
       - POSTGRES_USER=airflow
       - POSTGRES_PASSWORD=airflow
+
+  airflow-webserver:
+    <<: *airflow-common
+    command: webserver
+    restart: on-failure
+    ports:
+      - ${AIRFLOW_UI_PORT:-8080}:8080
+    depends_on:
+      <<: *airflow-common-depends-on
+      airflow-init:
+        condition: service_completed_successfully
+
+  airflow-scheduler:
+    <<: *airflow-common
+    command: scheduler
+    restart: on-failure
+    healthcheck:
+      test:
+        [
+          "CMD-SHELL",
+          'airflow jobs check --job-type SchedulerJob --hostname "$${HOSTNAME}"'
+        ]
+      interval: 10s
+      timeout: 10s
+      retries: 5
+    depends_on:
+      <<: *airflow-common-depends-on
+      airflow-init:
+        condition: service_completed_successfully
+
+  airflow-init:
+    <<: *airflow-common
+    entrypoint: /bin/bash -c
+    user: 0:0
+    command:
+      - |
+        mkdir -p /opt/airflow/logs
+        chown -R "${AIRFLOW_UID}:0" /opt/airflow/logs
+        exec /entrypoint airflow version
+    environment:
+      <<: *airflow-common-environment
+      # Additional variables for development only
+      _AIRFLOW_DB_UPGRADE: 'true'
+      _AIRFLOW_WWW_USER_CREATE: 'true'
+      _AIRFLOW_WWW_USER_USERNAME: airflow
+      _AIRFLOW_WWW_USER_PASSWORD: airflow
 
   dbt-init:
     image: ghcr.io/dbt-labs/dbt-postgres:1.4.1
@@ -117,7 +156,7 @@ services:
     volumes:
       - minio-data:/data
 
-  minio-extra:
+  minio-init:
     image: minio/mc:RELEASE.2022-12-24T15-21-38Z
     entrypoint: /bin/bash -c
     command:
@@ -130,6 +169,10 @@ services:
   target-db:
     image: postgis/postgis:14-3.3
     restart: on-failure
+    healthcheck:
+      test: [ "CMD", "pg_isready", "-U", "data-inclusion" ]
+      interval: 5s
+      retries: 5
     ports:
       - ${TARGET_POSTGRES_PORT:-5433}:5432
     environment:
@@ -143,7 +186,8 @@ services:
     image: data-inclusion/api
     build: api
     depends_on:
-      - target-db
+      target-db:
+        condition: service_healthy
     restart: on-failure
     ports:
       - ${API_PORT:-8000}:8000
@@ -157,7 +201,8 @@ services:
     image: data-inclusion/siretisation-ui
     build: siretisation
     depends_on:
-      - target-db
+      target-db:
+        condition: service_healthy
     restart: on-failure
     ports:
       - ${SIRETISATION_UI_PORT:-8005}:8000
