@@ -1,0 +1,35 @@
+# sources
+
+{% for source in sources %}
+
+## {{ source.nom }}
+
+Identifiant de la source dans les données (colonne `source`) : `{{ source.id }}`
+
+### description
+
+{{ source.description|default('', true) }}
+
+### qualité
+
+| Fréquence de récupération | Date dernière récupération | Thématiques principales |
+| -------- | -------- | -------- |
+| {{ source.frequence_recuperation }} | {{ source.date_derniere_recuperation|default('', true) }} | {{ source.thematiques|default('', true) }} |
+
+### ressources
+
+{% for ressource in source.ressources %}
+
+#### {{ ressource.nom }}
+
+{{ ressource.description }}
+
+| Lien données producteur | Schéma | Dans l'API | En Open Data |
+|--------|--------|---|---|
+| Text     | services, structures, schéma producteur     | ✅🚫     | ✅🚫 | 
+| **Nombre de lignes** | **Compatible outil siretisation** | **Historisation** | **Correspondances** |
+| | ✅🚫     | ✅🚫 | ✅🚫  |
+
+{% endfor %}
+
+{% endfor %}

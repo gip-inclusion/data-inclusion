@@ -1,4 +1,5 @@
 black[jupyter]
+jinja2
 matplotlib
 notebook
 openpyxl
