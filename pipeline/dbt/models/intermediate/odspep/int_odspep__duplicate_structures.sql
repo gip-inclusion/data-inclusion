@@ -12,15 +12,21 @@ unique_id_res AS (
         l1_identification_dest_adr,
         l3_complement_adr,
         l4_numero_lib_voie_adr,
-        code_commune_adr
+        code_commune_adr,
+        UNACCENT(LOWER(CONCAT(nom_structure,
+            l1_identification_dest_adr,
+            l3_complement_adr,
+            l4_numero_lib_voie_adr,
+            code_commune_adr))) AS "group_key"
     FROM ressources_partenariales
 ),
 
 select_duplicates AS (
-    SELECT *,
+    SELECT
+        *,
         '1'::BOOLEAN                                                                                                                                                     AS "duplicate",
-        COUNT(id_res) OVER(PARTITION BY UNACCENT(LOWER(CONCAT(nom_structure, l1_identification_dest_adr, l3_complement_adr, l4_numero_lib_voie_adr, code_commune_adr)))) AS "count_duplicates"
- 
+        COUNT(id_res) OVER(PARTITION BY group_key) AS "count_duplicates"
+
     FROM unique_id_res
 ),
 
@@ -30,4 +36,5 @@ final AS (
     ORDER BY UNACCENT(LOWER(CONCAT(count_duplicates, nom_structure, l1_identification_dest_adr, l3_complement_adr, l4_numero_lib_voie_adr, code_commune_adr))) DESC
 
 )
+
 SELECT * FROM final
