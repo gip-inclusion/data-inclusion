@@ -29,9 +29,6 @@ RUN python -m venv venvs/dbt/venv
 RUN venvs/dbt/venv/bin/python -m pip install --no-cache-dir -U pip setuptools wheel
 RUN venvs/dbt/venv/bin/python -m pip install --no-cache-dir -r requirements/tasks/dbt/requirements.txt
 
-# install dbt packages (not python packages)
-RUN venvs/dbt/venv/bin/dbt deps
-
 ENV PIP_USER true
 
 # make the data_inclusion package available in editable mode

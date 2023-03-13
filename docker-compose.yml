@@ -97,6 +97,14 @@ services:
       - POSTGRES_USER=airflow
       - POSTGRES_PASSWORD=airflow
 
+  dbt-init:
+    image: ghcr.io/dbt-labs/dbt-postgres:1.4.1
+    command: deps
+    environment:
+      DBT_PROFILES_DIR: /usr/app
+    volumes:
+      - ./pipeline/dbt:/usr/app
+
   minio:
     image: minio/minio:RELEASE.2022-10-08T20-11-00Z
     command: server /data
