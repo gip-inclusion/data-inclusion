@@ -123,8 +123,8 @@ class ServiceFactory(factory.Factory):
     longitude = factory.Faker("longitude")
     latitude = factory.Faker("latitude")
     recurrence = None
-    date_creation = factory.Faker("past_date")
-    date_suspension = factory.Faker("future_date")
+    date_creation = factory.LazyFunction(lambda: date(2022, 1, 1))
+    date_suspension = factory.LazyFunction(lambda: date(2054, 1, 1))
     lien_source = factory.LazyAttribute(lambda o: f"https://{o.source}.fr/{o.id}")
     telephone = "0102030405"
     courriel = factory.Faker("email", locale="fr_FR")
