@@ -32,7 +32,7 @@ select_duplicates AS (
 final AS (
     SELECT * FROM select_duplicates
     WHERE "count_duplicates" > 1
-    ORDER BY UNACCENT(LOWER(CONCAT(count_duplicates, nom_structure, l1_identification_dest_adr, l3_complement_adr, l4_numero_lib_voie_adr, code_commune_adr))) DESC
+    ORDER BY UNACCENT(LOWER(CONCAT(count_duplicates, group_key))) DESC
 
 )
 
