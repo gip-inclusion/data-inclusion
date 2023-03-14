@@ -44,6 +44,7 @@ inserts AS (
     SELECT
         snapshots_with_first_extraction_date.dbt_valid_from   AS "_di_logical_date",
         snapshots_with_first_extraction_date._di_source_id    AS "_di_source_id",
+        snapshots_with_first_extraction_date._di_stream_id    AS "_di_stream_id",
         snapshots_with_first_extraction_date.data             AS "data_next",
         NULL::JSONB                                           AS "data_prev",
         snapshots_with_first_extraction_date._di_surrogate_id AS "_di_surrogate_id",
@@ -61,6 +62,7 @@ updates AS (
     SELECT
         snapshots_with_first_extraction_date.dbt_valid_to     AS "_di_logical_date",
         snapshots_with_first_extraction_date._di_source_id    AS "_di_source_id",
+        snapshots_with_first_extraction_date._di_stream_id    AS "_di_stream_id",
         next_.data                                            AS "data_next",
         snapshots_with_first_extraction_date.data             AS "data_prev",
         snapshots_with_first_extraction_date._di_surrogate_id AS "_di_surrogate_id",
@@ -75,6 +77,7 @@ deletes AS (
     SELECT
         snapshots_with_first_extraction_date.dbt_valid_to     AS "_di_logical_date",
         snapshots_with_first_extraction_date._di_source_id    AS "_di_source_id",
+        snapshots_with_first_extraction_date._di_stream_id    AS "_di_stream_id",
         NULL::JSONB                                           AS "data_next",
         snapshots_with_first_extraction_date.data             AS "data_prev",
         snapshots_with_first_extraction_date._di_surrogate_id AS "_di_surrogate_id",
