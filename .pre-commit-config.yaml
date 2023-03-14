@@ -74,7 +74,6 @@ repos:
           - --config=./pipeline/pyproject.toml
       - id: sqlfluff-fix
         name: pipeline|sqlfluff-fix
-        entry: sqlfluff fix pipeline
         files: ^(pipeline/(dags|dbt)/)
         additional_dependencies:
           - sqlfluff-templater-dbt==1.4.5
