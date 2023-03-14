@@ -31,32 +31,68 @@ init_date_by_source_id AS (
     GROUP BY 1
 ),
 
-snapshots_with_init_date AS (
+snapshots_with_first_extraction_date AS (
     SELECT
         snapshots.*,
-        init_date_by_source_id.init_date
+        init_date_by_source_id.first_extraction_date
     FROM snapshots
     INNER JOIN init_date_by_source_id
         ON snapshots._di_source_id = init_date_by_source_id._di_source_id
 ),
 
-final AS (
+inserts AS (
     SELECT
-        snapshots._di_logical_date                                                      AS "_di_logical_date",
-        snapshots._di_source_id                                                         AS "_di_source_id",
-        snapshots.data                                                                  AS "data_next",
-        snapshots_with_init_date.data                                                   AS "data_prev",
-        COALESCE(snapshots._di_surrogate_id, snapshots_with_init_date._di_surrogate_id) AS "_di_surrogate_id",
-        CASE
-            WHEN snapshots_with_init_date.data IS NULL THEN 'AJOUT'
-            WHEN snapshots.data IS NULL THEN 'SUPPRESSION'
-            ELSE 'MODIFICATION'
-        END                                                                             AS "type"
-    FROM snapshots
-    FULL JOIN snapshots_with_init_date
-        ON snapshots_with_init_date._di_surrogate_id = snapshots_with_init_date._di_surrogate_id
-            AND snapshots_with_init_date.dbt_valid_from = snapshots_with_init_date.dbt_valid_to
-    WHERE snapshots_with_init_date.dbt_valid_from != snapshots_with_init_date.init_date
+        snapshots_with_first_extraction_date.dbt_valid_from   AS "_di_logical_date",
+        snapshots_with_first_extraction_date._di_source_id    AS "_di_source_id",
+        snapshots_with_first_extraction_date.data             AS "data_next",
+        NULL::JSONB                                           AS "data_prev",
+        snapshots_with_first_extraction_date._di_surrogate_id AS "_di_surrogate_id",
+        'AJOUT'                                               AS "type"
+    FROM snapshots_with_first_extraction_date
+    LEFT JOIN snapshots_with_first_extraction_date AS prev
+        ON snapshots_with_first_extraction_date._di_surrogate_id = prev._di_surrogate_id
+            AND snapshots_with_first_extraction_date.dbt_valid_from = prev.dbt_valid_to
+    WHERE prev.data IS NULL
+        -- ignore additions from the first date of extraction
+        AND snapshots_with_first_extraction_date._di_logical_date > snapshots_with_first_extraction_date.first_extraction_date  -- noqa: L016yy
+),
+
+updates AS (
+    SELECT
+        snapshots_with_first_extraction_date.dbt_valid_to     AS "_di_logical_date",
+        snapshots_with_first_extraction_date._di_source_id    AS "_di_source_id",
+        next_.data                                            AS "data_next",
+        snapshots_with_first_extraction_date.data             AS "data_prev",
+        snapshots_with_first_extraction_date._di_surrogate_id AS "_di_surrogate_id",
+        'MODIFICATION'                                        AS "type"
+    FROM snapshots_with_first_extraction_date
+    INNER JOIN snapshots_with_first_extraction_date AS next_
+        ON snapshots_with_first_extraction_date._di_surrogate_id = next_._di_surrogate_id
+            AND snapshots_with_first_extraction_date.dbt_valid_to = next_.dbt_valid_from
+),
+
+deletes AS (
+    SELECT
+        snapshots_with_first_extraction_date.dbt_valid_to     AS "_di_logical_date",
+        snapshots_with_first_extraction_date._di_source_id    AS "_di_source_id",
+        NULL::JSONB                                           AS "data_next",
+        snapshots_with_first_extraction_date.data             AS "data_prev",
+        snapshots_with_first_extraction_date._di_surrogate_id AS "_di_surrogate_id",
+        'SUPPRESSION'                                         AS "type"
+    FROM snapshots_with_first_extraction_date
+    LEFT JOIN snapshots_with_first_extraction_date AS next_
+        ON snapshots_with_first_extraction_date._di_surrogate_id = next_._di_surrogate_id
+            AND snapshots_with_first_extraction_date.dbt_valid_to = next_.dbt_valid_from
+    WHERE snapshots_with_first_extraction_date.dbt_valid_to IS NOT NULL
+        AND next_.data IS NULL
+),
+
+final AS (
+    SELECT * FROM inserts
+    UNION ALL
+    SELECT * FROM updates
+    UNION ALL
+    SELECT * FROM deletes
 )
 
 SELECT * FROM final
