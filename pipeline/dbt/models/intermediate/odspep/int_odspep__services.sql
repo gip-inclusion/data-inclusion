@@ -19,12 +19,10 @@ final AS (
     SELECT
         service                                         AS "nom",
         'odspep'                                        AS "source",
-        service_description                             AS "presentation_resume",
         NULL                                            AS "types",
         NULL                                            AS "prise_rdv",
         NULL::TEXT[]                                    AS "frais",
         NULL                                            AS "frais_autres",
-        NULL                                            AS "presentation_detail",
         NULL                                            AS "pre_requis",
         NULL                                            AS "cumulable",
         NULL                                            AS "justificatifs",
@@ -55,7 +53,15 @@ final AS (
             SELECT di_thematique_by_odspep_type_res_part.thematique
             FROM di_thematique_by_odspep_type_res_part
             WHERE ressources_partenariales.type_res_part = di_thematique_by_odspep_type_res_part.type_res_part
-        )::TEXT[]                                       AS "thematiques"
+        )::TEXT[]                                       AS "thematiques",
+        CASE LENGTH(service_description) <= 280
+            WHEN TRUE THEN service_description
+            WHEN FALSE THEN LEFT(service_description, 279) || '…'
+        END                                             AS "presentation_resume",
+        CASE LENGTH(service_description) <= 280
+            WHEN TRUE THEN NULL
+            WHEN FALSE THEN service_description
+        END                                             AS "presentation_detail"
     FROM ressources_partenariales
     ORDER BY 1
 
