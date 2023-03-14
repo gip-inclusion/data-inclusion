@@ -61,6 +61,9 @@ x-airflow-common:
     AIRFLOW_VAR_SOLIGUIDE_S3_KEY_PREFIX: ${SOLIGUIDE_S3_KEY_PREFIX}
     AIRFLOW_VAR_UN_JEUNE_UNE_SOLUTION_API_URL: ${UN_JEUNE_UNE_SOLUTION_API_URL}
 
+    # make the data_inclusion package available in editable mode
+    PYTHONPATH: $${PYTHONPATH}:/opt/airflow/data-inclusion/src
+
   volumes:
     - ./pipeline/dbt:/opt/airflow/dbt
     - ./pipeline/dags:/opt/airflow/dags

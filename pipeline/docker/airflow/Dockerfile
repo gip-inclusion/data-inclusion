@@ -34,6 +34,3 @@ RUN venvs/dbt/venv/bin/python -m pip install --no-cache-dir -U pip setuptools wh
 RUN venvs/dbt/venv/bin/python -m pip install --no-cache-dir -r requirements/tasks/dbt/requirements.txt
 
 ENV PIP_USER true
-
-# make the data_inclusion package available in editable mode
-ENV PYTHONPATH "${PYTHONPATH}:/opt/airflow/data-inclusion/src"
