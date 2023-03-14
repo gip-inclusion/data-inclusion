@@ -4,7 +4,6 @@ x-airflow-common:
   &airflow-common
   build:
     context: pipeline
-    dockerfile: docker/airflow/Dockerfile
 
   environment:
     &airflow-common-environment
