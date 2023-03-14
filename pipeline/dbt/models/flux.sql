@@ -23,10 +23,10 @@ WITH snapshots AS (
     }}
 ),
 
-init_date_by_source_id AS (
+first_extraction_date_by_source_id AS (
     SELECT
         _di_source_id,
-        MIN(dbt_valid_from) AS "init_date"
+        MIN(dbt_valid_from) AS "first_extraction_date"
     FROM snapshots
     GROUP BY 1
 ),
@@ -34,10 +34,10 @@ init_date_by_source_id AS (
 snapshots_with_first_extraction_date AS (
     SELECT
         snapshots.*,
-        init_date_by_source_id.first_extraction_date
+        first_extraction_date_by_source_id.first_extraction_date
     FROM snapshots
-    INNER JOIN init_date_by_source_id
-        ON snapshots._di_source_id = init_date_by_source_id._di_source_id
+    INNER JOIN first_extraction_date_by_source_id
+        ON snapshots._di_source_id = first_extraction_date_by_source_id._di_source_id
 ),
 
 inserts AS (
