@@ -20,6 +20,10 @@ final AS (
         service                                         AS "nom",
         'odspep'                                        AS "source",
         service_description                             AS "presentation_resume",
+        NULL                                            AS "types",
+        NULL                                            AS "prise_rdv",
+        NULL::TEXT[]                                    AS "frais",
+        NULL                                            AS "frais_autres",
         NULL                                            AS "presentation_detail",
         NULL                                            AS "pre_requis",
         NULL                                            AS "cumulable",
@@ -44,10 +48,9 @@ final AS (
         zone_diffusion_code                             AS "zone_diffusion_code",
         zone_diffusion_type                             AS "zone_diffusion_type",
         zone_diffusion_libelle                          AS "zone_diffusion_nom",
+        id_res                                          AS "structure_id",
+        NULL::TEXT[]                                    AS "profils",
         CONCAT(id_res, '_', zone_diffusion_unique_code) AS "id",
-        CASE WHEN prescriptible
-            THEN ARRAY['demandeur-demploi']::TEXT[]
-        END                                             AS "profils",
         ARRAY(
             SELECT di_thematique_by_odspep_type_res_part.thematique
             FROM di_thematique_by_odspep_type_res_part
