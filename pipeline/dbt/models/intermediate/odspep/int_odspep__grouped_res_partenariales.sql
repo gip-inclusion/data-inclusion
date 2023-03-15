@@ -29,4 +29,4 @@ final AS (
     FROM ressources_partenariales_with_group_key
 )
 
-SELECT * FROM final;
+SELECT * FROM final
