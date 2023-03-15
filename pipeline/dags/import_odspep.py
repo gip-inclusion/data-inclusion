@@ -9,9 +9,6 @@ from airflow.providers.amazon.aws.hooks import s3
 from airflow.providers.postgres.hooks import postgres
 from airflow.models import Variable
 
-
-from mattermost import mm_failed_task
-
 logger = logging.getLogger(__name__)
 
 default_args = {}

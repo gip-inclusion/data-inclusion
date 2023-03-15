@@ -4,16 +4,22 @@ import urllib
 
 from airflow.models import Variable
 
-# adapted from https://github.com/MTES-MCT/trackdechets-airflow-workspace/blob/main/dags/mattermost.py 
+
+# adapted from https://github.com/MTES-MCT/trackdechets-airflow-workspace/blob/main/dags/mattermost.py
 def mm_failed_task(context):
     """
     Function to be used as a callable for on_failure_callback.
     Send a Mattermost alert.
     """
 
-    mm_webhook_url = Variable.get("MATTERMOST_WEBHOOK")
-    base_url = Variable.get("AIRFLOW_BASE_URL")
+    print("Mattermost callback triggered.")
+
+    mm_webhook_url = Variable.get("MATTERMOST_WEBHOOK_URL")
+    public_url = Variable.get("AIRFLOW_PUBLIC_URL")
     if mm_webhook_url is None:
+        return
+    if 'localhost' in public_url:
+        print("No Mattermost alert if Airflow is running locally.")
         return
 
     # Set all of the contextual vars
@@ -31,8 +37,8 @@ def mm_failed_task(context):
     log_params = urllib.parse.urlencode(
         {"dag_id": dag_id, "task_id": task_id, "execution_date": execution_date}
     )
-    log_link = f"{base_url}/log?{log_params}"
-    log_link_markdown = f"[View Logs]({log_link})"
+    log_link = f"{public_url}/log?{log_params}"
+    log_link_markdown = f"[View logs]({log_link})"
 
     body = f"""**Error during DAG run:**\n\n| DAG | Task | Logs | Timestamp |
         |-----|------|------|-----------|
@@ -40,10 +46,6 @@ def mm_failed_task(context):
 
     payload = {"username": "airflow", "text": body}
 
-    os.system(
-        f"""curl -i -X POST {mm_webhook_url} -H 'Content-Type: application/json' \
-        --data-binary @- <<'EOF'
-            {json.dumps(payload)}
-        EOF
-    """
-    )
+    command = f"""curl -i -X POST {mm_webhook_url} -H 'Content-Type: application/json' \
+        --data-binary '{json.dumps(payload)}'"""
+    os.system(command)
