@@ -24,7 +24,7 @@ final AS (
     SELECT
         {{ dbt_utils.star(from=ref('int_odspep__enhanced_res_partenariales')) }},
         group_key                             AS "group_key",
-        RANK() OVER(ORDER BY group_key)       AS "group_number",
+        DENSE_RANK() OVER(ORDER BY group_key) AS "group_number",
         COUNT(*) OVER(PARTITION BY group_key) AS "group_size"
     FROM ressources_partenariales_with_group_key
 )
