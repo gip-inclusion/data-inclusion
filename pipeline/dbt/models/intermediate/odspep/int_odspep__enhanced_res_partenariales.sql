@@ -35,8 +35,8 @@ final AS (
         {{ dbt_utils.star(
                 relation_alias='zones_diffusion',
                 from=ref('int_odspep__zones_diffusion'),
-                except=['id_res'],
-                )
+                except=['id', 'id_res'],
+                prefix='zone_diffusion_')
         }}
     FROM ressources_partenariales
     LEFT JOIN adresses ON ressources_partenariales.id_adr = adresses.id

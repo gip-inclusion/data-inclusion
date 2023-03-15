@@ -1,16 +1,10 @@
-import io
-import json
 import logging
 import time
 from copy import deepcopy
-from pathlib import Path
 from typing import Optional
 
-import pandas as pd
 import requests
 from tqdm import tqdm
-
-from data_inclusion.scripts.tasks import utils
 
 logger = logging.getLogger(__name__)
 
@@ -81,24 +75,3 @@ class APIClient:
             pbar.close()
 
         return places_data
-
-
-def extract_data(
-    src: str, token: str, user_agent: str, **kwargs
-) -> dict[str, io.BytesIO]:
-    client = APIClient(base_url=src, token=token, user_agent=user_agent)
-
-    # raw places
-    data = client.search(
-        location_geo_type="pays",
-        location_geo_value="france",
-    )
-
-    with io.StringIO() as buf:
-        json.dump(data, buf)
-        return {"data.json": io.BytesIO(buf.getvalue().encode())}
-
-
-def read_data(path: Path) -> tuple[pd.DataFrame, Optional[pd.Series]]:
-    df = utils.read_json(path)
-    return df, df.lieu_id

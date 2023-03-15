@@ -16,9 +16,6 @@ clean-targets:
   - "target"
   - "dbt_packages"
 
-vars:
-  logical_date: "{{ env_var('LOGICAL_DATE', '2000-01-01') }}"
-
 # Configuring models
 # Full documentation: https://docs.getdbt.com/docs/configuring-models
 
@@ -56,4 +53,3 @@ seeds:
         value: text
         label: text
         description: text
-

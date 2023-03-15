@@ -18,7 +18,7 @@ final AS (
         telephone           AS "telephone",
         mail                AS "courriel",
         NULL                AS "site_web",
-        'siao'              AS "source",
+        _di_source_id       AS "source",
         NULL                AS "lien_source",
         NULL                AS "horaires_ouverture",
         NULL                AS "accessibilite",

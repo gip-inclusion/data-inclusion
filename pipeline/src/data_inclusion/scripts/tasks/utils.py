@@ -1,6 +1,5 @@
 import hashlib
 import io
-import json
 import logging
 from datetime import datetime
 from pathlib import Path
@@ -9,6 +8,7 @@ from typing import Optional
 import numpy as np
 import pandas as pd
 import pytz
+import requests
 
 from data_inclusion.scripts import settings
 
@@ -66,14 +66,5 @@ def read_excel(path: Path, sheet_name: Optional[str | int] = 0) -> pd.DataFrame:
     return df
 
 
-def deserialize_df_data(df: pd.DataFrame) -> pd.DataFrame:
-    df = pd.json_normalize(df.data, max_level=0)
-    df = df.replace({np.nan: None})
-    return df
-
-
-def serialize_df_data(df: pd.DataFrame) -> pd.DataFrame:
-    df = df.replace({np.nan: None})
-    df = df.apply(lambda row: json.dumps(row.to_dict()), axis="columns")
-    df = pd.DataFrame().assign(data=df)
-    return df
+def extract_http_content(url: str, **kwargs) -> bytes:
+    return requests.get(url).content
