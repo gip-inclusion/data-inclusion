@@ -39,8 +39,8 @@ airflow users create \
     --lastname "${AIRFLOW_SUPERUSER_LASTNAME}" \
     --password "${AIRFLOW_SUPERUSER_PASSWORD}" \
     --username "${AIRFLOW_SUPERUSER_USERNAME}"
-airflow scheduler
 airflow webserver --port "${PORT}" &
+airflow scheduler &
 
 # Create additional virtualenvs for isolated task executions
 VIRTUAL_ENV=venvs/python/venv
@@ -56,6 +56,8 @@ python -m venv "${VIRTUAL_ENV}"
 "${VIRTUAL_ENV}/bin/python" -m pip install -r requirements/tasks/dbt/requirements.txt
 
 # Install dbt packages (not python packages)
-"${VIRTUAL_ENV}/bin/dbt" deps
+"${VIRTUAL_ENV}/bin/dbt" deps --project-dir dbt
 
 airflow pools set base_adresse_nationale_api 1 "Limit access to the ban api"
+
+sleep infinity
