@@ -72,7 +72,7 @@ def dbt_operator_factory(
 
     dbt_args = command
     if select is not None:
-        dbt_args += f" --select {exclude}"
+        dbt_args += f" --select {select}"
     if exclude is not None:
         dbt_args += f" --exclude {exclude}"
 
