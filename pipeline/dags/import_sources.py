@@ -203,6 +203,7 @@ def dbt_operator_factory(
     return bash.BashOperator(
         task_id=task_id,
         bash_command=f"{DBT_PYTHON_BIN_PATH.parent / 'dbt'} {dbt_args}",
+        append_env=True,
         env={
             "DBT_PROFILES_DIR": Variable.get("DBT_PROJECT_DIR"),
             "POSTGRES_HOST": "{{ conn.pg.host }}",
