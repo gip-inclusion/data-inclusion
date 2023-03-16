@@ -103,14 +103,14 @@ with airflow.DAG(
 
     dbt_seed = dbt_operator_factory(
         task_id="dbt_seed",
-        command="seed",
+        command="seed --full-refresh",
     )
 
     # run what does not depend on geocoding results
     dbt_run_before_geocoding = dbt_operator_factory(
         task_id="dbt_run_before_geocoding",
         command="run",
-        exclude="int_extra__geocoded_results+",
+        exclude="int_extra__geocoded_results+ flux",
     )
 
     python_geocode = python.ExternalPythonOperator(
@@ -127,6 +127,12 @@ with airflow.DAG(
         select="int_extra__geocoded_results+",
     )
 
+    dbt_run_flux = dbt_operator_factory(
+        task_id="dbt_run_flux",
+        command="run",
+        select="flux",
+    )
+
     dbt_test = dbt_operator_factory(
         task_id="dbt_test",
         command="test",
@@ -138,6 +144,7 @@ with airflow.DAG(
         >> dbt_run_before_geocoding
         >> python_geocode
         >> dbt_run_after_geocoding
+        >> dbt_run_flux
         >> dbt_test
         >> end
     )

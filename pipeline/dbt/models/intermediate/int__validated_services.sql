@@ -18,6 +18,14 @@ profils AS (
     SELECT * FROM {{ ref('profils') }}
 ),
 
+modes_accueil AS (
+    SELECT * FROM {{ ref('modes_accueil') }}
+),
+
+types_cog AS (
+    SELECT * FROM {{ ref('types_cog') }}
+),
+
 validated_structures AS (
     SELECT * FROM {{ ref('int__validated_structures') }}
 ),
@@ -40,6 +48,13 @@ final AS (
         AND (types IS NULL OR types <@ ARRAY(SELECT value FROM typologies_de_services))
         AND (frais IS NULL OR frais <@ ARRAY(SELECT value FROM frais))
         AND (profils IS NULL OR profils <@ ARRAY(SELECT value FROM profils))
+        AND (code_postal IS NULL OR code_postal ~ '^\d{5}$')
+        AND (code_insee IS NULL OR code_insee ~ '^.{5}$')
+        -- RFC 5322
+        AND (courriel IS NULL OR courriel ~ '^[a-zA-Z0-9.!#$%&''*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$')
+        AND (modes_accueil IS NULL OR modes_accueil <@ ARRAY(SELECT value FROM modes_accueil))
+        AND (zone_diffusion_type IS NULL OR zone_diffusion_type IN (SELECT value FROM types_cog))
+        AND (zone_diffusion_code IS NULL OR zone_diffusion_code ~ '^(\w{5}|\w{2,3}|\d{2})$')
 )
 
 SELECT * FROM final

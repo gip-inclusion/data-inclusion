@@ -48,6 +48,14 @@ dbt run --select intermediate
 dbt run --select marts
 ```
 
+## Update schema in dbt seeds
+
+* Required when the schema changes.
+
+```bash
+python scripts/update_schema_seeds.py
+```
+
 ## Project requirements
 
 ### airflow

@@ -15,7 +15,8 @@ SELECT
     _di_logical_date                                 AS "_di_logical_date",
     data                                             AS "data",
     _di_source_id || '-' || (data #>> '{fields,ID}') AS "_di_surrogate_id",
-    _di_source_id                                    AS "_di_source_id"
+    _di_source_id                                    AS "_di_source_id",
+    _di_stream_id                                    AS "_di_stream_id"
 FROM {{ source('mes_aides', 'aides') }}
 
 {% endsnapshot %}
