@@ -1,2 +1,2 @@
-apache-airflow==2.5.1
+apache-airflow[amazon,postgres]==2.5.1
 psycopg2

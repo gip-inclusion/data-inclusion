@@ -10,13 +10,15 @@ alembic==1.9.2
     # via apache-airflow
 anyio==3.6.2
     # via httpcore
-apache-airflow==2.5.1
+apache-airflow[amazon,postgres]==2.5.1
     # via
     #   -r requirements/dev/../airflow/base.in
     #   apache-airflow-providers-amazon
     #   apache-airflow-providers-postgres
 apache-airflow-providers-amazon==7.1.0
-    # via -r requirements/dev/../tasks/python/requirements.in
+    # via
+    #   -r requirements/dev/../tasks/python/requirements.in
+    #   apache-airflow
 apache-airflow-providers-common-sql==1.3.3
     # via
     #   apache-airflow
@@ -30,7 +32,9 @@ apache-airflow-providers-http==4.1.1
 apache-airflow-providers-imap==3.1.1
     # via apache-airflow
 apache-airflow-providers-postgres==5.4.0
-    # via -r requirements/dev/../tasks/python/requirements.in
+    # via
+    #   -r requirements/dev/../tasks/python/requirements.in
+    #   apache-airflow
 apache-airflow-providers-sqlite==3.3.1
     # via apache-airflow
 apispec[yaml]==3.3.2
