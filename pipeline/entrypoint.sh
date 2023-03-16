@@ -31,6 +31,17 @@ export AIRFLOW__CORE__LOAD_DEFAULT_CONNECTIONS=False
 export AIRFLOW__CORE__LOAD_EXAMPLES=False
 export AIRFLOW__DATABASE__SQL_ALCHEMY_CONN="${DATABASE_URL}"
 
+airflow db upgrade
+airflow users create \
+    --email "${AIRFLOW_SUPERUSER_EMAIL}" \
+    --role Admin \
+    --firstname "${AIRFLOW_SUPERUSER_FIRSTNAME}" \
+    --lastname "${AIRFLOW_SUPERUSER_LASTNAME}" \
+    --password "${AIRFLOW_SUPERUSER_PASSWORD}" \
+    --username "${AIRFLOW_SUPERUSER_USERNAME}"
+airflow scheduler
+airflow webserver --port "${PORT}" &
+
 # Create additional virtualenvs for isolated task executions
 VIRTUAL_ENV=venvs/python/venv
 python -m venv "${VIRTUAL_ENV}"
@@ -46,16 +57,5 @@ python -m venv "${VIRTUAL_ENV}"
 
 # Install dbt packages (not python packages)
 "${VIRTUAL_ENV}/bin/dbt" deps
-
-airflow db upgrade
-airflow users create \
-    --email "${AIRFLOW_SUPERUSER_EMAIL}" \
-    --role Admin \
-    --firstname "${AIRFLOW_SUPERUSER_FIRSTNAME}" \
-    --lastname "${AIRFLOW_SUPERUSER_LASTNAME}" \
-    --password "${AIRFLOW_SUPERUSER_PASSWORD}" \
-    --username "${AIRFLOW_SUPERUSER_USERNAME}"
-airflow webserver --port "${PORT}" &
-airflow scheduler
 
 airflow pools set base_adresse_nationale_api 1 "Limit access to the ban api"
