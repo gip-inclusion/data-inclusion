@@ -43,14 +43,14 @@ airflow webserver --port "${PORT}" &
 airflow scheduler &
 
 # Create additional virtualenvs for isolated task executions
-VIRTUAL_ENV=venvs/python/venv
+VIRTUAL_ENV="${VENVS_DIR}/python/venv"
 python -m venv "${VIRTUAL_ENV}"
 "${VIRTUAL_ENV}/bin/python" -m pip install -U pip setuptools wheel
 "${VIRTUAL_ENV}/bin/python" -m pip install -r requirements/tasks/python/requirements.txt
 "${VIRTUAL_ENV}/bin/python" -m pip install .
 
 # Create additional virtualenvs for isolated task executions
-VIRTUAL_ENV=venvs/dbt/venv
+VIRTUAL_ENV="${VENVS_DIR}/dbt/venv"
 python -m venv "${VIRTUAL_ENV}"
 "${VIRTUAL_ENV}/bin/python" -m pip install -U pip setuptools wheel
 "${VIRTUAL_ENV}/bin/python" -m pip install -r requirements/tasks/dbt/requirements.txt
