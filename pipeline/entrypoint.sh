@@ -33,13 +33,14 @@ export AIRFLOW__DATABASE__SQL_ALCHEMY_CONN="${DATABASE_URL}"
 
 # Create additional virtualenvs for isolated task executions
 VIRTUAL_ENV=venvs/python/venv
-python -m "${VIRTUAL_ENV}"
+python -m venv "${VIRTUAL_ENV}"
 "${VIRTUAL_ENV}/bin/python" -m pip install -U pip setuptools wheel
 "${VIRTUAL_ENV}/bin/python" -m pip install -r requirements/tasks/python/requirements.txt
 "${VIRTUAL_ENV}/bin/python" -m pip install .
 
+# Create additional virtualenvs for isolated task executions
 VIRTUAL_ENV=venvs/dbt/venv
-python -m "${VIRTUAL_ENV}"
+python -m venv "${VIRTUAL_ENV}"
 "${VIRTUAL_ENV}/bin/python" -m pip install -U pip setuptools wheel
 "${VIRTUAL_ENV}/bin/python" -m pip install -r requirements/tasks/dbt/requirements.txt
 
