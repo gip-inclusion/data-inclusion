@@ -71,8 +71,11 @@ pip-compile --upgrade requirements/airflow/requirements.in --output-file require
 
 ### tasks
 
-These set of requirements are used to create isolated environments for python tasks on airflow.
+These sets of requirements are used to create isolated environments for python tasks on airflow.
 They are independent from the airflow requirements.
+
+- `requirements/tasks/dbt/`: requirements for dbt tasks
+- `requirements/tasks/python/`: requirements for various python tasks (pandas, openpyxl, requests, etc.)
 
 To add or delete a dependency to these requirements:
 

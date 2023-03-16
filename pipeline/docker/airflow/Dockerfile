@@ -25,6 +25,7 @@ RUN python -m venv venvs/python/venv
 RUN venvs/python/venv/bin/python -m pip install --no-cache-dir -U pip setuptools wheel
 RUN venvs/python/venv/bin/python -m pip install --no-cache-dir -r requirements/tasks/python/requirements.txt
 
+# create a isolated virtualenvs for python task execution
 RUN python -m venv venvs/dbt/venv
 RUN venvs/dbt/venv/bin/python -m pip install --no-cache-dir -U pip setuptools wheel
 RUN venvs/dbt/venv/bin/python -m pip install --no-cache-dir -r requirements/tasks/dbt/requirements.txt
