@@ -97,7 +97,6 @@ charset-normalizer==2.1.1
     # via requests
 click==8.1.3
     # via
-    #   -r requirements/dev/../tasks/dbt/requirements.in
     #   black
     #   click-plugins
     #   clickclick
@@ -388,7 +387,9 @@ prison==0.2.1
 psutil==5.9.4
     # via apache-airflow
 psycopg2==2.9.5
-    # via -r requirements/dev/../tasks/python/requirements.in
+    # via
+    #   -r requirements/dev/../airflow/base.in
+    #   -r requirements/dev/../tasks/python/requirements.in
 psycopg2-binary==2.9.5
     # via
     #   apache-airflow-providers-postgres
