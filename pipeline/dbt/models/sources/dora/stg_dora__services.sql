@@ -1,14 +1,10 @@
 WITH source AS (
-    SELECT *
-    FROM {{ source('data_inclusion', 'datalake') }}
-    WHERE
-        logical_date = '{{ var('logical_date') }}'
-        AND src_alias = 'dora'
-        AND file ~ 'services'
+    SELECT * FROM {{ source('dora', 'services') }}
 ),
 
 final AS (
     SELECT
+        _di_source_id         AS "_di_source_id",
         ARRAY(
             SELECT * FROM JSONB_ARRAY_ELEMENTS_TEXT(
                 (

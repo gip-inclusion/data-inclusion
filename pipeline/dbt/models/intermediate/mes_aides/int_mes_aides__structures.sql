@@ -19,7 +19,7 @@ final AS (
         telephone         AS "telephone",
         email             AS "courriel",
         url               AS "site_web",
-        'mes-aides'       AS "source",
+        _di_source_id     AS "source",
         NULL              AS "lien_source",
         NULL              AS "horaires_ouverture",
         NULL              AS "accessibilite",

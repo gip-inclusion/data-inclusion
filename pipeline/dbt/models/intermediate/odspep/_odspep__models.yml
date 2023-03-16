@@ -11,3 +11,19 @@ models:
         tests:
           - not_null
           - unique
+
+  - name: int_odspep__grouped_res_partenariales
+    description: Define an exploratory heuristic to group ressources partenariales by underlying structure
+    columns:
+      - name: group_key
+        description: key constructed by us to group ressources parteneriales by
+        tests:
+          - not_null
+      - name: group_size
+        description: records count for the associated group key
+        tests:
+          - not_null
+      - name: group_number
+        description: an identifier for the group to quickly visualize groups
+        tests:
+          - not_null

@@ -1,11 +1,10 @@
 import logging
 
 import airflow
-import pandas as pd
 import pendulum
-from airflow.models import Variable
 from airflow.operators import empty, python
-from airflow.providers.postgres.hooks import postgres
+
+from dags.virtualenvs import PYTHON_BIN_PATH
 
 logger = logging.getLogger(__name__)
 
@@ -13,6 +12,10 @@ default_args = {}
 
 
 def _import_dataset():
+    import pandas as pd
+    from airflow.models import Variable
+    from airflow.providers.postgres.hooks import postgres
+
     pg_hook = postgres.PostgresHook(postgres_conn_id="pg")
 
     df = pd.read_csv(Variable.get("INSEE_FIRSTNAME_FILE_URL"), sep=";")
@@ -37,8 +40,9 @@ with airflow.DAG(
     start = empty.EmptyOperator(task_id="start")
     end = empty.EmptyOperator(task_id="end")
 
-    import_dataset = python.PythonOperator(
+    import_dataset = python.ExternalPythonOperator(
         task_id="import",
+        python=str(PYTHON_BIN_PATH),
         python_callable=_import_dataset,
     )
 

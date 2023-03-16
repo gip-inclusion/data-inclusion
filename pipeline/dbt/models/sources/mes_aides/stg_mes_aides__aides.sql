@@ -1,13 +1,10 @@
 WITH source AS (
-    SELECT *
-    FROM {{ source('data_inclusion', 'datalake') }}
-    WHERE
-        logical_date = '{{ var('logical_date') }}'
-        AND src_alias = 'mes_aides_aides'
+    SELECT * FROM {{ source('mes_aides', 'aides') }}
 ),
 
 final AS (
     SELECT
+        _di_source_id                                              AS "_di_source_id",
         (data #>> '{fields,Ville Longitude}')::FLOAT               AS "ville_longitude",
         (data #>> '{fields,Ville Latitude}')::FLOAT                AS "ville_latitude",
         (data #>> '{fields,Modifié le}')::TIMESTAMP WITH TIME ZONE AS "modifie_le",

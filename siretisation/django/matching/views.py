@@ -1,12 +1,9 @@
-from datetime import timedelta
-
 from django_htmx.http import HttpResponseClientRedirect
 from furl import furl
 
 from django import http, shortcuts, urls
 from django.contrib.auth.decorators import login_required
 from django.contrib.postgres import search
-from django.utils import timezone
 
 from matching import models
 
@@ -59,7 +56,6 @@ def index(request: http.HttpRequest):
             WHERE
                 datalake.src_alias = %(left_datasource_name)s
                 AND datalake.file ~ %(left_stream_name)s
-                AND datalake.logical_date = %(logical_date)s
                 AND enhanced_matching.id IS NULL
             -- this allow concurrent users to work without too much overlap
             ORDER BY random()
@@ -67,14 +63,12 @@ def index(request: http.HttpRequest):
             {
                 "left_datasource_name": left_datasource_instance.name,
                 "left_stream_name": left_stream_instance.name,
-                "logical_date": timezone.now().date() - timedelta(days=1),
             },
         )
         left_row_instance = next((row for row in datalake_qs), None)
     else:
         # user has provided a natural id, use it
         left_row_instance = models.Datalake.objects.filter(
-            logical_date=timezone.now().date() - timedelta(days=1),
             src_alias=left_datasource_instance.name,
             file__contains=left_stream_instance.name,
             data_normalized__id=unsafe_row_natural_id,
@@ -107,7 +101,6 @@ def search_view(request: http.HttpRequest):
         return http.HttpResponseBadRequest()
 
     initial_qs = models.Datalake.objects.filter(
-        logical_date=timezone.now().date() - timedelta(days=1),
         src_alias=right_stream_instance.datasource.name,
         file__contains=right_stream_instance.name,
     )
@@ -153,7 +146,6 @@ def partial_matching(request: http.HttpRequest):
     left_row_instance = models.Datalake.objects.filter(
         id=unsafe_left_row_id,
         src_alias=left_stream_instance.datasource.name,
-        logical_date=timezone.now().date() - timedelta(days=1),
     ).first()
     if left_row_instance is None:
         return http.HttpResponseBadRequest()
@@ -163,7 +155,6 @@ def partial_matching(request: http.HttpRequest):
             models.Datalake.objects.get(
                 id=row_id,
                 src_alias=right_stream_instance.datasource.name,
-                logical_date=timezone.now().date() - timedelta(days=1),
             )
             for row_id in unsafe_right_row_id_list
         ]

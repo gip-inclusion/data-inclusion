@@ -29,13 +29,11 @@ services:
       - _AIRFLOW_WWW_USER_CREATE=True
       - _AIRFLOW_WWW_USER_USERNAME=airflow
       - _AIRFLOW_WWW_USER_PASSWORD=airflow
-      - _PIP_ADDITIONAL_REQUIREMENTS=-e /opt/airflow/data-inclusion pipx==1.1.0
       # Connections
       - AIRFLOW_CONN_S3=aws://@/data-inclusion-lake?endpoint_url=http://minio:9000&aws_access_key_id=minioadmin&aws_secret_access_key=minioadmin
       - AIRFLOW_CONN_S3_SOURCES=${AIRFLOW_CONN_S3_SOURCES}
       - AIRFLOW_CONN_PG=postgresql://data-inclusion:data-inclusion@target-db:5432/data-inclusion
       # Variables
-      - AIRFLOW_VAR_PIPX_BIN=/home/airflow/.local/bin/pipx
       - AIRFLOW_VAR_DBT_PROJECT_DIR=/opt/airflow/dbt
       - AIRFLOW_VAR_AIRFLOW_PUBLIC_URL=${AIRFLOW_PUBLIC_URL}
       - AIRFLOW_VAR_BAN_API_URL=${BAN_API_URL}
@@ -51,6 +49,7 @@ services:
       - AIRFLOW_VAR_ETAB_PUB_FILE_URL=${ETAB_PUB_FILE_URL}
       - AIRFLOW_VAR_FINESS_FILE_URL=${FINESS_FILE_URL}
       - AIRFLOW_VAR_INSEE_FIRSTNAME_FILE_URL=${INSEE_FIRSTNAME_FILE_URL}
+      - AIRFLOW_VAR_INSEE_COG_DATASET_URL=${INSEE_COG_DATASET_URL}
       - AIRFLOW_VAR_MEDIATION_NUMERIQUE_CONSEILLER_NUMERIQUE_DATASET_URL=${MEDIATION_NUMERIQUE_CONSEILLER_NUMERIQUE_DATASET_URL}
       - AIRFLOW_VAR_MEDIATION_NUMERIQUE_HINAURA_DATASET_URL=${MEDIATION_NUMERIQUE_HINAURA_DATASET_URL}
       - AIRFLOW_VAR_MEDIATION_NUMERIQUE_CD49_DATASET_URL=${MEDIATION_NUMERIQUE_CD49_DATASET_URL}
@@ -100,6 +99,14 @@ services:
       - POSTGRES_DB=airflow
       - POSTGRES_USER=airflow
       - POSTGRES_PASSWORD=airflow
+
+  dbt-init:
+    image: ghcr.io/dbt-labs/dbt-postgres:1.4.1
+    command: deps
+    environment:
+      DBT_PROFILES_DIR: /usr/app
+    volumes:
+      - ./pipeline/dbt:/usr/app
 
   minio:
     image: minio/minio:RELEASE.2022-10-08T20-11-00Z

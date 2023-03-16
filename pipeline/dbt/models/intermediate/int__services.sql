@@ -11,6 +11,7 @@ WITH services AS (
                 "frais": "TEXT[]",
                 "profils": "TEXT[]",
                 "thematiques": "TEXT[]",
+                "modes_accueil": "TEXT[]",
             },
             source_column_name=None
         )

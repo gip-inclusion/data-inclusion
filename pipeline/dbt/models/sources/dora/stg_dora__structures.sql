@@ -1,14 +1,10 @@
 WITH source AS (
-    SELECT *
-    FROM {{ source('data_inclusion', 'datalake') }}
-    WHERE
-        logical_date = '{{ var('logical_date') }}'
-        AND src_alias = 'dora'
-        AND file ~ 'structures'
+    SELECT * FROM {{ source('dora', 'structures') }}
 ),
 
 final AS (
     SELECT
+        _di_source_id                                      AS "_di_source_id",
         (data ->> 'longitude')::FLOAT                      AS "longitude",
         (data ->> 'latitude')::FLOAT                       AS "latitude",
         TO_DATE(data ->> 'modificationDate', 'YYYY-MM-DD') AS "modification_date",

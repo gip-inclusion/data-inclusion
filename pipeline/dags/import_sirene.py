@@ -1,14 +1,11 @@
 import logging
-import textwrap
 
 import airflow
-import geopandas
-import pandas as pd
 import pendulum
-from airflow.models import Variable
 from airflow.operators import empty, python
-from airflow.providers.postgres.hooks.postgres import PostgresHook
 from airflow.providers.postgres.operators.postgres import PostgresOperator
+
+from dags.virtualenvs import PYTHON_BIN_PATH
 
 logger = logging.getLogger(__name__)
 
@@ -16,8 +13,13 @@ default_args = {}
 
 
 def _import_stock_etablissement_historique():
+    import textwrap
+
+    import pandas as pd
     import sqlalchemy as sqla
     import tqdm
+    from airflow.models import Variable
+    from airflow.providers.postgres.hooks.postgres import PostgresHook
 
     pg_hook = PostgresHook(postgres_conn_id="pg")
 
@@ -65,8 +67,13 @@ def _import_stock_etablissement_historique():
 
 
 def _import_stock_etablissement_liens_succession():
+    import textwrap
+
+    import pandas as pd
     import sqlalchemy as sqla
     import tqdm
+    from airflow.models import Variable
+    from airflow.providers.postgres.hooks.postgres import PostgresHook
 
     pg_hook = PostgresHook(postgres_conn_id="pg")
 
@@ -118,7 +125,12 @@ def _import_stock_etablissement_liens_succession():
 
 
 def _import_stock_unite_legale():
+    import textwrap
+
+    import pandas as pd
     import tqdm
+    from airflow.models import Variable
+    from airflow.providers.postgres.hooks.postgres import PostgresHook
 
     pg_hook = PostgresHook(postgres_conn_id="pg")
 
@@ -188,7 +200,13 @@ def _import_stock_unite_legale():
 
 
 def _import_stock_etablissement_geocode():
+    import textwrap
+
+    import geopandas
+    import pandas as pd
     import tqdm
+    from airflow.models import Variable
+    from airflow.providers.postgres.hooks.postgres import PostgresHook
 
     pg_hook = PostgresHook(postgres_conn_id="pg")
 
@@ -361,23 +379,27 @@ with airflow.DAG(
 ) as dag:
     start = empty.EmptyOperator(task_id="start")
 
-    import_stock_etablissement_historique = python.PythonOperator(
+    import_stock_etablissement_historique = python.ExternalPythonOperator(
         task_id="import_stock_etablissement_historique",
+        python=str(PYTHON_BIN_PATH),
         python_callable=_import_stock_etablissement_historique,
     )
 
-    import_stock_etablissement_liens_succession = python.PythonOperator(
+    import_stock_etablissement_liens_succession = python.ExternalPythonOperator(
         task_id="import_stock_etablissement_liens_succession",
+        python=str(PYTHON_BIN_PATH),
         python_callable=_import_stock_etablissement_liens_succession,
     )
 
-    import_stock_unite_legale = python.PythonOperator(
+    import_stock_unite_legale = python.ExternalPythonOperator(
         task_id="import_stock_unite_legale",
+        python=str(PYTHON_BIN_PATH),
         python_callable=_import_stock_unite_legale,
     )
 
-    import_stock_etablissement_geocode = python.PythonOperator(
+    import_stock_etablissement_geocode = python.ExternalPythonOperator(
         task_id="import_stock_etablissement_geocode",
+        python=str(PYTHON_BIN_PATH),
         python_callable=_import_stock_etablissement_geocode,
     )
 
