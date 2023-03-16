@@ -4,7 +4,8 @@ import airflow
 import pendulum
 from airflow.operators import empty, python
 from airflow.providers.postgres.operators.postgres import PostgresOperator
-from virtualenvs import PYTHON_BIN_PATH
+
+from dags.virtualenvs import PYTHON_BIN_PATH
 
 logger = logging.getLogger(__name__)
 

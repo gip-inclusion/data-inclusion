@@ -1,7 +1,8 @@
 import airflow
 import pendulum
 from airflow.operators import empty, python
-from virtualenvs import PYTHON_BIN_PATH
+
+from dags.virtualenvs import PYTHON_BIN_PATH
 
 default_args = {}
 

@@ -4,4 +4,4 @@ max-doc-length = 88
 extend-exclude = .venv/ .vscode/
 extend-ignore = E203, W503
 per-file-ignores =
-    **/dags/settings.py:E501
+    **/dags/dags/settings.py:E501

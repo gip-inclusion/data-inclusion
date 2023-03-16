@@ -5,7 +5,8 @@ import airflow
 import pendulum
 from airflow.models import Variable
 from airflow.operators import bash, empty, python
-from virtualenvs import DBT_PYTHON_BIN_PATH, PYTHON_BIN_PATH
+
+from dags.virtualenvs import DBT_PYTHON_BIN_PATH, PYTHON_BIN_PATH
 
 logger = logging.getLogger(__name__)
 

@@ -6,8 +6,9 @@ import pendulum
 from airflow.models import Variable
 from airflow.operators import bash, empty, python
 from airflow.utils.task_group import TaskGroup
-from settings import SOURCES_CONFIGS
-from virtualenvs import DBT_PYTHON_BIN_PATH, PYTHON_BIN_PATH
+
+from dags.settings import SOURCES_CONFIGS
+from dags.virtualenvs import DBT_PYTHON_BIN_PATH, PYTHON_BIN_PATH
 
 logger = logging.getLogger(__name__)
 
