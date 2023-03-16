@@ -39,8 +39,14 @@ airflow users create \
     --lastname "${AIRFLOW_SUPERUSER_LASTNAME}" \
     --password "${AIRFLOW_SUPERUSER_PASSWORD}" \
     --username "${AIRFLOW_SUPERUSER_USERNAME}"
+
+# Run airflow services in the background, to be able to keep doing things.
+# Once the webserver is up, the deployment on scalingo will be marked as successful and
+# there will no timeout error raised (1min).
 airflow webserver --port "${PORT}" &
 airflow scheduler &
+
+# Keep doing things
 
 # Create additional virtualenvs for isolated task executions
 VIRTUAL_ENV="${AIRFLOW_VAR_VENVS_DIR}/python/venv"
@@ -60,4 +66,5 @@ python -m venv "${VIRTUAL_ENV}"
 
 airflow pools set base_adresse_nationale_api 1 "Limit access to the ban api"
 
+# Keep the application container up
 sleep infinity
