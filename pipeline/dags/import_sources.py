@@ -6,8 +6,9 @@ import pendulum
 from airflow.models import Variable
 from airflow.operators import bash, empty, python
 from airflow.utils.task_group import TaskGroup
-from settings import SOURCES_CONFIGS
-from virtualenvs import DBT_PYTHON_BIN_PATH, PYTHON_BIN_PATH
+
+from dags.settings import SOURCES_CONFIGS
+from dags.virtualenvs import DBT_PYTHON_BIN_PATH, PYTHON_BIN_PATH
 
 logger = logging.getLogger(__name__)
 
@@ -202,6 +203,7 @@ def dbt_operator_factory(
     return bash.BashOperator(
         task_id=task_id,
         bash_command=f"{DBT_PYTHON_BIN_PATH.parent / 'dbt'} {dbt_args}",
+        append_env=True,
         env={
             "DBT_PROFILES_DIR": Variable.get("DBT_PROJECT_DIR"),
             "POSTGRES_HOST": "{{ conn.pg.host }}",
