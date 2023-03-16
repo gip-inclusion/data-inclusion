@@ -1,8 +1,8 @@
--c constraints.txt
--r requirements.txt
+-r ../airflow/base.in
+-r ../tasks/python/requirements.in
+-r ../tasks/dbt/requirements.in
 
 pytest
-
 black
 pre-commit
 # As of writing,

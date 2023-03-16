@@ -1,11 +1,9 @@
 import logging
 
 import airflow
-import pandas as pd
 import pendulum
-from airflow.models import Variable
 from airflow.operators import empty, python
-from airflow.providers.postgres.hooks import postgres
+from virtualenvs import PYTHON_BIN_PATH
 
 logger = logging.getLogger(__name__)
 
@@ -13,6 +11,8 @@ default_args = {}
 
 
 def _setup():
+    from airflow.providers.postgres.hooks import postgres
+
     pg_hook = postgres.PostgresHook(postgres_conn_id="pg")
     pg_engine = pg_hook.get_sqlalchemy_engine()
     schema_name = "insee"
@@ -29,6 +29,10 @@ def _setup():
 
 
 def _import_dataset_ressource(ressource_name: str):
+    import pandas as pd
+    from airflow.models import Variable
+    from airflow.providers.postgres.hooks import postgres
+
     pg_hook = postgres.PostgresHook(postgres_conn_id="pg")
 
     url = (
@@ -59,14 +63,16 @@ with airflow.DAG(
     start = empty.EmptyOperator(task_id="start")
     end = empty.EmptyOperator(task_id="end")
 
-    setup = python.PythonOperator(
+    setup = python.ExternalPythonOperator(
         task_id="setup",
+        python=str(PYTHON_BIN_PATH),
         python_callable=_setup,
     )
 
     for ressource_name in ["regions", "departements", "communes"]:
-        import_dataset_ressource = python.PythonOperator(
+        import_dataset_ressource = python.ExternalPythonOperator(
             task_id=f"import_{ressource_name}",
+            python=str(PYTHON_BIN_PATH),
             python_callable=_import_dataset_ressource,
             op_kwargs={"ressource_name": ressource_name},
         )

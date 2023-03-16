@@ -1,17 +1,13 @@
-import io
 import logging
-from datetime import datetime
-from pathlib import Path
 from typing import Optional
 
 import airflow
 import pendulum
-from airflow.models import DAG, DagRun, Variable
+from airflow.models import Variable
 from airflow.operators import bash, empty, python
-from airflow.providers.amazon.aws.hooks import s3
-from airflow.providers.postgres.hooks.postgres import PostgresHook
 from airflow.utils.task_group import TaskGroup
 from settings import SOURCES_CONFIGS
+from virtualenvs import DBT_PYTHON_BIN_PATH, PYTHON_BIN_PATH
 
 logger = logging.getLogger(__name__)
 
@@ -19,24 +15,10 @@ logger = logging.getLogger(__name__)
 default_args = {}
 
 
-def get_stream_s3_key(
-    logical_date: datetime,
-    source_id: str,
-    filename: str,
-    batch_id: str,
-    timezone,
-) -> str:
-    """Compute the s3 bucket key under which the stream data is stored."""
-
-    logical_date_ds = pendulum.instance(
-        logical_date.astimezone(timezone)
-    ).to_date_string()
-
-    return f"data/raw/{logical_date_ds}/{source_id}/{batch_id}/{filename}"
-
-
 def _setup(source_config: dict):
     """Ensure the db objects (schema, permissions) subsequently required exist."""
+
+    from airflow.providers.postgres.hooks.postgres import PostgresHook
 
     pg_hook = PostgresHook(postgres_conn_id="pg")
     pg_engine = pg_hook.get_sqlalchemy_engine()
@@ -57,10 +39,14 @@ def _extract(
     stream_config: dict,
     source_config: dict,
     run_id: str,
-    dag: DAG,
-    dag_run: DagRun,
+    logical_date,
 ):
     """Extract raw data from source and store it into datalake bucket."""
+
+    import io
+
+    import pendulum
+    from airflow.providers.amazon.aws.hooks import s3
 
     from data_inclusion.scripts.tasks import (
         dora,
@@ -69,6 +55,10 @@ def _extract(
         mes_aides,
         utils,
     )
+
+    logical_date = pendulum.instance(
+        logical_date.astimezone(pendulum.timezone("Europe/Paris"))
+    ).date()
 
     EXTRACT_FN_BY_SOURCE_ID = {
         "annuaire-du-service-public": utils.extract_http_content,
@@ -89,16 +79,21 @@ def _extract(
 
     s3_hook = s3.S3Hook(aws_conn_id="s3")
 
+    stream_s3_key = "/".join(
+        [
+            "data",
+            "raw",
+            logical_date.to_date_string(),
+            source_config["id"],
+            run_id,
+            stream_config["filename"],
+        ]
+    )
+
     with io.BytesIO(extract_fn(**stream_config)) as buf:
         s3_hook.load_file_obj(
             file_obj=buf,
-            key=get_stream_s3_key(
-                logical_date=dag_run.logical_date,
-                source_id=source_config["id"],
-                filename=stream_config["filename"],
-                batch_id=run_id,
-                timezone=dag.timezone,
-            ),
+            key=stream_s3_key,
             replace=True,
         )
 
@@ -107,13 +102,17 @@ def _load(
     stream_config: dict,
     source_config: dict,
     run_id: str,
-    dag: DAG,
-    dag_run: DagRun,
+    logical_date,
 ):
     """Pull raw data from datalake bucket and load it with metadata to postgres."""
 
+    from pathlib import Path
+
     import pandas as pd
+    import pendulum
     import sqlalchemy as sqla
+    from airflow.providers.amazon.aws.hooks import s3
+    from airflow.providers.postgres.hooks.postgres import PostgresHook
     from sqlalchemy.dialects.postgresql import JSONB
 
     from data_inclusion.scripts.tasks import annuaire_du_service_public, utils
@@ -139,16 +138,19 @@ def _load(
     pg_hook = PostgresHook(postgres_conn_id="pg")
     pg_engine = pg_hook.get_sqlalchemy_engine()
 
-    logical_date_ds = pendulum.instance(
-        dag_run.logical_date.astimezone(dag.timezone)
-    ).to_date_string()
+    logical_date = pendulum.instance(
+        logical_date.astimezone(pendulum.timezone("Europe/Paris"))
+    ).date()
 
-    stream_s3_key = get_stream_s3_key(
-        logical_date=dag_run.logical_date,
-        source_id=source_config["id"],
-        filename=stream_config["filename"],
-        batch_id=run_id,
-        timezone=dag.timezone,
+    stream_s3_key = "/".join(
+        [
+            "data",
+            "raw",
+            logical_date.to_date_string(),
+            source_config["id"],
+            run_id,
+            stream_config["filename"],
+        ]
     )
 
     tmp_filename = s3_hook.download_file(key=stream_s3_key)
@@ -163,7 +165,7 @@ def _load(
     df = df.assign(_di_stream_id=stream_config["id"])
     df = df.assign(_di_source_url=stream_config["url"])
     df = df.assign(_di_stream_s3_key=stream_s3_key)
-    df = df.assign(_di_logical_date=logical_date_ds)
+    df = df.assign(_di_logical_date=logical_date)
 
     # load to postgres
     with pg_engine.connect() as conn:
@@ -186,21 +188,20 @@ def _load(
 def dbt_operator_factory(
     task_id: str,
     command: str,
-    selector: Optional[str] = None,
+    select: Optional[str] = None,
+    exclude: Optional[str] = None,
 ) -> bash.BashOperator:
     """A basic factory for bash operators operating dbt commands."""
 
-    dbt = "{{ var.value.pipx_bin }} run --spec dbt-postgres dbt"
-    # this ensure deps are installed (if instance has been recreated)
-    dbt = f"{dbt} deps && {dbt}"
-
-    bash_command = f"{dbt} {command}"
-    if selector is not None:
-        bash_command += f" -s {selector}"
+    dbt_args = command
+    if select is not None:
+        dbt_args += f" --select {select}"
+    if exclude is not None:
+        dbt_args += f" --exclude {exclude}"
 
     return bash.BashOperator(
         task_id=task_id,
-        bash_command=bash_command,
+        bash_command=f"{DBT_PYTHON_BIN_PATH.parent / 'dbt'} {dbt_args}",
         env={
             "DBT_PROFILES_DIR": Variable.get("DBT_PROJECT_DIR"),
             "POSTGRES_HOST": "{{ conn.pg.host }}",
@@ -229,8 +230,9 @@ for source_config in SOURCES_CONFIGS:
         start = empty.EmptyOperator(task_id="start")
         end = empty.EmptyOperator(task_id="end")
 
-        setup = python.PythonOperator(
+        setup = python.ExternalPythonOperator(
             task_id="setup",
+            python=str(PYTHON_BIN_PATH),
             python_callable=_setup,
             op_kwargs={"source_config": source_config},
         )
@@ -240,7 +242,7 @@ for source_config in SOURCES_CONFIGS:
         dbt_test_source = dbt_operator_factory(
             task_id="dbt_test_source",
             command="test",
-            selector="source:data_inclusion." + source_config["id"].replace("-", "_"),
+            select="source:data_inclusion." + source_config["id"].replace("-", "_"),
         )
 
         # historization of the raw data, if that makes sense
@@ -248,7 +250,7 @@ for source_config in SOURCES_CONFIGS:
             dbt_snapshot_source = dbt_operator_factory(
                 task_id="dbt_snapshot_source",
                 command="snapshot",
-                selector=source_config["id"].replace("-", "_"),
+                select=source_config["id"].replace("-", "_"),
             )
         else:
             dbt_snapshot_source = None
@@ -256,8 +258,9 @@ for source_config in SOURCES_CONFIGS:
         # create dedicated embranchments for the extract/load of every streams in source
         for stream_config in source_config["streams"]:
             with TaskGroup(group_id=stream_config["id"]) as stream_task_group:
-                extract = python.PythonOperator(
+                extract = python.ExternalPythonOperator(
                     task_id="extract",
+                    python=str(PYTHON_BIN_PATH),
                     python_callable=_extract,
                     retries=2,
                     op_kwargs={
@@ -265,8 +268,9 @@ for source_config in SOURCES_CONFIGS:
                         "source_config": source_config,
                     },
                 )
-                load = python.PythonOperator(
+                load = python.ExternalPythonOperator(
                     task_id="load",
+                    python=str(PYTHON_BIN_PATH),
                     python_callable=_load,
                     op_kwargs={
                         "stream_config": stream_config,

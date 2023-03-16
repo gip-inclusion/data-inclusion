@@ -1,22 +1,24 @@
-import itertools
-import logging
-
 import airflow
 import pendulum
-from airflow.models import Variable
 from airflow.operators import empty, python
-from airflow.providers.postgres.hooks import postgres
-
-logger = logging.getLogger(__name__)
+from virtualenvs import PYTHON_BIN_PATH
 
 default_args = {}
 
 
 def _publish_to_datagouv():
     import io
+    import itertools
+    import logging
+
+    import pendulum
+    from airflow.models import Variable
+    from airflow.providers.postgres.hooks import postgres
 
     from data_inclusion.scripts.tasks import datagouv
     from data_inclusion.scripts.tasks.utils import log_df_info
+
+    logger = logging.getLogger(__name__)
 
     pg_hook = postgres.PostgresHook(postgres_conn_id="pg")
 
@@ -87,8 +89,9 @@ with airflow.DAG(
     start = empty.EmptyOperator(task_id="start")
     end = empty.EmptyOperator(task_id="end")
 
-    publish_to_datagouv = python.PythonOperator(
+    publish_to_datagouv = python.ExternalPythonOperator(
         task_id="publish",
+        python=str(PYTHON_BIN_PATH),
         python_callable=_publish_to_datagouv,
     )
 

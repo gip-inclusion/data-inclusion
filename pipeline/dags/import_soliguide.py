@@ -1,33 +1,36 @@
 import logging
-from pathlib import Path
 
 import airflow
-import pandas as pd
 import pendulum
-from airflow.models import DagRun, Variable
 from airflow.operators import empty, python
-from airflow.providers.amazon.aws.hooks import s3
-from airflow.providers.postgres.hooks import postgres
+from virtualenvs import PYTHON_BIN_PATH
 
 logger = logging.getLogger(__name__)
 
 default_args = {}
 
-SOLIGUIDE_S3_KEY_PREFIX = Variable.get("SOLIGUIDE_S3_KEY_PREFIX")
-
 
 def _import_dataset(
     run_id: str,
-    dag_run: DagRun,
+    logical_date,
 ):
+    from pathlib import Path
+
+    import pandas as pd
+    import pendulum
+    from airflow.models import Variable
+    from airflow.providers.amazon.aws.hooks import s3
+    from airflow.providers.postgres.hooks import postgres
     from sqlalchemy.dialects.postgresql import JSONB
+
+    SOLIGUIDE_S3_KEY_PREFIX = Variable.get("SOLIGUIDE_S3_KEY_PREFIX")
 
     pg_hook = postgres.PostgresHook(postgres_conn_id="pg")
     pg_engine = pg_hook.get_sqlalchemy_engine()
     s3_hook = s3.S3Hook(aws_conn_id="s3_sources")
 
     logical_date = pendulum.instance(
-        dag_run.logical_date.astimezone(dag.timezone)
+        logical_date.astimezone(pendulum.timezone("Europe/Paris"))
     ).date()
 
     with pg_engine.connect() as conn:
@@ -84,8 +87,9 @@ with airflow.DAG(
     start = empty.EmptyOperator(task_id="start")
     end = empty.EmptyOperator(task_id="end")
 
-    import_dataset = python.PythonOperator(
+    import_dataset = python.ExternalPythonOperator(
         task_id="import",
+        python=str(PYTHON_BIN_PATH),
         python_callable=_import_dataset,
     )
 
