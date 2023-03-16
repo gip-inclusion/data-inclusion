@@ -20,15 +20,16 @@ COPY requirements requirements
 # cf https://airflow.apache.org/docs/docker-stack/build.html#important-notes-for-the-base-images
 ENV PIP_USER false
 
-ENV AIRFLOW_VAR_VENVS_DIR /opt/airflow/venvs
+ENV VENVS_DIR /opt/airflow/venvs
+ENV AIRFLOW_VAR_VENVS_DIR "${VENVS_DIR}"
 
 # create a isolated virtualenvs for python task execution
-RUN python -m venv "${AIRFLOW_VAR_VENVS_DIR}/python/venv"
+RUN python -m venv "${VENVS_DIR}/python/venv"
 RUN venvs/python/venv/bin/python -m pip install --no-cache-dir -U pip setuptools wheel
 RUN venvs/python/venv/bin/python -m pip install --no-cache-dir -r requirements/tasks/python/requirements.txt
 
 # create a isolated virtualenvs for python task execution
-RUN python -m venv "${AIRFLOW_VAR_VENVS_DIR}/dbt/venv"
+RUN python -m venv "${VENVS_DIR}/dbt/venv"
 RUN venvs/dbt/venv/bin/python -m pip install --no-cache-dir -U pip setuptools wheel
 RUN venvs/dbt/venv/bin/python -m pip install --no-cache-dir -r requirements/tasks/dbt/requirements.txt
 

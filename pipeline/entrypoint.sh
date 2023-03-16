@@ -43,20 +43,20 @@ airflow webserver --port "${PORT}" &
 airflow scheduler &
 
 # Create additional virtualenvs for isolated task executions
-VIRTUAL_ENV="${VENVS_DIR}/python/venv"
+VIRTUAL_ENV="${AIRFLOW_VAR_VENVS_DIR}/python/venv"
 python -m venv "${VIRTUAL_ENV}"
 "${VIRTUAL_ENV}/bin/python" -m pip install -U pip setuptools wheel
 "${VIRTUAL_ENV}/bin/python" -m pip install -r requirements/tasks/python/requirements.txt
 "${VIRTUAL_ENV}/bin/python" -m pip install .
 
 # Create additional virtualenvs for isolated task executions
-VIRTUAL_ENV="${VENVS_DIR}/dbt/venv"
+VIRTUAL_ENV="${AIRFLOW_VAR_VENVS_DIR}/dbt/venv"
 python -m venv "${VIRTUAL_ENV}"
 "${VIRTUAL_ENV}/bin/python" -m pip install -U pip setuptools wheel
 "${VIRTUAL_ENV}/bin/python" -m pip install -r requirements/tasks/dbt/requirements.txt
 
 # Install dbt packages (not python packages)
-"${VIRTUAL_ENV}/bin/dbt" deps --project-dir dbt
+"${VIRTUAL_ENV}/bin/dbt" deps --project-dir "${AIRFLOW_VAR_DBT_PROJECT_DIR}"
 
 airflow pools set base_adresse_nationale_api 1 "Limit access to the ban api"
 
