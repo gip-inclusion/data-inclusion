@@ -55,7 +55,7 @@ inserts AS (
             AND snapshots_with_first_extraction_date.dbt_valid_from = prev.dbt_valid_to
     WHERE prev.data IS NULL
         -- ignore additions from the first date of extraction
-        AND snapshots_with_first_extraction_date._di_logical_date > snapshots_with_first_extraction_date.first_extraction_date  -- noqa: L016yy
+        AND snapshots_with_first_extraction_date._di_logical_date > snapshots_with_first_extraction_date.first_extraction_date  -- noqa: L016
 ),
 
 updates AS (
