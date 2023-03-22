@@ -1,4 +1,3 @@
-import logging
 from typing import Optional
 
 import airflow
@@ -6,19 +5,26 @@ import pendulum
 from airflow.models import Variable
 from airflow.operators import bash, empty, python
 
+from dags.notifications import format_failure, notify_webhook
 from dags.virtualenvs import DBT_PYTHON_BIN_PATH, PYTHON_BIN_PATH
 
-logger = logging.getLogger(__name__)
-
-default_args = {}
+default_args = {
+    "on_failure_callback": lambda context: notify_webhook(
+        context, "mattermost", format_failure
+    )
+}
 
 
 def _geocode():
+    import logging
+
     import sqlalchemy as sqla
     from airflow.models import Variable
     from airflow.providers.postgres.hooks.postgres import PostgresHook
 
     from data_inclusion.scripts.tasks import geocoding, utils
+
+    logger = logging.getLogger(__name__)
 
     pg_hook = PostgresHook(postgres_conn_id="pg")
 

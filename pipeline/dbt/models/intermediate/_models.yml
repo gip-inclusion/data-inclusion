@@ -60,4 +60,24 @@ models:
       - name: nom
         tests:
           - not_null
-      
+
+  - name: int__structure_validation_errors
+    description: List validation errors of mapped structure entries
+    columns:
+      - name: _di_surrogate_id
+      - name: _di_source_id
+      - name: id
+      - name: field
+      - name: value
+      - name: type
+
+  - name: int__service_validation_errors
+    description: List validation errors of mapped service entries
+    columns:
+      - name: _di_structure_surrogate_id
+      - name: _di_surrogate_id
+      - name: _di_source_id
+      - name: id
+      - name: field
+      - name: value
+      - name: type
