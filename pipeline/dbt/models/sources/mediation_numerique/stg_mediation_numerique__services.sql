@@ -28,7 +28,8 @@ final AS (
         data ->> 'id'                                                                                 AS "id",
         data ->> 'structure_id'                                                                       AS "structure_id",
         data ->> 'nom'                                                                                AS "nom",
-        data ->> 'source'                                                                             AS "source"
+        data ->> 'source'                                                                             AS "source",
+        data ->> 'prise_rdv'                                                                          AS "prise_rdv"
     FROM source
 )
 

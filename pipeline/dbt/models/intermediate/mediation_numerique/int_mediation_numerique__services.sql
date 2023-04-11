@@ -9,7 +9,7 @@ final AS (
         NULL          AS "presentation_resume",
         NULL          AS "presentation_detail",
         types         AS "types",
-        NULL          AS "prise_rdv",
+        prise_rdv     AS "prise_rdv",
         frais         AS "frais",
         NULL::TEXT    AS "frais_autres",
         profils       AS "profils",
