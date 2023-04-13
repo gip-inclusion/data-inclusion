@@ -21,7 +21,7 @@ final AS (
         adresses.data ->> 'service_distribution'                                                        AS "service_distribution"
     FROM
         source,
-        LATERAL(SELECT * FROM JSONB_PATH_QUERY(source.data, '$.adresse[*]')) AS adresses(data)
+        LATERAL(SELECT * FROM JSONB_PATH_QUERY(source.data, '$.adresse[*]')) AS adresses (data)
 )
 
 SELECT * FROM final

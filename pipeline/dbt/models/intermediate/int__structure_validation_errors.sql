@@ -143,7 +143,8 @@ invalid_labels_nationaux AS (
         labels_nationaux::TEXT       AS "value",
         'labels_nationaux_invalides' AS "type"
     FROM structures
-    WHERE labels_nationaux IS NOT NULL
+    WHERE
+        labels_nationaux IS NOT NULL
         AND NOT labels_nationaux <@ ARRAY(SELECT value FROM labels_nationaux)
 ),
 
@@ -181,7 +182,7 @@ invalid_courriel AS (
         courriel::TEXT      AS "value",
         'courriel_invalide' AS "type"
     FROM structures
-    WHERE courriel IS NOT NULL AND NOT courriel ~ '^[a-zA-Z0-9.!#$%&''*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$'  -- noqa: L016
+    WHERE courriel IS NOT NULL AND NOT courriel ~ '^[a-zA-Z0-9.!#$%&''*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$'
 ),
 
 final AS (

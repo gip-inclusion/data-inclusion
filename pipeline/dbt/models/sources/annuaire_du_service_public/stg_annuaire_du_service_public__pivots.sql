@@ -10,7 +10,7 @@ final AS (
         pivots.data ->> 'type_service_local'                                                AS "type_service_local"
     FROM
         source,
-        LATERAL(SELECT * FROM JSONB_PATH_QUERY(source.data, '$.pivot[*]')) AS pivots(data)
+        LATERAL(SELECT * FROM JSONB_PATH_QUERY(source.data, '$.pivot[*]')) AS pivots (data)
 )
 
 SELECT * FROM final

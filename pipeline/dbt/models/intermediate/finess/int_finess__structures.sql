@@ -26,7 +26,7 @@ interesting_etablissement_categories AS (
         ('228'),
         -- Centre de soins et de prévention
         ('636')
-    ) AS x(categetab)
+    ) AS x (categetab)
 ),
 
 final AS (
@@ -45,9 +45,9 @@ final AS (
         NULL                                                              AS "lien_source",
         NULL                                                              AS "horaires_ouverture",
         NULL                                                              AS "accessibilite",
-        NULL::TEXT[]                                                      AS "labels_nationaux",
-        NULL::TEXT[]                                                      AS "labels_autres",
-        NULL::TEXT[]                                                      AS "thematiques",
+        NULL::TEXT []                                                     AS "labels_nationaux",
+        NULL::TEXT []                                                     AS "labels_autres",
+        NULL::TEXT []                                                     AS "thematiques",
         NULL                                                              AS "typologie",
         NULL                                                              AS "presentation_resume",
         NULL                                                              AS "presentation_detail",

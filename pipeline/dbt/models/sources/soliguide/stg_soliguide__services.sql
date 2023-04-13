@@ -12,7 +12,7 @@ final AS (
         services.data ->> 'categorie' AS "categorie"
     FROM
         source,
-        LATERAL(SELECT * FROM JSONB_PATH_QUERY(source.services_all, '$[*]')) AS services(data)
+        LATERAL(SELECT * FROM JSONB_PATH_QUERY(source.services_all, '$[*]')) AS services (data)
 )
 
 SELECT * FROM final

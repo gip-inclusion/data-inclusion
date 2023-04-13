@@ -10,7 +10,7 @@ final AS (
         telephones.data ->> 'description' AS "description"
     FROM
         source,
-        LATERAL(SELECT * FROM JSONB_PATH_QUERY(source.data, '$.telephone[*]')) AS telephones(data)
+        LATERAL(SELECT * FROM JSONB_PATH_QUERY(source.data, '$.telephone[*]')) AS telephones (data)
 )
 
 SELECT * FROM final

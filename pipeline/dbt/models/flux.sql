@@ -51,11 +51,13 @@ inserts AS (
         'AJOUT'                                               AS "type"
     FROM snapshots_with_first_extraction_date
     LEFT JOIN snapshots_with_first_extraction_date AS prev
-        ON snapshots_with_first_extraction_date._di_surrogate_id = prev._di_surrogate_id
+        ON
+            snapshots_with_first_extraction_date._di_surrogate_id = prev._di_surrogate_id
             AND snapshots_with_first_extraction_date.dbt_valid_from = prev.dbt_valid_to
-    WHERE prev.data IS NULL
+    WHERE
+        prev.data IS NULL
         -- ignore additions from the first date of extraction
-        AND snapshots_with_first_extraction_date._di_logical_date > snapshots_with_first_extraction_date.first_extraction_date  -- noqa: L016
+        AND snapshots_with_first_extraction_date._di_logical_date > snapshots_with_first_extraction_date.first_extraction_date
 ),
 
 updates AS (
@@ -69,7 +71,8 @@ updates AS (
         'MODIFICATION'                                        AS "type"
     FROM snapshots_with_first_extraction_date
     INNER JOIN snapshots_with_first_extraction_date AS next_
-        ON snapshots_with_first_extraction_date._di_surrogate_id = next_._di_surrogate_id
+        ON
+            snapshots_with_first_extraction_date._di_surrogate_id = next_._di_surrogate_id
             AND snapshots_with_first_extraction_date.dbt_valid_to = next_.dbt_valid_from
 ),
 
@@ -84,9 +87,11 @@ deletes AS (
         'SUPPRESSION'                                         AS "type"
     FROM snapshots_with_first_extraction_date
     LEFT JOIN snapshots_with_first_extraction_date AS next_
-        ON snapshots_with_first_extraction_date._di_surrogate_id = next_._di_surrogate_id
+        ON
+            snapshots_with_first_extraction_date._di_surrogate_id = next_._di_surrogate_id
             AND snapshots_with_first_extraction_date.dbt_valid_to = next_.dbt_valid_from
-    WHERE snapshots_with_first_extraction_date.dbt_valid_to IS NOT NULL
+    WHERE
+        snapshots_with_first_extraction_date.dbt_valid_to IS NOT NULL
         AND next_.data IS NULL
 ),
 

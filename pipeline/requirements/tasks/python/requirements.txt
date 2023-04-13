@@ -8,17 +8,17 @@ aiohttp==3.8.4
     # via apache-airflow-providers-http
 aiosignal==1.3.1
     # via aiohttp
-alembic==1.10.2
+alembic==1.10.3
     # via apache-airflow
 anyio==3.6.2
     # via httpcore
-apache-airflow==2.5.1
+apache-airflow==2.5.3
     # via
     #   apache-airflow-providers-amazon
     #   apache-airflow-providers-postgres
-apache-airflow-providers-amazon==7.3.0
+apache-airflow-providers-amazon==7.4.0
     # via -r requirements/tasks/python/requirements.in
-apache-airflow-providers-common-sql==1.3.4
+apache-airflow-providers-common-sql==1.4.0
     # via
     #   apache-airflow
     #   apache-airflow-providers-amazon
@@ -26,7 +26,7 @@ apache-airflow-providers-common-sql==1.3.4
     #   apache-airflow-providers-sqlite
 apache-airflow-providers-ftp==3.3.1
     # via apache-airflow
-apache-airflow-providers-http==4.2.0
+apache-airflow-providers-http==4.3.0
     # via apache-airflow
 apache-airflow-providers-imap==3.1.1
     # via apache-airflow
@@ -36,10 +36,12 @@ apache-airflow-providers-sqlite==3.3.1
     # via apache-airflow
 apispec[yaml]==3.3.2
     # via flask-appbuilder
-argcomplete==2.1.1
+argcomplete==3.0.5
     # via apache-airflow
 asgiref==3.6.0
-    # via apache-airflow-providers-http
+    # via
+    #   apache-airflow-providers-amazon
+    #   apache-airflow-providers-http
 asn1crypto==1.5.1
     # via scramp
 async-timeout==4.0.2
@@ -53,16 +55,16 @@ attrs==22.2.0
     #   jsonschema
 babel==2.12.1
     # via flask-babel
-beautifulsoup4==4.11.2
+beautifulsoup4==4.12.2
     # via redshift-connector
-blinker==1.5
+blinker==1.6.1
     # via apache-airflow
-boto3==1.26.87
+boto3==1.26.111
     # via
     #   apache-airflow-providers-amazon
     #   redshift-connector
     #   watchtower
-botocore==1.29.87
+botocore==1.29.111
     # via
     #   boto3
     #   redshift-connector
@@ -110,9 +112,9 @@ connexion[flask]==2.14.2
     # via apache-airflow
 cron-descriptor==1.2.35
     # via apache-airflow
-croniter==1.3.8
+croniter==1.3.11
     # via apache-airflow
-cryptography==39.0.2
+cryptography==40.0.1
     # via apache-airflow
 decorator==5.1.1
     # via jsonpath-ng
@@ -128,9 +130,9 @@ email-validator==1.3.1
     # via flask-appbuilder
 et-xmlfile==1.1.0
     # via openpyxl
-exceptiongroup==1.1.0
+exceptiongroup==1.1.1
     # via cattrs
-fiona==1.9.1
+fiona==1.9.3
     # via geopandas
 flask==2.2.3
     # via
@@ -180,16 +182,16 @@ gunicorn==20.1.0
     # via apache-airflow
 h11==0.14.0
     # via httpcore
-httpcore==0.16.3
+httpcore==0.17.0
     # via httpx
-httpx==0.23.3
+httpx==0.24.0
     # via apache-airflow
 idna==3.4
     # via
     #   anyio
     #   email-validator
+    #   httpx
     #   requests
-    #   rfc3986
     #   yarl
 inflection==0.5.1
     # via connexion
@@ -228,7 +230,7 @@ lxml==4.9.2
     # via redshift-connector
 mako==1.2.4
     # via alembic
-markdown==3.4.1
+markdown==3.4.3
     # via apache-airflow
 markdown-it-py==2.2.0
     # via
@@ -266,15 +268,15 @@ munch==2.5.0
     # via fiona
 mypy-boto3-appflow==1.26.78
     # via apache-airflow-providers-amazon
-mypy-boto3-rds==1.26.72
+mypy-boto3-rds==1.26.108
     # via apache-airflow-providers-amazon
-mypy-boto3-redshift-data==1.26.30
+mypy-boto3-redshift-data==1.26.109
     # via apache-airflow-providers-amazon
 numpy==1.24.2
     # via
     #   pandas
     #   shapely
-openpyxl==3.1.0
+openpyxl==3.1.2
     # via -r requirements/tasks/python/requirements.in
 packaging==23.0
     # via
@@ -285,7 +287,7 @@ packaging==23.0
     #   marshmallow
     #   redshift-connector
     #   sqlalchemy-redshift
-pandas==1.5.3
+pandas==2.0.0
     # via
     #   -r requirements/tasks/python/requirements.in
     #   geopandas
@@ -301,15 +303,15 @@ prison==0.2.1
     # via flask-appbuilder
 psutil==5.9.4
     # via apache-airflow
-psycopg2==2.9.5
+psycopg2==2.9.6
     # via -r requirements/tasks/python/requirements.in
-psycopg2-binary==2.9.5
+psycopg2-binary==2.9.6
     # via apache-airflow-providers-postgres
 pyairtable==1.4.0
     # via -r requirements/tasks/python/requirements.in
 pycparser==2.21
     # via cffi
-pygments==2.14.0
+pygments==2.15.0
     # via
     #   apache-airflow
     #   rich
@@ -318,7 +320,7 @@ pyjwt==2.6.0
     #   apache-airflow
     #   flask-appbuilder
     #   flask-jwt-extended
-pyproj==3.4.1
+pyproj==3.5.0
     # via geopandas
 pyrsistent==0.19.3
     # via jsonschema
@@ -338,7 +340,7 @@ python-slugify==8.0.1
     # via
     #   apache-airflow
     #   python-nvd3
-pytz==2022.7.1
+pytz==2023.3
     # via
     #   flask-babel
     #   pandas
@@ -362,9 +364,9 @@ requests==2.28.2
     #   requests-toolbelt
 requests-toolbelt==0.10.1
     # via apache-airflow-providers-http
-rfc3986[idna2008]==1.5.0
-    # via httpx
-rich==13.3.2
+rfc3339-validator==0.1.4
+    # via apache-airflow
+rich==13.3.3
     # via apache-airflow
 s3transfer==0.6.0
     # via boto3
@@ -380,6 +382,7 @@ six==1.16.0
     #   munch
     #   prison
     #   python-dateutil
+    #   rfc3339-validator
 sniffio==1.3.0
     # via
     #   anyio
@@ -387,7 +390,7 @@ sniffio==1.3.0
     #   httpx
 soupsieve==2.4
     # via beautifulsoup4
-sqlalchemy==1.4.46
+sqlalchemy==1.4.47
     # via
     #   -r requirements/tasks/python/requirements.in
     #   alembic
@@ -401,7 +404,7 @@ sqlalchemy==1.4.46
     #   sqlalchemy-utils
 sqlalchemy-jsonfield==1.0.1.post0
     # via apache-airflow
-sqlalchemy-redshift==0.8.12
+sqlalchemy-redshift==0.8.14
     # via apache-airflow-providers-amazon
 sqlalchemy-utils==0.40.0
     # via flask-appbuilder
@@ -423,14 +426,15 @@ typing-extensions==4.5.0
     # via
     #   alembic
     #   apache-airflow
+    #   blinker
     #   mypy-boto3-appflow
-    #   mypy-boto3-rds
-    #   mypy-boto3-redshift-data
+tzdata==2023.3
+    # via pandas
 uc-micro-py==1.0.1
     # via linkify-it-py
 unicodecsv==0.14.1
     # via apache-airflow
-urllib3==1.26.14
+urllib3==1.26.15
     # via
     #   -r requirements/tasks/python/requirements.in
     #   botocore
@@ -450,7 +454,7 @@ wtforms==3.0.1
     # via
     #   flask-appbuilder
     #   flask-wtf
-xlsxwriter==3.0.8
+xlsxwriter==3.0.9
     # via -r requirements/tasks/python/requirements.in
 yarl==1.8.2
     # via aiohttp

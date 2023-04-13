@@ -35,7 +35,7 @@ final AS (
         NULL          AS "courriel",
         NULL          AS "contact_public",
         NULL          AS "date_maj",
-        NULL::TEXT[]  AS "modes_accueil",
+        NULL::TEXT [] AS "modes_accueil",
         NULL          AS "zone_diffusion_type",
         NULL          AS "zone_diffusion_code",
         NULL          AS "zone_diffusion_nom"

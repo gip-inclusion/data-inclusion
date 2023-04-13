@@ -10,7 +10,7 @@ final AS (
         site_internets.data ->> 'libelle' AS "libelle"
     FROM
         source,
-        LATERAL(SELECT * FROM JSONB_PATH_QUERY(source.data, '$.site_internet[*]')) AS site_internets(data)
+        LATERAL(SELECT * FROM JSONB_PATH_QUERY(source.data, '$.site_internet[*]')) AS site_internets (data)
 )
 
 SELECT * FROM final

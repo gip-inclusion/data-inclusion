@@ -29,6 +29,9 @@ tox
 You can run dbt commands from your terminal.
 
 ```bash
+# install dbt
+pipx install --include-deps dbt-postgres==1.4.5
+
 # install extra dbt packages (e.g. dbt_utils)
 dbt deps
 
@@ -73,7 +76,7 @@ To update the constraints and upgrade the requirements:
 # optionally bump the airflow version
 export AIRFLOW_VERSION=
 export PYTHON_VERSION=3.10
-curl https://raw.githubusercontent.com/apache/airflow/constraints-${AIRFLOW_VERSION}/constraints-${PYTHON_VERSION}.txt > requirements/constraints.txt
+curl https://raw.githubusercontent.com/apache/airflow/constraints-${AIRFLOW_VERSION}/constraints-${PYTHON_VERSION}.txt > requirements/airflow/constraints.txt
 pip-compile --upgrade requirements/airflow/requirements.in --output-file requirements/airflow/requirements.txt
 ```
 
