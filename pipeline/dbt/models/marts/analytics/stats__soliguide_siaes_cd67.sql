@@ -34,7 +34,7 @@ final AS (
             WHEN NOT gip_structures_in_cd67.antenne AND soliguide_siaes_in_cd67._di_annotated_siret = gip_structures_in_cd67.siret THEN 'exact match'
             WHEN NOT gip_structures_in_cd67.antenne AND LEFT(soliguide_siaes_in_cd67._di_annotated_siret, 9) = LEFT(gip_structures_in_cd67.siret, 9) THEN 'partial match'
             ELSE 'not referenced by soliguide'
-        END AS "status",
+        END                                            AS "status",
         {{
             dbt_utils.star(
                 from=ref('int__enhanced_structures'),
@@ -54,7 +54,7 @@ final AS (
     ORDER BY
         soliguide_siaes_in_cd67.id,
         gip_structures_in_cd67.source,
-        status,
+        status,  -- noqa: RF02
         gip_structures_in_cd67.siret,
         gip_structures_in_cd67.id
 )

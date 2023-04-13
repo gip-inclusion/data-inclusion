@@ -12,11 +12,11 @@ final AS (
                 except=['courriel'])
         }},
         CASE
-            WHEN _di_email_is_pii THEN '***'
-            ELSE courriel
+            WHEN structures._di_email_is_pii THEN '***'
+            ELSE structures.courriel
         END AS "courriel"
     FROM structures
-    WHERE source NOT IN ('soliguide', 'siao', 'finess')
+    WHERE structures.source NOT IN ('soliguide', 'siao', 'finess')
 )
 
 SELECT * FROM final

@@ -6,29 +6,32 @@ final AS (
     SELECT
         _di_source_id         AS "_di_source_id",
         ARRAY(
-            SELECT * FROM JSONB_ARRAY_ELEMENTS_TEXT(
-                (
-                    SELECT *
-                    FROM JSONB_PATH_QUERY_ARRAY(data, '$.kinds[*].value')
+            SELECT * FROM
+                JSONB_ARRAY_ELEMENTS_TEXT(
+                    (
+                        SELECT *
+                        FROM JSONB_PATH_QUERY_ARRAY(data, '$.kinds[*].value')
+                    )
                 )
-            )
-        )::TEXT[]             AS "kinds",
+        )::TEXT []            AS "kinds",
         ARRAY(
-            SELECT * FROM JSONB_ARRAY_ELEMENTS_TEXT(
-                (
-                    SELECT *
-                    FROM JSONB_PATH_QUERY_ARRAY(data, '$.categories[*].value')
+            SELECT * FROM
+                JSONB_ARRAY_ELEMENTS_TEXT(
+                    (
+                        SELECT *
+                        FROM JSONB_PATH_QUERY_ARRAY(data, '$.categories[*].value')
+                    )
                 )
-            )
-        )::TEXT[]             AS "categories",
+        )::TEXT []            AS "categories",
         ARRAY(
-            SELECT * FROM JSONB_ARRAY_ELEMENTS_TEXT(
-                (
-                    SELECT *
-                    FROM JSONB_PATH_QUERY_ARRAY(data, '$.subcategories[*].value')
+            SELECT * FROM
+                JSONB_ARRAY_ELEMENTS_TEXT(
+                    (
+                        SELECT *
+                        FROM JSONB_PATH_QUERY_ARRAY(data, '$.subcategories[*].value')
+                    )
                 )
-            )
-        )::TEXT[]             AS "subcategories",
+        )::TEXT []            AS "subcategories",
         data ->> 'id'         AS "id",
         data ->> 'structure'  AS "structure",
         data ->> 'name'       AS "name",

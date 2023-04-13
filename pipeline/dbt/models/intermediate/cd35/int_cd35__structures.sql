@@ -23,9 +23,9 @@ final AS (
         url                                 AS "lien_source",
         org_horaire                         AS "horaires_ouverture",
         NULL                                AS "accessibilite",
-        NULL::TEXT[]                        AS "labels_nationaux",
-        NULL::TEXT[]                        AS "labels_autres",
-        NULL::TEXT[]                        AS "thematiques",
+        NULL::TEXT []                       AS "labels_nationaux",
+        NULL::TEXT []                       AS "labels_autres",
+        NULL::TEXT []                       AS "thematiques",
         CASE org_sigle
             WHEN 'CCAS' THEN 'CCAS'
             WHEN 'MAIRIE' THEN 'MUNI'

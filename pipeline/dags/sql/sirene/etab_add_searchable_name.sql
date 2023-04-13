@@ -22,11 +22,11 @@ SELECT
                 NOT(
                     sirene_stock_unite_legale."denominationUniteLegale"
                     LIKE (
-                        sirene_etablissement_geocode."denominationUsuelleEtablissement" -- noqa: L016
+                        sirene_etablissement_geocode."denominationUsuelleEtablissement"
                         || '%'
                     )
                 )
-                THEN sirene_etablissement_geocode."denominationUsuelleEtablissement" -- noqa: L016
+                THEN sirene_etablissement_geocode."denominationUsuelleEtablissement"
             ELSE ''
         END, '')
     || COALESCE(

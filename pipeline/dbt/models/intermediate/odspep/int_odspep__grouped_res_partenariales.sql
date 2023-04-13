@@ -12,20 +12,22 @@ ressources_partenariales AS (
 ressources_partenariales_with_group_key AS (
     SELECT
         *,
-        UNACCENT(LOWER(CONCAT(nom_structure,
+        UNACCENT(LOWER(CONCAT(
+            nom_structure,
             l1_identification_dest_adr,
             l3_complement_adr,
             l4_numero_lib_voie_adr,
-            code_commune_adr))) AS "group_key"
+            code_commune_adr
+        ))) AS "group_key"
     FROM ressources_partenariales
 ),
 
 final AS (
     SELECT
         {{ dbt_utils.star(from=ref('int_odspep__enhanced_res_partenariales')) }},
-        group_key                             AS "group_key",
-        DENSE_RANK() OVER(ORDER BY group_key) AS "group_number",
-        COUNT(*) OVER(PARTITION BY group_key) AS "group_size"
+        group_key                              AS "group_key",
+        DENSE_RANK() OVER (ORDER BY group_key) AS "group_number",
+        COUNT(*) OVER (PARTITION BY group_key) AS "group_size"
     FROM ressources_partenariales_with_group_key
 )
 

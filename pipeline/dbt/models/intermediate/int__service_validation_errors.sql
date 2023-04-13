@@ -166,7 +166,7 @@ invalid_courriel AS (
         courriel::TEXT             AS "value",
         'courriel_invalide'        AS "type"
     FROM services
-    WHERE courriel IS NOT NULL AND NOT courriel ~ '^[a-zA-Z0-9.!#$%&''*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$'  -- noqa: L016
+    WHERE courriel IS NOT NULL AND NOT courriel ~ '^[a-zA-Z0-9.!#$%&''*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$'
 ),
 
 invalid_modes_accueil AS (
@@ -192,7 +192,8 @@ invalid_zone_diffusion_type AS (
         zone_diffusion_type::TEXT      AS "value",
         'zone_diffusion_type_invalide' AS "type"
     FROM services
-    WHERE zone_diffusion_type IS NOT NULL
+    WHERE
+        zone_diffusion_type IS NOT NULL
         AND NOT zone_diffusion_type IN (SELECT value FROM types_cog)
 ),
 

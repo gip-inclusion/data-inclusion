@@ -15,7 +15,7 @@ final AS (
         annotation_annotation
     INNER JOIN
         annotation_dataset ON
-            annotation_annotation.dataset_id = annotation_dataset.id
+        annotation_annotation.dataset_id = annotation_dataset.id
     WHERE
         NOT annotation_annotation.closed
         AND NOT annotation_annotation.irrelevant

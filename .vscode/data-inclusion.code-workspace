@@ -15,14 +15,5 @@
 		{
 			"path": ".."
 		}
-	],
-	"settings": {
-		"sqlfluff.executablePath": "${workspaceFolder}/../pipeline/.venv/bin/sqlfluff",
-		"sqlfluff.config": "${workspaceFolder}/../pipeline/pyproject.toml",
-		"sqlfluff.dialect": "postgres",
-		"sqlfluff.linter.delay": 5000,
-		"sqlfluff.format.arguments": [
-			"--FIX-EVEN-UNPARSABLE"
-		]
-	}
+	]
 }

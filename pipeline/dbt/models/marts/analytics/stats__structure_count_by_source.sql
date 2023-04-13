@@ -5,7 +5,7 @@ WITH structures AS (
 final AS (
     SELECT
         source,
-        COUNT(*)
+        COUNT(*) AS "count"
     FROM structures
     GROUP BY 1
     ORDER BY 2 DESC
