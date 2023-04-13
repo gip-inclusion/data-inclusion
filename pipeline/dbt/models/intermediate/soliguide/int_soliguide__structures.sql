@@ -26,7 +26,8 @@ final AS (
         entity_website              AS "site_web",
         position_code_postal        AS "code_postal",
         NULL                        AS "code_insee",
-        entity_mail                 AS "courriel"
+        entity_mail                 AS "courriel",
+        NULL                        AS "telephone",
         CASE LENGTH(description) <= 280
             WHEN TRUE THEN description
             WHEN FALSE THEN LEFT(description, 279) || '…'
@@ -34,8 +35,7 @@ final AS (
         CASE LENGTH(description) <= 280
             WHEN TRUE THEN NULL
             WHEN FALSE THEN description
-        END                         AS "presentation_detail",
-        NULL                        AS "telephone",
+        END                         AS "presentation_detail"
     FROM places
     ORDER BY 1
 )
