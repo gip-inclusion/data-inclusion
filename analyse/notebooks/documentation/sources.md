@@ -25,12 +25,13 @@
 | ------------------------------------------------------------------ | ------------------------------------------ |
 | Lien vers les données d'origine                                    | {{ ressource.lien_donnees_producteurs }}   |
 | Types de données                                                   | {{ ressource.types_donnees }}              |
-| Ces données sont disponibles dans l'API data.inclusion             | {{ ressource.api }}                        |
-| Ces données sont disponibles en open.data sur notre page data.gouv | {{ ressource.open_data }}                  |
-| Ces données sont disponibles dans notre outil de siretisation      | {{ ressource.siretisation_automatisable }} |
+| Ces données sont disponibles dans [l'API data.inclusion](https://www.data.inclusion.beta.gouv.fr/api/lapi-data-inclusion)             | {{ ressource.api }}                        |
+| Ces données sont disponibles en [Open Data](https://www.data.inclusion.beta.gouv.fr/open-data/acceder-aux-donnees) | {{ ressource.open_data }}                  |
+| Ces données sont disponibles dans [notre outil de siretisation](https://www.data.inclusion.beta.gouv.fr/schemas-de-donnees-de-loffre/siretisation)      | {{ ressource.siretisation_automatisable }} |
 | Ces données sont disponibles dans notre outil de correspondance    | {{ ressource.correspondances }}            |
-| Nous historicisons ces données                                     | {{ ressource.historisation }}              |
+| Nous historicisons les données d'origine                                     | {{ ressource.historisation }}              |
 
 {% endfor %}
 
+_______
 {% endfor %}
