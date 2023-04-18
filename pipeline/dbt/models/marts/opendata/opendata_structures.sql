@@ -16,7 +16,7 @@ final AS (
             ELSE structures.courriel
         END AS "courriel"
     FROM structures
-    WHERE structures.source NOT IN ('soliguide', 'siao', 'finess', 'immersion-facilitee')
+    WHERE structures.source NOT IN ('soliguide', 'siao', 'finess')
 )
 
 SELECT * FROM final
