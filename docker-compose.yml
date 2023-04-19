@@ -224,10 +224,34 @@ services:
     volumes:
       - files-data:/var/www
 
+  elasticsearch:
+    image: elasticsearch:8.7.0
+    depends_on:
+      - elasticsearch-init
+    ports:
+      - 9200:9200
+    mem_limit: 1073741824
+    environment:
+      - ELASTIC_USERNAME=elastic
+      - ELASTIC_PASSWORD=changeme
+      - discovery.type=single-node
+    volumes:
+      - es-data:/usr/share/elasticsearch/data
+      - es-plugins:/usr/share/elasticsearch/plugins
+
+  elasticsearch-init:
+    image: elasticsearch:8.7.0
+    command: bin/elasticsearch-plugin install analysis-icu
+    volumes:
+      - es-data:/usr/share/elasticsearch/data
+      - es-plugins:/usr/share/elasticsearch/plugins
+
 volumes:
   pg-data:
   minio-data:
   files-data:
+  es-data:
+  es-plugins:
 
 
 networks:
