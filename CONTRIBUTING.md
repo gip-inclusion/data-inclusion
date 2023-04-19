@@ -26,7 +26,7 @@ cp .template.env .env
 # to the value returned by `echo $(id -u)`
 
 # Start the stack
-docker-compose up -d
+docker compose up -d
 ```
 
 After a few seconds, the services should be avaible as follow:

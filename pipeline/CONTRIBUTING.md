@@ -23,7 +23,7 @@ tox
 
 ## dbt
 
-* dbt is configured to target the `target-db` postgres container (see the root `docker-compose`).
+* dbt is configured to target the `target-db` postgres container (see the root `docker-compose.yml`).
 * all dbt commands must be run in the in the `pipeline/dbt` directory.
 
 You can run dbt commands from your terminal.
