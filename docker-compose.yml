@@ -77,9 +77,6 @@ x-airflow-common:
     airflow-db:
       condition: service_healthy
 
-  profiles:
-    - airflow
-
 services:
   airflow-db:
     image: postgres:14
