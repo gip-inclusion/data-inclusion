@@ -166,7 +166,7 @@ invalid_courriel AS (
         courriel::TEXT             AS "value",
         'courriel_invalide'        AS "type"
     FROM services
-    WHERE courriel IS NOT NULL AND NOT courriel ~ '^[a-zA-Z0-9.!#$%&''*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$'
+    WHERE courriel IS NOT NULL AND NOT courriel ~ '^[a-zA-Z0-9!#$%&''*+/=?^_`{|}~-]+[a-zA-Z0-9.!#$%&''*+/=?^_`{|}~-]*@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$'
 ),
 
 invalid_modes_accueil AS (
