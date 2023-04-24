@@ -5,6 +5,7 @@ WITH source AS (
                 source('mediation_numerique_angers', 'services'),
                 source('mediation_numerique_assembleurs', 'services'),
                 source('mediation_numerique_cd49', 'services'),
+                source('mediation_numerique_cd87', 'services'),
                 source('mediation_numerique_conseiller_numerique', 'services'),
                 source('mediation_numerique_france_services', 'services'),
                 source('mediation_numerique_france_tiers_lieux', 'services'),

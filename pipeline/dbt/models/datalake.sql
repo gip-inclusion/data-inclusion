@@ -22,6 +22,8 @@ WITH source AS (
                 source('mediation_numerique_assembleurs', 'services'),
                 source('mediation_numerique_cd49', 'structures'),
                 source('mediation_numerique_cd49', 'services'),
+                source('mediation_numerique_cd87', 'structures'),
+                source('mediation_numerique_cd87', 'services'),
                 source('mediation_numerique_conseiller_numerique', 'structures'),
                 source('mediation_numerique_conseiller_numerique', 'services'),
                 source('mediation_numerique_france_services', 'structures'),
@@ -55,7 +57,7 @@ naturally_identified_data AS (
             WHEN _di_source_id = 'mes-aides' THEN data #>> '{fields,ID}'
             WHEN _di_source_id = 'siao' THEN NULL
             WHEN _di_source_id = 'un-jeune-une-solution' THEN data ->> 'id'
-        END AS "natural_id",
+        END AS "natural_id",  -- noqa: CV03
         {{
             dbt_utils.star(from=source('dora', 'structures'))
         }}
@@ -67,12 +69,12 @@ final AS (
     -- emulate whats currently expected by the siretisation orm
     -- TODO: update models of the siretisation orm
     SELECT
-        _di_logical_date::DATE               AS "logical_date",
         _di_batch_id                         AS "batch_id",
         _di_source_id                        AS "src_alias",
         _di_source_url                       AS "src_url",
         _di_stream_s3_key                    AS "file",
         data                                 AS "data",
+        CAST(_di_logical_date AS DATE)       AS "logical_date",
         GEN_RANDOM_UUID()                    AS "id",
         NOW()                                AS "created_at",
         JSONB_BUILD_OBJECT('id', natural_id) AS "data_normalized"

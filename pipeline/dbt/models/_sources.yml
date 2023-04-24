@@ -86,6 +86,12 @@ sources:
       - name: structures
       - name: services
 
+  - name: mediation_numerique_cd87
+    schema: mediation_numerique_cd87
+    tables:
+      - name: structures
+      - name: services
+
   - name: mediation_numerique_conseiller_numerique
     schema: mediation_numerique_conseiller_numerique
     tables:

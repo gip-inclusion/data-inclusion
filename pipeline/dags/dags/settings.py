@@ -169,6 +169,7 @@ SOURCES_CONFIGS = [
         for source_id in [
             "hinaura",
             "cd49",
+            "cd87",
             "assembleurs",
             "francilin",
             "france-tiers-lieux",
