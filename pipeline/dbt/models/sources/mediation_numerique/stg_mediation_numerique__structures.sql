@@ -11,6 +11,7 @@ WITH source AS (
                 source('mediation_numerique_france_tiers_lieux', 'structures'),
                 source('mediation_numerique_francilin', 'structures'),
                 source('mediation_numerique_hinaura', 'structures'),
+                source('mediation_numerique_hub_antilles', 'structures'),
             ],
             source_column_name=None
         )

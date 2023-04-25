@@ -122,6 +122,12 @@ sources:
       - name: structures
       - name: services
 
+  - name: mediation_numerique_hub_antilles
+    schema: mediation_numerique_hub_antilles
+    tables:
+      - name: structures
+      - name: services
+
   - name: odspep
     schema: odspep
     tables:

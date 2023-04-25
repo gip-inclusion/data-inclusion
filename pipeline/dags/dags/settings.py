@@ -176,6 +176,7 @@ SOURCES_CONFIGS = [
             "angers",
             "france-services",
             "conseiller-numerique",
+            "hub-antilles",
         ]
     ],
 ]

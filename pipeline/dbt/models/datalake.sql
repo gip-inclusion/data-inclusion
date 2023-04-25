@@ -34,6 +34,8 @@ WITH source AS (
                 source('mediation_numerique_francilin', 'services'),
                 source('mediation_numerique_hinaura', 'structures'),
                 source('mediation_numerique_hinaura', 'services'),
+                source('mediation_numerique_hub_antilles', 'structures'),
+                source('mediation_numerique_hub_antilles', 'services'),
                 source('mes_aides', 'aides'),
                 source('mes_aides', 'garages'),
                 source('siao', 'etablissements'),
