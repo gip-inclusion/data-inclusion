@@ -20,6 +20,11 @@ class StructureFactory(factory.Factory):
         model = models.Structure
 
     _di_surrogate_id = factory.Faker("uuid4")
+    _di_geocodage_code_insee = factory.Faker("postcode", locale="fr_FR")
+    _di_geocodage_score = factory.Faker(
+        "pyfloat", right_digits=2, positive=True, max_value=1
+    )
+
     id = factory.Faker("slug", locale="fr_FR")
     siret = factory.LazyFunction(lambda: fake.siret().replace(" ", ""))
     rna = factory.Faker("bothify", text="W#########")

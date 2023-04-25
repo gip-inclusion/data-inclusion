@@ -3,7 +3,7 @@ from datetime import date, datetime
 from enum import Enum
 from typing import Optional, TypeAlias
 
-from pydantic import BaseModel, EmailStr, constr
+from pydantic import BaseModel, EmailStr, Field, confloat, constr
 
 from data_inclusion.schema.models import (
     Frais,
@@ -193,6 +193,15 @@ CodePostal: TypeAlias = constr(min_length=5, max_length=5, regex=r"^\d{5}$")
 
 
 class Structure(BaseModel):
+    # internal metadata
+    di_geocodage_code_insee: Optional[constr(min_length=5, max_length=5)] = Field(
+        alias="_di_geocodage_code_insee"
+    )
+    di_geocodage_score: Optional[confloat(ge=0, le=1)] = Field(
+        alias="_di_geocodage_score"
+    )
+
+    # structure data
     id: str
     siret: Optional[constr(min_length=14, max_length=14, regex=r"^\d{14}$")]
     rna: Optional[constr(min_length=10, max_length=10, regex=r"^W\d{9}$")]
@@ -222,6 +231,7 @@ class Structure(BaseModel):
 
     class Config:
         orm_mode = True
+        allow_population_by_field_name = True
 
 
 class TokenCreationData(BaseModel):
