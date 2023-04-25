@@ -3,7 +3,6 @@ import logging
 import airflow
 import pendulum
 from airflow.operators import empty, python
-from airflow.providers.postgres.operators.postgres import PostgresOperator
 
 from dags.virtualenvs import PYTHON_BIN_PATH
 
@@ -128,6 +127,7 @@ def _import_stock_unite_legale():
     import textwrap
 
     import pandas as pd
+    import sqlalchemy as sqla
     import tqdm
     from airflow.models import Variable
     from airflow.providers.postgres.hooks.postgres import PostgresHook
@@ -143,9 +143,12 @@ def _import_stock_unite_legale():
             with pd.read_csv(
                 Variable.get("SIRENE_STOCK_UNITE_LEGALE_FILE_URL"),
                 usecols=[
+                    "activitePrincipaleUniteLegale",
                     "caractereEmployeurUniteLegale",
                     "categorieEntreprise",
                     "categorieJuridiqueUniteLegale",
+                    "dateCreationUniteLegale",
+                    # "dateDernierTraitementUniteLegale",
                     "denominationUniteLegale",
                     "denominationUsuelle1UniteLegale",
                     "denominationUsuelle2UniteLegale",
@@ -154,11 +157,15 @@ def _import_stock_unite_legale():
                     "etatAdministratifUniteLegale",
                     "identifiantAssociationUniteLegale",
                     "nicSiegeUniteLegale",
+                    "nomUniteLegale",
+                    "nomUsageUniteLegale",
+                    "prenom1UniteLegale",
                     "sigleUniteLegale",
                     "siren",
                     "societeMissionUniteLegale",
                     "trancheEffectifsUniteLegale",
                 ],
+                parse_dates=["dateCreationUniteLegale"],
                 dtype={
                     "siren": str,
                     "denominationUsuelle1UniteLegale": str,
@@ -171,11 +178,37 @@ def _import_stock_unite_legale():
             ) as reader:
                 with tqdm.tqdm() as pbar:
                     for chunck_df in reader:
+                        chunck_df = chunck_df.rename(
+                            columns={
+                                "activitePrincipaleUniteLegale": "activite_principale_unite_legale",  # noqa: E501
+                                "caractereEmployeurUniteLegale": "caractere_employeur_unite_legale",  # noqa: E501
+                                "categorieEntreprise": "categorie_entreprise",  # noqa: E501
+                                "categorieJuridiqueUniteLegale": "categorie_juridique_unite_legale",  # noqa: E501
+                                "dateCreationUniteLegale": "date_creation_unite_legale",  # noqa: E501
+                                "denominationUniteLegale": "denomination_unite_legale",  # noqa: E501
+                                "denominationUsuelle1UniteLegale": "denomination_usuelle_1_unite_legale",  # noqa: E501
+                                "denominationUsuelle2UniteLegale": "denomination_usuelle_2_unite_legale",  # noqa: E501
+                                "denominationUsuelle3UniteLegale": "denomination_usuelle_3_unite_legale",  # noqa: E501
+                                "economieSocialeSolidaireUniteLegale": "economie_sociale_solidaire_unite_legale",  # noqa: E501
+                                "etatAdministratifUniteLegale": "etat_administratif_unite_legale",  # noqa: E501
+                                "identifiantAssociationUniteLegale": "identifiant_association_unite_legale",  # noqa: E501
+                                "nicSiegeUniteLegale": "nic_siege_unite_legale",  # noqa: E501
+                                "nomUniteLegale": "nom_unite_legale",  # noqa: E501
+                                "nomUsageUniteLegale": "nom_usage_unite_legale",  # noqa: E501
+                                "prenom1UniteLegale": "prenom_1_unite_legale",  # noqa: E501
+                                "sigleUniteLegale": "sigle_unite_legale",  # noqa: E501
+                                "siren": "siren",  # noqa: E501
+                                "societeMissionUniteLegale": "societe_mission_unite_legale",  # noqa: E501
+                                "trancheEffectifsUniteLegale": "tranche_effectifs_unite_legale",  # noqa: E501
+                            }
+                        )
+
                         chunck_df.to_sql(
                             target_table,
                             con=conn,
                             if_exists="replace" if pbar.n == 0 else "append",
                             index=False,
+                            dtype={"date_creation_unite_legale": sqla.Date()},
                         )
 
                         pbar.update(len(chunck_df))
@@ -193,7 +226,7 @@ def _import_stock_unite_legale():
                 textwrap.dedent(
                     f"""
                         CREATE INDEX sirene_stock_unite_legale_cat_juridique_idx
-                        ON {target_table} ("categorieJuridiqueUniteLegale");
+                        ON {target_table} ("categorie_juridique_unite_legale");
                     """
                 )
             )
@@ -204,6 +237,7 @@ def _import_stock_etablissement_geocode():
 
     import geopandas
     import pandas as pd
+    import sqlalchemy as sqla
     import tqdm
     from airflow.models import Variable
     from airflow.providers.postgres.hooks.postgres import PostgresHook
@@ -220,16 +254,23 @@ def _import_stock_etablissement_geocode():
                 Variable.get("SIRENE_STOCK_ETAB_GEOCODE_FILE_URL"),
                 usecols=[
                     "activitePrincipaleEtablissement",
+                    # "activitePrincipaleRegistreMetiersEtablissement",
                     "caractereEmployeurEtablissement",
                     "codeCedex2Etablissement",
                     "codeCedexEtablissement",
                     "codeCommune2Etablissement",
                     "codeCommuneEtablissement",
+                    # "codePaysEtranger2Etablissement",
+                    # "codePaysEtrangerEtablissement",
                     "codePostal2Etablissement",
                     "codePostalEtablissement",
                     "complementAdresse2Etablissement",
                     "complementAdresseEtablissement",
+                    "dateCreationEtablissement",
+                    "dateDebut",
                     "denominationUsuelleEtablissement",
+                    # "distributionSpeciale2Etablissement",
+                    # "distributionSpecialeEtablissement",
                     "enseigne1Etablissement",
                     "enseigne2Etablissement",
                     "enseigne3Etablissement",
@@ -241,12 +282,17 @@ def _import_stock_etablissement_geocode():
                     "libelleCedexEtablissement",
                     "libelleCommune2Etablissement",
                     "libelleCommuneEtablissement",
+                    # "libelleCommuneEtranger2Etablissement",
+                    # "libelleCommuneEtrangerEtablissement",
+                    # "libellePaysEtranger2Etablissement",
+                    # "libellePaysEtrangerEtablissement",
                     "libelleVoie2Etablissement",
                     "libelleVoieEtablissement",
                     "nomenclatureActivitePrincipaleEtablissement",
                     "numeroVoie2Etablissement",
                     "numeroVoieEtablissement",
                     "statutDiffusionEtablissement",
+                    "trancheEffectifsEtablissement",
                     "typeVoie2Etablissement",
                     "typeVoieEtablissement",
                     "siret",
@@ -260,6 +306,7 @@ def _import_stock_etablissement_geocode():
                     "geo_l4",
                     "geo_l5",
                 ],
+                parse_dates=["dateCreationEtablissement", "dateDebut"],
                 dtype={
                     "activitePrincipaleEtablissement": str,
                     "caractereEmployeurEtablissement": str,
@@ -288,6 +335,7 @@ def _import_stock_etablissement_geocode():
                     "numeroVoie2Etablissement": str,
                     "numeroVoieEtablissement": str,
                     "statutDiffusionEtablissement": str,
+                    "trancheEffectifsEtablissement": str,
                     "typeVoie2Etablissement": str,
                     "typeVoieEtablissement": str,
                     "siret": str,
@@ -303,6 +351,54 @@ def _import_stock_etablissement_geocode():
             ) as reader:
                 with tqdm.tqdm() as pbar:
                     for chunck_df in reader:
+                        chunck_df = chunck_df.rename(
+                            columns={
+                                "activitePrincipaleEtablissement": "activite_principale_etablissement",  # noqa: E501
+                                "caractereEmployeurEtablissement": "caractere_employeur_etablissement",  # noqa: E501
+                                "codeCedex2Etablissement": "code_cedex_2_etablissement",  # noqa: E501
+                                "codeCedexEtablissement": "code_cedex_etablissement",  # noqa: E501
+                                "codeCommune2Etablissement": "code_commune_2_etablissement",  # noqa: E501
+                                "codeCommuneEtablissement": "code_commune_etablissement",  # noqa: E501
+                                "codePostal2Etablissement": "code_postal_2_etablissement",  # noqa: E501
+                                "codePostalEtablissement": "code_postal_etablissement",  # noqa: E501
+                                "complementAdresse2Etablissement": "complement_adresse_2_etablissement",  # noqa: E501
+                                "complementAdresseEtablissement": "complement_adresse_etablissement",  # noqa: E501
+                                "dateCreationEtablissement": "date_creation_etablissement",  # noqa: E501
+                                "dateDebut": "date_debut",  # noqa: E501
+                                "denominationUsuelleEtablissement": "denomination_usuelle_etablissement",  # noqa: E501
+                                "enseigne1Etablissement": "enseigne_1_etablissement",  # noqa: E501
+                                "enseigne2Etablissement": "enseigne_2_etablissement",  # noqa: E501
+                                "enseigne3Etablissement": "enseigne_3_etablissement",  # noqa: E501
+                                "etablissementSiege": "etablissement_siege",  # noqa: E501
+                                "etatAdministratifEtablissement": "etat_administratif_etablissement",  # noqa: E501
+                                "indiceRepetition2Etablissement": "indice_repetition_2_etablissement",  # noqa: E501
+                                "indiceRepetitionEtablissement": "indice_repetition_etablissement",  # noqa: E501
+                                "libelleCedex2Etablissement": "libelle_cedex_2_etablissement",  # noqa: E501
+                                "libelleCedexEtablissement": "libelle_cedex_etablissement",  # noqa: E501
+                                "libelleCommune2Etablissement": "libelle_commune_2_etablissement",  # noqa: E501
+                                "libelleCommuneEtablissement": "libelle_commune_etablissement",  # noqa: E501
+                                "libelleVoie2Etablissement": "libelle_voie_2_etablissement",  # noqa: E501
+                                "libelleVoieEtablissement": "libelle_voie_etablissement",  # noqa: E501
+                                "nomenclatureActivitePrincipaleEtablissement": "nomenclature_activite_principale_etablissement",  # noqa: E501
+                                "numeroVoie2Etablissement": "numero_voie_2_etablissement",  # noqa: E501
+                                "numeroVoieEtablissement": "numero_voie_etablissement",  # noqa: E501
+                                "statutDiffusionEtablissement": "statut_diffusion_etablissement",  # noqa: E501
+                                "trancheEffectifsEtablissement": "tranche_effectifs_etablissement",  # noqa: E501
+                                "typeVoie2Etablissement": "type_voie_2_etablissement",  # noqa: E501
+                                "typeVoieEtablissement": "type_voie_etablissement",  # noqa: E501
+                                "siret": "siret",
+                                "longitude": "longitude",
+                                "latitude": "latitude",
+                                "geo_score": "geo_score",
+                                "geo_type": "geo_type",
+                                "geo_adresse": "geo_adresse",
+                                "geo_id": "geo_id",
+                                "geo_ligne": "geo_ligne",
+                                "geo_l4": "geo_l4",
+                                "geo_l5": "geo_l5",
+                            }
+                        )
+
                         # Add geometry from lon/lat
                         # Computing it now rather than later (unlike searchable fields),
                         # because it will likely be immutable (whereas searchable fields
@@ -322,6 +418,10 @@ def _import_stock_etablissement_geocode():
                             con=conn,
                             if_exists="replace" if pbar.n == 0 else "append",
                             index=False,
+                            dtype={
+                                "date_creation_etablissement": sqla.Date(),
+                                "date_debut": sqla.Date(),
+                            },
                         )
 
                         pbar.update(len(chunck_df))
@@ -353,7 +453,7 @@ def _import_stock_etablissement_geocode():
                     f"""
                         CREATE INDEX sirene_etablissement_geocode_code_commune_like
                         ON {target_table}
-                        ("codeCommuneEtablissement" varchar_pattern_ops);
+                        ("code_commune_etablissement" varchar_pattern_ops);
                     """
                 )
             )
@@ -363,10 +463,241 @@ def _import_stock_etablissement_geocode():
                     f"""
                         CREATE INDEX sirene_etablissement_geocode_commune_trgm_idx
                         ON {target_table}
-                        USING gin ("libelleCommuneEtablissement" gin_trgm_ops);
+                        USING gin ("libelle_commune_etablissement" gin_trgm_ops);
                     """
                 )
             )
+
+
+def _index_etablissements():
+    import logging
+    import textwrap
+
+    import elasticsearch_dsl
+    import pandas as pd
+    import tqdm
+    from airflow.providers.postgres.hooks.postgres import PostgresHook
+    from elasticsearch import helpers
+    from elasticsearch_dsl import (
+        Boolean,
+        GeoPoint,
+        Keyword,
+        Text,
+        analyzer,
+        connections,
+        token_filter,
+        tokenizer,
+    )
+
+    logger = logging.getLogger(__name__)
+
+    connections.create_connection(
+        hosts=["http://elasticsearch:9200"],
+        http_auth=("elastic", "changeme"),
+        retry_on_timeout=True,
+    )
+
+    es_conn = connections.get_connection()
+    logger.info(es_conn.cluster.health())
+
+    # Define filters
+    french_elision = token_filter(
+        "french_elision",
+        type="elision",
+        articles_case=True,
+        articles=[
+            "l",
+            "m",
+            "t",
+            "qu",
+            "n",
+            "s",
+            "j",
+            "d",
+            "c",
+            "jusqu",
+            "quoiqu",
+            "lorsqu",
+            "puisqu",
+        ],
+    )
+    french_stop = token_filter("french_stop", type="stop", stopwords="_french_")
+    french_stemmer = token_filter(
+        "french_stemmer", type="stemmer", language="light_french"
+    )
+    # ignore_case option deprecated, use lowercase filter before synonym filter
+    french_synonym = token_filter(
+        "french_synonym", type="synonym", expand=True, synonyms=[]
+    )
+
+    # Define analyzer
+    annuaire_analyzer = analyzer(
+        "annuaire_analyzer",
+        tokenizer=tokenizer("icu_tokenizer"),
+        filter=[
+            "lowercase",
+            french_elision,
+            french_stop,
+            "icu_folding",
+            french_synonym,
+            "asciifolding",
+            french_stemmer,
+        ],
+    )
+
+    target_index_name = "siret"
+
+    class EtablissementDocument(elasticsearch_dsl.Document):
+        siren = Keyword(required=True)
+        siret = Keyword(required=True)
+
+        nom_complet = Text(analyzer=annuaire_analyzer, fields={"keyword": Keyword()})
+
+        denomination_unite_legale = Text()
+        sigle_unite_legale = Keyword()
+
+        etablissement_siege = Boolean()
+        denomination_usuelle_etablissement = Text()
+        activite_principale_etablissement = Keyword()
+        code_commune_etablissement = Keyword()
+        code_postal_etablissement = Keyword()
+        libelle_commune_etablissement = Text()
+        libelle_voie_etablissement = Text()
+        numero_voie_etablissement = Text()
+
+        adresse_complete = Text()
+
+        departement = Keyword()
+
+        coordonnees = GeoPoint()
+        longitude = Text()
+        latitude = Text()
+
+        class Index:
+            settings = {"number_of_shards": 1, "number_of_replicas": 0}
+            name = target_index_name
+
+    index = elasticsearch_dsl.Index(target_index_name)
+    if index.exists():
+        index.delete()
+    EtablissementDocument.init(target_index_name)
+
+    def format_nom_complet(df: pd.DataFrame) -> pd.Series:
+        nom_complet = df[
+            [
+                "denomination_unite_legale",
+                "denomination_usuelle_etablissement",
+                "sigle_unite_legale",
+            ]
+        ].apply(lambda row: row.str.cat(sep=" "), axis=1)
+        nom_complet = nom_complet.str.lower()
+
+        # TODO: manage individual company without official company name ?
+
+        return nom_complet
+
+    def format_adresse_complete(df: pd.DataFrame) -> pd.Series:
+        adresse_complete = df[
+            [
+                "numero_voie_etablissement",
+                "indice_repetition_etablissement",
+                "type_voie_etablissement",
+                "libelle_voie_etablissement",
+                "complement_adresse_etablissement",
+            ]
+        ].apply(lambda row: row.str.cat(sep=" "), axis=1)
+
+        adresse_complete[df.libelle_commune_etablissement.notna()] = (
+            adresse_complete[df.libelle_commune_etablissement.notna()]
+            + " "
+            + df.libelle_commune_etablissement.fillna("")
+        )
+        adresse_complete = adresse_complete.str.strip()
+
+        # TODO: cedex ?
+
+        adresse_complete = adresse_complete.str.lower()
+        return adresse_complete
+
+    def format_departement(df: pd.DataFrame) -> pd.Series:
+        departement = df.code_commune_etablissement
+
+        in_outremer_idx = departement.str.startswith("97", na=False)
+        departement[in_outremer_idx] = departement[in_outremer_idx].str[:3]
+        departement[~in_outremer_idx] = departement[~in_outremer_idx].str[:2]
+        return departement
+
+    def format_coordonnees(df: pd.DataFrame) -> pd.Series:
+        coordonnees = df.latitude.astype(str) + "," + df.longitude.astype(str)
+        coordonnees[df.latitude.isna() | df.longitude.isna()] = None
+        return coordonnees
+
+    pg_hook = PostgresHook(postgres_conn_id="pg")
+    engine = pg_hook.get_sqlalchemy_engine()
+    with engine.connect() as conn:
+        with conn.begin():
+            # process by chunk
+            with tqdm.tqdm() as pbar:
+                for chunck_df in pd.read_sql_query(
+                    sql=textwrap.dedent(
+                        """\
+                            SELECT
+                                sirene_etablissement_geocode.siret,
+                                sirene_etablissement_geocode.etablissement_siege,
+                                sirene_etablissement_geocode.longitude,
+                                sirene_etablissement_geocode.latitude,
+                                sirene_etablissement_geocode.complement_adresse_etablissement,
+                                sirene_etablissement_geocode.numero_voie_etablissement,
+                                sirene_etablissement_geocode.indice_repetition_etablissement,
+                                sirene_etablissement_geocode.type_voie_etablissement,
+                                sirene_etablissement_geocode.libelle_voie_etablissement,
+                                sirene_etablissement_geocode.denomination_usuelle_etablissement,
+                                sirene_etablissement_geocode.activite_principale_etablissement,
+                                sirene_etablissement_geocode.code_commune_etablissement,
+                                sirene_etablissement_geocode.code_postal_etablissement,
+                                sirene_etablissement_geocode.libelle_commune_etablissement,
+                                sirene_stock_unite_legale.siren,
+                                sirene_stock_unite_legale.denomination_unite_legale,
+                                sirene_stock_unite_legale.sigle_unite_legale
+                            FROM sirene_etablissement_geocode
+                            INNER JOIN sirene_stock_unite_legale
+                            ON LEFT(sirene_etablissement_geocode.siret, 9)
+                                = sirene_stock_unite_legale.siren
+                        """
+                    ),
+                    con=conn,
+                    chunksize=10000,
+                ):
+                    pbar.update(len(chunck_df))
+
+                    # generate derivate fields
+                    chunck_df["nom_complet"] = format_nom_complet(chunck_df)
+                    chunck_df["adresse_complete"] = format_adresse_complete(chunck_df)
+                    chunck_df["departement"] = format_departement(chunck_df)
+                    chunck_df["coordonnees"] = format_coordonnees(chunck_df)
+                    # TODO: libelle pour code APE
+
+                    chunck_df = chunck_df.fillna("")
+                    chunck_df = chunck_df.replace("", None)
+
+                    # convert to document
+                    serialized_documents = (
+                        EtablissementDocument(
+                            meta={"id": row["siret"]}, **row.to_dict()
+                        ).to_dict(include_meta=True)
+                        for _, row in chunck_df.iterrows()
+                    )
+
+                    # disable verbose elasticsearch logs
+                    logger = logging.getLogger("elasticsearch")
+                    logger.setLevel(logging.WARNING)
+
+                    # send to ES
+                    for success, info in helpers.parallel_bulk(
+                        es_conn, serialized_documents, chunk_size=1000
+                    ):
+                        if not success:
+                            logger.warning("Failed indexing:", info)
 
 
 with airflow.DAG(
@@ -403,16 +734,10 @@ with airflow.DAG(
         python_callable=_import_stock_etablissement_geocode,
     )
 
-    add_stock_etablissement_searchable_name = PostgresOperator(
-        task_id="add_stock_etablissement_searchable_name",
-        postgres_conn_id="pg",
-        sql="sql/sirene/etab_add_searchable_name.sql",
-    )
-
-    add_stock_etablissement_searchable_l4 = PostgresOperator(
-        task_id="add_stock_etablissement_searchable_l4",
-        postgres_conn_id="pg",
-        sql="sql/sirene/etab_add_searchable_l4.sql",
+    index_etablissements = python.ExternalPythonOperator(
+        task_id="index_etablissements",
+        python=str(PYTHON_BIN_PATH),
+        python_callable=_index_etablissements,
     )
 
     (
@@ -430,6 +755,5 @@ with airflow.DAG(
             import_stock_etablissement_geocode,
             import_stock_unite_legale,
         ]
-        >> add_stock_etablissement_searchable_l4
-        >> add_stock_etablissement_searchable_name
+        >> index_etablissements
     )

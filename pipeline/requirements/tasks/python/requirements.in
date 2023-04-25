@@ -1,6 +1,8 @@
 apache-airflow-providers-postgres
 apache-airflow-providers-amazon
+apache-airflow-providers-elasticsearch
 
+elasticsearch_dsl
 GeoAlchemy2
 geopandas
 openpyxl!=3.1.1
