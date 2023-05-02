@@ -2,6 +2,19 @@ WITH services AS (
     SELECT * FROM {{ ref('stg_dora__services') }}
 ),
 
+di_frais_by_dora_fee_condition AS (
+    SELECT x.*
+    FROM (
+        VALUES
+        ('1', 'gratuit'),
+        ('2', 'gratuit-sous-conditions'),
+        ('3', 'payant'),
+        ('4', 'adhesion'),
+        ('5', 'pass-numerique')
+    ) AS x (fee_condition, frais)
+),
+
+
 final AS (
     SELECT
         id,
@@ -11,7 +24,11 @@ final AS (
         NULL                                                    AS "presentation_detail",
         kinds                                                   AS "types",
         online_form                                             AS "prise_rdv",
-        NULL::TEXT []                                           AS "frais",
+        ARRAY(
+            SELECT di_frais_by_dora_fee_condition.frais
+            FROM di_frais_by_dora_fee_condition
+            WHERE services.fee_condition = di_frais_by_dora_fee_condition.fee_condition
+        )::TEXT []                                              AS "frais",
         fee_details                                             AS "frais_autres",
         NULL::TEXT []                                           AS "profils",
         NULL                                                    AS "pre_requis",
