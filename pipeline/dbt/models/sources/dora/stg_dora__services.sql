@@ -4,7 +4,7 @@ WITH source AS (
 
 final AS (
     SELECT
-        _di_source_id                 AS "_di_source_id",
+        _di_source_id           AS "_di_source_id",
         ARRAY(
             SELECT * FROM
                 JSONB_ARRAY_ELEMENTS_TEXT(
@@ -13,7 +13,7 @@ final AS (
                         FROM JSONB_PATH_QUERY_ARRAY(data, '$.kinds[*].value')
                     )
                 )
-        )::TEXT []                    AS "kinds",
+        )::TEXT []              AS "kinds",
         ARRAY(
             SELECT * FROM
                 JSONB_ARRAY_ELEMENTS_TEXT(
@@ -22,7 +22,7 @@ final AS (
                         FROM JSONB_PATH_QUERY_ARRAY(data, '$.categories[*].value')
                     )
                 )
-        )::TEXT []                    AS "categories",
+        )::TEXT []              AS "categories",
         ARRAY(
             SELECT * FROM
                 JSONB_ARRAY_ELEMENTS_TEXT(
