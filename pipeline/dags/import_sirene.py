@@ -521,27 +521,19 @@ def _index_etablissements():
             "puisqu",
         ],
     )
-    french_stop = token_filter("french_stop", type="stop", stopwords="_french_")
-    french_stemmer = token_filter(
-        "french_stemmer", type="stemmer", language="light_french"
-    )
-    # ignore_case option deprecated, use lowercase filter before synonym filter
-    french_synonym = token_filter(
-        "french_synonym", type="synonym", expand=True, synonyms=[]
-    )
 
-    # Define analyzer
     annuaire_analyzer = analyzer(
         "annuaire_analyzer",
         tokenizer=tokenizer("icu_tokenizer"),
         filter=[
             "lowercase",
             french_elision,
-            french_stop,
+            token_filter("french_stop", type="stop", stopwords="_french_"),
             "icu_folding",
-            french_synonym,
+            # ignore_case option deprecated, use lowercase filter before synonym filter
+            token_filter("french_synonym", type="synonym", expand=True, synonyms=[]),
             "asciifolding",
-            french_stemmer,
+            token_filter("french_stemmer", type="stemmer", language="light_french"),
         ],
     )
 
@@ -553,19 +545,26 @@ def _index_etablissements():
 
         nom_complet = Text(analyzer=annuaire_analyzer, fields={"keyword": Keyword()})
 
-        denomination_unite_legale = Text()
+        denomination_unite_legale = Text(analyzer=annuaire_analyzer)
         sigle_unite_legale = Keyword()
 
         etablissement_siege = Boolean()
-        denomination_usuelle_etablissement = Text()
+        denomination_usuelle_etablissement = Text(analyzer=annuaire_analyzer)
         activite_principale_etablissement = Keyword()
         code_commune_etablissement = Keyword()
         code_postal_etablissement = Keyword()
-        libelle_commune_etablissement = Text()
-        libelle_voie_etablissement = Text()
+        libelle_commune_etablissement = Text(analyzer=annuaire_analyzer)
+        libelle_voie_etablissement = Text(analyzer=annuaire_analyzer)
         numero_voie_etablissement = Text()
+        categorie_juridique_unite_legale = Keyword()
 
-        adresse_complete = Text()
+        label_code_naf = Text(analyzer=annuaire_analyzer)
+        class_label_code_naf = Text(analyzer=annuaire_analyzer)
+        group_label_code_naf = Text(analyzer=annuaire_analyzer)
+        division_label_code_naf = Text(analyzer=annuaire_analyzer)
+        section_label_code_naf = Text(analyzer=annuaire_analyzer)
+
+        adresse_complete = Text(analyzer=annuaire_analyzer)
 
         departement = Keyword()
 
@@ -597,6 +596,11 @@ def _index_etablissements():
         return nom_complet
 
     def format_adresse_complete(df: pd.DataFrame) -> pd.Series:
+        # le libelle de la commune ne fait pas partie de l'adresse complete
+        # car c'est redondant et on a la chance d'avoir souvent le libelle de la commune
+        # clairement séparée du reste de l'adresse
+        # adresse_complete = l4
+
         adresse_complete = df[
             [
                 "numero_voie_etablissement",
@@ -607,29 +611,22 @@ def _index_etablissements():
             ]
         ].apply(lambda row: row.str.cat(sep=" "), axis=1)
 
-        adresse_complete[df.libelle_commune_etablissement.notna()] = (
-            adresse_complete[df.libelle_commune_etablissement.notna()]
-            + " "
-            + df.libelle_commune_etablissement.fillna("")
-        )
-        adresse_complete = adresse_complete.str.strip()
-
         # TODO: cedex ?
 
         adresse_complete = adresse_complete.str.lower()
         return adresse_complete
 
     def format_departement(df: pd.DataFrame) -> pd.Series:
-        departement = df.code_commune_etablissement
+        departement = df.code_commune_etablissement.copy()
 
         in_outremer_idx = departement.str.startswith("97", na=False)
-        departement[in_outremer_idx] = departement[in_outremer_idx].str[:3]
-        departement[~in_outremer_idx] = departement[~in_outremer_idx].str[:2]
+        departement.loc[in_outremer_idx] = departement.loc[in_outremer_idx].str[:3]
+        departement.loc[~in_outremer_idx] = departement.loc[~in_outremer_idx].str[:2]
         return departement
 
     def format_coordonnees(df: pd.DataFrame) -> pd.Series:
         coordonnees = df.latitude.astype(str) + "," + df.longitude.astype(str)
-        coordonnees[df.latitude.isna() | df.longitude.isna()] = None
+        coordonnees.loc[df.latitude.isna() | df.longitude.isna()] = None
         return coordonnees
 
     pg_hook = PostgresHook(postgres_conn_id="pg")
@@ -658,12 +655,22 @@ def _index_etablissements():
                                 sirene_etablissement_geocode.libelle_commune_etablissement,
                                 sirene_stock_unite_legale.siren,
                                 sirene_stock_unite_legale.denomination_unite_legale,
-                                sirene_stock_unite_legale.sigle_unite_legale
+                                sirene_stock_unite_legale.sigle_unite_legale,
+                                sirene_stock_unite_legale.categorie_juridique_unite_legale,
+                                insee.code_naf.label AS label_code_naf,
+                                insee.code_naf.class_label AS class_label_code_naf,
+                                insee.code_naf.group_label AS group_label_code_naf,
+                                insee.code_naf.division_label AS division_label_code_naf,
+                                insee.code_naf.section_label AS section_label_code_naf
                             FROM sirene_etablissement_geocode
                             INNER JOIN sirene_stock_unite_legale
                             ON LEFT(sirene_etablissement_geocode.siret, 9)
                                 = sirene_stock_unite_legale.siren
-                        """
+                            LEFT JOIN insee.code_naf
+                            ON sirene_etablissement_geocode.activite_principale_etablissement
+                                = insee.code_naf.code
+                            WHERE sirene_etablissement_geocode.statut_diffusion_etablissement = 'O';
+                        """  # noqa: E501
                     ),
                     con=conn,
                     chunksize=10000,
