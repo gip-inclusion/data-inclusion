@@ -34,6 +34,15 @@ final AS (
         )::TEXT []                    AS "subcategories",
         (data ->> 'longitude')::FLOAT AS "longitude",
         (data ->> 'latitude')::FLOAT  AS "latitude",
+        ARRAY(
+            SELECT * FROM
+                JSONB_ARRAY_ELEMENTS_TEXT(
+                    (
+                        SELECT *
+                        FROM JSONB_PATH_QUERY_ARRAY(data, '$.locationKinds[*].value')
+                    )
+                )
+        )::TEXT []                    AS "location_kinds",
         data ->> 'id'                 AS "id",
         data ->> 'structure'          AS "structure",
         data ->> 'name'               AS "name",

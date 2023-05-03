@@ -55,7 +55,8 @@ final AS (
         NULLIF(address_2, '')                                   AS "complement_adresse",
         NULLIF(recurrence, '')                                  AS "recurrence",
         SPLIT_PART(TRIM('/' FROM structure), '/structures/', 2) AS "structure_id",
-        (categories || subcategories)                           AS "thematiques"
+        (categories || subcategories)                           AS "thematiques",
+        NULLIF(location_kinds, '{}')                            AS "modes_accueil"
     FROM services
 )
 
