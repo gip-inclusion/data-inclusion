@@ -45,12 +45,25 @@ def _import_stock_etablissement_historique():
             ) as reader:
                 with tqdm.tqdm() as pbar:
                     for chunck_df in reader:
+                        chunck_df = chunck_df.rename(
+                            columns={
+                                "siret": "siret",  # noqa: E501
+                                "dateDebut": "date_debut",  # noqa: E501
+                                "dateFin": "date_fin",  # noqa: E501
+                                "changementEtatAdministratifEtablissement": "changement_etat_administratif_etablissement",  # noqa: E501
+                                "etatAdministratifEtablissement": "etat_administratif_etablissement",  # noqa: E501
+                            }
+                        )
+
                         chunck_df.to_sql(
                             target_table,
                             con=conn,
                             if_exists="replace" if pbar.n == 0 else "append",
                             index=False,
-                            dtype={"dateDebut": sqla.Date(), "dateFin": sqla.Date()},
+                            dtype={
+                                "date_debut": sqla.Date(),
+                                "date_fin": sqla.Date(),
+                            },
                         )
 
                         pbar.update(len(chunck_df))
@@ -103,12 +116,22 @@ def _import_stock_etablissement_liens_succession():
             ) as reader:
                 with tqdm.tqdm() as pbar:
                     for chunck_df in reader:
+                        chunck_df = chunck_df.rename(
+                            columns={
+                                "siretEtablissementPredecesseur": "siret_etablissement_predecesseur",  # noqa: E501
+                                "siretEtablissementSuccesseur": "siret_etablissement_successeur",  # noqa: E501
+                                "dateLienSuccession": "date_lien_succession",  # noqa: E501
+                                "transfertSiege": "transfert_siege",  # noqa: E501
+                                "continuiteEconomique": "continuite_economique",  # noqa: E501
+                                "dateDernierTraitementLienSuccession": "date_dernier_traitement_lien_succession",  # noqa: E501
+                            }
+                        )
                         chunck_df.to_sql(
                             target_table,
                             con=conn,
                             if_exists="replace" if pbar.n == 0 else "append",
                             index=False,
-                            dtype={"dateLienSuccession": sqla.Date()},
+                            dtype={"date_lien_succession": sqla.Date()},
                         )
 
                         pbar.update(len(chunck_df))
@@ -117,7 +140,7 @@ def _import_stock_etablissement_liens_succession():
                 textwrap.dedent(
                     f"""
                         CREATE INDEX sirene_etab_succession_siret_idx
-                        ON {target_table} ("siretEtablissementPredecesseur");
+                        ON {target_table} ("siret_etablissement_predecesseur");
                     """
                 )
             )
@@ -252,6 +275,7 @@ def _import_stock_etablissement_geocode():
             # process the csv file by chunk
             with pd.read_csv(
                 Variable.get("SIRENE_STOCK_ETAB_GEOCODE_FILE_URL"),
+                # unused fields are commented out to reduce overall size
                 usecols=[
                     "activitePrincipaleEtablissement",
                     # "activitePrincipaleRegistreMetiersEtablissement",

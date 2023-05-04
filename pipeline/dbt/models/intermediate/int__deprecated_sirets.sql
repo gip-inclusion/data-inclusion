@@ -16,15 +16,15 @@ structures_with_states_updates AS (
     SELECT
         structures._di_surrogate_id,
         structures.siret,
-        sirene_etablissement_historique."dateDebut"                      AS "sirene_date_debut",
-        sirene_etablissement_historique."etatAdministratifEtablissement" AS "sirene_etat_admin_etablissement"
+        sirene_etablissement_historique.date_debut                       AS "sirene_date_debut",
+        sirene_etablissement_historique.etat_administratif_etablissement AS "sirene_etat_admin_etablissement"
     FROM
         structures
     INNER JOIN
         sirene_etablissement_historique ON
         structures.siret = sirene_etablissement_historique.siret
     WHERE
-        sirene_etablissement_historique."changementEtatAdministratifEtablissement"
+        sirene_etablissement_historique.changement_etat_administratif_etablissement
 ),
 
 latest_debut_date_by_siret AS (
@@ -56,21 +56,23 @@ structures_with_deprecated_siret AS (
 ),
 
 latest_succession_by_siret AS (
-    SELECT DISTINCT ON ("siretEtablissementPredecesseur") *
+    SELECT DISTINCT ON (siret_etablissement_predecesseur) *
     FROM sirene_etablissement_succession
     ORDER BY
-        "siretEtablissementPredecesseur" ASC,
-        "dateLienSuccession" DESC
+        siret_etablissement_predecesseur ASC,
+        date_lien_succession DESC
 ),
 
 final AS (
     SELECT
         structures_with_deprecated_siret.*,
-        latest_succession_by_siret."siretEtablissementSuccesseur" AS sirene_etab_successeur
+        latest_succession_by_siret.siret_etablissement_successeur AS sirene_etab_successeur
     FROM
         structures_with_deprecated_siret
     LEFT JOIN
-        latest_succession_by_siret ON structures_with_deprecated_siret.siret = latest_succession_by_siret."siretEtablissementPredecesseur"
+        latest_succession_by_siret ON
+        structures_with_deprecated_siret.siret
+        = latest_succession_by_siret.siret_etablissement_predecesseur
 )
 
 SELECT * FROM final
