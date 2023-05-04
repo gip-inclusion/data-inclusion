@@ -20,6 +20,7 @@ x-airflow-common:
     AIRFLOW_CONN_S3: aws://@/data-inclusion-lake?endpoint_url=http://minio:9000&aws_access_key_id=minioadmin&aws_secret_access_key=minioadmin
     AIRFLOW_CONN_S3_SOURCES: ${AIRFLOW_CONN_S3_SOURCES}
     AIRFLOW_CONN_PG: postgresql://data-inclusion:data-inclusion@target-db:5432/data-inclusion
+    AIRFLOW_CONN_ES: elasticsearch+http://airflow:changeme@elasticsearch:9200
 
     # Variables
     AIRFLOW_VAR_DBT_PROJECT_DIR: /opt/airflow/dbt

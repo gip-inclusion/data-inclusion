@@ -500,6 +500,7 @@ def _index_etablissements():
     import elasticsearch_dsl
     import pandas as pd
     import tqdm
+    from airflow.providers.elasticsearch.hooks.elasticsearch import ElasticsearchSQLHook
     from airflow.providers.postgres.hooks.postgres import PostgresHook
     from elasticsearch import helpers
     from elasticsearch_dsl import (
@@ -516,8 +517,7 @@ def _index_etablissements():
     logger = logging.getLogger(__name__)
 
     connections.create_connection(
-        hosts=["http://elasticsearch:9200"],
-        http_auth=("elastic", "changeme"),
+        hosts=[ElasticsearchSQLHook(elasticsearch_conn_id="es").get_uri()],
         retry_on_timeout=True,
     )
 
@@ -620,10 +620,7 @@ def _index_etablissements():
         return nom_complet
 
     def format_adresse_complete(df: pd.DataFrame) -> pd.Series:
-        # le libelle de la commune ne fait pas partie de l'adresse complete
-        # car c'est redondant et on a la chance d'avoir souvent le libelle de la commune
-        # clairement séparée du reste de l'adresse
-        # adresse_complete = l4
+        # adresse_complete = l4 + l3
 
         adresse_complete = df[
             [
