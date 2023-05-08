@@ -1,3 +1,7 @@
+from typing import Optional
+
+from furl import furl
+
 from django import http
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render
@@ -9,23 +13,30 @@ from sirene.models import CodeNAF
 from sirene.services import get_naf_data_by_code
 
 
+def check_and_get_dataset(dataset_slug: Optional[str]) -> Dataset:
+    if dataset_slug is None:
+        return http.HttpResponseBadRequest()
+
+    try:
+        dataset_instance = Dataset.objects.get(slug=dataset_slug)
+    except Dataset.DoesNotExist:
+        return http.HttpResponseNotFound()
+
+    return dataset_instance
+
+
+def check_permissions(user_instance, dataset_instance: Dataset):
+    return user_instance.groups.filter(id=dataset_instance.organization.id).exists()
+
+
 @login_required()
 def index(request: http.HttpRequest):
     unsafe_dataset_slug_str = request.GET.get("dataset", None)
 
-    try:
-        dataset_instance = Dataset.objects.get(slug=unsafe_dataset_slug_str)
-    except Dataset.DoesNotExist:
-        return http.HttpResponseNotFound()
+    dataset_instance = check_and_get_dataset(unsafe_dataset_slug_str)
+    check_permissions(request.user, dataset_instance)
 
-    if not request.user.groups.filter(id=dataset_instance.organization.id).exists():
-        return http.HttpResponseForbidden()
-
-    context = {
-        "dataset_instance": dataset_instance,
-    }
-
-    return render(request, "annotation/index.html", context)
+    return render(request, "annotation/index.html")
 
 
 @login_required()
@@ -33,12 +44,11 @@ def partial_task(request: http.HttpRequest):
     if not request.htmx:
         return http.HttpResponseNotFound()
 
-    unsafe_dataset_instance_id = request.GET.get("dataset_instance_id", None)
+    unsafe_dataset_slug_str = furl(request.htmx.current_url).args.get("dataset")
+    unsafe_code_insee_str = furl(request.htmx.current_url).args.get("code_insee")
 
-    try:
-        dataset_instance = Dataset.objects.get(id=unsafe_dataset_instance_id)
-    except Dataset.DoesNotExist:
-        return http.HttpResponseNotFound()
+    dataset_instance = check_and_get_dataset(unsafe_dataset_slug_str)
+    check_permissions(request.user, dataset_instance)
 
     structure_instance = Structure.objects.raw(
         """
@@ -58,11 +68,13 @@ def partial_task(request: http.HttpRequest):
             WHERE
                 structure.source = %(dataset_source)s
                 AND enhanced_annotation.id IS NULL
+                AND (structure.code_insee ~ ('^' || %(code_insee)s) OR structure._di_geocodage_code_insee ~ ('^' || %(code_insee)s))
             -- this allow concurrent users to work without too much overlap
             ORDER BY random()
-            LIMIT 1""",
+            LIMIT 1""",  # noqa: E501
         {
             "dataset_source": dataset_instance.source,
+            "code_insee": unsafe_code_insee_str or "",
         },
     )[0]
 
@@ -127,7 +139,7 @@ def partial_submit(request: http.HttpRequest):
     if not request.htmx:
         return http.HttpResponseNotFound()
 
-    unsafe_dataset_instance_id = request.POST.get("dataset_instance_id", None)
+    unsafe_dataset_slug_str = furl(request.htmx.current_url).args.get("dataset")
     unsafe_structure_surrogate_id = request.POST.get("structure_surrogate_id", None)
     unsafe_skipped = request.POST.get("skipped", None)
     unsafe_closed = request.POST.get("closed", None)
@@ -135,14 +147,14 @@ def partial_submit(request: http.HttpRequest):
     unsafe_is_parent = request.POST.get("is_parent", None)
     unsafe_siret = request.POST.get("siret", None)
 
-    if not Dataset.objects.filter(id=unsafe_dataset_instance_id).exists():
-        return http.HttpResponseBadRequest()
+    dataset_instance = check_and_get_dataset(unsafe_dataset_slug_str)
+    check_permissions(request.user, dataset_instance)
 
     if not Structure.objects.filter(di_surrogate_id=unsafe_structure_surrogate_id).exists():
         return http.HttpResponseBadRequest()
 
     Annotation.objects.create(
-        dataset_id=unsafe_dataset_instance_id,
+        dataset_id=dataset_instance.id,
         di_surrogate_id=unsafe_structure_surrogate_id,
         skipped=bool(unsafe_skipped),
         closed=bool(unsafe_closed),

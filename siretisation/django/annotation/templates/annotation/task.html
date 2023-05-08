@@ -163,13 +163,13 @@
                     <div class="block is-flex is-justify-content-center">
                         <div class="buttons">
                             <button class="button" hx-post="/partials/submit"
-                                hx-include="#dataset-metadata, #task-metadata" hx-swap="outerHTML"
+                                hx-include="#task-metadata" hx-swap="outerHTML"
                                 hx-vals='{"skipped": true}'>Passer au suivant ⏩</button>
                             <button class="button" hx-post="/partials/submit"
-                                hx-include="#dataset-metadata, #task-metadata" hx-swap="outerHTML"
+                                hx-include="#task-metadata" hx-swap="outerHTML"
                                 hx-vals='{"closed": true}'>Structure fermée ❌</button>
                             <button class="button" hx-post="/partials/submit"
-                                hx-include="#dataset-metadata, #task-metadata" hx-swap="outerHTML"
+                                hx-include="#task-metadata" hx-swap="outerHTML"
                                 hx-vals='{"irrelevant": true}'>Ne pas conserver 🙅</button>
                         </div>
                     </div>

@@ -20,7 +20,7 @@
                         <td>{{ permanence_instance.name }}</td>
                         <td>{{ permanence_instance.address }}</td>
                         <td>{{ permanence_instance.city }}</td>
-                        <td><button class="button" hx-post="/partials/submit" hx-include="#dataset-metadata, #task-metadata"
+                        <td><button class="button" hx-post="/partials/submit" hx-include="#task-metadata"
                             hx-swap="outerHTML" hx-vals='{"siret": "{{ permanence_instance.siret }}"}'>C'est la
                             structure
                             ✅</button></td>
