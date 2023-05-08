@@ -87,19 +87,20 @@ def partial_task(request: http.HttpRequest):
         "dataset_instance": dataset_instance,
         "structure_instance": structure_instance,
         "establishment_queryset": services.search_sirene(
-            adresse=structure_instance.adresse,
+            address=structure_instance.adresse,
             name=structure_instance.nom,
             code_insee=structure_instance.code_insee,
             siret=structure_instance.siret,
         ),
-        "activity_list": [
+        "naf_section_list": [
             get_naf_data_by_code(level, code)
             for level, code in [
                 (CodeNAF.Level.SECTION, "O"),
                 (CodeNAF.Level.SECTION, "Q"),
-                (CodeNAF.Level.DIVISION, "91"),
+                (CodeNAF.Level.SECTION, "G"),
             ]
         ],
+        "naf_ape_queryset": CodeNAF.objects.exclude(code="00.00Z").all(),
     }
 
     if dataset_instance.show_nearby_cnfs_permanences:
@@ -121,15 +122,24 @@ def partial_search(request: http.HttpRequest):
     unsafe_name = request.POST.get("nom", None)
     unsafe_code_insee = request.POST.get("code_insee", None)
     unsafe_siret = request.POST.get("siret", None)
-    unsafe_naf_activities = [value.split(",") for value in request.POST.getlist("naf_activities", []) if value != ""]
+    unsafe_naf_section_list = [
+        value.split(",")[1] for value in request.POST.getlist("naf_section_list", []) if value != ""
+    ]
+    unsafe_naf_ape_list = [value for value in request.POST.getlist("naf_ape_list", []) if value != ""]
+    unsafe_structure_type_list = [value for value in request.POST.getlist("structure_type_list", []) if value != ""]
+
+    if isinstance(unsafe_structure_type_list, list):
+        structure_types = {f"is_{structure_type_str}": True for structure_type_str in unsafe_structure_type_list}
 
     context = {
         "establishment_queryset": services.search_sirene(
-            adresse=unsafe_address,
+            address=unsafe_address,
             name=unsafe_name,
             code_insee=unsafe_code_insee,
             siret=unsafe_siret,
-            naf_activities=unsafe_naf_activities,
+            naf_section=unsafe_naf_section_list,
+            naf_ape=unsafe_naf_ape_list,
+            **structure_types,
         )
     }
 

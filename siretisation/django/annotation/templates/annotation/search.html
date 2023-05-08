@@ -5,32 +5,40 @@
                 <tr>
                     <th>SIRET</th>
                     <th>Siège&nbsp;?</th>
-                    <th>Nom</th>
+                    <th>Etat</th>
+                    <th>Nom entreprise</th>
+                    <th>Nom établissement</th>
                     <th>Adresse</th>
-                    <th>Ville</th>
                     <th></th>
                     <th></th>
                 </tr>
             </thead>
             <tbody>
-                {% for establishment_instance in establishment_queryset|slice:":10" %}
-                    <tr>
-                        <td>{{ establishment_instance.siret }}<a title="ouvrir l'annuaire entreprises" target="_blank"
-                            href="https://annuaire-entreprises.data.gouv.fr/etablissement/{{ establishment_instance.siret }}">&nbsp;ℹ️</a>
-                        </td>
-                        <td>{{ establishment_instance.is_siege|yesno:"X," }}</td>
-                        <td>{{ establishment_instance.name }}</td>
-                        <td>{{ establishment_instance.address1 }}</td>
-                        <td>{{ establishment_instance.city }}</td>
-                        <td><button class="button" hx-post="/partials/submit" hx-include="#dataset-metadata, #task-metadata"
-                            hx-swap="outerHTML" hx-vals='{"siret": "{{ establishment_instance.siret }}"}'>C'est la
-                            structure
-                            ✅</button></td>
-                        <td><button class="button" hx-post="/partials/submit" hx-include="#dataset-metadata, #task-metadata"
-                            hx-swap="outerHTML"
-                            hx-vals='{"siret": "{{ establishment_instance.siret }}", "is_parent": true}'>Structure
-                            mère 💯</button></td>
-                    </tr>
+                {% for entreprise in establishment_queryset %}
+                    {% for etablissement in entreprise.matching_etablissements %}
+                        <tr>
+                            <td>{{ etablissement.siret }}<a title="ouvrir l'annuaire entreprises" target="_blank"
+                                href="https://annuaire-entreprises.data.gouv.fr/etablissement/{{ etablissement.siret }}">&nbsp;ℹ️</a>
+                            </td>
+                            <td>{{ etablissement.est_siege|yesno:"X," }}</td>
+                            {% if entreprise.etat_administratif == "A" %}
+                                <td>En activité</td>
+                            {% else %}
+                                <td>Fermé</td>
+                            {% endif %}
+                            <td>{{ entreprise.nom_complet }}</td>
+                            <td>{{ etablissement.nom_commercial|default_if_none:'' }}</td>
+                            <td>{{ etablissement.adresse }}</td>
+                            <td><button class="button" hx-post="/partials/submit" hx-include="#task-metadata"
+                                hx-swap="outerHTML" hx-vals='{"siret": "{{ etablissement.siret }}"}'>C'est la
+                                structure
+                                ✅</button></td>
+                            <td><button class="button" hx-post="/partials/submit" hx-include="#task-metadata"
+                                hx-swap="outerHTML"
+                                hx-vals='{"siret": "{{ etablissement.siret }}", "is_parent": true}'>Structure
+                                mère 💯</button></td>
+                        </tr>
+                    {% endfor %}
                 {% endfor %}
             </tbody>
         </table>
@@ -41,13 +49,7 @@
             <article class="message is-info">
                 <div class="message-header">Aucun résultat!</div>
                 <div class="message-body content">
-                    💡 Vous pouvez essayer:
-                    <ul>
-                        <li>de retirer le numéro dans l'adresse</li>
-                        <li>de retirer les 3 derniers chiffres du code postal</li>
-                        <li>de supprimer l'adresse en gardant le nom</li>
-                        <li>de supprimer le nom en gardant l'adresse</li>
-                    </ul>
+                    💡 Essayez d'enlever des termes dans la recherche
                 </div>
             </article>
         </div>
