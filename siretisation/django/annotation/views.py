@@ -50,7 +50,7 @@ def partial_task(request: http.HttpRequest):
     dataset_instance = check_and_get_dataset(unsafe_dataset_slug_str)
     check_permissions(request.user, dataset_instance)
 
-    structure_instance = Structure.objects.raw(
+    structure_instance_list = Structure.objects.raw(
         """
             WITH enhanced_annotation AS (
                 SELECT
@@ -76,10 +76,12 @@ def partial_task(request: http.HttpRequest):
             "dataset_source": dataset_instance.source,
             "code_insee": unsafe_code_insee_str or "",
         },
-    )[0]
+    )
 
-    if structure_instance is None:
+    if len(structure_instance_list) == 0:
         return http.HttpResponse("Vous avez terminé ! :)")
+    else:
+        structure_instance = structure_instance_list[0]
 
     context = {
         "dataset_instance": dataset_instance,
