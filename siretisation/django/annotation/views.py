@@ -89,7 +89,7 @@ def partial_task(request: http.HttpRequest):
         "establishment_queryset": services.search_sirene(
             adresse=structure_instance.adresse,
             name=structure_instance.nom,
-            postal_code=structure_instance.code_postal,
+            code_insee=structure_instance.code_insee,
             siret=structure_instance.siret,
         ),
         "activity_list": [
@@ -119,7 +119,7 @@ def partial_search(request: http.HttpRequest):
 
     unsafe_address = request.POST.get("adresse", None)
     unsafe_name = request.POST.get("nom", None)
-    unsafe_postal_code = request.POST.get("code_postal", None)
+    unsafe_code_insee = request.POST.get("code_insee", None)
     unsafe_siret = request.POST.get("siret", None)
     unsafe_naf_activities = [value.split(",") for value in request.POST.getlist("naf_activities", []) if value != ""]
 
@@ -127,7 +127,7 @@ def partial_search(request: http.HttpRequest):
         "establishment_queryset": services.search_sirene(
             adresse=unsafe_address,
             name=unsafe_name,
-            postal_code=unsafe_postal_code,
+            code_insee=unsafe_code_insee,
             siret=unsafe_siret,
             naf_activities=unsafe_naf_activities,
         )

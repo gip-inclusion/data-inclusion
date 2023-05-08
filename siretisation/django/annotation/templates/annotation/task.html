@@ -42,6 +42,10 @@
                                 <td>{{ structure_instance.code_postal|default_if_none:'' }}</td>
                             </tr>
                             <tr>
+                                <td>code_insee</td>
+                                <td>{{ structure_instance.code_insee|default_if_none:'' }}</td>
+                            </tr>
+                            <tr>
                                 <td>commune</td>
                                 <td>{{ structure_instance.commune|default_if_none:'' }}</td>
                             </tr>
@@ -111,20 +115,20 @@
                                             hx-sync="closest form:replace" value="{{ structure_instance.adresse }}" />
                                     </div>
                                 </div>
-                            </div>
-                            <div class="column is-half">
                                 <div class="field">
                                     <div class="control">
-                                        <label class="label" for="code_postal">Code postal:</label>
-                                        <input class="input" type="search" id="code_postal" name="code_postal"
+                                        <label class="label" for="code_insee">Code insee:</label>
+                                        <input class="input" type="search" id="code_insee" name="code_insee"
                                             placeholder="..." hx-post="/partials/search" hx-target="#search-results"
                                             hx-swap="outerHTML" hx-include="#search_data"
                                             hx-indicator="#search-indicator"
                                             hx-trigger="keyup changed delay:500ms, search"
                                             hx-sync="closest form:replace"
-                                            value="{{ structure_instance.code_postal|default_if_none:'' }}" />
+                                            value="{{ structure_instance.code_insee|default_if_none:'' }}" />
                                     </div>
                                 </div>
+                            </div>
+                            <div class="column is-half">
                                 <div class="field">
                                     <div class="control">
                                         <label class="label" for="naf_activities">Activité:</label>
