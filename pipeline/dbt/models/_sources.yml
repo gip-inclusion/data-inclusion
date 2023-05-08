@@ -80,6 +80,30 @@ sources:
       - name: structures
       - name: services
 
+  - name: mediation_numerique_cd23
+    schema: mediation_numerique_cd23
+    tables:
+      - name: structures
+      - name: services
+
+  - name: mediation_numerique_cd33
+    schema: mediation_numerique_cd33
+    tables:
+      - name: structures
+      - name: services
+
+  - name: mediation_numerique_cd40
+    schema: mediation_numerique_cd40
+    tables:
+      - name: structures
+      - name: services
+
+  - name: mediation_numerique_cd44
+    schema: mediation_numerique_cd44
+    tables:
+      - name: structures
+      - name: services
+
   - name: mediation_numerique_cd49
     schema: mediation_numerique_cd49
     tables:
@@ -94,6 +118,18 @@ sources:
 
   - name: mediation_numerique_conseiller_numerique
     schema: mediation_numerique_conseiller_numerique
+    tables:
+      - name: structures
+      - name: services
+
+  - name: mediation_numerique_cr93
+    schema: mediation_numerique_cr93
+    tables:
+      - name: structures
+      - name: services
+
+  - name: mediation_numerique_fibre_64
+    schema: mediation_numerique_fibre_64
     tables:
       - name: structures
       - name: services
@@ -127,6 +163,37 @@ sources:
     tables:
       - name: structures
       - name: services
+
+  - name: mediation_numerique_hub_lo
+    schema: mediation_numerique_hub_lo
+    tables:
+      - name: structures
+      - name: services
+
+  - name: mediation_numerique_mulhouse
+    schema: mediation_numerique_mulhouse
+    tables:
+      - name: structures
+      - name: services
+
+  - name: mediation_numerique_res_in
+    schema: mediation_numerique_res_in
+    tables:
+      - name: structures
+      - name: services
+
+  - name: mediation_numerique_rhinocc
+    schema: mediation_numerique_rhinocc
+    tables:
+      - name: structures
+      - name: services
+
+  - name: mediation_numerique_ultra_numerique
+    schema: mediation_numerique_ultra_numerique
+    tables:
+      - name: structures
+      - name: services
+
 
   - name: odspep
     schema: odspep
