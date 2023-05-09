@@ -87,7 +87,6 @@ def partial_task(request: http.HttpRequest):
         "dataset_instance": dataset_instance,
         "structure_instance": structure_instance,
         "establishment_queryset": services.search_sirene(
-            address=structure_instance.adresse,
             name=structure_instance.nom,
             code_insee=structure_instance.code_insee,
             siret=structure_instance.siret,

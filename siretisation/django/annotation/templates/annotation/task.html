@@ -112,12 +112,12 @@
                                             hx-post="/partials/search" hx-target="#search-results" hx-swap="outerHTML"
                                             hx-include="#search_data" hx-indicator="#search-indicator"
                                             hx-trigger="keyup changed delay:100ms, search"
-                                            hx-sync="closest form:replace" value="{{ structure_instance.adresse }}" />
+                                            hx-sync="closest form:replace" value="" />
                                     </div>
                                 </div>
                                 <div class="field">
                                     <div class="control">
-                                        <label class="label" for="code_insee">Code insee:</label>
+                                        <label class="label" for="code_insee">Code département ou code commune (Insee):</label>
                                         <input class="input" type="search" id="code_insee" name="code_insee"
                                             placeholder="..." hx-post="/partials/search" hx-target="#search-results"
                                             hx-swap="outerHTML" hx-include="#search_data"
