@@ -1,0 +1,8 @@
+-r prod.in
+
+factory_boy
+pytest
+pytest-django
+pytest-dotenv
+pytest-factoryboy
+tox

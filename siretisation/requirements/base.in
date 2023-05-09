@@ -1,0 +1,15 @@
+dj-database-url
+Django
+django-cors-headers
+django-htmx
+djangorestframework
+httpx
+furl
+numpy
+pandas
+psycopg2
+python-dotenv
+sentry-sdk
+tqdm
+uWSGI
+xlrd
