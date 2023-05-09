@@ -124,7 +124,7 @@
                                             hx-indicator="#search-indicator"
                                             hx-trigger="keyup changed delay:500ms, search"
                                             hx-sync="closest form:replace"
-                                            value="{{ structure_instance.code_insee|default_if_none:'' }}" />
+                                            value="{{ structure_instance.code_insee|default_if_none:structure_instance.di_geocodage_code_insee|default_if_none:'' }}" />
                                     </div>
                                 </div>
                                 <div class="field">

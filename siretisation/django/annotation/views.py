@@ -88,7 +88,7 @@ def partial_task(request: http.HttpRequest):
         "structure_instance": structure_instance,
         "establishment_queryset": services.search_sirene(
             name=structure_instance.nom,
-            code_insee=structure_instance.code_insee,
+            code_insee=structure_instance.code_insee or structure_instance.di_geocodage_code_insee,
             siret=structure_instance.siret,
         ),
         "naf_section_list": [
