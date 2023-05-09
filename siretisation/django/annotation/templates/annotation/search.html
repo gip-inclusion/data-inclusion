@@ -27,7 +27,7 @@
                                 <td>Fermé</td>
                             {% endif %}
                             <td>{{ entreprise.nom_complet }}</td>
-                            <td>{{ etablissement.nom_commercial|default_if_none:etablissement.liste_enseignes|first }}</td>
+                            <td>{{ etablissement.nom_commercial|default_if_none:etablissement.liste_enseignes|default_if_none:""|join:" " }}</td>
                             <td>{{ etablissement.adresse }}</td>
                             <td><button class="button" hx-post="/partials/submit" hx-include="#task-metadata"
                                 hx-swap="outerHTML" hx-vals='{"siret": "{{ etablissement.siret }}"}'>C'est la
