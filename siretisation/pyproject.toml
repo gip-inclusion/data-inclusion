@@ -26,4 +26,5 @@ testpaths = "tests"
 markers = '''
     as_user: force authenticate the api_client fixture to the user fixure
     as_other_user: force authenticate the api_client fixture to the other_user fixture
+    annuaire_entreprises_api: mark test as requiring the annuaire entreprises api
 '''

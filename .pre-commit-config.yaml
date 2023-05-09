@@ -124,4 +124,4 @@ repos:
       - id: bandit
         name: siretisation|bandit
         files: ^siretisation
-        exclude: ^(siretisation/django(/.*)*/static/vendor|tests)
+        exclude: ^siretisation/(django(/.*)*/static/vendor|tests)

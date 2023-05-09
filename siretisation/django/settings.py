@@ -191,3 +191,7 @@ sentry_sdk.init(
     traces_sample_rate=0,
     send_default_pii=True,
 )
+
+# Annuaire entreprise
+
+ANNUAIRE_ENTREPRISES_API_URL = os.environ.get("ANNUAIRE_ENTREPRISES_API_URL")

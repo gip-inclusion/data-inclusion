@@ -232,6 +232,7 @@ services:
       - DJANGO_SUPERUSER_USERNAME=admin
       - DJANGO_SUPERUSER_EMAIL=admin@admin.admin
       - DJANGO_SUPERUSER_PASSWORD=admin
+      - ANNUAIRE_ENTREPRISES_API_URL=${ANNUAIRE_ENTREPRISES_API_URL}
     volumes:
       - files-data:/var/www
 

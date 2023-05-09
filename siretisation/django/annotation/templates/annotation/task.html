@@ -42,6 +42,10 @@
                                 <td>{{ structure_instance.code_postal|default_if_none:'' }}</td>
                             </tr>
                             <tr>
+                                <td>code_insee</td>
+                                <td>{{ structure_instance.code_insee|default_if_none:'' }}</td>
+                            </tr>
+                            <tr>
                                 <td>commune</td>
                                 <td>{{ structure_instance.commune|default_if_none:'' }}</td>
                             </tr>
@@ -86,7 +90,7 @@
                                         <input class="input" type="search" id="nom" name="nom" placeholder="..."
                                             hx-post="/partials/search" hx-target="#search-results" hx-swap="outerHTML"
                                             hx-include="#search_data" hx-indicator="#search-indicator"
-                                            hx-trigger="keyup changed delay:500ms, search"
+                                            hx-trigger="keyup changed delay:100ms, search"
                                             hx-sync="closest form:replace" value="{{ structure_instance.nom }}" />
                                     </div>
                                 </div>
@@ -96,7 +100,7 @@
                                         <input class="input" type="search" id="siret" name="siret" placeholder="..."
                                             hx-post="/partials/search" hx-target="#search-results" hx-swap="outerHTML"
                                             hx-include="#search_data" hx-indicator="#search-indicator"
-                                            hx-trigger="keyup changed delay:500ms, search"
+                                            hx-trigger="keyup changed delay:100ms, search"
                                             hx-sync="closest form:replace"
                                             value="{{ structure_instance.siret|default_if_none:'' }}" />
                                     </div>
@@ -107,38 +111,71 @@
                                         <input class="input" type="search" id="adresse" name="adresse" placeholder="..."
                                             hx-post="/partials/search" hx-target="#search-results" hx-swap="outerHTML"
                                             hx-include="#search_data" hx-indicator="#search-indicator"
+                                            hx-trigger="keyup changed delay:100ms, search"
+                                            hx-sync="closest form:replace" value="" />
+                                    </div>
+                                </div>
+                                <div class="field">
+                                    <div class="control">
+                                        <label class="label" for="code_insee">Code département ou code commune (Insee):</label>
+                                        <input class="input" type="search" id="code_insee" name="code_insee"
+                                            placeholder="..." hx-post="/partials/search" hx-target="#search-results"
+                                            hx-swap="outerHTML" hx-include="#search_data"
+                                            hx-indicator="#search-indicator"
                                             hx-trigger="keyup changed delay:500ms, search"
-                                            hx-sync="closest form:replace" value="{{ structure_instance.adresse }}" />
+                                            hx-sync="closest form:replace"
+                                            value="{{ structure_instance.code_insee|default_if_none:'' }}" />
+                                    </div>
+                                </div>
+                                <div class="field">
+                                    <div class="control">
+                                        <label class="label" for="structure_type_list">Type de structure:</label>
+                                        <div class="select is-multiple">
+                                            <select multiple size=2 id="structure_type_list" name="structure_type_list"
+                                                hx-post="/partials/search" hx-target="#search-results"
+                                                hx-swap="outerHTML" hx-include="#search_data"
+                                                hx-indicator="#search-indicator" hx-sync="closest form:replace">
+                                                <option selected value="">Toutes</option>
+                                                <option title="Association" value="association">Association</option>
+                                            </select>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
                             <div class="column is-half">
                                 <div class="field">
                                     <div class="control">
-                                        <label class="label" for="code_postal">Code postal:</label>
-                                        <input class="input" type="search" id="code_postal" name="code_postal"
-                                            placeholder="..." hx-post="/partials/search" hx-target="#search-results"
-                                            hx-swap="outerHTML" hx-include="#search_data"
-                                            hx-indicator="#search-indicator"
-                                            hx-trigger="keyup changed delay:500ms, search"
-                                            hx-sync="closest form:replace"
-                                            value="{{ structure_instance.code_postal|default_if_none:'' }}" />
-                                    </div>
-                                </div>
-                                <div class="field">
-                                    <div class="control">
-                                        <label class="label" for="naf_activities">Activité:</label>
+                                        <label class="label" for="naf_section_list">Domaine d'activité:</label>
                                         <div class="select is-multiple">
-                                            <select multiple size={{ activity_dict|length }} id="naf_activities"
-                                                name="naf_activities" hx-post="/partials/search"
+                                            <select multiple size={{ naf_section_list|length|add:"1" }}
+                                                id="naf_section_list" name="naf_section_list" hx-post="/partials/search"
                                                 hx-target="#search-results" hx-swap="outerHTML"
                                                 hx-include="#search_data" hx-indicator="#search-indicator"
                                                 hx-sync="closest form:replace">
                                                 <option selected value="">Toutes</option>
-                                                {% for activity_dict in activity_list|dictsort:"label" %}
-                                                    <option title="{{ activity_dict.label }}"
-                                                        value="{{ activity_dict.level.value }},{{ activity_dict.code }}">
-                                                        {{ activity_dict.label }}
+                                                {% for section_dict in naf_section_list|dictsort:"label" %}
+                                                    <option title="{{ section_dict.label }}"
+                                                        value="{{ section_dict.level.value }},{{ section_dict.code }}">
+                                                        {{ section_dict.label }}
+                                                    </option>
+                                                {% endfor %}
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="field">
+                                    <div class="control">
+                                        <label class="label" for="naf_ape_list">Activité (APE):</label>
+                                        <div class="select is-multiple">
+                                            <select multiple size={{ naf_section_list|length|add:"1" }}
+                                                id="naf_ape_list" name="naf_ape_list" hx-post="/partials/search"
+                                                hx-target="#search-results" hx-swap="outerHTML"
+                                                hx-include="#search_data" hx-indicator="#search-indicator"
+                                                hx-sync="closest form:replace">
+                                                <option selected value="">Toutes</option>
+                                                {% for ape_dict in naf_ape_queryset|dictsort:"code" %}
+                                                    <option title="{{ ape_dict.label }}" value="{{ ape_dict.code }}">
+                                                        {{ ape_dict.code }} - {{ ape_dict.label }}
                                                     </option>
                                                 {% endfor %}
                                             </select>
@@ -162,15 +199,12 @@
 
                     <div class="block is-flex is-justify-content-center">
                         <div class="buttons">
-                            <button class="button" hx-post="/partials/submit"
-                                hx-include="#dataset-metadata, #task-metadata" hx-swap="outerHTML"
-                                hx-vals='{"skipped": true}'>Passer au suivant ⏩</button>
-                            <button class="button" hx-post="/partials/submit"
-                                hx-include="#dataset-metadata, #task-metadata" hx-swap="outerHTML"
-                                hx-vals='{"closed": true}'>Structure fermée ❌</button>
-                            <button class="button" hx-post="/partials/submit"
-                                hx-include="#dataset-metadata, #task-metadata" hx-swap="outerHTML"
-                                hx-vals='{"irrelevant": true}'>Ne pas conserver 🙅</button>
+                            <button class="button" hx-post="/partials/submit" hx-include="#task-metadata"
+                                hx-swap="outerHTML" hx-vals='{"skipped": true}'>Passer au suivant ⏩</button>
+                            <button class="button" hx-post="/partials/submit" hx-include="#task-metadata"
+                                hx-swap="outerHTML" hx-vals='{"closed": true}'>Structure fermée ❌</button>
+                            <button class="button" hx-post="/partials/submit" hx-include="#task-metadata"
+                                hx-swap="outerHTML" hx-vals='{"irrelevant": true}'>Ne pas conserver 🙅</button>
                         </div>
                     </div>
                 </div>
