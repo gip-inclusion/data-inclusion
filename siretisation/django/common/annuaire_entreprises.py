@@ -57,5 +57,6 @@ class AnnuaireEntreprisesClient:
             response.raise_for_status()
         except httpx.HTTPStatusError as exc:
             logger.error(exc)
+            return {"results": []}
 
         return response.json()

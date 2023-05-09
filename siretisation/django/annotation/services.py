@@ -6,7 +6,7 @@ from django.contrib.gis.db.models.functions import GeometryDistance
 from django.db import models
 
 from cnfs.models import Permanence
-from common import annuaire_entreprises
+from common import annuaire_entreprises, cog
 
 
 def search_sirene(
@@ -19,7 +19,6 @@ def search_sirene(
     naf_ape: Optional[list[str]] = None,
     is_association: Optional[bool] = None,
 ) -> list:
-
     annuaire_entreprises_client = annuaire_entreprises.AnnuaireEntreprisesClient(
         base_url=settings.ANNUAIRE_ENTREPRISES_API_URL
     )
@@ -39,7 +38,7 @@ def search_sirene(
     if code_insee is not None:
         if len(code_insee) == 5:
             params["code_commune"] = code_insee
-        else:
+        elif code_insee in cog.code_departements:
             params["departement"] = code_insee
 
     if is_association is not None:
@@ -54,7 +53,6 @@ def search_cnfs(
     longitude: Optional[float] = None,
     latitude: Optional[float] = None,
 ) -> models.QuerySet:
-
     if siret is not None:
         siret = siret.replace(" ", "")
         if len(siret) == 14:
