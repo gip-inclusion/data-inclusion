@@ -20,7 +20,7 @@ def index(request: http.HttpRequest):
     if left_datasource_instance is None:
         return http.HttpResponseBadRequest()
 
-    left_stream_instance = models.Stream.objects.filter(slug=unsafe_left_stream_slug).first()
+    left_stream_instance = left_datasource_instance.stream_set.filter(slug=unsafe_left_stream_slug).first()
     if left_stream_instance is None:
         return http.HttpResponseBadRequest()
 
@@ -28,7 +28,7 @@ def index(request: http.HttpRequest):
     if right_datasource_instance is None:
         return http.HttpResponseBadRequest()
 
-    right_stream_instance = models.Stream.objects.filter(slug=unsafe_right_stream_slug).first()
+    right_stream_instance = right_datasource_instance.stream_set.filter(slug=unsafe_right_stream_slug).first()
     if right_stream_instance is None:
         return http.HttpResponseBadRequest()
 
