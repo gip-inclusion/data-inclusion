@@ -116,7 +116,7 @@ def search_view(request: http.HttpRequest):
     return http.JsonResponse(
         data={
             "draw": request.GET["draw"],
-            "recordsTotal": len(initial_qs),
+            "recordsTotal": initial_qs.count(),
             "recordsFiltered": len(qs),
             "data": data,
         }
