@@ -107,7 +107,7 @@ def search_view(request: http.HttpRequest):
 
     qs = initial_qs
     if unsafe_search_str:
-        qs = qs.annotate(search=search.SearchVector("data")).filter(search=unsafe_search_str)
+        qs = qs.annotate(search=search.SearchVector("data", config="french")).filter(search=unsafe_search_str)
     qs = qs.values("id", "data")
     qs = qs.order_by("id")
 
