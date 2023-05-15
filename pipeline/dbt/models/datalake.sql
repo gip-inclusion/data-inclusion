@@ -1,7 +1,7 @@
 {{
     config(
         materialized='table',
-        post_hook="CREATE INDEX datalake_data_idx ON {{ this }} USING GIN (TO_TSVECTOR('french'::regconfig, COALESCE(data::TEXT, '')))"
+        post_hook="CREATE INDEX IF NOT EXISTS datalake_data_idx ON {{ this }} USING GIN (TO_TSVECTOR('french'::regconfig, COALESCE(data::TEXT, '')))"
     )
 }}
 
