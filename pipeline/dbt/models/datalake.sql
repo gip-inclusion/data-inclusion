@@ -1,6 +1,7 @@
 {{
     config(
         materialized='table',
+        pre_hoo="DROP INDEX IF EXISTS datalake_data_idx",
         post_hook="CREATE INDEX IF NOT EXISTS datalake_data_idx ON {{ this }} USING GIN (TO_TSVECTOR('french'::regconfig, COALESCE(data::TEXT, '')))"
     )
 }}
