@@ -110,16 +110,16 @@ final AS (
 
 odspep AS (
     SELECT
-        NULL                             AS "batch_id",
-        'odspep'                         AS "src_alias",
-        NULL                             AS "src_url",
-        'ressources-partenariales'       AS "file",
-        TO_JSONB(t . *)                  AS "data",
-        CAST('2022-01-01' AS DATE)       AS "logical_date",
-        GEN_RANDOM_UUID()                AS "id",
-        NOW()                            AS "created_at",
-        JSONB_BUILD_OBJECT('id', id_res) AS "natural_id"
-    FROM {{ ref('int_odspep__enhanced_res_partenariales') }}
+        NULL                               AS "batch_id",
+        'odspep'                           AS "src_alias",
+        NULL                               AS "src_url",
+        'ressources-partenariales'         AS "file",
+        TO_JSONB(t.*)                      AS "data",
+        CAST('2022-01-01' AS DATE)         AS "logical_date",
+        GEN_RANDOM_UUID()                  AS "id",
+        NOW()                              AS "created_at",
+        JSONB_BUILD_OBJECT('id', t.id_res) AS "natural_id"
+    FROM {{ ref('int_odspep__enhanced_res_partenariales') }} AS t
 )
 
 SELECT * FROM final
