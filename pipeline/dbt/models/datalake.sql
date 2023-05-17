@@ -1,7 +1,7 @@
 {{
     config(
         materialized='table',
-        pre_hoo="DROP INDEX IF EXISTS datalake_data_idx",
+        pre_hook="DROP INDEX IF EXISTS datalake_data_idx",
         post_hook="CREATE INDEX IF NOT EXISTS datalake_data_idx ON {{ this }} USING GIN (TO_TSVECTOR('french'::regconfig, COALESCE(data::TEXT, '')))"
     )
 }}
@@ -106,6 +106,22 @@ final AS (
         JSONB_BUILD_OBJECT('id', natural_id) AS "data_normalized"
     FROM naturally_identified_data
     WHERE natural_id IS NOT NULL
+),
+
+odspep AS (
+    SELECT
+        NULL                             AS "batch_id",
+        'odspep'                         AS "src_alias",
+        NULL                             AS "src_url",
+        'ressources-partenariales'       AS "file",
+        TO_JSONB(t . *)                  AS "data",
+        CAST('2022-01-01' AS DATE)       AS "logical_date",
+        GEN_RANDOM_UUID()                AS "id",
+        NOW()                            AS "created_at",
+        JSONB_BUILD_OBJECT('id', id_res) AS "natural_id"
+    FROM {{ ref('int_odspep__enhanced_res_partenariales') }}
 )
 
 SELECT * FROM final
+UNION
+SELECT * FROM odspep
