@@ -57,6 +57,7 @@ def _extract(
     from data_inclusion.scripts.tasks import (
         dora,
         emplois_de_linclusion,
+        grist,
         mediation_numerique,
         mes_aides,
         utils,
@@ -80,6 +81,8 @@ def _extract(
 
     if source_config["id"].startswith("mediation-numerique-"):
         extract_fn = mediation_numerique.extract
+    elif source_config.get("type", None) == "grist":
+        extract_fn = grist.extract
     else:
         extract_fn = EXTRACT_FN_BY_SOURCE_ID[source_config["id"]]
 
@@ -96,7 +99,7 @@ def _extract(
         ]
     )
 
-    with io.BytesIO(extract_fn(**stream_config)) as buf:
+    with io.BytesIO(extract_fn(**stream_config, source_dict=source_config)) as buf:
         s3_hook.load_file_obj(
             file_obj=buf,
             key=stream_s3_key,
@@ -137,6 +140,8 @@ def _load(
 
     if source_config["id"].startswith("mediation-numerique-"):
         read_fn = utils.read_json
+    elif source_config.get("type", None) == "grist":
+        read_fn = lambda path: utils.read_csv(path, sep=",")  # noqa: E731
     else:
         read_fn = READ_FN_BY_SOURCE_ID[source_config["id"]]
 
@@ -224,13 +229,18 @@ def dbt_operator_factory(
 # generate a dedicated DAG for every configured sources
 for source_config in SOURCES_CONFIGS:
     dag_id = f"import_{source_config['id']}".replace("-", "_")
+
+    tags = ["source"]
+    if source_config.get("type", None) == "grist":
+        tags += ["source_type:grist"]
+
     dag = airflow.DAG(
         dag_id=dag_id,
         start_date=pendulum.datetime(2022, 1, 1, tz="Europe/Paris"),
         default_args=default_args,
         schedule_interval=source_config["schedule_interval"],
         catchup=False,
-        tags=["source"],
+        tags=tags,
     )
 
     with dag:

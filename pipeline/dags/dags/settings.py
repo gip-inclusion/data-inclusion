@@ -190,4 +190,24 @@ SOURCES_CONFIGS = [
             "ultra-numerique",
         ]
     ],
+    *[
+        {
+            "id": source_id,
+            "type": "grist",
+            "schedule_interval": "@daily",
+            "snapshot": False,
+            "streams": [
+                {
+                    "id": "structures",
+                    "filename": "structures.csv",
+                    "url": Variable.get("GRIST_API_URL", None),
+                    "workspace_id": "124",
+                    "token": Variable.get("GRIST_API_TOKEN", None),
+                },
+            ],
+        }
+        for source_id in [
+            # TODO
+        ]
+    ],
 ]
