@@ -616,3 +616,37 @@ def test_list_services_filter_by_categorie_thematique(api_client, service_factor
     assert len(resp_data["items"]) == 1
     assert resp_data["items"][0]["source"] == service.structure.source
     assert resp_data["items"][0]["id"] == service.id
+
+
+@pytest.mark.with_token
+def test_list_services_filter_by_departement_cog(api_client, service_factory):
+    service = service_factory(code_insee="2A247")
+    service_factory(code_insee="59350")
+
+    url = "/api/v0/services/"
+    response = api_client.get(url, params={"departement": "2A"})
+
+    assert response.status_code == 200
+    resp_data = response.json()
+    assert_paginated_response_data(response.json(), total=1)
+    assert resp_data["items"][0]["id"] == service.id
+
+    response = api_client.get(url, params={"departement": "62"})
+    assert_paginated_response_data(response.json(), total=0)
+
+
+@pytest.mark.with_token
+def test_list_services_filter_by_departement_slug(api_client, service_factory):
+    service = service_factory(code_insee="22247")
+    service_factory(code_insee="59350")
+
+    url = "/api/v0/services/"
+    response = api_client.get(url, params={"departement_slug": "cotes-d-armor"})
+
+    assert response.status_code == 200
+    resp_data = response.json()
+    assert_paginated_response_data(response.json(), total=1)
+    assert resp_data["items"][0]["id"] == service.id
+
+    response = api_client.get(url, params={"departement_slug": "pas-de-calais"})
+    assert_paginated_response_data(response.json(), total=0)

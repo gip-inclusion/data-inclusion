@@ -244,6 +244,8 @@ def list_services(
     db_session: orm.Session,
     source: Optional[str] = None,
     thematique: Optional[schema.Thematique] = None,
+    departement: Optional[schema.DepartementCOG] = None,
+    departement_slug: Optional[schema.DepartementSlug] = None,
 ):
     query = db_session.query(
         models.Structure.source,
@@ -286,6 +288,16 @@ def list_services(
     if source is not None:
         query = query.filter(models.Structure.source == source)
 
+    if departement is not None:
+        query = query.filter(models.Service.code_insee.startswith(departement.value))
+
+    if departement_slug is not None:
+        query = query.filter(
+            models.Service.code_insee.startswith(
+                schema.DepartementCOG[departement_slug.name].value
+            )
+        )
+
     if thematique is not None:
         filter_stmt = """\
         EXISTS(
@@ -315,6 +327,8 @@ def list_services_endpoint(
     db_session=fastapi.Depends(db.get_session),
     source: Optional[str] = None,
     thematique: Optional[schema.Thematique] = None,
+    departement: Optional[schema.DepartementCOG] = None,
+    departement_slug: Optional[schema.DepartementSlug] = None,
 ):
     """
     ## Liste les services consolidées par data.inclusion
@@ -330,6 +344,8 @@ def list_services_endpoint(
         db_session,
         source=source,
         thematique=thematique,
+        departement=departement,
+        departement_slug=departement_slug,
     )
 
 
