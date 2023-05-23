@@ -92,6 +92,13 @@ class GristClient:
             params={"tableId": table_id},
         ).content
 
+    def add_records(self, document_id: str, table_id: str, records: list):
+        # https://support.getgrist.com/api/#tag/records/paths/~1docs~1%7BdocId%7D~1tables~1%7BtableId%7D~1records/post
+        return self.session.post(
+            self.base_url + f"/docs/{document_id}/tables/{table_id}/records",
+            json={"records": records},
+        )
+
 
 def _normalize_table_name(name: str) -> str:
     # Grist normalizes table names
