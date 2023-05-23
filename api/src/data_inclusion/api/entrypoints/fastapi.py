@@ -246,6 +246,7 @@ def list_services(
     thematique: Optional[schema.Thematique] = None,
     departement: Optional[schema.DepartementCOG] = None,
     departement_slug: Optional[schema.DepartementSlug] = None,
+    code_insee: Optional[schema.CodeInsee] = None,
 ):
     query = db_session.query(
         models.Structure.source,
@@ -298,6 +299,9 @@ def list_services(
             )
         )
 
+    if code_insee is not None:
+        query = query.filter_by(code_insee=code_insee)
+
     if thematique is not None:
         filter_stmt = """\
         EXISTS(
@@ -329,6 +333,7 @@ def list_services_endpoint(
     thematique: Optional[schema.Thematique] = None,
     departement: Optional[schema.DepartementCOG] = None,
     departement_slug: Optional[schema.DepartementSlug] = None,
+    code_insee: Optional[schema.CodeInsee] = None,
 ):
     """
     ## Liste les services consolidées par data.inclusion
@@ -346,6 +351,7 @@ def list_services_endpoint(
         thematique=thematique,
         departement=departement,
         departement_slug=departement_slug,
+        code_insee=code_insee,
     )
 
 

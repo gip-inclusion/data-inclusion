@@ -143,6 +143,9 @@ DepartementCOG = Enum(
     {k: departement.cog for k, departement in _departements_dict.items()},
 )
 
+CodePostal: TypeAlias = constr(min_length=5, max_length=5, regex=r"^\d{5}$")
+CodeInsee: TypeAlias = constr(min_length=5, max_length=5)
+
 
 class Service(BaseModel):
     id: str
@@ -162,8 +165,8 @@ class Service(BaseModel):
     justificatifs: Optional[str]
     formulaire_en_ligne: Optional[str]
     commune: Optional[str]
-    code_postal: Optional[constr(min_length=5, max_length=5, regex=r"^\d{5}$")]
-    code_insee: Optional[constr(min_length=5, max_length=5)]
+    code_postal: Optional[CodePostal]
+    code_insee: Optional[CodeInsee]
     adresse: Optional[str]
     complement_adresse: Optional[str]
     longitude: Optional[float]
@@ -189,9 +192,6 @@ class Service(BaseModel):
         orm_mode = True
 
 
-CodePostal: TypeAlias = constr(min_length=5, max_length=5, regex=r"^\d{5}$")
-
-
 class Structure(BaseModel):
     # internal metadata
     di_geocodage_code_insee: Optional[constr(min_length=5, max_length=5)] = Field(
@@ -208,7 +208,7 @@ class Structure(BaseModel):
     nom: str
     commune: str
     code_postal: CodePostal
-    code_insee: Optional[constr(min_length=5, max_length=5)]
+    code_insee: Optional[CodeInsee]
     adresse: str
     complement_adresse: Optional[str]
     longitude: Optional[float]

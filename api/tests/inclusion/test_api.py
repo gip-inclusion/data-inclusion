@@ -650,3 +650,20 @@ def test_list_services_filter_by_departement_slug(api_client, service_factory):
 
     response = api_client.get(url, params={"departement_slug": "pas-de-calais"})
     assert_paginated_response_data(response.json(), total=0)
+
+
+@pytest.mark.with_token
+def test_list_services_filter_by_code_insee(api_client, service_factory):
+    service = service_factory(code_insee="22247")
+    service_factory(code_insee="59350")
+
+    url = "/api/v0/services/"
+    response = api_client.get(url, params={"code_insee": "22247"})
+
+    assert response.status_code == 200
+    resp_data = response.json()
+    assert_paginated_response_data(response.json(), total=1)
+    assert resp_data["items"][0]["id"] == service.id
+
+    response = api_client.get(url, params={"code_insee": "62041"})
+    assert_paginated_response_data(response.json(), total=0)
