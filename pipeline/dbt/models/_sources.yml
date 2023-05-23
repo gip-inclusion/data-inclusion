@@ -232,3 +232,8 @@ sources:
       This source contains the data exported by IF for the purpose of siretisation.
     tables:
       - name: structures
+
+  - name: monenfant
+    schema: monenfant
+    tables:
+      - name: structures

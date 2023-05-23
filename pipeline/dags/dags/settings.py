@@ -201,13 +201,13 @@ SOURCES_CONFIGS = [
                     "id": "structures",
                     "filename": "structures.csv",
                     "url": Variable.get("GRIST_API_URL", None),
-                    "workspace_id": "124",
+                    "workspace_id": Variable.get("GRIST_WORKSPACE_ID", None),
                     "token": Variable.get("GRIST_API_TOKEN", None),
                 },
             ],
         }
         for source_id in [
-            # TODO
+            "monenfant",
         ]
     ],
 ]

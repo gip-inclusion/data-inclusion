@@ -13,6 +13,7 @@ WITH structures AS (
                 ref('int_siao__structures'),
                 ref('int_finess__structures'),
                 ref('int_immersion_facilitee_structures'),
+                ref('int_monenfant__structures'),
             ],
             column_override={
                 "thematiques": "TEXT[]",
