@@ -544,6 +544,15 @@ def search_services_endpoint(
     La recherche de services permet de trouver des services dans une commune et à proximité.
 
     Les services peuvent être filtrés selon par thématiques, frais, typologies.
+
+    Lorsqu'un `code_insee` est fourni:
+
+    * les services qui ne sont pas rattachés (par leur adresse ou celle de leur structure)
+        au département du code insee de la recherche sont exclus,
+    * null si un service n'a pas de code_insee,
+    * 0 si code_insee du service correspond au code_insee de la recherche,
+    * 40 sinon les code_insee sont différents,
+    * les résultats sont triés par distance croissante.
     """  # noqa: W505
     return search_services(
         db_session,
