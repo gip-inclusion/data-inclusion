@@ -22,7 +22,8 @@ final AS (
         data ->> 'url'                                     AS "url",
         data ->> 'shortDesc'                               AS "short_desc",
         data ->> 'fullDesc'                                AS "full_desc",
-        data ->> 'linkOnSource'                            AS "link_on_source"
+        data ->> 'linkOnSource'                            AS "link_on_source",
+        data #>> '{source,value}'                          AS "source"
     FROM source
 )
 

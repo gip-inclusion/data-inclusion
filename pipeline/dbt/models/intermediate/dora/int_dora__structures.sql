@@ -31,6 +31,9 @@ final AS (
         NULLIF(city_code, '')      AS "code_insee",
         NULLIF(email, '')          AS "courriel"
     FROM structures
+    -- FIXME: exclude data that have been imported by dora from les emplois
+    --  because it decreases the average dataset quality.
+    WHERE source != 'di-emplois-de-linclusion'
 )
 
 SELECT * FROM final
