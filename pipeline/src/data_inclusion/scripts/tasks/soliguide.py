@@ -27,7 +27,10 @@ class APIClient:
         self,
         location_geo_type: str,
         location_geo_value: Optional[str] = None,
-    ) -> dict:
+    ) -> list[dict]:
+        if location_geo_type != "position" and location_geo_value is None:
+            raise Exception("Missing location.geoValue.")
+
         default_data = {
             "location": {
                 "geoType": location_geo_type,
