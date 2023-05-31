@@ -1,5 +1,5 @@
 import logging
-from typing import Optional
+from typing import Annotated, Optional
 
 import sentry_sdk
 import sqlalchemy as sqla
@@ -116,7 +116,7 @@ def list_structures(
     code_postal: Optional[schema.CodePostal] = None,
     thematique: Optional[schema.Thematique] = None,
 ) -> list:
-    query = db_session.query(models.Structure)
+    query = sqla.select(models.Structure)
 
     if source is not None:
         query = query.filter_by(source=source)
@@ -167,7 +167,7 @@ def list_structures(
         models.Structure.id,
     )
 
-    return list(paginate(query))
+    return list(paginate(db_session, query))
 
 
 @v0_api_router.get(
@@ -221,9 +221,9 @@ def list_structures_endpoint(
 def list_sources(
     db_session: orm.Session,
 ) -> list[str]:
-    query = db_session.query(models.Structure.source).distinct()
+    query = sqla.select(models.Structure.source).distinct()
     query = query.order_by(models.Structure.source)
-    return [o.source for o in query]
+    return [o.source for o in db_session.execute(query)]
 
 
 @v0_api_router.get(
@@ -244,47 +244,68 @@ def list_services(
     db_session: orm.Session,
     source: Optional[str] = None,
     thematique: Optional[schema.Thematique] = None,
+    departement: Optional[schema.DepartementCOG] = None,
+    departement_slug: Optional[schema.DepartementSlug] = None,
+    code_insee: Optional[schema.CodeInsee] = None,
 ):
-    query = db_session.query(
-        models.Structure.source,
-        models.Structure.id.label("structure_id"),
-        models.Service.id,
-        models.Service.nom,
-        models.Service.presentation_resume,
-        models.Service.presentation_detail,
-        models.Service.types,
-        models.Service.thematiques,
-        models.Service.prise_rdv,
-        models.Service.frais,
-        models.Service.frais_autres,
-        models.Service.profils,
-        models.Service.pre_requis,
-        models.Service.cumulable,
-        models.Service.justificatifs,
-        models.Service.formulaire_en_ligne,
-        models.Service.commune,
-        models.Service.code_postal,
-        models.Service.code_insee,
-        models.Service.adresse,
-        models.Service.complement_adresse,
-        models.Service.longitude,
-        models.Service.latitude,
-        models.Service.recurrence,
-        models.Service.date_creation,
-        models.Service.date_suspension,
-        models.Service.lien_source,
-        models.Service.telephone,
-        models.Service.courriel,
-        models.Service.contact_public,
-        models.Service.date_maj,
-        models.Service.modes_accueil,
-        models.Service.zone_diffusion_type,
-        models.Service.zone_diffusion_code,
-        models.Service.zone_diffusion_nom,
-    ).join(models.Service)
+    query = (
+        sqla.select(
+            models.Structure.source,
+            models.Structure.id.label("structure_id"),
+            models.Service._di_surrogate_id,
+            models.Service.id,
+            models.Service.nom,
+            models.Service.presentation_resume,
+            models.Service.presentation_detail,
+            models.Service.types,
+            models.Service.thematiques,
+            models.Service.prise_rdv,
+            models.Service.frais,
+            models.Service.frais_autres,
+            models.Service.profils,
+            models.Service.pre_requis,
+            models.Service.cumulable,
+            models.Service.justificatifs,
+            models.Service.formulaire_en_ligne,
+            models.Service.commune,
+            models.Service.code_postal,
+            models.Service.code_insee,
+            models.Service.adresse,
+            models.Service.complement_adresse,
+            models.Service.longitude,
+            models.Service.latitude,
+            models.Service.recurrence,
+            models.Service.date_creation,
+            models.Service.date_suspension,
+            models.Service.lien_source,
+            models.Service.telephone,
+            models.Service.courriel,
+            models.Service.contact_public,
+            models.Service.date_maj,
+            models.Service.modes_accueil,
+            models.Service.zone_diffusion_type,
+            models.Service.zone_diffusion_code,
+            models.Service.zone_diffusion_nom,
+        )
+        .select_from(models.Service)
+        .join(models.Structure)
+    )
 
     if source is not None:
         query = query.filter(models.Structure.source == source)
+
+    if departement is not None:
+        query = query.filter(models.Service.code_insee.startswith(departement.value))
+
+    if departement_slug is not None:
+        query = query.filter(
+            models.Service.code_insee.startswith(
+                schema.DepartementCOG[departement_slug.name].value
+            )
+        )
+
+    if code_insee is not None:
+        query = query.filter(models.Service.code_insee == code_insee)
 
     if thematique is not None:
         filter_stmt = """\
@@ -303,7 +324,7 @@ def list_services(
         models.Service.id,
     )
 
-    return list(paginate(query))
+    return list(paginate(db_session, query, unique=False))
 
 
 @v0_api_router.get(
@@ -315,6 +336,9 @@ def list_services_endpoint(
     db_session=fastapi.Depends(db.get_session),
     source: Optional[str] = None,
     thematique: Optional[schema.Thematique] = None,
+    departement: Optional[schema.DepartementCOG] = None,
+    departement_slug: Optional[schema.DepartementSlug] = None,
+    code_insee: Optional[schema.CodeInsee] = None,
 ):
     """
     ## Liste les services consolidées par data.inclusion
@@ -330,6 +354,213 @@ def list_services_endpoint(
         db_session,
         source=source,
         thematique=thematique,
+        departement=departement,
+        departement_slug=departement_slug,
+        code_insee=code_insee,
+    )
+
+
+@v0_api_router.get(
+    "/services/{_di_surrogate_id}",
+    response_model=schema.DetailedService,
+    summary="Détaille un service",
+)
+def retrieve_service_endpoint(
+    _di_surrogate_id: Annotated[
+        str, fastapi.Path(description="L'identifiant créé par data.inclusion.")
+    ],
+    db_session=fastapi.Depends(db.get_session),
+):
+    service_instance = db_session.scalars(
+        sqla.select(models.Service)
+        .options(orm.selectinload(models.Service.structure))
+        .filter_by(_di_surrogate_id=_di_surrogate_id)
+    ).first()
+
+    if service_instance is None:
+        raise fastapi.HTTPException(status_code=404)
+
+    return service_instance
+
+
+def search_services(
+    db_session: orm.Session,
+    source: Optional[str] = None,
+    code_insee: Optional[schema.CodeInsee] = None,
+    thematiques: Optional[list[schema.Thematique]] = None,
+    frais: Optional[list[schema.Frais]] = None,
+    types: Optional[list[schema.TypologieService]] = None,
+):
+    query = (
+        sqla.select(
+            models.Structure.source,
+            models.Structure.id.label("structure_id"),
+            models.Service._di_surrogate_id,
+            models.Service.id,
+            models.Service.nom,
+            models.Service.presentation_resume,
+            models.Service.presentation_detail,
+            models.Service.types,
+            models.Service.thematiques,
+            models.Service.prise_rdv,
+            models.Service.frais,
+            models.Service.frais_autres,
+            models.Service.profils,
+            models.Service.pre_requis,
+            models.Service.cumulable,
+            models.Service.justificatifs,
+            models.Service.formulaire_en_ligne,
+            models.Service.commune,
+            models.Service.code_postal,
+            models.Service.code_insee,
+            models.Service.adresse,
+            models.Service.complement_adresse,
+            models.Service.longitude,
+            models.Service.latitude,
+            models.Service.recurrence,
+            models.Service.date_creation,
+            models.Service.date_suspension,
+            models.Service.lien_source,
+            models.Service.telephone,
+            models.Service.courriel,
+            models.Service.contact_public,
+            models.Service.date_maj,
+            models.Service.modes_accueil,
+            models.Service.zone_diffusion_type,
+            models.Service.zone_diffusion_code,
+            models.Service.zone_diffusion_nom,
+        )
+        .select_from(models.Service)
+        .join(models.Structure)
+    )
+
+    if source is not None:
+        query = query.filter(models.Structure.source == source)
+
+    if code_insee is not None:
+        # for now, filter services that are not in the associated departement out
+        cog_departement = code_insee[: 3 if code_insee.startswith("97") else 2]
+        query = query.filter(
+            models.Service.code_insee.startswith(cog_departement)
+            | models.Structure.code_insee.startswith(cog_departement)
+        )
+
+        # for now, assign an arbitrary distance based on the city code
+        query = query.add_columns(
+            sqla.case(
+                (models.Service.code_insee.is_(sqla.null()), sqla.null()),
+                (models.Service.code_insee == code_insee, 0),
+                (models.Service.code_insee != code_insee, 40),
+            ).label("distance")
+        )
+    else:
+        query = query.add_columns(sqla.null().label("distance"))
+
+    if thematiques is not None:
+        filter_stmt = """\
+        EXISTS(
+            SELECT
+            FROM unnest(service.thematiques) thematiques
+            WHERE thematiques = ANY(:thematiques)
+        )
+        """
+        query = query.filter(
+            sqla.text(filter_stmt).bindparams(
+                thematiques=[t.value for t in thematiques]
+            )
+        )
+
+    if frais is not None:
+        filter_stmt = """\
+        EXISTS(
+            SELECT
+            FROM unnest(service.frais) frais
+            WHERE frais = ANY(:frais)
+        )
+        """
+        query = query.filter(
+            sqla.text(filter_stmt).bindparams(frais=[f.value for f in frais])
+        )
+
+    if types is not None:
+        filter_stmt = """\
+        EXISTS(
+            SELECT
+            FROM unnest(service.types) types
+            WHERE types = ANY(:types)
+        )
+        """
+        query = query.filter(
+            sqla.text(filter_stmt).bindparams(types=[t.value for t in types])
+        )
+
+    query = query.order_by("distance")
+
+    return list(paginate(db_session, query, unique=False))
+
+
+@v0_api_router.get(
+    "/search/services",
+    response_model=pagination.Page[schema.ServiceSearchResult],
+    summary="Recherche de services",
+)
+def search_services_endpoint(
+    db_session=fastapi.Depends(db.get_session),
+    source: Optional[str] = None,
+    code_insee: Annotated[
+        Optional[schema.CodeInsee],
+        fastapi.Query(
+            description="""Code insee de la commune considérée.
+                Si fourni, les résultats inclus également les services proches de cette commune.
+                Les résultats sont triés par ordre de distance croissante.
+            """
+        ),
+    ] = None,
+    thematiques: Annotated[
+        Optional[list[schema.Thematique]],
+        fastapi.Query(
+            description="""Une liste de thématique.
+                Chaque résultat renvoyé a (au moins) une thématique dans cette liste."""
+        ),
+    ] = None,
+    frais: Annotated[
+        Optional[list[schema.Frais]],
+        fastapi.Query(
+            description="""Une liste de frais.
+                Chaque résultat renvoyé a (au moins) un frais dans cette liste."""
+        ),
+    ] = None,
+    types: Annotated[
+        Optional[list[schema.TypologieService]],
+        fastapi.Query(
+            description="""Une liste de typologies de service.
+                Chaque résultat renvoyé a (au moins) une typologie dans cette liste."""
+        ),
+    ] = None,
+):
+    """
+    ## Recherche de services
+
+    La recherche de services permet de trouver des services dans une commune et à proximité.
+
+    Les services peuvent être filtrés selon par thématiques, frais, typologies.
+
+    Lorsqu'un `code_insee` est fourni:
+
+    * les services qui ne sont pas rattachés (par leur adresse ou celle de leur structure)
+        au département du code insee de la recherche sont exclus,
+    * null si un service n'a pas de code_insee,
+    * 0 si code_insee du service correspond au code_insee de la recherche,
+    * 40 sinon les code_insee sont différents,
+    * les résultats sont triés par distance croissante.
+    """  # noqa: W505
+    return search_services(
+        db_session,
+        source=source,
+        code_insee=code_insee,
+        thematiques=thematiques,
+        frais=frais,
+        types=types,
     )
 
 
