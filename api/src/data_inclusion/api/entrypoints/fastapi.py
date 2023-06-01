@@ -220,7 +220,7 @@ def list_structures_endpoint(
 
 @v0_api_router.get(
     "/structures/{source}/{id}",
-    response_model=schema.Structure,
+    response_model=schema.DetailedStructure,
     summary="Détaille une structure",
 )
 def retrieve_structure_endpoint(

@@ -249,3 +249,7 @@ class Token(BaseModel):
 
 class DetailedService(Service):
     structure: Structure
+
+
+class DetailedStructure(Structure):
+    services: list[Service]

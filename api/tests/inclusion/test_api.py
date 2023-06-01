@@ -810,9 +810,11 @@ def test_retrieve_service(api_client, service_factory):
 
 
 @pytest.mark.with_token
-def test_retrieve_structure(api_client, structure_factory):
+def test_retrieve_structure(api_client, structure_factory, service_factory):
     structure_1 = structure_factory(source="foo", id="1")
+    service_1 = service_factory(structure=structure_1)
     structure_2 = structure_factory(source="bar", id="1")
+    service_factory(structure=structure_2)
     structure_3 = structure_factory(source="foo", id="2")
 
     url = "/api/v0/structures/"
@@ -821,6 +823,9 @@ def test_retrieve_structure(api_client, structure_factory):
     assert response.status_code == 200
     resp_data = response.json()
     assert resp_data["id"] == structure_1.id
+    assert "services" in resp_data
+    assert len(resp_data["services"]) == 1
+    assert resp_data["services"][0]["id"] == service_1.id
 
     response = api_client.get(url + f"{structure_2.source}/{structure_3.id}")
     assert response.status_code == 404
