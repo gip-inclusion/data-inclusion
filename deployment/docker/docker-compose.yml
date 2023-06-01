@@ -1,0 +1,156 @@
+version: "3.9"
+
+x-airflow-common:
+  &airflow-common
+  build:
+    context: ../../pipeline
+
+  environment:
+    &airflow-common-environment
+    AIRFLOW__CORE__DEFAULT_TIMEZONE: Europe/Paris
+    AIRFLOW__CORE__EXECUTOR: LocalExecutor
+    # AIRFLOW__CORE__FERNET_KEY:
+    AIRFLOW__CORE__LOAD_EXAMPLES: 'false'
+    AIRFLOW__CORE__LOAD_DEFAULT_CONNECTIONS: 'false'
+    AIRFLOW__DATABASE__SQL_ALCHEMY_CONN: postgresql://airflow:airflow@airflow-db:5432/airflow
+    AIRFLOW__SCHEDULER__MIN_FILE_PROCESS_INTERVAL: 60
+    AIRFLOW__WEBSERVER__WORKERS: 1
+    AIRFLOW__WEBSERVER__BASE_URL: http://localhost/airflow
+
+    # make the data_inclusion package available in editable mode
+    PYTHONPATH: $${PYTHONPATH}:/opt/airflow/data-inclusion/src
+
+  volumes:
+    - airflow-logs:/opt/airflow/logs
+
+  user: 0:0
+
+  depends_on:
+    &airflow-common-depends-on
+    airflow-db:
+      condition: service_healthy
+
+services:
+  airflow-db:
+    image: postgres:14
+    restart: on-failure
+    healthcheck:
+      test: [ "CMD", "pg_isready", "-U", "airflow" ]
+      interval: 5s
+      retries: 5
+    environment:
+      - POSTGRES_DB=airflow
+      - POSTGRES_USER=airflow
+      - POSTGRES_PASSWORD=airflow
+
+  airflow-init:
+    <<: *airflow-common
+    entrypoint: /bin/bash -c
+    command:
+      - |
+        mkdir -p /opt/airflow/logs
+        chown -R "0:0" /opt/airflow/logs
+        exec /entrypoint airflow version
+    environment:
+      <<: *airflow-common-environment
+      # Additional variables for development only
+      _AIRFLOW_DB_UPGRADE: 'true'
+      _AIRFLOW_WWW_USER_CREATE: 'true'
+      _AIRFLOW_WWW_USER_USERNAME: airflow
+      _AIRFLOW_WWW_USER_PASSWORD: airflow
+
+  airflow-webserver:
+    <<: *airflow-common
+    command: webserver
+    restart: on-failure
+    ports:
+      - 8080:8080
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.airflow.rule=Host(`localhost`) && PathPrefix(`/airflow`)"
+      - "traefik.http.routers.airflow.entrypoints=http"
+    depends_on:
+      <<: *airflow-common-depends-on
+      airflow-init:
+        condition: service_completed_successfully
+
+  minio:
+    image: minio/minio:RELEASE.2022-10-08T20-11-00Z
+    command: server /data
+    restart: always
+    ports:
+      - 9000:9000
+    environment:
+      - MINIO_ROOT_USER=minioadmin
+      - MINIO_ROOT_PASSWORD=minioadmin
+    volumes:
+      - minio-data:/data
+
+  minio-init:
+    image: minio/mc:RELEASE.2022-12-24T15-21-38Z
+    entrypoint: /bin/bash -c
+    command:
+      - |
+        mc alias set tmp http://minio:9000 minioadmin minioadmin
+        mc mb tmp/data-inclusion-lake
+    depends_on:
+      - minio
+
+  target-db:
+    image: postgis/postgis:14-3.3
+    restart: always
+    healthcheck:
+      test: [ "CMD", "pg_isready", "-U", "data-inclusion" ]
+      interval: 5s
+      retries: 5
+    environment:
+      - POSTGRES_DB=data-inclusion
+      - POSTGRES_USER=data-inclusion
+      - POSTGRES_PASSWORD=data-inclusion
+    volumes:
+      - pg-data:/var/lib/postgresql/data
+
+  api:
+    image: data-inclusion/api
+    build: ../../api
+    depends_on:
+      target-db:
+        condition: service_healthy
+    restart: always
+    ports:
+      - 8000:8000
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.api.rule=Host(`localhost`) && PathPrefix(`/api`)"
+      - "traefik.http.routers.api.entrypoints=http"
+    environment:
+      - ENV=prod
+      - DEBUG=False
+      - DATABASE_URL=postgresql://data-inclusion:data-inclusion@target-db:5432/data-inclusion
+      # - SECRET_KEY=${API_SECRET_KEY}
+      - SECRET_KEY=USE_IN_DEVELOPMENT_ONLY
+      - ROOT_PATH=/api
+
+  reverse-proxy:
+    image: traefik:v2.10
+    ports:
+      - 80:80
+      - 8081:8080
+    environment:
+      - TRAEFIK_PROVIDERS_DOCKER=true
+      - TRAEFIK_PROVIDERS_DOCKER_EXPOSEDBYDEFAULT=false
+      # enable the web ui (disabled for prod)
+      - TRAEFIK_API_INSECURE=true
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+
+volumes:
+  airflow-logs:
+  pg-data:
+  minio-data:
+  files-data:
+
+
+networks:
+  default:
+    name: data-inclusion

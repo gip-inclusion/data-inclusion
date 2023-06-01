@@ -51,6 +51,7 @@ def create_app() -> fastapi.FastAPI:
 
     app = fastapi.FastAPI(
         title="data.inclusion API",
+        openapi_url="/api/openapi.json",
         description=description,
         docs_url="/api/v0/docs",
         contact={
