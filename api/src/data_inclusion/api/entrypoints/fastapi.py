@@ -361,20 +361,20 @@ def list_services_endpoint(
 
 
 @v0_api_router.get(
-    "/services/{_di_surrogate_id}",
+    "/services/{source}/{id}",
     response_model=schema.DetailedService,
     summary="Détaille un service",
 )
 def retrieve_service_endpoint(
-    _di_surrogate_id: Annotated[
-        str, fastapi.Path(description="L'identifiant créé par data.inclusion.")
-    ],
+    source: str,
+    id: str,
     db_session=fastapi.Depends(db.get_session),
 ):
     service_instance = db_session.scalars(
         sqla.select(models.Service)
         .options(orm.selectinload(models.Service.structure))
-        .filter_by(_di_surrogate_id=_di_surrogate_id)
+        .filter_by(source=source)
+        .filter_by(id=id)
     ).first()
 
     if service_instance is None:
