@@ -805,3 +805,20 @@ def test_retrieve_service(api_client, service_factory):
 
     response = api_client.get(url + f"{service_2.source}/{service_3.id}")
     assert response.status_code == 404
+
+
+@pytest.mark.with_token
+def test_retrieve_structure(api_client, structure_factory):
+    structure_1 = structure_factory(source="foo", id="1")
+    structure_2 = structure_factory(source="bar", id="1")
+    structure_3 = structure_factory(source="foo", id="2")
+
+    url = "/api/v0/structures/"
+    response = api_client.get(url + f"{structure_1.source}/{structure_1.id}")
+
+    assert response.status_code == 200
+    resp_data = response.json()
+    assert resp_data["id"] == structure_1.id
+
+    response = api_client.get(url + f"{structure_2.source}/{structure_3.id}")
+    assert response.status_code == 404

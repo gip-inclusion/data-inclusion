@@ -218,6 +218,26 @@ def list_structures_endpoint(
     )
 
 
+@v0_api_router.get(
+    "/structures/{source}/{id}",
+    response_model=schema.Structure,
+    summary="Détaille une structure",
+)
+def retrieve_structure_endpoint(
+    source: str,
+    id: str,
+    db_session=fastapi.Depends(db.get_session),
+):
+    structure_instance = db_session.scalars(
+        sqla.select(models.Structure).filter_by(source=source).filter_by(id=id)
+    ).first()
+
+    if structure_instance is None:
+        raise fastapi.HTTPException(status_code=404)
+
+    return structure_instance
+
+
 def list_sources(
     db_session: orm.Session,
 ) -> list[str]:
@@ -342,13 +362,6 @@ def list_services_endpoint(
 ):
     """
     ## Liste les services consolidées par data.inclusion
-
-    ### Retrouver la structure associée à un service donné
-
-    Pour un service donné, il est possible de récupérer les informations de la structure
-    associée en filtrant les structures par source et identifiant local:
-
-    `/api/v0/structures/?source=<source>&id=<id>`
     """
     return list_services(
         db_session,
