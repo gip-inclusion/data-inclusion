@@ -221,7 +221,7 @@ def list_structures_endpoint(
 @v0_api_router.get(
     "/structures/{source}/{id}",
     response_model=schema.DetailedStructure,
-    summary="Détaille une structure",
+    summary="Détailler une structure",
 )
 def retrieve_structure_endpoint(
     source: str,
@@ -254,9 +254,6 @@ def list_sources(
 def list_sources_endpoint(
     db_session=fastapi.Depends(db.get_session),
 ):
-    """
-    ## Lister les sources consolidées
-    """
     return list_sources(db_session)
 
 
@@ -349,7 +346,7 @@ def list_services(
 @v0_api_router.get(
     "/services",
     response_model=pagination.Page[schema.Service],
-    summary="Liste les services consolidées",
+    summary="Lister les services consolidées",
 )
 def list_services_endpoint(
     db_session=fastapi.Depends(db.get_session),
@@ -359,9 +356,6 @@ def list_services_endpoint(
     departement_slug: Optional[schema.DepartementSlug] = None,
     code_insee: Optional[schema.CodeInsee] = None,
 ):
-    """
-    ## Liste les services consolidées par data.inclusion
-    """
     return list_services(
         db_session,
         source=source,
@@ -375,7 +369,7 @@ def list_services_endpoint(
 @v0_api_router.get(
     "/services/{source}/{id}",
     response_model=schema.DetailedService,
-    summary="Détaille un service",
+    summary="Détailler un service",
 )
 def retrieve_service_endpoint(
     source: str,
@@ -513,7 +507,7 @@ def search_services(
 @v0_api_router.get(
     "/search/services",
     response_model=pagination.Page[schema.ServiceSearchResult],
-    summary="Recherche de services",
+    summary="Rechercher des services",
 )
 def search_services_endpoint(
     db_session=fastapi.Depends(db.get_session),
@@ -550,7 +544,7 @@ def search_services_endpoint(
     ] = None,
 ):
     """
-    ## Recherche de services
+    ## Rechercher des services
 
     La recherche de services permet de trouver des services dans une commune et à proximité.
 
