@@ -272,7 +272,6 @@ def list_services(
         sqla.select(
             models.Structure.source,
             models.Structure.id.label("structure_id"),
-            models.Service._di_surrogate_id,
             models.Service.id,
             models.Service.nom,
             models.Service.presentation_resume,
@@ -408,7 +407,6 @@ def search_services(
         sqla.select(
             models.Structure.source,
             models.Structure.id.label("structure_id"),
-            models.Service._di_surrogate_id,
             models.Service.id,
             models.Service.nom,
             models.Service.presentation_resume,
