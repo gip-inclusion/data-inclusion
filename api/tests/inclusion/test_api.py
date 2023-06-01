@@ -305,7 +305,7 @@ def test_list_services_unauthenticated(api_client):
 
 @pytest.mark.with_token
 def test_list_services_all(api_client, service_factory):
-    service = service_factory()
+    service_factory()
 
     url = "/api/v0/services/"
 
@@ -315,7 +315,6 @@ def test_list_services_all(api_client, service_factory):
     assert resp_data == {
         "items": [
             {
-                "_di_surrogate_id": service._di_surrogate_id,
                 "id": "cacher-violent",
                 "structure_id": "grace-plaindre",
                 "source": "dora",
@@ -793,15 +792,40 @@ def test_search_services_with_types(api_client, service_factory):
 
 @pytest.mark.with_token
 def test_retrieve_service(api_client, service_factory):
-    service_1 = service_factory()
-    service_factory()
+    service_1 = service_factory(source="foo", id="1")
+    service_2 = service_factory(source="bar", id="1")
+    service_3 = service_factory(source="foo", id="2")
 
     url = "/api/v0/services/"
-    response = api_client.get(url + service_1._di_surrogate_id)
+    response = api_client.get(url + f"{service_1.source}/{service_1.id}")
 
     assert response.status_code == 200
     resp_data = response.json()
-    assert resp_data["_di_surrogate_id"] == service_1._di_surrogate_id
+    assert resp_data["id"] == service_1.id
+    assert "structure" in resp_data
+    assert resp_data["structure"]["id"] == service_1.structure.id
 
-    response = api_client.get(url + "foo")
+    response = api_client.get(url + f"{service_2.source}/{service_3.id}")
+    assert response.status_code == 404
+
+
+@pytest.mark.with_token
+def test_retrieve_structure(api_client, structure_factory, service_factory):
+    structure_1 = structure_factory(source="foo", id="1")
+    service_1 = service_factory(structure=structure_1)
+    structure_2 = structure_factory(source="bar", id="1")
+    service_factory(structure=structure_2)
+    structure_3 = structure_factory(source="foo", id="2")
+
+    url = "/api/v0/structures/"
+    response = api_client.get(url + f"{structure_1.source}/{structure_1.id}")
+
+    assert response.status_code == 200
+    resp_data = response.json()
+    assert resp_data["id"] == structure_1.id
+    assert "services" in resp_data
+    assert len(resp_data["services"]) == 1
+    assert resp_data["services"][0]["id"] == service_1.id
+
+    response = api_client.get(url + f"{structure_2.source}/{structure_3.id}")
     assert response.status_code == 404

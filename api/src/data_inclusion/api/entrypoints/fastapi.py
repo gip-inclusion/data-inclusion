@@ -218,6 +218,29 @@ def list_structures_endpoint(
     )
 
 
+@v0_api_router.get(
+    "/structures/{source}/{id}",
+    response_model=schema.DetailedStructure,
+    summary="Détailler une structure",
+)
+def retrieve_structure_endpoint(
+    source: str,
+    id: str,
+    db_session=fastapi.Depends(db.get_session),
+):
+    structure_instance = db_session.scalars(
+        sqla.select(models.Structure)
+        .options(orm.selectinload(models.Structure.services))
+        .filter_by(source=source)
+        .filter_by(id=id)
+    ).first()
+
+    if structure_instance is None:
+        raise fastapi.HTTPException(status_code=404)
+
+    return structure_instance
+
+
 def list_sources(
     db_session: orm.Session,
 ) -> list[str]:
@@ -234,9 +257,6 @@ def list_sources(
 def list_sources_endpoint(
     db_session=fastapi.Depends(db.get_session),
 ):
-    """
-    ## Lister les sources consolidées
-    """
     return list_sources(db_session)
 
 
@@ -252,7 +272,6 @@ def list_services(
         sqla.select(
             models.Structure.source,
             models.Structure.id.label("structure_id"),
-            models.Service._di_surrogate_id,
             models.Service.id,
             models.Service.nom,
             models.Service.presentation_resume,
@@ -330,7 +349,7 @@ def list_services(
 @v0_api_router.get(
     "/services",
     response_model=pagination.Page[schema.Service],
-    summary="Liste les services consolidées",
+    summary="Lister les services consolidées",
 )
 def list_services_endpoint(
     db_session=fastapi.Depends(db.get_session),
@@ -340,16 +359,6 @@ def list_services_endpoint(
     departement_slug: Optional[schema.DepartementSlug] = None,
     code_insee: Optional[schema.CodeInsee] = None,
 ):
-    """
-    ## Liste les services consolidées par data.inclusion
-
-    ### Retrouver la structure associée à un service donné
-
-    Pour un service donné, il est possible de récupérer les informations de la structure
-    associée en filtrant les structures par source et identifiant local:
-
-    `/api/v0/structures/?source=<source>&id=<id>`
-    """
     return list_services(
         db_session,
         source=source,
@@ -361,20 +370,20 @@ def list_services_endpoint(
 
 
 @v0_api_router.get(
-    "/services/{_di_surrogate_id}",
+    "/services/{source}/{id}",
     response_model=schema.DetailedService,
-    summary="Détaille un service",
+    summary="Détailler un service",
 )
 def retrieve_service_endpoint(
-    _di_surrogate_id: Annotated[
-        str, fastapi.Path(description="L'identifiant créé par data.inclusion.")
-    ],
+    source: str,
+    id: str,
     db_session=fastapi.Depends(db.get_session),
 ):
     service_instance = db_session.scalars(
         sqla.select(models.Service)
         .options(orm.selectinload(models.Service.structure))
-        .filter_by(_di_surrogate_id=_di_surrogate_id)
+        .filter_by(source=source)
+        .filter_by(id=id)
     ).first()
 
     if service_instance is None:
@@ -395,7 +404,6 @@ def search_services(
         sqla.select(
             models.Structure.source,
             models.Structure.id.label("structure_id"),
-            models.Service._di_surrogate_id,
             models.Service.id,
             models.Service.nom,
             models.Service.presentation_resume,
@@ -502,7 +510,7 @@ def search_services(
 @v0_api_router.get(
     "/search/services",
     response_model=pagination.Page[schema.ServiceSearchResult],
-    summary="Recherche de services",
+    summary="Rechercher des services",
 )
 def search_services_endpoint(
     db_session=fastapi.Depends(db.get_session),
@@ -539,7 +547,7 @@ def search_services_endpoint(
     ] = None,
 ):
     """
-    ## Recherche de services
+    ## Rechercher des services
 
     La recherche de services permet de trouver des services dans une commune et à proximité.
 

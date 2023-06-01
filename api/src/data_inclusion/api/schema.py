@@ -148,8 +148,6 @@ CodeInsee: TypeAlias = constr(min_length=5, max_length=5)
 
 
 class Service(BaseModel):
-    di_surrogate_id: str = Field(alias="_di_surrogate_id")
-
     id: str
     structure_id: str
     source: str
@@ -251,3 +249,7 @@ class Token(BaseModel):
 
 class DetailedService(Service):
     structure: Structure
+
+
+class DetailedStructure(Structure):
+    services: list[Service]
