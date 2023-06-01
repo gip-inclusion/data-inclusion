@@ -229,7 +229,10 @@ def retrieve_structure_endpoint(
     db_session=fastapi.Depends(db.get_session),
 ):
     structure_instance = db_session.scalars(
-        sqla.select(models.Structure).filter_by(source=source).filter_by(id=id)
+        sqla.select(models.Structure)
+        .options(orm.selectinload(models.Structure.services))
+        .filter_by(source=source)
+        .filter_by(id=id)
     ).first()
 
     if structure_instance is None:
