@@ -29,7 +29,7 @@ final AS (
         NULL                                            AS "formulaire_en_ligne",
         NULL                                            AS "commune",
         NULL                                            AS "code_postal",
-        NULL                                            AS "code_insee",
+        code_commune_adr                                AS "code_insee",
         NULL                                            AS "adresse",
         NULL                                            AS "complement_adresse",
         NULL                                            AS "longitude",
