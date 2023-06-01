@@ -802,6 +802,8 @@ def test_retrieve_service(api_client, service_factory):
     assert response.status_code == 200
     resp_data = response.json()
     assert resp_data["id"] == service_1.id
+    assert "structure" in resp_data
+    assert resp_data["structure"]["id"] == service_1.structure.id
 
     response = api_client.get(url + f"{service_2.source}/{service_3.id}")
     assert response.status_code == 404
