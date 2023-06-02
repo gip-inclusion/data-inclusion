@@ -5,6 +5,7 @@ WITH services AS (
                 ref('int_dora__services'),
                 ref('int_mediation_numerique__services'),
                 ref('int_odspep__services'),
+                ref('int_soliguide__services'),
             ],
             column_override={
                 "types": "TEXT[]",

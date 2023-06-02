@@ -223,7 +223,7 @@ sources:
   - name: soliguide
     schema: soliguide
     tables:
-      - name: places
+      - name: lieux
 
   - name: immersion_facilitee
     schema: immersion_facilitee

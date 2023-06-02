@@ -190,4 +190,17 @@ SOURCES_CONFIGS = [
             "ultra-numerique",
         ]
     ],
+    {
+        "id": "soliguide",
+        "schedule_interval": "@daily",
+        "snapshot": True,
+        "streams": [
+            {
+                "id": "lieux",
+                "filename": "lieux.json",
+                "url": Variable.get("SOLIGUIDE_API_URL", None),
+                "token": Variable.get("SOLIGUIDE_API_TOKEN", None),
+            }
+        ],
+    },
 ]

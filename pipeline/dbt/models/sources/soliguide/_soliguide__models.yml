@@ -1,7 +1,16 @@
 version: 2
 
 models:
-  - name: stg_soliguide__places
+  - name: stg_soliguide__categories
+    columns:
+      - name: code
+        tests:
+          - not_null
+          - unique
+      - name: label
+        tests:
+          - not_null
+  - name: stg_soliguide__lieux
     columns:
       - name: lieu_id
         tests:
@@ -11,12 +20,11 @@ models:
     columns:
       - name: id
         tests:
-          - not_null:
-              config:
-                severity: warn
+          - not_null
+          - unique
       - name: lieu_id
         tests:
           - not_null
           - relationships:
-              to: ref('stg_soliguide__places')
+              to: ref('stg_soliguide__lieux')
               field: lieu_id

@@ -11,7 +11,7 @@ WITH structures AS (
 final AS (
     SELECT *
     FROM structures
-    WHERE source NOT IN ('soliguide', 'siao', 'finess')
+    WHERE source NOT IN ('siao', 'finess')
 )
 
 SELECT * FROM final
