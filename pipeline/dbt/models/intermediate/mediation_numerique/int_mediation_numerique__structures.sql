@@ -2,6 +2,10 @@ WITH structures AS (
     SELECT * FROM {{ ref('stg_mediation_numerique__structures') }}
 ),
 
+di_thematiques AS (
+    SELECT * FROM {{ ref('thematiques') }}
+),
+
 final AS (
     SELECT
         id                 AS "id",
@@ -27,9 +31,21 @@ final AS (
         thematiques        AS "thematiques",
         NULL               AS "typologie",
         NULL               AS "presentation_resume",
-        NULL               AS "presentation_detail",
         date_maj           AS "date_maj",
-        _di_source_id      AS "source"
+        _di_source_id      AS "source",
+        (
+            nom
+            || ' propose des services : '
+            || ARRAY_TO_STRING(
+                ARRAY(
+                    SELECT LOWER(di_thematiques.label)
+                    FROM UNNEST(thematiques) AS t (value)
+                    INNER JOIN di_thematiques ON t.value = di_thematiques.value
+                ),
+                ', '
+            )
+            || '.'
+        )                  AS "presentation_detail"
     FROM structures
 )
 
