@@ -1,18 +1,20 @@
 WITH source AS (
     SELECT *
-    FROM {{ source('soliguide', 'places') }}
+    FROM {{ source('soliguide', 'lieux') }}
 ),
 
 final AS (
     SELECT
-        -- services do not have an id
-        NULL                          AS "id",
-        source."lieu_id"::TEXT        AS "lieu_id",
-        services.data ->> 'name'      AS "name",
-        services.data ->> 'categorie' AS "categorie"
+        source._di_source_id                        AS "_di_source_id",
+        (source.data ->> 'updatedAt')::DATE         AS "updated_at",
+        source.data ->> 'lieu_id'                   AS "lieu_id",
+        services.data ->> 'serviceObjectId'         AS "id",
+        NULLIF(services.data ->> 'name', '')        AS "name",
+        services.data ->> 'categorie'               AS "categorie",
+        NULLIF(services.data ->> 'description', '') AS "description"
     FROM
         source,
-        LATERAL(SELECT * FROM JSONB_PATH_QUERY(source.services_all, '$[*]')) AS services (data)
+        LATERAL(SELECT * FROM JSONB_PATH_QUERY(source.data, '$.services_all[*]')) AS services (data)
 )
 
 SELECT * FROM final

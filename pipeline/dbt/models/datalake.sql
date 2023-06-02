@@ -63,6 +63,7 @@ WITH source AS (
                 source('mes_aides', 'aides'),
                 source('mes_aides', 'garages'),
                 source('siao', 'etablissements'),
+                source('soliguide', 'lieux'),
                 source('un_jeune_une_solution', 'benefits'),
                 source('un_jeune_une_solution', 'institutions'),
             ],
