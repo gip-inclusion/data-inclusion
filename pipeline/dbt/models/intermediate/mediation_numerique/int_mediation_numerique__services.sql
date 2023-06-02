@@ -44,7 +44,7 @@ final AS (
         CASE WHEN CARDINALITY(services.types) > 0 THEN services.types ELSE ARRAY['accompagnement'] END AS "types",
         ARRAY['en-presentiel']                                                                         AS "modes_accueil"
     FROM services
-    LEFT JOIN structures ON services.structure_id = structures.id
+    LEFT JOIN structures ON services.structure_id = structures.id AND services.source = structures.source
 )
 
 SELECT * FROM final
