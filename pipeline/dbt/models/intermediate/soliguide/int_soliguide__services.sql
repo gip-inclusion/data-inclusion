@@ -14,7 +14,7 @@ di_thematique_by_soliguide_categorie_code AS (
     SELECT x.*
     FROM (
         VALUES
-        -- Mapping: https://grist.incubateur.anct.gouv.fr/o/datainclusion/tAh1eF3DeE3D/Mappings/p/1
+        -- Mapping: https://docs.google.com/spreadsheets/d/1PtQ0_JRhHr37Ftjdjuv97FlHqZYWnmneOlDroi-4WhA/edit
         ('100', 'sante'),
         ('101', 'sante--faire-face-a-une-situation-daddiction'),
         ('102', 'sante--prevention-et-acces-aux-soins'),
