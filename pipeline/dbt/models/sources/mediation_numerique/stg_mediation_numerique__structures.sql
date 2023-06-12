@@ -11,6 +11,7 @@ WITH source AS (
                 source('mediation_numerique_cd49', 'structures'),
                 source('mediation_numerique_cd87', 'structures'),
                 source('mediation_numerique_conseiller_numerique', 'structures'),
+                source('mediation_numerique_conumm', 'structures'),
                 source('mediation_numerique_cr93', 'structures'),
                 source('mediation_numerique_fibre_64', 'structures'),
                 source('mediation_numerique_france_services', 'structures'),

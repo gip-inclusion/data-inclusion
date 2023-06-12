@@ -122,6 +122,12 @@ sources:
       - name: structures
       - name: services
 
+  - name: mediation_numerique_conumm
+    schema: mediation_numerique_conumm
+    tables:
+      - name: structures
+      - name: services
+
   - name: mediation_numerique_cr93
     schema: mediation_numerique_cr93
     tables:

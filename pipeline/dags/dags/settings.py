@@ -176,6 +176,7 @@ SOURCES_CONFIGS = [
             "cd49",
             "cd87",
             "conseiller-numerique",
+            "conumm",
             "cr93",
             "fibre-64",
             "france-services",
