@@ -269,45 +269,9 @@ def list_services(
     code_insee: Optional[schema.CodeInsee] = None,
 ):
     query = (
-        sqla.select(
-            models.Structure.source,
-            models.Structure.id.label("structure_id"),
-            models.Service.id,
-            models.Service.nom,
-            models.Service.presentation_resume,
-            models.Service.presentation_detail,
-            models.Service.types,
-            models.Service.thematiques,
-            models.Service.prise_rdv,
-            models.Service.frais,
-            models.Service.frais_autres,
-            models.Service.profils,
-            models.Service.pre_requis,
-            models.Service.cumulable,
-            models.Service.justificatifs,
-            models.Service.formulaire_en_ligne,
-            models.Service.commune,
-            models.Service.code_postal,
-            models.Service.code_insee,
-            models.Service.adresse,
-            models.Service.complement_adresse,
-            models.Service.longitude,
-            models.Service.latitude,
-            models.Service.recurrence,
-            models.Service.date_creation,
-            models.Service.date_suspension,
-            models.Service.lien_source,
-            models.Service.telephone,
-            models.Service.courriel,
-            models.Service.contact_public,
-            models.Service.date_maj,
-            models.Service.modes_accueil,
-            models.Service.zone_diffusion_type,
-            models.Service.zone_diffusion_code,
-            models.Service.zone_diffusion_nom,
-        )
-        .select_from(models.Service)
-        .join(models.Structure)
+        sqla.select(models.Service)
+        .join(models.Service.structure)
+        .options(orm.contains_eager(models.Service.structure))
     )
 
     if source is not None:
@@ -401,45 +365,9 @@ def search_services(
     types: Optional[list[schema.TypologieService]] = None,
 ):
     query = (
-        sqla.select(
-            models.Structure.source,
-            models.Structure.id.label("structure_id"),
-            models.Service.id,
-            models.Service.nom,
-            models.Service.presentation_resume,
-            models.Service.presentation_detail,
-            models.Service.types,
-            models.Service.thematiques,
-            models.Service.prise_rdv,
-            models.Service.frais,
-            models.Service.frais_autres,
-            models.Service.profils,
-            models.Service.pre_requis,
-            models.Service.cumulable,
-            models.Service.justificatifs,
-            models.Service.formulaire_en_ligne,
-            models.Service.commune,
-            models.Service.code_postal,
-            models.Service.code_insee,
-            models.Service.adresse,
-            models.Service.complement_adresse,
-            models.Service.longitude,
-            models.Service.latitude,
-            models.Service.recurrence,
-            models.Service.date_creation,
-            models.Service.date_suspension,
-            models.Service.lien_source,
-            models.Service.telephone,
-            models.Service.courriel,
-            models.Service.contact_public,
-            models.Service.date_maj,
-            models.Service.modes_accueil,
-            models.Service.zone_diffusion_type,
-            models.Service.zone_diffusion_code,
-            models.Service.zone_diffusion_nom,
-        )
-        .select_from(models.Service)
-        .join(models.Structure)
+        sqla.select(models.Service)
+        .join(models.Service.structure)
+        .options(orm.contains_eager(models.Service.structure))
     )
 
     if source is not None:
@@ -504,7 +432,14 @@ def search_services(
 
     query = query.order_by("distance")
 
-    return list(paginate(db_session, query, unique=False))
+    def _items_to_mappings(items: list) -> list[dict]:
+        # convert rows returned by `Session.execute` to a list of dicts that will be
+        # used to instanciate pydantic models
+        return [{"service": item[0], "distance": item[1]} for item in items]
+
+    return list(
+        paginate(db_session, query, unique=False, transformer=_items_to_mappings)
+    )
 
 
 @v0_api_router.get(

@@ -546,7 +546,7 @@ def test_list_services_filter_by_source(api_client, service_factory):
 @pytest.mark.with_token
 def test_list_services_filter_by_thematique(api_client, service_factory):
     service_1 = service_factory(
-        source="alpha",
+        structure__source="alpha",
         id="1",
         thematiques=[
             schema.Thematique.MOBILITE.value,
@@ -554,7 +554,7 @@ def test_list_services_filter_by_thematique(api_client, service_factory):
         ],
     )
     service_2 = service_factory(
-        source="alpha",
+        structure__source="alpha",
         id="2",
         thematiques=[
             schema.Thematique.TROUVER_UN_EMPLOI.value,
@@ -597,7 +597,7 @@ def test_list_services_filter_by_thematique(api_client, service_factory):
 @pytest.mark.with_token
 def test_list_services_filter_by_categorie_thematique(api_client, service_factory):
     service = service_factory(
-        source="alpha",
+        structure__source="alpha",
         id="1",
         thematiques=[
             schema.Thematique.MOBILITE__ACHETER_UN_VEHICULE_MOTORISE.value,
@@ -683,11 +683,11 @@ def test_search_services_with_code_insee(api_client, service_factory):
     assert response.status_code == 200
     resp_data = response.json()
     assert_paginated_response_data(resp_data, total=3)
-    assert resp_data["items"][0]["id"] == service_1.id
+    assert resp_data["items"][0]["service"]["id"] == service_1.id
     assert resp_data["items"][0]["distance"] == 0
-    assert resp_data["items"][1]["id"] == service_2.id
+    assert resp_data["items"][1]["service"]["id"] == service_2.id
     assert resp_data["items"][1]["distance"] == 40
-    assert resp_data["items"][2]["id"] == service_3.id
+    assert resp_data["items"][2]["service"]["id"] == service_3.id
     assert resp_data["items"][2]["distance"] is None
 
     response = api_client.get(url, params={"code_insee": "62041"})
@@ -714,8 +714,8 @@ def test_search_services_with_thematique(api_client, service_factory):
     assert response.status_code == 200
     resp_data = response.json()
     assert_paginated_response_data(resp_data, total=2)
-    assert resp_data["items"][0]["id"] in [service_1.id, service_2.id]
-    assert resp_data["items"][1]["id"] in [service_1.id, service_2.id]
+    assert resp_data["items"][0]["service"]["id"] in [service_1.id, service_2.id]
+    assert resp_data["items"][1]["service"]["id"] in [service_1.id, service_2.id]
 
     response = api_client.get(
         url,
@@ -746,8 +746,8 @@ def test_search_services_with_frais(api_client, service_factory):
     assert response.status_code == 200
     resp_data = response.json()
     assert_paginated_response_data(resp_data, total=2)
-    assert resp_data["items"][0]["id"] in [service_1.id, service_2.id]
-    assert resp_data["items"][1]["id"] in [service_1.id, service_2.id]
+    assert resp_data["items"][0]["service"]["id"] in [service_1.id, service_2.id]
+    assert resp_data["items"][1]["service"]["id"] in [service_1.id, service_2.id]
 
     response = api_client.get(
         url,
@@ -778,8 +778,8 @@ def test_search_services_with_types(api_client, service_factory):
     assert response.status_code == 200
     resp_data = response.json()
     assert_paginated_response_data(resp_data, total=2)
-    assert resp_data["items"][0]["id"] in [service_1.id, service_2.id]
-    assert resp_data["items"][1]["id"] in [service_1.id, service_2.id]
+    assert resp_data["items"][0]["service"]["id"] in [service_1.id, service_2.id]
+    assert resp_data["items"][1]["service"]["id"] in [service_1.id, service_2.id]
 
     response = api_client.get(
         url,

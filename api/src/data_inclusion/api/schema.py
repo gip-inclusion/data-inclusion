@@ -193,10 +193,6 @@ class Service(BaseModel):
         allow_population_by_field_name = True
 
 
-class ServiceSearchResult(Service):
-    distance: Optional[int]
-
-
 class Structure(BaseModel):
     # internal metadata
     di_geocodage_code_insee: Optional[constr(min_length=5, max_length=5)] = Field(
@@ -249,6 +245,11 @@ class Token(BaseModel):
 
 class DetailedService(Service):
     structure: Structure
+
+
+class ServiceSearchResult(BaseModel):
+    service: DetailedService
+    distance: Optional[int]
 
 
 class DetailedStructure(Structure):
