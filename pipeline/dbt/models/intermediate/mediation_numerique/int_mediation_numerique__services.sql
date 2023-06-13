@@ -1,3 +1,13 @@
+{% set presentation %}
+structures.nom || ' propose des services : ' || ARRAY_TO_STRING(
+    ARRAY(
+        SELECT LOWER(di_thematiques.label)
+        FROM UNNEST(services.thematiques) AS t (value)
+        INNER JOIN di_thematiques ON t.value = di_thematiques.value
+    ),
+', ') || '.'
+{% endset %}
+
 WITH services AS (
     SELECT * FROM {{ ref('stg_mediation_numerique__services') }}
 ),
@@ -6,12 +16,14 @@ structures AS (
     SELECT * FROM {{ ref('stg_mediation_numerique__structures') }}
 ),
 
+di_thematiques AS (
+    SELECT * FROM {{ ref('thematiques') }}
+),
+
 final AS (
     SELECT
         services.id                                                                                    AS "id",
         services.nom                                                                                   AS "nom",
-        NULL                                                                                           AS "presentation_resume",
-        NULL                                                                                           AS "presentation_detail",
         services.prise_rdv                                                                             AS "prise_rdv",
         services.frais                                                                                 AS "frais",
         NULL::TEXT                                                                                     AS "frais_autres",
@@ -42,7 +54,9 @@ final AS (
         NULL                                                                                           AS "zone_diffusion_code",
         NULL                                                                                           AS "zone_diffusion_nom",
         CASE WHEN CARDINALITY(services.types) > 0 THEN services.types ELSE ARRAY['accompagnement'] END AS "types",
-        ARRAY['en-presentiel']                                                                         AS "modes_accueil"
+        ARRAY['en-presentiel']                                                                         AS "modes_accueil",
+        {{ truncate_text(presentation) }}                                                              AS "presentation_resume",
+        {{ presentation }}                                                                             AS "presentation_detail"
     FROM services
     LEFT JOIN structures ON services.structure_id = structures.id AND services.source = structures.source
 )
