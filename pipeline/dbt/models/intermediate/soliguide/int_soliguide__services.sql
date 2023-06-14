@@ -14,15 +14,38 @@ di_thematique_by_soliguide_categorie_code AS (
     SELECT x.*
     FROM (
         VALUES
-        -- Mapping: https://grist.incubateur.anct.gouv.fr/o/datainclusion/tAh1eF3DeE3D/Mappings/p/1
-        ('1200', 'mobilite'),
-        ('1201', 'mobilite'),
-        ('1202', 'mobilite--louer-un-vehicule'),
-        ('1203', 'mobilite--comprendre-et-utiliser-les-transports-en-commun'),
-        ('1204', 'mobilite--aides-a-la-reprise-demploi-ou-a-la-formation'),
+        -- Mapping: https://docs.google.com/spreadsheets/d/1PtQ0_JRhHr37Ftjdjuv97FlHqZYWnmneOlDroi-4WhA/edit
+        ('100', 'sante'),
+        ('101', 'sante--faire-face-a-une-situation-daddiction'),
+        ('102', 'sante--prevention-et-acces-aux-soins'),
+        ('103', 'sante--bien-etre-psychologique'),
+        ('401', 'acces-aux-droits-et-citoyennete--accompagnement-juridique'),
         ('501', 'numerique--acceder-a-du-materiel'),
         ('502', 'numerique--acceder-a-une-connexion-internet'),
-        ('504', 'equipement-et-alimentation--acces-a-un-telephone-et-un-abonnement')
+        ('504', 'equipement-et-alimentation--acces-a-un-telephone-et-un-abonnement'),
+        ('600', 'equipement-et-alimentation--alimentation'),
+        ('601', 'equipement-et-alimentation--alimentation'),
+        ('602', 'equipement-et-alimentation--alimentation'),
+        ('603', 'equipement-et-alimentation--alimentation'),
+        ('604', 'equipement-et-alimentation--alimentation'),
+        ('703', 'famille--garde-denfants'),
+        ('704', 'famille--soutien-a-la-parentalite'),
+        ('804', 'remobilisation--decouvrir-son-potentiel-via-le-sport-et-la-culture'),
+        ('902', 'equipement-et-alimentation--habillement'),
+        ('903', 'equipement-et-alimentation--habillement'),
+        ('1200', 'mobilite'),
+        ('1201', 'mobilite--comprendre-et-utiliser-les-transports-en-commun'),
+        ('1202', 'mobilite--louer-un-vehicule'),
+        ('1203', 'mobilite--comprendre-et-utiliser-les-transports-en-commun'),
+        ('1300', 'logement-hebergement'),
+        ('1301', 'logement-hebergement--mal-loges-sans-logis'),
+        ('1302', 'logement-hebergement--mal-loges-sans-logis'),
+        ('1303', 'logement-hebergement--mal-loges-sans-logis'),
+        ('1305', 'logement-hebergement--etre-accompagne-pour-se-loger')
+
+        -- Soliguide va retravailler ces catégories :
+        -- ('1204', 'mobilite--aides-a-la-reprise-demploi-ou-a-la-formation'),
+
     ) AS x (categorie, thematique)
 ),
 
