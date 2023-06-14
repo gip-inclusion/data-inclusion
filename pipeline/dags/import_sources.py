@@ -252,7 +252,7 @@ for source_config in SOURCES_CONFIGS:
         dbt_test_source = dbt_operator_factory(
             task_id="dbt_test_source",
             command="test",
-            select="source:data_inclusion." + source_config["id"].replace("-", "_"),
+            select="source:" + source_config["id"].replace("-", "_"),
         )
 
         # historization of the raw data, if that makes sense
