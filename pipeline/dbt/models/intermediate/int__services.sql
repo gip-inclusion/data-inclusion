@@ -6,6 +6,7 @@ WITH services AS (
                 ref('int_mediation_numerique__services'),
                 ref('int_odspep__services'),
                 ref('int_soliguide__services'),
+                ref('int_monenfant__services'),
             ],
             column_override={
                 "types": "TEXT[]",

@@ -64,6 +64,7 @@ WITH source AS (
                 source('mediation_numerique_ultra_numerique', 'services'),
                 source('mes_aides', 'aides'),
                 source('mes_aides', 'garages'),
+                source('monenfant', 'creches'),
                 source('siao', 'etablissements'),
                 source('soliguide', 'lieux'),
                 source('un_jeune_une_solution', 'benefits'),

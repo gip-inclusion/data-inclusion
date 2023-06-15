@@ -294,3 +294,28 @@ sources:
       This source contains the data exported by IF for the purpose of siretisation.
     tables:
       - name: structures
+
+  - name: monenfant
+    schema: monenfant
+    tables:
+      - name: creches
+        columns:
+          - name: data
+            tests:
+              - expect_column_value_paths_to_exist:
+                  config:
+                    severity: error
+                  path_list:
+                    - '$.avip'
+                    - '$.longitude'
+                    - '$.latitude'
+                    - '$.resultId'
+                    - '$.ville'
+                    - '$.telephone'
+                    - '$.nom'
+                    - '$.mail'
+                    - '$.derniereModifDate'
+                    - '$.adresse'
+                    - '$.details.website'
+                    - '$.details.infosPratiques.jourHoraire'
+                    - '$.details.presentation.structureProjet'

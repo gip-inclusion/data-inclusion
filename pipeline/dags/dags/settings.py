@@ -204,4 +204,16 @@ SOURCES_CONFIGS = [
             }
         ],
     },
+    {
+        "id": "monenfant",
+        "schedule_interval": "@once",
+        "snapshot": True,
+        "streams": [
+            {
+                "id": "creches",
+                "filename": "creches.json",
+                "url": Variable.get("MONENFANT_CRECHES_FILE_URL", None),
+            },
+        ],
+    },
 ]

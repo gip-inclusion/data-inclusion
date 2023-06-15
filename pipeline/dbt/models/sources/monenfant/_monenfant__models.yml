@@ -1,0 +1,77 @@
+version: 2
+
+models:
+  - name: stg_monenfant__creches
+    columns:
+      - name: id
+        tests:
+          - unique
+          - not_null
+          - dbt_utils.not_empty_string
+      - name: avip
+        tests:
+          - not_null
+          - accepted_values:
+              values: [true, false]
+      - name: longitude
+        tests:
+          - not_null
+      - name: latitude
+        tests:
+          - not_null
+      - name: result_id
+        tests:
+          - unique
+          - not_null
+          - dbt_utils.not_empty_string
+      - name: ville
+        tests:
+          - not_null
+          - dbt_utils.not_empty_string
+      - name: telephone
+        tests:
+          - not_null
+          - dbt_utils.not_empty_string
+      - name: nom
+        tests:
+          - not_null
+          - dbt_utils.not_empty_string
+      - name: mail
+        tests:
+          - not_null:
+              config:
+                severity: warn
+          - dbt_utils.not_null_proportion:
+              at_least: 0.1
+          - dbt_utils.not_empty_string
+      - name: derniere_modif_date
+        tests:
+          - not_null
+      - name: adresse
+        tests:
+          - not_null
+          - dbt_utils.not_empty_string
+      - name: details_website
+        tests:
+          - not_null:
+              config:
+                severity: warn
+          - dbt_utils.not_null_proportion:
+              at_least: 0.1
+          - dbt_utils.not_empty_string
+      - name: details_infos_pratiques_jour_horaire
+        tests:
+          - not_null:
+              config:
+                  severity: warn
+          - dbt_utils.not_null_proportion:
+              at_least: 0.1
+          - dbt_utils.not_empty_string
+      - name: details_presentation_structure_projet
+        tests:
+          - not_null:
+              config:
+                severity: warn
+          - dbt_utils.not_null_proportion:
+              at_least: 0.5
+          - dbt_utils.not_empty_string
