@@ -53,7 +53,7 @@ class DoraClient:
         return return_data
 
     def list_structures(self) -> list:
-        return self._list_paginated_endpoint("/structures/", params={"di": True})
+        return self._list_paginated_endpoint("/structures/")
 
     def list_services(self) -> list:
         return self._list_paginated_endpoint("/services/")
