@@ -23,7 +23,84 @@ sources:
     schema: dora
     tables:
       - name: structures
+        columns:
+          - name: data
+            tests:
+              - expect_column_value_paths_to_exist:
+                  config:
+                    severity: error
+                  path_list:
+                    - '$.antenne'
+                    - '$.date_maj'
+                    - '$.labels_autres'
+                    - '$.labels_nationaux'
+                    - '$.latitude'
+                    - '$.longitude'
+                    - '$.thematiques'
+                    - '$.accessibilite'
+                    - '$.adresse'
+                    - '$.code_insee'
+                    - '$.code_postal'
+                    - '$.commune'
+                    - '$.complement_adresse'
+                    - '$.courriel'
+                    - '$.horaires_ouverture'
+                    - '$.id'
+                    - '$.lien_source'
+                    - '$.nom'
+                    - '$.presentation_detail'
+                    - '$.presentation_resume'
+                    - '$.rna'
+                    - '$.siret'
+                    - '$.site_web'
+                    - '$.source'
+                    - '$.telephone'
+                    - '$.typologie'
       - name: services
+        columns:
+          - name: data
+            tests:
+              - expect_column_value_paths_to_exist:
+                  config:
+                    severity: error
+                  path_list:
+                    - '$.contact_public'
+                    - '$.cumulable'
+                    - '$.date_creation'
+                    - '$.date_maj'
+                    - '$.date_suspension'
+                    - '$.justificatifs'
+                    - '$.latitude'
+                    - '$.longitude'
+                    - '$.modes_accueil'
+                    - '$.pre_requis'
+                    - '$.profils'
+                    - '$.thematiques'
+                    - '$.types'
+                    - '$.adresse'
+                    - '$.code_insee'
+                    - '$.code_postal'
+                    - '$.commune'
+                    - '$.complement_adresse'
+                    - '$.contact_nom'
+                    - '$.contact_prenom'
+                    - '$.courriel'
+                    - '$.formulaire_en_ligne'
+                    - '$.frais_autres'
+                    - '$.frais'
+                    - '$.id'
+                    - '$.lien_source'
+                    - '$.nom'
+                    - '$.presentation_resume'
+                    - '$.presentation_detail'
+                    - '$.prise_rdv'
+                    - '$.recurrence'
+                    - '$.source'
+                    - '$.structure_id'
+                    - '$.telephone'
+                    - '$.zone_diffusion_code'
+                    - '$.zone_diffusion_nom'
+                    - '$.zone_diffusion_type'
 
   - name: finess
     schema: finess
