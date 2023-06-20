@@ -21,8 +21,8 @@ clean-targets:
 
 models:
   data_inclusion:
-    sources:
-      +schema: sources
+    staging:
+      +schema: staging
       +materialized: table
 
       odspep:

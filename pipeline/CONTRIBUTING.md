@@ -38,11 +38,11 @@ dbt deps
 # run commands
 dbt ls
 
-# sources, basic processing/mapping:
+# staging, basic processing/mapping:
 # - retrieve data from datalake table
 # - retrieve data from raw dedicated source tables
 # - retrieve data from the Soliguide S3
-dbt run --select sources
+dbt run --select staging
 
 # intermediate, specific transformations
 dbt run --select intermediate
