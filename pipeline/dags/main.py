@@ -118,7 +118,8 @@ with airflow.DAG(
     dbt_run_before_geocoding = dbt_operator_factory(
         task_id="dbt_run_before_geocoding",
         command="run",
-        exclude="int_extra__geocoded_results+ flux",
+        select="intermediate datalake staging,odspep staging,immersion_facilitee",
+        exclude="int_extra__geocoded_results+",
     )
 
     python_geocode = python.ExternalPythonOperator(
@@ -132,7 +133,7 @@ with airflow.DAG(
     dbt_run_after_geocoding = dbt_operator_factory(
         task_id="dbt_run_after_geocoding",
         command="run",
-        select="int_extra__geocoded_results+",
+        select="intermediate,int_extra__geocoded_results+",
     )
 
     dbt_run_flux = dbt_operator_factory(

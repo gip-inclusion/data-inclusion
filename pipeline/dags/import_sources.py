@@ -249,12 +249,26 @@ for source_config in SOURCES_CONFIGS:
             op_kwargs={"source_config": source_config},
         )
 
+        dbt_source_id = source_config["id"].replace("-", "_")
+
         # tests here can detect impacting changes on the source data
         # before anything happens to the previously existing data
         dbt_test_source = dbt_operator_factory(
             task_id="dbt_test_source",
             command="test",
-            select="source:" + source_config["id"].replace("-", "_"),
+            select=f"source:{dbt_source_id}",
+        )
+
+        dbt_run_staging = dbt_operator_factory(
+            task_id="dbt_run_staging",
+            command="run",
+            select=f"source:{dbt_source_id}+,sources",
+        )
+
+        dbt_test_staging = dbt_operator_factory(
+            task_id="dbt_test_staging",
+            command="test",
+            select=f"source:{dbt_source_id}+,sources",
         )
 
         # historization of the raw data, if that makes sense
@@ -262,7 +276,7 @@ for source_config in SOURCES_CONFIGS:
             dbt_snapshot_source = dbt_operator_factory(
                 task_id="dbt_snapshot_source",
                 command="snapshot",
-                select=source_config["id"].replace("-", "_"),
+                select=dbt_source_id,
             )
         else:
             dbt_snapshot_source = None
@@ -292,11 +306,11 @@ for source_config in SOURCES_CONFIGS:
 
                 start >> setup >> extract >> load
 
-            stream_task_group >> dbt_test_source
+            stream_task_group >> dbt_test_source >> dbt_run_staging >> dbt_test_staging
 
             if dbt_snapshot_source is not None:
-                dbt_test_source >> dbt_snapshot_source >> end
+                dbt_test_staging >> dbt_snapshot_source >> end
             else:
-                dbt_test_source >> end
+                dbt_test_staging >> end
 
     globals()[dag_id] = dag
