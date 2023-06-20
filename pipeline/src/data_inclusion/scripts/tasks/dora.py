@@ -22,7 +22,7 @@ class DoraClient:
         self.base_url = base_url.rstrip("/")
         self.session = requests.Session()
         self.session.params.update({"page_size": 1000, "o": "creation_date"})
-        self.session.headers.update({"Authorization": f"Bearer {token}"})
+        self.session.headers.update({"Authorization": f"Token {token}"})
         self.session.hooks["response"] = [log_and_raise]
 
     def _list_paginated_endpoint(
