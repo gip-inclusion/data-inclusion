@@ -1,0 +1,5 @@
+version: 2
+
+models:
+  - name: stg_mediation_numerique_mulhouse__services
+  - name: stg_mediation_numerique_mulhouse__structures

@@ -1,0 +1,5 @@
+version: 2
+
+models:
+  - name: stg_mediation_numerique_france_services__services
+  - name: stg_mediation_numerique_france_services__structures

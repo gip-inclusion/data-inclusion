@@ -1,0 +1,5 @@
+version: 2
+
+models:
+  - name: stg_mediation_numerique_cd49__services
+  - name: stg_mediation_numerique_cd49__structures
