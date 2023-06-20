@@ -79,7 +79,8 @@ models:
           - dbt_utils.not_empty_string
       - name: justificatifs
         tests:
-          - not_null
+          - dbt_utils.at_least_one
+          - dbt_utils.not_empty_string
       - name: latitude
         tests:
           - dbt_utils.at_least_one
@@ -100,7 +101,8 @@ models:
           - dbt_utils.not_empty_string
       - name: pre_requis
         tests:
-          - not_null
+          - dbt_utils.at_least_one
+          - dbt_utils.not_empty_string
       - name: presentation_resume
         tests:
           - not_null
