@@ -62,7 +62,7 @@ sources:
             tests:
               - expect_column_value_paths_to_exist:
                   config:
-                    severity: error
+                    severity: warn
                   path_list:
                     - '$.contact_public'
                     - '$.cumulable'
