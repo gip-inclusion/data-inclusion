@@ -97,6 +97,7 @@ certifi==2023.5.7
     #   httpx
     #   pyproj
     #   requests
+    #   trafilatura
 cffi==1.15.1
     # via cryptography
 cfgv==3.3.1
@@ -106,7 +107,9 @@ chardet==5.1.0
 charset-normalizer==3.1.0
     # via
     #   aiohttp
+    #   htmldate
     #   requests
+    #   trafilatura
 click==8.1.3
     # via
     #   black
@@ -132,12 +135,16 @@ configupdater==3.1.1
     # via apache-airflow
 connexion[flask]==2.14.2
     # via apache-airflow
+courlan==0.9.3
+    # via trafilatura
 cron-descriptor==1.4.0
     # via apache-airflow
 croniter==1.3.15
     # via apache-airflow
 cryptography==41.0.1
     # via apache-airflow
+dateparser==1.1.8
+    # via htmldate
 decorator==5.1.1
     # via jsonpath-ng
 deprecated==1.2.14
@@ -218,6 +225,8 @@ gunicorn==20.1.0
     # via apache-airflow
 h11==0.14.0
     # via httpcore
+htmldate==1.4.3
+    # via trafilatura
 httpcore==0.17.2
     # via httpx
 httpx==0.24.1
@@ -260,6 +269,10 @@ jsonschema==4.17.3
     #   apache-airflow
     #   connexion
     #   flask-appbuilder
+justext==3.0.0
+    # via trafilatura
+langcodes==3.3.0
+    # via courlan
 lazy-object-proxy==1.9.0
     # via apache-airflow
 limits==3.5.0
@@ -271,7 +284,12 @@ lockfile==0.12.2
     #   apache-airflow
     #   python-daemon
 lxml==4.9.2
-    # via redshift-connector
+    # via
+    #   -r requirements/dev/../tasks/python/requirements.in
+    #   htmldate
+    #   justext
+    #   redshift-connector
+    #   trafilatura
 mako==1.2.4
     # via alembic
 markdown==3.4.3
@@ -406,7 +424,9 @@ python-dateutil==2.8.2
     #   apache-airflow
     #   botocore
     #   croniter
+    #   dateparser
     #   flask-appbuilder
+    #   htmldate
     #   pandas
     #   pendulum
 python-nvd3==0.15.0
@@ -417,6 +437,7 @@ python-slugify==8.0.1
     #   python-nvd3
 pytz==2023.3
     # via
+    #   dateparser
     #   flask-babel
     #   pandas
     #   redshift-connector
@@ -430,6 +451,8 @@ pyyaml==6.0
     #   pre-commit
 redshift-connector==2.0.911
     # via apache-airflow-providers-amazon
+regex==2023.6.3
+    # via dateparser
 requests==2.31.0
     # via
     #   -r requirements/dev/../tasks/python/requirements.in
@@ -501,6 +524,8 @@ termcolor==2.3.0
     # via apache-airflow
 text-unidecode==1.3
     # via python-slugify
+tld==0.13
+    # via courlan
 tomli==2.0.1
     # via
     #   black
@@ -510,6 +535,8 @@ tomli==2.0.1
 tox==4.6.0
     # via -r requirements/dev/requirements.in
 tqdm==4.65.0
+    # via -r requirements/dev/../tasks/python/requirements.in
+trafilatura==1.6.1
     # via -r requirements/dev/../tasks/python/requirements.in
 typing-extensions==4.6.3
     # via
@@ -522,6 +549,8 @@ typing-extensions==4.6.3
     #   pydantic
 tzdata==2023.3
     # via pandas
+tzlocal==5.0.1
+    # via dateparser
 uc-micro-py==1.0.2
     # via linkify-it-py
 unicodecsv==0.14.1
@@ -530,8 +559,11 @@ urllib3==1.26.16
     # via
     #   -r requirements/dev/../tasks/python/requirements.in
     #   botocore
+    #   courlan
+    #   htmldate
     #   pyairtable
     #   requests
+    #   trafilatura
 virtualenv==20.23.0
     # via
     #   pre-commit

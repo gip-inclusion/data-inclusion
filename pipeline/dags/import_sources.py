@@ -123,7 +123,11 @@ def _load(
     from airflow.providers.postgres.hooks.postgres import PostgresHook
     from sqlalchemy.dialects.postgresql import JSONB
 
-    from data_inclusion.scripts.tasks import annuaire_du_service_public, utils
+    from data_inclusion.scripts.tasks import (
+        annuaire_du_service_public,
+        soliguide,
+        utils,
+    )
 
     READ_FN_BY_SOURCE_ID = {
         "annuaire-du-service-public": annuaire_du_service_public.read,
@@ -135,7 +139,7 @@ def _load(
         "mes-aides": utils.read_json,
         "siao": utils.read_excel,
         "un-jeune-une-solution": utils.read_json,
-        "soliguide": utils.read_json,
+        "soliguide": soliguide.read,
         "monenfant": utils.read_json,
     }
 
