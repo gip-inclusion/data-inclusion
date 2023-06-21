@@ -2,4 +2,14 @@ version: 2
 
 models:
   - name: stg_mediation_numerique_cd28_appui_territorial__services
+    columns:
+      - name: id
+        tests:
+          - not_null
+          - unique
   - name: stg_mediation_numerique_cd28_appui_territorial__structures
+    columns:
+      - name: id
+        tests:
+          - not_null
+          - unique
