@@ -3,7 +3,6 @@ apache-airflow-providers-amazon
 
 GeoAlchemy2
 geopandas
-lxml
 openpyxl!=3.1.1
 pandas
 psycopg2

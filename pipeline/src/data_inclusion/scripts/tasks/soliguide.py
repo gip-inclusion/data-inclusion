@@ -10,7 +10,6 @@ import numpy as np
 import pandas as pd
 import requests
 import trafilatura
-from lxml import html
 from tqdm import tqdm
 
 logger = logging.getLogger(__name__)
@@ -107,7 +106,7 @@ def extract(url: str, token: str, **kwargs) -> bytes:
 def html_to_markdown(s: Optional[str]) -> Optional[str]:
     if s is None or s == "":
         return s
-    return trafilatura.extract(html.fromstring(s))
+    return trafilatura.extract(trafilatura.load_html("<html>" + s + "</html>"))
 
 
 def read(path: Path) -> pd.DataFrame:

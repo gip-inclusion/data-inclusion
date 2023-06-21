@@ -258,7 +258,6 @@ lockfile==0.12.2
     #   python-daemon
 lxml==4.9.2
     # via
-    #   -r requirements/tasks/python/requirements.in
     #   htmldate
     #   justext
     #   redshift-connector
