@@ -81,6 +81,18 @@ SOURCES_CONFIGS = [
         ],
     },
     {
+        "id": "cd39",
+        "schedule_interval": "@once",
+        "snapshot": True,
+        "streams": [
+            {
+                "id": "structures_services",
+                "filename": "Base_de_données_Jura-Tableau.csv",
+                "url": Variable.get("CD39_FILE_URL", None),
+            },
+        ],
+    },
+    {
         "id": "cd72",
         "schedule_interval": "@once",
         "snapshot": False,
