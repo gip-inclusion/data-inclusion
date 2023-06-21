@@ -57,6 +57,12 @@ sources:
     tables:
       - name: organisations
 
+  - name: cd39
+    schema: cd39
+    tables:
+      - name: structures_services
+
+
   - name: cd72
     schema: cd72
     tables:
