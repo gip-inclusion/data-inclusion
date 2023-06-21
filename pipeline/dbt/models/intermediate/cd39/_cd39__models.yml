@@ -1,0 +1,5 @@
+version: 2
+
+models:
+  - name: int_cd39__structures
+  - name: int_cd39__services
