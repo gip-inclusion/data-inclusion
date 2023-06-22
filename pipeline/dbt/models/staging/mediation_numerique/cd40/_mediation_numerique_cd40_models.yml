@@ -2,4 +2,8 @@ version: 2
 
 models:
   - name: stg_mediation_numerique_cd40__services
+    config:
+      tags: mediation_numerique_cd40
   - name: stg_mediation_numerique_cd40__structures
+    config:
+      tags: mediation_numerique_cd40

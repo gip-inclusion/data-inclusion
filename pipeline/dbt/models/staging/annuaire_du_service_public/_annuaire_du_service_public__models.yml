@@ -2,7 +2,17 @@ version: 2
 
 models:
   - name: stg_annuaire_du_service_public__adresses
+    config:
+      tags: annuaire_du_service_public
   - name: stg_annuaire_du_service_public__etablissements
+    config:
+      tags: annuaire_du_service_public
   - name: stg_annuaire_du_service_public__pivots
+    config:
+      tags: annuaire_du_service_public
   - name: stg_annuaire_du_service_public__site_internets
+    config:
+      tags: annuaire_du_service_public
   - name: stg_annuaire_du_service_public__telephones
+    config:
+      tags: annuaire_du_service_public

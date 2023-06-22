@@ -2,6 +2,8 @@ version: 2
 
 models:
   - name: stg_monenfant__creches
+    config:
+      tags: monenfant
     columns:
       - name: id
         tests:

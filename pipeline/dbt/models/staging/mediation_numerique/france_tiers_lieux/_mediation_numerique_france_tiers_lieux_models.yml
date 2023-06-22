@@ -2,4 +2,8 @@ version: 2
 
 models:
   - name: stg_mediation_numerique_france_tiers_lieux__services
+    config:
+      tags: mediation_numerique_france_tiers_lieux
   - name: stg_mediation_numerique_france_tiers_lieux__structures
+    config:
+      tags: mediation_numerique_france_tiers_lieux

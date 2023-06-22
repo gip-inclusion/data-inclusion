@@ -2,3 +2,5 @@ version: 2
 
 models:
   - name: stg_cd35__organisations
+    config:
+      tags: cd35

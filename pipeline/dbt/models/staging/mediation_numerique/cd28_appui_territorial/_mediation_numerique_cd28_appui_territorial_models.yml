@@ -2,6 +2,8 @@ version: 2
 
 models:
   - name: stg_mediation_numerique_cd28_appui_territorial__services
+    config:
+      tags: mediation_numerique_cd28_appui_territorial
     columns:
       - name: id
         tests:
@@ -55,6 +57,8 @@ models:
                 severity: warn
           - dbt_utils.not_empty_string
   - name: stg_mediation_numerique_cd28_appui_territorial__structures
+    config:
+      tags: mediation_numerique_cd28_appui_territorial
     columns:
       - name: id
         tests:

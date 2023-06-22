@@ -86,7 +86,14 @@ with airflow.DAG(
     dbt_run_before_geocoding = dbt_operator_factory(
         task_id="dbt_run_before_geocoding",
         command="run",
-        select="intermediate datalake staging,odspep staging,immersion_facilitee",
+        select=" ".join(
+            [
+                "intermediate",
+                "datalake",
+                "staging,tag:odspep",
+                "staging,tag:immersion_facilitee",
+            ]
+        ),
         exclude="int_extra__geocoded_results+",
     )
 
