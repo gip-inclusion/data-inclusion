@@ -108,7 +108,7 @@ with airflow.DAG(
     dbt_run_after_geocoding = dbt_operator_factory(
         task_id="dbt_run_after_geocoding",
         command="run",
-        select="intermediate,int_extra__geocoded_results+",
+        select=" ".join(["intermediate,int_extra__geocoded_results+", "marts"]),
     )
 
     dbt_run_flux = dbt_operator_factory(
