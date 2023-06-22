@@ -132,7 +132,7 @@ final AS (
         {{ truncate_text(presentation) }}                                                              AS "presentation_resume",
         {{ presentation }}                                                                             AS "presentation_detail"
     FROM services
-    LEFT JOIN structures ON services.structure_id = structures.id AND services.source = structures.source
+    LEFT JOIN structures ON services.structure_id = structures.id AND services._di_source_id = structures._di_source_id
 )
 
 SELECT * FROM final
