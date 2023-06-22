@@ -1,0 +1,6 @@
+version: 2
+
+models:
+  - name: stg_cd72__rows
+    config:
+      tags: cd72

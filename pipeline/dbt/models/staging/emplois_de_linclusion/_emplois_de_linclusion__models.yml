@@ -1,0 +1,9 @@
+version: 2
+
+models:
+  - name: stg_emplois_de_linclusion__organisations
+    config:
+      tags: emplois_de_linclusion
+  - name: stg_emplois_de_linclusion__siaes
+    config:
+      tags: emplois_de_linclusion

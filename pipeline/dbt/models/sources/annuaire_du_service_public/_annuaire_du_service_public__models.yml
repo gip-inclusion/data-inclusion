@@ -1,8 +1,0 @@
-version: 2
-
-models:
-  - name: stg_annuaire_du_service_public__adresses
-  - name: stg_annuaire_du_service_public__etablissements
-  - name: stg_annuaire_du_service_public__pivots
-  - name: stg_annuaire_du_service_public__site_internets
-  - name: stg_annuaire_du_service_public__telephones

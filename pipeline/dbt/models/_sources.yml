@@ -86,8 +86,20 @@ sources:
       - name: structures
       - name: services
 
+  - name: mediation_numerique_cd17
+    schema: mediation_numerique_cd17
+    tables:
+      - name: structures
+      - name: services
+
   - name: mediation_numerique_cd23
     schema: mediation_numerique_cd23
+    tables:
+      - name: structures
+      - name: services
+
+  - name: mediation_numerique_cd28_appui_territorial
+    schema: mediation_numerique_cd28_appui_territorial
     tables:
       - name: structures
       - name: services
@@ -140,6 +152,12 @@ sources:
       - name: structures
       - name: services
 
+  - name: mediation_numerique_etapes_numerique
+    schema: mediation_numerique_etapes_numerique
+    tables:
+      - name: structures
+      - name: services
+
   - name: mediation_numerique_fibre_64
     schema: mediation_numerique_fibre_64
     tables:
@@ -184,6 +202,12 @@ sources:
 
   - name: mediation_numerique_mulhouse
     schema: mediation_numerique_mulhouse
+    tables:
+      - name: structures
+      - name: services
+
+  - name: mediation_numerique_numi
+    schema: mediation_numerique_numi
     tables:
       - name: structures
       - name: services

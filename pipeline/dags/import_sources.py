@@ -1,15 +1,14 @@
 import logging
-from typing import Optional
 
 import airflow
 import pendulum
-from airflow.models import Variable
-from airflow.operators import bash, empty, python
+from airflow.operators import empty, python
 from airflow.utils.task_group import TaskGroup
 
+from dags.dbt import dbt_operator_factory
 from dags.notifications import format_failure, notify_webhook
 from dags.settings import SOURCES_CONFIGS
-from dags.virtualenvs import DBT_PYTHON_BIN_PATH, PYTHON_BIN_PATH
+from dags.virtualenvs import PYTHON_BIN_PATH
 
 logger = logging.getLogger(__name__)
 
@@ -125,7 +124,11 @@ def _load(
     from airflow.providers.postgres.hooks.postgres import PostgresHook
     from sqlalchemy.dialects.postgresql import JSONB
 
-    from data_inclusion.scripts.tasks import annuaire_du_service_public, utils
+    from data_inclusion.scripts.tasks import (
+        annuaire_du_service_public,
+        soliguide,
+        utils,
+    )
 
     READ_FN_BY_SOURCE_ID = {
         "annuaire-du-service-public": annuaire_du_service_public.read,
@@ -138,7 +141,7 @@ def _load(
         "mes-aides": utils.read_json,
         "siao": utils.read_excel,
         "un-jeune-une-solution": utils.read_json,
-        "soliguide": utils.read_json,
+        "soliguide": soliguide.read,
         "monenfant": utils.read_json,
     }
 
@@ -198,36 +201,6 @@ def _load(
             )
 
 
-def dbt_operator_factory(
-    task_id: str,
-    command: str,
-    select: Optional[str] = None,
-    exclude: Optional[str] = None,
-) -> bash.BashOperator:
-    """A basic factory for bash operators operating dbt commands."""
-
-    dbt_args = command
-    if select is not None:
-        dbt_args += f" --select {select}"
-    if exclude is not None:
-        dbt_args += f" --exclude {exclude}"
-
-    return bash.BashOperator(
-        task_id=task_id,
-        bash_command=f"{DBT_PYTHON_BIN_PATH.parent / 'dbt'} {dbt_args}",
-        append_env=True,
-        env={
-            "DBT_PROFILES_DIR": Variable.get("DBT_PROJECT_DIR"),
-            "POSTGRES_HOST": "{{ conn.pg.host }}",
-            "POSTGRES_PORT": "{{ conn.pg.port }}",
-            "POSTGRES_USER": "{{ conn.pg.login }}",
-            "POSTGRES_PASSWORD": "{{ conn.pg.password }}",
-            "POSTGRES_DB": "{{ conn.pg.schema }}",
-        },
-        cwd=Variable.get("DBT_PROJECT_DIR"),
-    )
-
-
 # generate a dedicated DAG for every configured sources
 for source_config in SOURCES_CONFIGS:
     dag_id = f"import_{source_config['id']}".replace("-", "_")
@@ -251,12 +224,26 @@ for source_config in SOURCES_CONFIGS:
             op_kwargs={"source_config": source_config},
         )
 
+        dbt_source_id = source_config["id"].replace("-", "_")
+
         # tests here can detect impacting changes on the source data
         # before anything happens to the previously existing data
         dbt_test_source = dbt_operator_factory(
             task_id="dbt_test_source",
             command="test",
-            select="source:" + source_config["id"].replace("-", "_"),
+            select=f"source:{dbt_source_id}",
+        )
+
+        dbt_run_staging = dbt_operator_factory(
+            task_id="dbt_run_staging",
+            command="run",
+            select=f"tag:{dbt_source_id},staging",
+        )
+
+        dbt_test_staging = dbt_operator_factory(
+            task_id="dbt_test_staging",
+            command="test",
+            select=f"tag:{dbt_source_id},staging",
         )
 
         # historization of the raw data, if that makes sense
@@ -264,7 +251,7 @@ for source_config in SOURCES_CONFIGS:
             dbt_snapshot_source = dbt_operator_factory(
                 task_id="dbt_snapshot_source",
                 command="snapshot",
-                select=source_config["id"].replace("-", "_"),
+                select=dbt_source_id,
             )
         else:
             dbt_snapshot_source = None
@@ -294,11 +281,11 @@ for source_config in SOURCES_CONFIGS:
 
                 start >> setup >> extract >> load
 
-            stream_task_group >> dbt_test_source
+            stream_task_group >> dbt_test_source >> dbt_run_staging >> dbt_test_staging
 
             if dbt_snapshot_source is not None:
-                dbt_test_source >> dbt_snapshot_source >> end
+                dbt_test_staging >> dbt_snapshot_source >> end
             else:
-                dbt_test_source >> end
+                dbt_test_staging >> end
 
     globals()[dag_id] = dag

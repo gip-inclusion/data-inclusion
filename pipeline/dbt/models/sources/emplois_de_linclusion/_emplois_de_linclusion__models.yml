@@ -1,5 +1,0 @@
-version: 2
-
-models:
-  - name: stg_emplois_de_linclusion__organisations
-  - name: stg_emplois_de_linclusion__siaes
