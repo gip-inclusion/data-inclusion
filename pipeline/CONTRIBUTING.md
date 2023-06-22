@@ -51,6 +51,18 @@ dbt run --select intermediate
 dbt run --select marts
 ```
 
+## Adding a public HTTP tabular source
+
+To extract, read and store the source data in S3:
+
+- add the URL in the `.template.env` file (use the format XXX_FILE_URL)
+- add the environment variable in `docker-compose.yml`
+- add the stream config in `pipeline/dags/dags/settings.py`
+- declare the dbt source in `pipeline/dbt/models/_sources.yml`
+- add the source id + functions in `pipeline/dags/import_sources.py` (extract and read functions)
+
+For transformations, create the relevant files in `dbt/staging`, `dbt/intermediate` and `dbt/marts`.
+
 ## Update schema in dbt seeds
 
 * Required when the schema changes.

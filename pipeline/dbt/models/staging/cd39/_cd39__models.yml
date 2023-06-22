@@ -1,0 +1,16 @@
+version: 2
+
+models:
+  - name: stg_cd39__structures_services
+    config:
+      tags: cd39
+    columns:
+      - name: id_service
+        tests:
+          - unique
+          - not_null
+          - dbt_utils.not_empty_string
+      - name: structure_id
+        tests:
+          - not_null
+          - dbt_utils.not_empty_string

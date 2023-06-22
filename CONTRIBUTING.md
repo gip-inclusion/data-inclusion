@@ -70,17 +70,6 @@ code -n data-inclusion
 
 Each subdirectory (`./pipeline`, `./api`, etc.) has its own contributing guidelines on how to setup an environment for development.
 
-## Adding a public HTTP tabular source
-
-To extract, read and store the source data in S3:
-
-- add the URL in the `.template.env` file (use the format XXX_FILE_URL)
-- add the environment variable in `docker-compose.yml`
-- add the stream config in `pipeline/dags/dags/settings.py`
-- add the source id + functions in `pipeline/dags/import_sources.py` (extract and read functions)
-
-For transformations, create the relevant files in `dbt/sources`, `dbt/intermediate` and `dbt/marts`.
-
 ## Contribution
 
 Issues and PRs are welcome.
