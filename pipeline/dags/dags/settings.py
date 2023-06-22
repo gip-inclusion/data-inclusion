@@ -152,7 +152,7 @@ SOURCES_CONFIGS = [
                     "id": "structures",
                     "filename": "structures.json",
                     "url": Variable.get(
-                        f"MEDIATION_NUMERIQUE_{source_id.upper().replace('-', '_')}_DATASET_URL",
+                        f"MEDNUM_{source_id.upper().replace('-', '_')}_DATASET_URL",
                         None,
                     ),
                 },
@@ -160,7 +160,7 @@ SOURCES_CONFIGS = [
                     "id": "services",
                     "filename": "services.json",
                     "url": Variable.get(
-                        f"MEDIATION_NUMERIQUE_{source_id.upper().replace('-', '_')}_DATASET_URL",
+                        f"MEDNUM_{source_id.upper().replace('-', '_')}_DATASET_URL",
                         None,
                     ),
                 },
