@@ -315,8 +315,10 @@ def test_list_services_all(api_client, service_factory):
     assert resp_data == {
         "items": [
             {
+                "_di_geocodage_code_insee": "55626",
+                "_di_geocodage_score": 0.33,
                 "id": "cacher-violent",
-                "structure_id": "grace-plaindre",
+                "structure_id": "rouge-empire",
                 "source": "dora",
                 "nom": "Munoz",
                 "presentation_resume": "Puissant fine.",
@@ -671,11 +673,10 @@ def test_list_services_filter_by_code_insee(api_client, service_factory):
 
 @pytest.mark.with_token
 def test_search_services_with_code_insee(api_client, service_factory):
-    service_1 = service_factory(code_insee="59009")
-    service_2 = service_factory(code_insee="59350")
-    service_3 = service_factory(code_insee=None, structure__code_insee="59009")
-    service_factory(code_insee=None, structure__code_insee="62193")
-    service_factory(code_insee="62193", structure__code_insee="62193")
+    service_1 = service_factory(code_insee="59009", _di_geocodage_code_insee=None)
+    service_2 = service_factory(code_insee="59350", _di_geocodage_code_insee="62000")
+    service_3 = service_factory(code_insee=None, _di_geocodage_code_insee="59000")
+    service_factory(code_insee=None, _di_geocodage_code_insee=None)
 
     url = "/api/v0/search/services"
     response = api_client.get(url, params={"code_insee": "59009"})
@@ -688,10 +689,10 @@ def test_search_services_with_code_insee(api_client, service_factory):
     assert resp_data["items"][1]["service"]["id"] == service_2.id
     assert resp_data["items"][1]["distance"] == 40
     assert resp_data["items"][2]["service"]["id"] == service_3.id
-    assert resp_data["items"][2]["distance"] is None
+    assert resp_data["items"][2]["distance"] == 40
 
     response = api_client.get(url, params={"code_insee": "62041"})
-    assert_paginated_response_data(response.json(), total=2)
+    assert_paginated_response_data(response.json(), total=1)
 
 
 @pytest.mark.with_token

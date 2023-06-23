@@ -148,6 +148,15 @@ CodeInsee: TypeAlias = constr(min_length=5, max_length=5)
 
 
 class Service(BaseModel):
+    # internal metadata
+    di_geocodage_code_insee: Optional[constr(min_length=5, max_length=5)] = Field(
+        alias="_di_geocodage_code_insee"
+    )
+    di_geocodage_score: Optional[confloat(ge=0, le=1)] = Field(
+        alias="_di_geocodage_score"
+    )
+
+    # service data
     id: str
     structure_id: str
     source: str

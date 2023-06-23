@@ -134,8 +134,13 @@ def list_structures(
 
     if departement_slug is not None:
         query = query.filter(
-            models.Structure.code_insee.startswith(
-                schema.DepartementCOG[departement_slug.name].value
+            sqla.or_(
+                models.Structure.code_insee.startswith(
+                    schema.DepartementCOG[departement_slug.name].value
+                ),
+                models.Structure._di_geocodage_code_insee.startswith(
+                    schema.DepartementCOG[departement_slug.name].value
+                ),
             )
         )
 
@@ -278,17 +283,32 @@ def list_services(
         query = query.filter(models.Structure.source == source)
 
     if departement is not None:
-        query = query.filter(models.Service.code_insee.startswith(departement.value))
+        query = query.filter(
+            sqla.or_(
+                models.Service.code_insee.startswith(departement.value),
+                models.Service._di_geocodage_code_insee.startswith(departement.value),
+            )
+        )
 
     if departement_slug is not None:
         query = query.filter(
-            models.Service.code_insee.startswith(
-                schema.DepartementCOG[departement_slug.name].value
+            sqla.or_(
+                models.Service.code_insee.startswith(
+                    schema.DepartementCOG[departement_slug.name].value
+                ),
+                models.Service._di_geocodage_code_insee.startswith(
+                    schema.DepartementCOG[departement_slug.name].value
+                ),
             )
         )
 
     if code_insee is not None:
-        query = query.filter(models.Service.code_insee == code_insee)
+        query = query.filter(
+            sqla.or_(
+                models.Service.code_insee == code_insee,
+                models.Service._di_geocodage_code_insee == code_insee,
+            )
+        )
 
     if thematique is not None:
         filter_stmt = """\
@@ -377,16 +397,21 @@ def search_services(
         # for now, filter services that are not in the associated departement out
         cog_departement = code_insee[: 3 if code_insee.startswith("97") else 2]
         query = query.filter(
-            models.Service.code_insee.startswith(cog_departement)
-            | models.Structure.code_insee.startswith(cog_departement)
+            sqla.or_(
+                models.Service.code_insee.startswith(cog_departement),
+                models.Service._di_geocodage_code_insee.startswith(cog_departement),
+            )
+        )
+
+        coalesced_code_insee = sqla.func.coalesce(
+            models.Service.code_insee, models.Service._di_geocodage_code_insee
         )
 
         # for now, assign an arbitrary distance based on the city code
         query = query.add_columns(
             sqla.case(
-                (models.Service.code_insee.is_(sqla.null()), sqla.null()),
-                (models.Service.code_insee == code_insee, 0),
-                (models.Service.code_insee != code_insee, 40),
+                (coalesced_code_insee == code_insee, 0),
+                (coalesced_code_insee != code_insee, 40),
             ).label("distance")
         )
     else:
