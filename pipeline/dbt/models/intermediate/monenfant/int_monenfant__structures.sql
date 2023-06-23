@@ -5,17 +5,11 @@ WITH creches AS (
 final AS (
     SELECT
         id                                                                                                                                                                 AS "id",
+        id                                                                                                                                                                 AS "adresse_id",
         NULL                                                                                                                                                               AS "siret",
         NULL::BOOLEAN                                                                                                                                                      AS "antenne",
         NULL                                                                                                                                                               AS "rna",
         nom                                                                                                                                                                AS "nom",
-        ville                                                                                                                                                              AS "commune",
-        SUBSTRING(adresse FROM '\d{5}')                                                                                                                                    AS "code_postal",
-        NULL                                                                                                                                                               AS "code_insee",
-        SUBSTRING(adresse FROM '^(.*?) (- .* )?\d{5}')                                                                                                                     AS "adresse",
-        SUBSTRING(adresse FROM '- (.*) \d{5}')                                                                                                                             AS "complement_adresse",
-        longitude                                                                                                                                                          AS "longitude",
-        latitude                                                                                                                                                           AS "latitude",
         telephone                                                                                                                                                          AS "telephone",
         mail                                                                                                                                                               AS "courriel",
         details_website                                                                                                                                                    AS "site_web",

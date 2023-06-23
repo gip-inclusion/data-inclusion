@@ -1,5 +1,6 @@
 version: 2
 
 models:
+  - name: int_soliguide__adresses
   - name: int_soliguide__structures
   - name: int_soliguide__services

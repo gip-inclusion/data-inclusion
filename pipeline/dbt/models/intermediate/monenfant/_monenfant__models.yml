@@ -1,5 +1,6 @@
 version: 2
 
 models:
+  - name: int_monenfant__adresses
   - name: int_monenfant__structures
   - name: int_monenfant__services

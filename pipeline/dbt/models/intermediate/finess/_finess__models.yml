@@ -1,4 +1,5 @@
 version: 2
 
 models:
+  - name: int_finess__adresses
   - name: int_finess__structures

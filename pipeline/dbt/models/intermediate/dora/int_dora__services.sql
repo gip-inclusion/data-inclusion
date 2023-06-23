@@ -17,7 +17,8 @@ di_frais_by_dora_fee_condition AS (
 
 final AS (
     SELECT
-        id,
+        id                                                      AS "id",
+        id                                                      AS "adresse_id",
         _di_source_id                                           AS "source",
         name                                                    AS "nom",
         short_desc                                              AS "presentation_resume",
@@ -33,8 +34,6 @@ final AS (
         NULL                                                    AS "pre_requis",
         NULL                                                    AS "cumulable",
         NULL                                                    AS "justificatifs",
-        longitude                                               AS "longitude",
-        latitude                                                AS "latitude",
         NULL                                                    AS "date_creation",
         NULL                                                    AS "date_suspension",
         NULL                                                    AS "lien_source",
@@ -47,11 +46,6 @@ final AS (
         NULL                                                    AS "zone_diffusion_nom",
         NULLIF(full_desc, '')                                   AS "presentation_detail",
         NULLIF(online_form, '')                                 AS "formulaire_en_ligne",
-        NULLIF(city, '')                                        AS "commune",
-        NULLIF(postal_code, '')                                 AS "code_postal",
-        NULLIF(city_code, '')                                   AS "code_insee",
-        NULLIF(address_1, '')                                   AS "adresse",
-        NULLIF(address_2, '')                                   AS "complement_adresse",
         NULLIF(recurrence, '')                                  AS "recurrence",
         SPLIT_PART(TRIM('/' FROM structure), '/structures/', 2) AS "structure_id",
         (categories || subcategories)                           AS "thematiques",

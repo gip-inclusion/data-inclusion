@@ -1,4 +1,5 @@
 version: 2
 
 models:
+  - name: int_siao__adresses
   - name: int_siao__structures

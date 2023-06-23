@@ -97,6 +97,7 @@ di_thematiques AS (
 final AS (
     SELECT
         services.id                                                                                    AS "id",
+        structures.id                                                                                  AS "adresse_id",
         services.nom                                                                                   AS "nom",
         services.prise_rdv                                                                             AS "prise_rdv",
         services.frais                                                                                 AS "frais",
@@ -108,13 +109,6 @@ final AS (
         NULL                                                                                           AS "cumulable",
         NULL                                                                                           AS "justificatifs",
         NULL                                                                                           AS "formulaire_en_ligne",
-        structures.commune                                                                             AS "commune",
-        structures.code_postal                                                                         AS "code_postal",
-        NULL                                                                                           AS "code_insee",
-        structures.adresse                                                                             AS "adresse",
-        NULL                                                                                           AS "complement_adresse",
-        structures.longitude                                                                           AS "longitude",
-        structures.latitude                                                                            AS "latitude",
         NULL                                                                                           AS "recurrence",
         NULL                                                                                           AS "date_creation",
         NULL                                                                                           AS "date_suspension",

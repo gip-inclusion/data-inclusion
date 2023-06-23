@@ -41,16 +41,10 @@ WITH structures AS (
 final AS (
     SELECT
         id                    AS "id",
+        id                    AS "adresse_id",
         siret                 AS "siret",
         NULL                  AS "rna",
         nom                   AS "nom",
-        commune               AS "commune",
-        code_postal           AS "code_postal",
-        NULL                  AS "code_insee",
-        adresse               AS "adresse",
-        NULL                  AS "complement_adresse",
-        longitude             AS "longitude",
-        latitude              AS "latitude",
         telephone             AS "telephone",
         courriel              AS "courriel",
         site_web              AS "site_web",
