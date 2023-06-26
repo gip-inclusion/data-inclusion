@@ -5,24 +5,27 @@ WITH source AS (
 
 final AS (
     SELECT
-        _di_source_id                                    AS "_di_source_id",
-        (TRIM('|' FROM data ->> 'ORG_LONGITUDE'))::FLOAT AS "org_longitude",
-        (TRIM('|' FROM data ->> 'ORG_LATITUDE'))::FLOAT  AS "org_latitude",
-        TO_DATE(data ->> 'ORG_DATEMAJ', 'DD-MM-YYYY')    AS "org_datemaj",
-        TO_DATE(data ->> 'ORG_DATECREA', 'DD-MM-YYYY')   AS "org_datecrea",
-        data ->> 'ORG_ID'                                AS "id",
-        data ->> 'ORG_ID'                                AS "org_id",
-        data ->> 'ORG_NOM'                               AS "org_nom",
-        data ->> 'ORG_VILLE'                             AS "org_ville",
-        data ->> 'ORG_CP'                                AS "org_cp",
-        data ->> 'ORG_ADRES'                             AS "org_adres",
-        data ->> 'ORG_SIGLE'                             AS "org_sigle",
-        data ->> 'ORG_TEL'                               AS "org_tel",
-        data ->> 'ORG_MAIL'                              AS "org_mail",
-        data ->> 'ORG_WEB'                               AS "org_web",
-        data ->> 'ORG_DESC'                              AS "org_desc",
-        data ->> 'URL'                                   AS "url",
-        data ->> 'ORG_HORAIRE'                           AS "org_horaire"
+        _di_source_id                                                                                AS "_di_source_id",
+        (data ->> 'LATITUDE')::FLOAT                                                                 AS "latitude",
+        (data ->> 'LONGITUDE')::FLOAT                                                                AS "longitude",
+        data ->> 'ADRESSE'                                                                           AS "adresse",
+        data ->> 'CODE_INSEE'                                                                        AS "code_insee",
+        data ->> 'CODE_POSTAL'                                                                       AS "code_postal",
+        data ->> 'COMMUNE'                                                                           AS "commune",
+        data ->> 'COMPLEMENT_ADRESSE'                                                                AS "complement_adresse",
+        data ->> 'COURRIEL'                                                                          AS "courriel",
+        TO_DATE(data ->> 'DATE_CREATION', 'DD-MM-YYYY')                                              AS "date_creation",
+        TO_DATE(data ->> 'DATE_MAJ', 'DD-MM-YYYY')                                                   AS "date_maj",
+        data ->> 'HORAIRES_OUVERTURES'                                                               AS "horaires_ouvertures",
+        data ->> 'ID'                                                                                AS "id",
+        data ->> 'LIEN_SOURCE'                                                                       AS "lien_source",
+        data ->> 'NOM'                                                                               AS "nom",
+        data ->> 'PRESENTATION_DETAIL'                                                               AS "presentation_detail",
+        (SELECT ARRAY_AGG(TRIM(p)) FROM UNNEST(STRING_TO_ARRAY(data ->> 'PROFILS', ',')) AS "p")     AS "profils",
+        data ->> 'SIGLE'                                                                             AS "sigle",
+        data ->> 'SITE_WEB'                                                                          AS "site_web",
+        data ->> 'TELEPHONE'                                                                         AS "telephone",
+        (SELECT ARRAY_AGG(TRIM(t)) FROM UNNEST(STRING_TO_ARRAY(data ->> 'THEMATIQUES', ',')) AS "t") AS "thematiques"
     FROM source
 )
 

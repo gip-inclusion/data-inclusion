@@ -4,15 +4,15 @@ WITH organisations AS (
 
 final AS (
     SELECT
-        id            AS "id",
-        org_ville     AS "commune",
-        org_cp        AS "code_postal",
-        NULL          AS "code_insee",
-        org_adres     AS "adresse",
-        NULL          AS "complement_adresse",
-        org_longitude AS "longitude",
-        org_latitude  AS "latitude",
-        _di_source_id AS "source"
+        id                 AS "id",
+        commune            AS "commune",
+        code_postal        AS "code_postal",
+        code_insee         AS "code_insee",
+        adresse            AS "adresse",
+        complement_adresse AS "complement_adresse",
+        longitude          AS "longitude",
+        latitude           AS "latitude",
+        _di_source_id      AS "source"
     FROM organisations
 )
 

@@ -57,6 +57,40 @@ sources:
     schema: cd35
     tables:
       - name: organisations
+        columns:
+          - name: data
+            tests:
+              - expect_column_value_paths_to_exist:
+                  config:
+                    severity: error
+                  path_list:
+                    - '$.ADRESSE'
+                    - '$.CODE_INSEE'
+                    - '$.CODE_POSTAL'
+                    - '$.COMMUNE'
+                    - '$.COMPLEMENT_ADRESSE'
+                    - '$.COURRIEL'
+                    - '$.DATE_CREATION'
+                    - '$.DATE_MAJ'
+                    - '$.HORAIRES_OUVERTURES'
+                    - '$.ID'
+                    - '$.LATITUDE'
+                    - '$.LIEN_SOURCE'
+                    - '$.LONGITUDE'
+                    - '$.NOM'
+                    - '$.PRESENTATION_DETAIL'
+                    - '$.PROFILS'
+                    - '$.SIGLE'
+                    - '$.SITE_WEB'
+                    - '$.TELEPHONE'
+                    - '$.THEMATIQUES'
+              - expect_column_value_paths_to_exist:
+                  config:
+                    severity: warn
+                  path_list:
+                    - '$.ASCOLLMODIFICATION'
+                    - '$.ASCOLLNOM'
+                    - '$.ASCOLLSIRET'
 
   - name: cd72
     schema: cd72
