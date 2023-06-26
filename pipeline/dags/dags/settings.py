@@ -75,7 +75,7 @@ SOURCES_CONFIGS = [
         "streams": [
             {
                 "id": "organisations",
-                "filename": "organisations.xlsx",
+                "filename": "organisations.csv",
                 "url": Variable.get("CD35_FILE_URL", None),
             },
         ],
