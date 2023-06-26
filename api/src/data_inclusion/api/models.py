@@ -55,6 +55,8 @@ class Service(Base):
     _di_structure_surrogate_id = sqla.Column(
         sqla.ForeignKey("structure._di_surrogate_id")
     )
+    _di_geocodage_code_insee = sqla.Column(sqla.Text, nullable=True)
+    _di_geocodage_score = sqla.Column(sqla.Float, nullable=True)
     structure = orm.relationship("Structure", back_populates="services")
 
     # service data

@@ -5,17 +5,11 @@ WITH garages AS (
 final AS (
     SELECT
         id                AS "id",
+        id                AS "adresse_id",
         NULL              AS "siret",
         NULL::BOOLEAN     AS "antenne",
         NULL              AS "rna",
         nom               AS "nom",
-        ville_nom         AS "commune",
-        code_postal       AS "code_postal",
-        NULL              AS "code_insee",
-        adresse           AS "adresse",
-        NULL              AS "complement_adresse",
-        ville_longitude   AS "longitude",
-        ville_latitude    AS "latitude",
         telephone         AS "telephone",
         email             AS "courriel",
         url               AS "site_web",

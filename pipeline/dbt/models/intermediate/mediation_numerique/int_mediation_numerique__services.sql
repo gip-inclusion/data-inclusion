@@ -14,7 +14,9 @@ WITH services AS (
             relations=[
                 ref('stg_mediation_numerique_angers__services'),
                 ref('stg_mediation_numerique_assembleurs__services'),
+                ref('stg_mediation_numerique_cd17__services'),
                 ref('stg_mediation_numerique_cd23__services'),
+                ref('stg_mediation_numerique_cd28_appui_territorial__services'),
                 ref('stg_mediation_numerique_cd33__services'),
                 ref('stg_mediation_numerique_cd40__services'),
                 ref('stg_mediation_numerique_cd44__services'),
@@ -23,6 +25,7 @@ WITH services AS (
                 ref('stg_mediation_numerique_conseiller_numerique__services'),
                 ref('stg_mediation_numerique_conumm__services'),
                 ref('stg_mediation_numerique_cr93__services'),
+                ref('stg_mediation_numerique_etapes_numerique__services'),
                 ref('stg_mediation_numerique_fibre_64__services'),
                 ref('stg_mediation_numerique_france_services__services'),
                 ref('stg_mediation_numerique_france_tiers_lieux__services'),
@@ -31,6 +34,7 @@ WITH services AS (
                 ref('stg_mediation_numerique_hub_antilles__services'),
                 ref('stg_mediation_numerique_hub_lo__services'),
                 ref('stg_mediation_numerique_mulhouse__services'),
+                ref('stg_mediation_numerique_numi__services'),
                 ref('stg_mediation_numerique_res_in__services'),
                 ref('stg_mediation_numerique_rhinocc__services'),
                 ref('stg_mediation_numerique_ultra_numerique__services'),
@@ -52,7 +56,9 @@ structures AS (
             relations=[
                 ref('stg_mediation_numerique_angers__structures'),
                 ref('stg_mediation_numerique_assembleurs__structures'),
+                ref('stg_mediation_numerique_cd17__structures'),
                 ref('stg_mediation_numerique_cd23__structures'),
+                ref('stg_mediation_numerique_cd28_appui_territorial__structures'),
                 ref('stg_mediation_numerique_cd33__structures'),
                 ref('stg_mediation_numerique_cd40__structures'),
                 ref('stg_mediation_numerique_cd44__structures'),
@@ -61,6 +67,7 @@ structures AS (
                 ref('stg_mediation_numerique_conseiller_numerique__structures'),
                 ref('stg_mediation_numerique_conumm__structures'),
                 ref('stg_mediation_numerique_cr93__structures'),
+                ref('stg_mediation_numerique_etapes_numerique__structures'),
                 ref('stg_mediation_numerique_fibre_64__structures'),
                 ref('stg_mediation_numerique_france_services__structures'),
                 ref('stg_mediation_numerique_france_tiers_lieux__structures'),
@@ -69,6 +76,7 @@ structures AS (
                 ref('stg_mediation_numerique_hub_antilles__structures'),
                 ref('stg_mediation_numerique_hub_lo__structures'),
                 ref('stg_mediation_numerique_mulhouse__structures'),
+                ref('stg_mediation_numerique_numi__structures'),
                 ref('stg_mediation_numerique_res_in__structures'),
                 ref('stg_mediation_numerique_rhinocc__structures'),
                 ref('stg_mediation_numerique_ultra_numerique__structures'),
@@ -89,6 +97,7 @@ di_thematiques AS (
 final AS (
     SELECT
         services.id                                                                                    AS "id",
+        structures.id                                                                                  AS "adresse_id",
         services.nom                                                                                   AS "nom",
         services.prise_rdv                                                                             AS "prise_rdv",
         services.frais                                                                                 AS "frais",
@@ -100,13 +109,6 @@ final AS (
         NULL                                                                                           AS "cumulable",
         NULL                                                                                           AS "justificatifs",
         NULL                                                                                           AS "formulaire_en_ligne",
-        structures.commune                                                                             AS "commune",
-        structures.code_postal                                                                         AS "code_postal",
-        NULL                                                                                           AS "code_insee",
-        structures.adresse                                                                             AS "adresse",
-        NULL                                                                                           AS "complement_adresse",
-        structures.longitude                                                                           AS "longitude",
-        structures.latitude                                                                            AS "latitude",
         NULL                                                                                           AS "recurrence",
         NULL                                                                                           AS "date_creation",
         NULL                                                                                           AS "date_suspension",
@@ -124,7 +126,7 @@ final AS (
         {{ truncate_text(presentation) }}                                                              AS "presentation_resume",
         {{ presentation }}                                                                             AS "presentation_detail"
     FROM services
-    LEFT JOIN structures ON services.structure_id = structures.id AND services.source = structures.source
+    LEFT JOIN structures ON services.structure_id = structures.id AND services._di_source_id = structures._di_source_id
 )
 
 SELECT * FROM final

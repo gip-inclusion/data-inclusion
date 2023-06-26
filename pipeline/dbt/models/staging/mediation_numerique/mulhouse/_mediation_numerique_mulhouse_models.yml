@@ -2,4 +2,8 @@ version: 2
 
 models:
   - name: stg_mediation_numerique_mulhouse__services
+    config:
+      tags: mediation_numerique_mulhouse
   - name: stg_mediation_numerique_mulhouse__structures
+    config:
+      tags: mediation_numerique_mulhouse

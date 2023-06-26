@@ -1,4 +1,5 @@
 version: 2
 
 models:
+  - name: int_cd72__adresses
   - name: int_cd72__structures

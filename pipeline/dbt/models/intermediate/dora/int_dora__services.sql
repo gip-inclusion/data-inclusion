@@ -4,11 +4,7 @@ WITH services AS (
 
 final AS (
     SELECT
-        adresse                          AS "adresse",
-        code_insee                       AS "code_insee",
-        code_postal                      AS "code_postal",
-        commune                          AS "commune",
-        complement_adresse               AS "complement_adresse",
+        id                               AS "adresse_id",
         contact_nom                      AS "contact_nom",
         contact_prenom                   AS "contact_prenom",
         contact_public                   AS "contact_public",
@@ -22,9 +18,7 @@ final AS (
         frais                            AS "frais",
         id                               AS "id",
         justificatifs                    AS "justificatifs",
-        latitude                         AS "latitude",
         lien_source                      AS "lien_source",
-        longitude                        AS "longitude",
         modes_accueil                    AS "modes_accueil",
         nom                              AS "nom",
         presentation_resume              AS "presentation_resume",

@@ -15,9 +15,8 @@ structures AS (
 final AS (
     SELECT
         id                              AS "id",
+        id                              AS "adresse_id",
         antenne                         AS "antenne",
-        longitude                       AS "longitude",
-        latitude                        AS "latitude",
         _di_source_id                   AS "source",
         labels_nationaux                AS "labels_nationaux",
         labels_autres                   AS "labels_autres",
@@ -30,16 +29,11 @@ final AS (
         NULLIF(horaires_ouverture, '')  AS "horaires_ouverture",
         NULLIF(accessibilite, '')       AS "accessibilite",
         NULLIF(rna, '')                 AS "rna",
-        NULLIF(complement_adresse, '')  AS "complement_adresse",
         NULLIF(presentation_resume, '') AS "presentation_resume",
         NULLIF(presentation_detail, '') AS "presentation_detail",
-        NULLIF(adresse, '')             AS "adresse",
         NULLIF(telephone, '')           AS "telephone",
         NULLIF(courriel, '')            AS "courriel",
-        NULLIF(site_web, '')            AS "site_web",
-        NULLIF(commune, '')             AS "commune",
-        NULLIF(code_postal, '')         AS "code_postal",
-        NULLIF(code_insee, '')          AS "code_insee"
+        NULLIF(site_web, '')            AS "site_web"
     FROM structures
 )
 

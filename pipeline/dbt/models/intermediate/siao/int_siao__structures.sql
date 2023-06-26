@@ -5,16 +5,10 @@ WITH etablissements AS (
 final AS (
     SELECT
         id                  AS "id",
+        id                  AS "adresse_id",
         code_siret          AS "siret",
         NULL::BOOLEAN       AS "antenne",
         NULL                AS "rna",
-        ville               AS "commune",
-        code_postal         AS "code_postal",
-        NULL                AS "code_insee",
-        adresse             AS "adresse",
-        NULL                AS "complement_adresse",
-        NULL::FLOAT         AS "longitude",
-        NULL::FLOAT         AS "latitude",
         telephone           AS "telephone",
         mail                AS "courriel",
         NULL                AS "site_web",

@@ -11,17 +11,11 @@ rows_with_id AS (
 final AS (
     SELECT
         id                                               AS "id",
+        id                                               AS "adresse_id",
         siret                                            AS "siret",
         NULL::BOOLEAN                                    AS "antenne",
         NULL                                             AS "rna",
         nom_structure                                    AS "nom",
-        ville                                            AS "commune",
-        code_postal                                      AS "code_postal",
-        NULL                                             AS "code_insee",
-        adresse                                          AS "adresse",
-        NULL                                             AS "complement_adresse",
-        NULL::FLOAT                                      AS "longitude",
-        NULL::FLOAT                                      AS "latitude",
         email_accueil                                    AS "courriel",
         site_internet                                    AS "site_web",
         _di_source_id                                    AS "source",

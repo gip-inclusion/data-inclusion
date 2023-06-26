@@ -1,5 +1,6 @@
 version: 2
 
 models:
+  - name: int_dora__adresses
   - name: int_dora__services
   - name: int_dora__structures

@@ -77,7 +77,7 @@ SOURCES_CONFIGS = [
         "streams": [
             {
                 "id": "organisations",
-                "filename": "organisations.xlsx",
+                "filename": "organisations.csv",
                 "url": Variable.get("CD35_FILE_URL", None),
             },
         ],
@@ -154,7 +154,7 @@ SOURCES_CONFIGS = [
                     "id": "structures",
                     "filename": "structures.json",
                     "url": Variable.get(
-                        f"MEDIATION_NUMERIQUE_{source_id.upper().replace('-', '_')}_DATASET_URL",
+                        f"MEDNUM_{source_id.upper().replace('-', '_')}_DATASET_URL",
                         None,
                     ),
                 },
@@ -162,7 +162,7 @@ SOURCES_CONFIGS = [
                     "id": "services",
                     "filename": "services.json",
                     "url": Variable.get(
-                        f"MEDIATION_NUMERIQUE_{source_id.upper().replace('-', '_')}_DATASET_URL",
+                        f"MEDNUM_{source_id.upper().replace('-', '_')}_DATASET_URL",
                         None,
                     ),
                 },
@@ -171,7 +171,9 @@ SOURCES_CONFIGS = [
         for source_id in [
             "angers",
             "assembleurs",
+            "cd17",
             "cd23",
+            "cd28-appui-territorial",
             "cd33",
             "cd40",
             "cd44",
@@ -180,6 +182,7 @@ SOURCES_CONFIGS = [
             "conseiller-numerique",
             "conumm",
             "cr93",
+            "etapes-numerique",
             "fibre-64",
             "france-services",
             "france-tiers-lieux",
@@ -188,6 +191,7 @@ SOURCES_CONFIGS = [
             "hub-antilles",
             "hub-lo",
             "mulhouse",
+            "numi",
             "res-in",
             "rhinocc",
             "ultra-numerique",

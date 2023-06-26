@@ -34,7 +34,7 @@ def _geocode():
                 adresse,
                 code_postal,
                 commune
-            FROM public_intermediate.int__structures;
+            FROM public_intermediate.int__adresses;
         """
     )
 
@@ -86,7 +86,14 @@ with airflow.DAG(
     dbt_run_before_geocoding = dbt_operator_factory(
         task_id="dbt_run_before_geocoding",
         command="run",
-        select="intermediate datalake staging,odspep staging,immersion_facilitee",
+        select=" ".join(
+            [
+                "intermediate",
+                "datalake",
+                "staging,tag:odspep",
+                "staging,tag:immersion_facilitee",
+            ]
+        ),
         exclude="int_extra__geocoded_results+",
     )
 
@@ -101,7 +108,7 @@ with airflow.DAG(
     dbt_run_after_geocoding = dbt_operator_factory(
         task_id="dbt_run_after_geocoding",
         command="run",
-        select="intermediate,int_extra__geocoded_results+",
+        select=" ".join(["intermediate,int_extra__geocoded_results+", "marts"]),
     )
 
     dbt_run_flux = dbt_operator_factory(

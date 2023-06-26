@@ -43,8 +43,8 @@ di_thematique_by_soliguide_categorie_code AS (
         ('1303', 'logement-hebergement--mal-loges-sans-logis'),
         ('1305', 'logement-hebergement--etre-accompagne-pour-se-loger')
 
-        -- Soliguide va retravailler ces catégories :
-        -- ('1204', 'mobilite--aides-a-la-reprise-demploi-ou-a-la-formation'),
+    -- Soliguide va retravailler ces catégories :
+    -- ('1204', 'mobilite--aides-a-la-reprise-demploi-ou-a-la-formation'),
 
     ) AS x (categorie, thematique)
 ),
@@ -52,6 +52,7 @@ di_thematique_by_soliguide_categorie_code AS (
 final AS (
     SELECT
         services.id                                              AS "id",
+        lieux.lieu_id                                            AS "adresse_id",
         services._di_source_id                                   AS "source",
         NULL::TEXT []                                            AS "types",
         NULL                                                     AS "prise_rdv",
@@ -61,8 +62,6 @@ final AS (
         NULL                                                     AS "pre_requis",
         NULL                                                     AS "cumulable",
         NULL                                                     AS "justificatifs",
-        NULL                                                     AS "longitude",
-        NULL                                                     AS "latitude",
         NULL                                                     AS "date_creation",
         NULL                                                     AS "date_suspension",
         NULL                                                     AS "telephone",
@@ -73,13 +72,9 @@ final AS (
         NULL                                                     AS "zone_diffusion_code",
         NULL                                                     AS "zone_diffusion_nom",
         NULL                                                     AS "formulaire_en_ligne",
-        lieux.position_ville                                     AS "commune",
-        lieux.position_code_postal                               AS "code_postal",
-        lieux.position_code_postal                               AS "code_insee",
-        lieux.position_adresse                                   AS "adresse",
-        lieux.position_complement_adresse                        AS "complement_adresse",
         NULL                                                     AS "recurrence",
         services.lieu_id                                         AS "structure_id",
+        NULL::TEXT []                                            AS "modes_accueil",
         categories.label || COALESCE(' : ' || services.name, '') AS "nom",
         'https://soliguide.fr/fr/fiche/' || lieux.seo_url        AS "lien_source",
         ARRAY(
@@ -87,7 +82,6 @@ final AS (
             FROM di_thematique_by_soliguide_categorie_code
             WHERE services.categorie = di_thematique_by_soliguide_categorie_code.categorie
         )::TEXT []                                               AS "thematiques",
-        NULL::TEXT []                                            AS "modes_accueil",
         CASE LENGTH(services.description) <= 280
             WHEN TRUE THEN services.description
             WHEN FALSE THEN LEFT(services.description, 279) || '…'

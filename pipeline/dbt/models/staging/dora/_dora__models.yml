@@ -2,6 +2,8 @@ version: 2
 
 models:
   - name: stg_dora__services
+    config:
+      tags: dora
     columns:
       - name: adresse
         tests:
@@ -168,6 +170,8 @@ models:
               values: [commune, epci, departement, region]
 
   - name: stg_dora__structures
+    config:
+      tags: dora
     columns:
       - name: accessibilite
         tests:

@@ -31,33 +31,26 @@ interesting_etablissement_categories AS (
 
 final AS (
     SELECT
-        nofinesset                                                        AS "id",
-        siret                                                             AS "siret",
-        NULL::BOOLEAN                                                     AS "antenne",
-        NULL                                                              AS "rna",
-        compvoie                                                          AS "complement_adresse",
-        NULL::FLOAT                                                       AS "longitude",
-        NULL::FLOAT                                                       AS "latitude",
-        telephone                                                         AS "telephone",
-        NULL                                                              AS "courriel",
-        NULL                                                              AS "site_web",
-        _di_source_id                                                     AS "source",
-        NULL                                                              AS "lien_source",
-        NULL                                                              AS "horaires_ouverture",
-        NULL                                                              AS "accessibilite",
-        NULL::TEXT []                                                     AS "labels_nationaux",
-        NULL::TEXT []                                                     AS "labels_autres",
-        NULL::TEXT []                                                     AS "thematiques",
-        NULL                                                              AS "typologie",
-        NULL                                                              AS "presentation_resume",
-        NULL                                                              AS "presentation_detail",
-        maj                                                               AS "date_maj",
-        rs                                                                AS "nom",
-        TRIM(SUBSTRING(ligneacheminement FROM '\d{5} (.*?)(?= CEDEX|$)')) AS "commune",
-        LEFT(ligneacheminement, 5)                                        AS "code_postal",
-        -- cf: https://www.atih.sante.fr/constitution-codes-geographiques
-        REGEXP_REPLACE(departement, '9[A-F]', '97') || commune            AS "code_insee",
-        compldistrib || numvoie || typvoie || voie || lieuditbp           AS "adresse"
+        nofinesset    AS "id",
+        nofinesset    AS "adresse_id",
+        siret         AS "siret",
+        NULL::BOOLEAN AS "antenne",
+        NULL          AS "rna",
+        telephone     AS "telephone",
+        NULL          AS "courriel",
+        NULL          AS "site_web",
+        _di_source_id AS "source",
+        NULL          AS "lien_source",
+        NULL          AS "horaires_ouverture",
+        NULL          AS "accessibilite",
+        NULL::TEXT [] AS "labels_nationaux",
+        NULL::TEXT [] AS "labels_autres",
+        NULL::TEXT [] AS "thematiques",
+        NULL          AS "typologie",
+        NULL          AS "presentation_resume",
+        NULL          AS "presentation_detail",
+        maj           AS "date_maj",
+        rs            AS "nom"
     FROM etablissements
     WHERE categetab IN (SELECT categetab FROM interesting_etablissement_categories)
 )

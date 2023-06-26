@@ -2,4 +2,8 @@ version: 2
 
 models:
   - name: stg_mediation_numerique_res_in__services
+    config:
+      tags: mediation_numerique_res_in
   - name: stg_mediation_numerique_res_in__structures
+    config:
+      tags: mediation_numerique_res_in

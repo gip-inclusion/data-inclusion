@@ -3,6 +3,8 @@ version: 2
 models:
 
   - name: stg_odspep__adresses
+    config:
+      tags: odspep
     columns:
       - name: id_adr
         tests:
@@ -10,48 +12,64 @@ models:
           - unique
 
   - name: stg_odspep__contacts
+    config:
+      tags: odspep
     columns:
       - name: id_ctc
         tests:
           - not_null
           - unique
   - name: stg_odspep__horaires
+    config:
+      tags: odspep
     columns:
       - name: id_hor
         tests:
           - not_null
           - unique
   - name: stg_odspep__regions
+    config:
+      tags: odspep
     columns:
       - name: id_res
         comment: id_res are not unique in this table
         tests:
           - not_null
   - name: stg_odspep__departements
+    config:
+      tags: odspep
     columns:
       - name: id_res
         comment: id_res are not unique in this table
         tests:
           - not_null
   - name: stg_odspep__communes
+    config:
+      tags: odspep
     columns:
       - name: id_res
         comment: id_res are not unique in this table
         tests:
           - not_null
   - name: stg_odspep__bassins
+    config:
+      tags: odspep
     columns:
       - name: id_res
         comment: id_res are not unique in this table
         tests:
           - not_null
   - name: stg_odspep__dir_territoriale_ofii
+    config:
+      tags: odspep
     columns:
       - name: id_res
         comment: id_res are not unique in this table
         tests:
           - not_null
   - name: stg_odspep__res_partenariales
+    config:
+      tags: odspep
     columns:
       - name: id_res
         tests:

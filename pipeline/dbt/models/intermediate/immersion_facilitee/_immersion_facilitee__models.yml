@@ -1,0 +1,5 @@
+version: 2
+
+models:
+  - name: int_immersion_facilitee__adresses
+  - name: int_immersion_facilitee__structures

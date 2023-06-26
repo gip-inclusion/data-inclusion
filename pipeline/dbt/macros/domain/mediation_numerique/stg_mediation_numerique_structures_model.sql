@@ -22,7 +22,8 @@ final AS (
         data ->> 'site_web'                                                                                         AS "site_web",
         data ->> 'telephone'                                                                                        AS "telephone",
         data ->> 'code_postal'                                                                                      AS "code_postal",
-        data ->> 'horaires_ouverture'                                                                               AS "horaires_ouverture"
+        data ->> 'horaires_ouverture'                                                                               AS "horaires_ouverture",
+        data ->> 'typologie'                                                                                        AS "typologie"
     FROM source
 )
 

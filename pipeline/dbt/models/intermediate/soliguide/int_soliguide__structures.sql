@@ -5,10 +5,9 @@ WITH lieux AS (
 final AS (
     SELECT
         lieux.lieu_id                                     AS "id",
+        lieux.lieu_id                                     AS "adresse_id",
         NULL                                              AS "antenne",
         NULL                                              AS "rna",
-        lieux.position_coordinates_x                      AS "longitude",
-        lieux.position_coordinates_y                      AS "latitude",
         'soliguide'                                       AS "source",
         NULL                                              AS "horaires_ouverture",
         NULL                                              AS "accessibilite",
@@ -19,15 +18,10 @@ final AS (
         lieux.updated_at                                  AS "date_maj",
         NULL                                              AS "siret",
         lieux.name                                        AS "nom",
-        'https://soliguide.fr/fr/fiche/' || lieux.seo_url AS "lien_source",
-        lieux.position_complement_adresse                 AS "complement_adresse",
-        lieux.position_ville                              AS "commune",
-        lieux.position_adresse                            AS "adresse",
         lieux.entity_website                              AS "site_web",
-        lieux.position_code_postal                        AS "code_postal",
-        NULL                                              AS "code_insee",
         lieux.entity_mail                                 AS "courriel",
         NULL                                              AS "telephone",
+        'https://soliguide.fr/fr/fiche/' || lieux.seo_url AS "lien_source",
         CASE LENGTH(lieux.description) <= 280
             WHEN TRUE THEN lieux.description
             WHEN FALSE THEN LEFT(lieux.description, 279) || '…'

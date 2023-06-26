@@ -74,6 +74,11 @@ class ServiceFactory(factory.Factory):
         model = models.Service
 
     _di_surrogate_id = factory.Faker("uuid4")
+    _di_geocodage_code_insee = factory.Faker("postcode")
+    _di_geocodage_score = factory.Faker(
+        "pyfloat", right_digits=2, positive=True, max_value=1
+    )
+
     structure = factory.SubFactory(StructureFactory)
     id = factory.Faker("slug", locale="fr_FR")
     structure_id = factory.SelfAttribute("structure.id")

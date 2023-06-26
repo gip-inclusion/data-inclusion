@@ -20,6 +20,7 @@ WITH creches AS (
 final AS (
     SELECT
         id                                                                                        AS "id",
+        id                                                                                        AS "adresse_id",
         NULL                                                                                      AS "prise_rdv",
         NULL                                                                                      AS "frais_autres",
         NULL::TEXT []                                                                             AS "profils",
@@ -29,10 +30,6 @@ final AS (
         NULL                                                                                      AS "cumulable",
         NULL                                                                                      AS "justificatifs",
         NULL                                                                                      AS "formulaire_en_ligne",
-        ville                                                                                     AS "commune",
-        NULL                                                                                      AS "code_insee",
-        longitude                                                                                 AS "longitude",
-        latitude                                                                                  AS "latitude",
         details_infos_pratiques_jour_horaire                                                      AS "recurrence",
         NULL::DATE                                                                                AS "date_creation",
         NULL::DATE                                                                                AS "date_suspension",
@@ -46,9 +43,6 @@ final AS (
         CASE WHEN avip THEN 'Crèches À Vocation d''Insertion Professionnelle' ELSE nom END        AS "nom",
         ARRAY['payant']                                                                           AS "frais",
         ARRAY['famille--garde-denfants']                                                          AS "thematiques",
-        SUBSTRING(adresse FROM '\d{5}')                                                           AS "code_postal",
-        SUBSTRING(adresse FROM '^(.*?) (- .* )?\d{5}')                                            AS "adresse",
-        SUBSTRING(adresse FROM '- (.*) \d{5}')                                                    AS "complement_adresse",
         'https://monenfant.fr/que-recherchez-vous/' || result_id                                  AS "lien_source",
         ARRAY['accueil']                                                                          AS "types",
         ARRAY['en-presentiel']                                                                    AS "modes_accueil",
