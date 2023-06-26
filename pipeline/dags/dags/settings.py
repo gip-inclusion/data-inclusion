@@ -206,8 +206,6 @@ SOURCES_CONFIGS = [
                 },
             ],
         }
-        for source_id in [
-            "monenfant",
-        ]
+        for source_id in []
     ],
 ]
