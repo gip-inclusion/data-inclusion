@@ -22,6 +22,10 @@ x-airflow-common:
 
   volumes:
     - airflow-logs:/opt/airflow/logs
+    - ../../pipeline/dbt:/opt/airflow/dbt
+    - ../../pipeline/dags:/opt/airflow/dags
+    - ../../pipeline/logs:/opt/airflow/logs
+    - ../../pipeline/src:/opt/airflow/data-inclusion/src
 
   user: 0:0
 
@@ -69,6 +73,24 @@ services:
       - "traefik.enable=true"
       - "traefik.http.routers.airflow.rule=Host(`localhost`) && PathPrefix(`/airflow`)"
       - "traefik.http.routers.airflow.entrypoints=http"
+    depends_on:
+      <<: *airflow-common-depends-on
+      airflow-init:
+        condition: service_completed_successfully
+
+  airflow-scheduler:
+    <<: *airflow-common
+    command: scheduler
+    restart: on-failure
+    healthcheck:
+      test:
+        [
+          "CMD-SHELL",
+          'airflow jobs check --job-type SchedulerJob --hostname "$${HOSTNAME}"'
+        ]
+      interval: 10s
+      timeout: 10s
+      retries: 5
     depends_on:
       <<: *airflow-common-depends-on
       airflow-init:
