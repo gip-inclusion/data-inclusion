@@ -5,8 +5,6 @@ WITH services AS (
 final AS (
     SELECT
         id                  AS "adresse_id",
-        contact_nom         AS "contact_nom", -- ignored for now
-        contact_prenom      AS "contact_prenom", -- ignored for now
         contact_public      AS "contact_public",
         NULL                AS "courriel", -- ignored for now
         cumulable           AS "cumulable",
@@ -15,7 +13,7 @@ final AS (
         date_suspension     AS "date_suspension",
         formulaire_en_ligne AS "formulaire_en_ligne",
         frais_autres        AS "frais_autres",
-        frais               AS "frais",
+        ARRAY[frais]        AS "frais",
         id                  AS "id",
         justificatifs       AS "justificatifs",
         lien_source         AS "lien_source",
@@ -28,7 +26,7 @@ final AS (
         recurrence          AS "recurrence",
         _di_source_id       AS "source",
         structure_id        AS "structure_id",
-        telephone           AS "telephone", -- ignored for now
+        NULL                AS "telephone", -- ignored for now
         thematiques         AS "thematiques",
         types               AS "types",
         zone_diffusion_code AS "zone_diffusion_code",
