@@ -53,7 +53,7 @@ final AS (
         NULL                  AS "accessibilite",
         labels_nationaux      AS "labels_nationaux",
         thematiques           AS "thematiques",
-        NULL                  AS "typologie",
+        typologie             AS "typologie",
         NULL                  AS "presentation_resume",
         date_maj              AS "date_maj",
         _di_source_id         AS "source",
