@@ -8,7 +8,7 @@ final AS (
         id                  AS "adresse_id",
         antenne             AS "antenne",
         courriel            AS "courriel",
-        date_maj            AS "date_maj",
+        date_maj::DATE      AS "date_maj",
         horaires_ouverture  AS "horaires_ouverture",
         id                  AS "id",
         labels_autres       AS "labels_autres",
