@@ -143,8 +143,20 @@ DepartementCOG = Enum(
     {k: departement.cog for k, departement in _departements_dict.items()},
 )
 
+CodePostal: TypeAlias = constr(min_length=5, max_length=5, regex=r"^\d{5}$")
+CodeInsee: TypeAlias = constr(min_length=5, max_length=5)
+
 
 class Service(BaseModel):
+    # internal metadata
+    di_geocodage_code_insee: Optional[constr(min_length=5, max_length=5)] = Field(
+        alias="_di_geocodage_code_insee"
+    )
+    di_geocodage_score: Optional[confloat(ge=0, le=1)] = Field(
+        alias="_di_geocodage_score"
+    )
+
+    # service data
     id: str
     structure_id: str
     source: str
@@ -162,8 +174,8 @@ class Service(BaseModel):
     justificatifs: Optional[str]
     formulaire_en_ligne: Optional[str]
     commune: Optional[str]
-    code_postal: Optional[constr(min_length=5, max_length=5, regex=r"^\d{5}$")]
-    code_insee: Optional[constr(min_length=5, max_length=5)]
+    code_postal: Optional[CodePostal]
+    code_insee: Optional[CodeInsee]
     adresse: Optional[str]
     complement_adresse: Optional[str]
     longitude: Optional[float]
@@ -187,9 +199,7 @@ class Service(BaseModel):
 
     class Config:
         orm_mode = True
-
-
-CodePostal: TypeAlias = constr(min_length=5, max_length=5, regex=r"^\d{5}$")
+        allow_population_by_field_name = True
 
 
 class Structure(BaseModel):
@@ -208,7 +218,7 @@ class Structure(BaseModel):
     nom: str
     commune: str
     code_postal: CodePostal
-    code_insee: Optional[constr(min_length=5, max_length=5)]
+    code_insee: Optional[CodeInsee]
     adresse: str
     complement_adresse: Optional[str]
     longitude: Optional[float]
@@ -240,3 +250,16 @@ class TokenCreationData(BaseModel):
 
 class Token(BaseModel):
     access: str
+
+
+class DetailedService(Service):
+    structure: Structure
+
+
+class ServiceSearchResult(BaseModel):
+    service: DetailedService
+    distance: Optional[int]
+
+
+class DetailedStructure(Structure):
+    services: list[Service]

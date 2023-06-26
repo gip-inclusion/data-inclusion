@@ -38,11 +38,11 @@ dbt deps
 # run commands
 dbt ls
 
-# sources, basic processing/mapping:
+# staging, basic processing/mapping:
 # - retrieve data from datalake table
 # - retrieve data from raw dedicated source tables
 # - retrieve data from the Soliguide S3
-dbt run --select sources
+dbt run --select staging
 
 # intermediate, specific transformations
 dbt run --select intermediate
@@ -77,7 +77,7 @@ To update the constraints and upgrade the requirements:
 export AIRFLOW_VERSION=
 export PYTHON_VERSION=3.10
 curl https://raw.githubusercontent.com/apache/airflow/constraints-${AIRFLOW_VERSION}/constraints-${PYTHON_VERSION}.txt > requirements/airflow/constraints.txt
-pip-compile --upgrade requirements/airflow/requirements.in --output-file requirements/airflow/requirements.txt
+pip-compile --resolver=backtracking --upgrade requirements/airflow/requirements.in --output-file requirements/airflow/requirements.txt
 ```
 
 ### tasks
@@ -93,15 +93,15 @@ To add or delete a dependency to these requirements:
 ```bash
 # 1. edit the target requirements/tasks/...../requirements.in
 # 2. compile the dependencies
-pip-compile requirements/tasks/dbt/requirements.in --output-file requirements/tasks/dbt/requirements.txt
-pip-compile requirements/tasks/python/requirements.in --output-file requirements/tasks/python/requirements.txt
+pip-compile --resolver=backtracking requirements/tasks/dbt/requirements.in --output-file requirements/tasks/dbt/requirements.txt
+pip-compile --resolver=backtracking requirements/tasks/python/requirements.in --output-file requirements/tasks/python/requirements.txt
 ```
 
 To upgrade these requirements:
 
 ```bash
-pip-compile --upgrade requirements/tasks/dbt/requirements.in --output-file requirements/tasks/dbt/requirements.txt
-pip-compile --upgrade requirements/tasks/python/requirements.in --output-file requirements/tasks/python/requirements.txt
+pip-compile --resolver=backtracking --upgrade requirements/tasks/dbt/requirements.in --output-file requirements/tasks/dbt/requirements.txt
+pip-compile --resolver=backtracking --upgrade requirements/tasks/python/requirements.in --output-file requirements/tasks/python/requirements.txt
 ```
 
 Then you should update the dev requirements.
@@ -116,11 +116,11 @@ To add or delete a dependency to these dev requirements:
 ```bash
 # 1. edit the target requirements/dev/requirements.in
 # 2. compile the dependencies
-pip-compile requirements/dev/requirements.in --output-file requirements/dev/requirements.txt
+pip-compile --resolver=backtracking requirements/dev/requirements.in --output-file requirements/dev/requirements.txt
 ```
 
 To upgrade these requirements:
 
 ```bash
-pip-compile --upgrade requirements/dev/requirements.in --output-file requirements/dev/requirements.txt
+pip-compile --resolver=backtracking --upgrade requirements/dev/requirements.in --output-file requirements/dev/requirements.txt
 ```

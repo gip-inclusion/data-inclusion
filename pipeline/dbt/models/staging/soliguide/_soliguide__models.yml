@@ -1,0 +1,36 @@
+version: 2
+
+models:
+  - name: stg_soliguide__categories
+    config:
+      tags: soliguide
+    columns:
+      - name: code
+        tests:
+          - not_null
+          - unique
+      - name: label
+        tests:
+          - not_null
+  - name: stg_soliguide__lieux
+    config:
+      tags: soliguide
+    columns:
+      - name: lieu_id
+        tests:
+          - not_null
+          - unique
+  - name: stg_soliguide__services
+    config:
+      tags: soliguide
+    columns:
+      - name: id
+        tests:
+          - not_null
+          - unique
+      - name: lieu_id
+        tests:
+          - not_null
+          - relationships:
+              to: ref('stg_soliguide__lieux')
+              field: lieu_id

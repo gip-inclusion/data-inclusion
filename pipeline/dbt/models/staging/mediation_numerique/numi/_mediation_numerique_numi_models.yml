@@ -1,0 +1,138 @@
+version: 2
+
+models:
+  - name: stg_mediation_numerique_numi__services
+    config:
+      tags: mediation_numerique_numi
+    columns:
+      - name: id
+        tests:
+          - unique
+          - not_null
+          - dbt_utils.not_empty_string
+      - name: structure_id
+        tests:
+          - not_null
+          - relationships:
+              to: ref('stg_mediation_numerique_numi__structures')
+              field: id
+      - name: thematiques
+        tests:
+          - dbt_utils.expression_is_true:
+              expression: "<@ ARRAY(SELECT value FROM {{ ref('thematiques') }})"
+      - name: profils
+        tests:
+          - dbt_utils.expression_is_true:
+              expression: "<@ ARRAY(SELECT value FROM {{ ref('profils') }})"
+      - name: types
+        tests:
+          - dbt_utils.expression_is_true:
+              expression: "<@ ARRAY(SELECT value FROM {{ ref('typologies_de_services') }})"
+      - name: frais
+        tests:
+          - dbt_utils.expression_is_true:
+              expression: "<@ ARRAY(SELECT value FROM {{ ref('frais') }})"
+      - name: latitude
+        tests:
+          - dbt_utils.at_least_one:
+              config:
+                severity: warn
+      - name: longitude
+        tests:
+          - dbt_utils.at_least_one:
+              config:
+                severity: warn
+      - name: nom
+        tests:
+          - not_null
+          - dbt_utils.not_empty_string
+      - name: source
+        tests:
+          - not_null
+          - dbt_utils.not_empty_string
+      - name: prise_rdv
+        tests:
+          - dbt_utils.at_least_one
+          - dbt_utils.not_empty_string
+  - name: stg_mediation_numerique_numi__structures
+    config:
+      tags: mediation_numerique_numi
+    columns:
+      - name: id
+        tests:
+          - unique
+          - not_null
+          - dbt_utils.not_empty_string
+      - name: siret
+        tests:
+          - dbt_utils.not_empty_string
+          - dbt_utils.expression_is_true:
+              expression: "!= REPEAT('0', 14)"
+      - name: source
+        tests:
+          - not_null
+          - dbt_utils.not_empty_string
+      - name: nom
+        tests:
+          - not_null
+          - dbt_utils.not_empty_string
+      - name: thematiques
+        tests:
+          - dbt_utils.expression_is_true:
+              expression: "<@ ARRAY(SELECT value FROM {{ ref('thematiques') }})"
+      - name: latitude
+        tests:
+          - dbt_utils.at_least_one
+      - name: longitude
+        tests:
+          - dbt_utils.at_least_one
+      - name: labels_nationaux
+        tests:
+          - dbt_utils.expression_is_true:
+              expression: "<@ ARRAY(SELECT value FROM {{ ref('labels_nationaux') }})"
+      - name: adresse
+        tests:
+          - not_null
+          - dbt_utils.not_empty_string
+      - name: commune
+        tests:
+          - not_null
+          - dbt_utils.not_empty_string
+      - name: courriel
+        tests:
+          - dbt_utils.at_least_one:
+              config:
+                severity: warn
+          - dbt_utils.not_empty_string
+      - name: site_web
+        tests:
+          - dbt_utils.at_least_one:
+              config:
+                severity: warn
+          - dbt_utils.not_empty_string
+      - name: telephone
+        tests:
+          - dbt_utils.at_least_one:
+              config:
+                severity: warn
+          - dbt_utils.not_empty_string
+      - name: code_postal
+        tests:
+          - not_null
+          - dbt_utils.not_empty_string
+      - name: horaires_ouverture
+        tests:
+          - dbt_utils.at_least_one:
+              config:
+                severity: warn
+          - dbt_utils.not_empty_string
+      - name: date_maj
+        tests:
+          - not_null
+          - dbt_utils.not_constant:
+              config:
+                severity: warn
+          - dbt_utils.accepted_range:
+              min_value: "now() - interval '10 years'"
+              config:
+                severity: warn

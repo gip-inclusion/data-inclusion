@@ -11,5 +11,6 @@ requests
 SQLAlchemy
 tenacity
 tqdm
+trafilatura
 urllib3
 xlsxwriter

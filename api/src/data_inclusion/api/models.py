@@ -43,7 +43,8 @@ class Structure(Base):
     labels_nationaux = sqla.Column(ARRAY(sqla.Text), default=list)
     labels_autres = sqla.Column(ARRAY(sqla.Text), default=list)
     thematiques = sqla.Column(ARRAY(sqla.Text), default=list)
-    services = orm.relationship("Service", backref="structure", cascade="all, delete")
+
+    services = orm.relationship("Service", back_populates="structure")
 
 
 class Service(Base):
@@ -54,6 +55,9 @@ class Service(Base):
     _di_structure_surrogate_id = sqla.Column(
         sqla.ForeignKey("structure._di_surrogate_id")
     )
+    _di_geocodage_code_insee = sqla.Column(sqla.Text, nullable=True)
+    _di_geocodage_score = sqla.Column(sqla.Float, nullable=True)
+    structure = orm.relationship("Structure", back_populates="services")
 
     # service data
     id = sqla.Column(sqla.Text, nullable=True)

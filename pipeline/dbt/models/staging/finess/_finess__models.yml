@@ -1,0 +1,6 @@
+version: 2
+
+models:
+  - name: stg_finess__etablissements
+    config:
+      tags: finess

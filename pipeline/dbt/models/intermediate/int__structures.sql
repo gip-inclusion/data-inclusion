@@ -6,13 +6,14 @@ WITH structures AS (
                 ref('int_cd35__structures'),
                 ref('int_cd72__structures'),
                 ref('int_emplois_de_linclusion__structures'),
-                ref('int_mes_aides__structures'),
+                ref('int_finess__structures'),
+                ref('int_immersion_facilitee__structures'),
                 ref('int_mediation_numerique__structures'),
-                ref('int_soliguide__structures'),
+                ref('int_mes_aides__structures'),
+                ref('int_monenfant__structures'),
                 ref('int_odspep__structures'),
                 ref('int_siao__structures'),
-                ref('int_finess__structures'),
-                ref('int_immersion_facilitee_structures'),
+                ref('int_soliguide__structures'),
             ],
             column_override={
                 "thematiques": "TEXT[]",
@@ -27,7 +28,8 @@ WITH structures AS (
 final AS (
     SELECT
         *,
-        source || '-' || id AS "_di_surrogate_id"
+        source || '-' || id         AS "_di_surrogate_id",
+        source || '-' || adresse_id AS "_di_adresse_surrogate_id"
     FROM structures
 )
 

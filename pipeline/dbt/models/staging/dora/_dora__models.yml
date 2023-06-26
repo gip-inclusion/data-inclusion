@@ -1,0 +1,9 @@
+version: 2
+
+models:
+  - name: stg_dora__services
+    config:
+      tags: dora
+  - name: stg_dora__structures
+    config:
+      tags: dora

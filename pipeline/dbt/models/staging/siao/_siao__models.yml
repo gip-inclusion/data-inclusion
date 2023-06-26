@@ -1,0 +1,6 @@
+version: 2
+
+models:
+  - name: stg_siao__etablissements
+    config:
+      tags: siao

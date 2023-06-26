@@ -1,4 +1,5 @@
 version: 2
 
 models:
+  - name: int_emplois_de_linclusion__adresses
   - name: int_emplois_de_linclusion__structures

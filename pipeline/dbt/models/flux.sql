@@ -17,6 +17,7 @@ WITH snapshots AS (
                 ref('snps_mes_aides__garages'),
                 ref('snps_un_jeune_une_solution__benefits'),
                 ref('snps_un_jeune_une_solution__institutions'),
+                ref('snps_soliguide__lieux'),
             ],
             source_column_name=None,
         )

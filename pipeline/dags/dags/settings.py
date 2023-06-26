@@ -152,7 +152,7 @@ SOURCES_CONFIGS = [
                     "id": "structures",
                     "filename": "structures.json",
                     "url": Variable.get(
-                        f"MEDIATION_NUMERIQUE_{source_id.upper().replace('-', '_')}_DATASET_URL",
+                        f"MEDNUM_{source_id.upper().replace('-', '_')}_DATASET_URL",
                         None,
                     ),
                 },
@@ -160,7 +160,7 @@ SOURCES_CONFIGS = [
                     "id": "services",
                     "filename": "services.json",
                     "url": Variable.get(
-                        f"MEDIATION_NUMERIQUE_{source_id.upper().replace('-', '_')}_DATASET_URL",
+                        f"MEDNUM_{source_id.upper().replace('-', '_')}_DATASET_URL",
                         None,
                     ),
                 },
@@ -169,14 +169,18 @@ SOURCES_CONFIGS = [
         for source_id in [
             "angers",
             "assembleurs",
+            "cd17",
             "cd23",
+            "cd28-appui-territorial",
             "cd33",
             "cd40",
             "cd44",
             "cd49",
             "cd87",
             "conseiller-numerique",
+            "conumm",
             "cr93",
+            "etapes-numerique",
             "fibre-64",
             "france-services",
             "france-tiers-lieux",
@@ -185,6 +189,7 @@ SOURCES_CONFIGS = [
             "hub-antilles",
             "hub-lo",
             "mulhouse",
+            "numi",
             "res-in",
             "rhinocc",
             "ultra-numerique",
@@ -208,4 +213,29 @@ SOURCES_CONFIGS = [
         }
         for source_id in []
     ],
+    {
+        "id": "soliguide",
+        "schedule_interval": "@daily",
+        "snapshot": True,
+        "streams": [
+            {
+                "id": "lieux",
+                "filename": "lieux.json",
+                "url": Variable.get("SOLIGUIDE_API_URL", None),
+                "token": Variable.get("SOLIGUIDE_API_TOKEN", None),
+            }
+        ],
+    },
+    {
+        "id": "monenfant",
+        "schedule_interval": "@once",
+        "snapshot": True,
+        "streams": [
+            {
+                "id": "creches",
+                "filename": "creches.json",
+                "url": Variable.get("MONENFANT_CRECHES_FILE_URL", None),
+            },
+        ],
+    },
 ]

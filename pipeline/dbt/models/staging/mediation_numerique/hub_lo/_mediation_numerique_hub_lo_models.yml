@@ -1,0 +1,9 @@
+version: 2
+
+models:
+  - name: stg_mediation_numerique_hub_lo__services
+    config:
+      tags: mediation_numerique_hub_lo
+  - name: stg_mediation_numerique_hub_lo__structures
+    config:
+      tags: mediation_numerique_hub_lo

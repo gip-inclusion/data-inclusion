@@ -1,5 +1,5 @@
 WITH services AS (
-    SELECT * FROM {{ ref('int__services') }}
+    SELECT * FROM {{ ref('int__enhanced_services') }}
 ),
 
 thematiques AS (

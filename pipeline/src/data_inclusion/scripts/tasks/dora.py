@@ -1,6 +1,7 @@
 import io
 import json
 import logging
+from typing import Optional
 
 import requests
 from tqdm import tqdm
@@ -23,14 +24,18 @@ class DoraClient:
         self.session.params.update({"page_size": 1000, "o": "creation_date"})
         self.session.hooks["response"] = [log_and_raise]
 
-    def _list_paginated_endpoint(self, url_path: str) -> list:
+    def _list_paginated_endpoint(
+        self,
+        url_path: str,
+        params: Optional[dict] = None,
+    ) -> list:
         next_url = f"{self.base_url}{url_path}"
         return_data = []
 
         pbar = None
 
         while True:
-            response = self.session.get(next_url)
+            response = self.session.get(next_url, params=params)
             data = response.json()
 
             if pbar is None:
@@ -48,7 +53,7 @@ class DoraClient:
         return return_data
 
     def list_structures(self) -> list:
-        return self._list_paginated_endpoint("/structures/")
+        return self._list_paginated_endpoint("/structures/", params={"di": True})
 
     def list_services(self) -> list:
         return self._list_paginated_endpoint("/services/")

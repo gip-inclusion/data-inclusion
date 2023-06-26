@@ -1,42 +1,36 @@
-WITH places AS (
-    SELECT * FROM {{ ref('stg_soliguide__places') }}
+WITH lieux AS (
+    SELECT * FROM {{ ref('stg_soliguide__lieux') }}
 ),
 
 final AS (
     SELECT
-        lieu_id                     AS "id",
-        NULL                        AS "antenne",
-        NULL                        AS "rna",
-        position_coordinates_x      AS "longitude",
-        position_coordinates_y      AS "latitude",
-        'soliguide'                 AS "source",
-        NULL                        AS "horaires_ouverture",
-        NULL                        AS "accessibilite",
-        NULL::TEXT []               AS "labels_nationaux",
-        NULL::TEXT []               AS "labels_autres",
-        NULL::TEXT []               AS "thematiques",
-        NULL                        AS "typologie",
-        updated_at                  AS "date_maj",
-        NULL                        AS "siret",
-        name                        AS "nom",
-        seo_url                     AS "lien_source",
-        position_complement_adresse AS "complement_adresse",
-        ville                       AS "commune",
-        position_adresse            AS "adresse",
-        entity_website              AS "site_web",
-        position_code_postal        AS "code_postal",
-        NULL                        AS "code_insee",
-        entity_mail                 AS "courriel",
-        NULL                        AS "telephone",
-        CASE LENGTH(description) <= 280
-            WHEN TRUE THEN description
-            WHEN FALSE THEN LEFT(description, 279) || '…'
-        END                         AS "presentation_resume",
-        CASE LENGTH(description) <= 280
+        lieux.lieu_id                                     AS "id",
+        lieux.lieu_id                                     AS "adresse_id",
+        NULL                                              AS "antenne",
+        NULL                                              AS "rna",
+        'soliguide'                                       AS "source",
+        NULL                                              AS "horaires_ouverture",
+        NULL                                              AS "accessibilite",
+        NULL::TEXT []                                     AS "labels_nationaux",
+        NULL::TEXT []                                     AS "labels_autres",
+        NULL::TEXT []                                     AS "thematiques",
+        NULL                                              AS "typologie",
+        lieux.updated_at                                  AS "date_maj",
+        NULL                                              AS "siret",
+        lieux.name                                        AS "nom",
+        lieux.entity_website                              AS "site_web",
+        lieux.entity_mail                                 AS "courriel",
+        NULL                                              AS "telephone",
+        'https://soliguide.fr/fr/fiche/' || lieux.seo_url AS "lien_source",
+        CASE LENGTH(lieux.description) <= 280
+            WHEN TRUE THEN lieux.description
+            WHEN FALSE THEN LEFT(lieux.description, 279) || '…'
+        END                                               AS "presentation_resume",
+        CASE LENGTH(lieux.description) <= 280
             WHEN TRUE THEN NULL
-            WHEN FALSE THEN description
-        END                         AS "presentation_detail"
-    FROM places
+            WHEN FALSE THEN lieux.description
+        END                                               AS "presentation_detail"
+    FROM lieux
     ORDER BY 1
 )
 

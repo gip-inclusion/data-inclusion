@@ -11,6 +11,7 @@ sources:
       - name: sirene_etablissement_historique
       - name: sirene_etablissement_succession
       - name: extra__geocoded_results
+      - name: adresses_geocoded
 
   - name: insee
     schema: insee
@@ -80,8 +81,20 @@ sources:
       - name: structures
       - name: services
 
+  - name: mediation_numerique_cd17
+    schema: mediation_numerique_cd17
+    tables:
+      - name: structures
+      - name: services
+
   - name: mediation_numerique_cd23
     schema: mediation_numerique_cd23
+    tables:
+      - name: structures
+      - name: services
+
+  - name: mediation_numerique_cd28_appui_territorial
+    schema: mediation_numerique_cd28_appui_territorial
     tables:
       - name: structures
       - name: services
@@ -122,8 +135,20 @@ sources:
       - name: structures
       - name: services
 
+  - name: mediation_numerique_conumm
+    schema: mediation_numerique_conumm
+    tables:
+      - name: structures
+      - name: services
+
   - name: mediation_numerique_cr93
     schema: mediation_numerique_cr93
+    tables:
+      - name: structures
+      - name: services
+
+  - name: mediation_numerique_etapes_numerique
+    schema: mediation_numerique_etapes_numerique
     tables:
       - name: structures
       - name: services
@@ -176,6 +201,12 @@ sources:
       - name: structures
       - name: services
 
+  - name: mediation_numerique_numi
+    schema: mediation_numerique_numi
+    tables:
+      - name: structures
+      - name: services
+
   - name: mediation_numerique_res_in
     schema: mediation_numerique_res_in
     tables:
@@ -223,7 +254,63 @@ sources:
   - name: soliguide
     schema: soliguide
     tables:
-      - name: places
+      - name: lieux
+        columns:
+          - name: data
+            tests:
+              - expect_column_value_paths_to_exist:
+                  config:
+                    severity: error
+                  path_list:
+                    - '$.updatedAt'
+                    - '$.lieu_id'
+                    - '$.position.ville'
+                    - '$.position.codePostal'
+                    - '$.position.adresse'
+                    - '$.position.location.coordinates[0]'
+                    - '$.position.location.coordinates[1]'
+                    - '$.seo_url'
+                    - '$.name'
+                    - '$.description'
+                    - '$.entity.mail'
+                    - '$.entity.website'
+                    - '$.services_all'
+                    - '$.services_all[*].serviceObjectId'
+                    - '$.services_all[*].name'
+                    - '$.services_all[*].categorie'
+                    - '$.services_all[*].description'
+              - expect_column_value_paths_to_exist:
+                  config:
+                    severity: warn
+                  path_list:
+                    - '$.position.complementAdresse' # used but sometime missing
+                    - '$.position.region'
+                    - '$.position.departement'
+                    - '$.entity.facebook'
+                    - '$.entity.instagram'
+                    - '$.entity.phones'
+                    - '$.entity.mail'
+                    - '$.entity.fax'
+                    - '$.modalities'
+                    - '$._id'
+                    - '$.tempInfos'
+                    - '$.publics'
+                    - '$.newhours'
+                    - '$.close'
+                    - '$.status'
+                    - '$.visibility'
+                    - '$.services_all[*].hours'
+                    - '$.services_all[*].isOpenToday'
+                    - '$.services_all[*].differentModalities'
+                    - '$.services_all[*].publics'
+                    - '$.services_all[*].saturated'
+                    - '$.services_all[*].differentHours'
+                    - '$.services_all[*].jobsList'
+                    - '$.services_all[*].close'
+                    - '$.services_all[*].createdAt'
+                    - '$.services_all[*].updatedAt'
+                    - '$.services_all[*].modalities'
+                    - '$.services_all[*].differentModalities'
 
   - name: immersion_facilitee
     schema: immersion_facilitee
@@ -232,3 +319,28 @@ sources:
       This source contains the data exported by IF for the purpose of siretisation.
     tables:
       - name: structures
+
+  - name: monenfant
+    schema: monenfant
+    tables:
+      - name: creches
+        columns:
+          - name: data
+            tests:
+              - expect_column_value_paths_to_exist:
+                  config:
+                    severity: error
+                  path_list:
+                    - '$.avip'
+                    - '$.longitude'
+                    - '$.latitude'
+                    - '$.resultId'
+                    - '$.ville'
+                    - '$.telephone'
+                    - '$.nom'
+                    - '$.mail'
+                    - '$.derniereModifDate'
+                    - '$.adresse'
+                    - '$.details.website'
+                    - '$.details.infosPratiques.jourHoraire'
+                    - '$.details.presentation.structureProjet'

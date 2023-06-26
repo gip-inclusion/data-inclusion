@@ -1,0 +1,9 @@
+version: 2
+
+models:
+  - name: stg_mediation_numerique_fibre_64__services
+    config:
+      tags: mediation_numerique_fibre_64
+  - name: stg_mediation_numerique_fibre_64__structures
+    config:
+      tags: mediation_numerique_fibre_64

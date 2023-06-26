@@ -27,13 +27,6 @@ final AS (
         NULL                                            AS "cumulable",
         NULL                                            AS "justificatifs",
         NULL                                            AS "formulaire_en_ligne",
-        NULL                                            AS "commune",
-        NULL                                            AS "code_postal",
-        NULL                                            AS "code_insee",
-        NULL                                            AS "adresse",
-        NULL                                            AS "complement_adresse",
-        NULL                                            AS "longitude",
-        NULL                                            AS "latitude",
         NULL                                            AS "recurrence",
         NULL                                            AS "date_creation",
         date_fin_valid                                  AS "date_suspension",
@@ -49,6 +42,7 @@ final AS (
         id_res                                          AS "structure_id",
         NULL::TEXT []                                   AS "profils",
         CONCAT(id_res, '_', zone_diffusion_unique_code) AS "id",
+        CONCAT(id_res, '_', zone_diffusion_unique_code) AS "adresse_id",
         ARRAY(
             SELECT di_thematique_by_odspep_type_res_part.thematique
             FROM di_thematique_by_odspep_type_res_part

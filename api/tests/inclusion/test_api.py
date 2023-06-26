@@ -24,31 +24,31 @@ def test_list_structures_all(api_client, structure_factory):
     assert resp_data == {
         "items": [
             {
-                "_di_geocodage_code_insee": "04876",
-                "_di_geocodage_score": 0.61,
-                "id": "libre-rouge-empire",
-                "siret": "42194892800179",
-                "rna": "W411578156",
-                "nom": "Bourdon",
-                "commune": "Courtois",
-                "code_postal": "78408",
-                "code_insee": "16097",
-                "adresse": "25, boulevard Louis",
+                "_di_geocodage_code_insee": "55626",
+                "_di_geocodage_score": 0.33,
+                "id": "prince-point-monde",
+                "siret": "59382421200611",
+                "rna": "W948924115",
+                "nom": "Vaillant",
+                "commune": "Sainte Bernadetteboeuf",
+                "code_postal": "80571",
+                "code_insee": "84442",
+                "adresse": "977, rue Susan Lévy",
                 "complement_adresse": None,
-                "longitude": -51.89405,
-                "latitude": -51.749453,
+                "longitude": -172.461419,
+                "latitude": -64.9625245,
                 "typologie": "ACI",
                 "telephone": "0102030405",
-                "courriel": "frobin@example.com",
-                "site_web": "https://www.courtois.org/",
-                "presentation_resume": "Voiture complet.",
-                "presentation_detail": "Beau rassurer sortir toit.",
+                "courriel": "ylacombe@example.net",
+                "site_web": "http://berger.fr/",
+                "presentation_resume": "Voie battre.",
+                "presentation_detail": "Or personne jambe.",
                 "source": "dora",
                 "date_maj": "2023-01-01",
                 "antenne": False,
-                "lien_source": "https://dora.fr/libre-rouge-empire",
+                "lien_source": "https://dora.fr/prince-point-monde",
                 "horaires_ouverture": 'Mo-Fr 10:00-20:00 "sur rendez-vous"; PH off',
-                "accessibilite": "https://acceslibre.beta.gouv.fr/app/libre-rouge-empire/",
+                "accessibilite": "https://acceslibre.beta.gouv.fr/app/prince-point-monde/",
                 "labels_nationaux": [],
                 "labels_autres": ["SudLabs", "Nièvre médiation numérique"],
                 "thematiques": ["choisir-un-metier", "creation-activite"],
@@ -56,8 +56,8 @@ def test_list_structures_all(api_client, structure_factory):
         ],
         "total": 1,
         "page": 1,
-        "pages": 1,
         "size": ANY,
+        "pages": 1,
     }
 
 
@@ -315,35 +315,37 @@ def test_list_services_all(api_client, service_factory):
     assert resp_data == {
         "items": [
             {
-                "id": "parmi-position-ton",
-                "structure_id": "corps-force-cote",
+                "_di_geocodage_code_insee": "55626",
+                "_di_geocodage_score": 0.33,
+                "id": "cacher-violent",
+                "structure_id": "rouge-empire",
                 "source": "dora",
-                "nom": "Perez",
-                "presentation_resume": "Il signifier classe.",
-                "presentation_detail": "Saint source.",
+                "nom": "Munoz",
+                "presentation_resume": "Puissant fine.",
+                "presentation_detail": "Épaule élever un.",
                 "types": ["formation", "numerique"],
                 "thematiques": ["choisir-un-metier", "creation-activite"],
-                "prise_rdv": "http://www.foucher.com/",
+                "prise_rdv": "https://teixeira.fr/",
                 "frais": ["gratuit", "gratuit-sous-conditions"],
-                "frais_autres": "Voir en madame dent.",
+                "frais_autres": "Camarade il.",
                 "profils": ["femmes", "jeunes-16-26"],
                 "pre_requis": None,
                 "cumulable": False,
                 "justificatifs": None,
                 "formulaire_en_ligne": None,
-                "commune": "BonnetBourg",
-                "code_postal": "30989",
-                "code_insee": "01399",
-                "adresse": "rue Alexandrie Ferreira",
+                "commune": "Sainte Jacquelineboeuf",
+                "code_postal": "25454",
+                "code_insee": "32356",
+                "adresse": "chemin de Ferreira",
                 "complement_adresse": None,
-                "longitude": -160.462174,
-                "latitude": 72.538788,
+                "longitude": -61.64115,
+                "latitude": 9.8741475,
                 "recurrence": None,
                 "date_creation": "2022-01-01",
                 "date_suspension": "2054-01-01",
-                "lien_source": "https://dora.fr/parmi-position-ton",
+                "lien_source": "https://dora.fr/cacher-violent",
                 "telephone": "0102030405",
-                "courriel": "leclercqjulien@example.net",
+                "courriel": "xavierlaunay@example.org",
                 "contact_public": False,
                 "date_maj": "2023-01-01",
                 "modes_accueil": ["a-distance"],
@@ -546,7 +548,7 @@ def test_list_services_filter_by_source(api_client, service_factory):
 @pytest.mark.with_token
 def test_list_services_filter_by_thematique(api_client, service_factory):
     service_1 = service_factory(
-        source="alpha",
+        structure__source="alpha",
         id="1",
         thematiques=[
             schema.Thematique.MOBILITE.value,
@@ -554,7 +556,7 @@ def test_list_services_filter_by_thematique(api_client, service_factory):
         ],
     )
     service_2 = service_factory(
-        source="alpha",
+        structure__source="alpha",
         id="2",
         thematiques=[
             schema.Thematique.TROUVER_UN_EMPLOI.value,
@@ -597,7 +599,7 @@ def test_list_services_filter_by_thematique(api_client, service_factory):
 @pytest.mark.with_token
 def test_list_services_filter_by_categorie_thematique(api_client, service_factory):
     service = service_factory(
-        source="alpha",
+        structure__source="alpha",
         id="1",
         thematiques=[
             schema.Thematique.MOBILITE__ACHETER_UN_VEHICULE_MOTORISE.value,
@@ -616,3 +618,215 @@ def test_list_services_filter_by_categorie_thematique(api_client, service_factor
     assert len(resp_data["items"]) == 1
     assert resp_data["items"][0]["source"] == service.structure.source
     assert resp_data["items"][0]["id"] == service.id
+
+
+@pytest.mark.with_token
+def test_list_services_filter_by_departement_cog(api_client, service_factory):
+    service = service_factory(code_insee="2A247")
+    service_factory(code_insee="59350")
+
+    url = "/api/v0/services/"
+    response = api_client.get(url, params={"departement": "2A"})
+
+    assert response.status_code == 200
+    resp_data = response.json()
+    assert_paginated_response_data(resp_data, total=1)
+    assert resp_data["items"][0]["id"] == service.id
+
+    response = api_client.get(url, params={"departement": "62"})
+    assert_paginated_response_data(response.json(), total=0)
+
+
+@pytest.mark.with_token
+def test_list_services_filter_by_departement_slug(api_client, service_factory):
+    service = service_factory(code_insee="22247")
+    service_factory(code_insee="59350")
+
+    url = "/api/v0/services/"
+    response = api_client.get(url, params={"departement_slug": "cotes-d-armor"})
+
+    assert response.status_code == 200
+    resp_data = response.json()
+    assert_paginated_response_data(resp_data, total=1)
+    assert resp_data["items"][0]["id"] == service.id
+
+    response = api_client.get(url, params={"departement_slug": "pas-de-calais"})
+    assert_paginated_response_data(response.json(), total=0)
+
+
+@pytest.mark.with_token
+def test_list_services_filter_by_code_insee(api_client, service_factory):
+    service = service_factory(code_insee="22247")
+    service_factory(code_insee="59350")
+
+    url = "/api/v0/services/"
+    response = api_client.get(url, params={"code_insee": "22247"})
+
+    assert response.status_code == 200
+    resp_data = response.json()
+    assert_paginated_response_data(resp_data, total=1)
+    assert resp_data["items"][0]["id"] == service.id
+
+    response = api_client.get(url, params={"code_insee": "62041"})
+    assert_paginated_response_data(response.json(), total=0)
+
+
+@pytest.mark.with_token
+def test_search_services_with_code_insee(api_client, service_factory):
+    service_1 = service_factory(code_insee="59009", _di_geocodage_code_insee=None)
+    service_2 = service_factory(code_insee="59350", _di_geocodage_code_insee="62000")
+    service_3 = service_factory(code_insee=None, _di_geocodage_code_insee="59000")
+    service_factory(code_insee=None, _di_geocodage_code_insee=None)
+
+    url = "/api/v0/search/services"
+    response = api_client.get(url, params={"code_insee": "59009"})
+
+    assert response.status_code == 200
+    resp_data = response.json()
+    assert_paginated_response_data(resp_data, total=3)
+    assert resp_data["items"][0]["service"]["id"] == service_1.id
+    assert resp_data["items"][0]["distance"] == 0
+    assert resp_data["items"][1]["service"]["id"] == service_2.id
+    assert resp_data["items"][1]["distance"] == 40
+    assert resp_data["items"][2]["service"]["id"] == service_3.id
+    assert resp_data["items"][2]["distance"] == 40
+
+    response = api_client.get(url, params={"code_insee": "62041"})
+    assert_paginated_response_data(response.json(), total=1)
+
+
+@pytest.mark.with_token
+def test_search_services_with_thematique(api_client, service_factory):
+    service_1 = service_factory(thematiques=[schema.Thematique.NUMERIQUE.value])
+    service_2 = service_factory(thematiques=[schema.Thematique.SANTE.value])
+    service_factory(thematiques=[schema.Thematique.MOBILITE.value])
+
+    url = "/api/v0/search/services"
+    response = api_client.get(
+        url,
+        params={
+            "thematiques": [
+                schema.Thematique.SANTE.value,
+                schema.Thematique.NUMERIQUE.value,
+            ],
+        },
+    )
+
+    assert response.status_code == 200
+    resp_data = response.json()
+    assert_paginated_response_data(resp_data, total=2)
+    assert resp_data["items"][0]["service"]["id"] in [service_1.id, service_2.id]
+    assert resp_data["items"][1]["service"]["id"] in [service_1.id, service_2.id]
+
+    response = api_client.get(
+        url,
+        params={
+            "thematiques": schema.Thematique.CREATION_ACTIVITE.value,
+        },
+    )
+    assert_paginated_response_data(response.json(), total=0)
+
+
+@pytest.mark.with_token
+def test_search_services_with_frais(api_client, service_factory):
+    service_1 = service_factory(frais=[schema.Frais.GRATUIT.value])
+    service_2 = service_factory(frais=[schema.Frais.ADHESION.value])
+    service_factory(frais=[schema.Frais.PASS_NUMERIQUE.value])
+
+    url = "/api/v0/search/services"
+    response = api_client.get(
+        url,
+        params={
+            "frais": [
+                schema.Frais.GRATUIT.value,
+                schema.Frais.ADHESION.value,
+            ],
+        },
+    )
+
+    assert response.status_code == 200
+    resp_data = response.json()
+    assert_paginated_response_data(resp_data, total=2)
+    assert resp_data["items"][0]["service"]["id"] in [service_1.id, service_2.id]
+    assert resp_data["items"][1]["service"]["id"] in [service_1.id, service_2.id]
+
+    response = api_client.get(
+        url,
+        params={
+            "frais": schema.Frais.PAYANT.value,
+        },
+    )
+    assert_paginated_response_data(response.json(), total=0)
+
+
+@pytest.mark.with_token
+def test_search_services_with_types(api_client, service_factory):
+    service_1 = service_factory(types=[schema.TypologieService.ACCUEIL.value])
+    service_2 = service_factory(types=[schema.TypologieService.ACCOMPAGNEMENT.value])
+    service_factory(types=[schema.TypologieService.AIDE_FINANCIERE.value])
+
+    url = "/api/v0/search/services"
+    response = api_client.get(
+        url,
+        params={
+            "types": [
+                schema.TypologieService.ACCUEIL.value,
+                schema.TypologieService.ACCOMPAGNEMENT.value,
+            ],
+        },
+    )
+
+    assert response.status_code == 200
+    resp_data = response.json()
+    assert_paginated_response_data(resp_data, total=2)
+    assert resp_data["items"][0]["service"]["id"] in [service_1.id, service_2.id]
+    assert resp_data["items"][1]["service"]["id"] in [service_1.id, service_2.id]
+
+    response = api_client.get(
+        url,
+        params={
+            "types": schema.TypologieService.ATELIER.value,
+        },
+    )
+    assert_paginated_response_data(response.json(), total=0)
+
+
+@pytest.mark.with_token
+def test_retrieve_service(api_client, service_factory):
+    service_1 = service_factory(source="foo", id="1")
+    service_2 = service_factory(source="bar", id="1")
+    service_3 = service_factory(source="foo", id="2")
+
+    url = "/api/v0/services/"
+    response = api_client.get(url + f"{service_1.source}/{service_1.id}")
+
+    assert response.status_code == 200
+    resp_data = response.json()
+    assert resp_data["id"] == service_1.id
+    assert "structure" in resp_data
+    assert resp_data["structure"]["id"] == service_1.structure.id
+
+    response = api_client.get(url + f"{service_2.source}/{service_3.id}")
+    assert response.status_code == 404
+
+
+@pytest.mark.with_token
+def test_retrieve_structure(api_client, structure_factory, service_factory):
+    structure_1 = structure_factory(source="foo", id="1")
+    service_1 = service_factory(structure=structure_1)
+    structure_2 = structure_factory(source="bar", id="1")
+    service_factory(structure=structure_2)
+    structure_3 = structure_factory(source="foo", id="2")
+
+    url = "/api/v0/structures/"
+    response = api_client.get(url + f"{structure_1.source}/{structure_1.id}")
+
+    assert response.status_code == 200
+    resp_data = response.json()
+    assert resp_data["id"] == structure_1.id
+    assert "services" in resp_data
+    assert len(resp_data["services"]) == 1
+    assert resp_data["services"][0]["id"] == service_1.id
+
+    response = api_client.get(url + f"{structure_2.source}/{structure_3.id}")
+    assert response.status_code == 404

@@ -1,4 +1,5 @@
 version: 2
 
 models:
+  - name: int_mes_aides__adresses
   - name: int_mes_aides__structures
