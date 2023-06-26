@@ -5,10 +5,10 @@ WITH services AS (
 final AS (
     SELECT
         id                               AS "adresse_id",
-        contact_nom                      AS "contact_nom",
-        contact_prenom                   AS "contact_prenom",
+        contact_nom                      AS "contact_nom", -- ignored for now
+        contact_prenom                   AS "contact_prenom", -- ignored for now
         contact_public                   AS "contact_public",
-        courriel                         AS "courriel",
+        NULL                             AS "courriel", -- ignored for now
         cumulable                        AS "cumulable",
         date_creation                    AS "date_creation",
         date_maj                         AS "date_maj",
@@ -28,7 +28,7 @@ final AS (
         recurrence                       AS "recurrence",
         _di_source_id                    AS "source",
         structure_id                     AS "structure_id",
-        telephone                        AS "telephone",
+        telephone                        AS "telephone", -- ignored for now
         thematiques                      AS "thematiques",
         types                            AS "types",
         zone_diffusion_code              AS "zone_diffusion_code",
