@@ -15,7 +15,9 @@ logger = logging.getLogger(__name__)
 
 default_args = {
     "on_failure_callback": lambda context: notify_webhook(
-        context, "mattermost", format_failure
+        context,
+        conn_id="mattermost",
+        format_fn=format_failure,
     )
 }
 

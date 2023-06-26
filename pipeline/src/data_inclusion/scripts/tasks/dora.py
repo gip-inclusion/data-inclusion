@@ -18,10 +18,11 @@ def log_and_raise(resp: requests.Response, *args, **kwargs):
 
 
 class DoraClient:
-    def __init__(self, base_url: str) -> None:
+    def __init__(self, base_url: str, token: str) -> None:
         self.base_url = base_url.rstrip("/")
         self.session = requests.Session()
         self.session.params.update({"page_size": 1000, "o": "creation_date"})
+        self.session.headers.update({"Authorization": f"Token {token}"})
         self.session.hooks["response"] = [log_and_raise]
 
     def _list_paginated_endpoint(
@@ -53,14 +54,14 @@ class DoraClient:
         return return_data
 
     def list_structures(self) -> list:
-        return self._list_paginated_endpoint("/structures/", params={"di": True})
+        return self._list_paginated_endpoint("/structures/")
 
     def list_services(self) -> list:
         return self._list_paginated_endpoint("/services/")
 
 
-def extract(id: str, url: str, **kwargs) -> bytes:
-    dora_client = DoraClient(base_url=url)
+def extract(id: str, url: str, token: str, **kwargs) -> bytes:
+    dora_client = DoraClient(base_url=url, token=token)
     data = getattr(dora_client, f"list_{id}")()
     with io.StringIO() as buf:
         json.dump(data, buf)
