@@ -25,12 +25,12 @@ final AS (
             WHEN 'MAIRIE' THEN 'MUNI'
         END                 AS "typologie",
         CASE LENGTH(presentation_detail) <= 280
-            WHEN TRUE THEN org_desc
-            WHEN FALSE THEN LEFT(org_desc, 279) || '…'
+            WHEN TRUE THEN presentation_detail
+            WHEN FALSE THEN LEFT(presentation_detail, 279) || '…'
         END                 AS "presentation_resume",
         CASE LENGTH(presentation_detail) <= 280
             WHEN TRUE THEN NULL
-            WHEN FALSE THEN org_desc
+            WHEN FALSE THEN presentation_detail
         END                 AS "presentation_detail"
     FROM organisations
 )
