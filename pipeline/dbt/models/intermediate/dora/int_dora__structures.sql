@@ -4,26 +4,26 @@ WITH structures AS (
 
 final AS (
     SELECT
-        id                         AS "id",
-        id                         AS "adresse_id",
-        NULL::BOOLEAN              AS "antenne",
-        NULL                       AS "rna",
-        _di_source_id              AS "source",
-        NULL                       AS "horaires_ouverture",
-        NULL                       AS "accessibilite",
-        NULL::TEXT []              AS "labels_nationaux",
-        NULL::TEXT []              AS "labels_autres",
-        NULL::TEXT []              AS "thematiques",
-        typology                   AS "typologie",
-        modification_date          AS "date_maj",
-        NULLIF(siret, '')          AS "siret",
-        NULLIF(name, '')           AS "nom",
-        NULLIF(link_on_source, '') AS "lien_source",
-        NULLIF(short_desc, '')     AS "presentation_resume",
-        NULLIF(full_desc, '')      AS "presentation_detail",
-        NULLIF(phone, '')          AS "telephone",
-        NULLIF(url, '')            AS "site_web",
-        NULLIF(email, '')          AS "courriel"
+        accessibilite       AS "accessibilite",
+        id                  AS "adresse_id",
+        antenne             AS "antenne",
+        courriel            AS "courriel",
+        date_maj            AS "date_maj",
+        horaires_ouverture  AS "horaires_ouverture",
+        id                  AS "id",
+        labels_autres       AS "labels_autres",
+        labels_nationaux    AS "labels_nationaux",
+        lien_source         AS "lien_source",
+        nom                 AS "nom",
+        presentation_detail AS "presentation_detail",
+        presentation_resume AS "presentation_resume",
+        rna                 AS "rna",
+        siret               AS "siret",
+        site_web            AS "site_web",
+        _di_source_id       AS "source",
+        telephone           AS "telephone",
+        NULL::TEXT []       AS "thematiques",
+        typologie           AS "typologie"
     FROM structures
 )
 

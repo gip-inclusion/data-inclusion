@@ -39,8 +39,7 @@ def notify_webhook(context: Context, conn_id: str, format_fn):
 
     try:
         http_hook = HttpHook(http_conn_id=conn_id)
+        http_hook.run(json={"text": format_fn(context)})
     except exceptions.AirflowNotFoundException:
         logger.warning("Webhook notifier disabled.")
         return
-
-    http_hook.run(json={"text": format_fn(context)})
