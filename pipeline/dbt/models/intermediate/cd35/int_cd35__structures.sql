@@ -5,6 +5,7 @@ WITH organisations AS (
 final AS (
     SELECT
         id                  AS "id",
+        id                  AS "adresse_id",
         NULL                AS "siret",
         NULL::BOOLEAN       AS "antenne",
         NULL                AS "rna",
