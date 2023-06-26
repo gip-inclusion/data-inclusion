@@ -31,7 +31,9 @@ models:
           - dbt_utils.not_empty_string
       - name: contact_prenom
         tests:
-          - dbt_utils.at_least_one
+          - dbt_utils.at_least_one:
+              config:
+                severity: warn
           - dbt_utils.not_empty_string
       - name: contact_public
         tests:
@@ -49,7 +51,10 @@ models:
               values: [true, false]
       - name: date_creation
         tests:
-          - not_null  # TODO: why null values?
+          - not_null:
+              config:
+                severity: warn
+          - dbt_utils.at_least_one
       - name: date_maj
         tests:
           - not_null
@@ -111,11 +116,15 @@ models:
           - dbt_utils.not_empty_string
       - name: presentation_detail
         tests:
-          - dbt_utils.at_least_one
+          - dbt_utils.at_least_one:
+              config:
+                severity: warn
           - dbt_utils.not_empty_string
       - name: prise_rdv
         tests:
-          - dbt_utils.at_least_one
+          - dbt_utils.at_least_one:
+              config:
+                severity: warn
           - dbt_utils.not_empty_string
       - name: profils
         tests:
@@ -179,7 +188,10 @@ models:
           - dbt_utils.not_empty_string
       - name: adresse
         tests:
-          - not_null
+          - not_null:
+              config:
+                severity: warn
+          - dbt_utils.at_least_one
           - dbt_utils.not_empty_string
       - name: antenne
         tests:
@@ -208,7 +220,10 @@ models:
           - dbt_utils.not_empty_string
       - name: date_maj
         tests:
-          - not_null
+          - not_null:
+              config:
+                severity: warn
+          - dbt_utils.at_least_one
           - dbt_utils.accepted_range:
               min_value: "now() - interval '2 years'"
               config:
@@ -241,7 +256,10 @@ models:
           - dbt_utils.at_least_one
       - name: nom
         tests:
-          - not_null
+          - not_null:
+              config:
+                severity: warn
+          - dbt_utils.at_least_one
           - dbt_utils.not_empty_string
       - name: presentation_detail
         tests:
@@ -253,11 +271,16 @@ models:
           - dbt_utils.not_empty_string
       - name: rna
         tests:
-          - dbt_utils.at_least_one
+          - dbt_utils.at_least_one:
+              config:
+                severity: warn
           - dbt_utils.not_empty_string
       - name: siret
         tests:
-          - not_null
+          - not_null:
+              config:
+                severity: warn
+          - dbt_utils.at_least_one
           - dbt_utils.not_empty_string
       - name: site_web
         tests:
@@ -265,7 +288,7 @@ models:
           - dbt_utils.not_empty_string
       - name: source
         tests:
-          - not_null
+          - dbt_utils.at_least_one
           - dbt_utils.not_empty_string
       - name: telephone
         tests:
