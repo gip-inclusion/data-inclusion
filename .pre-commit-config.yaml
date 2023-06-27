@@ -29,6 +29,16 @@ repos:
         files: ^api
         exclude: ^api/tests/
 
+  # deployment
+  - repo: local
+    hooks:
+      - id: terraform-fmt
+        name: deployment|terraform-fmt
+        language: docker_image
+        entry: hashicorp/terraform:1.4.0
+        args: [fmt, -recursive, deployment]
+        pass_filenames: false
+
   # pipeline
   - repo: https://github.com/psf/black
     rev: 23.7.0

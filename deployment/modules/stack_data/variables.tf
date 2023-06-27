@@ -13,11 +13,3 @@ variable "scaleway_project_id" {
   description = "Scaleway project id (https://console.scaleway.com/project/settings)"
   type        = string
 }
-
-module "stack_data" {
-  source = "../../modules/stack_data"
-
-  scaleway_access_key = var.scaleway_access_key
-  scaleway_secret_key = var.scaleway_secret_key
-  scaleway_project_id = var.scaleway_project_id
-}
