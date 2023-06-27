@@ -14,10 +14,56 @@ variable "scaleway_project_id" {
   type        = string
 }
 
+variable "datawarehouse_admin_username" {
+  description = "Identifier for the first user of the postgres datawarehouse"
+  type        = string
+}
+
+variable "datawarehouse_admin_password" {
+  description = "Password for the first user of the postgres datawarehouse"
+  type        = string
+}
+
+variable "datawarehouse_di_username" {
+  description = "Identifier for the main user of the postgres datawarehouse"
+  type        = string
+}
+
+variable "datawarehouse_di_password" {
+  description = "Password for the main user of the postgres datawarehouse"
+  type        = string
+}
+
+variable "datawarehouse_di_database" {
+  description = "Identifier for the data inclusion database"
+  type        = string
+}
+
 module "stack_data" {
   source = "../../modules/stack_data"
 
-  scaleway_access_key = var.scaleway_access_key
-  scaleway_secret_key = var.scaleway_secret_key
-  scaleway_project_id = var.scaleway_project_id
+  scaleway_access_key          = var.scaleway_access_key
+  scaleway_secret_key          = var.scaleway_secret_key
+  scaleway_project_id          = var.scaleway_project_id
+  datawarehouse_admin_username = var.datawarehouse_admin_username
+  datawarehouse_admin_password = var.datawarehouse_admin_password
+  datawarehouse_di_username    = var.datawarehouse_di_username
+  datawarehouse_di_password    = var.datawarehouse_di_password
+  datawarehouse_di_database    = var.datawarehouse_di_database
+}
+
+output "public_ip" {
+  description = "Publicly reachable IP (with `ssh root@<public_ip>`)"
+  value       = module.stack_data.public_ip
+}
+
+output "object_storage_access_key" {
+  description = "Access key for the datalake object storage"
+  value       = module.stack_data.object_storage_access_key
+}
+
+output "object_storage_secret_key" {
+  description = "Secret key for the datalake object storage"
+  value       = module.stack_data.object_storage_secret_key
+  sensitive   = true
 }
