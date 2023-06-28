@@ -303,5 +303,5 @@ models:
         tests:
           - dbt_utils.at_least_one
           - relationships:
-              to: ref('typologie_de_structures')
+              to: ref('typologies_de_structures')
               field: value
