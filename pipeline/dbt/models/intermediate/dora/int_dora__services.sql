@@ -18,6 +18,7 @@ final AS (
     SELECT
         id                    AS "adresse_id",
         contact_public        AS "contact_public",
+        NULL                  AS "contact_nom_prenom", -- ignored for now
         NULL                  AS "courriel", -- ignored for now
         cumulable             AS "cumulable",
         date_creation::DATE   AS "date_creation",
@@ -43,8 +44,8 @@ final AS (
         recurrence            AS "recurrence",
         _di_source_id         AS "source",
         structure_id          AS "structure_id",
-        NULL                  AS "telephone",
-        thematiques           AS "thematiques", -- ignored for now
+        NULL                  AS "telephone", -- ignored for now
+        thematiques           AS "thematiques",
         types                 AS "types",
         zone_diffusion_code   AS "zone_diffusion_code",
         zone_diffusion_nom    AS "zone_diffusion_nom",

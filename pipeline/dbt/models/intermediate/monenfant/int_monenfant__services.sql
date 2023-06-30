@@ -36,6 +36,7 @@ final AS (
         telephone                                                                                 AS "telephone",
         mail                                                                                      AS "courriel",
         FALSE                                                                                     AS "contact_public",
+        NULL                                                                                      AS "contact_nom_prenom",
         derniere_modif_date                                                                       AS "date_maj",
         NULL                                                                                      AS "zone_diffusion_type",
         NULL                                                                                      AS "zone_diffusion_code",

@@ -67,6 +67,7 @@ final AS (
         NULL                                                     AS "telephone",
         NULL                                                     AS "courriel",
         NULL                                                     AS "contact_public",
+        NULL                                                     AS "contact_nom_prenom",
         services.updated_at                                      AS "date_maj",
         NULL                                                     AS "zone_diffusion_type",
         NULL                                                     AS "zone_diffusion_code",

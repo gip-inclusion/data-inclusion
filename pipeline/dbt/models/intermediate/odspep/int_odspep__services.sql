@@ -34,6 +34,7 @@ final AS (
         NULL                                            AS "telephone",
         NULL                                            AS "courriel",
         NULL                                            AS "contact_public",
+        NULL                                            AS "contact_nom_prenom",
         date_derniere_modif                             AS "date_maj",
         NULL::TEXT []                                   AS "modes_accueil",
         NULL::TEXT []                                   AS "modes_orientation_accompagnateur",

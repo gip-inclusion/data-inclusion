@@ -120,6 +120,7 @@ final AS (
         structures.telephone                                                                           AS "telephone",
         structures.courriel                                                                            AS "courriel",
         TRUE                                                                                           AS "contact_public",
+        NULL                                                                                           AS "contact_nom_prenom",
         structures.date_maj                                                                            AS "date_maj",
         NULL                                                                                           AS "zone_diffusion_type",
         NULL                                                                                           AS "zone_diffusion_code",
