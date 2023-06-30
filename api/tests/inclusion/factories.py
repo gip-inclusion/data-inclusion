@@ -139,6 +139,7 @@ class ServiceFactory(factory.Factory):
     telephone = "0102030405"
     courriel = factory.Faker("email", locale="fr_FR")
     contact_public = None
+    contact_nom_prenom = factory.Faker("name", locale="fr_FR")
     date_maj = factory.LazyFunction(lambda: date(2023, 1, 1))
     modes_accueil = factory.Iterator(
         [
@@ -148,6 +149,18 @@ class ServiceFactory(factory.Factory):
                 schema.ModeAccueil.A_DISTANCE.value,
                 schema.ModeAccueil.EN_PRESENTIEL.value,
             ],
+        ]
+    )
+    modes_orientation_accompagnateur = factory.Iterator(
+        [
+            [schema.ModeOrientationAccompagnateur.TELEPHONER.value],
+            [schema.ModeOrientationAccompagnateur.ENVOYER_UN_MAIL.value],
+        ]
+    )
+    modes_orientation_beneficiaire = factory.Iterator(
+        [
+            [schema.ModeOrientationBeneficiaire.TELEPHONER.value],
+            [schema.ModeOrientationBeneficiaire.SE_PRESENTER.value],
         ]
     )
     zone_diffusion_type = schema.TypeCOG.COMMUNE.value
