@@ -41,9 +41,12 @@ WITH services AS (
             ],
             column_override={
                 "types": "TEXT[]",
+                "frais": "TEXT[]",
                 "profils": "TEXT[]",
                 "thematiques": "TEXT[]",
-                "frais": "TEXT[]",
+                "modes_accueil": "TEXT[]",
+                "modes_orientation_accompagnateur": "TEXT[]",
+                "modes_orientation_beneficiaire": "TEXT[]",
             },
             source_column_name=None,
         )
@@ -84,6 +87,7 @@ structures AS (
             column_override={
                 "thematiques": "TEXT[]",
                 "labels_nationaux": "TEXT[]",
+                "labels_autres": "TEXT[]",
             },
             source_column_name=None
         )
@@ -116,10 +120,13 @@ final AS (
         structures.telephone                                                                           AS "telephone",
         structures.courriel                                                                            AS "courriel",
         TRUE                                                                                           AS "contact_public",
+        NULL                                                                                           AS "contact_nom_prenom",
         structures.date_maj                                                                            AS "date_maj",
         NULL                                                                                           AS "zone_diffusion_type",
         NULL                                                                                           AS "zone_diffusion_code",
         NULL                                                                                           AS "zone_diffusion_nom",
+        CAST(NULL AS TEXT [])                                                                          AS "modes_orientation_accompagnateur",
+        CAST(NULL AS TEXT [])                                                                          AS "modes_orientation_beneficiaire",
         CAST(NULL AS TEXT)                                                                             AS "frais_autres",
         CASE WHEN CARDINALITY(services.types) > 0 THEN services.types ELSE ARRAY['accompagnement'] END AS "types",
         ARRAY['en-presentiel']                                                                         AS "modes_accueil",

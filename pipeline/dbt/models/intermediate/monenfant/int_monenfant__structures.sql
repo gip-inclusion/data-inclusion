@@ -19,7 +19,7 @@ final AS (
         NULL                                                                                                                                                               AS "accessibilite",
         NULL::TEXT []                                                                                                                                                      AS "labels_nationaux",
         NULL::TEXT []                                                                                                                                                      AS "labels_autres",
-        NULL                                                                                                                                                               AS "typologie",
+        CASE WHEN avip THEN 'AVIP' END                                                                                                                                     AS "typologie",
         {{ truncate_text("details_presentation_structure_projet") }}              AS "presentation_resume",
         details_presentation_structure_projet                                                                                                                              AS "presentation_detail",
         derniere_modif_date                                                                                                                                                AS "date_maj",

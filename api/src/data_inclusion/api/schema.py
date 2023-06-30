@@ -9,6 +9,8 @@ from data_inclusion.schema.models import (
     Frais,
     LabelNational,
     ModeAccueil,
+    ModeOrientationAccompagnateur,
+    ModeOrientationBeneficiaire,
     Profil,
     Thematique,
     TypeCOG,
@@ -187,11 +189,15 @@ class Service(BaseModel):
     telephone: Optional[str]
     courriel: Optional[EmailStr]
     contact_public: Optional[bool]
+    contact_nom_prenom: Optional[str]
     date_maj: Optional[date | datetime]
     modes_accueil: Optional[list[ModeAccueil]]
+    modes_orientation_accompagnateur: Optional[list[ModeOrientationAccompagnateur]]
+    modes_orientation_beneficiaire: Optional[list[ModeOrientationBeneficiaire]]
     zone_diffusion_type: Optional[TypeCOG]
     zone_diffusion_code: Optional[
         constr(regex=r"^\w{5}$")  # code commune
+        | constr(regex=r"^\d{9}$")  # code epci
         | constr(regex=r"^\w{2,3}$")  # code departement
         | constr(regex=r"^\d{2}$")  # code region
     ]

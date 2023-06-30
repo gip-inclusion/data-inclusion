@@ -8,7 +8,9 @@ di_profil_by_dora_profil AS (
     FROM (
         VALUES
         ('Adultes', 'adultes'),
-        ('Femmes', 'femmes')
+        ('Femmes', 'femmes'),
+        ('Public bénéficiaire du Revenu de Solidarité Active (RSA)', 'beneficiaire-rsa'),
+        ('Demandeur d''emploi', 'demandeur-demploi')
     ) AS x (dora_profil, di_profil)
 ),
 
@@ -16,6 +18,7 @@ final AS (
     SELECT
         id                    AS "adresse_id",
         contact_public        AS "contact_public",
+        NULL                  AS "contact_nom_prenom", -- ignored for now
         NULL                  AS "courriel", -- ignored for now
         cumulable             AS "cumulable",
         date_creation::DATE   AS "date_creation",
@@ -27,6 +30,8 @@ final AS (
         justificatifs         AS "justificatifs",
         lien_source           AS "lien_source",
         modes_accueil         AS "modes_accueil",
+        NULL::TEXT []         AS "modes_orientation_accompagnateur",
+        NULL::TEXT []         AS "modes_orientation_beneficiaire",
         nom                   AS "nom",
         presentation_resume   AS "presentation_resume",
         presentation_detail   AS "presentation_detail",
@@ -39,8 +44,8 @@ final AS (
         recurrence            AS "recurrence",
         _di_source_id         AS "source",
         structure_id          AS "structure_id",
-        NULL                  AS "telephone",
-        thematiques           AS "thematiques", -- ignored for now
+        NULL                  AS "telephone", -- ignored for now
+        thematiques           AS "thematiques",
         types                 AS "types",
         zone_diffusion_code   AS "zone_diffusion_code",
         zone_diffusion_nom    AS "zone_diffusion_nom",
