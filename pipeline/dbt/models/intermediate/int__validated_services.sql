@@ -64,7 +64,7 @@ final AS (
         AND (modes_orientation_accompagnateur IS NULL OR modes_orientation_accompagnateur <@ ARRAY(SELECT value FROM modes_orientation_accompagnateur))
         AND (modes_orientation_beneficiaire IS NULL OR modes_orientation_beneficiaire <@ ARRAY(SELECT value FROM modes_orientation_beneficiaire))
         AND (zone_diffusion_type IS NULL OR zone_diffusion_type IN (SELECT value FROM types_cog))
-        AND (zone_diffusion_code IS NULL OR zone_diffusion_code ~ '^(\w{5}|\w{2,3}|\d{2})$')
+        AND (zone_diffusion_code IS NULL OR zone_diffusion_code ~ '^(\d{9}|\w{5}|\w{2,3}|\d{2})$')
 )
 
 SELECT * FROM final

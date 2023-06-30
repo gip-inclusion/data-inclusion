@@ -241,7 +241,7 @@ malformed_zone_diffusion_code AS (
         zone_diffusion_code::TEXT      AS "value",
         'zone_diffusion_code_malformé' AS "type"
     FROM services
-    WHERE zone_diffusion_code IS NOT NULL AND NOT zone_diffusion_code ~ '^(\w{5}|\w{2,3}|\d{2})$'
+    WHERE zone_diffusion_code IS NOT NULL AND NOT zone_diffusion_code ~ '^(\d{9}|\w{5}|\w{2,3}|\d{2})$'
 ),
 
 final AS (
