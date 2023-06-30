@@ -14,6 +14,8 @@ WITH services AS (
                 "profils": "TEXT[]",
                 "thematiques": "TEXT[]",
                 "modes_accueil": "TEXT[]",
+                "modes_orientation_accompagnateur": "TEXT[]",
+                "modes_orientation_beneficiaire": "TEXT[]",
             },
             source_column_name=None
         )

@@ -22,6 +22,14 @@ modes_accueil AS (
     SELECT * FROM {{ ref('modes_accueil') }}
 ),
 
+modes_orientation_accompagnateur AS (
+    SELECT * FROM {{ ref('modes_orientation_accompagnateur') }}
+),
+
+modes_orientation_beneficiaire AS (
+    SELECT * FROM {{ ref('modes_orientation_beneficiaire') }}
+),
+
 types_cog AS (
     SELECT * FROM {{ ref('types_cog') }}
 ),
@@ -182,6 +190,32 @@ invalid_modes_accueil AS (
     WHERE modes_accueil IS NOT NULL AND NOT modes_accueil <@ ARRAY(SELECT value FROM modes_accueil)
 ),
 
+invalid_modes_orientation_accompagnateur AS (
+    SELECT
+        _di_structure_surrogate_id                   AS "_di_structure_surrogate_id",
+        _di_surrogate_id                             AS "_di_surrogate_id",
+        source                                       AS "_di_source_id",
+        id                                           AS "id",
+        'modes_orientation_accompagnateur'           AS "field",
+        modes_orientation_accompagnateur::TEXT       AS "value",
+        'modes_orientation_accompagnateur_invalides' AS "type"
+    FROM services
+    WHERE modes_orientation_accompagnateur IS NOT NULL AND NOT modes_orientation_accompagnateur <@ ARRAY(SELECT value FROM modes_orientation_accompagnateur)
+),
+
+invalid_modes_orientation_beneficiaire AS (
+    SELECT
+        _di_structure_surrogate_id                 AS "_di_structure_surrogate_id",
+        _di_surrogate_id                           AS "_di_surrogate_id",
+        source                                     AS "_di_source_id",
+        id                                         AS "id",
+        'modes_orientation_beneficiaire'           AS "field",
+        modes_orientation_beneficiaire::TEXT       AS "value",
+        'modes_orientation_beneficiaire_invalides' AS "type"
+    FROM services
+    WHERE modes_orientation_beneficiaire IS NOT NULL AND NOT modes_orientation_beneficiaire <@ ARRAY(SELECT value FROM modes_orientation_beneficiaire)
+),
+
 invalid_zone_diffusion_type AS (
     SELECT
         _di_structure_surrogate_id     AS "_di_structure_surrogate_id",
@@ -234,6 +268,10 @@ final AS (
     SELECT * FROM invalid_courriel
     UNION ALL
     SELECT * FROM invalid_modes_accueil
+    UNION ALL
+    SELECT * FROM invalid_modes_orientation_accompagnateur
+    UNION ALL
+    SELECT * FROM invalid_modes_orientation_beneficiaire
     UNION ALL
     SELECT * FROM invalid_zone_diffusion_type
     UNION ALL

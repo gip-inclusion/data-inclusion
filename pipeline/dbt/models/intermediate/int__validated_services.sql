@@ -22,6 +22,14 @@ modes_accueil AS (
     SELECT * FROM {{ ref('modes_accueil') }}
 ),
 
+modes_orientation_accompagnateur AS (
+    SELECT * FROM {{ ref('modes_orientation_accompagnateur') }}
+),
+
+modes_orientation_beneficiaire AS (
+    SELECT * FROM {{ ref('modes_orientation_beneficiaire') }}
+),
+
 types_cog AS (
     SELECT * FROM {{ ref('types_cog') }}
 ),
@@ -53,6 +61,8 @@ final AS (
         -- RFC 5322
         AND (courriel IS NULL OR courriel ~ '^[a-zA-Z0-9.!#$%&''*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$')
         AND (modes_accueil IS NULL OR modes_accueil <@ ARRAY(SELECT value FROM modes_accueil))
+        AND (modes_orientation_accompagnateur IS NULL OR modes_orientation_accompagnateur <@ ARRAY(SELECT value FROM modes_orientation_accompagnateur))
+        AND (modes_orientation_beneficiaire IS NULL OR modes_orientation_beneficiaire <@ ARRAY(SELECT value FROM modes_orientation_beneficiaire))
         AND (zone_diffusion_type IS NULL OR zone_diffusion_type IN (SELECT value FROM types_cog))
         AND (zone_diffusion_code IS NULL OR zone_diffusion_code ~ '^(\w{5}|\w{2,3}|\d{2})$')
 )

@@ -29,6 +29,8 @@ final AS (
         justificatifs         AS "justificatifs",
         lien_source           AS "lien_source",
         modes_accueil         AS "modes_accueil",
+        NULL::TEXT []         AS "modes_orientation_accompagnateur",
+        NULL::TEXT []         AS "modes_orientation_beneficiaire",
         nom                   AS "nom",
         presentation_resume   AS "presentation_resume",
         presentation_detail   AS "presentation_detail",

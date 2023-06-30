@@ -40,6 +40,8 @@ final AS (
         NULL                                                                                      AS "zone_diffusion_type",
         NULL                                                                                      AS "zone_diffusion_code",
         NULL                                                                                      AS "zone_diffusion_nom",
+        NULL::TEXT []                                                                             AS "modes_orientation_accompagnateur",
+        NULL::TEXT []                                                                             AS "modes_orientation_beneficiaire",
         CASE WHEN avip THEN 'Crèches À Vocation d''Insertion Professionnelle' ELSE nom END        AS "nom",
         ARRAY['payant']                                                                           AS "frais",
         ARRAY['famille--garde-denfants']                                                          AS "thematiques",

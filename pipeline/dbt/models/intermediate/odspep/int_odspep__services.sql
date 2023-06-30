@@ -36,18 +36,20 @@ final AS (
         NULL                                            AS "contact_public",
         date_derniere_modif                             AS "date_maj",
         NULL::TEXT []                                   AS "modes_accueil",
+        NULL::TEXT []                                   AS "modes_orientation_accompagnateur",
+        NULL::TEXT []                                   AS "modes_orientation_beneficiaire",
         zone_diffusion_code                             AS "zone_diffusion_code",
         zone_diffusion_type                             AS "zone_diffusion_type",
         zone_diffusion_libelle                          AS "zone_diffusion_nom",
         id_res                                          AS "structure_id",
         NULL::TEXT []                                   AS "profils",
-        CONCAT(id_res, '_', zone_diffusion_unique_code) AS "id",
-        CONCAT(id_res, '_', zone_diffusion_unique_code) AS "adresse_id",
         ARRAY(
             SELECT di_thematique_by_odspep_type_res_part.thematique
             FROM di_thematique_by_odspep_type_res_part
             WHERE ressources_partenariales.type_res_part = di_thematique_by_odspep_type_res_part.type_res_part
         )::TEXT []                                      AS "thematiques",
+        CONCAT(id_res, '_', zone_diffusion_unique_code) AS "id",
+        CONCAT(id_res, '_', zone_diffusion_unique_code) AS "adresse_id",
         CASE LENGTH(service_description) <= 280
             WHEN TRUE THEN service_description
             WHEN FALSE THEN LEFT(service_description, 279) || '…'

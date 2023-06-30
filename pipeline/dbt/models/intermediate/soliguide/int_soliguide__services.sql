@@ -75,13 +75,15 @@ final AS (
         NULL                                                     AS "recurrence",
         services.lieu_id                                         AS "structure_id",
         NULL::TEXT []                                            AS "modes_accueil",
-        categories.label || COALESCE(' : ' || services.name, '') AS "nom",
-        'https://soliguide.fr/fr/fiche/' || lieux.seo_url        AS "lien_source",
+        NULL::TEXT []                                            AS "modes_orientation_accompagnateur",
+        NULL::TEXT []                                            AS "modes_orientation_beneficiaire",
         ARRAY(
             SELECT di_thematique_by_soliguide_categorie_code.thematique
             FROM di_thematique_by_soliguide_categorie_code
             WHERE services.categorie = di_thematique_by_soliguide_categorie_code.categorie
         )::TEXT []                                               AS "thematiques",
+        categories.label || COALESCE(' : ' || services.name, '') AS "nom",
+        'https://soliguide.fr/fr/fiche/' || lieux.seo_url        AS "lien_source",
         CASE LENGTH(services.description) <= 280
             WHEN TRUE THEN services.description
             WHEN FALSE THEN LEFT(services.description, 279) || '…'
