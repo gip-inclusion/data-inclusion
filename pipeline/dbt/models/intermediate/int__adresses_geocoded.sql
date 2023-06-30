@@ -3,7 +3,7 @@ WITH adresses AS (
 ),
 
 geocoded_results AS (
-    SELECT * FROM {{ source('data_inclusion', 'extra__geocoded_results') }}
+    SELECT * FROM {{ ref('int_extra__geocoded_results') }}
 ),
 
 final AS (
