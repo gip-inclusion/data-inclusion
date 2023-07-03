@@ -7,13 +7,13 @@ from sqlalchemy import orm
 
 import fastapi
 import fastapi_pagination
-from fastapi import middleware, requests
+from fastapi import middleware
 from fastapi.middleware import cors
-from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
+from fastapi.security import HTTPBearer
 from fastapi_pagination.ext.sqlalchemy import paginate
 
 from data_inclusion.api import models, schema, settings
-from data_inclusion.api.core import db, jwt
+from data_inclusion.api.core import auth, db, jwt
 from data_inclusion.api.core.request.middleware import RequestMiddleware
 from data_inclusion.api.utils import pagination
 
@@ -64,6 +64,11 @@ def create_app() -> fastapi.FastAPI:
                 allow_methods=["*"],
                 allow_headers=["*"],
             ),
+            middleware.Middleware(
+                auth.AuthenticationMiddleware,
+                backend=auth.AuthenticationBackend(),
+                on_error=auth.on_error,
+            ),
             middleware.Middleware(RequestMiddleware),
         ],
     )
@@ -76,29 +81,9 @@ def create_app() -> fastapi.FastAPI:
     return app
 
 
-def authenticated(
-    request: requests.Request,
-    token: HTTPAuthorizationCredentials = fastapi.Depends(HTTPBearer()),
-) -> Optional[dict]:
-    payload = jwt.verify_token(token.credentials)
-    if payload is None:
-        raise fastapi.HTTPException(
-            status_code=fastapi.status.HTTP_403_FORBIDDEN,
-            detail="Not authenticated",
-        )
-
-    # attach username to the request
-    # TODO: https://www.starlette.io/authentication/ instead
-    if "sub" in payload:
-        request.scope["user"] = payload["sub"]
-        request.scope["admin"] = payload.get("admin", False)
-
-    return payload
-
-
 v0_api_router = fastapi.APIRouter(
     prefix="/api/v0",
-    dependencies=[fastapi.Depends(authenticated)] if settings.TOKEN_ENABLED else [],
+    dependencies=[fastapi.Depends(HTTPBearer())] if settings.TOKEN_ENABLED else [],
     tags=["Données"],
 )
 
@@ -653,7 +638,7 @@ def create_token_endpoint(
     token_creation_data: schema.TokenCreationData,
     request: fastapi.Request,
 ):
-    if request.scope.get("admin"):
+    if "admin" in request.auth.scopes:
         return create_token(email=token_creation_data.email)
     else:
         raise fastapi.HTTPException(

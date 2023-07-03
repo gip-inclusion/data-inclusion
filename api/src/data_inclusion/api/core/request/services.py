@@ -10,7 +10,12 @@ def save_request(request: requests.Request, response: responses.Response) -> Non
             status_code=response.status_code,
             method=request.method,
             path=request.url.path,
-            user=request.scope.get("user"),
+            base_url=str(request.base_url),
+            user=request.user.username,
+            path_params=request.path_params,
+            query_params=dict(request.query_params),
+            client_host=request.client.host,
+            client_port=request.client.port,
         )
         session.add(request_instance)
         session.commit()
