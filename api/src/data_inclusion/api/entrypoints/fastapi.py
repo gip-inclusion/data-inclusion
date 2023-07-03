@@ -604,6 +604,42 @@ def list_typologies_structures_endpoint():
     return schema.Typologie.as_dict_list()
 
 
+@v0_doc_api_router.get(
+    "/modes-accueil",
+    response_model=list[schema.EnhancedEnumMember],
+    summary="Documente les modes d'accueil",
+)
+def list_modes_accueil_endpoint():
+    """
+    ## Documente les modes d'accueil
+    """
+    return schema.ModeAccueil.as_dict_list()
+
+
+@v0_doc_api_router.get(
+    "/modes-orientation-accompagnateur",
+    response_model=list[schema.EnhancedEnumMember],
+    summary="Documente les modes d'orientation de l'accompagnateur",
+)
+def list_modes_orientation_accompagnateur_endpoint():
+    """
+    ## Documente les modes d'orientation de l'accompagnateur
+    """
+    return schema.ModeOrientationAccompagnateur.as_dict_list()
+
+
+@v0_doc_api_router.get(
+    "/modes-orientation-beneficiaire",
+    response_model=list[schema.EnhancedEnumMember],
+    summary="Documente les modes d'orientation de l'beneficiaire",
+)
+def list_modes_orientation_beneficiaire_endpoint():
+    """
+    ## Documente les modes d'orientation de l'beneficiaire
+    """
+    return schema.ModeOrientationBeneficiaire.as_dict_list()
+
+
 def create_token(email: str) -> schema.Token:
     return schema.Token(access=jwt.create_access_token(subject=email))
 

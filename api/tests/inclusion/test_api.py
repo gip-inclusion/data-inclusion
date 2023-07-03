@@ -443,6 +443,45 @@ def test_list_typologies_structures(api_client):
 
 
 @pytest.mark.with_token
+def test_list_modes_accueil(api_client):
+    url = "/api/v0/doc/modes-accueil/"
+
+    response = api_client.get(url)
+
+    assert response.status_code == 200
+
+    resp_data = response.json()
+
+    assert resp_data[0] == {"value": ANY, "label": ANY, "description": ANY}
+
+
+@pytest.mark.with_token
+def test_list_modes_orientation_accompagnateur(api_client):
+    url = "/api/v0/doc/modes-orientation-accompagnateur/"
+
+    response = api_client.get(url)
+
+    assert response.status_code == 200
+
+    resp_data = response.json()
+
+    assert resp_data[0] == {"value": ANY, "label": ANY, "description": ANY}
+
+
+@pytest.mark.with_token
+def test_list_modes_orientation_beneficiaire(api_client):
+    url = "/api/v0/doc/modes-orientation-beneficiaire/"
+
+    response = api_client.get(url)
+
+    assert response.status_code == 200
+
+    resp_data = response.json()
+
+    assert resp_data[0] == {"value": ANY, "label": ANY, "description": ANY}
+
+
+@pytest.mark.with_token
 def test_list_structures_null_siret(api_client, structure_factory):
     structure = structure_factory(siret=None)
 
