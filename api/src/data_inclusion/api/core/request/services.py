@@ -16,6 +16,9 @@ def save_request(request: requests.Request, response: responses.Response) -> Non
             query_params=dict(request.query_params),
             client_host=request.client.host,
             client_port=request.client.port,
+            endpoint_name=request.scope["route"].name
+            if "route" in request.scope
+            else None,
         )
         session.add(request_instance)
         session.commit()

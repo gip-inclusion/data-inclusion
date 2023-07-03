@@ -19,6 +19,7 @@ def test_save_api_request_with_token(api_client, db_session):
     assert request_instance.method == "GET"
     assert request_instance.path_params == {"source": "foo", "id": "bar"}
     assert request_instance.query_params == {"baz": "1"}
+    assert request_instance.endpoint_name == "retrieve_structure_endpoint"
 
 
 def test_save_api_request_without_token(api_client, db_session):

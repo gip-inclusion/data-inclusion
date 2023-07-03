@@ -23,3 +23,4 @@ class Request(Base):
     query_params = sqla.Column(JSONB)
     client_host = sqla.Column(sqla.Text)
     client_port = sqla.Column(sqla.Integer)
+    endpoint_name = sqla.Column(sqla.Text)
