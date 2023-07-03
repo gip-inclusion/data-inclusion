@@ -12,6 +12,7 @@ final AS (
         CAST((data ->> 'latitude') AS FLOAT)                                                                        AS "latitude",
         CAST((data ->> 'date_maj') AS TIMESTAMP WITH TIME ZONE)                                                     AS "date_maj",
         CAST(ARRAY(SELECT * FROM JSONB_ARRAY_ELEMENTS_TEXT(NULLIF(data -> 'labels_nationaux', 'null'))) AS TEXT []) AS "labels_nationaux",
+        CAST(ARRAY(SELECT * FROM JSONB_ARRAY_ELEMENTS_TEXT(NULLIF(data -> 'labels_autres', 'null'))) AS TEXT [])    AS "labels_autres",
         data ->> 'id'                                                                                               AS "id",
         data ->> 'nom'                                                                                              AS "nom",
         NULLIF(data ->> 'siret', REPEAT('0', 14))                                                                   AS "siret",
@@ -23,7 +24,9 @@ final AS (
         data ->> 'telephone'                                                                                        AS "telephone",
         data ->> 'code_postal'                                                                                      AS "code_postal",
         data ->> 'horaires_ouverture'                                                                               AS "horaires_ouverture",
-        data ->> 'typologie'                                                                                        AS "typologie"
+        data ->> 'typologie'                                                                                        AS "typologie",
+        data ->> 'presentation_resume'                                                                              AS "presentation_resume",
+        data ->> 'presentation_detail'                                                                              AS "presentation_detail"
     FROM source
 )
 

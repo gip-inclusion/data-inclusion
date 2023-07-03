@@ -54,12 +54,13 @@ final AS (
         labels_nationaux      AS "labels_nationaux",
         thematiques           AS "thematiques",
         typologie             AS "typologie",
-        NULL                  AS "presentation_resume",
+        presentation_resume   AS "presentation_resume",
+        presentation_detail   AS "presentation_detail",
         date_maj              AS "date_maj",
         _di_source_id         AS "source",
         NULL                  AS "presentation_detail",
-        CAST(NULL AS BOOLEAN) AS "antenne",
-        CAST(NULL AS TEXT []) AS "labels_autres"
+        labels_autres         AS "labels_autres",
+        CAST(NULL AS BOOLEAN) AS "antenne"
     FROM structures
 )
 
