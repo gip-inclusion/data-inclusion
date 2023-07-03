@@ -33,6 +33,7 @@ WITH structures AS (
             column_override={
                 "thematiques": "TEXT[]",
                 "labels_nationaux": "TEXT[]",
+                "labels_autres": "TEXT[]",
             },
             source_column_name=None
         )
