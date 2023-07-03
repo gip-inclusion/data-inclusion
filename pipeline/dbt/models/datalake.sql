@@ -36,6 +36,8 @@ WITH source AS (
                 source('mediation_numerique_cd44', 'services'),
                 source('mediation_numerique_cd49', 'structures'),
                 source('mediation_numerique_cd49', 'services'),
+                source('mediation_numerique_cd85', 'structures'),
+                source('mediation_numerique_cd85', 'services'),
                 source('mediation_numerique_cd87', 'structures'),
                 source('mediation_numerique_cd87', 'services'),
                 source('mediation_numerique_conseiller_numerique', 'structures'),
@@ -126,7 +128,7 @@ odspep AS (
         'odspep'                           AS "src_alias",
         NULL                               AS "src_url",
         'ressources-partenariales'         AS "file",
-        TO_JSONB(t.*)                      AS "data",
+        TO_JSONB(t.*)                      AS "data",  -- noqa: LT01
         CAST('2022-01-01' AS DATE)         AS "logical_date",
         GEN_RANDOM_UUID()                  AS "id",
         NOW()                              AS "created_at",

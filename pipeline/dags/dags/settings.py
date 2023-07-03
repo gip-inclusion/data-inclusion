@@ -178,6 +178,7 @@ SOURCES_CONFIGS = [
             "cd40",
             "cd44",
             "cd49",
+            "cd85",
             "cd87",
             "conseiller-numerique",
             "conumm",

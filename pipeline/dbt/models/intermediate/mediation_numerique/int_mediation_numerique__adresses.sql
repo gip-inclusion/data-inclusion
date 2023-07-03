@@ -11,6 +11,7 @@ WITH structures AS (
                 ref('stg_mediation_numerique_cd40__structures'),
                 ref('stg_mediation_numerique_cd44__structures'),
                 ref('stg_mediation_numerique_cd49__structures'),
+                ref('stg_mediation_numerique_cd85__structures'),
                 ref('stg_mediation_numerique_cd87__structures'),
                 ref('stg_mediation_numerique_conseiller_numerique__structures'),
                 ref('stg_mediation_numerique_conumm__structures'),
