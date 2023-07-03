@@ -1,3 +1,4 @@
+import geoalchemy2
 import sqlalchemy as sqla
 from sqlalchemy import orm
 from sqlalchemy.dialects.postgresql import ARRAY
@@ -6,6 +7,18 @@ from data_inclusion.api.core.db import Base
 
 # all fields are nullable or have a default value. These models will only be used to
 # query valid data coming from the data pipeline.
+
+
+class Commune(Base):
+    __tablename__ = "admin_express_commune"
+
+    code_insee = sqla.Column(sqla.Text, primary_key=True)
+    nom = sqla.Column(sqla.Text)
+    departement = sqla.Column(sqla.Text)
+    region = sqla.Column(sqla.Text)
+    geom = sqla.Column(geoalchemy2.Geography(geometry_type="GEOMETRY", srid=4326))
+
+    services = orm.relationship("Service", back_populates="commune_")
 
 
 class Structure(Base):
@@ -78,7 +91,9 @@ class Service(Base):
     formulaire_en_ligne = sqla.Column(sqla.Text, nullable=True)
     commune = sqla.Column(sqla.Text, nullable=True)
     code_postal = sqla.Column(sqla.Text, nullable=True)
-    code_insee = sqla.Column(sqla.Text, nullable=True)
+    code_insee = sqla.Column(
+        sqla.ForeignKey("admin_express_commune.code_insee"), nullable=True
+    )
     adresse = sqla.Column(sqla.Text, nullable=True)
     complement_adresse = sqla.Column(sqla.Text, nullable=True)
     longitude = sqla.Column(sqla.Float, nullable=True)
@@ -98,3 +113,5 @@ class Service(Base):
     zone_diffusion_type = sqla.Column(sqla.Text, nullable=True)
     zone_diffusion_code = sqla.Column(sqla.Text, nullable=True)
     zone_diffusion_nom = sqla.Column(sqla.Text, nullable=True)
+
+    commune_ = orm.relationship("Commune", back_populates="services")

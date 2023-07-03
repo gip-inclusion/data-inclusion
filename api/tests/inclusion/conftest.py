@@ -1,4 +1,5 @@
 import inspect
+from pathlib import Path
 
 import pytest
 from factory import Factory
@@ -45,3 +46,31 @@ def service_factory(db_session):
         return service_db_obj
 
     return factory
+
+
+@pytest.fixture
+def commune_factory(db_session):
+    def factory(**kwargs):
+        commune_db_obj = factories.CommuneFactory(**kwargs)
+        db_session.add(commune_db_obj)
+        db_session.commit()
+        db_session.refresh(commune_db_obj)
+        return commune_db_obj
+
+    return factory
+
+
+@pytest.fixture(scope="session")
+def admin_express_commune_nord(db_engine):
+    import geopandas
+
+    df = geopandas.read_file(Path(__file__).parent / "data" / "nord.sqlite")
+    df = df.rename_geometry("geom")
+
+    with db_engine.connect() as conn:
+        df.to_postgis(
+            "admin_express_commune",
+            con=conn,
+            if_exists="replace",
+            index=False,
+        )

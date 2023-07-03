@@ -64,6 +64,12 @@ def test_database_url():
             sqla.text(f'CREATE DATABASE "{test_database_url.database}";')
         )
 
+    # Create postgis extension in test database
+    with sqla.create_engine(
+        test_database_url, isolation_level="AUTOCOMMIT"
+    ).connect() as test_database_conn:
+        test_database_conn.execute(sqla.text("CREATE EXTENSION postgis;"))
+
     yield test_database_url
 
     # Teardown test database

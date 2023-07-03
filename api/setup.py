@@ -37,6 +37,8 @@ setup(
             "faker",
             "factory_boy",
             "pytest-dotenv",
+            "GeoAlchemy2",
+            "geopandas",
         ],
         "dev": [
             "black",

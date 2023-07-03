@@ -714,10 +714,81 @@ def test_list_services_filter_by_code_insee(api_client, service_factory):
 
 
 @pytest.mark.with_token
-def test_search_services_with_code_insee(api_client, service_factory):
-    service_1 = service_factory(code_insee="59009", _di_geocodage_code_insee=None)
-    service_2 = service_factory(code_insee="59350", _di_geocodage_code_insee="62000")
-    service_3 = service_factory(code_insee=None, _di_geocodage_code_insee="59000")
+def test_search_services_with_code_insee_farther_than_100km(
+    api_client,
+    service_factory,
+    admin_express_commune_nord,
+):
+    # Dunkerque to Maubeuge: > 100km
+    # Lille to Maubeuge: <100km
+    service_1 = service_factory(
+        commune="Lille", code_insee="59350", _di_geocodage_code_insee=None
+    )
+    service_factory(
+        commune="Dunkerque", code_insee="59183", _di_geocodage_code_insee=None
+    )
+    service_factory(code_insee=None, _di_geocodage_code_insee=None)
+
+    url = "/api/v0/search/services"
+    response = api_client.get(
+        url,
+        params={
+            "code_insee": "59392",  # Maubeuge
+        },
+    )
+
+    assert response.status_code == 200
+    resp_data = response.json()
+    assert_paginated_response_data(resp_data, total=1)
+    assert resp_data["items"][0]["service"]["id"] == service_1.id
+    assert 0 < resp_data["items"][0]["distance"] < 100
+
+
+@pytest.mark.with_token
+def test_search_services_with_code_insee_geocoded(
+    api_client,
+    service_factory,
+    admin_express_commune_nord,
+):
+    service_1 = service_factory(
+        commune="Maubeuge", code_insee=None, _di_geocodage_code_insee="59392"
+    )
+    service_2 = service_factory(
+        commune="Lille",
+        code_insee="59350",
+        _di_geocodage_code_insee="59392",  # Maubeuge
+    )
+    service_factory(
+        commune="Dunkerque", code_insee=None, _di_geocodage_code_insee="59183"
+    )
+    service_factory(code_insee=None, _di_geocodage_code_insee=None)
+
+    url = "/api/v0/search/services"
+    response = api_client.get(
+        url,
+        params={
+            "code_insee": "59392",  # Maubeuge
+        },
+    )
+
+    assert response.status_code == 200
+    resp_data = response.json()
+    assert_paginated_response_data(resp_data, total=2)
+    assert resp_data["items"][0]["service"]["id"] == service_1.id
+    assert resp_data["items"][0]["distance"] == 0
+    assert resp_data["items"][1]["service"]["id"] == service_2.id
+    assert 0 < resp_data["items"][1]["distance"] < 100
+
+
+@pytest.mark.with_token
+def test_search_services_with_code_insee_ordering(
+    api_client,
+    service_factory,
+    admin_express_commune_nord,
+):
+    service_1 = service_factory(code_insee="59350", _di_geocodage_code_insee=None)
+    service_2 = service_factory(code_insee="59009", _di_geocodage_code_insee=None)
+    service_3 = service_factory(code_insee="59183", _di_geocodage_code_insee=None)
     service_factory(code_insee=None, _di_geocodage_code_insee=None)
 
     url = "/api/v0/search/services"
@@ -726,15 +797,31 @@ def test_search_services_with_code_insee(api_client, service_factory):
     assert response.status_code == 200
     resp_data = response.json()
     assert_paginated_response_data(resp_data, total=3)
-    assert resp_data["items"][0]["service"]["id"] == service_1.id
+    assert resp_data["items"][0]["service"]["id"] == service_2.id
     assert resp_data["items"][0]["distance"] == 0
-    assert resp_data["items"][1]["service"]["id"] == service_2.id
-    assert resp_data["items"][1]["distance"] == 40
+    assert resp_data["items"][1]["service"]["id"] == service_1.id
+    assert resp_data["items"][1]["distance"] == 0
     assert resp_data["items"][2]["service"]["id"] == service_3.id
-    assert resp_data["items"][2]["distance"] == 40
+    assert resp_data["items"][2]["distance"] > 0
 
-    response = api_client.get(url, params={"code_insee": "62041"})
-    assert_paginated_response_data(response.json(), total=1)
+
+@pytest.mark.with_token
+def test_search_services_with_code_insee_sample_distance(api_client, service_factory):
+    service_1 = service_factory(
+        commune="Lille",
+        code_insee="59350",
+        _di_geocodage_code_insee=None,
+    )
+    service_factory(code_insee=None, _di_geocodage_code_insee=None)
+
+    url = "/api/v0/search/services"
+    response = api_client.get(url, params={"code_insee": "59183"})
+
+    assert response.status_code == 200
+    resp_data = response.json()
+    assert_paginated_response_data(resp_data, total=1)
+    assert resp_data["items"][0]["service"]["id"] == service_1.id
+    assert 50 < resp_data["items"][0]["distance"] < 70
 
 
 @pytest.mark.with_token

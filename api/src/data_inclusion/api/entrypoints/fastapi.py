@@ -1,6 +1,7 @@
 import logging
 from typing import Annotated, Optional
 
+import geoalchemy2
 import sentry_sdk
 import sqlalchemy as sqla
 from sqlalchemy import orm
@@ -369,34 +370,58 @@ def search_services(
     frais: Optional[list[schema.Frais]] = None,
     types: Optional[list[schema.TypologieService]] = None,
 ):
+    coalesced_code_insee = sqla.func.coalesce(
+        models.Service.code_insee, models.Service._di_geocodage_code_insee
+    )
+
     query = (
         sqla.select(models.Service)
         .join(models.Service.structure)
         .options(orm.contains_eager(models.Service.structure))
+        .join(
+            models.Commune,
+            coalesced_code_insee == models.Commune.code_insee,
+            isouter=True,
+        )
     )
 
     if source is not None:
         query = query.filter(models.Structure.source == source)
 
     if code_insee is not None:
-        # for now, filter services that are not in the associated departement out
-        cog_departement = code_insee[: 3 if code_insee.startswith("97") else 2]
+        # exclude services farther than 100km
         query = query.filter(
-            sqla.or_(
-                models.Service.code_insee.startswith(cog_departement),
-                models.Service._di_geocodage_code_insee.startswith(cog_departement),
+            geoalchemy2.func.ST_DWithin(
+                sqla.cast(
+                    geoalchemy2.func.ST_Simplify(models.Commune.geom, 0.01),
+                    geoalchemy2.Geography(geometry_type="GEOMETRY", srid=4326),
+                ),
+                sqla.select(
+                    sqla.cast(
+                        geoalchemy2.func.ST_Simplify(models.Commune.geom, 0.01),
+                        geoalchemy2.Geography(geometry_type="GEOMETRY", srid=4326),
+                    )
+                )
+                .filter_by(code_insee=code_insee)
+                .scalar_subquery(),
+                100_000,  # meters
             )
         )
 
-        coalesced_code_insee = sqla.func.coalesce(
-            models.Service.code_insee, models.Service._di_geocodage_code_insee
-        )
-
-        # for now, assign an arbitrary distance based on the city code
+        # annotate distance
         query = query.add_columns(
-            sqla.case(
-                (coalesced_code_insee == code_insee, 0),
-                (coalesced_code_insee != code_insee, 40),
+            (
+                models.Commune.geom.ST_Distance(
+                    sqla.select(
+                        sqla.cast(
+                            models.Commune.geom,
+                            geoalchemy2.Geography(geometry_type="GEOMETRY", srid=4326),
+                        )
+                    )
+                    .filter_by(code_insee=code_insee)
+                    .scalar_subquery()
+                )
+                / 1000  # conversion to kms
             ).label("distance")
         )
     else:
@@ -439,6 +464,9 @@ def search_services(
         query = query.filter(
             sqla.text(filter_stmt).bindparams(types=[t.value for t in types])
         )
+
+    if code_insee:
+        query = query.order_by((coalesced_code_insee == code_insee).desc().nulls_last())
 
     query = query.order_by("distance")
 
