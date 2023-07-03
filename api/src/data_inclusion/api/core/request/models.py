@@ -1,7 +1,7 @@
 import uuid
 
 import sqlalchemy as sqla
-from sqlalchemy.dialects.postgresql import UUID
+from sqlalchemy.dialects.postgresql import JSONB, UUID
 
 from data_inclusion.api.core.db import Base
 
@@ -17,4 +17,9 @@ class Request(Base):
     status_code = sqla.Column(sqla.SmallInteger)
     method = sqla.Column(sqla.Text)
     path = sqla.Column(sqla.Text)
+    base_url = sqla.Column(sqla.Text)
     user = sqla.Column(sqla.Text, nullable=True)
+    path_params = sqla.Column(JSONB)
+    query_params = sqla.Column(JSONB)
+    client_host = sqla.Column(sqla.Text)
+    client_port = sqla.Column(sqla.Integer)
