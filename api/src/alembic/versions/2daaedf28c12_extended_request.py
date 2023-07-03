@@ -33,6 +33,7 @@ def upgrade() -> None:
     )
     op.add_column("api_request", sa.Column("client_host", sa.Text(), nullable=True))
     op.add_column("api_request", sa.Column("client_port", sa.Integer(), nullable=True))
+    op.add_column("api_request", sa.Column("endpoint_name", sa.Text(), nullable=True))
 
 
 def downgrade() -> None:

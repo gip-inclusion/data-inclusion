@@ -16,6 +16,9 @@ def on_error(conn: HTTPConnection, exc: Exception) -> responses.Response:
 
 class AuthenticationBackend(authentication.AuthenticationBackend):
     async def authenticate(self, conn):
+        if "Authorization" not in conn.headers:
+            return
+
         http_bearer_instance = HTTPBearer()
 
         try:
