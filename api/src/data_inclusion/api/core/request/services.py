@@ -11,7 +11,7 @@ def save_request(request: requests.Request, response: responses.Response) -> Non
             method=request.method,
             path=request.url.path,
             base_url=str(request.base_url),
-            user=request.user.username,
+            user=request.user.username if request.user.is_authenticated else None,
             path_params=request.path_params,
             query_params=dict(request.query_params),
             client_host=request.client.host,
