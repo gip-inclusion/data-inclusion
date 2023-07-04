@@ -1,7 +1,7 @@
 """commune
 
 Revision ID: 7f177bfb0108
-Revises: ca282a8389ef
+Revises: 2daaedf28c12
 Create Date: 2023-05-24 18:27:45.820006
 
 """
@@ -12,7 +12,7 @@ from alembic import op
 
 # revision identifiers, used by Alembic.
 revision = "7f177bfb0108"
-down_revision = "ca282a8389ef"
+down_revision = "2daaedf28c12"
 branch_labels = None
 depends_on = None
 
