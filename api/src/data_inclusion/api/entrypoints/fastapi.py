@@ -425,7 +425,7 @@ def search_services(
             ).label("distance")
         )
     else:
-        query = query.add_columns(sqla.null().label("distance"))
+        query = query.add_columns(sqla.null().cast(sqla.Integer).label("distance"))
 
     if thematiques is not None:
         filter_stmt = """\
