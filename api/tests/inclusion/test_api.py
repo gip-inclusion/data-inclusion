@@ -722,12 +722,22 @@ def test_search_services_with_code_insee_farther_than_100km(
     # Dunkerque to Maubeuge: > 100km
     # Lille to Maubeuge: <100km
     service_1 = service_factory(
-        commune="Lille", code_insee="59350", _di_geocodage_code_insee=None
+        commune="Lille",
+        code_insee="59350",
+        _di_geocodage_code_insee=None,
+        modes_accueil=[schema.ModeAccueil.EN_PRESENTIEL.value],
     )
     service_factory(
-        commune="Dunkerque", code_insee="59183", _di_geocodage_code_insee=None
+        commune="Dunkerque",
+        code_insee="59183",
+        _di_geocodage_code_insee=None,
+        modes_accueil=[schema.ModeAccueil.EN_PRESENTIEL.value],
     )
-    service_factory(code_insee=None, _di_geocodage_code_insee=None)
+    service_factory(
+        code_insee=None,
+        _di_geocodage_code_insee=None,
+        modes_accueil=[schema.ModeAccueil.EN_PRESENTIEL.value],
+    )
 
     url = "/api/v0/search/services"
     response = api_client.get(
@@ -751,17 +761,28 @@ def test_search_services_with_code_insee_geocoded(
     admin_express_commune_nord,
 ):
     service_1 = service_factory(
-        commune="Maubeuge", code_insee=None, _di_geocodage_code_insee="59392"
+        commune="Maubeuge",
+        code_insee=None,
+        _di_geocodage_code_insee="59392",
+        modes_accueil=[schema.ModeAccueil.EN_PRESENTIEL.value],
     )
     service_2 = service_factory(
         commune="Lille",
         code_insee="59350",
         _di_geocodage_code_insee="59392",  # Maubeuge
+        modes_accueil=[schema.ModeAccueil.EN_PRESENTIEL.value],
     )
     service_factory(
-        commune="Dunkerque", code_insee=None, _di_geocodage_code_insee="59183"
+        commune="Dunkerque",
+        code_insee=None,
+        _di_geocodage_code_insee="59183",
+        modes_accueil=[schema.ModeAccueil.EN_PRESENTIEL.value],
     )
-    service_factory(code_insee=None, _di_geocodage_code_insee=None)
+    service_factory(
+        code_insee=None,
+        _di_geocodage_code_insee=None,
+        modes_accueil=[schema.ModeAccueil.EN_PRESENTIEL.value],
+    )
 
     url = "/api/v0/search/services"
     response = api_client.get(
@@ -786,10 +807,26 @@ def test_search_services_with_code_insee_ordering(
     service_factory,
     admin_express_commune_nord,
 ):
-    service_1 = service_factory(code_insee="59350", _di_geocodage_code_insee=None)
-    service_2 = service_factory(code_insee="59009", _di_geocodage_code_insee=None)
-    service_3 = service_factory(code_insee="59183", _di_geocodage_code_insee=None)
-    service_factory(code_insee=None, _di_geocodage_code_insee=None)
+    service_1 = service_factory(
+        code_insee="59350",
+        _di_geocodage_code_insee=None,
+        modes_accueil=[schema.ModeAccueil.EN_PRESENTIEL.value],
+    )
+    service_2 = service_factory(
+        code_insee="59009",
+        _di_geocodage_code_insee=None,
+        modes_accueil=[schema.ModeAccueil.EN_PRESENTIEL.value],
+    )
+    service_3 = service_factory(
+        code_insee="59183",
+        _di_geocodage_code_insee=None,
+        modes_accueil=[schema.ModeAccueil.EN_PRESENTIEL.value],
+    )
+    service_factory(
+        code_insee=None,
+        _di_geocodage_code_insee=None,
+        modes_accueil=[schema.ModeAccueil.EN_PRESENTIEL.value],
+    )
 
     url = "/api/v0/search/services"
     response = api_client.get(url, params={"code_insee": "59009"})
@@ -811,8 +848,13 @@ def test_search_services_with_code_insee_sample_distance(api_client, service_fac
         commune="Lille",
         code_insee="59350",
         _di_geocodage_code_insee=None,
+        modes_accueil=[schema.ModeAccueil.EN_PRESENTIEL.value],
     )
-    service_factory(code_insee=None, _di_geocodage_code_insee=None)
+    service_factory(
+        code_insee=None,
+        _di_geocodage_code_insee=None,
+        modes_accueil=[schema.ModeAccueil.EN_PRESENTIEL.value],
+    )
 
     url = "/api/v0/search/services"
     response = api_client.get(url, params={"code_insee": "59183"})
@@ -822,6 +864,33 @@ def test_search_services_with_code_insee_sample_distance(api_client, service_fac
     assert_paginated_response_data(resp_data, total=1)
     assert resp_data["items"][0]["service"]["id"] == service_1.id
     assert 50 < resp_data["items"][0]["distance"] < 70
+
+
+@pytest.mark.with_token
+def test_search_services_with_code_insee_a_distance(api_client, service_factory):
+    service_1 = service_factory(
+        commune="Dunkerque",
+        code_insee="59183",
+        _di_geocodage_code_insee=None,
+        modes_accueil=[schema.ModeAccueil.A_DISTANCE.value],
+    )
+    service_2 = service_factory(
+        commune="Maubeuge",
+        code_insee="59392",
+        _di_geocodage_code_insee=None,
+        modes_accueil=[schema.ModeAccueil.A_DISTANCE.value],
+    )
+
+    url = "/api/v0/search/services"
+    response = api_client.get(url, params={"code_insee": "59183"})
+
+    assert response.status_code == 200
+    resp_data = response.json()
+    assert_paginated_response_data(resp_data, total=2)
+    assert resp_data["items"][0]["service"]["id"] == service_1.id
+    assert resp_data["items"][0]["distance"] is None
+    assert resp_data["items"][1]["service"]["id"] == service_2.id
+    assert resp_data["items"][1]["distance"] is None
 
 
 @pytest.mark.with_token

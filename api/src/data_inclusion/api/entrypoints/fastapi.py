@@ -389,39 +389,53 @@ def search_services(
         query = query.filter(models.Structure.source == source)
 
     if code_insee is not None:
-        # exclude services farther than 100km
         query = query.filter(
-            geoalchemy2.func.ST_DWithin(
-                sqla.cast(
-                    geoalchemy2.func.ST_Simplify(models.Commune.geom, 0.01),
-                    geoalchemy2.Geography(geometry_type="GEOMETRY", srid=4326),
-                ),
-                sqla.select(
+            sqla.or_(
+                # either `en-presentiel` within 100km
+                geoalchemy2.func.ST_DWithin(
                     sqla.cast(
                         geoalchemy2.func.ST_Simplify(models.Commune.geom, 0.01),
                         geoalchemy2.Geography(geometry_type="GEOMETRY", srid=4326),
+                    ),
+                    sqla.select(
+                        sqla.cast(
+                            geoalchemy2.func.ST_Simplify(models.Commune.geom, 0.01),
+                            geoalchemy2.Geography(geometry_type="GEOMETRY", srid=4326),
+                        )
                     )
-                )
-                .filter_by(code_insee=code_insee)
-                .scalar_subquery(),
-                100_000,  # meters
+                    .filter_by(code_insee=code_insee)
+                    .scalar_subquery(),
+                    100_000,  # meters
+                ),
+                # or `a-distance`
+                schema.ModeAccueil.A_DISTANCE.value
+                == sqla.any_(models.Service.modes_accueil),
             )
         )
 
         # annotate distance
         query = query.add_columns(
             (
-                models.Commune.geom.ST_Distance(
-                    sqla.select(
-                        sqla.cast(
-                            models.Commune.geom,
-                            geoalchemy2.Geography(geometry_type="GEOMETRY", srid=4326),
+                sqla.case(
+                    (
+                        schema.ModeAccueil.EN_PRESENTIEL.value
+                        == sqla.any_(models.Service.modes_accueil),
+                        models.Commune.geom.ST_Distance(
+                            sqla.select(
+                                sqla.cast(
+                                    models.Commune.geom,
+                                    geoalchemy2.Geography(
+                                        geometry_type="GEOMETRY", srid=4326
+                                    ),
+                                )
+                            )
+                            .filter_by(code_insee=code_insee)
+                            .scalar_subquery()
                         )
-                    )
-                    .filter_by(code_insee=code_insee)
-                    .scalar_subquery()
+                        / 1000,  # conversion to kms
+                    ),
+                    else_=sqla.null().cast(sqla.Integer),
                 )
-                / 1000  # conversion to kms
             ).label("distance")
         )
     else:
@@ -465,10 +479,10 @@ def search_services(
             sqla.text(filter_stmt).bindparams(types=[t.value for t in types])
         )
 
+    query = query.order_by("distance")
+
     if code_insee:
         query = query.order_by((coalesced_code_insee == code_insee).desc().nulls_last())
-
-    query = query.order_by("distance")
 
     def _items_to_mappings(items: list) -> list[dict]:
         # convert rows returned by `Session.execute` to a list of dicts that will be
