@@ -18,6 +18,7 @@ setup(
         "faker",
         "fastapi",
         "fastapi-pagination",
+        "GeoAlchemy2",
         "gunicorn",
         "httpx",
         "psycopg2",
@@ -37,7 +38,6 @@ setup(
             "faker",
             "factory_boy",
             "pytest-dotenv",
-            "GeoAlchemy2",
             "geopandas",
         ],
         "dev": [

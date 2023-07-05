@@ -66,6 +66,8 @@ filelock==3.12.0
     # via
     #   tox
     #   virtualenv
+geoalchemy2==0.14.0
+    # via data-inclusion-api (setup.py)
 greenlet==2.0.2
     # via sqlalchemy
 gunicorn==20.1.0
@@ -99,6 +101,7 @@ nodeenv==1.8.0
 packaging==23.1
     # via
     #   black
+    #   geoalchemy2
     #   pyproject-api
     #   tox
 pathspec==0.11.1
@@ -161,6 +164,7 @@ sqlalchemy==2.0.15
     # via
     #   alembic
     #   data-inclusion-api (setup.py)
+    #   geoalchemy2
 starlette==0.27.0
     # via fastapi
 tomli==2.0.1

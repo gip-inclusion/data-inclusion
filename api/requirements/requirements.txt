@@ -49,6 +49,8 @@ fastapi==0.95.2
     #   sentry-sdk
 fastapi-pagination==0.12.4
     # via data-inclusion-api (setup.py)
+geoalchemy2==0.14.0
+    # via data-inclusion-api (setup.py)
 greenlet==2.0.2
     # via sqlalchemy
 gunicorn==20.1.0
@@ -73,6 +75,8 @@ mako==1.2.4
     # via alembic
 markupsafe==2.1.2
     # via mako
+packaging==23.1
+    # via geoalchemy2
 psycopg2==2.9.6
     # via data-inclusion-api (setup.py)
 pyasn1==0.5.0
@@ -118,6 +122,7 @@ sqlalchemy==2.0.15
     # via
     #   alembic
     #   data-inclusion-api (setup.py)
+    #   geoalchemy2
 starlette==0.27.0
     # via fastapi
 typing-extensions==4.6.2
