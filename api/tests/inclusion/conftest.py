@@ -57,7 +57,7 @@ def admin_express_commune_nord(db_engine):
 
     with db_engine.connect() as conn:
         df.to_postgis(
-            "admin_express_commune",
+            "admin_express_communes",
             con=conn,
             if_exists="replace",
             index=False,

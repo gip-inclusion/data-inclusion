@@ -365,7 +365,7 @@ def retrieve_service_endpoint(
 def search_services(
     db_session: orm.Session,
     source: Optional[str] = None,
-    code_insee: Optional[schema.CodeInsee] = None,
+    commune_instance: Optional[models.Commune] = None,
     thematiques: Optional[list[schema.Thematique]] = None,
     frais: Optional[list[schema.Frais]] = None,
     types: Optional[list[schema.TypologieService]] = None,
@@ -380,7 +380,7 @@ def search_services(
         .options(orm.contains_eager(models.Service.structure))
         .join(
             models.Commune,
-            coalesced_code_insee == models.Commune.code_insee,
+            coalesced_code_insee == models.Commune.code,
             isouter=True,
         )
     )
@@ -388,7 +388,34 @@ def search_services(
     if source is not None:
         query = query.filter(models.Structure.source == source)
 
-    if code_insee is not None:
+    if commune_instance is not None:
+        # filter by zone de diffusion
+        query = query.filter(
+            sqla.or_(
+                models.Service.zone_diffusion_type is None,
+                models.Service.zone_diffusion_type == schema.TypeCOG.PAYS.value,
+                sqla.and_(
+                    models.Service.zone_diffusion_type == schema.TypeCOG.COMMUNE.value,
+                    models.Service.zone_diffusion_code == commune_instance.code,
+                ),
+                sqla.and_(
+                    models.Service.zone_diffusion_type == schema.TypeCOG.EPCI.value,
+                    sqla.literal(commune_instance.siren_epci).contains(
+                        models.Service.zone_diffusion_code
+                    ),
+                ),
+                sqla.and_(
+                    models.Service.zone_diffusion_type
+                    == schema.TypeCOG.DEPARTEMENT.value,
+                    models.Service.zone_diffusion_code == commune_instance.departement,
+                ),
+                sqla.and_(
+                    models.Service.zone_diffusion_type == schema.TypeCOG.REGION.value,
+                    models.Service.zone_diffusion_code == commune_instance.region,
+                ),
+            )
+        )
+
         query = query.filter(
             sqla.or_(
                 # either `en-presentiel` within 100km
@@ -403,7 +430,7 @@ def search_services(
                             geoalchemy2.Geography(geometry_type="GEOMETRY", srid=4326),
                         )
                     )
-                    .filter_by(code_insee=code_insee)
+                    .filter(models.Commune.code == commune_instance.code)
                     .scalar_subquery(),
                     100_000,  # meters
                 ),
@@ -429,7 +456,7 @@ def search_services(
                                     ),
                                 )
                             )
-                            .filter_by(code_insee=code_insee)
+                            .filter(models.Commune.code == commune_instance.code)
                             .scalar_subquery()
                         )
                         / 1000,  # conversion to kms
@@ -481,8 +508,10 @@ def search_services(
 
     query = query.order_by("distance")
 
-    if code_insee:
-        query = query.order_by((coalesced_code_insee == code_insee).desc().nulls_last())
+    if commune_instance is not None:
+        query = query.order_by(
+            (coalesced_code_insee == commune_instance.code).desc().nulls_last()
+        )
 
     def _items_to_mappings(items: list) -> list[dict]:
         # convert rows returned by `Session.execute` to a list of dicts that will be
@@ -536,20 +565,37 @@ def search_services_endpoint(
     """
     ## Rechercher des services
 
-    La recherche de services permet de trouver des services dans une commune et à proximité.
+    La recherche de services permet de trouver des services dans une commune et à
+    proximité.
 
-    Les services peuvent être filtrés selon par thématiques, frais, typologies.
+    Les services peuvent être filtrés selon par thématiques, frais, typologies et
+    code_insee de commune.
 
-    Lorsque le `code_insee` d'une commune est fourni,
+    En particulier, lorsque le `code_insee` d'une commune est fourni :
 
-    * les services sont filtrés dans un rayon de 100km autour de la commune.
-    * le champ `distance` des résultats est rempli.
+    * les services sont filtrés par zone de diffusion lorsque celle-ci est définie.
+    * de plus, les services en présentiel sont filtrés dans un rayon de 100km autour de
+    la commune.
+    * le champ `distance` est :
+        * rempli pour les services (non exclusivement) en présentiel.
+        * laissé vide pour les services à distance et par défaut si le mode d'accueil
+        n'est pas définie.
     * les résultats sont triés par distance croissante.
-    """  # noqa: W505
+    """
+
+    commune_instance = None
+    if code_insee is not None:
+        commune_instance = db_session.get(models.Commune, code_insee)
+        if commune_instance is None:
+            raise fastapi.HTTPException(
+                status_code=fastapi.status.HTTP_422_UNPROCESSABLE_ENTITY,
+                detail="This `code_insee` does not exist.",
+            )
+
     return search_services(
         db_session,
         source=source,
-        code_insee=code_insee,
+        commune_instance=commune_instance,
         thematiques=thematiques,
         frais=frais,
         types=types,

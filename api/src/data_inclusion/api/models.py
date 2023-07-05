@@ -10,15 +10,42 @@ from data_inclusion.api.core.db import Base
 
 
 class Commune(Base):
-    __tablename__ = "admin_express_commune"
+    __tablename__ = "admin_express_communes"
 
-    code_insee = sqla.Column(sqla.Text, primary_key=True)
+    code = sqla.Column(sqla.Text, primary_key=True)
     nom = sqla.Column(sqla.Text)
     departement = sqla.Column(sqla.Text)
     region = sqla.Column(sqla.Text)
+    siren_epci = sqla.Column(sqla.Text)
     geom = sqla.Column(geoalchemy2.Geography(geometry_type="GEOMETRY", srid=4326))
 
     services = orm.relationship("Service", back_populates="commune_")
+
+
+class EPCI(Base):
+    __tablename__ = "admin_express_epcis"
+
+    code = sqla.Column(sqla.Text, primary_key=True)
+    nom = sqla.Column(sqla.Text)
+    nature = sqla.Column(sqla.Text)
+    geom = sqla.Column(geoalchemy2.Geography(geometry_type="GEOMETRY", srid=4326))
+
+
+class Departement(Base):
+    __tablename__ = "admin_express_departements"
+
+    code = sqla.Column(sqla.Text, primary_key=True)
+    nom = sqla.Column(sqla.Text)
+    insee_reg = sqla.Column(sqla.Text)
+    geom = sqla.Column(geoalchemy2.Geography(geometry_type="GEOMETRY", srid=4326))
+
+
+class Region(Base):
+    __tablename__ = "admin_express_regions"
+
+    code = sqla.Column(sqla.Text, primary_key=True)
+    nom = sqla.Column(sqla.Text)
+    geom = sqla.Column(geoalchemy2.Geography(geometry_type="GEOMETRY", srid=4326))
 
 
 class Structure(Base):
@@ -92,7 +119,7 @@ class Service(Base):
     commune = sqla.Column(sqla.Text, nullable=True)
     code_postal = sqla.Column(sqla.Text, nullable=True)
     code_insee = sqla.Column(
-        sqla.ForeignKey("admin_express_commune.code_insee"), nullable=True
+        sqla.ForeignKey("admin_express_communes.code"), nullable=True
     )
     adresse = sqla.Column(sqla.Text, nullable=True)
     complement_adresse = sqla.Column(sqla.Text, nullable=True)

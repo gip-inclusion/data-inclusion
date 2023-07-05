@@ -352,9 +352,9 @@ def test_list_services_all(api_client, service_factory):
                 "modes_accueil": ["a-distance"],
                 "modes_orientation_accompagnateur": ["telephoner"],
                 "modes_orientation_beneficiaire": ["telephoner"],
-                "zone_diffusion_type": "commune",
-                "zone_diffusion_code": "59350",
-                "zone_diffusion_nom": "Lille",
+                "zone_diffusion_type": None,
+                "zone_diffusion_code": None,
+                "zone_diffusion_nom": None,
             }
         ],
         "total": 1,
@@ -752,6 +752,216 @@ def test_search_services_with_code_insee_farther_than_100km(
     assert_paginated_response_data(resp_data, total=1)
     assert resp_data["items"][0]["service"]["id"] == service_1.id
     assert 0 < resp_data["items"][0]["distance"] < 100
+
+
+@pytest.mark.with_token
+def test_search_services_with_zone_diffusion_pays(
+    api_client,
+    service_factory,
+    admin_express_commune_nord,
+):
+    service_1 = service_factory(
+        commune="Dunkerque",
+        code_insee="59183",
+        _di_geocodage_code_insee=None,
+        modes_accueil=[schema.ModeAccueil.A_DISTANCE.value],
+        zone_diffusion_type=schema.TypeCOG.PAYS.value,
+        zone_diffusion_code=None,
+        zone_diffusion_nom=None,
+    )
+
+    url = "/api/v0/search/services"
+    response = api_client.get(
+        url,
+        params={
+            "code_insee": "59392",  # Maubeuge
+        },
+    )
+
+    assert response.status_code == 200
+    resp_data = response.json()
+    assert_paginated_response_data(resp_data, total=1)
+    assert resp_data["items"][0]["service"]["id"] == service_1.id
+
+
+@pytest.mark.with_token
+def test_search_services_with_zone_diffusion_commune(
+    api_client,
+    service_factory,
+    admin_express_commune_nord,
+):
+    service_1 = service_factory(
+        commune="Dunkerque",
+        code_insee="59183",
+        _di_geocodage_code_insee=None,
+        modes_accueil=[schema.ModeAccueil.EN_PRESENTIEL.value],
+        zone_diffusion_type=schema.TypeCOG.COMMUNE.value,
+        zone_diffusion_code="59183",
+        zone_diffusion_nom="Dunkerque",
+    )
+    service_factory(
+        commune="Lille",
+        code_insee="59350",
+        _di_geocodage_code_insee=None,
+        modes_accueil=[schema.ModeAccueil.EN_PRESENTIEL.value],
+        zone_diffusion_type=schema.TypeCOG.COMMUNE.value,
+        zone_diffusion_code="59350",
+        zone_diffusion_nom="Lille",
+    )
+
+    url = "/api/v0/search/services"
+    response = api_client.get(
+        url,
+        params={
+            "code_insee": "59183",  # Dunkerque
+        },
+    )
+
+    assert response.status_code == 200
+    resp_data = response.json()
+    assert_paginated_response_data(resp_data, total=1)
+    assert resp_data["items"][0]["service"]["id"] == service_1.id
+
+
+@pytest.mark.with_token
+def test_search_services_with_zone_diffusion_epci(
+    api_client,
+    service_factory,
+    admin_express_commune_nord,
+):
+    service_1 = service_factory(
+        commune="Dunkerque",
+        code_insee="59183",
+        _di_geocodage_code_insee=None,
+        modes_accueil=[schema.ModeAccueil.EN_PRESENTIEL.value],
+        zone_diffusion_type=schema.TypeCOG.EPCI.value,
+        zone_diffusion_code="245900428",
+        zone_diffusion_nom="CU de Dunkerque",
+    )
+    service_factory(
+        commune="Lille",
+        code_insee="59350",
+        _di_geocodage_code_insee=None,
+        modes_accueil=[schema.ModeAccueil.EN_PRESENTIEL.value],
+        zone_diffusion_type=schema.TypeCOG.EPCI.value,
+        zone_diffusion_code="200093201",
+        zone_diffusion_nom="Métropole Européenne de Lille",
+    )
+
+    url = "/api/v0/search/services"
+    response = api_client.get(
+        url,
+        params={
+            "code_insee": "59183",  # Dunkerque
+        },
+    )
+
+    assert response.status_code == 200
+    resp_data = response.json()
+    assert_paginated_response_data(resp_data, total=1)
+    assert resp_data["items"][0]["service"]["id"] == service_1.id
+
+
+@pytest.mark.with_token
+def test_search_services_with_zone_diffusion_departement(
+    api_client,
+    service_factory,
+    admin_express_commune_nord,
+):
+    service_1 = service_factory(
+        commune="Dunkerque",
+        code_insee="59183",
+        _di_geocodage_code_insee=None,
+        modes_accueil=[schema.ModeAccueil.EN_PRESENTIEL.value],
+        zone_diffusion_type=schema.TypeCOG.DEPARTEMENT.value,
+        zone_diffusion_code="59",
+        zone_diffusion_nom="Nord",
+    )
+    service_factory(
+        commune="Lille",
+        code_insee="59350",
+        _di_geocodage_code_insee=None,
+        modes_accueil=[schema.ModeAccueil.EN_PRESENTIEL.value],
+        zone_diffusion_type=schema.TypeCOG.DEPARTEMENT.value,
+        zone_diffusion_code="62",
+        zone_diffusion_nom="Pas-de-Calais",
+    )
+
+    url = "/api/v0/search/services"
+    response = api_client.get(
+        url,
+        params={
+            "code_insee": "59183",  # Dunkerque
+        },
+    )
+
+    assert response.status_code == 200
+    resp_data = response.json()
+    assert_paginated_response_data(resp_data, total=1)
+    assert resp_data["items"][0]["service"]["id"] == service_1.id
+
+
+@pytest.mark.with_token
+def test_search_services_with_zone_diffusion_region(
+    api_client,
+    service_factory,
+    admin_express_commune_nord,
+):
+    service_1 = service_factory(
+        commune="Dunkerque",
+        code_insee="59183",
+        _di_geocodage_code_insee=None,
+        modes_accueil=[schema.ModeAccueil.EN_PRESENTIEL.value],
+        zone_diffusion_type=schema.TypeCOG.REGION.value,
+        zone_diffusion_code="32",
+        zone_diffusion_nom="Nord",
+    )
+    service_factory(
+        commune="Maubeuge",
+        code_insee="59392",
+        _di_geocodage_code_insee=None,
+        modes_accueil=[schema.ModeAccueil.EN_PRESENTIEL.value],
+        zone_diffusion_type=schema.TypeCOG.REGION.value,
+        zone_diffusion_code="44",
+        zone_diffusion_nom="Grand Est",
+    )
+
+    url = "/api/v0/search/services"
+    response = api_client.get(
+        url,
+        params={
+            "code_insee": "59183",  # Dunkerque
+        },
+    )
+
+    assert response.status_code == 200
+    resp_data = response.json()
+    assert_paginated_response_data(resp_data, total=1)
+    assert resp_data["items"][0]["service"]["id"] == service_1.id
+
+
+@pytest.mark.with_token
+def test_search_services_with_bad_code_insee(
+    api_client,
+    service_factory,
+    admin_express_commune_nord,
+):
+    service_factory(
+        commune="Lille",
+        code_insee="59350",
+        _di_geocodage_code_insee=None,
+        modes_accueil=[schema.ModeAccueil.A_DISTANCE.value],
+    )
+
+    url = "/api/v0/search/services"
+    response = api_client.get(
+        url,
+        params={
+            "code_insee": "59999",  # Does not exist
+        },
+    )
+
+    assert response.status_code == 422
 
 
 @pytest.mark.with_token
