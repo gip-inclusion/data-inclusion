@@ -392,7 +392,7 @@ def search_services(
         # filter by zone de diffusion
         query = query.filter(
             sqla.or_(
-                models.Service.zone_diffusion_type is None,
+                models.Service.zone_diffusion_type.is_(None),
                 models.Service.zone_diffusion_type == schema.TypeCOG.PAYS.value,
                 sqla.and_(
                     models.Service.zone_diffusion_type == schema.TypeCOG.COMMUNE.value,
