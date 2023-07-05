@@ -419,14 +419,16 @@ def search_services(
         query = query.filter(
             sqla.or_(
                 # either `en-presentiel` within 100km
-                geoalchemy2.func.ST_DWithin(
+                geoalchemy2.functions.ST_DWithin(
                     sqla.cast(
-                        geoalchemy2.func.ST_Simplify(models.Commune.geom, 0.01),
+                        geoalchemy2.functions.ST_Simplify(models.Commune.geom, 0.01),
                         geoalchemy2.Geography(geometry_type="GEOMETRY", srid=4326),
                     ),
                     sqla.select(
                         sqla.cast(
-                            geoalchemy2.func.ST_Simplify(models.Commune.geom, 0.01),
+                            geoalchemy2.functions.ST_Simplify(
+                                models.Commune.geom, 0.01
+                            ),
                             geoalchemy2.Geography(geometry_type="GEOMETRY", srid=4326),
                         )
                     )
