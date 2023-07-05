@@ -46,6 +46,7 @@ RUN apt-get update \
     build-essential \
     libpq-dev \
     git \
+    p7zip \
     && apt-get autoremove -yqq --purge \
     && apt-get clean -y \
     && rm -rf /var/lib/apt/lists/*

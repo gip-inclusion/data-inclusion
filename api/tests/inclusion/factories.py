@@ -163,6 +163,6 @@ class ServiceFactory(factory.Factory):
             [schema.ModeOrientationBeneficiaire.SE_PRESENTER.value],
         ]
     )
-    zone_diffusion_type = schema.TypeCOG.COMMUNE.value
-    zone_diffusion_code = "59350"
-    zone_diffusion_nom = "Lille"
+    zone_diffusion_type = None
+    zone_diffusion_code = None
+    zone_diffusion_nom = None
