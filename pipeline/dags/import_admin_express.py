@@ -4,7 +4,7 @@ import airflow
 import pendulum
 from airflow.operators import bash, empty, python
 
-from dags.virtualenvs import PYTHON_BIN_PATH
+from dags.virtualenvs import PIPX_PYTHON_BIN_PATH, PYTHON_BIN_PATH
 
 logger = logging.getLogger(__name__)
 
@@ -256,7 +256,11 @@ with airflow.DAG(
 
     extract_dataset = bash.BashOperator(
         task_id="extract",
-        bash_command="7zr -aoa -bd x /tmp/ign_admin_express.7z",
+        bash_command=(
+            f"{PIPX_PYTHON_BIN_PATH.parent / 'pipx'} "
+            "run py7zr x /tmp/ign_admin_express.7z"
+        ),
+        append_env=True,
         cwd="/tmp",
     )
 

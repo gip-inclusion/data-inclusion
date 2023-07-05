@@ -56,6 +56,12 @@ python -m venv "${VIRTUAL_ENV}"
 "${VIRTUAL_ENV}/bin/python" -m pip install .
 
 # Create additional virtualenvs for isolated task executions
+VIRTUAL_ENV="${AIRFLOW_HOME}/venvs/pipx/venv"
+python -m venv "${VIRTUAL_ENV}"
+"${VIRTUAL_ENV}/bin/python" -m pip install -U pip setuptools wheel
+"${VIRTUAL_ENV}/bin/python" -m pip install -r requirements/tasks/pipx/requirements.txt
+
+# Create additional virtualenvs for isolated task executions
 VIRTUAL_ENV="${AIRFLOW_HOME}/venvs/dbt/venv"
 python -m venv "${VIRTUAL_ENV}"
 "${VIRTUAL_ENV}/bin/python" -m pip install -U pip setuptools wheel
