@@ -1200,6 +1200,35 @@ def test_search_services_with_types(api_client, service_factory):
 
 
 @pytest.mark.with_token
+def test_search_services_with_sources(api_client, service_factory):
+    service_1 = service_factory(source="dora")
+    service_2 = service_factory(source="emplois-de-linclusion")
+    service_factory(source="un-jeune-une-solution")
+
+    url = "/api/v0/search/services"
+    response = api_client.get(
+        url,
+        params={
+            "sources": ["dora", "emplois-de-linclusion"],
+        },
+    )
+
+    assert response.status_code == 200
+    resp_data = response.json()
+    assert_paginated_response_data(resp_data, total=2)
+    assert resp_data["items"][0]["service"]["id"] in [service_1.id, service_2.id]
+    assert resp_data["items"][1]["service"]["id"] in [service_1.id, service_2.id]
+
+    response = api_client.get(
+        url,
+        params={
+            "sources": ["foobar"],
+        },
+    )
+    assert_paginated_response_data(response.json(), total=0)
+
+
+@pytest.mark.with_token
 def test_retrieve_service(api_client, service_factory):
     service_1 = service_factory(source="foo", id="1")
     service_2 = service_factory(source="bar", id="1")

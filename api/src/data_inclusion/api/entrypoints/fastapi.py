@@ -364,7 +364,7 @@ def retrieve_service_endpoint(
 
 def search_services(
     db_session: orm.Session,
-    source: Optional[str] = None,
+    sources: Optional[list[str]] = None,
     commune_instance: Optional[models.Commune] = None,
     thematiques: Optional[list[schema.Thematique]] = None,
     frais: Optional[list[schema.Frais]] = None,
@@ -385,8 +385,8 @@ def search_services(
         )
     )
 
-    if source is not None:
-        query = query.filter(models.Structure.source == source)
+    if sources is not None:
+        query = query.filter(models.Service.source == sqla.any_(sqla.literal(sources)))
 
     if commune_instance is not None:
         # filter by zone de diffusion
@@ -532,7 +532,22 @@ def search_services(
 )
 def search_services_endpoint(
     db_session=fastapi.Depends(db.get_session),
-    source: Optional[str] = None,
+    source: Annotated[
+        Optional[str],
+        fastapi.Query(
+            description="""Un identifiant de source. Déprécié en faveur de `sources`.""",
+            deprecated=True,
+        ),
+    ] = None,
+    sources: Annotated[
+        Optional[list[str]],
+        fastapi.Query(
+            description="""Une liste d'identifiants de source.
+                La liste des identifiants de source est disponible sur le endpoint dédié.
+                Les résultats seront limités aux sources spécifiées.
+            """,
+        ),
+    ] = None,
     code_insee: Annotated[
         Optional[schema.CodeInsee],
         fastapi.Query(
@@ -594,9 +609,12 @@ def search_services_endpoint(
                 detail="This `code_insee` does not exist.",
             )
 
+    if sources is None and source is not None:
+        sources = [source]
+
     return search_services(
         db_session,
-        source=source,
+        sources=sources,
         commune_instance=commune_instance,
         thematiques=thematiques,
         frais=frais,
