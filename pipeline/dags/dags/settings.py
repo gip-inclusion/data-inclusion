@@ -169,6 +169,7 @@ SOURCES_CONFIGS = [
             ],
         }
         for source_id in [
+            "aidants-connect",
             "angers",
             "assembleurs",
             "cd17",

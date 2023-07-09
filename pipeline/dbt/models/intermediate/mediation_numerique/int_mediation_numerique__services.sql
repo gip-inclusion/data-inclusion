@@ -12,6 +12,7 @@ WITH services AS (
     {{
         dbt_utils.union_relations(
             relations=[
+                ref('stg_mediation_numerique_aidants_connect__services'),
                 ref('stg_mediation_numerique_angers__services'),
                 ref('stg_mediation_numerique_assembleurs__services'),
                 ref('stg_mediation_numerique_cd17__services'),
@@ -58,6 +59,7 @@ structures AS (
     {{
         dbt_utils.union_relations(
             relations=[
+                ref('stg_mediation_numerique_aidants_connect__structures'),
                 ref('stg_mediation_numerique_angers__structures'),
                 ref('stg_mediation_numerique_assembleurs__structures'),
                 ref('stg_mediation_numerique_cd17__structures'),

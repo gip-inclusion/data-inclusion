@@ -18,6 +18,8 @@ WITH source AS (
                 source('emplois_de_linclusion', 'siaes'),
                 source('emplois_de_linclusion', 'organisations'),
                 source('finess', 'etablissements'),
+                source('mediation_numerique_aidants_connect', 'structures'),
+                source('mediation_numerique_aidants_connect', 'services'),
                 source('mediation_numerique_angers', 'structures'),
                 source('mediation_numerique_angers', 'services'),
                 source('mediation_numerique_assembleurs', 'structures'),

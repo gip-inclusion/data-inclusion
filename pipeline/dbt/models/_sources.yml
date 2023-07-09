@@ -180,6 +180,12 @@ sources:
       - name: siaes
       - name: organisations
 
+  - name: mediation_numerique_aidants_connect
+    schema: mediation_numerique_aidants_connect
+    tables:
+      - name: structures
+      - name: services
+
   - name: mediation_numerique_angers
     schema: mediation_numerique_angers
     tables:
