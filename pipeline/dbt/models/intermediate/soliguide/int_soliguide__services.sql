@@ -60,7 +60,7 @@ final AS (
         NULL                                                     AS "frais_autres",
         NULL::TEXT []                                            AS "profils",
         NULL                                                     AS "pre_requis",
-        NULL                                                     AS "cumulable",
+        TRUE                                                     AS "cumulable",
         NULL                                                     AS "justificatifs",
         NULL                                                     AS "date_creation",
         NULL                                                     AS "date_suspension",
