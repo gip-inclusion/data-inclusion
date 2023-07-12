@@ -38,9 +38,9 @@ final AS (
         FALSE                                                                                     AS "contact_public",
         NULL                                                                                      AS "contact_nom_prenom",
         derniere_modif_date                                                                       AS "date_maj",
-        NULL                                                                                      AS "zone_diffusion_type",
-        NULL                                                                                      AS "zone_diffusion_code",
-        NULL                                                                                      AS "zone_diffusion_nom",
+        'commune'                                                                                 AS "zone_diffusion_type",
+        NULL                                                                                      AS "zone_diffusion_code", -- will be overridden after geocoding
+        NULL                                                                                      AS "zone_diffusion_nom", -- will be overridden after geocoding
         NULL::TEXT []                                                                             AS "modes_orientation_accompagnateur",
         NULL::TEXT []                                                                             AS "modes_orientation_beneficiaire",
         CASE WHEN avip THEN 'Crèches À Vocation d''Insertion Professionnelle' ELSE nom END        AS "nom",
