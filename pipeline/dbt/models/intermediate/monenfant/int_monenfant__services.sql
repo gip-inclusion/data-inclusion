@@ -27,7 +27,7 @@ final AS (
         id                                                                                        AS "structure_id",
         _di_source_id                                                                             AS "source",
         NULL                                                                                      AS "pre_requis",
-        NULL                                                                                      AS "cumulable",
+        TRUE                                                                                      AS "cumulable",
         NULL                                                                                      AS "justificatifs",
         NULL                                                                                      AS "formulaire_en_ligne",
         details_infos_pratiques_jour_horaire                                                      AS "recurrence",
