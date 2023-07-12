@@ -69,13 +69,12 @@ final AS (
         NULL                                                     AS "contact_public",
         NULL                                                     AS "contact_nom_prenom",
         services.updated_at                                      AS "date_maj",
-        NULL                                                     AS "zone_diffusion_type",
-        NULL                                                     AS "zone_diffusion_code",
-        NULL                                                     AS "zone_diffusion_nom",
+        'commune'                                                AS "zone_diffusion_type",
+        NULL                                                     AS "zone_diffusion_code",  -- will be overridden after geocoding
+        NULL                                                     AS "zone_diffusion_nom",  -- will be overridden after geocoding
         NULL                                                     AS "formulaire_en_ligne",
         NULL                                                     AS "recurrence",
         services.lieu_id                                         AS "structure_id",
-        NULL::TEXT []                                            AS "modes_accueil",
         NULL::TEXT []                                            AS "modes_orientation_accompagnateur",
         NULL::TEXT []                                            AS "modes_orientation_beneficiaire",
         ARRAY(
@@ -83,6 +82,7 @@ final AS (
             FROM di_thematique_by_soliguide_categorie_code
             WHERE services.categorie = di_thematique_by_soliguide_categorie_code.categorie
         )::TEXT []                                               AS "thematiques",
+        ARRAY['en-presentiel']                                   AS "modes_accueil",
         categories.label || COALESCE(' : ' || services.name, '') AS "nom",
         'https://soliguide.fr/fr/fiche/' || lieux.seo_url        AS "lien_source",
         CASE LENGTH(services.description) <= 280

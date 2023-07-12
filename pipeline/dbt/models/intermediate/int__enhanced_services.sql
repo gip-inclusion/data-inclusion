@@ -11,12 +11,12 @@ final AS (
         -- TODO: Refactoring needed to be able to do geocoding per source and then use the result
         -- in the mapping
         {{ dbt_utils.star(from=ref('int__services'), relation_alias='services', except=["zone_diffusion_code", "zone_diffusion_nom"]) }},
-        CASE services.source
-            WHEN 'monenfant' THEN adresses_geocoded.result_citycode
+        CASE services.source = ANY(ARRAY['monenfant', 'soliguide'])
+            WHEN TRUE THEN adresses_geocoded.result_citycode
             ELSE services.zone_diffusion_code
         END                                  AS "zone_diffusion_code",
-        CASE services.source
-            WHEN 'monenfant' THEN adresses_geocoded.commune
+        CASE services.source = ANY(ARRAY['monenfant', 'soliguide'])
+            WHEN TRUE THEN adresses_geocoded.commune
             ELSE services.zone_diffusion_nom
         END                                  AS "zone_diffusion_nom",
         adresses_geocoded.longitude          AS "longitude",
