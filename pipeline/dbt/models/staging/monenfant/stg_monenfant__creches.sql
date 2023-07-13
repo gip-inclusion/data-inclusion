@@ -41,8 +41,16 @@ final AS (
         NULLIF(data #>> '{details,website}', '')                                                                AS "details_website",
         data #>> '{details,dispo,allNonRenseigne}'                                                              AS "details_dispo_all_non_renseigne",
         data #>> '{details,typeStructure}'                                                                      AS "details_type_structure",
-        data #>> '{details,modalite,conditionAdmision}'                                                         AS "details_modalite_condition_admision",
-        data #>> '{details,modalite,modalitesInscription}'                                                      AS "details_modalite_modalites_inscription",
+        CASE
+            WHEN LENGTH(data #>> '{details,modalite,conditionAdmision}') = 1 THEN NULL
+            WHEN data #>> '{details,modalite,conditionAdmision}' = '' THEN NULL
+            ELSE data #>> '{details,modalite,conditionAdmision}'
+        END                                                                                                     AS "details_modalite_condition_admision",
+        CASE
+            WHEN LENGTH(data #>> '{details,modalite,modalitesInscription}') = 1 THEN NULL
+            WHEN data #>> '{details,modalite,modalitesInscription}' = '' THEN NULL
+            ELSE data #>> '{details,modalite,modalitesInscription}'
+        END                                                                                                     AS "details_modalite_modalites_inscription",
         data #>> '{details,modalite,modalitesTarifaireLibre}'                                                   AS "details_modalite_modalites_tarifaire_libre",
         data #>> '{details,modalite,modalitesTarifaireTexte}'                                                   AS "details_modalite_modalites_tarifaire_texte",
         data #>> '{details,infosPratiques,ageMax}'                                                              AS "details_infos_pratiques_age_max",
@@ -56,7 +64,11 @@ final AS (
         data #>> '{details,presentation,equipe}'                                                                AS "details_presentation_equipe",
         data #>> '{details,presentation,gestionnaire}'                                                          AS "details_presentation_gestionnaire",
         data #>> '{details,presentation,nomGestionnaire}'                                                       AS "details_presentation_nom_gestionnaire",
-        NULLIF(data #>> '{details,presentation,structureProjet}', '')                                           AS "details_presentation_structure_projet",
+        CASE
+            WHEN LENGTH(data #>> '{details,presentation,structureProjet}') = 1 THEN NULL
+            WHEN data #>> '{details,presentation,structureProjet}' = '' THEN NULL
+            ELSE data #>> '{details,presentation,structureProjet}'
+        END                                                                                                     AS "details_presentation_structure_projet",
         data ->> 'type'                                                                                         AS "type"
     FROM source
 )

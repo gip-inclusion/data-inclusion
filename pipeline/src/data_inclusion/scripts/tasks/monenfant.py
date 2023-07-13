@@ -28,6 +28,12 @@ def read(path: Path) -> pd.DataFrame:
         creche_data["details"]["presentation"]["structureProjet"] = html_to_markdown(
             creche_data["details"]["presentation"]["structureProjet"]
         )
+        creche_data["details"]["modalite"]["conditionAdmision"] = html_to_markdown(
+            creche_data["details"]["modalite"]["conditionAdmision"]
+        )
+        creche_data["details"]["modalite"]["modalitesInscription"] = html_to_markdown(
+            creche_data["details"]["modalite"]["modalitesInscription"]
+        )
 
     df = pd.DataFrame.from_records(data)
     df = df.replace({np.nan: None})
