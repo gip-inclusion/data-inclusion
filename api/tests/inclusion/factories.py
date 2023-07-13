@@ -15,6 +15,11 @@ def pairwise(iterable):
     return zip(a, b)
 
 
+class CommuneFactory(factory.Factory):
+    class Meta:
+        model = models.Commune
+
+
 class StructureFactory(factory.Factory):
     class Meta:
         model = models.Structure

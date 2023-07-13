@@ -696,21 +696,65 @@ def test_list_services_filter_by_departement_slug(api_client, service_factory):
     assert_paginated_response_data(response.json(), total=0)
 
 
+@pytest.mark.parametrize(
+    "code_insee, input, found",
+    [
+        (None, "22247", False),
+        ("22247", "22247", True),
+        ("22247", "62041", False),
+        ("75056", "75101", True),
+    ],
+)
 @pytest.mark.with_token
-def test_list_services_filter_by_code_insee(api_client, service_factory):
-    service = service_factory(code_insee="22247")
+def test_list_services_filter_by_code_insee(
+    api_client, service_factory, code_insee, input, found
+):
+    service = service_factory(code_insee=code_insee)
     service_factory(code_insee="59350")
 
     url = "/api/v0/services/"
-    response = api_client.get(url, params={"code_insee": "22247"})
+    response = api_client.get(url, params={"code_insee": input})
 
     assert response.status_code == 200
     resp_data = response.json()
-    assert_paginated_response_data(resp_data, total=1)
-    assert resp_data["items"][0]["id"] == service.id
+    if found:
+        assert_paginated_response_data(resp_data, total=1)
+        assert resp_data["items"][0]["id"] == service.id
+    else:
+        assert_paginated_response_data(resp_data, total=0)
 
-    response = api_client.get(url, params={"code_insee": "62041"})
-    assert_paginated_response_data(response.json(), total=0)
+
+@pytest.mark.parametrize(
+    "code_insee, input, found",
+    [
+        (None, "59183", True),
+        ("59183", "59183", True),
+        ("59183", "59392", False),
+        ("75056", "75101", True),
+        ("75101", "75101", True),
+        pytest.param("75101", "75056", True, marks=pytest.mark.xfail),  # TODO
+    ],
+)
+@pytest.mark.with_token
+def test_search_services_with_code_insee(
+    api_client, service_factory, commune_factory, code_insee, input, found
+):
+    commune_factory(code="59350", nom="Lille")
+    commune_factory(code="59183", nom="Dunkerque")
+    commune_factory(code="59392", nom="Maubeuge")
+    commune_factory(code="75056", nom="Paris")
+    service = service_factory(code_insee=code_insee)
+
+    url = "/api/v0/search/services"
+    response = api_client.get(url, params={"code_insee": input})
+
+    assert response.status_code == 200
+    resp_data = response.json()
+    if found:
+        assert_paginated_response_data(resp_data, total=1)
+        assert resp_data["items"][0]["service"]["id"] == service.id
+    else:
+        assert_paginated_response_data(resp_data, total=0)
 
 
 @pytest.mark.with_token

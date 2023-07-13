@@ -16,7 +16,7 @@ from fastapi_pagination.ext.sqlalchemy import paginate
 from data_inclusion.api import models, schema, settings
 from data_inclusion.api.core import auth, db, jwt
 from data_inclusion.api.core.request.middleware import RequestMiddleware
-from data_inclusion.api.utils import pagination
+from data_inclusion.api.utils import code_officiel_geographique, pagination
 
 logger = logging.getLogger(__name__)
 
@@ -289,6 +289,10 @@ def list_services(
         )
 
     if code_insee is not None:
+        code_insee = code_officiel_geographique.CODE_COMMUNE_BY_CODE_ARRONDISSEMENT.get(
+            code_insee, code_insee
+        )
+
         query = query.filter(
             sqla.or_(
                 models.Service.code_insee == code_insee,
@@ -603,6 +607,9 @@ def search_services_endpoint(
 
     commune_instance = None
     if code_insee is not None:
+        code_insee = code_officiel_geographique.CODE_COMMUNE_BY_CODE_ARRONDISSEMENT.get(
+            code_insee, code_insee
+        )
         commune_instance = db_session.get(models.Commune, code_insee)
         if commune_instance is None:
             raise fastapi.HTTPException(
