@@ -127,6 +127,7 @@ def _load(
 
     from data_inclusion.scripts.tasks import (
         annuaire_du_service_public,
+        monenfant,
         soliguide,
         utils,
     )
@@ -142,7 +143,7 @@ def _load(
         "siao": utils.read_excel,
         "un-jeune-une-solution": utils.read_json,
         "soliguide": soliguide.read,
-        "monenfant": utils.read_json,
+        "monenfant": monenfant.read,
     }
 
     if source_config["id"].startswith("mediation-numerique-"):
