@@ -1068,36 +1068,51 @@ def test_search_services_with_code_insee_a_distance(api_client, service_factory)
     assert resp_data["items"][1]["distance"] is None
 
 
+@pytest.mark.parametrize(
+    "thematiques,input,found",
+    [
+        ([], [schema.Thematique.FAMILLE.value], False),
+        ([schema.Thematique.FAMILLE.value], [schema.Thematique.FAMILLE.value], True),
+        ([schema.Thematique.NUMERIQUE.value], [schema.Thematique.FAMILLE.value], False),
+        (
+            [schema.Thematique.NUMERIQUE.value, schema.Thematique.FAMILLE.value],
+            [schema.Thematique.FAMILLE.value],
+            True,
+        ),
+        (
+            [schema.Thematique.SANTE.value, schema.Thematique.NUMERIQUE.value],
+            [schema.Thematique.FAMILLE.value, schema.Thematique.NUMERIQUE.value],
+            True,
+        ),
+        (
+            [schema.Thematique.SANTE.value, schema.Thematique.NUMERIQUE.value],
+            [schema.Thematique.FAMILLE.value, schema.Thematique.NUMERIQUE.value],
+            True,
+        ),
+        (
+            [schema.Thematique.FAMILLE__GARDE_DENFANTS.value],
+            [schema.Thematique.FAMILLE.value],
+            True,
+        ),
+    ],
+)
 @pytest.mark.with_token
-def test_search_services_with_thematique(api_client, service_factory):
-    service_1 = service_factory(thematiques=[schema.Thematique.NUMERIQUE.value])
-    service_2 = service_factory(thematiques=[schema.Thematique.SANTE.value])
+def test_search_services_with_thematique(
+    api_client, service_factory, thematiques, input, found
+):
+    service = service_factory(thematiques=thematiques)
     service_factory(thematiques=[schema.Thematique.MOBILITE.value])
 
     url = "/api/v0/search/services"
-    response = api_client.get(
-        url,
-        params={
-            "thematiques": [
-                schema.Thematique.SANTE.value,
-                schema.Thematique.NUMERIQUE.value,
-            ],
-        },
-    )
+    response = api_client.get(url, params={"thematiques": input})
 
     assert response.status_code == 200
     resp_data = response.json()
-    assert_paginated_response_data(resp_data, total=2)
-    assert resp_data["items"][0]["service"]["id"] in [service_1.id, service_2.id]
-    assert resp_data["items"][1]["service"]["id"] in [service_1.id, service_2.id]
-
-    response = api_client.get(
-        url,
-        params={
-            "thematiques": schema.Thematique.CREATION_ACTIVITE.value,
-        },
-    )
-    assert_paginated_response_data(response.json(), total=0)
+    if found:
+        assert_paginated_response_data(resp_data, total=1)
+        assert resp_data["items"][0]["service"]["id"] in [service.id]
+    else:
+        assert_paginated_response_data(resp_data, total=0)
 
 
 @pytest.mark.with_token

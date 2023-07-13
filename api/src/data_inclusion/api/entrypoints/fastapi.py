@@ -476,9 +476,12 @@ def search_services(
     if thematiques is not None:
         filter_stmt = """\
         EXISTS(
-            SELECT
-            FROM unnest(service.thematiques) thematiques
-            WHERE thematiques = ANY(:thematiques)
+            SELECT FROM unnest(service.thematiques) thematique
+            WHERE
+                EXISTS(
+                    SELECT FROM unnest(:thematiques) input_thematique
+                    WHERE thematique ^@ input_thematique
+                )
         )
         """
         query = query.filter(
