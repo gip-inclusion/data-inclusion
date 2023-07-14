@@ -324,12 +324,6 @@ sources:
       - name: structures
       - name: services
 
-  - name: mediation_numerique_numi
-    schema: mediation_numerique_numi
-    tables:
-      - name: structures
-      - name: services
-
   - name: mediation_numerique_res_in
     schema: mediation_numerique_res_in
     tables:

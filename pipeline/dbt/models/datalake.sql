@@ -66,8 +66,6 @@ WITH source AS (
                 source('mediation_numerique_hub_lo', 'services'),
                 source('mediation_numerique_mulhouse', 'structures'),
                 source('mediation_numerique_mulhouse', 'services'),
-                source('mediation_numerique_numi', 'structures'),
-                source('mediation_numerique_numi', 'services'),
                 source('mediation_numerique_res_in', 'structures'),
                 source('mediation_numerique_res_in', 'services'),
                 source('mediation_numerique_rhinocc', 'structures'),
