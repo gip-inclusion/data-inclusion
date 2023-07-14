@@ -17,6 +17,7 @@ di_thematique_by_odspep_type_res_part AS (
 
 final AS (
     SELECT
+        id_res                                          AS "adresse_id",
         service                                         AS "nom",
         'odspep'                                        AS "source",
         NULL                                            AS "types",
@@ -50,7 +51,6 @@ final AS (
             WHERE ressources_partenariales.type_res_part = di_thematique_by_odspep_type_res_part.type_res_part
         )::TEXT []                                      AS "thematiques",
         CONCAT(id_res, '_', zone_diffusion_unique_code) AS "id",
-        CONCAT(id_res, '_', zone_diffusion_unique_code) AS "adresse_id",
         CASE LENGTH(service_description) <= 280
             WHEN TRUE THEN service_description
             WHEN FALSE THEN LEFT(service_description, 279) || '…'
