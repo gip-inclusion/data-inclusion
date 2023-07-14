@@ -63,6 +63,7 @@ final AS (
             E'\n\n'
         )                                                                                  AS "presentation_detail"
     FROM creches
+    WHERE avip  -- temporarily limit results to avip
 )
 
 SELECT * FROM final
