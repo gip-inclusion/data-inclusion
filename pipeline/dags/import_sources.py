@@ -80,6 +80,7 @@ def _extract(
         "un-jeune-une-solution": utils.extract_http_content,
         "soliguide": soliguide.extract,
         "monenfant": utils.extract_http_content,
+        "agefiph": utils.extract_http_content,
     }
 
     if source_config["id"].startswith("mediation-numerique-"):
@@ -144,6 +145,7 @@ def _load(
         "un-jeune-une-solution": utils.read_json,
         "soliguide": soliguide.read,
         "monenfant": monenfant.read,
+        "agefiph": lambda path: utils.read_csv(path, sep=","),
     }
 
     if source_config["id"].startswith("mediation-numerique-"):

@@ -223,4 +223,21 @@ SOURCES_CONFIGS = [
             },
         ],
     },
+    {
+        "id": "agefiph",
+        "schedule_interval": "@once",
+        "snapshot": False,
+        "streams": [
+            {
+                "id": "services",
+                "filename": "services.csv",
+                "url": Variable.get("AGEFIPH_SERVICES_FILE_URL", None),
+            },
+            {
+                "id": "structures",
+                "filename": "structures.csv",
+                "url": Variable.get("AGEFIPH_STRUCTURES_FILE_URL", None),
+            },
+        ],
+    },
 ]
