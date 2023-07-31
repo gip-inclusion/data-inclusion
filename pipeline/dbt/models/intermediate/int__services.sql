@@ -7,6 +7,7 @@ WITH services AS (
                 ref('int_monenfant__services'),
                 ref('int_odspep__services'),
                 ref('int_soliguide__services'),
+                ref('int_agefiph__services'),
             ],
             column_override={
                 "types": "TEXT[]",

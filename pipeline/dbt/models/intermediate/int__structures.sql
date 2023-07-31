@@ -14,6 +14,7 @@ WITH structures AS (
                 ref('int_odspep__structures'),
                 ref('int_siao__structures'),
                 ref('int_soliguide__structures'),
+                ref('int_agefiph__structures'),
             ],
             column_override={
                 "thematiques": "TEXT[]",
