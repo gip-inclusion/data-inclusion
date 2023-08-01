@@ -59,7 +59,7 @@ final AS (
         AND (code_postal IS NULL OR code_postal ~ '^\d{5}$')
         AND (code_insee IS NULL OR code_insee ~ '^.{5}$')
         -- RFC 5322
-        AND (courriel IS NULL OR courriel ~ '^[a-zA-Z0-9.!#$%&''*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$')
+        AND (courriel IS NULL OR courriel ~ '^[a-zA-Z0-9.!#$%&''*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)+$')
         AND (modes_accueil IS NULL OR modes_accueil <@ ARRAY(SELECT value FROM modes_accueil))
         AND (modes_orientation_accompagnateur IS NULL OR modes_orientation_accompagnateur <@ ARRAY(SELECT value FROM modes_orientation_accompagnateur))
         AND (modes_orientation_beneficiaire IS NULL OR modes_orientation_beneficiaire <@ ARRAY(SELECT value FROM modes_orientation_beneficiaire))
