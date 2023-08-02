@@ -729,11 +729,11 @@ def list_modes_orientation_accompagnateur_endpoint():
 @v0_doc_api_router.get(
     "/modes-orientation-beneficiaire",
     response_model=list[schema.EnhancedEnumMember],
-    summary="Documente les modes d'orientation de l'beneficiaire",
+    summary="Documente les modes d'orientation du bénéficiaire",
 )
 def list_modes_orientation_beneficiaire_endpoint():
     """
-    ## Documente les modes d'orientation de l'beneficiaire
+    ## Documente les modes d'orientation du bénéficiaire
     """
     return schema.ModeOrientationBeneficiaire.as_dict_list()
 
