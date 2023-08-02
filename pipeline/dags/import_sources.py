@@ -145,7 +145,7 @@ def _load(
         "un-jeune-une-solution": utils.read_json,
         "soliguide": soliguide.read,
         "monenfant": monenfant.read,
-        "agefiph": lambda path: utils.read_csv(path, sep=","),
+        "agefiph": utils.read_json,
     }
 
     if source_config["id"].startswith("mediation-numerique-"):
