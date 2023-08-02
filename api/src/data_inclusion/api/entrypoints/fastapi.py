@@ -4,6 +4,7 @@ from typing import Annotated, Optional
 import geoalchemy2
 import sentry_sdk
 import sqlalchemy as sqla
+from pydantic.json_schema import SkipJsonSchema
 from sqlalchemy import orm
 
 import fastapi
@@ -158,7 +159,7 @@ def list_structures(
         models.Structure.id,
     )
 
-    return list(paginate(db_session, query))
+    return paginate(db_session, query)
 
 
 @v0_api_router.get(
@@ -167,14 +168,26 @@ def list_structures(
     summary="Lister les structures consolidées",
 )
 def list_structures_endpoint(
-    source: Optional[str] = None,
-    id: Optional[str] = None,
-    typologie: Optional[schema.Typologie] = None,
-    label_national: Optional[schema.LabelNational] = None,
-    thematique: Optional[schema.Thematique] = None,
-    departement: Optional[schema.DepartementCOG] = None,
-    departement_slug: Optional[schema.DepartementSlug] = None,
-    code_postal: Optional[schema.CodePostal] = None,
+    source: Annotated[str | SkipJsonSchema[None], fastapi.Query()] = None,
+    id: Annotated[str | SkipJsonSchema[None], fastapi.Query()] = None,
+    typologie: Annotated[
+        schema.Typologie | SkipJsonSchema[None], fastapi.Query()
+    ] = None,
+    label_national: Annotated[
+        schema.LabelNational | SkipJsonSchema[None], fastapi.Query()
+    ] = None,
+    thematique: Annotated[
+        schema.Thematique | SkipJsonSchema[None], fastapi.Query()
+    ] = None,
+    departement: Annotated[
+        schema.DepartementCOG | SkipJsonSchema[None], fastapi.Query()
+    ] = None,
+    departement_slug: Annotated[
+        schema.DepartementSlug | SkipJsonSchema[None], fastapi.Query()
+    ] = None,
+    code_postal: Annotated[
+        schema.CodePostal | SkipJsonSchema[None], fastapi.Query()
+    ] = None,
     db_session=fastapi.Depends(db.get_session),
 ):
     """
@@ -215,8 +228,8 @@ def list_structures_endpoint(
     summary="Détailler une structure",
 )
 def retrieve_structure_endpoint(
-    source: str,
-    id: str,
+    source: Annotated[str, fastapi.Path()],
+    id: Annotated[str, fastapi.Path()],
     db_session=fastapi.Depends(db.get_session),
 ):
     structure_instance = db_session.scalars(
@@ -237,7 +250,7 @@ def list_sources(
 ) -> list[str]:
     query = sqla.select(models.Structure.source).distinct()
     query = query.order_by(models.Structure.source)
-    return [o.source for o in db_session.execute(query)]
+    return db_session.scalars(query).all()
 
 
 @v0_api_router.get(
@@ -317,7 +330,7 @@ def list_services(
         models.Service.id,
     )
 
-    return list(paginate(db_session, query, unique=False))
+    return paginate(db_session, query, unique=False)
 
 
 @v0_api_router.get(
@@ -327,11 +340,19 @@ def list_services(
 )
 def list_services_endpoint(
     db_session=fastapi.Depends(db.get_session),
-    source: Optional[str] = None,
-    thematique: Optional[schema.Thematique] = None,
-    departement: Optional[schema.DepartementCOG] = None,
-    departement_slug: Optional[schema.DepartementSlug] = None,
-    code_insee: Optional[schema.CodeInsee] = None,
+    source: Annotated[str | SkipJsonSchema[None], fastapi.Query()] = None,
+    thematique: Annotated[
+        schema.Thematique | SkipJsonSchema[None], fastapi.Query()
+    ] = None,
+    departement: Annotated[
+        schema.DepartementCOG | SkipJsonSchema[None], fastapi.Query()
+    ] = None,
+    departement_slug: Annotated[
+        schema.DepartementSlug | SkipJsonSchema[None], fastapi.Query()
+    ] = None,
+    code_insee: Annotated[
+        schema.CodeInsee | SkipJsonSchema[None], fastapi.Query()
+    ] = None,
 ):
     return list_services(
         db_session,
@@ -349,8 +370,8 @@ def list_services_endpoint(
     summary="Détailler un service",
 )
 def retrieve_service_endpoint(
-    source: str,
-    id: str,
+    source: Annotated[str, fastapi.Path()],
+    id: Annotated[str, fastapi.Path()],
     db_session=fastapi.Depends(db.get_session),
 ):
     service_instance = db_session.scalars(
@@ -448,27 +469,32 @@ def search_services(
                         models.Service.modes_accueil.contains(
                             sqla.literal([schema.ModeAccueil.EN_PRESENTIEL.value])
                         ),
-                        geoalchemy2.functions.ST_Distance(
-                            sqla.cast(
-                                geoalchemy2.functions.ST_MakePoint(
-                                    models.Service.longitude, models.Service.latitude
-                                ),
-                                geoalchemy2.Geography(
-                                    geometry_type="GEOMETRY", srid=4326
-                                ),
-                            ),
-                            sqla.select(
+                        (
+                            geoalchemy2.functions.ST_Distance(
                                 sqla.cast(
-                                    models.Commune.geom,
+                                    geoalchemy2.functions.ST_MakePoint(
+                                        models.Service.longitude,
+                                        models.Service.latitude,
+                                    ),
                                     geoalchemy2.Geography(
                                         geometry_type="GEOMETRY", srid=4326
                                     ),
+                                ),
+                                sqla.select(
+                                    sqla.cast(
+                                        models.Commune.geom,
+                                        geoalchemy2.Geography(
+                                            geometry_type="GEOMETRY", srid=4326
+                                        ),
+                                    )
                                 )
+                                .filter(models.Commune.code == commune_instance.code)
+                                .scalar_subquery(),
                             )
-                            .filter(models.Commune.code == commune_instance.code)
-                            .scalar_subquery(),
-                        )
-                        / 1000,  # conversion to kms
+                            / 1000
+                        ).cast(
+                            sqla.Integer
+                        ),  # conversion to kms
                     ),
                     else_=sqla.null().cast(sqla.Integer),
                 )
@@ -525,9 +551,7 @@ def search_services(
         # used to instanciate pydantic models
         return [{"service": item[0], "distance": item[1]} for item in items]
 
-    return list(
-        paginate(db_session, query, unique=False, transformer=_items_to_mappings)
-    )
+    return paginate(db_session, query, unique=False, transformer=_items_to_mappings)
 
 
 @v0_api_router.get(
@@ -538,14 +562,14 @@ def search_services(
 def search_services_endpoint(
     db_session=fastapi.Depends(db.get_session),
     source: Annotated[
-        Optional[str],
+        str | SkipJsonSchema[None],
         fastapi.Query(
             description="""Un identifiant de source. Déprécié en faveur de `sources`.""",
             deprecated=True,
         ),
     ] = None,
     sources: Annotated[
-        Optional[list[str]],
+        list[str] | SkipJsonSchema[None],
         fastapi.Query(
             description="""Une liste d'identifiants de source.
                 La liste des identifiants de source est disponible sur le endpoint dédié.
@@ -554,7 +578,7 @@ def search_services_endpoint(
         ),
     ] = None,
     code_insee: Annotated[
-        Optional[schema.CodeInsee],
+        schema.CodeInsee | SkipJsonSchema[None],
         fastapi.Query(
             description="""Code insee de la commune considérée.
                 Si fourni, les résultats inclus également les services proches de cette commune.
@@ -563,21 +587,21 @@ def search_services_endpoint(
         ),
     ] = None,
     thematiques: Annotated[
-        Optional[list[schema.Thematique]],
+        list[schema.Thematique] | SkipJsonSchema[None],
         fastapi.Query(
             description="""Une liste de thématique.
                 Chaque résultat renvoyé a (au moins) une thématique dans cette liste."""
         ),
     ] = None,
     frais: Annotated[
-        Optional[list[schema.Frais]],
+        list[schema.Frais] | SkipJsonSchema[None],
         fastapi.Query(
             description="""Une liste de frais.
                 Chaque résultat renvoyé a (au moins) un frais dans cette liste."""
         ),
     ] = None,
     types: Annotated[
-        Optional[list[schema.TypologieService]],
+        list[schema.TypologieService] | SkipJsonSchema[None],
         fastapi.Query(
             description="""Une liste de typologies de service.
                 Chaque résultat renvoyé a (au moins) une typologie dans cette liste."""
@@ -748,7 +772,7 @@ def create_token(email: str) -> schema.Token:
     include_in_schema=False,
 )
 def create_token_endpoint(
-    token_creation_data: schema.TokenCreationData,
+    token_creation_data: Annotated[schema.TokenCreationData, fastapi.Body()],
     request: fastapi.Request,
 ):
     if "admin" in request.auth.scopes:
