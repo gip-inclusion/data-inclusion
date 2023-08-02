@@ -21,10 +21,7 @@ final AS (
         presentation_resume AS "presentation_resume",
         presentation_detail AS "presentation_detail",
         contact_public      AS "contact_public",
-        --id_thematiques                                                                 AS "id_thematiques",
         thematiques         AS "thematiques"
-
-
     FROM source
 )
 
