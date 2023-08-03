@@ -8,29 +8,29 @@ services AS (
 
 structure_adresses AS (
     SELECT
-        _di_source_id      AS "source",
-        id                 AS "id",
-        NULL               AS "longitude",
-        NULL               AS "latitude",
-        commune            AS "commune",
-        code_postal        AS "code_postal",
-        code_insee         AS "code_insee",
-        adresse            AS "adresse",
-        complement_adresse AS "complement_adresse"
+        _di_source_id       AS "source",
+        id                  AS "id",
+        commune             AS "commune",
+        code_postal         AS "code_postal",
+        code_insee          AS "code_insee",
+        adresse             AS "adresse",
+        complement_adresse  AS "complement_adresse",
+        CAST(NULL AS FLOAT) AS "longitude",
+        CAST(NULL AS FLOAT) AS "latitude"
     FROM structures
 ),
 
 service_adresses AS (
     SELECT
-        _di_source_id      AS "source",
-        id                 AS "id",
-        NULL               AS "longitude",
-        NULL               AS "latitude",
-        commune            AS "commune",
-        code_postal        AS "code_postal",
-        code_insee         AS "code_insee",
-        adresse            AS "adresse",
-        complement_adresse AS "complement_adresse"
+        _di_source_id       AS "source",
+        id                  AS "id",
+        commune             AS "commune",
+        code_postal         AS "code_postal",
+        code_insee          AS "code_insee",
+        adresse             AS "adresse",
+        complement_adresse  AS "complement_adresse",
+        CAST(NULL AS FLOAT) AS "longitude",
+        CAST(NULL AS FLOAT) AS "latitude"
     FROM services
 ),
 
