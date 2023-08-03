@@ -9,6 +9,7 @@ final AS (
         data ->> 'courriel'                                                                    AS "courriel",
         data ->> 'telephone'                                                                   AS "telephone",
         data ->> 'adresse'                                                                     AS "adresse",
+        data ->> 'complement_adresse'                                                          AS "complement_adresse",
         data ->> 'commune'                                                                     AS "commune",
         data ->> 'code_postal'                                                                 AS "code_postal",
         data ->> 'code_insee'                                                                  AS "code_insee",

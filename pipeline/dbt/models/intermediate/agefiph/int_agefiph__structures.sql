@@ -1,34 +1,30 @@
-WITH source AS (
+WITH structures AS (
     SELECT * FROM {{ ref('stg_agefiph__structures') }}
 ),
 
 final AS (
     SELECT
-        _di_source_id       AS "source",
-        id                  AS "id",
-        courriel            AS "courriel",
-        nom                 AS "nom",
-        commune             AS "commune",
-        code_postal         AS "code_postal",
-        code_insee          AS "code_insee",
-        adresse             AS "adresse",
-        complement_adresse  AS "complement_adresse",
-        longitude           AS "longitude",
-        latitude            AS "latitude",
-        typologie           AS "typologie",
-        telephone           AS "telephone",
-        site_web            AS "site_web",
-        presentation_resume AS "presentation_resume",
-        presentation_detail AS "presentation_detail",
-        date_maj            AS "date_maj",
-        antenne             AS "antenne",
-        lien_source         AS "lien_source",
-        horaires_ouverture  AS "horaires_ouverture",
-        accessibilite       AS "accessibilite",
-        labels_nationaux    AS "labels_nationaux",
-        labels_autres       AS "labels_autres",
-        thematiques         AS "thematiques"
-    FROM source
+        accessibilite         AS "accessibilite",
+        id                    AS "adresse_id",
+        antenne               AS "antenne",
+        courriel              AS "courriel",
+        date_maj              AS "date_maj",
+        horaires_ouverture    AS "horaires_ouverture",
+        id                    AS "id",
+        lien_source           AS "lien_source",
+        nom                   AS "nom",
+        presentation_detail   AS "presentation_detail",
+        presentation_resume   AS "presentation_resume",
+        NULL                  AS "rna",
+        NULL                  AS "siret",
+        site_web              AS "site_web",
+        _di_source_id         AS "source",
+        telephone             AS "telephone",
+        typologie             AS "typologie",
+        CAST(NULL AS TEXT []) AS "labels_autres",
+        CAST(NULL AS TEXT []) AS "labels_nationaux",
+        CAST(NULL AS TEXT []) AS "thematiques"
+    FROM structures
 )
 
 SELECT * FROM final

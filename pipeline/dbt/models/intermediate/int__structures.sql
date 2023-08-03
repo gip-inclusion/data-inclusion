@@ -2,6 +2,7 @@ WITH structures AS (
     {{ 
         dbt_utils.union_relations(
             relations=[
+                ref('int_agefiph__structures'),
                 ref('int_dora__structures'),
                 ref('int_cd35__structures'),
                 ref('int_cd72__structures'),
@@ -14,7 +15,6 @@ WITH structures AS (
                 ref('int_odspep__structures'),
                 ref('int_siao__structures'),
                 ref('int_soliguide__structures'),
-                ref('int_agefiph__structures'),
             ],
             column_override={
                 "thematiques": "TEXT[]",

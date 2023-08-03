@@ -1,5 +1,6 @@
 version: 2
 
 models:
+  - name: int_agefiph__adresses
   - name: int_agefiph__services
   - name: int_agefiph__structures
