@@ -10,6 +10,10 @@ categories AS (
     SELECT * FROM {{ ref('stg_soliguide__categories') }}
 ),
 
+phones AS (
+    SELECT * FROM {{ ref('stg_soliguide__phones') }}
+),
+
 di_thematique_by_soliguide_categorie_code AS (
     SELECT x.*
     FROM (
@@ -49,6 +53,12 @@ di_thematique_by_soliguide_categorie_code AS (
     ) AS x (categorie, thematique)
 ),
 
+filtered_phones AS (
+    -- FIXME: di schema only allows a single phone number, but soliguide can have more
+    SELECT DISTINCT ON (lieu_id) *
+    FROM phones
+),
+
 final AS (
     SELECT
         services.id                                              AS "id",
@@ -64,7 +74,7 @@ final AS (
         NULL                                                     AS "justificatifs",
         NULL                                                     AS "date_creation",
         NULL                                                     AS "date_suspension",
-        NULL                                                     AS "telephone",
+        filtered_phones.phone_number                             AS "telephone",
         lieux.entity_mail                                        AS "courriel",
         NULL                                                     AS "contact_public",
         NULL                                                     AS "contact_nom_prenom",
@@ -93,8 +103,10 @@ final AS (
             WHEN TRUE THEN NULL
             WHEN FALSE THEN services.description
         END                                                      AS "presentation_detail"
-    FROM services LEFT JOIN lieux ON services.lieu_id = lieux.id
+    FROM services
+    LEFT JOIN lieux ON services.lieu_id = lieux.id
     LEFT JOIN categories ON services.categorie = categories.code
+    LEFT JOIN filtered_phones ON services.lieu_id = filtered_phones.lieu_id
     ORDER BY 1
 )
 

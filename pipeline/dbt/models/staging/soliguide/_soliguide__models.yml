@@ -34,3 +34,13 @@ models:
           - relationships:
               to: ref('stg_soliguide__lieux')
               field: lieu_id
+  - name: stg_soliguide__phones
+    config:
+      tags: soliguide
+    columns:
+      - name: lieu_id
+        tests:
+          - not_null
+          - relationships:
+              to: ref('stg_soliguide__lieux')
+              field: lieu_id
