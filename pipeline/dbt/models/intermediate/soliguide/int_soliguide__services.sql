@@ -65,7 +65,7 @@ final AS (
         NULL                                                     AS "date_creation",
         NULL                                                     AS "date_suspension",
         NULL                                                     AS "telephone",
-        NULL                                                     AS "courriel",
+        lieux.entity_mail                                        AS "courriel",
         NULL                                                     AS "contact_public",
         NULL                                                     AS "contact_nom_prenom",
         services.updated_at                                      AS "date_maj",
