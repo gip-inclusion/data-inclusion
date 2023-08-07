@@ -83,7 +83,6 @@ final AS (
         NULL                                                     AS "zone_diffusion_code",  -- will be overridden after geocoding
         NULL                                                     AS "zone_diffusion_nom",  -- will be overridden after geocoding
         NULL                                                     AS "formulaire_en_ligne",
-        NULL                                                     AS "recurrence",
         services.lieu_id                                         AS "structure_id",
         NULL::TEXT []                                            AS "modes_orientation_accompagnateur",
         NULL::TEXT []                                            AS "modes_orientation_beneficiaire",
@@ -102,7 +101,12 @@ final AS (
         CASE LENGTH(services.description) <= 280
             WHEN TRUE THEN NULL
             WHEN FALSE THEN services.description
-        END                                                      AS "presentation_detail"
+        END                                                      AS "presentation_detail",
+        CASE
+            WHEN services.different_hours
+                THEN UDF_SOLIGUIDE__NEW_HOURS_TO_OSM_OPENING_HOURS(services.hours)
+            ELSE UDF_SOLIGUIDE__NEW_HOURS_TO_OSM_OPENING_HOURS(lieux.newhours)
+        END                                                      AS "recurrence"
     FROM services
     LEFT JOIN lieux ON services.lieu_id = lieux.id
     LEFT JOIN categories ON services.categorie = categories.code
