@@ -51,6 +51,7 @@ BEGIN
     END CASE;
 
     opening_hours := NULLIF(opening_hours, '');
+    opening_hours := TRIM(opening_hours);
 
     RETURN opening_hours;
 END;
