@@ -4,3 +4,8 @@ models:
   - name: int_soliguide__adresses
   - name: int_soliguide__structures
   - name: int_soliguide__services
+    columns:
+      - name: id
+        tests:
+          - unique
+          - not_null
