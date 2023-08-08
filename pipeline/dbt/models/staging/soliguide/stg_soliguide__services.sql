@@ -13,7 +13,10 @@ final AS (
         services.data ->> 'categorie'                       AS "categorie",
         NULLIF(services.data ->> 'description', '')         AS "description",
         services.data -> 'hours'                            AS "hours",
-        CAST(services.data ->> 'differentHours' AS BOOLEAN) AS "different_hours"
+        CAST(services.data ->> 'differentHours' AS BOOLEAN) AS "different_hours",
+        CAST(services.data #>> '{close,actif}' AS BOOLEAN)  AS "close__actif",
+        CAST(services.data #>> '{close,dateDebut}' AS DATE) AS "close__date_debut",
+        CAST(services.data #>> '{close,dateFin}' AS DATE)   AS "close__date_fin"
     FROM
         source,
         LATERAL(SELECT * FROM JSONB_PATH_QUERY(source.data, '$.services_all[*]')) AS services (data)

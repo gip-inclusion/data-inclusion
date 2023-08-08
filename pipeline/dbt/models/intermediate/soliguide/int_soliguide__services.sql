@@ -75,58 +75,78 @@ filtered_phones AS (
     FROM phones
 ),
 
+-- remove temporarily suspended services from downstream data
+-- FIXME: these services should ideally be in the downstream but flagged as unavailable in some way
+open_services AS (
+    SELECT *
+    FROM services
+    WHERE
+        (close__date_debut IS NOT NULL OR close__date_fin IS NOT NULL)
+        AND
+        (
+            CURRENT_DATE AT TIME ZONE 'Europe/Paris',
+            CURRENT_DATE AT TIME ZONE 'Europe/Paris'
+        )
+        OVERLAPS
+        (
+            COALESCE(close__date_debut, CURRENT_DATE - INTERVAL '1 year'),
+            COALESCE(close__date_fin, CURRENT_DATE + INTERVAL '1 year')
+        )
+),
+
+
 final AS (
     SELECT
-        services.id                                              AS "id",
-        lieux.lieu_id                                            AS "adresse_id",
-        services._di_source_id                                   AS "source",
-        NULL::TEXT []                                            AS "types",
-        NULL                                                     AS "prise_rdv",
-        NULL::TEXT []                                            AS "frais",
-        NULL                                                     AS "frais_autres",
-        NULL::TEXT []                                            AS "profils",
-        NULL                                                     AS "pre_requis",
-        TRUE                                                     AS "cumulable",
-        NULL                                                     AS "justificatifs",
-        NULL                                                     AS "date_creation",
-        NULL                                                     AS "date_suspension",
-        filtered_phones.phone_number                             AS "telephone",
-        lieux.entity_mail                                        AS "courriel",
-        NULL                                                     AS "contact_public",
-        NULL                                                     AS "contact_nom_prenom",
-        services.updated_at                                      AS "date_maj",
-        'commune'                                                AS "zone_diffusion_type",
-        NULL                                                     AS "zone_diffusion_code",  -- will be overridden after geocoding
-        NULL                                                     AS "zone_diffusion_nom",  -- will be overridden after geocoding
-        NULL                                                     AS "formulaire_en_ligne",
-        services.lieu_id                                         AS "structure_id",
-        NULL::TEXT []                                            AS "modes_orientation_accompagnateur",
-        NULL::TEXT []                                            AS "modes_orientation_beneficiaire",
+        open_services.id                                              AS "id",
+        lieux.lieu_id                                                 AS "adresse_id",
+        open_services._di_source_id                                   AS "source",
+        NULL::TEXT []                                                 AS "types",
+        NULL                                                          AS "prise_rdv",
+        NULL::TEXT []                                                 AS "frais",
+        NULL                                                          AS "frais_autres",
+        NULL::TEXT []                                                 AS "profils",
+        NULL                                                          AS "pre_requis",
+        TRUE                                                          AS "cumulable",
+        NULL                                                          AS "justificatifs",
+        NULL                                                          AS "date_creation",
+        NULL                                                          AS "date_suspension",
+        filtered_phones.phone_number                                  AS "telephone",
+        lieux.entity_mail                                             AS "courriel",
+        NULL                                                          AS "contact_public",
+        NULL                                                          AS "contact_nom_prenom",
+        open_services.updated_at                                      AS "date_maj",
+        'commune'                                                     AS "zone_diffusion_type",
+        NULL                                                          AS "zone_diffusion_code",  -- will be overridden after geocoding
+        NULL                                                          AS "zone_diffusion_nom",  -- will be overridden after geocoding
+        NULL                                                          AS "formulaire_en_ligne",
+        open_services.lieu_id                                         AS "structure_id",
+        NULL::TEXT []                                                 AS "modes_orientation_accompagnateur",
+        NULL::TEXT []                                                 AS "modes_orientation_beneficiaire",
         (
             SELECT di_thematique_by_soliguide_categorie_code.thematique
             FROM di_thematique_by_soliguide_categorie_code
-            WHERE services.categorie = di_thematique_by_soliguide_categorie_code.categorie
-        )::TEXT []                                               AS "thematiques",
-        ARRAY['en-presentiel']                                   AS "modes_accueil",
-        categories.label || COALESCE(' : ' || services.name, '') AS "nom",
-        'https://soliguide.fr/fr/fiche/' || lieux.seo_url        AS "lien_source",
-        CASE LENGTH(services.description) <= 280
-            WHEN TRUE THEN services.description
-            WHEN FALSE THEN LEFT(services.description, 279) || '…'
-        END                                                      AS "presentation_resume",
-        CASE LENGTH(services.description) <= 280
+            WHERE open_services.categorie = di_thematique_by_soliguide_categorie_code.categorie
+        )::TEXT []                                                    AS "thematiques",
+        ARRAY['en-presentiel']                                        AS "modes_accueil",
+        categories.label || COALESCE(' : ' || open_services.name, '') AS "nom",
+        'https://soliguide.fr/fr/fiche/' || lieux.seo_url             AS "lien_source",
+        CASE LENGTH(open_services.description) <= 280
+            WHEN TRUE THEN open_services.description
+            WHEN FALSE THEN LEFT(open_services.description, 279) || '…'
+        END                                                           AS "presentation_resume",
+        CASE LENGTH(open_services.description) <= 280
             WHEN TRUE THEN NULL
-            WHEN FALSE THEN services.description
-        END                                                      AS "presentation_detail",
+            WHEN FALSE THEN open_services.description
+        END                                                           AS "presentation_detail",
         CASE
-            WHEN services.different_hours
-                THEN UDF_SOLIGUIDE__NEW_HOURS_TO_OSM_OPENING_HOURS(services.hours)
+            WHEN open_services.different_hours
+                THEN UDF_SOLIGUIDE__NEW_HOURS_TO_OSM_OPENING_HOURS(open_services.hours)
             ELSE UDF_SOLIGUIDE__NEW_HOURS_TO_OSM_OPENING_HOURS(lieux.newhours)
-        END                                                      AS "recurrence"
-    FROM services
-    LEFT JOIN lieux ON services.lieu_id = lieux.id
-    LEFT JOIN categories ON services.categorie = categories.code
-    LEFT JOIN filtered_phones ON services.lieu_id = filtered_phones.lieu_id
+        END                                                           AS "recurrence"
+    FROM open_services
+    LEFT JOIN lieux ON open_services.lieu_id = lieux.id
+    LEFT JOIN categories ON open_services.categorie = categories.code
+    LEFT JOIN filtered_phones ON open_services.lieu_id = filtered_phones.lieu_id
     ORDER BY 1
 )
 
