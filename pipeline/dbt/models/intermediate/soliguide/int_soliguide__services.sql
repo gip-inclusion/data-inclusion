@@ -31,7 +31,10 @@ di_thematique_by_soliguide_categorie_code AS (
         ('202', ARRAY['apprendre-francais--suivre-formation']),
         ('303', ARRAY['remobilisation--bien-etre']),
         ('401', ARRAY['acces-aux-droits-et-citoyennete--accompagnement-juridique']),
-        ('404', ARRAY['numerique--realiser-des-demarches-administratives-avec-un-accompagnement']),
+        ('404', ARRAY[
+            'acces-aux-droits-et-citoyennete--accompagnement-dans-les-demarches-administratives',
+            'numerique--realiser-des-demarches-administratives-avec-un-accompagnement'
+        ]),
         ('406', ARRAY[
             'acces-aux-droits-et-citoyennete--connaitre-ses-droits',
             'acces-aux-droits-et-citoyennete--accompagnement-dans-les-demarches-administratives'
