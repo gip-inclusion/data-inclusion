@@ -56,5 +56,6 @@ seeds:
 
 # Creating user defined functions
 # based on https://discourse.getdbt.com/t/using-dbt-to-manage-user-defined-functions/18
-on-run-start:
-  - '{{ create_udf_soliguide__new_hours_to_osm_opening_hours() }}'
+# FIXME
+# on-run-start:
+#   - '{{ create_udf_soliguide__new_hours_to_osm_opening_hours() }}'
