@@ -3,7 +3,8 @@ from datetime import date, datetime
 from enum import Enum
 from typing import Optional, TypeAlias
 
-from pydantic import BaseModel, EmailStr, Field, confloat, constr
+from pydantic import BaseModel, ConfigDict, EmailStr, Field, StringConstraints
+from typing_extensions import Annotated
 
 from data_inclusion.schema.models import (
     Frais,
@@ -22,7 +23,7 @@ from data_inclusion.schema.models import (
 class EnhancedEnumMember(BaseModel):
     value: str
     label: str
-    description: Optional[str]
+    description: Optional[str] = None
 
 
 @dataclass(frozen=True)
@@ -145,16 +146,20 @@ DepartementCOG = Enum(
     {k: departement.cog for k, departement in _departements_dict.items()},
 )
 
-CodePostal: TypeAlias = constr(min_length=5, max_length=5, regex=r"^\d{5}$")
-CodeInsee: TypeAlias = constr(min_length=5, max_length=5)
+CodePostal: TypeAlias = Annotated[
+    str, StringConstraints(min_length=5, max_length=5, pattern=r"^\d{5}$")
+]
+CodeInsee: TypeAlias = Annotated[str, StringConstraints(min_length=5, max_length=5)]
 
 
 class Service(BaseModel):
+    model_config = ConfigDict(from_attributes=True, populate_by_name=True)
+
     # internal metadata
-    di_geocodage_code_insee: Optional[constr(min_length=5, max_length=5)] = Field(
-        alias="_di_geocodage_code_insee"
-    )
-    di_geocodage_score: Optional[confloat(ge=0, le=1)] = Field(
+    di_geocodage_code_insee: Optional[
+        Annotated[str, StringConstraints(min_length=5, max_length=5)]
+    ] = Field(alias="_di_geocodage_code_insee")
+    di_geocodage_score: Optional[Annotated[float, Field(ge=0, le=1)]] = Field(
         alias="_di_geocodage_score"
     )
 
@@ -163,91 +168,99 @@ class Service(BaseModel):
     structure_id: str
     source: str
     nom: str
-    presentation_resume: Optional[constr(max_length=280)]
-    presentation_detail: Optional[str]
-    types: Optional[list[TypologieService]]
-    thematiques: Optional[list[Thematique]]
-    prise_rdv: Optional[str]
-    frais: Optional[list[Frais]]
-    frais_autres: Optional[str]
-    profils: Optional[list[Profil]]
-    pre_requis: Optional[str]
-    cumulable: Optional[bool]
-    justificatifs: Optional[str]
-    formulaire_en_ligne: Optional[str]
-    commune: Optional[str]
-    code_postal: Optional[CodePostal]
-    code_insee: Optional[CodeInsee]
-    adresse: Optional[str]
-    complement_adresse: Optional[str]
-    longitude: Optional[float]
-    latitude: Optional[float]
-    recurrence: Optional[str]
-    date_creation: Optional[date]
-    date_suspension: Optional[date]
-    lien_source: Optional[str]
-    telephone: Optional[str]
-    courriel: Optional[EmailStr]
-    contact_public: Optional[bool]
-    contact_nom_prenom: Optional[str]
-    date_maj: Optional[date | datetime]
-    modes_accueil: Optional[list[ModeAccueil]]
-    modes_orientation_accompagnateur: Optional[list[ModeOrientationAccompagnateur]]
-    modes_orientation_beneficiaire: Optional[list[ModeOrientationBeneficiaire]]
-    zone_diffusion_type: Optional[TypeCOG]
+    presentation_resume: Optional[
+        Annotated[str, StringConstraints(max_length=280)]
+    ] = None
+    presentation_detail: Optional[str] = None
+    types: Optional[list[TypologieService]] = None
+    thematiques: Optional[list[Thematique]] = None
+    prise_rdv: Optional[str] = None
+    frais: Optional[list[Frais]] = None
+    frais_autres: Optional[str] = None
+    profils: Optional[list[Profil]] = None
+    pre_requis: Optional[str] = None
+    cumulable: Optional[bool] = None
+    justificatifs: Optional[str] = None
+    formulaire_en_ligne: Optional[str] = None
+    commune: Optional[str] = None
+    code_postal: Optional[CodePostal] = None
+    code_insee: Optional[CodeInsee] = None
+    adresse: Optional[str] = None
+    complement_adresse: Optional[str] = None
+    longitude: Optional[float] = None
+    latitude: Optional[float] = None
+    recurrence: Optional[str] = None
+    date_creation: Optional[date] = None
+    date_suspension: Optional[date] = None
+    lien_source: Optional[str] = None
+    telephone: Optional[str] = None
+    courriel: Optional[EmailStr] = None
+    contact_public: Optional[bool] = None
+    contact_nom_prenom: Optional[str] = None
+    date_maj: Optional[date | datetime] = None
+    modes_accueil: Optional[list[ModeAccueil]] = None
+    modes_orientation_accompagnateur: Optional[
+        list[ModeOrientationAccompagnateur]
+    ] = None
+    modes_orientation_beneficiaire: Optional[list[ModeOrientationBeneficiaire]] = None
+    zone_diffusion_type: Optional[TypeCOG] = None
     zone_diffusion_code: Optional[
-        constr(regex=r"^\w{5}$")  # code commune
-        | constr(regex=r"^\d{9}$")  # code epci
-        | constr(regex=r"^\w{2,3}$")  # code departement
-        | constr(regex=r"^\d{2}$")  # code region
-    ]
-    zone_diffusion_nom: Optional[str]
-
-    class Config:
-        orm_mode = True
-        allow_population_by_field_name = True
+        Annotated[str, StringConstraints(pattern=r"^\w{5}$")]  # code commune
+        | Annotated[str, StringConstraints(pattern=r"^\d{9}$")]  # code epci
+        | Annotated[str, StringConstraints(pattern=r"^\w{2,3}$")]  # code departement
+        | Annotated[str, StringConstraints(pattern=r"^\d{2}$")]  # code region
+    ] = None
+    zone_diffusion_nom: Optional[str] = None
 
 
 class Structure(BaseModel):
+    model_config = ConfigDict(from_attributes=True, populate_by_name=True)
+
     # internal metadata
-    di_geocodage_code_insee: Optional[constr(min_length=5, max_length=5)] = Field(
-        alias="_di_geocodage_code_insee"
-    )
-    di_geocodage_score: Optional[confloat(ge=0, le=1)] = Field(
+    di_geocodage_code_insee: Optional[
+        Annotated[str, StringConstraints(min_length=5, max_length=5)]
+    ] = Field(alias="_di_geocodage_code_insee")
+    di_geocodage_score: Optional[Annotated[float, Field(ge=0, le=1)]] = Field(
         alias="_di_geocodage_score"
     )
 
     # structure data
     id: str
-    siret: Optional[constr(min_length=14, max_length=14, regex=r"^\d{14}$")]
-    rna: Optional[constr(min_length=10, max_length=10, regex=r"^W\d{9}$")]
+    siret: Optional[
+        Annotated[
+            str, StringConstraints(min_length=14, max_length=14, pattern=r"^\d{14}$")
+        ]
+    ] = None
+    rna: Optional[
+        Annotated[
+            str, StringConstraints(min_length=10, max_length=10, pattern=r"^W\d{9}$")
+        ]
+    ] = None
     nom: str
     commune: str
     code_postal: CodePostal
-    code_insee: Optional[CodeInsee]
+    code_insee: Optional[CodeInsee] = None
     adresse: str
-    complement_adresse: Optional[str]
-    longitude: Optional[float]
-    latitude: Optional[float]
-    typologie: Optional[Typologie]
-    telephone: Optional[str]
-    courriel: Optional[EmailStr]
-    site_web: Optional[str]
-    presentation_resume: Optional[constr(max_length=280)]
-    presentation_detail: Optional[str]
+    complement_adresse: Optional[str] = None
+    longitude: Optional[float] = None
+    latitude: Optional[float] = None
+    typologie: Optional[Typologie] = None
+    telephone: Optional[str] = None
+    courriel: Optional[EmailStr] = None
+    site_web: Optional[str] = None
+    presentation_resume: Optional[
+        Annotated[str, StringConstraints(max_length=280)]
+    ] = None
+    presentation_detail: Optional[str] = None
     source: str
     date_maj: date | datetime
-    antenne: Optional[bool]
-    lien_source: Optional[str]
-    horaires_ouverture: Optional[str]
-    accessibilite: Optional[str]
-    labels_nationaux: Optional[list[LabelNational]]
-    labels_autres: Optional[list[str]]
-    thematiques: Optional[list[Thematique]]
-
-    class Config:
-        orm_mode = True
-        allow_population_by_field_name = True
+    antenne: Optional[bool] = None
+    lien_source: Optional[str] = None
+    horaires_ouverture: Optional[str] = None
+    accessibilite: Optional[str] = None
+    labels_nationaux: Optional[list[LabelNational]] = None
+    labels_autres: Optional[list[str]] = None
+    thematiques: Optional[list[Thematique]] = None
 
 
 class TokenCreationData(BaseModel):
@@ -264,7 +277,7 @@ class DetailedService(Service):
 
 class ServiceSearchResult(BaseModel):
     service: DetailedService
-    distance: Optional[int]
+    distance: Optional[int] = None
 
 
 class DetailedStructure(Structure):

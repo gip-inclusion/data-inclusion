@@ -26,7 +26,6 @@ WITH structures AS (
                 ref('stg_mediation_numerique_hub_antilles__structures'),
                 ref('stg_mediation_numerique_hub_lo__structures'),
                 ref('stg_mediation_numerique_mulhouse__structures'),
-                ref('stg_mediation_numerique_numi__structures'),
                 ref('stg_mediation_numerique_res_in__structures'),
                 ref('stg_mediation_numerique_rhinocc__structures'),
                 ref('stg_mediation_numerique_ultra_numerique__structures'),

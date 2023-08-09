@@ -25,6 +25,18 @@ def reset_factories_sequences():
 
 
 @pytest.fixture
+def commune_factory(db_session):
+    def factory(**kwargs):
+        commune_db_obj = factories.CommuneFactory(**kwargs)
+        db_session.add(commune_db_obj)
+        db_session.commit()
+        db_session.refresh(commune_db_obj)
+        return commune_db_obj
+
+    return factory
+
+
+@pytest.fixture
 def structure_factory(db_session):
     def factory(**kwargs):
         structure_db_obj = factories.StructureFactory(**kwargs)

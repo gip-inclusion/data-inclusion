@@ -193,7 +193,6 @@ SOURCES_CONFIGS = [
             "hub-antilles",
             "hub-lo",
             "mulhouse",
-            "numi",
             "res-in",
             "rhinocc",
             "ultra-numerique",

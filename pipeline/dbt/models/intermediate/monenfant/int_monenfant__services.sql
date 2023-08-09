@@ -19,39 +19,51 @@ WITH creches AS (
 
 final AS (
     SELECT
-        id                                                                                        AS "id",
-        id                                                                                        AS "adresse_id",
-        NULL                                                                                      AS "prise_rdv",
-        NULL                                                                                      AS "frais_autres",
-        NULL::TEXT []                                                                             AS "profils",
-        id                                                                                        AS "structure_id",
-        _di_source_id                                                                             AS "source",
-        NULL                                                                                      AS "pre_requis",
-        NULL                                                                                      AS "cumulable",
-        NULL                                                                                      AS "justificatifs",
-        NULL                                                                                      AS "formulaire_en_ligne",
-        details_infos_pratiques_jour_horaire                                                      AS "recurrence",
-        NULL::DATE                                                                                AS "date_creation",
-        NULL::DATE                                                                                AS "date_suspension",
-        telephone                                                                                 AS "telephone",
-        mail                                                                                      AS "courriel",
-        FALSE                                                                                     AS "contact_public",
-        NULL                                                                                      AS "contact_nom_prenom",
-        derniere_modif_date                                                                       AS "date_maj",
-        'commune'                                                                                 AS "zone_diffusion_type",
-        NULL                                                                                      AS "zone_diffusion_code", -- will be overridden after geocoding
-        NULL                                                                                      AS "zone_diffusion_nom", -- will be overridden after geocoding
-        NULL::TEXT []                                                                             AS "modes_orientation_accompagnateur",
-        NULL::TEXT []                                                                             AS "modes_orientation_beneficiaire",
-        CASE WHEN avip THEN 'Crèches À Vocation d''Insertion Professionnelle' ELSE nom END        AS "nom",
-        ARRAY['payant']                                                                           AS "frais",
-        ARRAY['famille--garde-denfants']                                                          AS "thematiques",
-        'https://monenfant.fr/que-recherchez-vous/' || result_id                                  AS "lien_source",
-        ARRAY['accueil']                                                                          AS "types",
-        ARRAY['en-presentiel']                                                                    AS "modes_accueil",
-        CASE WHEN avip THEN {{ presentation_resume_avip }} ELSE {{ truncate_text("details_presentation_structure_projet") }} END                                                                                              AS "presentation_resume",
-        CASE WHEN avip THEN {{ presentation_detail_avip }} || E'\n' || details_presentation_structure_projet ELSE details_presentation_structure_projet END AS "presentation_detail"
+        id                                                                                AS "id",
+        id                                                                                AS "adresse_id",
+        NULL                                                                              AS "prise_rdv",
+        NULL                                                                              AS "frais_autres",
+        NULL::TEXT []                                                                     AS "profils",
+        id                                                                                AS "structure_id",
+        _di_source_id                                                                     AS "source",
+        NULL                                                                              AS "pre_requis",
+        TRUE                                                                              AS "cumulable",
+        NULL                                                                              AS "justificatifs",
+        NULL                                                                              AS "formulaire_en_ligne",
+        details_infos_pratiques_jour_horaire                                              AS "recurrence",
+        NULL::DATE                                                                        AS "date_creation",
+        NULL::DATE                                                                        AS "date_suspension",
+        telephone                                                                         AS "telephone",
+        mail                                                                              AS "courriel",
+        FALSE                                                                             AS "contact_public",
+        NULL                                                                              AS "contact_nom_prenom",
+        derniere_modif_date                                                               AS "date_maj",
+        'commune'                                                                         AS "zone_diffusion_type",
+        NULL                                                                              AS "zone_diffusion_code", -- will be overridden after geocoding
+        NULL                                                                              AS "zone_diffusion_nom", -- will be overridden after geocoding
+        NULL::TEXT []                                                                     AS "modes_orientation_accompagnateur",
+        NULL::TEXT []                                                                     AS "modes_orientation_beneficiaire",
+        CASE WHEN avip THEN 'Crèche À Vocation d''Insertion Professionnelle' ELSE nom END AS "nom",
+        ARRAY['payant']                                                                   AS "frais",
+        ARRAY['famille--garde-denfants']                                                  AS "thematiques",
+        'https://monenfant.fr/que-recherchez-vous/' || result_id                          AS "lien_source",
+        ARRAY['accueil']                                                                  AS "types",
+        ARRAY['en-presentiel']                                                            AS "modes_accueil",
+        CASE
+            WHEN avip THEN {{ presentation_resume_avip }}
+            ELSE {{ truncate_text("details_presentation_structure_projet") }}
+        END                                                                               AS "presentation_resume",
+        ARRAY_TO_STRING(
+            ARRAY[
+                CASE WHEN avip THEN {{ presentation_detail_avip }} END,
+                details_presentation_structure_projet,
+                details_modalite_condition_admision,
+                details_modalite_modalites_inscription
+            ],
+            E'\n\n'
+        )                                                                                 AS "presentation_detail"
     FROM creches
+    WHERE avip  -- temporarily limit results to avip
 )
 
 SELECT * FROM final

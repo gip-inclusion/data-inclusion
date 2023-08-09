@@ -17,7 +17,7 @@ class Commune(Base):
     departement = sqla.Column(sqla.Text)
     region = sqla.Column(sqla.Text)
     siren_epci = sqla.Column(sqla.Text)
-    geom = sqla.Column(geoalchemy2.Geography(geometry_type="GEOMETRY", srid=4326))
+    geom = sqla.Column(geoalchemy2.Geometry("Geometry", srid=4326))
 
     services = orm.relationship("Service", back_populates="commune_")
 
@@ -28,7 +28,7 @@ class EPCI(Base):
     code = sqla.Column(sqla.Text, primary_key=True)
     nom = sqla.Column(sqla.Text)
     nature = sqla.Column(sqla.Text)
-    geom = sqla.Column(geoalchemy2.Geography(geometry_type="GEOMETRY", srid=4326))
+    geom = sqla.Column(geoalchemy2.Geometry("Geometry", srid=4326))
 
 
 class Departement(Base):
@@ -37,7 +37,7 @@ class Departement(Base):
     code = sqla.Column(sqla.Text, primary_key=True)
     nom = sqla.Column(sqla.Text)
     insee_reg = sqla.Column(sqla.Text)
-    geom = sqla.Column(geoalchemy2.Geography(geometry_type="GEOMETRY", srid=4326))
+    geom = sqla.Column(geoalchemy2.Geometry("Geometry", srid=4326))
 
 
 class Region(Base):
@@ -45,7 +45,7 @@ class Region(Base):
 
     code = sqla.Column(sqla.Text, primary_key=True)
     nom = sqla.Column(sqla.Text)
-    geom = sqla.Column(geoalchemy2.Geography(geometry_type="GEOMETRY", srid=4326))
+    geom = sqla.Column(geoalchemy2.Geometry("Geometry", srid=4326))
 
 
 class Structure(Base):

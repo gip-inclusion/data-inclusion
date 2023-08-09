@@ -4,6 +4,7 @@ from typing import Annotated, Optional
 import geoalchemy2
 import sentry_sdk
 import sqlalchemy as sqla
+from pydantic.json_schema import SkipJsonSchema
 from sqlalchemy import orm
 
 import fastapi
@@ -16,7 +17,7 @@ from fastapi_pagination.ext.sqlalchemy import paginate
 from data_inclusion.api import models, schema, settings
 from data_inclusion.api.core import auth, db, jwt
 from data_inclusion.api.core.request.middleware import RequestMiddleware
-from data_inclusion.api.utils import pagination
+from data_inclusion.api.utils import code_officiel_geographique, pagination
 
 logger = logging.getLogger(__name__)
 
@@ -158,7 +159,7 @@ def list_structures(
         models.Structure.id,
     )
 
-    return list(paginate(db_session, query))
+    return paginate(db_session, query)
 
 
 @v0_api_router.get(
@@ -167,14 +168,26 @@ def list_structures(
     summary="Lister les structures consolidées",
 )
 def list_structures_endpoint(
-    source: Optional[str] = None,
-    id: Optional[str] = None,
-    typologie: Optional[schema.Typologie] = None,
-    label_national: Optional[schema.LabelNational] = None,
-    thematique: Optional[schema.Thematique] = None,
-    departement: Optional[schema.DepartementCOG] = None,
-    departement_slug: Optional[schema.DepartementSlug] = None,
-    code_postal: Optional[schema.CodePostal] = None,
+    source: Annotated[str | SkipJsonSchema[None], fastapi.Query()] = None,
+    id: Annotated[str | SkipJsonSchema[None], fastapi.Query()] = None,
+    typologie: Annotated[
+        schema.Typologie | SkipJsonSchema[None], fastapi.Query()
+    ] = None,
+    label_national: Annotated[
+        schema.LabelNational | SkipJsonSchema[None], fastapi.Query()
+    ] = None,
+    thematique: Annotated[
+        schema.Thematique | SkipJsonSchema[None], fastapi.Query()
+    ] = None,
+    departement: Annotated[
+        schema.DepartementCOG | SkipJsonSchema[None], fastapi.Query()
+    ] = None,
+    departement_slug: Annotated[
+        schema.DepartementSlug | SkipJsonSchema[None], fastapi.Query()
+    ] = None,
+    code_postal: Annotated[
+        schema.CodePostal | SkipJsonSchema[None], fastapi.Query()
+    ] = None,
     db_session=fastapi.Depends(db.get_session),
 ):
     """
@@ -215,8 +228,8 @@ def list_structures_endpoint(
     summary="Détailler une structure",
 )
 def retrieve_structure_endpoint(
-    source: str,
-    id: str,
+    source: Annotated[str, fastapi.Path()],
+    id: Annotated[str, fastapi.Path()],
     db_session=fastapi.Depends(db.get_session),
 ):
     structure_instance = db_session.scalars(
@@ -237,7 +250,7 @@ def list_sources(
 ) -> list[str]:
     query = sqla.select(models.Structure.source).distinct()
     query = query.order_by(models.Structure.source)
-    return [o.source for o in db_session.execute(query)]
+    return db_session.scalars(query).all()
 
 
 @v0_api_router.get(
@@ -289,6 +302,10 @@ def list_services(
         )
 
     if code_insee is not None:
+        code_insee = code_officiel_geographique.CODE_COMMUNE_BY_CODE_ARRONDISSEMENT.get(
+            code_insee, code_insee
+        )
+
         query = query.filter(
             sqla.or_(
                 models.Service.code_insee == code_insee,
@@ -313,7 +330,7 @@ def list_services(
         models.Service.id,
     )
 
-    return list(paginate(db_session, query, unique=False))
+    return paginate(db_session, query, unique=False)
 
 
 @v0_api_router.get(
@@ -323,11 +340,19 @@ def list_services(
 )
 def list_services_endpoint(
     db_session=fastapi.Depends(db.get_session),
-    source: Optional[str] = None,
-    thematique: Optional[schema.Thematique] = None,
-    departement: Optional[schema.DepartementCOG] = None,
-    departement_slug: Optional[schema.DepartementSlug] = None,
-    code_insee: Optional[schema.CodeInsee] = None,
+    source: Annotated[str | SkipJsonSchema[None], fastapi.Query()] = None,
+    thematique: Annotated[
+        schema.Thematique | SkipJsonSchema[None], fastapi.Query()
+    ] = None,
+    departement: Annotated[
+        schema.DepartementCOG | SkipJsonSchema[None], fastapi.Query()
+    ] = None,
+    departement_slug: Annotated[
+        schema.DepartementSlug | SkipJsonSchema[None], fastapi.Query()
+    ] = None,
+    code_insee: Annotated[
+        schema.CodeInsee | SkipJsonSchema[None], fastapi.Query()
+    ] = None,
 ):
     return list_services(
         db_session,
@@ -345,8 +370,8 @@ def list_services_endpoint(
     summary="Détailler un service",
 )
 def retrieve_service_endpoint(
-    source: str,
-    id: str,
+    source: Annotated[str, fastapi.Path()],
+    id: Annotated[str, fastapi.Path()],
     db_session=fastapi.Depends(db.get_session),
 ):
     service_instance = db_session.scalars(
@@ -370,19 +395,10 @@ def search_services(
     frais: Optional[list[schema.Frais]] = None,
     types: Optional[list[schema.TypologieService]] = None,
 ):
-    coalesced_code_insee = sqla.func.coalesce(
-        models.Service.code_insee, models.Service._di_geocodage_code_insee
-    )
-
     query = (
         sqla.select(models.Service)
         .join(models.Service.structure)
         .options(orm.contains_eager(models.Service.structure))
-        .join(
-            models.Commune,
-            coalesced_code_insee == models.Commune.code,
-            isouter=True,
-        )
     )
 
     if sources is not None:
@@ -421,7 +437,9 @@ def search_services(
                 # either `en-presentiel` within 100km
                 geoalchemy2.functions.ST_DWithin(
                     sqla.cast(
-                        geoalchemy2.functions.ST_Simplify(models.Commune.geom, 0.01),
+                        geoalchemy2.functions.ST_MakePoint(
+                            models.Service.longitude, models.Service.latitude
+                        ),
                         geoalchemy2.Geography(geometry_type="GEOMETRY", srid=4326),
                     ),
                     sqla.select(
@@ -437,8 +455,9 @@ def search_services(
                     100_000,  # meters
                 ),
                 # or `a-distance`
-                schema.ModeAccueil.A_DISTANCE.value
-                == sqla.any_(models.Service.modes_accueil),
+                models.Service.modes_accueil.contains(
+                    sqla.literal([schema.ModeAccueil.A_DISTANCE.value])
+                ),
             )
         )
 
@@ -447,21 +466,35 @@ def search_services(
             (
                 sqla.case(
                     (
-                        schema.ModeAccueil.EN_PRESENTIEL.value
-                        == sqla.any_(models.Service.modes_accueil),
-                        models.Commune.geom.ST_Distance(
-                            sqla.select(
+                        models.Service.modes_accueil.contains(
+                            sqla.literal([schema.ModeAccueil.EN_PRESENTIEL.value])
+                        ),
+                        (
+                            geoalchemy2.functions.ST_Distance(
                                 sqla.cast(
-                                    models.Commune.geom,
+                                    geoalchemy2.functions.ST_MakePoint(
+                                        models.Service.longitude,
+                                        models.Service.latitude,
+                                    ),
                                     geoalchemy2.Geography(
                                         geometry_type="GEOMETRY", srid=4326
                                     ),
+                                ),
+                                sqla.select(
+                                    sqla.cast(
+                                        models.Commune.geom,
+                                        geoalchemy2.Geography(
+                                            geometry_type="GEOMETRY", srid=4326
+                                        ),
+                                    )
                                 )
+                                .filter(models.Commune.code == commune_instance.code)
+                                .scalar_subquery(),
                             )
-                            .filter(models.Commune.code == commune_instance.code)
-                            .scalar_subquery()
-                        )
-                        / 1000,  # conversion to kms
+                            / 1000
+                        ).cast(
+                            sqla.Integer
+                        ),  # conversion to kms
                     ),
                     else_=sqla.null().cast(sqla.Integer),
                 )
@@ -473,9 +506,12 @@ def search_services(
     if thematiques is not None:
         filter_stmt = """\
         EXISTS(
-            SELECT
-            FROM unnest(service.thematiques) thematiques
-            WHERE thematiques = ANY(:thematiques)
+            SELECT FROM unnest(service.thematiques) thematique
+            WHERE
+                EXISTS(
+                    SELECT FROM unnest(:thematiques) input_thematique
+                    WHERE thematique ^@ input_thematique
+                )
         )
         """
         query = query.filter(
@@ -508,21 +544,14 @@ def search_services(
             sqla.text(filter_stmt).bindparams(types=[t.value for t in types])
         )
 
-    query = query.order_by("distance")
-
-    if commune_instance is not None:
-        query = query.order_by(
-            (coalesced_code_insee == commune_instance.code).desc().nulls_last()
-        )
+    query = query.order_by(sqla.column("distance").nulls_last())
 
     def _items_to_mappings(items: list) -> list[dict]:
         # convert rows returned by `Session.execute` to a list of dicts that will be
         # used to instanciate pydantic models
         return [{"service": item[0], "distance": item[1]} for item in items]
 
-    return list(
-        paginate(db_session, query, unique=False, transformer=_items_to_mappings)
-    )
+    return paginate(db_session, query, unique=False, transformer=_items_to_mappings)
 
 
 @v0_api_router.get(
@@ -533,14 +562,14 @@ def search_services(
 def search_services_endpoint(
     db_session=fastapi.Depends(db.get_session),
     source: Annotated[
-        Optional[str],
+        str | SkipJsonSchema[None],
         fastapi.Query(
             description="""Un identifiant de source. Déprécié en faveur de `sources`.""",
             deprecated=True,
         ),
     ] = None,
     sources: Annotated[
-        Optional[list[str]],
+        list[str] | SkipJsonSchema[None],
         fastapi.Query(
             description="""Une liste d'identifiants de source.
                 La liste des identifiants de source est disponible sur le endpoint dédié.
@@ -549,7 +578,7 @@ def search_services_endpoint(
         ),
     ] = None,
     code_insee: Annotated[
-        Optional[schema.CodeInsee],
+        schema.CodeInsee | SkipJsonSchema[None],
         fastapi.Query(
             description="""Code insee de la commune considérée.
                 Si fourni, les résultats inclus également les services proches de cette commune.
@@ -558,21 +587,21 @@ def search_services_endpoint(
         ),
     ] = None,
     thematiques: Annotated[
-        Optional[list[schema.Thematique]],
+        list[schema.Thematique] | SkipJsonSchema[None],
         fastapi.Query(
             description="""Une liste de thématique.
                 Chaque résultat renvoyé a (au moins) une thématique dans cette liste."""
         ),
     ] = None,
     frais: Annotated[
-        Optional[list[schema.Frais]],
+        list[schema.Frais] | SkipJsonSchema[None],
         fastapi.Query(
             description="""Une liste de frais.
                 Chaque résultat renvoyé a (au moins) un frais dans cette liste."""
         ),
     ] = None,
     types: Annotated[
-        Optional[list[schema.TypologieService]],
+        list[schema.TypologieService] | SkipJsonSchema[None],
         fastapi.Query(
             description="""Une liste de typologies de service.
                 Chaque résultat renvoyé a (au moins) une typologie dans cette liste."""
@@ -602,6 +631,9 @@ def search_services_endpoint(
 
     commune_instance = None
     if code_insee is not None:
+        code_insee = code_officiel_geographique.CODE_COMMUNE_BY_CODE_ARRONDISSEMENT.get(
+            code_insee, code_insee
+        )
         commune_instance = db_session.get(models.Commune, code_insee)
         if commune_instance is None:
             raise fastapi.HTTPException(
@@ -721,11 +753,11 @@ def list_modes_orientation_accompagnateur_endpoint():
 @v0_doc_api_router.get(
     "/modes-orientation-beneficiaire",
     response_model=list[schema.EnhancedEnumMember],
-    summary="Documente les modes d'orientation de l'beneficiaire",
+    summary="Documente les modes d'orientation du bénéficiaire",
 )
 def list_modes_orientation_beneficiaire_endpoint():
     """
-    ## Documente les modes d'orientation de l'beneficiaire
+    ## Documente les modes d'orientation du bénéficiaire
     """
     return schema.ModeOrientationBeneficiaire.as_dict_list()
 
@@ -740,7 +772,7 @@ def create_token(email: str) -> schema.Token:
     include_in_schema=False,
 )
 def create_token_endpoint(
-    token_creation_data: schema.TokenCreationData,
+    token_creation_data: Annotated[schema.TokenCreationData, fastapi.Body()],
     request: fastapi.Request,
 ):
     if "admin" in request.auth.scopes:
