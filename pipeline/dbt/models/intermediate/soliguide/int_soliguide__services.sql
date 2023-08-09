@@ -78,11 +78,18 @@ filtered_phones AS (
     FROM phones
 ),
 
+-- remove services without mapped thematiques which are assumed irrelevant
+relevant_services AS (
+    SELECT *
+    FROM services
+    WHERE categorie IN (SELECT categorie FROM di_thematique_by_soliguide_categorie_code)
+),
+
 -- remove temporarily suspended services from downstream data
 -- FIXME: these services should ideally be in the downstream but flagged as unavailable in some way
 open_services AS (
     SELECT *
-    FROM services
+    FROM relevant_services
     WHERE
         (close__date_debut IS NOT NULL OR close__date_fin IS NOT NULL)
         AND
