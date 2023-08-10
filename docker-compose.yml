@@ -22,6 +22,8 @@ x-airflow-common:
     AIRFLOW_CONN_PG: postgresql://data-inclusion:data-inclusion@target-db:5432/data-inclusion
 
     # Variables
+    AIRFLOW_VAR_AGEFIPH_SERVICES_API_URL: ${AGEFIPH_SERVICES_API_URL}
+    AIRFLOW_VAR_AGEFIPH_STRUCTURES_FILE_URL: ${AGEFIPH_STRUCTURES_FILE_URL}
     AIRFLOW_VAR_DBT_PROJECT_DIR: /opt/airflow/dbt
     AIRFLOW_VAR_BAN_API_URL: ${BAN_API_URL}
     AIRFLOW_VAR_CD35_FILE_URL: ${CD35_FILE_URL}

@@ -223,4 +223,21 @@ SOURCES_CONFIGS = [
             },
         ],
     },
+    {
+        "id": "agefiph",
+        "schedule_interval": "@daily",
+        "snapshot": True,
+        "streams": [
+            {
+                "id": "services",
+                "filename": "services.json",
+                "url": Variable.get("AGEFIPH_SERVICES_API_URL", None),
+            },
+            {
+                "id": "structures",
+                "filename": "structures.json",
+                "url": Variable.get("AGEFIPH_STRUCTURES_FILE_URL", None),
+            },
+        ],
+    },
 ]

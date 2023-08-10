@@ -8,9 +8,16 @@ geocoded_results AS (
 
 final AS (
     SELECT
-        adresses.*,
+        {{
+            dbt_utils.star(
+                relation_alias='adresses',
+                from=ref('int__adresses'),
+                except=['longitude', 'latitude'])
+        }},
         geocoded_results.result_score,
-        geocoded_results.result_citycode
+        geocoded_results.result_citycode,
+        COALESCE(adresses.longitude, geocoded_results.longitude) AS "longitude",
+        COALESCE(adresses.latitude, geocoded_results.latitude)   AS "latitude"
     FROM adresses
     LEFT JOIN geocoded_results ON adresses._di_surrogate_id = geocoded_results._di_surrogate_id
 )
