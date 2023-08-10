@@ -460,3 +460,9 @@ sources:
                     - '$.details.website'
                     - '$.details.infosPratiques.jourHoraire'
                     - '$.details.presentation.structureProjet'
+
+  - name: agefiph
+    schema: agefiph
+    tables:
+      - name: services
+      - name: structures
