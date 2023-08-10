@@ -20,7 +20,7 @@ final AS (
             ELSE structures.telephone
         END AS "telephone"
     FROM structures
-    WHERE structures.source NOT IN ('soliguide', 'siao', 'finess')
+    WHERE structures.source NOT IN ('soliguide', 'siao', 'finess', 'agefiph')
 )
 
 SELECT * FROM final

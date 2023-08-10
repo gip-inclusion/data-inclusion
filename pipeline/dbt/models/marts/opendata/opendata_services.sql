@@ -13,7 +13,7 @@ final AS (
         {{ obfuscate('courriel') }} AS "courriel",
         {{ obfuscate('telephone') }} AS "telephone"
     FROM services
-    WHERE services.source != 'soliguide'
+    WHERE services.source NOT IN ('soliguide', 'agefiph')
 )
 
 SELECT * FROM final
