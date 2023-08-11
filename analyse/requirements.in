@@ -12,3 +12,6 @@ seaborn
 pyairtable
 pyproj
 minio
+scrapy
+dateparser
+trafilatura
