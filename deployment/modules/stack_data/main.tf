@@ -50,12 +50,40 @@ resource "scaleway_iam_application" "main" {
   name = "airflow"
 }
 
-resource "scaleway_iam_policy" "object_full_access" {
-  application_id = scaleway_iam_application.main.id
-  rule {
-    project_ids          = [var.scaleway_project_id]
-    permission_set_names = ["ObjectStorageObjectsRead", "ObjectStorageObjectsWrite"]
-  }
+resource "scaleway_object_bucket_policy" "policy" {
+  bucket = scaleway_object_bucket.main.name
+  policy = jsonencode(
+    {
+      Version = "2023-04-17",
+      Statement = [
+        {
+          Effect = "Allow",
+          Principal = {
+            SCW = "application_id:${scaleway_iam_application.main.name}"
+          },
+          Action = [
+            "s3:GetObject",
+            "s3:PutObject"
+          ],
+          Resources = [
+            "${scaleway_object_bucket.main.name}/data/*",
+          ]
+        },
+        {
+          Effect = "Allow",
+          Principal = {
+            SCW = "application_id:${scaleway_iam_application.main.name}"
+          },
+          Action = [
+            "s3:GetObject"
+          ],
+          Resources = [
+            "${scaleway_object_bucket.main.name}/sources/*"
+          ]
+        }
+      ]
+    }
+  )
 }
 
 resource "scaleway_iam_api_key" "main" {
