@@ -1,9 +1,33 @@
 resource "scaleway_instance_ip" "main" {}
 
+resource "scaleway_instance_security_group" "main" {
+  inbound_default_policy  = "drop"
+  outbound_default_policy = "accept"
+  stateful                = true
+
+  inbound_rule {
+    action = "accept"
+    port   = 22
+  }
+  inbound_rule {
+    action = "accept"
+    port   = 80
+  }
+  inbound_rule {
+    action = "accept"
+    port   = 443
+  }
+  inbound_rule {
+    action = "accept"
+    port   = 8081
+  }
+}
+
 resource "scaleway_instance_server" "main" {
-  type  = "DEV1-L"
-  image = "docker"
-  ip_id = scaleway_instance_ip.main.id
+  type              = "DEV1-L"
+  image             = "docker"
+  ip_id             = scaleway_instance_ip.main.id
+  security_group_id = scaleway_instance_security_group.main.id
 }
 
 resource "scaleway_rdb_instance" "main" {
@@ -43,14 +67,23 @@ resource "scaleway_rdb_privilege" "main" {
 }
 
 resource "scaleway_object_bucket" "main" {
-  name = "datalake"
+  name = "data-inclusion-datalake-staging"
 }
 
 resource "scaleway_iam_application" "main" {
   name = "airflow"
 }
 
-resource "scaleway_object_bucket_policy" "policy" {
+data "scaleway_account_project" "main" {
+  project_id = var.scaleway_project_id
+}
+
+data "scaleway_iam_group" "editors" {
+  organization_id = data.scaleway_account_project.main.organization_id
+  name            = "Editors"
+}
+
+resource "scaleway_object_bucket_policy" "main" {
   bucket = scaleway_object_bucket.main.name
   policy = jsonencode(
     {
@@ -59,26 +92,47 @@ resource "scaleway_object_bucket_policy" "policy" {
         {
           Effect = "Allow",
           Principal = {
-            SCW = "application_id:${scaleway_iam_application.main.name}"
+            SCW = concat(
+              [for user_id in data.scaleway_iam_group.editors.user_ids : "user_id:${user_id}"],
+              [
+                "application_id:${scaleway_iam_application.main.id}"
+              ]
+            )
           },
           Action = [
             "s3:GetObject",
             "s3:PutObject"
           ],
-          Resources = [
+          Resource = [
             "${scaleway_object_bucket.main.name}/data/*",
           ]
         },
         {
           Effect = "Allow",
           Principal = {
-            SCW = "application_id:${scaleway_iam_application.main.name}"
+            SCW = concat(
+              [for user_id in data.scaleway_iam_group.editors.user_ids : "user_id:${user_id}"],
+              [
+                "application_id:${scaleway_iam_application.main.id}"
+              ]
+            )
           },
           Action = [
             "s3:GetObject"
           ],
-          Resources = [
+          Resource = [
             "${scaleway_object_bucket.main.name}/sources/*"
+          ]
+        },
+        {
+          Effect = "Allow",
+          Principal = {
+            SCW = [for user_id in data.scaleway_iam_group.editors.user_ids : "user_id:${user_id}"]
+          },
+          Action = "*",
+          Resource = [
+            "${scaleway_object_bucket.main.name}",
+            "${scaleway_object_bucket.main.name}/*"
           ]
         }
       ]
