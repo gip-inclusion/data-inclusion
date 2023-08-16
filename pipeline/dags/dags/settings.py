@@ -240,4 +240,21 @@ SOURCES_CONFIGS = [
             },
         ],
     },
+    {
+        "id": "data-inclusion",
+        "schedule_interval": "@once",
+        "snapshot": False,
+        "streams": [
+            {
+                "id": "services",
+                "filename": "services.json",
+                "url": Variable.get("DI_EXTRA_SERVICES_FILE_URL", None),
+            },
+            {
+                "id": "structures",
+                "filename": "structures.json",
+                "url": Variable.get("DI_EXTRA_STRUCTURES_FILE_URL", None),
+            },
+        ],
+    },
 ]
