@@ -2,6 +2,7 @@ WITH services AS (
     {{
         dbt_utils.union_relations(
             relations=[
+                ref('int_agefiph__services'),
                 ref('int_dora__services'),
                 ref('int_mediation_numerique__services'),
                 ref('int_monenfant__services'),

@@ -1,0 +1,35 @@
+version: 2
+
+models:
+  - name: stg_agefiph__services_thematiques
+    config:
+      tags: agefiph
+    columns:
+      - name: service_id
+        tests:
+          - not_null
+          - dbt_utils.not_empty_string
+      - name: thematique_id
+        tests:
+          - not_null
+          - dbt_utils.not_empty_string
+
+  - name: stg_agefiph__services
+    config:
+      tags: agefiph
+    columns:
+      - name: id
+        tests:
+          - unique
+          - not_null
+          - dbt_utils.not_empty_string
+
+  - name: stg_agefiph__structures
+    config:
+      tags: agefiph
+    columns:
+      - name: id
+        tests:
+          - unique
+          - not_null
+          - dbt_utils.not_empty_string

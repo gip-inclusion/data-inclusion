@@ -20,7 +20,8 @@ final AS (
         data #>> '{position,adresse}'                         AS "position_adresse",
         data #>> '{position,complementAdresse}'               AS "position_complement_adresse",
         NULLIF(data #>> '{entity,mail}', '')                  AS "entity_mail",
-        data #>> '{entity,website}'                           AS "entity_website"
+        data #>> '{entity,website}'                           AS "entity_website",
+        data -> 'newhours'                                    AS "newhours"
     FROM source
 )
 

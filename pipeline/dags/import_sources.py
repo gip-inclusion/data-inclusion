@@ -69,6 +69,7 @@ def _extract(
     ).date()
 
     EXTRACT_FN_BY_SOURCE_ID = {
+        "agefiph": utils.extract_http_content,
         "annuaire-du-service-public": utils.extract_http_content,
         "cd35": utils.extract_http_content,
         "cd72": utils.extract_http_content,
@@ -126,6 +127,7 @@ def _load(
     from sqlalchemy.dialects.postgresql import JSONB
 
     from data_inclusion.scripts.tasks import (
+        agefiph,
         annuaire_du_service_public,
         monenfant,
         soliguide,
@@ -144,10 +146,16 @@ def _load(
         "un-jeune-une-solution": utils.read_json,
         "soliguide": soliguide.read,
         "monenfant": monenfant.read,
+        "agefiph": {
+            "services": agefiph.read,
+            "structures": lambda path: utils.read_csv(path, sep=","),
+        },
     }
 
     if source_config["id"].startswith("mediation-numerique-"):
         read_fn = utils.read_json
+    elif isinstance(READ_FN_BY_SOURCE_ID[source_config["id"]], dict):
+        read_fn = READ_FN_BY_SOURCE_ID[source_config["id"]][stream_config["id"]]
     else:
         read_fn = READ_FN_BY_SOURCE_ID[source_config["id"]]
 

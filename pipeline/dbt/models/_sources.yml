@@ -388,7 +388,9 @@ sources:
                     - '$.position.location.coordinates[1]'
                     - '$.seo_url'
                     - '$.name'
+                    - '$.newhours'
                     - '$.description'
+                    - '$.entity.phones'
                     - '$.entity.mail'
                     - '$.entity.website'
                     - '$.services_all'
@@ -396,6 +398,8 @@ sources:
                     - '$.services_all[*].name'
                     - '$.services_all[*].categorie'
                     - '$.services_all[*].description'
+                    - '$.services_all[*].differentHours'
+                    - '$.services_all[*].hours'
               - expect_column_value_paths_to_exist:
                   config:
                     severity: warn
@@ -405,23 +409,18 @@ sources:
                     - '$.position.departement'
                     - '$.entity.facebook'
                     - '$.entity.instagram'
-                    - '$.entity.phones'
-                    - '$.entity.mail'
                     - '$.entity.fax'
                     - '$.modalities'
                     - '$._id'
                     - '$.tempInfos'
                     - '$.publics'
-                    - '$.newhours'
                     - '$.close'
                     - '$.status'
                     - '$.visibility'
-                    - '$.services_all[*].hours'
                     - '$.services_all[*].isOpenToday'
                     - '$.services_all[*].differentModalities'
                     - '$.services_all[*].publics'
                     - '$.services_all[*].saturated'
-                    - '$.services_all[*].differentHours'
                     - '$.services_all[*].jobsList'
                     - '$.services_all[*].close'
                     - '$.services_all[*].createdAt'
@@ -461,3 +460,9 @@ sources:
                     - '$.details.website'
                     - '$.details.infosPratiques.jourHoraire'
                     - '$.details.presentation.structureProjet'
+
+  - name: agefiph
+    schema: agefiph
+    tables:
+      - name: services
+      - name: structures
