@@ -77,10 +77,14 @@ class AlphaSpider(scrapy.Spider):
     name = "alpha"
     custom_settings = {"DOWNLOAD_DELAY": 0.5}
 
+    def __init__(self, url=None, **kwargs):
+        self.url = url
+        super().__init__(url, **kwargs)
+
     # How self.URL is initiated:
     # https://stackoverflow.com/a/41123138
     def start_requests(self):
-        urls = [self.URL]
+        urls = [self.url]
         for url in urls:
             yield scrapy.Request(url=url, callback=self.parse)
 
