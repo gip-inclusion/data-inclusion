@@ -60,6 +60,7 @@ def _extract(
         emplois_de_linclusion,
         mediation_numerique,
         mes_aides,
+        reseau_alpha,
         soliguide,
         utils,
     )
@@ -80,6 +81,7 @@ def _extract(
         "un-jeune-une-solution": utils.extract_http_content,
         "soliguide": soliguide.extract,
         "monenfant": utils.extract_http_content,
+        "reseau-alpha": reseau_alpha.extract,
     }
 
     if source_config["id"].startswith("mediation-numerique-"):
@@ -144,6 +146,7 @@ def _load(
         "un-jeune-une-solution": utils.read_json,
         "soliguide": soliguide.read,
         "monenfant": monenfant.read,
+        "reseau-alpha": utils.read_json,
     }
 
     if source_config["id"].startswith("mediation-numerique-"):

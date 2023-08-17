@@ -223,4 +223,16 @@ SOURCES_CONFIGS = [
             },
         ],
     },
+    {
+        "id": "reseau-alpha",
+        "schedule_interval": "@once",
+        "snapshot": True,
+        "streams": [
+            {
+                "id": "structures_services",
+                "filename": "alpha.json",
+                "url": Variable.get("RESEAU_ALPHA_HTML_FILE_URL", None),
+            }
+        ],
+    },
 ]
