@@ -81,7 +81,7 @@ final AS (
             INNER JOIN di_thematique_by_agefiph_thematique ON services_thematiques.thematique_id = di_thematique_by_agefiph_thematique.agefiph_thematique_id
             WHERE services.id = services_thematiques.service_id
         )                                                             AS "thematiques",
-        ARRAY['en-presentiel', 'a-distance']                          AS "modes_accueil",
+        ARRAY['a-distance']                                           AS "modes_accueil",
         CAST(NULL AS TEXT [])                                         AS "modes_orientation_accompagnateur",
         CAST(NULL AS TEXT [])                                         AS "modes_orientation_beneficiaire",
         CAST(NULL AS TEXT [])                                         AS "profils",
