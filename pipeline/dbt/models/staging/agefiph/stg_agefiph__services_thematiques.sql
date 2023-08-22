@@ -10,6 +10,8 @@ final AS (
     FROM
         source,
         LATERAL(SELECT * FROM JSONB_PATH_QUERY(source.data, '$.relationships.field_thematique.data[*]')) AS thematiques (data)
+    WHERE
+        thematiques.data ->> 'id' IS NOT NULL
 )
 
 SELECT * FROM final
