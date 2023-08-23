@@ -56,9 +56,9 @@ final AS (
         ARRAY_TO_STRING(
             ARRAY[
                 CASE WHEN avip THEN {{ presentation_detail_avip }} END,
-                details_presentation_structure_projet,
-                details_modalite_condition_admision,
-                details_modalite_modalites_inscription
+                CASE WHEN details_presentation_structure_projet IS NOT NULL THEN '## La structure :' || E'\n\n' || details_presentation_structure_projet END,
+                CASE WHEN details_modalite_condition_admision IS NOT NULL THEN '## Les conditions d''admission :' || E'\n\n' || details_modalite_condition_admision END,
+                CASE WHEN details_modalite_modalites_inscription IS NOT NULL THEN '## Les modalités d''inscription :' || E'\n\n' || details_modalite_modalites_inscription END
             ],
             E'\n\n'
         )                                                                                 AS "presentation_detail"
