@@ -13,7 +13,9 @@ final AS (
         data #>> '{attributes,field_titre_card_employeur}'                AS "attributes__field_titre_card_employeur",
         data #>> '{attributes,field_essentiel_ph,processed}'              AS "attributes__field_essentiel_ph__processed",
         data #>> '{attributes,field_essentiel_employeur,processed}'       AS "attributes__field_essentiel_employeur__processed",
-        data #>> '{attributes,field_texte_brut_long}'                     AS "attributes__field_texte_brut_long"
+        data #>> '{attributes,field_texte_brut_long}'                     AS "attributes__field_texte_brut_long",
+        data #>> '{attributes,path,alias}'                                AS "attributes__path__alias",
+        data #>> '{relationships.field_type_aide_service.data.id}'        AS "relationships__field_type_aide_service__data__id"
     FROM source
 )
 

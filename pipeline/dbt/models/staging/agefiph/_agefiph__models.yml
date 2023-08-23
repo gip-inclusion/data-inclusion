@@ -1,19 +1,6 @@
 version: 2
 
 models:
-  - name: stg_agefiph__services_types
-    config:
-      tags: agefiph
-    columns:
-      - name: service_id
-        tests:
-          - not_null
-          - dbt_utils.not_empty_string
-      - name: type_id
-        tests:
-          - not_null
-          - dbt_utils.not_empty_string
-
   - name: stg_agefiph__services_publics
     config:
       tags: agefiph

@@ -19,6 +19,7 @@ regions AS (
     SELECT * FROM {{ source('insee', 'regions') }}
 ),
 
+-- https://www.agefiph.fr/jsonapi/taxonomy_term/thematique
 di_thematique_by_agefiph_thematique AS (
     SELECT x.*
     FROM (
@@ -36,6 +37,17 @@ di_thematique_by_agefiph_thematique AS (
     ) AS x (agefiph_thematique_id, thematique)
 ),
 
+-- https://www.agefiph.fr/jsonapi/taxonomy_term/type_aide_service
+di_type_by_agefiph_type AS (
+    SELECT x.*
+    FROM (
+        VALUES
+        ('9f1b3cad-7a62-449a-8ac2-3356c939f827', 'aide-financiere'),
+        ('6a94011c-a840-4ad5-824f-81738e8a1821', 'information'),
+        ('0f8de1a1-1b4b-4508-b235-ada518a806e4', 'accompagnement')
+    ) AS x (agefiph_type, type_)
+),
+
 final AS (
     SELECT
         structures.id                                                 AS "adresse_id",
@@ -47,7 +59,6 @@ final AS (
         NULL                                                          AS "formulaire_en_ligne",
         NULL                                                          AS "frais_autres",
         NULL                                                          AS "justificatifs",
-        NULL                                                          AS "lien_source",
         services.attributes__title                                    AS "nom",
         services.attributes__field_titre_card_employeur               AS "presentation_resume",
         NULL                                                          AS "prise_rdv",
@@ -59,6 +70,7 @@ final AS (
         regions."LIBELLE"                                             AS "zone_diffusion_nom",
         'region'                                                      AS "zone_diffusion_type",
         NULL                                                          AS "pre_requis",
+        'https://www.agefiph.fr' || services.attributes__path__alias  AS "lien_source",
         CAST(services.attributes__created AS DATE)                    AS "date_creation",
         CAST(services.attributes__changed AS DATE)                    AS "date_maj",
         CAST(CAST(MD5(structures.id || services.id) AS UUID) AS TEXT) AS "id",
@@ -85,7 +97,11 @@ final AS (
         CAST(NULL AS TEXT [])                                         AS "modes_orientation_accompagnateur",
         CAST(NULL AS TEXT [])                                         AS "modes_orientation_beneficiaire",
         CAST(NULL AS TEXT [])                                         AS "profils",
-        CAST(NULL AS TEXT [])                                         AS "types",
+        (
+            SELECT di_type_by_agefiph_type.type_
+            FROM di_type_by_agefiph_type
+            WHERE services.relationships__field_type_aide_service__data__id = di_type_by_agefiph_type.agefiph_type
+        )                                                             AS "types",
         CAST(NULL AS TEXT [])                                         AS "frais"
     FROM
         structures
