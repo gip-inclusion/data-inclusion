@@ -97,7 +97,7 @@ final AS (
         CAST(NULL AS TEXT [])                                         AS "modes_orientation_accompagnateur",
         CAST(NULL AS TEXT [])                                         AS "modes_orientation_beneficiaire",
         CAST(NULL AS TEXT [])                                         AS "profils",
-        (
+        ARRAY(
             SELECT di_type_by_agefiph_type.type_
             FROM di_type_by_agefiph_type
             WHERE services.relationships__field_type_aide_service__data__id = di_type_by_agefiph_type.agefiph_type
