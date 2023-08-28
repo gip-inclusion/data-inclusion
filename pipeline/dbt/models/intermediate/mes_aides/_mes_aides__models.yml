@@ -2,4 +2,13 @@ version: 2
 
 models:
   - name: int_mes_aides__adresses
+    tests:
+      - check_adresse:
+          config:
+            severity: warn
+
   - name: int_mes_aides__structures
+    tests:
+      - check_structure:
+          config:
+            severity: warn

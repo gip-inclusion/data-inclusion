@@ -35,6 +35,12 @@ pipx install --include-deps dbt-postgres==1.4.5
 # install extra dbt packages (e.g. dbt_utils)
 dbt deps
 
+# load seeds
+dbt seeds
+
+# create user defined functions
+dbt run-operation create_udfs
+
 # run commands
 dbt ls
 

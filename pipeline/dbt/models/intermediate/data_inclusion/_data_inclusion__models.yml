@@ -4,6 +4,10 @@ models:
   - name: int_siretisation__annotations
 
   - name: int_data_inclusion__adresses
+    tests:
+      - check_adresse:
+          config:
+            severity: warn
     columns:
       - name: id
         tests:
@@ -12,6 +16,10 @@ models:
           - dbt_utils.not_empty_string
 
   - name: int_data_inclusion__services
+    tests:
+      - check_service:
+          config:
+            severity: warn
     columns:
       - name: id
         tests:
@@ -32,6 +40,10 @@ models:
               field: id
 
   - name: int_data_inclusion__structures
+    tests:
+      - check_structure:
+          config:
+            severity: warn
     columns:
       - name: id
         tests:

@@ -18,9 +18,37 @@ siretisation_annotations AS (
     SELECT * FROM {{ ref('int_siretisation__annotations') }}
 ),
 
+valid_structures AS (
+    SELECT structures.*
+    FROM structures
+    LEFT JOIN LATERAL
+        LIST_STRUCTURE_ERRORS(
+            accessibilite,
+            antenne,
+            courriel,
+            date_maj,
+            horaires_ouverture,
+            id,
+            labels_autres,
+            labels_nationaux,
+            lien_source,
+            nom,
+            presentation_detail,
+            presentation_resume,
+            rna,
+            siret,
+            site_web,
+            source,
+            telephone,
+            thematiques,
+            typologie
+        ) AS errors ON TRUE
+    WHERE errors.field IS NULL
+),
+
 final AS (
     SELECT
-        structures.*,
+        valid_structures.*,
         deprecated_sirets.sirene_date_fermeture                                 AS "_di_sirene_date_fermeture",
         deprecated_sirets.sirene_etab_successeur                                AS "_di_sirene_etab_successeur",
         adresses_geocoded.longitude                                             AS "longitude",
@@ -37,11 +65,11 @@ final AS (
         COALESCE(plausible_personal_emails._di_surrogate_id IS NOT NULL, FALSE) AS "_di_email_is_pii",
         COALESCE(deprecated_sirets._di_surrogate_id IS NOT NULL, FALSE)         AS "_di_has_deprecated_siret"
     FROM
-        structures
-    LEFT JOIN plausible_personal_emails ON structures._di_surrogate_id = plausible_personal_emails._di_surrogate_id
-    LEFT JOIN deprecated_sirets ON structures._di_surrogate_id = deprecated_sirets._di_surrogate_id
-    LEFT JOIN adresses_geocoded ON structures._di_adresse_surrogate_id = adresses_geocoded._di_surrogate_id
-    LEFT JOIN siretisation_annotations ON structures._di_surrogate_id = siretisation_annotations._di_surrogate_id
+        valid_structures
+    LEFT JOIN plausible_personal_emails ON valid_structures._di_surrogate_id = plausible_personal_emails._di_surrogate_id
+    LEFT JOIN deprecated_sirets ON valid_structures._di_surrogate_id = deprecated_sirets._di_surrogate_id
+    LEFT JOIN adresses_geocoded ON valid_structures._di_adresse_surrogate_id = adresses_geocoded._di_surrogate_id
+    LEFT JOIN siretisation_annotations ON valid_structures._di_surrogate_id = siretisation_annotations._di_surrogate_id
 )
 
 SELECT * FROM final

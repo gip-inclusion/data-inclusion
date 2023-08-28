@@ -2,6 +2,10 @@ version: 2
 
 models:
   - name: int_agefiph__adresses
+    tests:
+      - check_adresse:
+          config:
+            severity: warn
     columns:
       - name: id
         tests:
@@ -10,6 +14,10 @@ models:
           - dbt_utils.not_empty_string
 
   - name: int_agefiph__services
+    tests:
+      - check_service:
+          config:
+            severity: warn
     columns:
       - name: id
         tests:
@@ -30,6 +38,10 @@ models:
               field: id
 
   - name: int_agefiph__structures
+    tests:
+      - check_structure:
+          config:
+            severity: warn
     columns:
       - name: id
         tests:

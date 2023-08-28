@@ -20,7 +20,7 @@ final AS (
         id_res                                          AS "adresse_id",
         service                                         AS "nom",
         'odspep'                                        AS "source",
-        NULL                                            AS "types",
+        NULL::TEXT []                                   AS "types",
         NULL                                            AS "prise_rdv",
         NULL::TEXT []                                   AS "frais",
         NULL                                            AS "frais_autres",

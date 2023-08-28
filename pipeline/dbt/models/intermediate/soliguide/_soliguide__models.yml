@@ -2,8 +2,22 @@ version: 2
 
 models:
   - name: int_soliguide__adresses
+    tests:
+      - check_adresse:
+          config:
+            severity: warn
+
   - name: int_soliguide__structures
+    tests:
+      - check_structure:
+          config:
+            severity: warn
+
   - name: int_soliguide__services
+    tests:
+      - check_service:
+          config:
+            severity: warn
     columns:
       - name: id
         tests:

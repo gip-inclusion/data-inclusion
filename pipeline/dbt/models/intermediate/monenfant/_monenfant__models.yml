@@ -2,5 +2,19 @@ version: 2
 
 models:
   - name: int_monenfant__adresses
+    tests:
+      - check_adresse:
+          config:
+            severity: warn
+
   - name: int_monenfant__structures
+    tests:
+      - check_service:
+          config:
+            severity: warn
+
   - name: int_monenfant__services
+    tests:
+      - check_structure:
+          config:
+            severity: warn

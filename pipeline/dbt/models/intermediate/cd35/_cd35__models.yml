@@ -2,4 +2,13 @@ version: 2
 
 models:
   - name: int_cd35__adresses
+    tests:
+      - check_adresse:
+          config:
+            severity: warn
+
   - name: int_cd35__structures
+    tests:
+      - check_structure:
+          config:
+            severity: warn

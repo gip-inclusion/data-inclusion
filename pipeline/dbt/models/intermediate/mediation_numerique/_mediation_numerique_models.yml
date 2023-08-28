@@ -2,5 +2,19 @@ version: 2
 
 models:
   - name: int_mediation_numerique__adresses
+    tests:
+      - check_adresse:
+          config:
+            severity: warn
+
   - name: int_mediation_numerique__services
+    tests:
+      - check_service:
+          config:
+            severity: warn
+
   - name: int_mediation_numerique__structures
+    tests:
+      - check_structure:
+          config:
+            severity: warn

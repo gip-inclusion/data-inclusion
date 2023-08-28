@@ -1,5 +1,5 @@
 WITH structures AS (
-    SELECT * FROM {{ ref('int__validated_structures') }}
+    SELECT * FROM {{ ref('int__enhanced_structures') }}
 ),
 
 annotation_annotations AS (

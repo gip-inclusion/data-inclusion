@@ -2,4 +2,13 @@ version: 2
 
 models:
   - name: int_siao__adresses
+    tests:
+      - check_adresse:
+          config:
+            severity: warn
+
   - name: int_siao__structures
+    tests:
+      - check_structure:
+          config:
+            severity: warn

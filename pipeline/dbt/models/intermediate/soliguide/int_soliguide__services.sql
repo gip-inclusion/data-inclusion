@@ -1,9 +1,3 @@
-{{
-    config(
-        pre_hook="{{ create_udf_soliguide__new_hours_to_osm_opening_hours() }}"
-    )
-}}
-
 WITH lieux AS (
     SELECT * FROM {{ ref('stg_soliguide__lieux') }}
 ),
