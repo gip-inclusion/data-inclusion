@@ -38,3 +38,7 @@ jobs:
       - name: tf validate
         run: |
           docker compose run --rm tf -chdir=environments/staging validate
+
+      - name: tf plan
+        run: |
+          docker compose run --rm tf -chdir=environments/staging plan
