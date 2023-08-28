@@ -1,0 +1,35 @@
+name: api
+
+defaults:
+  run:
+    working-directory: deployment
+
+on:
+  push:
+    branches:
+      - "main"
+  pull_request:
+    branches:
+      - "main"
+
+jobs:
+  tests:
+    runs-on: ubuntu-20.04
+
+    environment: staging
+
+    steps:
+      - uses: actions/checkout@v2
+
+      # AWS_ACCESS_KEY_ID & AWS_SECRET_ACCESS_KEY will be sourced from environment
+      - name: tf init
+        run: |
+          docker compose run --rm tf -chdir=environments/staging init \
+            -backend-config "bucket=data-inclusion-terraform" \
+            -backend-config "key=stack_data/staging" \
+            -backend-config "region=fr-par" \
+            -backend-config "endpoint=https://s3.fr-par.scw.cloud"
+
+      - name: tf validate
+        run: |
+          docker compose run --rm tf -chdir=environments/staging validate
