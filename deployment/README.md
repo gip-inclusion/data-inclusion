@@ -9,9 +9,22 @@ This documentation is structured as follow :
 
 ### prerequisites
 
-* A scaleway project.
-* An IAM application ([here](https://console.scaleway.com/iam/applications)) with a policy to fully access all ressources in the target scaleway project.
-* An API key for that application ([here](https://console.scaleway.com/iam/api-keys))
+#### for the state backend
+
+* A scaleway project
+* A policy with access to object storage ([here](https://console.scaleway.com/iam/policies))
+* An IAM application with this policy assigned ([here](https://console.scaleway.com/iam/applications))
+* An API key for this application ([here](https://console.scaleway.com/iam/api-keys))
+
+This is preferably shared by environments.
+
+#### for provisioning an environment
+
+* A scaleway project dedicated for that environment
+* A policy ([here](https://console.scaleway.com/iam/policies)) with the following rules:
+    * `InstancesFullAccess`, `ObjectStorageFullAccess`, `RelationalDatabasesFullAccess` in the target project scope
+* An IAM application with this policy assigned ([here](https://console.scaleway.com/iam/applications))
+* An API key for this application ([here](https://console.scaleway.com/iam/api-keys))
 
 ### targeting an environment
 
@@ -22,6 +35,8 @@ docker compose run --rm tf -chdir=environments/staging plan
 ```
 
 ### initializing the state backend
+
+*Use the prerequisites for the state backend*
 
 ```bash
 docker compose run --rm tf -chdir=environments/<ENVIRONMENT>/ init \
@@ -46,6 +61,8 @@ USER_ID=$(id -u) docker compose run --rm tf-vars environments/<ENVIRONMENT>
 The generated `terraform.tfvars.json` file can be filled with the appropriate values for that environment.
 
 ⚠️⚠️ `terraform.tfvars.json` FILES SHOULD NOT BE COMMITTED ⚠️⚠️
+
+*Use the prerequisites for provisioning an environment*
 
 ### provisioning
 

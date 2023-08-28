@@ -13,23 +13,36 @@ on:
       - "main"
 
 jobs:
-  tests:
+  deploy:
     runs-on: ubuntu-20.04
 
     environment: staging
+
+    container:
+      image: hashicorp/terraform:1.4.0
+      env:
+        AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+
+        # `TF_VAR_*` are case sensitive and must match the case of variables
+        TF_VAR_datawarehouse_admin_password: ${{ secrets.TF_VAR_DATAWAREHOUSE_ADMIN_PASSWORD }}
+        TF_VAR_datawarehouse_admin_username: ${{ vars.TF_VAR_DATAWAREHOUSE_ADMIN_USERNAME }}
+        TF_VAR_datawarehouse_di_database: ${{ vars.TF_VAR_DATAWAREHOUSE_DI_DATABASE }}
+        TF_VAR_datawarehouse_di_password: ${{ secrets.TF_VAR_DATAWAREHOUSE_DI_PASSWORD }}
+        TF_VAR_datawarehouse_di_username: ${{ vars.TF_VAR_DATAWAREHOUSE_DI_USERNAME }}
+        TF_VAR_scaleway_access_key: ${{ secrets.TF_VAR_SCALEWAY_ACCESS_KEY }}
+        TF_VAR_scaleway_project_id: ${{ vars.TF_VAR_SCALEWAY_PROJECT_ID }}
+        TF_VAR_scaleway_secret_key: ${{ secrets.TF_VAR_SCALEWAY_SECRET_KEY }}
+      volumes:
+        - .:/deployment
+      options: --workdir /deployment
 
     steps:
       - uses: actions/checkout@v2
 
       - name: tf init
-        env:
-          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
         run: |
-          docker compose run --rm \
-            -e AWS_ACCESS_KEY_ID \
-            -e AWS_SECRET_ACCESS_KEY \
-            tf -chdir=environments/staging init \
+          terraform -chdir=environments/staging init \
             -backend-config "bucket=data-inclusion-terraform" \
             -backend-config "key=stack_data/staging" \
             -backend-config "region=fr-par" \
@@ -37,8 +50,8 @@ jobs:
 
       - name: tf validate
         run: |
-          docker compose run --rm tf -chdir=environments/staging validate
+          terraform -chdir=environments/staging validate
 
       - name: tf plan
         run: |
-          docker compose run --rm tf -chdir=environments/staging plan
+          terraform -chdir=environments/staging plan
