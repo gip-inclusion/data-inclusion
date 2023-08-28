@@ -1,30 +1,30 @@
 WITH services AS (
-    SELECT * FROM {{ ref('int__services') }}
+    SELECT * FROM {{ ref('int__union_services') }}
 ),
 
 structures AS (
-    SELECT * FROM {{ ref('int__enhanced_structures') }}
+    SELECT * FROM {{ ref('int__union_structures__enhanced') }}
 ),
 
-adresses_geocoded AS (
-    SELECT * FROM {{ ref('int__adresses_geocoded') }}
+adresses AS (
+    SELECT * FROM {{ ref('int__union_adresses__enhanced') }}
 ),
 
 -- TODO: Refactoring needed to be able to do geocoding per source and then use the result in the mapping
 services_with_zone_diffusion AS (
     SELECT
-        {{ dbt_utils.star(from=ref('int__services'), relation_alias='services', except=["zone_diffusion_code", "zone_diffusion_nom"]) }},
+        {{ dbt_utils.star(from=ref('int__union_services'), relation_alias='services', except=["zone_diffusion_code", "zone_diffusion_nom"]) }},
         CASE services.source = ANY(ARRAY['monenfant', 'soliguide'])
-            WHEN TRUE THEN adresses_geocoded.result_citycode
+            WHEN TRUE THEN adresses.result_citycode
             ELSE services.zone_diffusion_code
         END AS "zone_diffusion_code",
         CASE services.source = ANY(ARRAY['monenfant', 'soliguide'])
-            WHEN TRUE THEN adresses_geocoded.commune
+            WHEN TRUE THEN adresses.commune
             ELSE services.zone_diffusion_nom
         END AS "zone_diffusion_nom"
     FROM
         services
-    LEFT JOIN adresses_geocoded ON services._di_adresse_surrogate_id = adresses_geocoded._di_surrogate_id
+    LEFT JOIN adresses ON services._di_adresse_surrogate_id = adresses._di_surrogate_id
 ),
 
 services_with_valid_structure AS (
@@ -75,18 +75,18 @@ valid_services AS (
 final AS (
     SELECT
         valid_services.*,
-        adresses_geocoded.longitude          AS "longitude",
-        adresses_geocoded.latitude           AS "latitude",
-        adresses_geocoded.complement_adresse AS "complement_adresse",
-        adresses_geocoded.commune            AS "commune",
-        adresses_geocoded.adresse            AS "adresse",
-        adresses_geocoded.code_postal        AS "code_postal",
-        adresses_geocoded.code_insee         AS "code_insee",
-        adresses_geocoded.result_score       AS "_di_geocodage_score",
-        adresses_geocoded.result_citycode    AS "_di_geocodage_code_insee"
+        adresses.longitude          AS "longitude",
+        adresses.latitude           AS "latitude",
+        adresses.complement_adresse AS "complement_adresse",
+        adresses.commune            AS "commune",
+        adresses.adresse            AS "adresse",
+        adresses.code_postal        AS "code_postal",
+        adresses.code_insee         AS "code_insee",
+        adresses.result_score       AS "_di_geocodage_score",
+        adresses.result_citycode    AS "_di_geocodage_code_insee"
     FROM
         valid_services
-    LEFT JOIN adresses_geocoded ON valid_services._di_adresse_surrogate_id = adresses_geocoded._di_surrogate_id
+    LEFT JOIN adresses ON valid_services._di_adresse_surrogate_id = adresses._di_surrogate_id
 )
 
 SELECT * FROM final

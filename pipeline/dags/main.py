@@ -34,7 +34,7 @@ def _geocode():
                 adresse,
                 code_postal,
                 commune
-            FROM public_intermediate.int__adresses;
+            FROM public_intermediate.int__union_adresses;
         """
     )
 

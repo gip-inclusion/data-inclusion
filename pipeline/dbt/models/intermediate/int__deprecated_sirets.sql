@@ -1,5 +1,5 @@
 WITH structures AS (
-    SELECT * FROM {{ ref('int__structures') }}
+    SELECT * FROM {{ ref('int__union_structures') }}
 ),
 
 sirene_etablissement_historique AS (

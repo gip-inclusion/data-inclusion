@@ -1,7 +1,5 @@
--- TODO: rename to 'int__enhanced_adresses'
-
 WITH adresses AS (
-    SELECT * FROM {{ ref('int__adresses') }}
+    SELECT * FROM {{ ref('int__union_adresses') }}
 ),
 
 valid_adresses AS (
@@ -31,7 +29,7 @@ final AS (
         {{
             dbt_utils.star(
                 relation_alias='valid_adresses',
-                from=ref('int__adresses'),
+                from=ref('int__union_adresses'),
                 except=['longitude', 'latitude'])
         }},
         geocoded_results.result_score,

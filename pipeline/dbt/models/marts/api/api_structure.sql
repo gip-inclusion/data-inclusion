@@ -1,5 +1,5 @@
 WITH structures AS (
-    SELECT * FROM {{ ref('int__enhanced_structures') }}
+    SELECT * FROM {{ ref('int__union_structures__enhanced') }}
 ),
 
 final AS (
@@ -7,7 +7,7 @@ final AS (
         {{
             dbt_utils.star(
                 relation_alias='structures',
-                from=ref('int__enhanced_structures'),
+                from=ref('int__union_structures__enhanced'),
                 except=[
                     '_di_adresse_surrogate_id',
                     '_di_annotated_antenne',
