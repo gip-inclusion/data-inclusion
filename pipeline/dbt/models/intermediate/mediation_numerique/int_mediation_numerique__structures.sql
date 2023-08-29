@@ -58,7 +58,7 @@ final AS (
         typologie                                                                                                    AS "typologie",
         presentation_resume                                                                                          AS "presentation_resume",
         {{ truncate_text("presentation_detail") }} AS "presentation_detail",
-        date_maj                                                                                                     AS "date_maj",
+        CAST(date_maj AS DATE)                                                                                       AS "date_maj",
         _di_source_id                                                                                                AS "source",
         labels_autres                                                                                                AS "labels_autres",
         CAST(NULL AS BOOLEAN)                                                                                        AS "antenne"
