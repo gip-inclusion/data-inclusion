@@ -60,10 +60,23 @@ output "public_ip" {
 output "object_storage_access_key" {
   description = "Access key for the datalake object storage"
   value       = module.stack_data.object_storage_access_key
+  sensitive   = true
 }
 
 output "object_storage_secret_key" {
   description = "Secret key for the datalake object storage"
   value       = module.stack_data.object_storage_secret_key
+  sensitive   = true
+}
+
+output "airflow_conn_pg" {
+  description = "Connection string to the datawarehouse for airflow"
+  value       = module.stack_data.airflow_conn_pg
+  sensitive   = true
+}
+
+output "airflow_conn_s3" {
+  description = "Connection string to the datalake for airflow"
+  value       = module.stack_data.airflow_conn_s3
   sensitive   = true
 }

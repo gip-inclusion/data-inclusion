@@ -1,9 +1,5 @@
 name: deployment
 
-defaults:
-  run:
-    working-directory: deployment
-
 on:
   push:
     branches:
@@ -13,14 +9,22 @@ on:
       - "main"
 
 jobs:
-  deploy:
+  provision:
     runs-on: ubuntu-20.04
-
     environment: staging
+
+    defaults:
+      run:
+        working-directory: deployment
+
+    outputs:
+      encrypted_tf_outputs: ${{ steps.wip.outputs.encrypted_tf_outputs }}
 
     container:
       image: hashicorp/terraform:1.4.0
       env:
+        TF_IN_AUTOMATION: true
+
         AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
         AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
 
@@ -38,7 +42,7 @@ jobs:
       options: --workdir /deployment
 
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
 
       - name: tf init
         run: |
@@ -55,3 +59,72 @@ jobs:
       - name: tf plan
         run: |
           terraform -chdir=environments/staging plan
+
+      - name: tf apply
+        run: |
+          terraform -chdir=environments/staging apply -auto-approve
+
+      - id: tf-output
+        name: tf output
+        env:
+          TMP_ENCRYPTION_PASSWORD: ${{ secrets.TMP_ENCRYPTION_PASSWORD }}
+        run: |
+          apk --no-cache add gpg
+          TF_OUTPUTS=$(terraform -chdir=environments/staging output -json)
+          ENCRYPTED_TF_OUTPUTS=$(echo "foo" | gpg --symmetric --cipher-algo AES256 --batch --passphrase "${TMP_ENCRYPTION_PASSWORD}" --no-symkey-cache | base64 -w0)
+          echo "encrypted_tf_outputs=${ENCRYPTED_TF_OUTPUTS}" >> "${GITHUB_OUTPUT}"
+
+  deploy:
+    runs-on: ubuntu-20.04
+    environment: staging
+    needs: provision
+
+    defaults:
+      run:
+        working-directory: deployment/docker
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - id: set-outputs
+        name: set outputs
+        env:
+          ENCRYPTED_TF_OUTPUTS: ${{ needs.provision.outputs.encrypted_tf_outputs }}
+          TMP_ENCRYPTION_PASSWORD: ${{ secrets.TMP_ENCRYPTION_PASSWORD }}
+        run: |
+          TF_OUTPUTS=$(echo ${ENCRYPTED_TF_OUTPUTS} | base64 -d | gpg --batch --decrypt --passphrase "${TMP_ENCRYPTION_PASSWORD}")
+
+          python -c "$(cat << EOF
+          import os
+          import json
+
+          TF_OUTPUTS = json.loads(os.environ.get("TF_OUTPUTS"))
+
+          airflow_conn_s3 = TF_OUTPUTS["airflow_conn_s3"]["value"]
+          airflow_conn_pg = TF_OUTPUTS["airflow_conn_pg"]["value"]
+          public_ip = TF_OUTPUTS["public_ip"]["value"]
+
+          docker_host = f"ssh://root@{public_ip}"
+
+          print(f"AIRFLOW_CONN_S3={airflow_conn_s3}")
+          print(f"AIRFLOW_CONN_PG={airflow_conn_pg}")
+          print(f"DOCKER_HOST_={docker_host}")
+          EOF
+          )" >> "${GITHUB_ENV}"
+
+      # - name: start services
+      #   env:
+      #     AIRFLOW_CONN_S3: ${{ env.AIRFLOW_CONN_S3 }}
+      #     AIRFLOW_CONN_PG: ${{ env.AIRFLOW_CONN_PG }}
+      #     BAN_API_URL: ${{ vars.BAN_API_URL }}
+      #     DORA_API_URL: ${{ vars.DORA_API_URL }}
+      #     INSEE_FIRSTNAME_FILE_URL: ${{ vars.INSEE_FIRSTNAME_FILE_URL }}
+      #     INSEE_COG_DATASET_URL: ${{ vars.INSEE_COG_DATASET_URL }}
+      #     SIRENE_STOCK_ETAB_GEOCODE_FILE_URL: ${{ vars.SIRENE_STOCK_ETAB_GEOCODE_FILE_URL }}
+      #     SIRENE_STOCK_ETAB_HIST_FILE_URL: ${{ vars.SIRENE_STOCK_ETAB_HIST_FILE_URL }}
+      #     SIRENE_STOCK_ETAB_LIENS_SUCCESSION_URL: ${{ vars.SIRENE_STOCK_ETAB_LIENS_SUCCESSION_URL }}
+      #     SIRENE_STOCK_UNITE_LEGALE_FILE_URL: ${{ vars.SIRENE_STOCK_UNITE_LEGALE_FILE_URL }}
+      #     AIRFLOW_WWW_USER_PASSWORD: ${{ secrets.AIRFLOW_WWW_USER_PASSWORD }}
+      #     DOCKER_HOST_: ${{ env.DOCKER_HOST_ }}
+      #   run: |
+      #     DOCKER_HOST="${DOCKER_HOST_}" docker compose up -d
