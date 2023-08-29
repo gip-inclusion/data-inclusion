@@ -1,5 +1,5 @@
 WITH services AS (
-    SELECT * FROM {{ ref('int__union_services') }}
+    SELECT * FROM {{ ref('int__union_services__enhanced') }}
 ),
 
 final AS (
@@ -7,7 +7,7 @@ final AS (
         {{
             dbt_utils.star(
                 relation_alias='services',
-                from=ref('int__union_services'),
+                from=ref('int__union_services__enhanced'),
                 except=['courriel', 'telephone'])
         }},
         {{ obfuscate('courriel') }} AS "courriel",

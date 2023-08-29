@@ -1,5 +1,5 @@
 WITH structures AS (
-    SELECT * FROM {{ ref('int__union_structures') }}
+    SELECT * FROM {{ ref('int__union_structures__enhanced') }}
 ),
 
 final AS (
@@ -8,7 +8,7 @@ final AS (
         {{
             dbt_utils.star(
                 relation_alias='structures',
-                from=ref('int__union_structures'),
+                from=ref('int__union_structures__enhanced'),
                 except=['courriel', 'telephone'])
         }},
         CASE
