@@ -137,8 +137,14 @@ resource "scaleway_object_bucket_policy" "main" {
   )
 }
 
+resource "time_rotating" "api_key_rotation" {
+  rfc3339        = "2023-06-01T00:00:00Z"
+  rotation_years = 1
+}
+
 resource "scaleway_iam_api_key" "main" {
   application_id = scaleway_iam_application.main.id
+  expires_at     = time_rotating.api_key_rotation.id
 }
 
 resource "scaleway_iam_ssh_key" "main" {
