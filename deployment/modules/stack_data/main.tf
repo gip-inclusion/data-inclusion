@@ -68,7 +68,7 @@ resource "scaleway_object_bucket" "main" {
 
 resource "scaleway_iam_application" "main" {
   organization_id = data.scaleway_account_project.main.organization_id
-  name            = "airflow"
+  name            = "${var.environment_name}--airflow--tf"
 }
 
 data "scaleway_account_project" "main" {
@@ -81,6 +81,9 @@ data "scaleway_iam_group" "editors" {
 }
 
 resource "scaleway_object_bucket_policy" "main" {
+  # disable resource. TODO: find a way to retrieve the user/app associated to the access key
+  count = 0
+
   bucket = scaleway_object_bucket.main.name
   policy = jsonencode(
     {
@@ -138,16 +141,11 @@ resource "scaleway_object_bucket_policy" "main" {
 }
 
 resource "time_rotating" "api_key_rotation" {
-  rfc3339        = "2023-06-01T00:00:00Z"
+  rfc3339        = "2024-06-01T00:00:00Z"
   rotation_years = 1
 }
 
 resource "scaleway_iam_api_key" "main" {
   application_id = scaleway_iam_application.main.id
   expires_at     = time_rotating.api_key_rotation.id
-}
-
-resource "scaleway_iam_ssh_key" "main" {
-  name       = var.environment_name
-  public_key = var.ssh_public_key
 }

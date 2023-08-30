@@ -47,11 +47,6 @@ variable "environment_name" {
   type        = string
 }
 
-variable "ssh_public_key" {
-  description = "SSH public key to be set on the server instance"
-  type        = string
-}
-
 module "stack_data" {
   source = "../../modules/stack_data"
 
@@ -63,8 +58,7 @@ module "stack_data" {
   datawarehouse_di_username    = var.datawarehouse_di_username
   datawarehouse_di_password    = var.datawarehouse_di_password
   datawarehouse_di_database    = var.datawarehouse_di_database
-  environment_name             = var.datawarehouse_di_database
-  ssh_public_key               = var.ssh_public_key
+  environment_name             = var.environment_name
 }
 
 output "public_ip" {

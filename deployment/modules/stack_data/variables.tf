@@ -46,8 +46,3 @@ variable "environment_name" {
   description = "Identifier of the target environment"
   type        = string
 }
-
-variable "ssh_public_key" {
-  description = "SSH public key to be set on the server instance"
-  type        = string
-}
