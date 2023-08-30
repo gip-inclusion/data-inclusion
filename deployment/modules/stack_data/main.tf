@@ -67,7 +67,8 @@ resource "scaleway_object_bucket" "main" {
 }
 
 resource "scaleway_iam_application" "main" {
-  name = "airflow"
+  organization_id = data.scaleway_account_project.main.organization_id
+  name            = "airflow"
 }
 
 data "scaleway_account_project" "main" {
