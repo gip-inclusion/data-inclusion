@@ -63,7 +63,7 @@ resource "scaleway_rdb_privilege" "main" {
 }
 
 resource "scaleway_object_bucket" "main" {
-  name = "data-inclusion-datalake-staging"
+  name = "data-inclusion-datalake-${var.environment_name}"
 }
 
 resource "scaleway_iam_application" "main" {
@@ -139,4 +139,9 @@ resource "scaleway_object_bucket_policy" "main" {
 
 resource "scaleway_iam_api_key" "main" {
   application_id = scaleway_iam_application.main.id
+}
+
+resource "scaleway_iam_ssh_key" "main" {
+  name       = var.environment_name
+  public_key = var.ssh_public_key
 }

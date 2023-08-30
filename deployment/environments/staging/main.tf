@@ -1,6 +1,7 @@
 variable "scaleway_access_key" {
   description = "Scaleway access key (https://console.scaleway.com/iam/api-keys)"
   type        = string
+  sensitive   = true
 }
 
 variable "scaleway_secret_key" {
@@ -22,6 +23,7 @@ variable "datawarehouse_admin_username" {
 variable "datawarehouse_admin_password" {
   description = "Password for the first user of the postgres datawarehouse"
   type        = string
+  sensitive   = true
 }
 
 variable "datawarehouse_di_username" {
@@ -32,10 +34,21 @@ variable "datawarehouse_di_username" {
 variable "datawarehouse_di_password" {
   description = "Password for the main user of the postgres datawarehouse"
   type        = string
+  sensitive   = true
 }
 
 variable "datawarehouse_di_database" {
   description = "Identifier for the data inclusion database"
+  type        = string
+}
+
+variable "environment_name" {
+  description = "Identifier of the target environment"
+  type        = string
+}
+
+variable "ssh_public_key" {
+  description = "SSH public key to be set on the server instance"
   type        = string
 }
 
@@ -50,6 +63,8 @@ module "stack_data" {
   datawarehouse_di_username    = var.datawarehouse_di_username
   datawarehouse_di_password    = var.datawarehouse_di_password
   datawarehouse_di_database    = var.datawarehouse_di_database
+  environment_name             = var.datawarehouse_di_database
+  ssh_public_key               = var.ssh_public_key
 }
 
 output "public_ip" {

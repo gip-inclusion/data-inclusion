@@ -18,8 +18,10 @@ This documentation is structured as follow :
 
 This is preferably shared by environments.
 
-#### for provisioning an environment
+#### to provision an environment
 
+* A SSH key pair, generated with:
+    * `ssh-keygen -t ed25519 -C <ENVIRONMENT> -f /tmp/<ENVIRONMENT> -N ''`)
 * A scaleway project dedicated for that environment
 * A policy ([here](https://console.scaleway.com/iam/policies)) with the following rules:
     * `InstancesFullAccess`, `ObjectStorageFullAccess`, `RelationalDatabasesFullAccess` in the target project scope
