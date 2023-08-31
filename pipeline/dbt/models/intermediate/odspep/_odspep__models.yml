@@ -6,6 +6,12 @@ models:
       - check_adresse:
           config:
             severity: warn
+    columns:
+      - name: id
+        tests:
+          - unique
+          - not_null
+          - dbt_utils.not_empty_string
 
   - name: int_odspep__services
     tests:
@@ -15,14 +21,39 @@ models:
     columns:
       - name: id
         tests:
-          - not_null
           - unique
+          - not_null
+          - dbt_utils.not_empty_string
+      - name: structure_id
+        tests:
+          - not_null
+          - relationships:
+              to: ref('int_odspep__structures')
+              field: id
+      - name: adresse_id
+        tests:
+          - not_null
+          - relationships:
+              to: ref('int_odspep__adresses')
+              field: id
 
   - name: int_odspep__structures
     tests:
       - check_structure:
           config:
             severity: warn
+    columns:
+      - name: id
+        tests:
+          - unique
+          - not_null
+          - dbt_utils.not_empty_string
+      - name: adresse_id
+        tests:
+          - not_null
+          - relationships:
+              to: ref('int_odspep__adresses')
+              field: id
 
   - name: int_odspep__zones_diffusion
     description: This model aggregates all the *_RESSOURCE ODSPEP tables in the same table, aligned on a common set of columns

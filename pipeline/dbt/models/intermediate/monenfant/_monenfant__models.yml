@@ -6,15 +6,51 @@ models:
       - check_adresse:
           config:
             severity: warn
+    columns:
+      - name: id
+        tests:
+          - unique
+          - not_null
+          - dbt_utils.not_empty_string
 
   - name: int_monenfant__structures
     tests:
       - check_structure:
           config:
             severity: warn
+    columns:
+      - name: id
+        tests:
+          - unique
+          - not_null
+          - dbt_utils.not_empty_string
+      - name: adresse_id
+        tests:
+          - not_null
+          - relationships:
+              to: ref('int_monenfant__adresses')
+              field: id
 
   - name: int_monenfant__services
     tests:
       - check_service:
           config:
             severity: warn
+    columns:
+      - name: id
+        tests:
+          - unique
+          - not_null
+          - dbt_utils.not_empty_string
+      - name: structure_id
+        tests:
+          - not_null
+          - relationships:
+              to: ref('int_monenfant__structures')
+              field: id
+      - name: adresse_id
+        tests:
+          - not_null
+          - relationships:
+              to: ref('int_monenfant__adresses')
+              field: id

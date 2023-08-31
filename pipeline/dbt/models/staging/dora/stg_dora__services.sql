@@ -2,7 +2,11 @@ WITH source AS (
     SELECT * FROM {{ source('dora', 'services') }}
 ),
 
-final AS (
+structures AS (
+    SELECT * FROM {{ ref('stg_dora__structures') }}
+),
+
+services AS (
     SELECT
         _di_source_id                                                                    AS "_di_source_id",
         (data ->> 'contact_public')::BOOLEAN                                             AS "contact_public",
@@ -43,6 +47,13 @@ final AS (
         NULLIF(TRIM(data ->> 'zone_diffusion_nom'), '')                                  AS "zone_diffusion_nom",
         data ->> 'zone_diffusion_type'                                                   AS "zone_diffusion_type"
     FROM source
+),
+
+-- dora removes suggested structures from its api, but does not remove the associated services
+-- therefore filter these orphan services
+final AS (
+    SELECT services.*
+    FROM services INNER JOIN structures ON services.structure_id = structures.id
 )
 
 SELECT * FROM final
