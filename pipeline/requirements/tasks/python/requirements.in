@@ -3,14 +3,14 @@ apache-airflow-providers-amazon
 
 GeoAlchemy2
 geopandas~=0.13.2
-openpyxl!=3.1.1
+openpyxl~=3.1.2
 pandas~=2.1.0
 psycopg2~=2.9.7
 pyairtable~=2.1
-requests
+requests~=2.31
 SQLAlchemy
-tenacity
-tqdm
-trafilatura
+tenacity~=8.2
+tqdm~=4.66
+trafilatura~=1.6
 urllib3
-xlsxwriter
+xlsxwriter~=3.1.2
