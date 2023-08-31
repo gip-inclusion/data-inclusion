@@ -10,7 +10,8 @@ def extract(url: str, token: str, **kwargs) -> bytes:
     base_id = url.split("/")[-3]
     table_name = url.split("/")[-2]
 
-    table = pyairtable.Table(api_key=token, base_id=base_id, table_name=table_name)
+    api = pyairtable.Api(api_key=token)
+    table = api.table(base_id=base_id, table_name=table_name)
     data = table.all()
 
     with io.StringIO() as buf:

@@ -6,7 +6,7 @@ geopandas~=0.13.2
 openpyxl!=3.1.1
 pandas~=2.1.0
 psycopg2~=2.9.7
-pyairtable
+pyairtable~=2.1
 requests
 SQLAlchemy
 tenacity
