@@ -4,86 +4,102 @@
 #
 #    pip-compile --output-file=requirements/tasks/dbt/requirements.txt --resolver=backtracking requirements/tasks/dbt/requirements.in
 #
-agate==1.7.0
-    # via dbt-core
+agate==1.7.1
+    # via
+    #   dbt-core
+    #   dbt-postgres
 attrs==23.1.0
     # via jsonschema
 babel==2.12.1
     # via agate
-certifi==2023.5.7
+certifi==2023.7.22
     # via requests
 cffi==1.15.1
     # via dbt-core
-charset-normalizer==3.1.0
+charset-normalizer==3.2.0
     # via requests
-click==8.1.3
-    # via dbt-core
+click==8.1.7
+    # via
+    #   dbt-core
+    #   dbt-semantic-interfaces
 colorama==0.4.6
     # via dbt-core
-dbt-core==1.5.1
+dbt-core==1.6.1
     # via
     #   -r requirements/tasks/dbt/requirements.in
     #   dbt-postgres
 dbt-extractor==0.4.1
     # via dbt-core
-dbt-postgres==1.5.1
+dbt-postgres==1.6.1
     # via -r requirements/tasks/dbt/requirements.in
-future==0.18.3
-    # via parsedatetime
+dbt-semantic-interfaces==0.2.0
+    # via dbt-core
 hologram==0.0.16
     # via dbt-core
 idna==3.4
     # via
     #   dbt-core
     #   requests
+importlib-metadata==6.8.0
+    # via dbt-semantic-interfaces
 isodate==0.6.1
     # via
     #   agate
     #   dbt-core
 jinja2==3.1.2
-    # via dbt-core
-jsonschema==4.17.3
-    # via hologram
+    # via
+    #   dbt-core
+    #   dbt-semantic-interfaces
+jsonschema==3.2.0
+    # via
+    #   dbt-semantic-interfaces
+    #   hologram
 leather==0.3.4
     # via agate
 logbook==1.5.3
     # via dbt-core
 markupsafe==2.1.3
-    # via
-    #   jinja2
-    #   werkzeug
-mashumaro[msgpack]==3.6
+    # via jinja2
+mashumaro[msgpack]==3.8.1
     # via dbt-core
 minimal-snowplow-tracker==0.0.2
     # via dbt-core
+more-itertools==8.14.0
+    # via dbt-semantic-interfaces
 msgpack==1.0.5
     # via mashumaro
-networkx==2.8.8
+networkx==3.1
     # via dbt-core
 packaging==23.1
     # via dbt-core
-parsedatetime==2.4
+parsedatetime==2.6
     # via agate
-pathspec==0.11.1
+pathspec==0.11.2
     # via dbt-core
-protobuf==4.23.2
+protobuf==4.24.2
     # via dbt-core
-psycopg2-binary==2.9.6
+psycopg2-binary==2.9.7
     # via dbt-postgres
 pycparser==2.21
     # via cffi
+pydantic==1.10.12
+    # via dbt-semantic-interfaces
 pyrsistent==0.19.3
     # via jsonschema
 python-dateutil==2.8.2
-    # via hologram
+    # via
+    #   dbt-semantic-interfaces
+    #   hologram
 python-slugify==8.0.1
     # via agate
 pytimeparse==1.1.8
     # via agate
 pytz==2023.3
     # via dbt-core
-pyyaml==6.0
-    # via dbt-core
+pyyaml==6.0.1
+    # via
+    #   dbt-core
+    #   dbt-semantic-interfaces
 requests==2.31.0
     # via
     #   dbt-core
@@ -91,18 +107,26 @@ requests==2.31.0
 six==1.16.0
     # via
     #   isodate
+    #   jsonschema
     #   leather
     #   minimal-snowplow-tracker
     #   python-dateutil
-sqlparse==0.4.3
+sqlparse==0.4.4
     # via dbt-core
 text-unidecode==1.3
     # via python-slugify
-typing-extensions==4.6.3
+typing-extensions==4.7.1
     # via
     #   dbt-core
+    #   dbt-semantic-interfaces
     #   mashumaro
-urllib3==2.0.3
-    # via requests
-werkzeug==2.3.6
-    # via dbt-core
+    #   pydantic
+urllib3==1.26.16
+    # via
+    #   dbt-core
+    #   requests
+zipp==3.16.2
+    # via importlib-metadata
+
+# The following packages are considered to be unsafe in a requirements file:
+# setuptools
