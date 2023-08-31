@@ -324,7 +324,7 @@ packaging==23.1
     #   marshmallow
     #   redshift-connector
     #   sqlalchemy-redshift
-pandas==2.0.2
+pandas==2.1.0
     # via
     #   -r requirements/tasks/python/requirements.in
     #   geopandas
@@ -340,7 +340,7 @@ prison==0.2.1
     # via flask-appbuilder
 psutil==5.9.5
     # via apache-airflow
-psycopg2==2.9.6
+psycopg2==2.9.7
     # via -r requirements/tasks/python/requirements.in
 psycopg2-binary==2.9.6
     # via apache-airflow-providers-postgres

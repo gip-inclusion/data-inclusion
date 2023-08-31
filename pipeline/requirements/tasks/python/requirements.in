@@ -2,10 +2,10 @@ apache-airflow-providers-postgres
 apache-airflow-providers-amazon
 
 GeoAlchemy2
-geopandas
+geopandas~=0.13.2
 openpyxl!=3.1.1
-pandas
-psycopg2
+pandas~=2.1.0
+psycopg2~=2.9.7
 pyairtable
 requests
 SQLAlchemy
