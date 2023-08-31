@@ -78,7 +78,6 @@ def import_naf(apps, _) -> None:
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         ("sirene", "0004_add_codenaf_table"),
     ]

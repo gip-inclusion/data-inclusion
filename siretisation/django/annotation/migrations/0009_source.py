@@ -4,7 +4,6 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         ("annotation", "0008_dataset_show_nearby_cnfs_permanences_and_more"),
     ]
