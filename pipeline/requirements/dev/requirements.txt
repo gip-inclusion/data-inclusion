@@ -4,15 +4,15 @@
 #
 #    pip-compile --output-file=requirements/dev/requirements.txt --resolver=backtracking requirements/dev/requirements.in
 #
-aiohttp==3.8.4
+aiohttp==3.8.5
     # via apache-airflow-providers-http
 aiosignal==1.3.1
     # via aiohttp
-alembic==1.11.1
+alembic==1.11.3
     # via apache-airflow
-anyio==3.7.0
+anyio==4.0.0
     # via httpcore
-apache-airflow[amazon,postgres]==2.6.1
+apache-airflow[amazon,postgres]==2.7.0
     # via
     #   -r requirements/dev/../airflow/base.in
     #   apache-airflow-providers-amazon
@@ -22,29 +22,31 @@ apache-airflow[amazon,postgres]==2.6.1
     #   apache-airflow-providers-imap
     #   apache-airflow-providers-postgres
     #   apache-airflow-providers-sqlite
-apache-airflow-providers-amazon==8.1.0
+apache-airflow-providers-amazon==8.6.0
     # via
     #   -r requirements/dev/../tasks/python/requirements.in
     #   apache-airflow
-apache-airflow-providers-common-sql==1.5.1
+apache-airflow-providers-common-sql==1.7.1
     # via
     #   apache-airflow
     #   apache-airflow-providers-amazon
     #   apache-airflow-providers-postgres
     #   apache-airflow-providers-sqlite
-apache-airflow-providers-ftp==3.4.1
+apache-airflow-providers-ftp==3.5.1
     # via apache-airflow
-apache-airflow-providers-http==4.4.1
+apache-airflow-providers-http==4.5.1
+    # via
+    #   apache-airflow
+    #   apache-airflow-providers-amazon
+apache-airflow-providers-imap==3.3.1
     # via apache-airflow
-apache-airflow-providers-imap==3.2.1
-    # via apache-airflow
-apache-airflow-providers-postgres==5.5.0
+apache-airflow-providers-postgres==5.6.0
     # via
     #   -r requirements/dev/../tasks/python/requirements.in
     #   apache-airflow
-apache-airflow-providers-sqlite==3.4.1
+apache-airflow-providers-sqlite==3.4.3
     # via apache-airflow
-apispec[yaml]==5.2.2
+apispec[yaml]==6.3.0
     # via flask-appbuilder
 argcomplete==3.1.1
     # via apache-airflow
@@ -55,7 +57,7 @@ asgiref==3.7.2
     #   apache-airflow-providers-http
 asn1crypto==1.5.1
     # via scramp
-async-timeout==4.0.2
+async-timeout==4.0.3
     # via aiohttp
 attrs==23.1.0
     # via
@@ -64,21 +66,29 @@ attrs==23.1.0
     #   cattrs
     #   fiona
     #   jsonschema
+    #   referencing
 babel==2.12.1
     # via flask-babel
+backoff==2.2.1
+    # via
+    #   opentelemetry-exporter-otlp-proto-grpc
+    #   opentelemetry-exporter-otlp-proto-http
+backports-datetime-fromisoformat==2.0.0
+    # via htmldate
 beautifulsoup4==4.12.2
     # via redshift-connector
-black==23.3.0
+black==23.7.0
     # via -r requirements/dev/requirements.in
 blinker==1.6.2
     # via apache-airflow
-boto3==1.26.151
+boto3==1.28.38
     # via
     #   apache-airflow-providers-amazon
     #   redshift-connector
     #   watchtower
-botocore==1.29.151
+botocore==1.31.38
     # via
+    #   apache-airflow-providers-amazon
     #   boto3
     #   redshift-connector
     #   s3transfer
@@ -90,7 +100,7 @@ cachetools==5.3.1
     # via tox
 cattrs==23.1.2
     # via apache-airflow
-certifi==2023.5.7
+certifi==2023.7.22
     # via
     #   fiona
     #   httpcore
@@ -100,17 +110,17 @@ certifi==2023.5.7
     #   trafilatura
 cffi==1.15.1
     # via cryptography
-cfgv==3.3.1
+cfgv==3.4.0
     # via pre-commit
-chardet==5.1.0
+chardet==5.2.0
     # via tox
-charset-normalizer==3.1.0
+charset-normalizer==3.2.0
     # via
     #   aiohttp
     #   htmldate
     #   requests
     #   trafilatura
-click==8.1.3
+click==8.1.7
     # via
     #   black
     #   click-plugins
@@ -139,9 +149,9 @@ courlan==0.9.3
     # via trafilatura
 cron-descriptor==1.4.0
     # via apache-airflow
-croniter==1.3.15
+croniter==1.4.1
     # via apache-airflow
-cryptography==41.0.1
+cryptography==41.0.3
     # via apache-airflow
 dateparser==1.1.8
     # via htmldate
@@ -151,11 +161,12 @@ deprecated==1.2.14
     # via
     #   apache-airflow
     #   limits
-dill==0.3.6
+    #   opentelemetry-api
+dill==0.3.7
     # via apache-airflow
-distlib==0.3.6
+distlib==0.3.7
     # via virtualenv
-dnspython==2.3.0
+dnspython==2.4.2
     # via email-validator
 docutils==0.20.1
     # via python-daemon
@@ -163,12 +174,12 @@ email-validator==1.3.1
     # via flask-appbuilder
 et-xmlfile==1.1.0
     # via openpyxl
-exceptiongroup==1.1.1
+exceptiongroup==1.1.3
     # via
     #   anyio
     #   cattrs
     #   pytest
-filelock==3.12.1
+filelock==3.12.3
     # via
     #   tox
     #   virtualenv
@@ -187,7 +198,7 @@ flask==2.2.5
     #   flask-session
     #   flask-sqlalchemy
     #   flask-wtf
-flask-appbuilder==4.3.0
+flask-appbuilder==4.3.3
     # via apache-airflow
 flask-babel==2.0.0
     # via flask-appbuilder
@@ -195,7 +206,7 @@ flask-caching==2.0.2
     # via apache-airflow
 flask-jwt-extended==4.5.2
     # via flask-appbuilder
-flask-limiter==3.3.1
+flask-limiter==3.5.0
     # via flask-appbuilder
 flask-login==0.6.2
     # via
@@ -209,29 +220,37 @@ flask-wtf==1.1.1
     # via
     #   apache-airflow
     #   flask-appbuilder
-frozenlist==1.3.3
+frozenlist==1.4.0
     # via
     #   aiohttp
     #   aiosignal
-geoalchemy2==0.13.3
+geoalchemy2==0.14.1
     # via -r requirements/dev/../tasks/python/requirements.in
 geopandas==0.13.2
     # via -r requirements/dev/../tasks/python/requirements.in
+google-re2==1.1
+    # via apache-airflow
+googleapis-common-protos==1.60.0
+    # via
+    #   opentelemetry-exporter-otlp-proto-grpc
+    #   opentelemetry-exporter-otlp-proto-http
 graphviz==0.20.1
     # via apache-airflow
 greenlet==2.0.2
     # via sqlalchemy
-gunicorn==20.1.0
+grpcio==1.57.0
+    # via opentelemetry-exporter-otlp-proto-grpc
+gunicorn==21.2.0
     # via apache-airflow
 h11==0.14.0
     # via httpcore
-htmldate==1.4.3
+htmldate==1.5.0
     # via trafilatura
-httpcore==0.17.2
+httpcore==0.17.3
     # via httpx
 httpx==0.24.1
     # via apache-airflow
-identify==2.5.24
+identify==2.5.27
     # via pre-commit
 idna==3.4
     # via
@@ -240,10 +259,12 @@ idna==3.4
     #   httpx
     #   requests
     #   yarl
-importlib-resources==5.12.0
+importlib-resources==6.0.1
     # via limits
 inflection==0.5.1
-    # via connexion
+    # via
+    #   connexion
+    #   pyairtable
 iniconfig==2.0.0
     # via pytest
 itsdangerous==2.1.2
@@ -264,11 +285,13 @@ jmespath==1.0.1
     #   botocore
 jsonpath-ng==1.5.3
     # via apache-airflow-providers-amazon
-jsonschema==4.17.3
+jsonschema==4.19.0
     # via
     #   apache-airflow
     #   connexion
     #   flask-appbuilder
+jsonschema-specifications==2023.7.1
+    # via jsonschema
 justext==3.0.0
     # via trafilatura
 langcodes==3.3.0
@@ -283,7 +306,7 @@ lockfile==0.12.2
     # via
     #   apache-airflow
     #   python-daemon
-lxml==4.9.2
+lxml==4.9.3
     # via
     #   htmldate
     #   justext
@@ -291,9 +314,9 @@ lxml==4.9.2
     #   trafilatura
 mako==1.2.4
     # via alembic
-markdown==3.4.3
+markdown==3.4.4
     # via apache-airflow
-markdown-it-py==2.2.0
+markdown-it-py==3.0.0
     # via
     #   apache-airflow
     #   mdit-py-plugins
@@ -305,14 +328,11 @@ markupsafe==2.1.3
     #   mako
     #   werkzeug
     #   wtforms
-marshmallow==3.19.0
+marshmallow==3.20.1
     # via
     #   flask-appbuilder
-    #   marshmallow-enum
     #   marshmallow-oneofschema
     #   marshmallow-sqlalchemy
-marshmallow-enum==1.5.1
-    # via flask-appbuilder
 marshmallow-oneofschema==3.0.1
     # via apache-airflow
 marshmallow-sqlalchemy==0.26.1
@@ -325,33 +345,57 @@ multidict==6.0.4
     # via
     #   aiohttp
     #   yarl
-mypy-boto3-appflow==1.26.145
+mypy-boto3-appflow==1.28.38
     # via apache-airflow-providers-amazon
-mypy-boto3-rds==1.26.144
+mypy-boto3-rds==1.28.36
     # via apache-airflow-providers-amazon
-mypy-boto3-redshift-data==1.26.109
+mypy-boto3-redshift-data==1.28.36
     # via apache-airflow-providers-amazon
-mypy-boto3-s3==1.26.127
+mypy-boto3-s3==1.28.36
     # via apache-airflow-providers-amazon
 mypy-extensions==1.0.0
     # via black
 nodeenv==1.8.0
     # via pre-commit
-numpy==1.24.3
+numpy==1.25.2
     # via
     #   pandas
     #   shapely
 openpyxl==3.1.2
     # via -r requirements/dev/../tasks/python/requirements.in
+opentelemetry-api==1.15.0
+    # via
+    #   apache-airflow
+    #   opentelemetry-exporter-otlp-proto-grpc
+    #   opentelemetry-exporter-otlp-proto-http
+    #   opentelemetry-sdk
+opentelemetry-exporter-otlp==1.15.0
+    # via apache-airflow
+opentelemetry-exporter-otlp-proto-grpc==1.15.0
+    # via opentelemetry-exporter-otlp
+opentelemetry-exporter-otlp-proto-http==1.15.0
+    # via opentelemetry-exporter-otlp
+opentelemetry-proto==1.15.0
+    # via
+    #   opentelemetry-exporter-otlp-proto-grpc
+    #   opentelemetry-exporter-otlp-proto-http
+opentelemetry-sdk==1.15.0
+    # via
+    #   opentelemetry-exporter-otlp-proto-grpc
+    #   opentelemetry-exporter-otlp-proto-http
+opentelemetry-semantic-conventions==0.36b0
+    # via opentelemetry-sdk
 ordered-set==4.1.0
     # via flask-limiter
 packaging==23.1
     # via
     #   apache-airflow
+    #   apispec
     #   black
     #   connexion
     #   geoalchemy2
     #   geopandas
+    #   gunicorn
     #   limits
     #   marshmallow
     #   pyproject-api
@@ -359,62 +403,66 @@ packaging==23.1
     #   redshift-connector
     #   sqlalchemy-redshift
     #   tox
-pandas==2.0.2
+pandas==2.1.0
     # via
     #   -r requirements/dev/../tasks/python/requirements.in
     #   geopandas
-pathspec==0.9.0
+pathspec==0.11.2
     # via
     #   apache-airflow
     #   black
 pendulum==2.1.2
     # via apache-airflow
-platformdirs==3.5.3
+platformdirs==3.10.0
     # via
     #   black
     #   tox
     #   virtualenv
-pluggy==1.0.0
+pluggy==1.3.0
     # via
     #   apache-airflow
     #   pytest
     #   tox
 ply==3.11
     # via jsonpath-ng
-pre-commit==3.3.2
+pre-commit==3.3.3
     # via -r requirements/dev/requirements.in
 prison==0.2.1
     # via flask-appbuilder
+protobuf==4.24.2
+    # via
+    #   googleapis-common-protos
+    #   opentelemetry-proto
 psutil==5.9.5
     # via apache-airflow
-psycopg2==2.9.6
+psycopg2==2.9.7
     # via
     #   -r requirements/dev/../airflow/base.in
     #   -r requirements/dev/../tasks/python/requirements.in
-psycopg2-binary==2.9.6
+psycopg2-binary==2.9.7
     # via apache-airflow-providers-postgres
-pyairtable==1.5.0
+pyairtable==2.1.0.post1
     # via -r requirements/dev/../tasks/python/requirements.in
 pycparser==2.21
     # via cffi
-pydantic==1.10.9
-    # via apache-airflow
-pygments==2.15.1
+pydantic==1.10.12
+    # via
+    #   apache-airflow
+    #   pyairtable
+pygments==2.16.1
     # via
     #   apache-airflow
     #   rich
-pyjwt==2.7.0
+pyjwt==2.8.0
     # via
     #   apache-airflow
     #   flask-appbuilder
     #   flask-jwt-extended
-pyproj==3.5.0
+pyproj==3.6.0
     # via geopandas
-pyproject-api==1.5.1
+pyproject-api==1.6.1
     # via tox
-pyrsistent==0.19.3
-    # via jsonschema
-pytest==7.3.2
+pytest==7.4.0
     # via -r requirements/dev/requirements.in
 python-daemon==3.0.1
     # via apache-airflow
@@ -442,21 +490,26 @@ pytz==2023.3
     #   redshift-connector
 pytzdata==2020.1
     # via pendulum
-pyyaml==6.0
+pyyaml==6.0.1
     # via
     #   apispec
     #   clickclick
     #   connexion
     #   pre-commit
-redshift-connector==2.0.911
+redshift-connector==2.0.913
     # via apache-airflow-providers-amazon
-regex==2023.6.3
+referencing==0.30.2
+    # via
+    #   jsonschema
+    #   jsonschema-specifications
+regex==2023.8.8
     # via dateparser
 requests==2.31.0
     # via
     #   -r requirements/dev/../tasks/python/requirements.in
     #   apache-airflow-providers-http
     #   connexion
+    #   opentelemetry-exporter-otlp-proto-http
     #   pyairtable
     #   redshift-connector
     #   requests-toolbelt
@@ -464,14 +517,18 @@ requests-toolbelt==1.0.0
     # via apache-airflow-providers-http
 rfc3339-validator==0.1.4
     # via apache-airflow
-rich==13.4.1
+rich==13.5.2
     # via
     #   apache-airflow
     #   flask-limiter
     #   rich-argparse
-rich-argparse==1.1.1
+rich-argparse==1.3.0
     # via apache-airflow
-s3transfer==0.6.1
+rpds-py==0.10.0
+    # via
+    #   jsonschema
+    #   referencing
+s3transfer==0.6.2
     # via boto3
 scramp==1.4.4
     # via redshift-connector
@@ -493,7 +550,7 @@ sniffio==1.3.0
     #   httpx
 soupsieve==2.4.1
     # via beautifulsoup4
-sqlalchemy==1.4.48
+sqlalchemy==1.4.49
     # via
     #   -r requirements/dev/../tasks/python/requirements.in
     #   alembic
@@ -515,7 +572,7 @@ sqlparse==0.4.4
     # via apache-airflow-providers-common-sql
 tabulate==0.9.0
     # via apache-airflow
-tenacity==8.2.2
+tenacity==8.2.3
     # via
     #   -r requirements/dev/../tasks/python/requirements.in
     #   apache-airflow
@@ -531,20 +588,27 @@ tomli==2.0.1
     #   pyproject-api
     #   pytest
     #   tox
-tox==4.6.0
+tox==4.11.0
     # via -r requirements/dev/requirements.in
-tqdm==4.65.0
+tqdm==4.66.1
     # via -r requirements/dev/../tasks/python/requirements.in
 trafilatura==1.6.1
     # via -r requirements/dev/../tasks/python/requirements.in
-typing-extensions==4.6.3
+typing-extensions==4.7.1
     # via
     #   alembic
     #   apache-airflow
     #   asgiref
     #   cattrs
+    #   filelock
     #   flask-limiter
     #   limits
+    #   mypy-boto3-appflow
+    #   mypy-boto3-rds
+    #   mypy-boto3-redshift-data
+    #   mypy-boto3-s3
+    #   opentelemetry-sdk
+    #   pyairtable
     #   pydantic
 tzdata==2023.3
     # via pandas
@@ -563,7 +627,7 @@ urllib3==1.26.16
     #   pyairtable
     #   requests
     #   trafilatura
-virtualenv==20.23.0
+virtualenv==20.24.4
     # via
     #   pre-commit
     #   tox
