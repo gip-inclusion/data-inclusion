@@ -17,9 +17,9 @@ di_profil_by_dora_profil AS (
 final AS (
     SELECT
         id                    AS "adresse_id",
-        contact_public        AS "contact_public",
-        NULL                  AS "contact_nom_prenom",
-        NULL                  AS "courriel",
+        TRUE                  AS "contact_public",
+        contact_nom_prenom    AS "contact_nom_prenom",
+        courriel              AS "courriel",
         cumulable             AS "cumulable",
         date_creation::DATE   AS "date_creation",
         date_maj::DATE        AS "date_maj",
