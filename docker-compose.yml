@@ -17,7 +17,7 @@ x-airflow-common:
     AIRFLOW__WEBSERVER__WORKERS: 1
 
     # Connections
-    AIRFLOW_CONN_S3: aws://@/data-inclusion-lake?endpoint_url=http://minio:9000&aws_access_key_id=minioadmin&aws_secret_access_key=minioadmin
+    AIRFLOW_CONN_S3: aws://@/data-inclusion-lake?endpoint_url=http%3A%2F%2Fminio%3A9000&aws_access_key_id=minioadmin&aws_secret_access_key=minioadmin
     AIRFLOW_CONN_S3_SOURCES: ${AIRFLOW_CONN_S3_SOURCES}
     AIRFLOW_CONN_PG: postgresql://data-inclusion:data-inclusion@target-db:5432/data-inclusion
 
