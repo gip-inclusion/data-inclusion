@@ -29,15 +29,16 @@ jobs:
         AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
 
         # `TF_VAR_*` are case sensitive and must match the case of variables
-        TF_VAR_datawarehouse_admin_password: ${{ secrets.TF_VAR_DATAWAREHOUSE_ADMIN_PASSWORD }}
-        TF_VAR_datawarehouse_admin_username: ${{ vars.TF_VAR_DATAWAREHOUSE_ADMIN_USERNAME }}
-        TF_VAR_datawarehouse_di_database: ${{ vars.TF_VAR_DATAWAREHOUSE_DI_DATABASE }}
-        TF_VAR_datawarehouse_di_password: ${{ secrets.TF_VAR_DATAWAREHOUSE_DI_PASSWORD }}
-        TF_VAR_datawarehouse_di_username: ${{ vars.TF_VAR_DATAWAREHOUSE_DI_USERNAME }}
-        TF_VAR_scaleway_access_key: ${{ secrets.TF_VAR_SCALEWAY_ACCESS_KEY }}
-        TF_VAR_scaleway_project_id: ${{ vars.TF_VAR_SCALEWAY_PROJECT_ID }}
-        TF_VAR_scaleway_secret_key: ${{ secrets.TF_VAR_SCALEWAY_SECRET_KEY }}
-        TF_VAR_environment_name: ${{ vars.TF_VAR_ENVIRONMENT_NAME }}
+        TF_VAR_datawarehouse_admin_password: ${{ secrets.DATAWAREHOUSE_ADMIN_PASSWORD }}
+        TF_VAR_datawarehouse_admin_username: ${{ vars.DATAWAREHOUSE_ADMIN_USERNAME }}
+        TF_VAR_datawarehouse_di_database: ${{ vars.DATAWAREHOUSE_DI_DATABASE }}
+        TF_VAR_datawarehouse_di_password: ${{ secrets.DATAWAREHOUSE_DI_PASSWORD }}
+        TF_VAR_datawarehouse_di_username: ${{ vars.DATAWAREHOUSE_DI_USERNAME }}
+        TF_VAR_scaleway_access_key: ${{ secrets.SCALEWAY_ACCESS_KEY }}
+        TF_VAR_scaleway_project_id: ${{ vars.SCALEWAY_PROJECT_ID }}
+        TF_VAR_scaleway_secret_key: ${{ secrets.SCALEWAY_SECRET_KEY }}
+        TF_VAR_environment_name: ${{ vars.ENVIRONMENT_NAME }}
+        TF_VAR_airflow_admin_password: ${{ secrets.AIRFLOW_ADMIN_PASSWORD }}
         ENV: ${{ vars.TF_VAR_ENVIRONMENT_NAME }}
       volumes:
         - .:/deployment
@@ -65,78 +66,3 @@ jobs:
       - name: tf apply
         run: |
           terraform -chdir="environments/${ENV}" apply -auto-approve
-
-      - id: tf-output
-        name: tf output
-        env:
-          TMP_ENCRYPTION_PASSWORD: ${{ secrets.TMP_ENCRYPTION_PASSWORD }}
-        run: |
-          apk --no-cache add gpg
-          TF_OUTPUTS=$(terraform -chdir="environments/${ENV}" output -json)
-          ENCRYPTED_TF_OUTPUTS=$(echo "${TF_OUTPUTS}" | gpg --symmetric --cipher-algo AES256 --batch --passphrase "${TMP_ENCRYPTION_PASSWORD}" --no-symkey-cache | base64 -w0)
-          echo "encrypted_tf_outputs=${ENCRYPTED_TF_OUTPUTS}" >> "${GITHUB_OUTPUT}"
-
-  deploy:
-    runs-on: ubuntu-20.04
-    environment: staging
-    needs: provision
-
-    defaults:
-      run:
-        working-directory: deployment/docker
-
-    steps:
-      - uses: actions/checkout@v3
-
-      - id: set-outputs
-        name: set outputs
-        env:
-          ENCRYPTED_TF_OUTPUTS: ${{ needs.provision.outputs.encrypted_tf_outputs }}
-          TMP_ENCRYPTION_PASSWORD: ${{ secrets.TMP_ENCRYPTION_PASSWORD }}
-
-        run: |
-          TF_OUTPUTS=$(echo ${ENCRYPTED_TF_OUTPUTS} | base64 -d | gpg --batch --decrypt --passphrase "${TMP_ENCRYPTION_PASSWORD}")
-
-          AIRFLOW_CONN_S3=$(echo "${TF_OUTPUTS}" | jq '.airflow_conn_s3.value')
-          AIRFLOW_CONN_PG=$(echo "${TF_OUTPUTS}" | jq '.airflow_conn_pg.value')
-          SERVER_PUBLIC_IP=$(echo "${TF_OUTPUTS}" | jq '.public_ip.value')
-
-          echo "::add-mask::${AIRFLOW_CONN_S3}"
-          echo "::add-mask::${AIRFLOW_CONN_PG}"
-
-          echo "airflow_conn_s3=${AIRFLOW_CONN_S3}" >> "${GITHUB_OUTPUT}"
-          echo "airflow_conn_pg=${AIRFLOW_CONN_PG}" >> "${GITHUB_OUTPUT}"
-          echo "server_public_ip=${SERVER_PUBLIC_IP}" >> "${GITHUB_OUTPUT}"
-
-      - name: set up ssh agent
-        env:
-          SERVER_PUBLIC_IP: ${{ steps.set-outputs.outputs.server_public_ip }}
-          SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
-        run: |
-          mkdir -p ~/.ssh
-          echo "${SSH_PRIVATE_KEY}" >> ~/.ssh/key
-          chmod 600 ~/.ssh/key
-          cat >> ~/.ssh/config << EOF
-          Host staging
-            HostName ${SERVER_PUBLIC_IP}
-            User root
-            IdentityFile ~/.ssh/key
-            StrictHostKeyChecking no
-          EOF
-
-      - name: start services
-        env:
-          AIRFLOW_CONN_S3: ${{ steps.set-outputs.outputs.airflow_conn_s3 }}
-          AIRFLOW_CONN_PG: ${{ steps.set-outputs.outputs.airflow_conn_pg }}
-          API_SECRET_KEY: ${{ secrets.API_SECRET_KEY }}
-          BAN_API_URL: ${{ vars.BAN_API_URL }}
-          DORA_API_URL: ${{ vars.DORA_API_URL }}
-          INSEE_FIRSTNAME_FILE_URL: ${{ vars.INSEE_FIRSTNAME_FILE_URL }}
-          INSEE_COG_DATASET_URL: ${{ vars.INSEE_COG_DATASET_URL }}
-          SIRENE_STOCK_ETAB_GEOCODE_FILE_URL: ${{ vars.SIRENE_STOCK_ETAB_GEOCODE_FILE_URL }}
-          SIRENE_STOCK_ETAB_HIST_FILE_URL: ${{ vars.SIRENE_STOCK_ETAB_HIST_FILE_URL }}
-          SIRENE_STOCK_ETAB_LIENS_SUCCESSION_URL: ${{ vars.SIRENE_STOCK_ETAB_LIENS_SUCCESSION_URL }}
-          SIRENE_STOCK_UNITE_LEGALE_FILE_URL: ${{ vars.SIRENE_STOCK_UNITE_LEGALE_FILE_URL }}
-          AIRFLOW_WWW_USER_PASSWORD: ${{ secrets.AIRFLOW_WWW_USER_PASSWORD }}
-        run: |
-          DOCKER_HOST="ssh://staging" docker compose up -d

@@ -46,3 +46,26 @@ variable "environment_name" {
   description = "Identifier of the target environment"
   type        = string
 }
+
+variable "airflow_admin_password" {
+  description = "Password for airflow admin panel"
+  type        = string
+  sensitive   = true
+}
+
+variable "api_secret_key" {
+  description = "Secret key used for cryptographic signing by the api"
+  type        = string
+  sensitive   = true
+}
+
+variable "api_version" {
+  description = "Version (e.g. sha or semver) of the api to deploy"
+  type        = string
+}
+
+variable "ssh_private_key" {
+  description = "The associated public key will be deployed to the instance"
+  type        = string
+  sensitive   = true
+}

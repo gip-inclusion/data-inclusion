@@ -47,6 +47,29 @@ variable "environment_name" {
   type        = string
 }
 
+variable "airflow_admin_password" {
+  description = "Password for airflow admin panel"
+  type        = string
+  sensitive   = true
+}
+
+variable "api_secret_key" {
+  description = "Secret key used for cryptographic signing by the api"
+  type        = string
+  sensitive   = true
+}
+
+variable "api_version" {
+  description = "Version (e.g. sha or semver) of the api to deploy"
+  type        = string
+}
+
+variable "ssh_private_key" {
+  description = "The associated public key will be deployed to the instance"
+  type        = string
+  sensitive   = true
+}
+
 module "stack_data" {
   source = "../../modules/stack_data"
 
@@ -59,6 +82,10 @@ module "stack_data" {
   datawarehouse_di_password    = var.datawarehouse_di_password
   datawarehouse_di_database    = var.datawarehouse_di_database
   environment_name             = var.environment_name
+  airflow_admin_password       = var.airflow_admin_password
+  api_secret_key               = var.api_secret_key
+  api_version                  = var.api_version
+  ssh_private_key              = var.ssh_private_key
 }
 
 output "public_ip" {

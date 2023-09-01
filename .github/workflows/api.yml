@@ -17,33 +17,19 @@ on:
       - "api/**"
 
 jobs:
-  tests:
+  main:
     runs-on: ubuntu-20.04
-
-    steps:
-      - uses: actions/checkout@v3
-
-      - name: up stack
-        run: docker-compose up -d target-db
-      - name: run tests
-        run: docker-compose run --entrypoint pytest api -p no:cacheprovider -vv
-
-
-# References
-# https://docs.docker.com/build/ci/github-actions/
-# https://docs.github.com/en/actions/publishing-packages/publishing-docker-images
-
-  docker:
-    runs-on: ubuntu-20.04
-    needs: tests
-
     env:
       REGISTRY: ghcr.io
-      IMAGE_NAME: data-inclusion/api
+      IMAGE_NAME: ${{ github.repository }}-api
 
     permissions:
       contents: read
       packages: write
+
+    # References
+    # https://docs.docker.com/build/ci/github-actions/
+    # https://docs.github.com/en/actions/publishing-packages/publishing-docker-images
 
     steps:
       - uses: actions/checkout@v3
@@ -66,16 +52,25 @@ jobs:
             type=ref,event=pr
             type=sha
 
-      - name: Set up QEMU
-        uses: docker/setup-qemu-action@v2
-
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v2
 
-      - name: Build and push Docker image
+      - name: Build and export to Docker
         uses: docker/build-push-action@v4
         with:
           context: ./api
-          # push: true
+          load: true
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+
+      - name: Run tests
+        run: |
+          docker compose run --entrypoint pytest api -p no:cacheprovider -vv
+
+      - name: Push image to GitHub registry
+        uses: docker/build-push-action@v4
+        with:
+          context: ./api
+          push: true
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}

@@ -37,10 +37,10 @@ x-airflow-common:
 
   volumes:
     - airflow-logs:/opt/airflow/logs
-    - ../../pipeline/dbt:/opt/airflow/dbt
-    - ../../pipeline/dags:/opt/airflow/dags
-    - ../../pipeline/logs:/opt/airflow/logs
-    - ../../pipeline/src:/opt/airflow/data-inclusion/src
+    - ./../../pipeline/dbt:/opt/airflow/dbt
+    - ./../../pipeline/dags:/opt/airflow/dags
+    - ./../../pipeline/logs:/opt/airflow/logs
+    - ./../../pipeline/src:/opt/airflow/data-inclusion/src
 
   user: 0:0
 
@@ -113,9 +113,26 @@ services:
       airflow-init:
         condition: service_completed_successfully
 
+  datawarehouse:
+    image: postgis/postgis:14-3.3
+    restart: on-failure
+    healthcheck:
+      test: [ "CMD", "pg_isready", "-U", "${DATAWAREHOUSE_DI_USERNAME}"]
+      interval: 5s
+      retries: 5
+    ports:
+      - 5432:5432
+    environment:
+      - POSTGRES_DB=${DATAWAREHOUSE_DI_DATABASE}
+      - POSTGRES_USER=${DATAWAREHOUSE_DI_USERNAME}
+      - POSTGRES_PASSWORD=${DATAWAREHOUSE_DI_PASSWORD}
+    volumes:
+      - datawarehouse-data:/var/lib/postgresql/data
+
   api:
-    image: data-inclusion/api
-    build: ../../api
+    image: ghcr.io/betagouv/data-inclusion-api:${API_VERSION}
+    depends_on:
+      - datawarehouse
     restart: always
     ports:
       - 8000:8000
@@ -145,8 +162,7 @@ services:
 
 volumes:
   airflow-logs:
-  files-data:
-
+  datawarehouse-data:
 
 networks:
   default:
