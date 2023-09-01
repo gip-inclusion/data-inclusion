@@ -18,7 +18,7 @@ final AS (
     SELECT
         id                    AS "adresse_id",
         TRUE                  AS "contact_public",
-        contact_nom_prenom    AS "contact_nom_prenom",
+        contact_nom           AS "contact_nom_prenom",
         courriel              AS "courriel",
         cumulable             AS "cumulable",
         date_creation::DATE   AS "date_creation",
