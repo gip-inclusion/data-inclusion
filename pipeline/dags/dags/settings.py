@@ -235,4 +235,38 @@ SOURCES_CONFIGS = [
             }
         ],
     },
+    {
+        "id": "agefiph",
+        "schedule_interval": "@daily",
+        "snapshot": True,
+        "streams": [
+            {
+                "id": "services",
+                "filename": "services.json",
+                "url": Variable.get("AGEFIPH_SERVICES_API_URL", None),
+            },
+            {
+                "id": "structures",
+                "filename": "structures.json",
+                "url": Variable.get("AGEFIPH_STRUCTURES_FILE_URL", None),
+            },
+        ],
+    },
+    {
+        "id": "data-inclusion",
+        "schedule_interval": "@once",
+        "snapshot": False,
+        "streams": [
+            {
+                "id": "services",
+                "filename": "services.json",
+                "url": Variable.get("DI_EXTRA_SERVICES_FILE_URL", None),
+            },
+            {
+                "id": "structures",
+                "filename": "structures.json",
+                "url": Variable.get("DI_EXTRA_STRUCTURES_FILE_URL", None),
+            },
+        ],
+    },
 ]

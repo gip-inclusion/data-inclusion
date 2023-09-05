@@ -3,7 +3,7 @@ WITH source AS (
     FROM {{ source('odspep', 'DD009_RES_PARTENARIALE') }}
 ),
 
-final AS (
+ressources_partenariales AS (
     SELECT
         "ID_RES"                                         AS "id",
         "ID_RES"                                         AS "id_res",
@@ -30,6 +30,12 @@ final AS (
         TO_DATE("DATE_FIN_VALID_RSP", 'YYYY-MM-DD')      AS "date_fin_valid",
         TO_DATE("DATE_DERNIERE_MODIF_RSP", 'YYYY-MM-DD') AS "date_derniere_modif"
     FROM source
+),
+
+final AS (
+    SELECT *
+    FROM ressources_partenariales
+    WHERE date_derniere_modif IS NOT NULL AND EXTRACT(YEAR FROM date_derniere_modif) >= 2021
 )
 
 SELECT * FROM final

@@ -34,7 +34,7 @@ def _geocode():
                 adresse,
                 code_postal,
                 commune
-            FROM public_intermediate.int__adresses;
+            FROM public_intermediate.int__union_adresses;
         """
     )
 
@@ -82,6 +82,11 @@ with airflow.DAG(
         command="seed --full-refresh",
     )
 
+    dbt_create_udfs = dbt_operator_factory(
+        task_id="dbt_create_udfs",
+        command="run-operation create_udfs",
+    )
+
     # run what does not depend on geocoding results
     dbt_run_before_geocoding = dbt_operator_factory(
         task_id="dbt_run_before_geocoding",
@@ -125,6 +130,7 @@ with airflow.DAG(
     (
         start
         >> dbt_seed
+        >> dbt_create_udfs
         >> dbt_run_before_geocoding
         >> python_geocode
         >> dbt_run_after_geocoding

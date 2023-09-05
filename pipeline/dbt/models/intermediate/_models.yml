@@ -1,83 +1,61 @@
 version: 2
 
+x-union-common-check-args: &union-common-check-args
+  include:
+    - _di_surrogate_id
+  config:
+    severity: warn
+    store_failures: true
+
 models:
-  - name: int__services
-  - name: int__structures
+  - name: int__union_adresses
+    description: |
+      Gathers addresses from all sources
+
+      * model can contain faulty data
+      * test failure are saved (see log output)
+    tests:
+      - check_adresse: *union-common-check-args
+
+  - name: int__union_services
+    description: |
+      Gathers services from all sources
+
+      * model can contain faulty data
+      * test failure are saved (see log output)
+    tests:
+      - check_service: *union-common-check-args
+
+  - name: int__union_structures
+    description: |
+      Gathers structures from all sources
+
+      * model can contain faulty data
+      * test failure are saved (see log output)
+    tests:
+      - check_structure: *union-common-check-args
+
   - name: int__plausible_personal_emails
   - name: int__deprecated_sirets
-  - name: int__enhanced_structures
 
-  - name: int__validated_structures
-    columns:
-      - name: _di_surrogate_id
-        tests:
-          - not_null
-          - unique
-      - name: source
-        tests:
-          - not_null
-      - name: id
-        tests:
-          - not_null
-      - name: nom
-        tests:
-          - not_null
-      - name: commune
-        tests:
-          - not_null
-      - name: adresse
-        tests:
-          - not_null
-      - name: date_maj
-        tests:
-          - not_null
+  - name: int__union_adresses__enhanced
+    description: |
+      All valid adresses, with geocoding
 
-  - name: int__validated_services
-    tests:
-      - dbt_utils.unique_combination_of_columns:
-          combination_of_columns:
-            - source
-            - id
-    columns:
-      - name: _di_structure_surrogate_id
-        tests:
-          - relationships:
-              to: ref('int__validated_structures')
-              field: _di_surrogate_id
-      - name: _di_surrogate_id
-        tests:
-          - not_null
-          - unique
-      - name: source
-        tests:
-          - not_null
-      - name: structure_id
-        tests:
-          - not_null
-      - name: id
-        tests:
-          - not_null
-      - name: nom
-        tests:
-          - not_null
+  - name: int__union_services__enhanced
+    description: |
+      All valid services, with extra data:
 
-  - name: int__structure_validation_errors
-    description: List validation errors of mapped structure entries
-    columns:
-      - name: _di_surrogate_id
-      - name: _di_source_id
-      - name: id
-      - name: field
-      - name: value
-      - name: type
+      * geocoded addresses
+      * zone_diffusion_* filled with geocoded data (monenfant, soliguide)
 
-  - name: int__service_validation_errors
-    description: List validation errors of mapped service entries
-    columns:
-      - name: _di_structure_surrogate_id
-      - name: _di_surrogate_id
-      - name: _di_source_id
-      - name: id
-      - name: field
-      - name: value
-      - name: type
+      A service belonging to a structure data failing validation is considered invalid.
+
+  - name: int__union_structures__enhanced
+    description: |
+      All valid structures, with extra data:
+
+      * geocoded addresses
+      * siret deprecation flag & data
+      * siret annotations data
+      * email with pii flag

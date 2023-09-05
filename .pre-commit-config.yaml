@@ -1,7 +1,7 @@
 repos:
   # api
   - repo: https://github.com/psf/black
-    rev: 22.3.0
+    rev: 23.7.0
     hooks:
       - id: black
         name: api|black
@@ -31,7 +31,7 @@ repos:
 
   # pipeline
   - repo: https://github.com/psf/black
-    rev: 22.10.0
+    rev: 23.7.0
     hooks:
       - id: black
         name: pipeline|black
@@ -95,7 +95,7 @@ repos:
         files: ^siretisation
         exclude: ^siretisation/django(/.*)*/static/vendor
   - repo: https://github.com/psf/black
-    rev: 22.10.0
+    rev: 23.7.0
     hooks:
       - id: black
         name: siretisation|black

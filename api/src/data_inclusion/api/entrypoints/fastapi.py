@@ -93,6 +93,7 @@ v0_doc_api_router = fastapi.APIRouter(prefix="/api/v0/doc", tags=["Documentation
 
 
 def list_structures(
+    request: fastapi.Request,
     db_session: orm.Session,
     source: Optional[str] = None,
     id_: Optional[str] = None,
@@ -107,6 +108,10 @@ def list_structures(
 
     if source is not None:
         query = query.filter_by(source=source)
+
+    # FIXME: this is a temporary hack
+    if request.user.username != "dora-staging-stream":
+        query = query.filter(models.Structure.source != "agefiph")
 
     if id_ is not None:
         query = query.filter_by(id=id_)
@@ -168,6 +173,7 @@ def list_structures(
     summary="Lister les structures consolidées",
 )
 def list_structures_endpoint(
+    request: fastapi.Request,
     source: Annotated[str | SkipJsonSchema[None], fastapi.Query()] = None,
     id: Annotated[str | SkipJsonSchema[None], fastapi.Query()] = None,
     typologie: Annotated[
@@ -210,6 +216,7 @@ def list_structures_endpoint(
     """
 
     return list_structures(
+        request,
         db_session,
         source=source,
         id_=id,
@@ -265,6 +272,7 @@ def list_sources_endpoint(
 
 
 def list_services(
+    request: fastapi.Request,
     db_session: orm.Session,
     source: Optional[str] = None,
     thematique: Optional[schema.Thematique] = None,
@@ -280,6 +288,10 @@ def list_services(
 
     if source is not None:
         query = query.filter(models.Structure.source == source)
+
+    # FIXME: this is a temporary hack
+    if request.user.username != "dora-staging-stream":
+        query = query.filter(models.Service.source != "agefiph")
 
     if departement is not None:
         query = query.filter(
@@ -339,6 +351,7 @@ def list_services(
     summary="Lister les services consolidées",
 )
 def list_services_endpoint(
+    request: fastapi.Request,
     db_session=fastapi.Depends(db.get_session),
     source: Annotated[str | SkipJsonSchema[None], fastapi.Query()] = None,
     thematique: Annotated[
@@ -355,6 +368,7 @@ def list_services_endpoint(
     ] = None,
 ):
     return list_services(
+        request,
         db_session,
         source=source,
         thematique=thematique,
@@ -388,6 +402,7 @@ def retrieve_service_endpoint(
 
 
 def search_services(
+    request: fastapi.Request,
     db_session: orm.Session,
     sources: Optional[list[str]] = None,
     commune_instance: Optional[models.Commune] = None,
@@ -403,6 +418,10 @@ def search_services(
 
     if sources is not None:
         query = query.filter(models.Service.source == sqla.any_(sqla.literal(sources)))
+
+    # FIXME: this is a temporary hack
+    if request.user.username != "dora-staging-stream":
+        query = query.filter(models.Service.source != "agefiph")
 
     if commune_instance is not None:
         # filter by zone de diffusion
@@ -560,6 +579,7 @@ def search_services(
     summary="Rechercher des services",
 )
 def search_services_endpoint(
+    request: fastapi.Request,
     db_session=fastapi.Depends(db.get_session),
     source: Annotated[
         str | SkipJsonSchema[None],
@@ -645,6 +665,7 @@ def search_services_endpoint(
         sources = [source]
 
     return search_services(
+        request,
         db_session,
         sources=sources,
         commune_instance=commune_instance,

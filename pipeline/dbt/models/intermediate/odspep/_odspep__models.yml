@@ -2,16 +2,63 @@ version: 2
 
 models:
   - name: int_odspep__adresses
-  - name: int_odspep__zones_diffusion
-    description: This model aggregates all the *_RESSOURCE ODSPEP tables in the same table, aligned on a common set of columns
-  - name: int_odspep__enhanced_res_partenariales
-  - name: int_odspep__structures
-  - name: int_odspep__services
+    tests:
+      - check_adresse:
+          config:
+            severity: warn
     columns:
       - name: id
         tests:
-          - not_null
           - unique
+          - not_null
+          - dbt_utils.not_empty_string
+
+  - name: int_odspep__services
+    tests:
+      - check_service:
+          config:
+            severity: warn
+    columns:
+      - name: id
+        tests:
+          - unique
+          - not_null
+          - dbt_utils.not_empty_string
+      - name: structure_id
+        tests:
+          - not_null
+          - relationships:
+              to: ref('int_odspep__structures')
+              field: id
+      - name: adresse_id
+        tests:
+          - not_null
+          - relationships:
+              to: ref('int_odspep__adresses')
+              field: id
+
+  - name: int_odspep__structures
+    tests:
+      - check_structure:
+          config:
+            severity: warn
+    columns:
+      - name: id
+        tests:
+          - unique
+          - not_null
+          - dbt_utils.not_empty_string
+      - name: adresse_id
+        tests:
+          - not_null
+          - relationships:
+              to: ref('int_odspep__adresses')
+              field: id
+
+  - name: int_odspep__zones_diffusion
+    description: This model aggregates all the *_RESSOURCE ODSPEP tables in the same table, aligned on a common set of columns
+
+  - name: int_odspep__enhanced_res_partenariales
 
   - name: int_odspep__grouped_res_partenariales
     description: Define an exploratory heuristic to group ressources partenariales by underlying structure

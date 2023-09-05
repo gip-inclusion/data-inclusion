@@ -70,9 +70,11 @@ def _extract(
     ).date()
 
     EXTRACT_FN_BY_SOURCE_ID = {
+        "agefiph": utils.extract_http_content,
         "annuaire-du-service-public": utils.extract_http_content,
         "cd35": utils.extract_http_content,
         "cd72": utils.extract_http_content,
+        "data-inclusion": utils.extract_http_content,
         "dora": dora.extract,
         "emplois-de-linclusion": emplois_de_linclusion.extract,
         "finess": utils.extract_http_content,
@@ -128,6 +130,7 @@ def _load(
     from sqlalchemy.dialects.postgresql import JSONB
 
     from data_inclusion.scripts.tasks import (
+        agefiph,
         annuaire_du_service_public,
         monenfant,
         soliguide,
@@ -138,6 +141,7 @@ def _load(
         "annuaire-du-service-public": annuaire_du_service_public.read,
         "cd35": lambda path: utils.read_csv(path, sep=";"),
         "cd72": lambda path: utils.read_excel(path, sheet_name="Structures"),
+        "data-inclusion": utils.read_json,
         "dora": utils.read_json,
         "emplois-de-linclusion": utils.read_json,
         "finess": lambda path: utils.read_csv(path, sep=","),
@@ -147,10 +151,16 @@ def _load(
         "soliguide": soliguide.read,
         "monenfant": monenfant.read,
         "reseau-alpha": utils.read_json,
+        "agefiph": {
+            "services": agefiph.read,
+            "structures": lambda path: utils.read_csv(path, sep=","),
+        },
     }
 
     if source_config["id"].startswith("mediation-numerique-"):
         read_fn = utils.read_json
+    elif isinstance(READ_FN_BY_SOURCE_ID[source_config["id"]], dict):
+        read_fn = READ_FN_BY_SOURCE_ID[source_config["id"]][stream_config["id"]]
     else:
         read_fn = READ_FN_BY_SOURCE_ID[source_config["id"]]
 

@@ -2,6 +2,8 @@ WITH structures AS (
     {{ 
         dbt_utils.union_relations(
             relations=[
+                ref('int_agefiph__structures'),
+                ref('int_data_inclusion__structures'),
                 ref('int_dora__structures'),
                 ref('int_cd35__structures'),
                 ref('int_cd72__structures'),

@@ -1,7 +1,7 @@
 -r ../airflow/base.in
 -r ../tasks/python/requirements.in
 
-pytest
 black
 pre-commit
+pytest
 tox

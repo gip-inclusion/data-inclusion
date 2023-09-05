@@ -33,10 +33,6 @@ models:
       +materialized: table
 
     marts:
-      analytics:
-        +schema: analytics
-        +materialized: table
-
       api:
         +materialized: table
       
@@ -53,8 +49,3 @@ seeds:
         value: text
         label: text
         description: text
-
-# Creating user defined functions
-# based on https://discourse.getdbt.com/t/using-dbt-to-manage-user-defined-functions/18
-on-run-start:
-  - '{{ create_udf_soliguide__new_hours_to_osm_opening_hours() }}'

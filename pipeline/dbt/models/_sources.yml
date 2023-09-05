@@ -13,6 +13,14 @@ sources:
       - name: extra__geocoded_results
       - name: adresses_geocoded
 
+  - name: data_inclusion_extra
+    schema: data_inclusion
+    tables:
+      - name: structures
+        description: Entered by the data.inclusion team.
+      - name: services
+        description: Entered by the data.inclusion team.
+
   - name: insee
     schema: insee
     tables:
@@ -460,3 +468,9 @@ sources:
                     - '$.details.website'
                     - '$.details.infosPratiques.jourHoraire'
                     - '$.details.presentation.structureProjet'
+
+  - name: agefiph
+    schema: agefiph
+    tables:
+      - name: services
+      - name: structures

@@ -1,5 +1,4 @@
 *
 
-!dbt/macros/
 !dbt/models/
 !dbt/snapshots/

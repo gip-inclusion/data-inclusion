@@ -2,6 +2,8 @@ WITH services AS (
     {{
         dbt_utils.union_relations(
             relations=[
+                ref('int_agefiph__services'),
+                ref('int_data_inclusion__services'),
                 ref('int_dora__services'),
                 ref('int_mediation_numerique__services'),
                 ref('int_monenfant__services'),
@@ -9,13 +11,18 @@ WITH services AS (
                 ref('int_soliguide__services'),
             ],
             column_override={
-                "types": "TEXT[]",
+                "contact_public": "BOOLEAN",
+                "cumulable": "BOOLEAN",
+                "date_creation": "DATE",
+                "date_maj": "DATE",
+                "date_suspension": "DATE",
                 "frais": "TEXT[]",
-                "profils": "TEXT[]",
-                "thematiques": "TEXT[]",
                 "modes_accueil": "TEXT[]",
                 "modes_orientation_accompagnateur": "TEXT[]",
                 "modes_orientation_beneficiaire": "TEXT[]",
+                "profils": "TEXT[]",
+                "thematiques": "TEXT[]",
+                "types": "TEXT[]",
             },
             source_column_name=None
         )

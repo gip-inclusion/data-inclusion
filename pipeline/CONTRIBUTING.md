@@ -30,10 +30,16 @@ You can run dbt commands from your terminal.
 
 ```bash
 # install dbt
-pipx install --include-deps dbt-postgres==1.4.5
+pipx install --include-deps dbt-postgres==1.6.1
 
 # install extra dbt packages (e.g. dbt_utils)
 dbt deps
+
+# load seeds
+dbt seeds
+
+# create user defined functions
+dbt run-operation create_udfs
 
 # run commands
 dbt ls
@@ -74,8 +80,8 @@ To update the constraints and upgrade the requirements:
 
 ```bash
 # optionally bump the airflow version
-export AIRFLOW_VERSION=
-export PYTHON_VERSION=3.10
+AIRFLOW_VERSION=
+PYTHON_VERSION=3.10
 curl https://raw.githubusercontent.com/apache/airflow/constraints-${AIRFLOW_VERSION}/constraints-${PYTHON_VERSION}.txt > requirements/airflow/constraints.txt
 pip-compile --resolver=backtracking --upgrade requirements/airflow/requirements.in --output-file requirements/airflow/requirements.txt
 ```

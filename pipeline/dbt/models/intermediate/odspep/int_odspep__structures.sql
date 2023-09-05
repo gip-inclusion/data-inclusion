@@ -8,7 +8,7 @@ final AS (
     SELECT DISTINCT ON (1)
         id_res              AS "id",
         id_res              AS "adresse_id",
-        NULL                AS "antenne",
+        NULL::BOOLEAN       AS "antenne",
         NULL                AS "rna",
         'odspep'            AS "source",
         NULL                AS "horaires_ouverture",

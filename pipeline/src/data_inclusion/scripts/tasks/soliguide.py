@@ -110,7 +110,6 @@ def html_to_markdown(s: Optional[str]) -> Optional[str]:
 
 
 def read(path: Path) -> pd.DataFrame:
-
     # utils.read_json is enough
     # but this adds the conversion of descriptions from html to markdown
     # should eventually be implemented as a python dbt model

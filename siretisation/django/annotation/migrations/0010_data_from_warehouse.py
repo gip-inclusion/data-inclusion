@@ -15,7 +15,6 @@ def migrate_data(apps, _) -> None:
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         ("annotation", "0009_source"),
     ]

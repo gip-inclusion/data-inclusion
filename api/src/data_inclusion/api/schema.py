@@ -237,10 +237,10 @@ class Structure(BaseModel):
         ]
     ] = None
     nom: str
-    commune: str
-    code_postal: CodePostal
+    commune: Optional[str] = None
+    code_postal: Optional[CodePostal] = None
     code_insee: Optional[CodeInsee] = None
-    adresse: str
+    adresse: Optional[str] = None
     complement_adresse: Optional[str] = None
     longitude: Optional[float] = None
     latitude: Optional[float] = None
@@ -253,7 +253,7 @@ class Structure(BaseModel):
     ] = None
     presentation_detail: Optional[str] = None
     source: str
-    date_maj: date | datetime
+    date_maj: Optional[date | datetime]
     antenne: Optional[bool] = None
     lien_source: Optional[str] = None
     horaires_ouverture: Optional[str] = None

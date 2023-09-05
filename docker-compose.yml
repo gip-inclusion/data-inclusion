@@ -17,11 +17,13 @@ x-airflow-common:
     AIRFLOW__WEBSERVER__WORKERS: 1
 
     # Connections
-    AIRFLOW_CONN_S3: aws://@/data-inclusion-lake?endpoint_url=http://minio:9000&aws_access_key_id=minioadmin&aws_secret_access_key=minioadmin
+    AIRFLOW_CONN_S3: aws://@/data-inclusion-lake?endpoint_url=http%3A%2F%2Fminio%3A9000&aws_access_key_id=minioadmin&aws_secret_access_key=minioadmin
     AIRFLOW_CONN_S3_SOURCES: ${AIRFLOW_CONN_S3_SOURCES}
     AIRFLOW_CONN_PG: postgresql://data-inclusion:data-inclusion@target-db:5432/data-inclusion
 
     # Variables
+    AIRFLOW_VAR_AGEFIPH_SERVICES_API_URL: ${AGEFIPH_SERVICES_API_URL}
+    AIRFLOW_VAR_AGEFIPH_STRUCTURES_FILE_URL: ${AGEFIPH_STRUCTURES_FILE_URL}
     AIRFLOW_VAR_DBT_PROJECT_DIR: /opt/airflow/dbt
     AIRFLOW_VAR_BAN_API_URL: ${BAN_API_URL}
     AIRFLOW_VAR_CD35_FILE_URL: ${CD35_FILE_URL}
@@ -30,6 +32,8 @@ x-airflow-common:
     AIRFLOW_VAR_DATAGOUV_API_URL: ${DATAGOUV_API_URL}
     AIRFLOW_VAR_DATAGOUV_DI_DATASET_ID: ${DATAGOUV_DI_DATASET_ID}
     AIRFLOW_VAR_DATAGOUV_DI_RESOURCE_IDS: ${DATAGOUV_DI_RESOURCE_IDS}
+    AIRFLOW_VAR_DI_EXTRA_SERVICES_FILE_URL: ${DI_EXTRA_SERVICES_FILE_URL}
+    AIRFLOW_VAR_DI_EXTRA_STRUCTURES_FILE_URL: ${DI_EXTRA_STRUCTURES_FILE_URL}
     AIRFLOW_VAR_DORA_API_TOKEN: ${DORA_API_TOKEN}
     AIRFLOW_VAR_DORA_API_URL: ${DORA_API_URL}
     AIRFLOW_VAR_EMPLOIS_API_TOKEN: ${EMPLOIS_API_TOKEN}

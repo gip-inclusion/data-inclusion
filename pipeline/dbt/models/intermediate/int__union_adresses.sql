@@ -2,6 +2,8 @@ WITH adresses AS (
     {{ 
         dbt_utils.union_relations(
             relations=[
+                ref('int_agefiph__adresses'),
+                ref('int_data_inclusion__adresses'),
                 ref('int_dora__adresses'),
                 ref('int_cd35__adresses'),
                 ref('int_cd72__adresses'),
