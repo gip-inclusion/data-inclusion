@@ -1,0 +1,15 @@
+version: 2
+
+models:
+  - name: stg_reseau_alpha_structures_services
+    config:
+      tags: reseau_alpha
+    columns:
+      - name: structure_id
+        tests:
+          - not_null
+          - dbt_utils.not_empty_string
+      - name: id
+        tests:
+          - not_null
+          - dbt_utils.not_empty_string
