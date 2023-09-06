@@ -91,6 +91,8 @@ open_services AS (
     SELECT *
     FROM relevant_services
     WHERE
+        NOT close__actif
+        OR
         (close__date_debut IS NOT NULL OR close__date_fin IS NOT NULL)
         AND
         (
