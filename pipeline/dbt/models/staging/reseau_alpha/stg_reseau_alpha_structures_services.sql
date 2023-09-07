@@ -4,30 +4,37 @@ WITH source AS (
 
 final AS (
     SELECT
-        _di_source_id           AS "_di_source_id",
-        data ->> 'id'           AS "id",
-        data ->> 'structure_id' AS "structure_id"
-    -- data ->> 'courriel'                 AS "courriel",
-    -- data ->> 'nom'                      AS "nom",
-    -- data ->> 'commune'                  AS "commune",
-    -- data ->> 'code_postal'              AS "code_postal",
-    -- data ->> 'code_insee'               AS "code_insee",
-    -- data ->> 'adresse'                  AS "adresse",
-    -- data ->> 'complement_adresse'       AS "complement_adresse",
-    -- CAST(data ->> 'longitude' AS FLOAT) AS "longitude",
-    -- CAST(data ->> 'latitude' AS FLOAT)  AS "latitude",
-    -- data ->> 'typologie'                AS "typologie",git 
-    -- data ->> 'telephone'                AS "telephone",
-    -- data ->> 'site_web'                 AS "site_web",
-    -- data ->> 'presentation_resume'      AS "presentation_resume",
-    -- data ->> 'presentation_detail'      AS "presentation_detail",
-    -- data ->> 'source'                   AS "source",
-    -- CAST(data ->> 'date_maj' AS DATE)   AS "date_maj",
-    -- CAST(data ->> 'antenne' AS BOOLEAN) AS "antenne",
-    -- data ->> 'lien_source'              AS "lien_source",
-    -- data ->> 'horaires_ouverture'       AS "horaires_ouverture",
-    -- data ->> 'accessibilite'            AS "accessibilite",
-    -- ARRAY[data ->> 'labels_nationaux']  AS "labels_nationaux"
+        _di_source_id                                AS "_di_source_id",
+
+        -- Service data
+        data ->> 'id'                                AS "id",
+        ARRAY[data ->> 'types']                      AS "types",
+        data ->> 'courriel'                          AS "courriel",
+        CAST(data ->> 'date_maj' AS DATE)            AS "date_maj",
+        CAST(data ->> 'cumulable' AS BOOLEAN)        AS "cumulable",
+        data ->> 'telephone'                         AS "telephone",
+        data ->> 'lien_source'                       AS "lien_source",
+        ARRAY[data ->> 'thematiques']                AS "thematiques",
+        ARRAY[data ->> 'modes_accueil']              AS "modes_accueil",
+        CAST(data ->> 'contact_public' AS BOOLEAN)   AS "contact_public",
+        data ->> 'contact_nom_prenom'                AS "contact_nom_prenom",
+        data ->> 'zone_diffusion_nom'                AS "zone_diffusion_nom",
+        data ->> 'zone_diffusion_code'               AS "zone_diffusion_code",
+        data ->> 'zone_diffusion_type'               AS "zone_diffusion_type",
+
+        -- Structure data
+        data ->> 'structure_nom'                     AS "structure_nom",
+        data ->> 'structure_id'                      AS "structure_id",
+        CAST(data ->> 'structure_date_maj' AS DATE)  AS "structure_date_maj",
+        data ->> 'structure_site_web'                AS "structure_site_web",
+        data ->> 'structure_telephone'               AS "structure_telephone",
+        data ->> 'structure_lien_source'             AS "structure_lien_source",
+        ARRAY[data ->> 'structure_thematiques']      AS "structure_thematiques",
+        ARRAY[data ->> 'structure_labels_autres']    AS "structure_labels_autres",
+        data ->> 'structure_service_adresse'         AS "structure_service_adresse",
+        data ->> 'structure_service_commune'         AS "structure_service_commune",
+        data ->> 'structure_service_code_postal'     AS "structure_service_code_postal",
+        data ->> 'structure_service_adresse_entiere' AS "structure_service_adresse_entiere"
     FROM source
 )
 
