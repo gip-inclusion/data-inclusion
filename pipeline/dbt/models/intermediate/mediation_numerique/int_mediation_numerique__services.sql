@@ -124,11 +124,17 @@ final AS (
         TRUE                                                                                           AS "contact_public",
         NULL                                                                                           AS "contact_nom_prenom",
         CAST(structures.date_maj AS DATE)                                                              AS "date_maj",
-        NULL                                                                                           AS "zone_diffusion_type",
+        'departement'                                                                                  AS "zone_diffusion_type",
         NULL                                                                                           AS "zone_diffusion_code",
         NULL                                                                                           AS "zone_diffusion_nom",
-        CAST(NULL AS TEXT [])                                                                          AS "modes_orientation_accompagnateur",
-        CAST(NULL AS TEXT [])                                                                          AS "modes_orientation_beneficiaire",
+        ARRAY_REMOVE(
+            ARRAY[
+                CASE WHEN structures.telephone IS NOT NULL THEN 'telephoner' END,
+                CASE WHEN structures.courriel IS NOT NULL THEN 'envoyer-un-mail' END
+            ],
+            NULL
+        )                                                                                              AS "modes_orientation_accompagnateur",
+        ARRAY_REMOVE(ARRAY[CASE WHEN structures.telephone IS NOT NULL THEN 'telephoner' END], NULL)    AS "modes_orientation_beneficiaire",
         CAST(NULL AS TEXT)                                                                             AS "frais_autres",
         CASE WHEN CARDINALITY(services.types) > 0 THEN services.types ELSE ARRAY['accompagnement'] END AS "types",
         ARRAY['en-presentiel']                                                                         AS "modes_accueil",
