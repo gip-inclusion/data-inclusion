@@ -1,12 +1,19 @@
 from dataclasses import dataclass
 from datetime import date, datetime
 from enum import Enum
-from typing import Optional, TypeAlias
+from typing import Optional
 
 from pydantic import BaseModel, ConfigDict, EmailStr, Field, StringConstraints
 from typing_extensions import Annotated
 
-from data_inclusion.schema.models import (
+from data_inclusion.schema import (
+    CodeCommune,
+    CodeDepartement,
+    CodeEPCI,
+    CodePostal,
+    CodeRegion,
+    CodeRna,
+    CodeSiret,
     Frais,
     LabelNational,
     ModeAccueil,
@@ -14,9 +21,9 @@ from data_inclusion.schema.models import (
     ModeOrientationBeneficiaire,
     Profil,
     Thematique,
-    TypeCOG,
     Typologie,
     TypologieService,
+    ZoneDiffusionType,
 )
 
 
@@ -146,19 +153,14 @@ DepartementCOG = Enum(
     {k: departement.cog for k, departement in _departements_dict.items()},
 )
 
-CodePostal: TypeAlias = Annotated[
-    str, StringConstraints(min_length=5, max_length=5, pattern=r"^\d{5}$")
-]
-CodeInsee: TypeAlias = Annotated[str, StringConstraints(min_length=5, max_length=5)]
-
 
 class Service(BaseModel):
     model_config = ConfigDict(from_attributes=True, populate_by_name=True)
 
     # internal metadata
-    di_geocodage_code_insee: Optional[
-        Annotated[str, StringConstraints(min_length=5, max_length=5)]
-    ] = Field(alias="_di_geocodage_code_insee")
+    di_geocodage_code_insee: Optional[CodeCommune] = Field(
+        alias="_di_geocodage_code_insee"
+    )
     di_geocodage_score: Optional[Annotated[float, Field(ge=0, le=1)]] = Field(
         alias="_di_geocodage_score"
     )
@@ -178,13 +180,13 @@ class Service(BaseModel):
     frais: Optional[list[Frais]] = None
     frais_autres: Optional[str] = None
     profils: Optional[list[Profil]] = None
-    pre_requis: Optional[str] = None
+    pre_requis: Optional[list[str]] = None
     cumulable: Optional[bool] = None
-    justificatifs: Optional[str] = None
+    justificatifs: Optional[list[str]] = None
     formulaire_en_ligne: Optional[str] = None
     commune: Optional[str] = None
     code_postal: Optional[CodePostal] = None
-    code_insee: Optional[CodeInsee] = None
+    code_insee: Optional[CodeCommune] = None
     adresse: Optional[str] = None
     complement_adresse: Optional[str] = None
     longitude: Optional[float] = None
@@ -202,13 +204,12 @@ class Service(BaseModel):
     modes_orientation_accompagnateur: Optional[
         list[ModeOrientationAccompagnateur]
     ] = None
+    modes_orientation_accompagnateur_autres: Optional[str] = None
     modes_orientation_beneficiaire: Optional[list[ModeOrientationBeneficiaire]] = None
-    zone_diffusion_type: Optional[TypeCOG] = None
+    modes_orientation_beneficiaire_autres: Optional[str] = None
+    zone_diffusion_type: Optional[ZoneDiffusionType] = None
     zone_diffusion_code: Optional[
-        Annotated[str, StringConstraints(pattern=r"^\w{5}$")]  # code commune
-        | Annotated[str, StringConstraints(pattern=r"^\d{9}$")]  # code epci
-        | Annotated[str, StringConstraints(pattern=r"^\w{2,3}$")]  # code departement
-        | Annotated[str, StringConstraints(pattern=r"^\d{2}$")]  # code region
+        CodeCommune | CodeEPCI | CodeDepartement | CodeRegion
     ] = None
     zone_diffusion_nom: Optional[str] = None
 
@@ -217,29 +218,21 @@ class Structure(BaseModel):
     model_config = ConfigDict(from_attributes=True, populate_by_name=True)
 
     # internal metadata
-    di_geocodage_code_insee: Optional[
-        Annotated[str, StringConstraints(min_length=5, max_length=5)]
-    ] = Field(alias="_di_geocodage_code_insee")
+    di_geocodage_code_insee: Optional[CodeCommune] = Field(
+        alias="_di_geocodage_code_insee"
+    )
     di_geocodage_score: Optional[Annotated[float, Field(ge=0, le=1)]] = Field(
         alias="_di_geocodage_score"
     )
 
     # structure data
     id: str
-    siret: Optional[
-        Annotated[
-            str, StringConstraints(min_length=14, max_length=14, pattern=r"^\d{14}$")
-        ]
-    ] = None
-    rna: Optional[
-        Annotated[
-            str, StringConstraints(min_length=10, max_length=10, pattern=r"^W\d{9}$")
-        ]
-    ] = None
+    siret: Optional[CodeSiret] = None
+    rna: Optional[CodeRna] = None
     nom: str
     commune: Optional[str] = None
     code_postal: Optional[CodePostal] = None
-    code_insee: Optional[CodeInsee] = None
+    code_insee: Optional[CodeCommune] = None
     adresse: Optional[str] = None
     complement_adresse: Optional[str] = None
     longitude: Optional[float] = None

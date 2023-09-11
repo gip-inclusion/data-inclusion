@@ -126,9 +126,9 @@ class ServiceFactory(factory.Factory):
         ),
         getter=lambda l: list(map(lambda t: t.value, l)),
     )
-    pre_requis = None
+    pre_requis = []
     cumulable = False
-    justificatifs = None
+    justificatifs = []
     formulaire_en_ligne = None
     commune = factory.Faker("city", locale="fr_FR")
     code_postal = factory.Faker("postcode")
@@ -162,12 +162,14 @@ class ServiceFactory(factory.Factory):
             [schema.ModeOrientationAccompagnateur.ENVOYER_UN_MAIL.value],
         ]
     )
+    modes_orientation_accompagnateur_autres = None
     modes_orientation_beneficiaire = factory.Iterator(
         [
             [schema.ModeOrientationBeneficiaire.TELEPHONER.value],
             [schema.ModeOrientationBeneficiaire.SE_PRESENTER.value],
         ]
     )
+    modes_orientation_beneficiaire_autres = None
     zone_diffusion_type = None
     zone_diffusion_code = None
     zone_diffusion_nom = None
