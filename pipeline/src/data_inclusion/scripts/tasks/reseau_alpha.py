@@ -5,25 +5,14 @@ import re
 import dateparser
 import scrapy
 import trafilatura
-from scrapy.crawler import CrawlerProcess
 from scrapyscript import Job, Processor
 
-# Local HTML
-# base_path =  'file://' + os.path.abspath('')
-# structure_base_path = base_path + '/structures'
-# formation_base_path = base_path + '/services'
-
-
-# Live HTML (don't use too much to avoid being banned!)
-# structure_base_url =
-# 'https://www.reseau-alpha.org/structure/apprentissage-du-francais/'
-
-
-# Structure avec antennes et formations :
+# URL EXAMPLES
+# Structure with lieux and service details :
 # https://www.reseau-alpha.org/structure/apprentissage-du-francais/aries
-# Structure sans antenne et sans formation :
+# Structure without lieu and without service :
 # https://www.reseau-alpha.org/structure/apprentissage-du-francais/acafi
-# Formation :
+# A service :
 # https://www.reseau-alpha.org/structure/apprentissage-du-francais/aries/formation/
 # francais-a-visee-professionnelle/b8a73-francais-a-visee-sociale-et-ou-professionnelle
 
@@ -89,7 +78,6 @@ class AlphaSpider(scrapy.Spider):
             yield scrapy.Request(url=url, callback=self.parse)
 
     def parse(self, response):
-
         formations_links = response.css(
             "div#div-accordion-formation > div.contact-content a.readon"
         )
@@ -98,7 +86,6 @@ class AlphaSpider(scrapy.Spider):
             yield response.follow(a, callback=self.parse_formation)
 
     def parse_formation(self, response):
-
         formation_entete = response.css("div.entete")
         # formation_contenu = response.css("div.entete + div")
         formation_contenu_col1 = response.css("div.entete + div > div:nth-child(1)")
@@ -127,11 +114,12 @@ class AlphaSpider(scrapy.Spider):
         # Description
         contenu_objectif_public = formation_contenu_col1.css(".row div").getall()
         contenu_objectif_public += formation_informations_pratiques.get()
-        # les descriptions sont très longues et rendent difficiles
-        # le test des autres champs
+        # Service descriptions are very long and trafilatura doesn't
+        # manage to properly cleanup the HTML markup. The result has
+        # too many line breaks.
         # item["presentation_detail"] = html_to_markdown(contenu_objectif_public)
 
-        # Lien vers la source
+        # URL to the source page
         item["lien_source"] = response.url
 
         # Courriel
@@ -171,7 +159,7 @@ class AlphaSpider(scrapy.Spider):
         item["modes_accueil"] = ["en-presentiel"]
 
         # STRUCTURE
-        # ID de la structure
+        # Structure ID
         structure_link_element = formation_entete.css(
             "div.titre-element ~ a.underline.red-alpha"
         )
@@ -180,7 +168,7 @@ class AlphaSpider(scrapy.Spider):
         )
         structure_link = structure_link_element.xpath("@href").get()
 
-        # Une ligne/record de service et une structure par lieu
+        # One record per lieu, each record has service and structure data
         service_id_suffix = 1
         for lieu in clean_lieux:
             # Id
@@ -196,7 +184,6 @@ class AlphaSpider(scrapy.Spider):
             )
 
     def parse_structure(self, response):
-
         item = response.meta.get("item")
 
         # Nom
@@ -216,15 +203,15 @@ class AlphaSpider(scrapy.Spider):
         ).isoformat()
 
         # Adresse
-        # Sur le site Web, une structure a autant d'adresses qu'elle a
-        # de lieux pour ses services
-        # Certains services sont proposés sur toutes les adresses de
-        # la structure, certains non.
+        # A structure has as many addresses as the number of lieux
+        # for its services
+        # Certain services are offered on all those addresses,
+        # certain aren't
 
         # Téléphone
         telephone = response.css("div.lieu div.telephone > a::attr(href)").get()
         if type(telephone) == str:
-            # Les numéro de téléphone sont préfixés par tel:
+            # The phone numbers are stored in @href with a tel: prefix
             telephone = telephone.strip()[4:]
         else:
             telephone = ""
@@ -247,41 +234,12 @@ class AlphaSpider(scrapy.Spider):
         return item
 
 
-process = CrawlerProcess(
-    settings={
-        "FEEDS": {
-            # Seul le JSON est utilisable dans le pipeline car le
-            # CSV imprime les listes sans square brackets ([])
-            # Le CSV est pratique pour tester
-            "alpha.json": {
-                "format": "json",
-                "overwrite": True,
-                "ensure_ascii": False,
-                "encoding": "utf8",
-                "store_empty": False,
-            },
-            "alpha.csv": {
-                "format": "csv",
-                "overwrite": True,
-                "encoding": "utf8",
-            },
-        },
-    }
-)
-
-
 processor = Processor(settings=None)
 
 
 def extract(url: str, **kwargs):
-
     job = Job(AlphaSpider, url=url)
     data = processor.run(job)
     with io.StringIO() as buf:
         json.dump(data, buf)
         return buf.getvalue().encode()
-
-
-# utils.read_json is enough to read the result
-# later processing will be required to clean the presentation_detail
-# fields when we extract them
