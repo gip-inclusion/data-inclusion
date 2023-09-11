@@ -31,7 +31,9 @@ final AS (
         NULL                  AS "lien_source",  -- ignored
         modes_accueil         AS "modes_accueil",
         NULL::TEXT []         AS "modes_orientation_accompagnateur",
+        NULL                  AS "modes_orientation_accompagnateur_autres",
         NULL::TEXT []         AS "modes_orientation_beneficiaire",
+        NULL                  AS "modes_orientation_beneficiaire_autres",
         nom                   AS "nom",
         presentation_resume   AS "presentation_resume",
         presentation_detail   AS "presentation_detail",
