@@ -17,15 +17,14 @@ branch_labels = None
 depends_on = None
 
 
+def column_exists(table_name, column_name):
+    bind = op.get_context().bind
+    insp = sa.inspect(bind)
+    columns = insp.get_columns(table_name)
+    return any(c["name"] == column_name for c in columns)
+
+
 def upgrade() -> None:
-    op.add_column(
-        "service",
-        sa.Column("modes_orientation_accompagnateur_autres", sa.Text(), nullable=True),
-    )
-    op.add_column(
-        "service",
-        sa.Column("modes_orientation_beneficiaire_autres", sa.Text(), nullable=True),
-    )
     op.drop_column("service", "pre_requis")
     op.drop_column("service", "justificatifs")
     op.add_column(
@@ -36,6 +35,22 @@ def upgrade() -> None:
         "service",
         sa.Column("justificatifs", postgresql.ARRAY(sa.Text()), nullable=True),
     )
+
+    # these columns might have already been created by dbt
+    if not column_exists("service", "modes_orientation_accompagnateur_autres"):
+        op.add_column(
+            "service",
+            sa.Column(
+                "modes_orientation_accompagnateur_autres", sa.Text(), nullable=True
+            ),
+        )
+    if not column_exists("service", "modes_orientation_beneficiaire_autres"):
+        op.add_column(
+            "service",
+            sa.Column(
+                "modes_orientation_beneficiaire_autres", sa.Text(), nullable=True
+            ),
+        )
 
 
 def downgrade() -> None:
