@@ -1,8 +1,8 @@
 value,label,description
 adultes,Adultes,
-beneficiaire-rsa,Bénéficiaire du Revenu de Solidarité Active (RSA),
+beneficiaires-rsa,Bénéficiaires du Revenu de Solidarité Active (RSA),
 deficience-visuelle,Déficience visuelle,
-demandeur-demploi,Demandeur ou demandeuse d’emploi,
+demandeurs-demploi,Demandeurs ou demandeuses d’emploi,
 familles-enfants,Familles/enfants,
 femmes,Femmes,Le lieu propose des accompagnements réservés aux femmes.
 handicaps-mentaux,Handicaps mentaux : déficiences limitant les activités d’une personne,

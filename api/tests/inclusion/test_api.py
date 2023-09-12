@@ -2,7 +2,7 @@ from unittest.mock import ANY
 
 import pytest
 
-from data_inclusion.api import schema
+from data_inclusion import schema
 
 
 def test_list_structures_unauthenticated(api_client):
@@ -329,9 +329,9 @@ def test_list_services_all(api_client, service_factory):
                 "frais": ["gratuit", "gratuit-sous-conditions"],
                 "frais_autres": "Camarade il.",
                 "profils": ["femmes", "jeunes-16-26"],
-                "pre_requis": None,
+                "pre_requis": [],
                 "cumulable": False,
-                "justificatifs": None,
+                "justificatifs": [],
                 "formulaire_en_ligne": None,
                 "commune": "Sainte Jacquelineboeuf",
                 "code_postal": "25454",
@@ -351,7 +351,9 @@ def test_list_services_all(api_client, service_factory):
                 "date_maj": "2023-01-01",
                 "modes_accueil": ["a-distance"],
                 "modes_orientation_accompagnateur": ["telephoner"],
+                "modes_orientation_accompagnateur_autres": None,
                 "modes_orientation_beneficiaire": ["telephoner"],
+                "modes_orientation_beneficiaire_autres": None,
                 "zone_diffusion_type": None,
                 "zone_diffusion_code": None,
                 "zone_diffusion_nom": None,
@@ -813,7 +815,7 @@ def test_search_services_with_zone_diffusion_pays(
         latitude=51.034368,
         longitude=2.376776,
         modes_accueil=[schema.ModeAccueil.A_DISTANCE.value],
-        zone_diffusion_type=schema.TypeCOG.PAYS.value,
+        zone_diffusion_type=schema.ZoneDiffusionType.PAYS.value,
         zone_diffusion_code=None,
         zone_diffusion_nom=None,
     )
@@ -844,7 +846,7 @@ def test_search_services_with_zone_diffusion_commune(
         latitude=51.034368,
         longitude=2.376776,
         modes_accueil=[schema.ModeAccueil.EN_PRESENTIEL.value],
-        zone_diffusion_type=schema.TypeCOG.COMMUNE.value,
+        zone_diffusion_type=schema.ZoneDiffusionType.COMMUNE.value,
         zone_diffusion_code="59183",
         zone_diffusion_nom="Dunkerque",
     )
@@ -854,7 +856,7 @@ def test_search_services_with_zone_diffusion_commune(
         latitude=50.633333,
         longitude=3.066667,
         modes_accueil=[schema.ModeAccueil.EN_PRESENTIEL.value],
-        zone_diffusion_type=schema.TypeCOG.COMMUNE.value,
+        zone_diffusion_type=schema.ZoneDiffusionType.COMMUNE.value,
         zone_diffusion_code="59350",
         zone_diffusion_nom="Lille",
     )
@@ -885,7 +887,7 @@ def test_search_services_with_zone_diffusion_epci(
         latitude=51.034368,
         longitude=2.376776,
         modes_accueil=[schema.ModeAccueil.EN_PRESENTIEL.value],
-        zone_diffusion_type=schema.TypeCOG.EPCI.value,
+        zone_diffusion_type=schema.ZoneDiffusionType.EPCI.value,
         zone_diffusion_code="245900428",
         zone_diffusion_nom="CU de Dunkerque",
     )
@@ -895,7 +897,7 @@ def test_search_services_with_zone_diffusion_epci(
         latitude=50.633333,
         longitude=3.066667,
         modes_accueil=[schema.ModeAccueil.EN_PRESENTIEL.value],
-        zone_diffusion_type=schema.TypeCOG.EPCI.value,
+        zone_diffusion_type=schema.ZoneDiffusionType.EPCI.value,
         zone_diffusion_code="200093201",
         zone_diffusion_nom="Métropole Européenne de Lille",
     )
@@ -926,7 +928,7 @@ def test_search_services_with_zone_diffusion_departement(
         latitude=51.034368,
         longitude=2.376776,
         modes_accueil=[schema.ModeAccueil.EN_PRESENTIEL.value],
-        zone_diffusion_type=schema.TypeCOG.DEPARTEMENT.value,
+        zone_diffusion_type=schema.ZoneDiffusionType.DEPARTEMENT.value,
         zone_diffusion_code="59",
         zone_diffusion_nom="Nord",
     )
@@ -936,7 +938,7 @@ def test_search_services_with_zone_diffusion_departement(
         latitude=50.633333,
         longitude=3.066667,
         modes_accueil=[schema.ModeAccueil.EN_PRESENTIEL.value],
-        zone_diffusion_type=schema.TypeCOG.DEPARTEMENT.value,
+        zone_diffusion_type=schema.ZoneDiffusionType.DEPARTEMENT.value,
         zone_diffusion_code="62",
         zone_diffusion_nom="Pas-de-Calais",
     )
@@ -967,7 +969,7 @@ def test_search_services_with_zone_diffusion_region(
         latitude=51.034368,
         longitude=2.376776,
         modes_accueil=[schema.ModeAccueil.EN_PRESENTIEL.value],
-        zone_diffusion_type=schema.TypeCOG.REGION.value,
+        zone_diffusion_type=schema.ZoneDiffusionType.REGION.value,
         zone_diffusion_code="32",
         zone_diffusion_nom="Nord",
     )
@@ -977,7 +979,7 @@ def test_search_services_with_zone_diffusion_region(
         latitude=50.277500,
         longitude=3.973400,
         modes_accueil=[schema.ModeAccueil.EN_PRESENTIEL.value],
-        zone_diffusion_type=schema.TypeCOG.REGION.value,
+        zone_diffusion_type=schema.ZoneDiffusionType.REGION.value,
         zone_diffusion_code="44",
         zone_diffusion_nom="Grand Est",
     )
