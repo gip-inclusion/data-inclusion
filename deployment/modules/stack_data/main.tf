@@ -155,7 +155,7 @@ locals {
   airflow_conn_s3 = "aws://@/${scaleway_object_bucket.main.name}?endpoint_url=${scaleway_object_bucket.main.endpoint}&region_name=${scaleway_object_bucket.main.region}&aws_access_key_id=${scaleway_iam_api_key.main.access_key}&aws_secret_access_key=${scaleway_iam_api_key.main.secret_key}"
 }
 
-resource "null_resource" "test" {
+resource "null_resource" "up" {
   triggers = {
     always_run = timestamp()
   }
@@ -196,7 +196,7 @@ resource "null_resource" "test" {
       "rm -rf data-inclusion",
       "git clone https://github.com/betagouv/data-inclusion",
       "cd data-inclusion",
-      "git reset --hard ${var.api_version}",
+      "git checkout vmttn/feat/provision-terraform-scaleway", # TODO: use the commit sha
       "docker compose -f deployment/docker/docker-compose.yml --env-file ../.env up -d"
     ]
   }
