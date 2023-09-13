@@ -1,45 +1,33 @@
-WITH raw_rows AS (
-    SELECT * FROM {{ ref('stg_cd72__rows') }}
-),
-
-rows_with_id AS (
-    SELECT *
-    FROM raw_rows
-    WHERE id IS NOT NULL
+WITH structures AS (
+    SELECT * FROM {{ ref('stg_cd72__structures') }}
 ),
 
 final AS (
     SELECT
-        id                                               AS "id",
-        id                                               AS "adresse_id",
-        siret                                            AS "siret",
-        NULL::BOOLEAN                                    AS "antenne",
-        NULL                                             AS "rna",
-        nom_structure                                    AS "nom",
-        email_accueil                                    AS "courriel",
-        site_internet                                    AS "site_web",
-        _di_source_id                                    AS "source",
-        NULL                                             AS "lien_source",
-        horaires                                         AS "horaires_ouverture",
-        NULL                                             AS "accessibilite",
-        NULL::TEXT []                                    AS "labels_autres",
-        NULL::TEXT []                                    AS "thematiques",
-        NULL                                             AS "typologie",
-        mise_a_jour_le::DATE                             AS "date_maj",
-        COALESCE(telephone_accueil, telephone_principal) AS "telephone",
+        NULL                  AS "accessibilite",
+        id                    AS "adresse_id",
+        courriel              AS "courriel",
+        date_maj              AS "date_maj",
+        horaires_ouverture    AS "horaires_ouverture",
+        id                    AS "id",
+        NULL                  AS "lien_source",
+        nom                   AS "nom",
+        presentation_detail   AS "presentation_detail",
+        NULL                  AS "presentation_resume",
+        NULL                  AS "rna",
+        siret                 AS "siret",
+        site_web              AS "site_web",
+        _di_source_id         AS "source",
+        telephone             AS "telephone",
+        typologie             AS "typologie",
+        CAST(NULL AS BOOLEAN) AS "antenne",
+        CAST(NULL AS TEXT []) AS "labels_autres",
+        CAST(NULL AS TEXT []) AS "thematiques",
         CASE
-            WHEN typologie_structure ~ 'AFPA' THEN ARRAY['afpa']
-            WHEN typologie_structure ~ 'Mission Locale' THEN ARRAY['mission-locale']
-        END                                              AS "labels_nationaux",
-        CASE LENGTH(description) <= 280
-            WHEN TRUE THEN description
-            WHEN FALSE THEN LEFT(description, 279) || '…'
-        END                                              AS "presentation_resume",
-        CASE LENGTH(description) <= 280
-            WHEN TRUE THEN NULL
-            WHEN FALSE THEN description
-        END                                              AS "presentation_detail"
-    FROM rows_with_id
+            WHEN typologie = 'AFPA' THEN ARRAY['afpa']
+            WHEN typologie = 'ML' THEN ARRAY['mission-locale']
+        END                   AS "labels_nationaux"
+    FROM structures
 )
 
 SELECT * FROM final

@@ -180,7 +180,8 @@ sources:
   - name: cd72
     schema: cd72
     tables:
-      - name: rows
+      - name: structures
+      - name: services
 
   - name: emplois_de_linclusion
     schema: emplois_de_linclusion

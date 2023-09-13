@@ -1,25 +1,43 @@
-WITH raw_rows AS (
-    SELECT * FROM {{ ref('stg_cd72__rows') }}
+WITH structures AS (
+    SELECT * FROM {{ ref('stg_cd72__structures') }}
 ),
 
-rows_with_id AS (
-    SELECT *
-    FROM raw_rows
-    WHERE id IS NOT NULL
+services AS (
+    SELECT * FROM {{ ref('stg_cd72__services') }}
+),
+
+structure_adresses AS (
+    SELECT
+        id                  AS "id",
+        commune             AS "commune",
+        code_postal         AS "code_postal",
+        NULL                AS "code_insee",
+        adresse             AS "adresse",
+        NULL                AS "complement_adresse",
+        _di_source_id       AS "source",
+        CAST(NULL AS FLOAT) AS "longitude",
+        CAST(NULL AS FLOAT) AS "latitude"
+    FROM structures
+),
+
+service_adresses AS (
+    SELECT
+        id                  AS "id",
+        commune             AS "commune",
+        code_postal         AS "code_postal",
+        NULL                AS "code_insee",
+        adresse             AS "adresse",
+        NULL                AS "complement_adresse",
+        _di_source_id       AS "source",
+        CAST(NULL AS FLOAT) AS "longitude",
+        CAST(NULL AS FLOAT) AS "latitude"
+    FROM services
 ),
 
 final AS (
-    SELECT
-        id            AS "id",
-        ville         AS "commune",
-        code_postal   AS "code_postal",
-        NULL          AS "code_insee",
-        adresse       AS "adresse",
-        NULL          AS "complement_adresse",
-        NULL::FLOAT   AS "longitude",
-        NULL::FLOAT   AS "latitude",
-        _di_source_id AS "source"
-    FROM rows_with_id
+    SELECT * FROM structure_adresses
+    UNION ALL
+    SELECT * FROM service_adresses
 )
 
 SELECT * FROM final

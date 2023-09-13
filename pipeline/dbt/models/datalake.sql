@@ -12,7 +12,8 @@ WITH source AS (
             relations=[
                 source('annuaire_du_service_public', 'etablissements'),
                 source('cd35', 'organisations'),
-                source('cd72', 'rows'),
+                source('cd72', 'structures'),
+                source('cd72', 'services'),
                 source('dora', 'structures'),
                 source('dora', 'services'),
                 source('emplois_de_linclusion', 'siaes'),
