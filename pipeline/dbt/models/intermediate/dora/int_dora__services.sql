@@ -9,8 +9,8 @@ di_profil_by_dora_profil AS (
         VALUES
         ('Adultes', 'adultes'),
         ('Femmes', 'femmes'),
-        ('Public bénéficiaire du Revenu de Solidarité Active (RSA)', 'beneficiaire-rsa'),
-        ('Demandeur d''emploi', 'demandeur-demploi')
+        ('Public bénéficiaire du Revenu de Solidarité Active (RSA)', 'beneficiaires-rsa'),
+        ('Demandeur d''emploi', 'demandeurs-demploi')
     ) AS x (dora_profil, di_profil)
 ),
 
