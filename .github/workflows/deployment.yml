@@ -17,9 +17,6 @@ jobs:
       run:
         working-directory: deployment
 
-    outputs:
-      encrypted_tf_outputs: ${{ steps.tf-output.outputs.encrypted_tf_outputs }}
-
     container:
       image: hashicorp/terraform:1.4.0
       env:
@@ -39,7 +36,7 @@ jobs:
         TF_VAR_scaleway_secret_key: ${{ secrets.SCALEWAY_SECRET_KEY }}
         TF_VAR_environment_name: ${{ vars.ENVIRONMENT_NAME }}
         TF_VAR_airflow_admin_password: ${{ secrets.AIRFLOW_ADMIN_PASSWORD }}
-        ENV: ${{ vars.TF_VAR_ENVIRONMENT_NAME }}
+        ENV: ${{ vars.ENVIRONMENT_NAME }}
       volumes:
         - .:/deployment
       options: --workdir /deployment
