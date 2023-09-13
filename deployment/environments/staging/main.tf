@@ -42,7 +42,7 @@ variable "datawarehouse_di_database" {
   type        = string
 }
 
-variable "environment_name" {
+variable "environment" {
   description = "Identifier of the target environment"
   type        = string
 }
@@ -81,7 +81,7 @@ module "stack_data" {
   datawarehouse_di_username    = var.datawarehouse_di_username
   datawarehouse_di_password    = var.datawarehouse_di_password
   datawarehouse_di_database    = var.datawarehouse_di_database
-  environment_name             = var.environment_name
+  environment                  = var.environment
   airflow_admin_password       = var.airflow_admin_password
   api_secret_key               = var.api_secret_key
   api_version                  = var.api_version

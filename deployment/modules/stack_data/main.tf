@@ -68,12 +68,12 @@ resource "scaleway_instance_server" "main" {
 # }
 
 resource "scaleway_object_bucket" "main" {
-  name = "data-inclusion-datalake-${var.environment_name}"
+  name = "data-inclusion-datalake-${var.environment}"
 }
 
 resource "scaleway_iam_application" "main" {
   organization_id = data.scaleway_account_project.main.organization_id
-  name            = "${var.environment_name}--airflow--tf"
+  name            = "${var.environment}--airflow--tf"
 }
 
 data "scaleway_account_project" "main" {

@@ -42,7 +42,7 @@ variable "datawarehouse_di_database" {
   type        = string
 }
 
-variable "environment_name" {
+variable "environment" {
   description = "Identifier of the target environment"
   type        = string
 }

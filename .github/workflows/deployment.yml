@@ -34,9 +34,9 @@ jobs:
         TF_VAR_scaleway_access_key: ${{ secrets.SCALEWAY_ACCESS_KEY }}
         TF_VAR_scaleway_project_id: ${{ vars.SCALEWAY_PROJECT_ID }}
         TF_VAR_scaleway_secret_key: ${{ secrets.SCALEWAY_SECRET_KEY }}
-        TF_VAR_environment_name: ${{ vars.ENVIRONMENT_NAME }}
+        TF_VAR_environment: ${{ vars.ENVIRONMENT }}
         TF_VAR_airflow_admin_password: ${{ secrets.AIRFLOW_ADMIN_PASSWORD }}
-        ENV: ${{ vars.ENVIRONMENT_NAME }}
+        ENV: ${{ vars.ENVIRONMENT }}
       volumes:
         - .:/deployment
       options: --workdir /deployment
