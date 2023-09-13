@@ -26,6 +26,11 @@ resource "scaleway_instance_server" "main" {
   security_group_id = scaleway_instance_security_group.main.id
 }
 
+# TODO: the postgis extension must be enabled manually
+# Until we figure out a good enough way of doing that,
+# the resources linked to the managed database are commented out
+# and the datawarehouse is deployed as a container on the VM
+#
 # resource "scaleway_rdb_instance" "main" {
 #   name           = "datawarehouse"
 #   node_type      = "DB-DEV-S"
@@ -81,8 +86,8 @@ data "scaleway_iam_group" "editors" {
 }
 
 resource "scaleway_object_bucket_policy" "main" {
-  # disable resource. TODO: find a way to retrieve the user/app associated to the access key
-  count = 0
+  # TODO: find a way to retrieve the user/app associated to the access key
+  count = 0 # disable resource
 
   bucket = scaleway_object_bucket.main.name
   policy = jsonencode(

@@ -42,6 +42,7 @@ docker compose run --rm tf -chdir=environments/staging plan
 *Use the prerequisites for the state backend*
 
 ```bash
+set +o history
 docker compose run --rm tf -chdir=environments/<ENVIRONMENT>/ init \
     -backend-config "bucket=data-inclusion-terraform" \
     -backend-config "key=stack_data/<ENVIRONMENT>" \
@@ -49,6 +50,7 @@ docker compose run --rm tf -chdir=environments/<ENVIRONMENT>/ init \
     -backend-config "endpoint=https://s3.fr-par.scw.cloud" \
     -backend-config "access_key=<ACCESS_KEY>" \
     -backend-config "secret_key=<SECRET_KEY>"
+set -o history
 ```
 
 ### configuring the provisioning
