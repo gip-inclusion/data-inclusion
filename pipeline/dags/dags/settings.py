@@ -83,18 +83,6 @@ SOURCES_CONFIGS = [
         ],
     },
     {
-        "id": "cd72",
-        "schedule_interval": "@once",
-        "snapshot": False,
-        "streams": [
-            {
-                "id": "rows",
-                "filename": "rows.xlsx",
-                "url": Variable.get("CD72_FILE_URL", None),
-            },
-        ],
-    },
-    {
         "id": "emplois-de-linclusion",
         "schedule_interval": "@daily",
         "snapshot": True,
@@ -254,6 +242,25 @@ SOURCES_CONFIGS = [
                 "id": "structures",
                 "filename": "structures.json",
                 "url": Variable.get("DI_EXTRA_STRUCTURES_FILE_URL", None),
+            },
+        ],
+    },
+    {
+        "id": "cd72",
+        "schedule_interval": "@daily",
+        "snapshot": False,
+        "streams": [
+            {
+                "id": "structures",
+                "filename": "structures.csv",
+                "url": Variable.get("CD72_STRUCTURES_FILE_URL", None),
+                "token": Variable.get("GRIST_API_TOKEN", None),
+            },
+            {
+                "id": "services",
+                "filename": "services.csv",
+                "url": Variable.get("CD72_SERVICES_FILE_URL", None),
+                "token": Variable.get("GRIST_API_TOKEN", None),
             },
         ],
     },
