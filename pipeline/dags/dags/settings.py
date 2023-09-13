@@ -247,7 +247,7 @@ SOURCES_CONFIGS = [
     },
     {
         "id": "cd72",
-        "schedule_interval": "@daily",
+        "schedule_interval": "@once",
         "snapshot": False,
         "streams": [
             {
