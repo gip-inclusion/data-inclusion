@@ -13,7 +13,7 @@ def get_resources_url_from_dataset_url(dataset_url: str) -> dict[str, str]:
     data_inclusion_resources = [
         resource_data
         for resource_data in dataset_data["resources"]
-        if resource_data["schema"]["name"] == "betagouv/data-inclusion-schema"
+        if resource_data["schema"]["name"] == "gip-inclusion/data-inclusion-schema"
     ]
 
     # identify urls based on resource titles
