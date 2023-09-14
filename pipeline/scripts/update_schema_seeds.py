@@ -7,7 +7,7 @@ import pandas as pd
 
 BASE_URL = os.environ.get(
     "BASE_URL",
-    "https://raw.githubusercontent.com/betagouv/data-inclusion-schema/latest/schemas/extra/",  # noqa: E501
+    "https://raw.githubusercontent.com/gip-inclusion/data-inclusion-schema/latest/schemas/extra/",  # noqa: E501
 )
 OUTPUT_DIR = Path(__file__).parent.parent / "dbt" / "seeds" / "schema"
 
