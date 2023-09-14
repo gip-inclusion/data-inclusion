@@ -1,0 +1,4 @@
+*
+
+!/docker-entrypoint-initdb.d
+!/requirements
