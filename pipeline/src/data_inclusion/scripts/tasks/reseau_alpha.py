@@ -2,7 +2,6 @@ import io
 import json
 import re
 
-import dateparser
 import scrapy
 import trafilatura
 from scrapyscript import Job, Processor
@@ -87,10 +86,8 @@ class AlphaSpider(scrapy.Spider):
 
     def parse_formation(self, response):
         formation_entete = response.css("div.entete")
-        # formation_contenu = response.css("div.entete + div")
         formation_contenu_col1 = response.css("div.entete + div > div:nth-child(1)")
         formation_contenu_col2 = response.css("div.entete + div > div:nth-child(2)")
-        # formation_inscription_info = formation_contenu_col2.css("div:nth-of-type(1)")
         formation_inscription_contact = formation_contenu_col2.css("div:nth-of-type(2)")
         formation_informations_pratiques = formation_contenu_col2.css(
             "div:nth-of-type(3)"
@@ -101,15 +98,11 @@ class AlphaSpider(scrapy.Spider):
         item = {}
 
         # Nom
-        service_nom_1 = strip(response.css("div.titre-element > strong::text").get())
-        service_nom_2 = strip(response.css("a.underline.red-alpha + div::text").get())
-        item["nom"] = f"{service_nom_1} ({service_nom_2})"
+        item["service_nom_1"] = response.css("div.titre-element > strong::text").get()
+        item["service_nom_2"] = response.css("a.underline.red-alpha + div::text").get()
 
         # Date de màj
-        date_maj_fr = strip(
-            response.css("a.underline.red-alpha + div + div::text").get().split(":")[-1]
-        )
-        item["date_maj"] = dateparser.parse(date_maj_fr).isoformat()
+        item["date_maj"] = response.css("a.underline.red-alpha + div + div::text").get()
 
         # Description
         contenu_objectif_public = formation_contenu_col1.css(".row div").getall()
@@ -123,61 +116,23 @@ class AlphaSpider(scrapy.Spider):
         item["lien_source"] = response.url
 
         # Courriel
-        item["courriel"] = strip(
-            formation_inscription_contact.css(
-                "div.email.red-alpha > a::attr(href)"
-            ).get()
-        ).split(":")[-1]
+        item["courriel"] = formation_inscription_contact.css(
+            "div.email.red-alpha > a::attr(href)"
+        ).get()
 
         # Adresse
         clean_lieux = clean_adresse(formation_lieux_horaires.css("div.adresse"))
 
-        # Téléphone
-        item["telephone"] = ""
-
-        # Contact nom prénom
-        item["contact_nom_prenom"] = ""
-
-        # Thématiques
-        item["thematiques"] = ["apprendre-francais--suivre-formation"]
-        if service_nom_2 == "Français à visée professionnelle":
-            item["thematiques"].append(
-                "apprendre-francais--accompagnement-insertion-pro"
-            )
-        if service_nom_2 == "Français à visée sociale et communicative":
-            item["thematiques"].append(
-                "apprendre-francais--communiquer-vie-tous-les-jours"
-            )
-
-        # Hard coded fields
-        item["zone_diffusion_type"] = "departement"
-        item["zone_diffusion_code"] = "91"
-        item["zone_diffusion_nom"] = "Essonne"
-        item["types"] = ["formation"]
-        item["cumulable"] = True
-        item["contact_public"] = True
-        item["modes_accueil"] = ["en-presentiel"]
-
         # STRUCTURE
-        # Structure ID
+        # Structure URL
         structure_link_element = formation_entete.css(
             "div.titre-element ~ a.underline.red-alpha"
         )
-        item["structure_id"] = (
-            structure_link_element.xpath("@href").get().split("/")[-1]
-        )
-        structure_link = structure_link_element.xpath("@href").get()
+        item["structure_url"] = structure_link_element.xpath("@href").get()
 
-        # One record per lieu, each record has service and structure data
-        service_id_suffix = 1
         for lieu in clean_lieux:
-            # Id
-            item["id"] = f"{response.url.split('/')[-1]}_{str(service_id_suffix)}"
-            service_id_suffix += 1
-            print(lieu)
-            item = item | lieu
             yield scrapy.Request(
-                structure_link,
+                item["structure_url"],
                 callback=self.parse_structure,
                 meta={"item": item},
                 dont_filter=True,
@@ -187,20 +142,14 @@ class AlphaSpider(scrapy.Spider):
         item = response.meta.get("item")
 
         # Nom
-        item["structure_nom"] = strip(
-            response.css("div#structure > strong::text").get()
-        )
+        item["structure_nom"] = response.css("div#structure > strong::text").get()
 
         # Data màj
-        item["structure_date_maj"] = strip(
+        item["structure_date_maj"] = (
             response.css("div.structures-dates > div:nth-child(2)")
             .xpath("text()")
             .get()
         )
-        item["structure_date_maj"] = item["structure_date_maj"].split(" : ")[-1]
-        item["structure_date_maj"] = dateparser.parse(
-            item["structure_date_maj"]
-        ).isoformat()
 
         # Adresse
         # A structure has as many addresses as the number of lieux
@@ -209,13 +158,9 @@ class AlphaSpider(scrapy.Spider):
         # certain aren't
 
         # Téléphone
-        telephone = response.css("div.lieu div.telephone > a::attr(href)").get()
-        if type(telephone) == str:
-            # The phone numbers are stored in @href with a tel: prefix
-            telephone = telephone.strip()[4:]
-        else:
-            telephone = ""
-        item["structure_telephone"] = telephone
+        item["structure_telephone"] = response.css(
+            "div.lieu div.telephone > a::attr(href)"
+        ).get()
 
         # Site Web
         item["structure_site_web"] = strip(
@@ -224,12 +169,6 @@ class AlphaSpider(scrapy.Spider):
 
         # Lien source
         item["structure_lien_source"] = response.url
-
-        # Labels
-        item["structure_labels_autres"] = ["reseau-alpha"]
-
-        # Thématiques
-        item["structure_thematiques"] = ["apprendre-francais--suivre-formation"]
 
         return item
 
