@@ -67,6 +67,8 @@ python scripts/update_schema_seeds.py
 
 ## Project requirements
 
+* `pip-compile~=7.3`
+
 ### airflow
 
 These requirements are mainly used for the deployment on scalingo.
@@ -83,7 +85,7 @@ To update the constraints and upgrade the requirements:
 AIRFLOW_VERSION=
 PYTHON_VERSION=3.10
 curl https://raw.githubusercontent.com/apache/airflow/constraints-${AIRFLOW_VERSION}/constraints-${PYTHON_VERSION}.txt > requirements/airflow/constraints.txt
-pip-compile --resolver=backtracking --upgrade requirements/airflow/requirements.in --output-file requirements/airflow/requirements.txt
+pip-compile --upgrade requirements/airflow/requirements.in
 ```
 
 ### tasks
@@ -99,15 +101,15 @@ To add or delete a dependency to these requirements:
 ```bash
 # 1. edit the target requirements/tasks/...../requirements.in
 # 2. compile the dependencies
-pip-compile --resolver=backtracking requirements/tasks/dbt/requirements.in --output-file requirements/tasks/dbt/requirements.txt
-pip-compile --resolver=backtracking requirements/tasks/python/requirements.in --output-file requirements/tasks/python/requirements.txt
+pip-compile requirements/tasks/dbt/requirements.in
+pip-compile requirements/tasks/python/requirements.in
 ```
 
 To upgrade these requirements:
 
 ```bash
-pip-compile --resolver=backtracking --upgrade requirements/tasks/dbt/requirements.in --output-file requirements/tasks/dbt/requirements.txt
-pip-compile --resolver=backtracking --upgrade requirements/tasks/python/requirements.in --output-file requirements/tasks/python/requirements.txt
+pip-compile --upgrade requirements/tasks/dbt/requirements.in
+pip-compile --upgrade requirements/tasks/python/requirements.in
 ```
 
 Then you should update the dev requirements.
@@ -122,11 +124,11 @@ To add or delete a dependency to these dev requirements:
 ```bash
 # 1. edit the target requirements/dev/requirements.in
 # 2. compile the dependencies
-pip-compile --resolver=backtracking requirements/dev/requirements.in --output-file requirements/dev/requirements.txt
+pip-compile requirements/dev/requirements.in
 ```
 
 To upgrade these requirements:
 
 ```bash
-pip-compile --resolver=backtracking --upgrade requirements/dev/requirements.in --output-file requirements/dev/requirements.txt
+pip-compile --upgrade requirements/dev/requirements.in
 ```
