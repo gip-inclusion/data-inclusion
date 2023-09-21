@@ -199,10 +199,10 @@ resource "null_resource" "up" {
   provisioner "remote-exec" {
     inline = [
       "rm -rf data-inclusion",
-      "git clone https://github.com/betagouv/data-inclusion",
+      "git clone https://github.com/betagouv/data-inclusion 2>&1 | cat",
       "cd data-inclusion",
       "git checkout vmttn/feat/provision-terraform-scaleway", # TODO: use the commit sha
-      "docker compose -f deployment/docker/docker-compose.yml --env-file ../.env up -d"
+      "docker compose -f deployment/docker/docker-compose.yml --env-file ../.env up --quiet-pull -d 2>&1 | cat"
     ]
   }
 }
