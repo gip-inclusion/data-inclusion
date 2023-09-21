@@ -3,6 +3,7 @@ WITH services AS (
         dbt_utils.union_relations(
             relations=[
                 ref('int_agefiph__services'),
+                ref('int_cd72__services'),
                 ref('int_data_inclusion__services'),
                 ref('int_dora__services'),
                 ref('int_mediation_numerique__services'),
@@ -17,9 +18,11 @@ WITH services AS (
                 "date_maj": "DATE",
                 "date_suspension": "DATE",
                 "frais": "TEXT[]",
+                "justificatifs": "TEXT[]",
                 "modes_accueil": "TEXT[]",
                 "modes_orientation_accompagnateur": "TEXT[]",
                 "modes_orientation_beneficiaire": "TEXT[]",
+                "pre_requis": "TEXT[]",
                 "profils": "TEXT[]",
                 "thematiques": "TEXT[]",
                 "types": "TEXT[]",

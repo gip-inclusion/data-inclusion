@@ -14,11 +14,11 @@ adresses AS (
 services_with_zone_diffusion AS (
     SELECT
         {{ dbt_utils.star(from=ref('int__union_services'), relation_alias='services', except=["zone_diffusion_code", "zone_diffusion_nom"]) }},
-        CASE services.source = ANY(ARRAY['monenfant', 'soliguide'])
+        CASE services.source = ANY(ARRAY['monenfant', 'soliguide']) OR services.source ~ 'mediation-numerique'
             WHEN TRUE THEN adresses.result_citycode
             ELSE services.zone_diffusion_code
         END AS "zone_diffusion_code",
-        CASE services.source = ANY(ARRAY['monenfant', 'soliguide'])
+        CASE services.source = ANY(ARRAY['monenfant', 'soliguide']) OR services.source ~ 'mediation-numerique'
             WHEN TRUE THEN adresses.commune
             ELSE services.zone_diffusion_nom
         END AS "zone_diffusion_nom"
@@ -52,7 +52,9 @@ valid_services AS (
             lien_source,
             modes_accueil,
             modes_orientation_accompagnateur,
+            modes_orientation_accompagnateur_autres,
             modes_orientation_beneficiaire,
+            modes_orientation_beneficiaire_autres,
             nom,
             presentation_detail,
             presentation_resume,

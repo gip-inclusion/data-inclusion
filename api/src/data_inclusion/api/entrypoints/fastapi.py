@@ -278,7 +278,7 @@ def list_services(
     thematique: Optional[schema.Thematique] = None,
     departement: Optional[schema.DepartementCOG] = None,
     departement_slug: Optional[schema.DepartementSlug] = None,
-    code_insee: Optional[schema.CodeInsee] = None,
+    code_insee: Optional[schema.CodeCommune] = None,
 ):
     query = (
         sqla.select(models.Service)
@@ -364,7 +364,7 @@ def list_services_endpoint(
         schema.DepartementSlug | SkipJsonSchema[None], fastapi.Query()
     ] = None,
     code_insee: Annotated[
-        schema.CodeInsee | SkipJsonSchema[None], fastapi.Query()
+        schema.CodeCommune | SkipJsonSchema[None], fastapi.Query()
     ] = None,
 ):
     return list_services(
@@ -428,24 +428,28 @@ def search_services(
         query = query.filter(
             sqla.or_(
                 models.Service.zone_diffusion_type.is_(None),
-                models.Service.zone_diffusion_type == schema.TypeCOG.PAYS.value,
+                models.Service.zone_diffusion_type
+                == schema.ZoneDiffusionType.PAYS.value,
                 sqla.and_(
-                    models.Service.zone_diffusion_type == schema.TypeCOG.COMMUNE.value,
+                    models.Service.zone_diffusion_type
+                    == schema.ZoneDiffusionType.COMMUNE.value,
                     models.Service.zone_diffusion_code == commune_instance.code,
                 ),
                 sqla.and_(
-                    models.Service.zone_diffusion_type == schema.TypeCOG.EPCI.value,
+                    models.Service.zone_diffusion_type
+                    == schema.ZoneDiffusionType.EPCI.value,
                     sqla.literal(commune_instance.siren_epci).contains(
                         models.Service.zone_diffusion_code
                     ),
                 ),
                 sqla.and_(
                     models.Service.zone_diffusion_type
-                    == schema.TypeCOG.DEPARTEMENT.value,
+                    == schema.ZoneDiffusionType.DEPARTEMENT.value,
                     models.Service.zone_diffusion_code == commune_instance.departement,
                 ),
                 sqla.and_(
-                    models.Service.zone_diffusion_type == schema.TypeCOG.REGION.value,
+                    models.Service.zone_diffusion_type
+                    == schema.ZoneDiffusionType.REGION.value,
                     models.Service.zone_diffusion_code == commune_instance.region,
                 ),
             )
@@ -598,7 +602,7 @@ def search_services_endpoint(
         ),
     ] = None,
     code_insee: Annotated[
-        schema.CodeInsee | SkipJsonSchema[None],
+        schema.CodeCommune | SkipJsonSchema[None],
         fastapi.Query(
             description="""Code insee de la commune considérée.
                 Si fourni, les résultats inclus également les services proches de cette commune.

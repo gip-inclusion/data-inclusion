@@ -1,4 +1,5 @@
-# based on https://github.com/betagouv/dora-back/blob/main/dora/admin_express/utils.py
+# based on
+# https://github.com/gip-inclusion/dora-back/blob/main/dora/admin_express/utils.py
 
 CODES_ARRONDISSEMENTS_BY_CODE_COMMUNE = {
     # Paris

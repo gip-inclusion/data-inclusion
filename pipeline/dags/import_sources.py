@@ -58,6 +58,7 @@ def _extract(
     from data_inclusion.scripts.tasks import (
         dora,
         emplois_de_linclusion,
+        grist,
         mediation_numerique,
         mes_aides,
         reseau_alpha,
@@ -73,7 +74,7 @@ def _extract(
         "agefiph": utils.extract_http_content,
         "annuaire-du-service-public": utils.extract_http_content,
         "cd35": utils.extract_http_content,
-        "cd72": utils.extract_http_content,
+        "cd72": grist.extract,
         "data-inclusion": utils.extract_http_content,
         "dora": dora.extract,
         "emplois-de-linclusion": emplois_de_linclusion.extract,
@@ -146,7 +147,7 @@ def _load(
     READ_FN_BY_SOURCE_ID = {
         "annuaire-du-service-public": annuaire_du_service_public.read,
         "cd35": lambda path: utils.read_csv(path, sep=";"),
-        "cd72": lambda path: utils.read_excel(path, sheet_name="Structures"),
+        "cd72": lambda path: utils.read_csv(path, sep=","),
         "data-inclusion": utils.read_json,
         "dora": utils.read_json,
         "emplois-de-linclusion": utils.read_json,

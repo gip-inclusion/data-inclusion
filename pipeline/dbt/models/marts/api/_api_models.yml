@@ -143,11 +143,11 @@ models:
       - name: profils
         data_type: text[]
       - name: pre_requis
-        data_type: text
+        data_type: text[]
       - name: cumulable
         data_type: boolean
       - name: justificatifs
-        data_type: text
+        data_type: text[]
       - name: formulaire_en_ligne
         data_type: text
       - name: commune
@@ -192,8 +192,12 @@ models:
         data_type: text[]
       - name: modes_orientation_accompagnateur
         data_type: text[]
+      - name: modes_orientation_accompagnateur_autres
+        data_type: text
       - name: modes_orientation_beneficiaire
         data_type: text[]
+      - name: modes_orientation_beneficiaire_autres
+        data_type: text
       - name: zone_diffusion_type
         data_type: text
       - name: zone_diffusion_code

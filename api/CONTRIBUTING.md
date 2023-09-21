@@ -45,16 +45,16 @@ tox
 # 1. add/remove packages from the requirements in setup.py
 
 # 2. compile dependencies
-pip-compile --resolver=backtracking --output-file=requirements/requirements.txt
-pip-compile --resolver=backtracking --extra=dev --output-file=requirements/dev-requirements.txt
-pip-compile --resolver=backtracking --extra=test --output-file=requirements/test-requirements.txt
+pip-compile --output-file=requirements/requirements.txt
+pip-compile --extra=dev --output-file=requirements/dev-requirements.txt
+pip-compile --extra=test --output-file=requirements/test-requirements.txt
 ```
 
 ### 2. Upgrading packages
 
 ```bash
 # 1. compile dependencies with the upgrade flag set
-pip-compile --resolver=backtracking --upgrade --output-file=requirements/requirements.txt && \
-    pip-compile --resolver=backtracking --upgrade --extra=dev --output-file=requirements/dev-requirements.txt && \
-    pip-compile --resolver=backtracking --upgrade --extra=test --output-file=requirements/test-requirements.txt
+pip-compile --upgrade --output-file=requirements/requirements.txt && \
+    pip-compile --upgrade --extra=dev --output-file=requirements/dev-requirements.txt && \
+    pip-compile --upgrade --extra=test --output-file=requirements/test-requirements.txt
 ```

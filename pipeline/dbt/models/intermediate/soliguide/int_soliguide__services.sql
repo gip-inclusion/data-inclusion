@@ -91,6 +91,8 @@ open_services AS (
     SELECT *
     FROM relevant_services
     WHERE
+        NOT close__actif
+        OR
         (close__date_debut IS NOT NULL OR close__date_fin IS NOT NULL)
         AND
         (
@@ -115,9 +117,9 @@ final AS (
         NULL::TEXT []                                                 AS "frais",
         NULL                                                          AS "frais_autres",
         NULL::TEXT []                                                 AS "profils",
-        NULL                                                          AS "pre_requis",
+        NULL::TEXT []                                                 AS "pre_requis",
         TRUE                                                          AS "cumulable",
-        NULL                                                          AS "justificatifs",
+        NULL::TEXT []                                                 AS "justificatifs",
         NULL::DATE                                                    AS "date_creation",
         NULL::DATE                                                    AS "date_suspension",
         filtered_phones.phone_number                                  AS "telephone",
@@ -131,7 +133,9 @@ final AS (
         NULL                                                          AS "formulaire_en_ligne",
         open_services.lieu_id                                         AS "structure_id",
         NULL::TEXT []                                                 AS "modes_orientation_accompagnateur",
+        NULL                                                          AS "modes_orientation_accompagnateur_autres",
         NULL::TEXT []                                                 AS "modes_orientation_beneficiaire",
+        NULL                                                          AS "modes_orientation_beneficiaire_autres",
         (
             SELECT di_thematique_by_soliguide_categorie_code.thematique
             FROM di_thematique_by_soliguide_categorie_code

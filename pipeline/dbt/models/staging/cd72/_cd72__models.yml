@@ -1,6 +1,28 @@
 version: 2
 
 models:
-  - name: stg_cd72__rows
+  - name: stg_cd72__structures
     config:
       tags: cd72
+    columns:
+      - name: id
+        tests:
+          - unique
+          - not_null
+          - dbt_utils.not_empty_string
+
+  - name: stg_cd72__services
+    config:
+      tags: cd72
+    columns:
+      - name: id
+        tests:
+          - unique
+          - not_null
+          - dbt_utils.not_empty_string
+      - name: structure_id
+        tests:
+          - not_null
+          - relationships:
+              to: ref('stg_cd72__structures')
+              field: id
