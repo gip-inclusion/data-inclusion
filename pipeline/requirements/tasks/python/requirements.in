@@ -1,6 +1,7 @@
 apache-airflow-providers-postgres
 apache-airflow-providers-amazon
 
+beautifulsoup4~=4.12.2
 GeoAlchemy2
 geopandas~=0.13.2
 openpyxl~=3.1.2
@@ -8,8 +9,6 @@ pandas~=2.1.0
 psycopg2~=2.9.7
 pyairtable~=2.1
 requests~=2.31
-scrapy
-scrapyscript
 SQLAlchemy
 tenacity~=8.2
 tqdm~=4.66

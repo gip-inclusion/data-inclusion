@@ -83,11 +83,16 @@ def _extract(
         "un-jeune-une-solution": utils.extract_http_content,
         "soliguide": soliguide.extract,
         "monenfant": utils.extract_http_content,
-        "reseau-alpha": reseau_alpha.extract,
+        "reseau-alpha": {
+            "structures": reseau_alpha.extract_structures,
+            "formations": reseau_alpha.extract_formations,
+        },
     }
 
     if source_config["id"].startswith("mediation-numerique-"):
         extract_fn = mediation_numerique.extract
+    elif isinstance(EXTRACT_FN_BY_SOURCE_ID[source_config["id"]], dict):
+        extract_fn = EXTRACT_FN_BY_SOURCE_ID[source_config["id"]][stream_config["id"]]
     else:
         extract_fn = EXTRACT_FN_BY_SOURCE_ID[source_config["id"]]
 
@@ -133,6 +138,7 @@ def _load(
         agefiph,
         annuaire_du_service_public,
         monenfant,
+        reseau_alpha,
         soliguide,
         utils,
     )
@@ -150,7 +156,10 @@ def _load(
         "un-jeune-une-solution": utils.read_json,
         "soliguide": soliguide.read,
         "monenfant": monenfant.read,
-        "reseau-alpha": utils.read_json,
+        "reseau-alpha": {
+            "structures": reseau_alpha.read_structures,
+            "formations": reseau_alpha.read_formations,
+        },
         "agefiph": {
             "services": agefiph.read,
             "structures": lambda path: utils.read_csv(path, sep=","),

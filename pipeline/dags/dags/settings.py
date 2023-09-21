@@ -229,10 +229,15 @@ SOURCES_CONFIGS = [
         "snapshot": True,
         "streams": [
             {
-                "id": "structures_services",
-                "filename": "alpha.json",
-                "url": Variable.get("RESEAU_ALPHA_HTML_FILE_URL", None),
-            }
+                "id": "structures",
+                "filename": "structures.tar.gz",
+                "url": Variable.get("RESEAU_ALPHA_URL", None),
+            },
+            {
+                "id": "formations",
+                "filename": "formations.tar.gz",
+                "url": Variable.get("RESEAU_ALPHA_URL", None),
+            },
         ],
     },
     {
