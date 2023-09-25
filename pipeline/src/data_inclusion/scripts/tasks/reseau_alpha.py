@@ -15,8 +15,6 @@ from tqdm import tqdm
 
 logger = logging.getLogger(__name__)
 
-tqdm.pandas()
-
 
 def log_and_raise(resp: requests.Response, *args, **kwargs):
     try:
@@ -125,6 +123,9 @@ def scrap_formation_html(html_path: Path) -> dict:
                 "div.container:nth-child(2) > div:nth-child(2)"
                 " > div:nth-child(1) > div:nth-child(1)"
             ),
+            "date_maj": soup.select_one(".entete").find(
+                string=lambda text: "Date de la dernière modification :" in text
+            ),
             "public_attendu": soup.select_one(
                 "div.container:nth-child(2) > div:nth-child(2)"
                 " > div:nth-child(1) > div:nth-child(2)"
@@ -139,6 +140,12 @@ def scrap_formation_html(html_path: Path) -> dict:
             "courriel": soup.select_one(".email > a:nth-child(1)"),
             "informations_pratiques": soup.select_one(
                 "div.col-lg-6:nth-child(2) > div:nth-child(3)"
+            ),
+            "adresse": soup.select_one(".col-sm-9 > div:nth-child(2)"),
+            "horaires": "".join(
+                soup.select_one(".col-sm-9").find_all(
+                    string=lambda text: "de" in text and "à" in text
+                )
             ),
         }
 

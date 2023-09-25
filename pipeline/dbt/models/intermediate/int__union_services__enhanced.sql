@@ -10,16 +10,22 @@ adresses AS (
     SELECT * FROM {{ ref('int__union_adresses__enhanced') }}
 ),
 
+departements AS (
+    SELECT * FROM {{ source('insee', 'departements') }}
+),
+
 -- TODO: Refactoring needed to be able to do geocoding per source and then use the result in the mapping
 services_with_zone_diffusion AS (
     SELECT
         {{ dbt_utils.star(from=ref('int__union_services'), relation_alias='services', except=["zone_diffusion_code", "zone_diffusion_nom"]) }},
-        CASE services.source = ANY(ARRAY['monenfant', 'soliguide']) OR services.source ~ 'mediation-numerique'
-            WHEN TRUE THEN adresses.result_citycode
+        CASE
+            WHEN services.source = ANY(ARRAY['monenfant', 'soliguide']) OR services.source ~ 'mediation-numerique' THEN adresses.result_citycode
+            WHEN services.source = 'reseau-alpha' THEN LEFT(adresses.result_citycode, 2)
             ELSE services.zone_diffusion_code
         END AS "zone_diffusion_code",
-        CASE services.source = ANY(ARRAY['monenfant', 'soliguide']) OR services.source ~ 'mediation-numerique'
-            WHEN TRUE THEN adresses.commune
+        CASE
+            WHEN services.source = ANY(ARRAY['monenfant', 'soliguide']) OR services.source ~ 'mediation-numerique' THEN adresses.commune
+            WHEN services.source = 'reseau-alpha' THEN (SELECT departements."LIBELLE" FROM departements WHERE departements."DEP" = LEFT(adresses.result_citycode, 2))
             ELSE services.zone_diffusion_nom
         END AS "zone_diffusion_nom"
     FROM
