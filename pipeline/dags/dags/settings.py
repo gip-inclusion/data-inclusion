@@ -212,6 +212,23 @@ SOURCES_CONFIGS = [
         ],
     },
     {
+        "id": "reseau-alpha",
+        "schedule_interval": "@once",
+        "snapshot": False,
+        "streams": [
+            {
+                "id": "structures",
+                "filename": "structures.tar.gz",
+                "url": Variable.get("RESEAU_ALPHA_URL", None),
+            },
+            {
+                "id": "formations",
+                "filename": "formations.tar.gz",
+                "url": Variable.get("RESEAU_ALPHA_URL", None),
+            },
+        ],
+    },
+    {
         "id": "agefiph",
         "schedule_interval": "@daily",
         "snapshot": True,

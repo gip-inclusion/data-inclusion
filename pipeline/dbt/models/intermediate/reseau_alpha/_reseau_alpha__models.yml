@@ -1,0 +1,56 @@
+version: 2
+
+models:
+  - name: int_reseau_alpha__adresses
+    tests:
+      - check_adresse:
+          config:
+            severity: warn
+    columns:
+      - name: id
+        tests:
+          - unique
+          - not_null
+          - dbt_utils.not_empty_string
+
+  - name: int_reseau_alpha__services
+    tests:
+      - check_service:
+          config:
+            severity: warn
+    columns:
+      - name: id
+        tests:
+          - unique
+          - not_null
+          - dbt_utils.not_empty_string
+      - name: structure_id
+        tests:
+          - not_null
+          - relationships:
+              to: ref('int_reseau_alpha__structures')
+              field: id
+      - name: adresse_id
+        tests:
+          - not_null
+          - relationships:
+              to: ref('int_reseau_alpha__adresses')
+              field: id
+
+  - name: int_reseau_alpha__structures
+    tests:
+      - check_structure:
+          config:
+            severity: warn
+    columns:
+      - name: id
+        tests:
+          - unique
+          - not_null
+          - dbt_utils.not_empty_string
+      - name: adresse_id
+        tests:
+          - not_null
+          - relationships:
+              to: ref('int_reseau_alpha__adresses')
+              field: id

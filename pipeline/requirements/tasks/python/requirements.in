@@ -1,6 +1,7 @@
 apache-airflow-providers-postgres
 apache-airflow-providers-amazon
 
+beautifulsoup4~=4.12.2
 GeoAlchemy2
 geopandas~=0.13.2
 openpyxl~=3.1.2

@@ -475,3 +475,9 @@ sources:
     tables:
       - name: services
       - name: structures
+
+  - name: reseau_alpha
+    schema: reseau_alpha
+    tables:
+      - name: structures
+      - name: formations
