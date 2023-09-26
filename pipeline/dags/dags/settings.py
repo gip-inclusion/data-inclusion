@@ -214,7 +214,7 @@ SOURCES_CONFIGS = [
     {
         "id": "reseau-alpha",
         "schedule_interval": "@once",
-        "snapshot": True,
+        "snapshot": False,
         "streams": [
             {
                 "id": "structures",
