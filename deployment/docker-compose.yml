@@ -12,14 +12,6 @@ services:
   scw:
     image: scaleway/cli:v2.12.0
 
-  tf-docs:
-    image: quay.io/terraform-docs/terraform-docs:0.16.0
-    user: "${USER_UID:-1000}:0"
-    working_dir: /deployment
-    entrypoint: terraform-docs markdown --recursive --recursive-path ../../modules --output-file README.md
-    volumes:
-      - .:/deployment
-
   tf-fmt:
     image: hashicorp/terraform:1.4.0
     working_dir: /deployment

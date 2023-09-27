@@ -74,12 +74,6 @@ docker compose run --rm tf plan
 docker compose run --rm tf apply
 ```
 
-### updating auto generated documentation
-
-```bash
-USER_ID=$(id -u) docker compose run --rm tf-docs
-```
-
 ### formatting `.tf` files
 
 ```bash
