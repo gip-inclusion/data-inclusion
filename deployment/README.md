@@ -22,9 +22,13 @@ This is preferably shared by environments.
 
 * A scaleway project dedicated for that environment
 * A policy ([here](https://console.scaleway.com/iam/policies)) with the following rules:
+    * `IAMReadOnly`, `ProjectReadOnly` in the organization;
     * `InstancesFullAccess`, `ObjectStorageFullAccess`, `RelationalDatabasesFullAccess` in the target project scope
 * An IAM application with this policy assigned ([here](https://console.scaleway.com/iam/applications))
 * An API key for this application ([here](https://console.scaleway.com/iam/api-keys))
+* Another IAM application that will be used for object storage by Airflow, together with the
+  API key (access key + secret key) for this application. This application needs a policy attached
+  that gives it `ObjectStorageFullAccess` to the target project.
 * A SSH key pair:
     * generated with `ssh-keygen -t ed25519 -C <ENVIRONMENT> -f /tmp/<ENVIRONMENT> -N ''`)
     * the public key must have been uploaded to scaleway ([here](https://console.scaleway.com/project/ssh-keys))

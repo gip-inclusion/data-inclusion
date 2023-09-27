@@ -15,6 +15,24 @@ variable "scaleway_project_id" {
   type        = string
 }
 
+variable "airflow_application_id" {
+  description = "Scaleway app ID for Airflow"
+  type        = string
+  sensitive   = false
+}
+
+variable "airflow_access_key" {
+  description = "Scaleway access key for Airflow"
+  type        = string
+  sensitive   = false
+}
+
+variable "airflow_secret_key" {
+  description = "Scaleway secret key for Airflow"
+  type        = string
+  sensitive   = true
+}
+
 variable "datawarehouse_admin_username" {
   description = "Identifier for the first user of the postgres datawarehouse"
   type        = string
@@ -76,6 +94,9 @@ module "stack_data" {
   scaleway_access_key          = var.scaleway_access_key
   scaleway_secret_key          = var.scaleway_secret_key
   scaleway_project_id          = var.scaleway_project_id
+  airflow_application_id       = var.airflow_application_id
+  airflow_access_key           = var.airflow_access_key
+  airflow_secret_key           = var.airflow_secret_key
   datawarehouse_admin_username = var.datawarehouse_admin_username
   datawarehouse_admin_password = var.datawarehouse_admin_password
   datawarehouse_di_username    = var.datawarehouse_di_username
@@ -91,18 +112,6 @@ module "stack_data" {
 output "public_ip" {
   description = "Publicly reachable IP (with `ssh root@<public_ip>`)"
   value       = module.stack_data.public_ip
-}
-
-output "object_storage_access_key" {
-  description = "Access key for the datalake object storage"
-  value       = module.stack_data.object_storage_access_key
-  sensitive   = true
-}
-
-output "object_storage_secret_key" {
-  description = "Secret key for the datalake object storage"
-  value       = module.stack_data.object_storage_secret_key
-  sensitive   = true
 }
 
 output "airflow_conn_pg" {

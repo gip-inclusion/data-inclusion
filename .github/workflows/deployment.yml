@@ -35,6 +35,9 @@ jobs:
         TF_VAR_scaleway_project_id: ${{ vars.SCALEWAY_PROJECT_ID }}
         TF_VAR_scaleway_secret_key: ${{ secrets.SCALEWAY_SECRET_KEY }}
         TF_VAR_environment: ${{ vars.ENVIRONMENT }}
+        TF_VAR_airflow_application_id: ${{ vars.AIRFLOW_APPLICATION_ID }}
+        TF_VAR_airflow_access_key: ${{ vars.AIRFLOW_ACCESS_KEY }}
+        TF_VAR_airflow_secret_key: ${{ secrets.AIRFLOW_SECRET_KEY }}
         TF_VAR_airflow_admin_password: ${{ secrets.AIRFLOW_ADMIN_PASSWORD }}
         TF_VAR_api_secret_key: ${{ secrets.api_secret_key }}
         TF_VAR_api_version: pr-63  # TODO

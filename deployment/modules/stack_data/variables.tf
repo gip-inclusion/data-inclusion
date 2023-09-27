@@ -15,6 +15,24 @@ variable "scaleway_project_id" {
   type        = string
 }
 
+variable "airflow_application_id" {
+  description = "Scaleway app ID for Airflow"
+  type        = string
+  sensitive   = false
+}
+
+variable "airflow_access_key" {
+  description = "Scaleway access key for Airflow"
+  type        = string
+  sensitive   = false
+}
+
+variable "airflow_secret_key" {
+  description = "Scaleway secret key for Airflow"
+  type        = string
+  sensitive   = true
+}
+
 variable "datawarehouse_admin_username" {
   description = "Identifier for the first user of the postgres datawarehouse"
   type        = string

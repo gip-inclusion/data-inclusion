@@ -71,11 +71,6 @@ resource "scaleway_object_bucket" "main" {
   name = "data-inclusion-datalake-${var.environment}"
 }
 
-resource "scaleway_iam_application" "main" {
-  organization_id = data.scaleway_account_project.main.organization_id
-  name            = "${var.environment}--airflow--tf"
-}
-
 data "scaleway_account_project" "main" {
   project_id = var.scaleway_project_id
 }
@@ -100,7 +95,7 @@ resource "scaleway_object_bucket_policy" "main" {
             SCW = concat(
               [for user_id in data.scaleway_iam_group.editors.user_ids : "user_id:${user_id}"],
               [
-                "application_id:${scaleway_iam_application.main.id}"
+                "application_id:${var.airflow_application_id}"
               ]
             )
           },
@@ -118,7 +113,7 @@ resource "scaleway_object_bucket_policy" "main" {
             SCW = concat(
               [for user_id in data.scaleway_iam_group.editors.user_ids : "user_id:${user_id}"],
               [
-                "application_id:${scaleway_iam_application.main.id}"
+                "application_id:${var.airflow_application_id}"
               ]
             )
           },
@@ -145,19 +140,9 @@ resource "scaleway_object_bucket_policy" "main" {
   )
 }
 
-resource "time_rotating" "api_key_rotation" {
-  rfc3339        = "2024-06-01T00:00:00Z"
-  rotation_years = 1
-}
-
-resource "scaleway_iam_api_key" "main" {
-  application_id = scaleway_iam_application.main.id
-  expires_at     = time_rotating.api_key_rotation.id
-}
-
 locals {
   airflow_conn_pg = "postgresql://${var.datawarehouse_di_username}:${var.datawarehouse_di_password}@datawarehouse:5432/${var.datawarehouse_di_database}"
-  airflow_conn_s3 = "aws://@/${scaleway_object_bucket.main.name}?endpoint_url=${scaleway_object_bucket.main.endpoint}&region_name=${scaleway_object_bucket.main.region}&aws_access_key_id=${scaleway_iam_api_key.main.access_key}&aws_secret_access_key=${scaleway_iam_api_key.main.secret_key}"
+  airflow_conn_s3 = "aws://@/${scaleway_object_bucket.main.name}?endpoint_url=${scaleway_object_bucket.main.endpoint}&region_name=${scaleway_object_bucket.main.region}&aws_access_key_id=${var.airflow_access_key}&aws_secret_access_key=${var.airflow_secret_key}"
 }
 
 resource "null_resource" "up" {
