@@ -114,36 +114,131 @@ def scrap_structure_html(html_path: Path) -> dict:
 
 
 def scrap_formation_html(html_path: Path) -> dict:
+    def get_parent(node):
+        return node.parent if node is not None else None
+
     with html_path.open() as f:
         soup = bs4.BeautifulSoup(f, features="lxml")
         data = {}
 
+        contenu_et_objectifs_selector = (
+            ".container > .row:nth-child(2) > div:nth-child(1) > .row:nth-child(1)"
+        )
+        public_attendu_selector = (
+            ".container > .row:nth-child(2) > div:nth-child(1) > .row:nth-child(2)"
+        )
+        inscription_selector = (
+            ".container > .row:nth-child(2) > div:nth-child(2) > .row:nth-child(1)"
+        )
+        informations_pratiques_selector = (
+            ".container > .row:nth-child(2) > div:nth-child(2) > .row:nth-child(3)"
+        )
+
         NODE_BY_CONTENT_NAME = {
-            "contenu_et_objectifs": soup.select_one(
-                "div.container:nth-child(2) > div:nth-child(2)"
-                " > div:nth-child(1) > div:nth-child(1)"
-            ),
             "date_maj": soup.select_one(".entete").find(
                 string=lambda text: "Date de la dernière modification :" in text
             ),
-            "public_attendu": soup.select_one(
-                "div.container:nth-child(2) > div:nth-child(2)"
-                " > div:nth-child(1) > div:nth-child(2)"
+            "contenu_et_objectifs__titre": soup.select_one(
+                f"{contenu_et_objectifs_selector} > div:nth-child(2)"
             ),
-            "inscription": soup.select_one(
-                "div.col-lg-6:nth-child(2) > div:nth-child(1)"
+            "contenu_et_objectifs__objectifs": soup.select_one(
+                f"{contenu_et_objectifs_selector} > div:nth-child(3)"
             ),
-            "contact_prenom_nom": soup.select_one(
-                "#formation-inscription > div:nth-child(2) > div:nth-child(2)"
+            "contenu_et_objectifs__niveau": soup.select_one(
+                f"{contenu_et_objectifs_selector} > div:nth-child(4)"
             ),
-            "telephone": soup.select_one("#formation-inscription > div:nth-child(3)"),
-            "courriel": soup.select_one(".email > a:nth-child(1)"),
-            "informations_pratiques": soup.select_one(
-                "div.col-lg-6:nth-child(2) > div:nth-child(3)"
+            "public_attendu__niveau": soup.select_one(
+                f"{public_attendu_selector} > div:nth-child(2)"
             ),
-            "adresse": soup.select_one(".col-sm-9 > div:nth-child(2)"),
-            "horaires": "".join(
-                soup.select_one(".col-sm-9").find_all(
+            "public_attendu__competences": soup.select_one(
+                f"{public_attendu_selector} > div:nth-child(3)"
+            ),
+            "public_attendu__type_de_public": soup.select_one(
+                f"{public_attendu_selector} > div:nth-child(4)"
+            ),
+            "inscription__informations_en_ligne": get_parent(
+                get_parent(
+                    soup.select_one(inscription_selector).find(
+                        string=lambda text: "Informations en ligne" in text
+                    )
+                )
+            ),
+            "inscription__places": get_parent(
+                get_parent(
+                    soup.select_one(inscription_selector).find(
+                        string=lambda text: "Places disponibles" in text
+                    )
+                )
+            ),
+            "inscription__entree_sortie": get_parent(
+                get_parent(
+                    soup.select_one(inscription_selector).find(
+                        string=lambda text: "Entrée / sortie permanente" in text
+                    )
+                )
+            ),
+            "contact_inscription__adresse": get_parent(
+                get_parent(soup.select_one("#formation-inscription .fa-home"))
+            ),
+            "contact_inscription__contact": get_parent(
+                get_parent(soup.select_one("#formation-inscription .fa-user"))
+            ),
+            "contact_inscription__telephone": get_parent(
+                get_parent(soup.select_one("#formation-inscription .fa-phone"))
+            ),
+            "contact_inscription__courriel": get_parent(
+                get_parent(soup.select_one("#formation-inscription .fa-inbox"))
+            ),
+            "informations_pratiques__etendue": get_parent(
+                get_parent(
+                    soup.select_one(informations_pratiques_selector).find(
+                        string=lambda text: "Étendue de la formation" in text
+                    )
+                )
+            ),
+            "informations_pratiques__volume": get_parent(
+                get_parent(
+                    soup.select_one(informations_pratiques_selector).find(
+                        string=lambda text: "Volume horaire" in text
+                    )
+                )
+            ),
+            "informations_pratiques__cout": get_parent(
+                get_parent(
+                    soup.select_one(informations_pratiques_selector).find(
+                        string=lambda text: (
+                            "Adhésion annuelle à la structure obligatoire"
+                        )
+                        in text
+                    )
+                )
+            ),
+            "informations_pratiques__prise_en_charge": get_parent(
+                get_parent(
+                    soup.select_one(informations_pratiques_selector).find(
+                        string=lambda text: "Coût d'inscription à la formation" in text
+                    )
+                )
+            ),
+            "informations_pratiques__remuneration": get_parent(
+                get_parent(
+                    soup.select_one(informations_pratiques_selector).find(
+                        string=lambda text: "Rémunération" in text
+                    )
+                )
+            ),
+            "informations_pratiques__garde": get_parent(
+                get_parent(
+                    soup.select_one(informations_pratiques_selector).find(
+                        string=lambda text: "Garde d'enfant" in text
+                    )
+                )
+            ),
+            "lieux_et_horaires_formation__adresse": soup.select_one(
+                "#lieux-formation .lieu-formation .adresse"
+            ),
+            "lieux_et_horaires_formation__horaires": "\n".join(
+                soup.select_one("#lieux-formation").find_all(
                     string=lambda text: "de" in text and "à" in text
                 )
             ),
