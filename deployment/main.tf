@@ -71,7 +71,7 @@ variable "ssh_private_key" {
 }
 
 module "stack_data" {
-  source = "../../modules/stack_data"
+  source = "./modules/stack_data"
 
   scaleway_access_key          = var.scaleway_access_key
   scaleway_secret_key          = var.scaleway_secret_key

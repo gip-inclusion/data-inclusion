@@ -34,7 +34,7 @@ This is preferably shared by environments.
 Use the `-chdir=` option to target a specific environment:
 
 ```bash
-docker compose run --rm tf -chdir=environments/staging plan
+docker compose run --rm tf plan
 ```
 
 ### initializing the state backend
@@ -43,7 +43,7 @@ docker compose run --rm tf -chdir=environments/staging plan
 
 ```bash
 set +o history
-docker compose run --rm tf -chdir=environments/<ENVIRONMENT>/ init \
+docker compose run --rm tf init \
     -backend-config "bucket=data-inclusion-terraform" \
     -backend-config "key=stack_data/<ENVIRONMENT>" \
     -backend-config "region=fr-par" \
@@ -60,7 +60,7 @@ The deployment is configured through variables. The set of variables will be dif
 To generate a configuration file for a specific environment:
 
 ```bash
-USER_ID=$(id -u) docker compose run --rm tf-vars environments/<ENVIRONMENT>
+USER_ID=$(id -u) docker compose run --rm tf-vars .
 ```
 
 The generated `terraform.tfvars.json` file can be filled with the appropriate values for that environment.
@@ -73,10 +73,10 @@ The generated `terraform.tfvars.json` file can be filled with the appropriate va
 
 ```bash
 # review changes
-docker compose run --rm tf -chdir=environments/staging plan
+docker compose run --rm tf plan
 
 # apply
-docker compose run --rm tf -chdir=environments/staging apply
+docker compose run --rm tf apply
 ```
 
 ### updating auto generated documentation

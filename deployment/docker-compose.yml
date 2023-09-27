@@ -17,7 +17,6 @@ services:
     user: "${USER_UID:-1000}:0"
     working_dir: /deployment
     entrypoint: terraform-docs markdown --recursive --recursive-path ../../modules --output-file README.md
-    command: environments/staging
     volumes:
       - .:/deployment
 
