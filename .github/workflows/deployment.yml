@@ -49,7 +49,7 @@ jobs:
 
       - name: tf init
         run: |
-          terraform -chdir="environments/${ENV}" init \
+          terraform init \
             -backend-config "bucket=data-inclusion-terraform" \
             -backend-config "key=stack_data/${ENV}" \
             -backend-config "region=fr-par" \
@@ -57,12 +57,12 @@ jobs:
 
       - name: tf validate
         run: |
-          terraform -chdir="environments/${ENV}" validate
+          terraform validate
 
       - name: tf plan
         run: |
-          terraform -chdir="environments/${ENV}" plan
+          terraform plan
 
       - name: tf apply
         run: |
-          terraform -chdir="environments/${ENV}" apply -auto-approve
+          terraform apply -auto-approve
