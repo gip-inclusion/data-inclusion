@@ -26,11 +26,3 @@ services:
     command: fmt -recursive
     volumes:
       - .:/deployment
-
-  tf-vars:
-    image: quay.io/terraform-docs/terraform-docs:0.16.0
-    user: "${USER_UID:-1000}:0"
-    working_dir: /deployment
-    entrypoint: terraform-docs tfvars --output-file "terraform.tfvars.json" json
-    volumes:
-      - .:/deployment

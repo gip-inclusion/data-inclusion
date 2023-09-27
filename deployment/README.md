@@ -57,17 +57,12 @@ set -o history
 
 The deployment is configured through variables. The set of variables will be different for each environment.
 
-To generate a configuration file for a specific environment:
+Variables must be defined in a `terraform.tfvars.json` in the deployment directory.
 
 ```bash
-USER_ID=$(id -u) docker compose run --rm tf-vars .
+# Copy and fill the template
+cp template.terraform.tfvars.json terraform.tfvars.json
 ```
-
-The generated `terraform.tfvars.json` file can be filled with the appropriate values for that environment.
-
-⚠️⚠️ `terraform.tfvars.json` FILES SHOULD NOT BE COMMITTED ⚠️⚠️
-
-*Use the prerequisites for provisioning an environment*
 
 ### provisioning
 
