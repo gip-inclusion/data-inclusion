@@ -143,6 +143,8 @@ resource "scaleway_object_bucket_policy" "main" {
 locals {
   airflow_conn_pg = "postgresql://${var.datawarehouse_di_username}:${var.datawarehouse_di_password}@datawarehouse:5432/${var.datawarehouse_di_database}"
   airflow_conn_s3 = "aws://@/${scaleway_object_bucket.main.name}?endpoint_url=${scaleway_object_bucket.main.endpoint}&region_name=${scaleway_object_bucket.main.region}&aws_access_key_id=${var.airflow_access_key}&aws_secret_access_key=${var.airflow_secret_key}"
+
+  work_dir = "/root/data-inclusion"
 }
 
 resource "null_resource" "up" {
@@ -155,6 +157,13 @@ resource "null_resource" "up" {
     user        = "root"
     host        = scaleway_instance_server.main.public_ip
     private_key = var.ssh_private_key
+  }
+
+  provisioner "remote-exec" {
+    inline = [
+      "rm -rf ${local.work_dir}",
+      "mkdir -p ${local.work_dir}/deployment/docker",
+    ]
   }
 
   provisioner "file" {
@@ -178,16 +187,24 @@ resource "null_resource" "up" {
     SIRENE_STOCK_UNITE_LEGALE_FILE_URL=https://www.data.gouv.fr/fr/datasets/r/825f4199-cadd-486c-ac46-a65a8ea1a047
     EOT
     )
-    destination = ".env"
+    destination = "${local.work_dir}/deployment/docker/.env"
+  }
+
+  provisioner "file" {
+    source = "${path.module}/../../../pipeline"
+    destination = "${local.work_dir}/"
+  }
+
+  provisioner "file" {
+    source = "${path.module}/../../docker"
+    destination = "${local.work_dir}/deployment/"
   }
 
   provisioner "remote-exec" {
     inline = [
-      "rm -rf data-inclusion",
-      "git clone https://github.com/betagouv/data-inclusion 2>&1 | cat",
-      "cd data-inclusion",
-      "git checkout vmttn/feat/provision-terraform-scaleway", # TODO: use the commit sha
-      "docker compose -f deployment/docker/docker-compose.yml --env-file ../.env up --quiet-pull -d 2>&1 | cat"
+      "cd ${local.work_dir}/deployment/docker",
+      "docker compose up --quiet-pull --detach 2>&1 | cat",
+      "rm -rf ${local.work_dir}",
     ]
   }
 }
