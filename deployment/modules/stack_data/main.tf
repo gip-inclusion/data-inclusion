@@ -162,7 +162,7 @@ resource "null_resource" "up" {
   provisioner "remote-exec" {
     inline = [
       "rm -rf ${local.work_dir}",
-      "mkdir -p ${local.work_dir}/deployment/docker",
+      "mkdir -p ${local.work_dir}/deployment",
     ]
   }
 
@@ -187,24 +187,24 @@ resource "null_resource" "up" {
     SIRENE_STOCK_UNITE_LEGALE_FILE_URL=https://www.data.gouv.fr/fr/datasets/r/825f4199-cadd-486c-ac46-a65a8ea1a047
     EOT
     )
-    destination = "${local.work_dir}/deployment/docker/.env"
+    destination = "${local.work_dir}/deployment/.env"
   }
 
   provisioner "file" {
-    source      = "${path.module}/../../../pipeline"
+    source      = "${path.root}/../pipeline"
     destination = "${local.work_dir}/"
   }
 
   provisioner "file" {
-    source      = "${path.module}/../../docker"
-    destination = "${local.work_dir}/deployment/"
+    source      = "${path.root}/../deployment/docker-compose.yml"
+    destination = "${local.work_dir}/deployment/docker-compose.yml"
   }
 
   provisioner "remote-exec" {
     inline = [
-      "cd ${local.work_dir}/deployment/docker",
+      "cd ${local.work_dir}/deployment",
       "docker compose up --quiet-pull --detach 2>&1 | cat",
-      "rm -f ${local.work_dir}/deployment/docker/.env",
+      "rm -f ${local.work_dir}/deployment/.env",
     ]
   }
 }

@@ -4,7 +4,7 @@ name: "data-inclusion"
 x-airflow-common:
   &airflow-common
   build:
-    context: ../../pipeline
+    context: ../pipeline
 
   environment:
     &airflow-common-environment
@@ -38,10 +38,10 @@ x-airflow-common:
 
   volumes:
     - airflow-logs:/opt/airflow/logs
-    - ./../../pipeline/dbt:/opt/airflow/dbt
-    - ./../../pipeline/dags:/opt/airflow/dags
-    - ./../../pipeline/logs:/opt/airflow/logs
-    - ./../../pipeline/src:/opt/airflow/data-inclusion/src
+    - ./../pipeline/dbt:/opt/airflow/dbt
+    - ./../pipeline/dags:/opt/airflow/dags
+    - ./../pipeline/logs:/opt/airflow/logs
+    - ./../pipeline/src:/opt/airflow/data-inclusion/src
 
   user: 0:0
 
