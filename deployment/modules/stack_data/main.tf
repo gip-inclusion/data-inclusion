@@ -191,12 +191,12 @@ resource "null_resource" "up" {
   }
 
   provisioner "file" {
-    source = "${path.module}/../../../pipeline"
+    source      = "${path.module}/../../../pipeline"
     destination = "${local.work_dir}/"
   }
 
   provisioner "file" {
-    source = "${path.module}/../../docker"
+    source      = "${path.module}/../../docker"
     destination = "${local.work_dir}/deployment/"
   }
 
