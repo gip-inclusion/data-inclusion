@@ -204,7 +204,7 @@ resource "null_resource" "up" {
     inline = [
       "cd ${local.work_dir}/deployment/docker",
       "docker compose up --quiet-pull --detach 2>&1 | cat",
-      "rm -rf ${local.work_dir}",
+      "rm -f ${local.work_dir}/deployment/docker/.env",
     ]
   }
 }
