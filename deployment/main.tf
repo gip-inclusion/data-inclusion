@@ -88,6 +88,11 @@ variable "ssh_private_key" {
   sensitive   = true
 }
 
+variable "public_hostname" {
+  description = "Public hostname that will be used to reach the instance"
+  type        = string
+}
+
 module "stack_data" {
   source = "./modules/stack_data"
 
@@ -107,6 +112,7 @@ module "stack_data" {
   api_secret_key               = var.api_secret_key
   api_version                  = var.api_version
   ssh_private_key              = var.ssh_private_key
+  public_hostname              = var.public_hostname
 }
 
 output "public_ip" {

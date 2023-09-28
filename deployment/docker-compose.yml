@@ -16,7 +16,7 @@ x-airflow-common:
     AIRFLOW__DATABASE__SQL_ALCHEMY_CONN: postgresql://airflow:airflow@airflow-db:5432/airflow
     AIRFLOW__SCHEDULER__MIN_FILE_PROCESS_INTERVAL: 60
     AIRFLOW__WEBSERVER__WORKERS: 1
-    AIRFLOW__WEBSERVER__BASE_URL: http://localhost/airflow # TODO
+    AIRFLOW__WEBSERVER__BASE_URL: http://airflow.${PUBLIC_HOSTNAME}
 
     # Connections
     AIRFLOW_CONN_S3: ${AIRFLOW_CONN_S3}
@@ -89,7 +89,7 @@ services:
       - 8080:8080
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.airflow.rule=PathPrefix(`/airflow`)"  # add `Host`
+      - "traefik.http.routers.airflow.rule=Host(`airflow.${PUBLIC_HOSTNAME}`)"
       - "traefik.http.routers.airflow.entrypoints=http"
     depends_on:
       <<: *airflow-common-depends-on
@@ -139,7 +139,7 @@ services:
       - 8000:8000
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.api.rule=PathPrefix(`/api`)"  # add `Host`
+      - "traefik.http.routers.api.rule=Host(`api.${PUBLIC_HOSTNAME}`)"
       - "traefik.http.routers.api.entrypoints=http"
     environment:
       - ENV=prod

@@ -87,3 +87,8 @@ variable "ssh_private_key" {
   type        = string
   sensitive   = true
 }
+
+variable "public_hostname" {
+  description = "Public hostname that will be used to reach the instance"
+  type        = string
+}
