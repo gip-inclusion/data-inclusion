@@ -1,10 +1,5 @@
 # deployment
 
-This documentation is structured as follow :
-
-1. the provisioning of the infrastructure on which to deploy
-2. the deployment of our services on top the infrastructure
-
 ## provisioning
 
 ### prerequisites
@@ -14,34 +9,31 @@ This documentation is structured as follow :
 #### for the state backend
 
 * A scaleway project
-* A policy with access to object storage ([here](https://console.scaleway.com/iam/policies))
-* An IAM application with this policy assigned ([here](https://console.scaleway.com/iam/applications))
-* An API key for this application ([here](https://console.scaleway.com/iam/api-keys))
+* A policy with access to object storage
+* An IAM application with this policy assigned
+* An API key for this application
 
-This is preferably shared by environments.
+The state backend is shared by environments. There must already be a project for `staging` and `prod`.
 
 #### to provision an environment
 
-* A scaleway project dedicated for that environment
-* A policy ([here](https://console.scaleway.com/iam/policies)) with the following rules:
+1. A scaleway project dedicated for that environment
+2. An IAM application that will be used to provision scaleway resources in the project, together with the API key (access key + secret key) for this application. This application needs a policy attached that gives it:
     * `IAMReadOnly`, `ProjectReadOnly` in the organization;
     * `InstancesFullAccess`, `ObjectStorageFullAccess`, `RelationalDatabasesFullAccess` in the target project scope
-* An IAM application with this policy assigned ([here](https://console.scaleway.com/iam/applications))
-* An API key for this application ([here](https://console.scaleway.com/iam/api-keys))
-* Another IAM application that will be used for object storage by Airflow, together with the
+3. Another IAM application that will be used for object storage by Airflow, together with the
   API key (access key + secret key) for this application. This application needs a policy attached
   that gives it `ObjectStorageFullAccess` to the target project.
-* A SSH key pair:
+4. A SSH key pair:
     * generated with `ssh-keygen -t ed25519 -C <ENVIRONMENT> -f /tmp/<ENVIRONMENT> -N ''`)
-    * the public key must have been uploaded to scaleway ([here](https://console.scaleway.com/project/ssh-keys))
+    * the public key must have been uploaded to scaleway
 
-### targeting an environment
+#### links
 
-Use the `-chdir=` option to target a specific environment:
-
-```bash
-docker compose run --rm tf plan
-```
+* https://console.scaleway.com/iam/api-keys
+* https://console.scaleway.com/iam/applications
+* https://console.scaleway.com/iam/policies
+* https://console.scaleway.com/project/ssh-keys
 
 ### initializing the state backend
 
@@ -58,6 +50,11 @@ terraform init \
     -backend-config "secret_key=<SECRET_KEY>"
 set -o history
 ```
+
+where:
+
+* `<ENVIRONMENT>` is an identifier for the target environment (`prod`, `staging`, etc.)
+* `<ACCESS_KEY>` and `<SECRET_KEY>` are the api key pair associated to the state backend
 
 ### configuring the provisioning
 
@@ -89,9 +86,3 @@ A pre-commit hook is provided, make sure to `pre-commit install`!
 * [Scaleway Terraform Provider documentation](https://registry.terraform.io/providers/scaleway/scaleway/latest/docs)
 * [Google's Best practices for using Terraform](https://cloud.google.com/docs/terraform/best-practices-for-terraform)
 * [How To Create Reusable Infrastructure with Terraform Modules and Templates by Savic](https://www.digitalocean.com/community/tutorials/how-to-create-reusable-infrastructure-with-terraform-modules-and-templates)
-
-## deployment
-
-```bash
-docker compose up -d [--env-file path/to/prod/.env]
-```
