@@ -9,6 +9,8 @@ This documentation is structured as follow :
 
 ### prerequisites
 
+* `terraform==1.5.x` (can be installed with an `asdf` plugin)
+
 #### for the state backend
 
 * A scaleway project
@@ -47,7 +49,7 @@ docker compose run --rm tf plan
 
 ```bash
 set +o history
-docker compose run --rm tf init \
+terraform init \
     -backend-config "bucket=data-inclusion-terraform" \
     -backend-config "key=stack_data/<ENVIRONMENT>" \
     -backend-config "region=fr-par" \
@@ -72,17 +74,15 @@ cp template.terraform.tfvars.json terraform.tfvars.json
 
 ```bash
 # review changes
-docker compose run --rm tf plan
+terraform plan
 
 # apply
-docker compose run --rm tf apply
+terraform apply
 ```
 
 ### formatting `.tf` files
 
-```bash
-docker compose run --rm tf-fmt
-```
+A pre-commit hook is provided, make sure to `pre-commit install`!
 
 ### references
 
