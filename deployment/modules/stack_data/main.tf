@@ -159,13 +159,6 @@ resource "null_resource" "up" {
     private_key = var.ssh_private_key
   }
 
-  provisioner "remote-exec" {
-    inline = [
-      "rm -rf ${local.work_dir}",
-      "mkdir -p ${local.work_dir}/deployment",
-    ]
-  }
-
   provisioner "file" {
     content = sensitive(<<-EOT
     API_VERSION=${var.api_version}
@@ -194,8 +187,43 @@ resource "null_resource" "up" {
   }
 
   provisioner "file" {
-    source      = "${path.root}/../pipeline"
-    destination = "${local.work_dir}/"
+    source      = "${path.root}/../pipeline/dags/"
+    destination = "${local.work_dir}/pipeline/dags"
+  }
+
+  provisioner "file" {
+    source      = "${path.root}/../pipeline/dbt/"
+    destination = "${local.work_dir}/pipeline/dbt"
+  }
+
+  provisioner "file" {
+    source      = "${path.root}/../pipeline/requirements/"
+    destination = "${local.work_dir}/pipeline/requirements"
+  }
+
+  provisioner "file" {
+    source      = "${path.root}/../pipeline/src/"
+    destination = "${local.work_dir}/pipeline/src"
+  }
+
+  provisioner "file" {
+    source      = "${path.root}/../pipeline/.dockerignore"
+    destination = "${local.work_dir}/pipeline/.dockerignore"
+  }
+
+  provisioner "file" {
+    source      = "${path.root}/../pipeline/Dockerfile"
+    destination = "${local.work_dir}/pipeline/Dockerfile"
+  }
+
+  provisioner "file" {
+    source      = "${path.root}/../pipeline/pyproject.toml"
+    destination = "${local.work_dir}/pipeline/pyproject.toml"
+  }
+
+  provisioner "file" {
+    source      = "${path.root}/../pipeline/setup.py"
+    destination = "${local.work_dir}/pipeline/setup.py"
   }
 
   provisioner "file" {

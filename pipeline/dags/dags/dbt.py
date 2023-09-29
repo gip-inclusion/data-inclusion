@@ -26,6 +26,8 @@ def dbt_operator_factory(
         append_env=True,
         env={
             "DBT_PROFILES_DIR": Variable.get("DBT_PROJECT_DIR"),
+            "DBT_TARGET_PATH": Variable.get("DBT_TARGET_PATH", "target"),
+            "DBT_LOG_PATH": Variable.get("DBT_LOG_PATH", "logs"),
             "POSTGRES_HOST": "{{ conn.pg.host }}",
             "POSTGRES_PORT": "{{ conn.pg.port }}",
             "POSTGRES_USER": "{{ conn.pg.login }}",

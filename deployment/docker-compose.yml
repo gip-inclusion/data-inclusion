@@ -22,6 +22,8 @@ x-airflow-common:
 
     # Variables
     AIRFLOW_VAR_DBT_PROJECT_DIR: /opt/airflow/dbt
+    AIRFLOW_VAR_DBT_TARGET_PATH: /opt/airflow/dbt-runtime/target
+    AIRFLOW_VAR_DBT_LOG_PATH: /opt/airflow/dbt-runtime/logs
     AIRFLOW_VAR_BAN_API_URL: ${BAN_API_URL}
     AIRFLOW_VAR_DORA_API_URL: ${DORA_API_URL}
     AIRFLOW_VAR_INSEE_FIRSTNAME_FILE_URL: ${INSEE_FIRSTNAME_FILE_URL}
@@ -40,8 +42,6 @@ x-airflow-common:
     - ../pipeline/dbt:/opt/airflow/dbt
     - ../pipeline/dags:/opt/airflow/dags
     - ../pipeline/src:/opt/airflow/data-inclusion/src
-
-  user: 0:0
 
   depends_on:
     &airflow-common-depends-on
@@ -64,10 +64,11 @@ services:
   airflow-init:
     <<: *airflow-common
     entrypoint: /bin/bash -c
+    user: 0:0
     command:
       - |
         mkdir -p /opt/airflow/logs
-        chown -R "0:0" /opt/airflow/logs
+        chown -R "50000:0" /opt/airflow/logs
         exec /entrypoint airflow version
     environment:
       <<: *airflow-common-environment
@@ -111,6 +112,14 @@ services:
       <<: *airflow-common-depends-on
       airflow-init:
         condition: service_completed_successfully
+
+  dbt-init:
+    image: ghcr.io/dbt-labs/dbt-postgres:1.5.1
+    command: deps
+    environment:
+      DBT_PROFILES_DIR: /usr/app
+    volumes:
+      - ../pipeline/dbt:/usr/app
 
   datawarehouse:
     image: postgis/postgis:14-3.3

@@ -11,7 +11,6 @@ seed-paths: ["seeds"]
 macro-paths: ["macros"]
 snapshot-paths: ["snapshots"]
 
-target-path: "target"
 clean-targets:
   - "target"
   - "dbt_packages"
