@@ -98,3 +98,9 @@ variable "airflow__core__fernet_key" {
   type        = string
   sensitive   = true
 }
+
+variable "dora_api_token" {
+  description = "Used in extraction tasks orchestrated by airflow"
+  type        = string
+  sensitive   = true
+}

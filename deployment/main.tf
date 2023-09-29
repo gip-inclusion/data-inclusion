@@ -99,6 +99,12 @@ variable "airflow__core__fernet_key" {
   sensitive   = true
 }
 
+variable "dora_api_token" {
+  description = "Used in extraction tasks orchestrated by airflow"
+  type        = string
+  sensitive   = true
+}
+
 module "stack_data" {
   source = "./modules/stack_data"
 
@@ -120,6 +126,7 @@ module "stack_data" {
   ssh_private_key              = var.ssh_private_key
   public_hostname              = var.public_hostname
   airflow__core__fernet_key    = var.airflow__core__fernet_key
+  dora_api_token               = var.dora_api_token
 }
 
 output "public_ip" {

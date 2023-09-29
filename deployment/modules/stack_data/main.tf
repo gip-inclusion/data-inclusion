@@ -172,6 +172,7 @@ resource "null_resource" "up" {
     API_SECRET_KEY=${var.api_secret_key}
     BAN_API_URL=https://api-adresse.data.gouv.fr
     DORA_API_URL=https://api.dora.incubateur.net/api/v2/
+    DORA_API_TOKEN=${var.dora_api_token}
     IGN_ADMIN_EXPRESS_FILE_URL=http://files.opendatarchives.fr/professionnels.ign.fr/adminexpress/ADMIN-EXPRESS-COG_3-0__SHP__FRA_WM_2021-05-19.7z
     INSEE_FIRSTNAME_FILE_URL=https://www.insee.fr/fr/statistiques/fichier/2540004/nat2021_csv.zip
     INSEE_COG_DATASET_URL=https://www.insee.fr/fr/statistiques/fichier/6800675
