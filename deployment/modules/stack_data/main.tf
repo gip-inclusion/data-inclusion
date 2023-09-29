@@ -26,47 +26,6 @@ resource "scaleway_instance_server" "main" {
   security_group_id = scaleway_instance_security_group.main.id
 }
 
-# TODO: the postgis extension must be enabled manually
-# Until we figure out a good enough way of doing that,
-# the resources linked to the managed database are commented out
-# and the datawarehouse is deployed as a container on the VM
-#
-# resource "scaleway_rdb_instance" "main" {
-#   name           = "datawarehouse"
-#   node_type      = "DB-DEV-S"
-#   engine         = "PostgreSQL-14"
-#   is_ha_cluster  = false
-#   disable_backup = true
-#   user_name      = var.datawarehouse_admin_username
-#   password       = var.datawarehouse_admin_password
-# }
-#
-# resource "scaleway_rdb_acl" "main" {
-#   instance_id = scaleway_rdb_instance.main.id
-#   acl_rules {
-#     ip = "${scaleway_instance_ip.main.address}/32"
-#   }
-# }
-#
-# resource "scaleway_rdb_user" "main" {
-#   instance_id = scaleway_rdb_instance.main.id
-#   name        = var.datawarehouse_di_username
-#   password    = var.datawarehouse_di_password
-#   is_admin    = false
-# }
-#
-# resource "scaleway_rdb_database" "main" {
-#   instance_id = scaleway_rdb_instance.main.id
-#   name        = var.datawarehouse_di_database
-# }
-#
-# resource "scaleway_rdb_privilege" "main" {
-#   instance_id   = scaleway_rdb_instance.main.id
-#   user_name     = scaleway_rdb_user.main.name
-#   database_name = scaleway_rdb_database.main.name
-#   permission    = "all"
-# }
-
 resource "scaleway_object_bucket" "main" {
   name = "data-inclusion-datalake-${var.environment}"
 }
