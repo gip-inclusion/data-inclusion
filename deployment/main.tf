@@ -82,6 +82,11 @@ variable "api_version" {
   type        = string
 }
 
+variable "api_token_enabled" {
+  description = "Whether to enable the api token auth or not"
+  type        = string
+}
+
 variable "ssh_private_key" {
   description = "The associated public key will be deployed to the instance"
   type        = string
@@ -127,6 +132,7 @@ module "stack_data" {
   public_hostname              = var.public_hostname
   airflow__core__fernet_key    = var.airflow__core__fernet_key
   dora_api_token               = var.dora_api_token
+  api_token_enabled            = var.api_token_enabled
 }
 
 output "public_ip" {

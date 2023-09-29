@@ -104,3 +104,8 @@ variable "dora_api_token" {
   type        = string
   sensitive   = true
 }
+
+variable "api_token_enabled" {
+  description = "Whether to enable the api token auth or not"
+  type        = string
+}

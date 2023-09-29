@@ -148,6 +148,7 @@ services:
       - DATABASE_URL=${AIRFLOW_CONN_PG}  # TODO: create dedicated RO creds for api
       - SECRET_KEY=${API_SECRET_KEY}
       - ROOT_PATH=/api
+      - TOKEN_ENABLED=${API_TOKEN_ENABLED}
 
   reverse-proxy:
     image: traefik:v2.10

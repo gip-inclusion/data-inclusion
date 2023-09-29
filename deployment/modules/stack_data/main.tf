@@ -141,6 +141,7 @@ resource "null_resource" "up" {
     SIRENE_STOCK_UNITE_LEGALE_FILE_URL=https://www.data.gouv.fr/fr/datasets/r/825f4199-cadd-486c-ac46-a65a8ea1a047
     UN_JEUNE_UNE_SOLUTION_API_URL=https://mes-aides.1jeune1solution.beta.gouv.fr/api/
     PUBLIC_HOSTNAME=${var.public_hostname}
+    API_TOKEN_ENABLED=${var.api_token_enabled}
     EOT
     )
     destination = "${local.work_dir}/deployment/.env"

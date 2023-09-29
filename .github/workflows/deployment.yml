@@ -44,6 +44,7 @@ jobs:
         TF_VAR_ssh_private_key: ${{ secrets.ssh_private_key }}
         TF_VAR_public_hostname: ${{ vars.PUBLIC_HOSTNAME }}
         TF_VAR_airflow__core__fernet_key: ${{ secrets.AIRFLOW__CORE__FERNET_KEY }}
+        TF_VAR_api_token_enabled: ${{ vars.api_token_enabled }}
         ENV: ${{ vars.ENVIRONMENT }}
       volumes:
         - .:/deployment
