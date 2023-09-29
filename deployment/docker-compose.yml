@@ -14,8 +14,6 @@ x-airflow-common:
     AIRFLOW__CORE__LOAD_EXAMPLES: 'false'
     AIRFLOW__CORE__LOAD_DEFAULT_CONNECTIONS: 'false'
     AIRFLOW__DATABASE__SQL_ALCHEMY_CONN: postgresql://airflow:airflow@airflow-db:5432/airflow
-    AIRFLOW__SCHEDULER__MIN_FILE_PROCESS_INTERVAL: 60
-    AIRFLOW__WEBSERVER__WORKERS: 1
     AIRFLOW__WEBSERVER__BASE_URL: http://airflow.${PUBLIC_HOSTNAME}
 
     # Connections
