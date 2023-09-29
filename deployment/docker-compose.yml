@@ -157,8 +157,6 @@ services:
     environment:
       - TRAEFIK_PROVIDERS_DOCKER=true
       - TRAEFIK_PROVIDERS_DOCKER_EXPOSEDBYDEFAULT=false
-      # enable the web ui (disabled for prod)
-      - TRAEFIK_API_INSECURE=true
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock:ro
 
