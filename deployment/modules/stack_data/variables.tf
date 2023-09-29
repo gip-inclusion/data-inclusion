@@ -92,3 +92,9 @@ variable "public_hostname" {
   description = "Public hostname that will be used to reach the instance"
   type        = string
 }
+
+variable "airflow__core__fernet_key" {
+  description = "Secret key to save connection passwords in the db"
+  type        = string
+  sensitive   = true
+}

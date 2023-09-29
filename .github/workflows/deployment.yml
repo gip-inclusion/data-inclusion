@@ -43,6 +43,7 @@ jobs:
         TF_VAR_api_version: pr-63  # TODO
         TF_VAR_ssh_private_key: ${{ secrets.ssh_private_key }}
         TF_VAR_public_hostname: ${{ vars.PUBLIC_HOSTNAME }}
+        TF_VAR_airflow__core__fernet_key: ${{ secrets.AIRFLOW__CORE__FERNET_KEY }}
         ENV: ${{ vars.ENVIRONMENT }}
       volumes:
         - .:/deployment

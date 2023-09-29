@@ -10,7 +10,7 @@ x-airflow-common:
     &airflow-common-environment
     AIRFLOW__CORE__DEFAULT_TIMEZONE: Europe/Paris
     AIRFLOW__CORE__EXECUTOR: LocalExecutor
-    # AIRFLOW__CORE__FERNET_KEY: # TODO
+    AIRFLOW__CORE__FERNET_KEY: ${AIRFLOW__CORE__FERNET_KEY}
     AIRFLOW__CORE__LOAD_EXAMPLES: 'false'
     AIRFLOW__CORE__LOAD_DEFAULT_CONNECTIONS: 'false'
     AIRFLOW__DATABASE__SQL_ALCHEMY_CONN: postgresql://airflow:airflow@airflow-db:5432/airflow

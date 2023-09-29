@@ -93,6 +93,12 @@ variable "public_hostname" {
   type        = string
 }
 
+variable "airflow__core__fernet_key" {
+  description = "Secret key to save connection passwords in the db"
+  type        = string
+  sensitive   = true
+}
+
 module "stack_data" {
   source = "./modules/stack_data"
 
@@ -113,6 +119,7 @@ module "stack_data" {
   api_version                  = var.api_version
   ssh_private_key              = var.ssh_private_key
   public_hostname              = var.public_hostname
+  airflow__core__fernet_key    = var.airflow__core__fernet_key
 }
 
 output "public_ip" {

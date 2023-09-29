@@ -171,6 +171,7 @@ resource "null_resource" "up" {
     API_VERSION=${var.api_version}
     AIRFLOW_CONN_PG=${local.airflow_conn_pg}
     AIRFLOW_CONN_S3=${local.airflow_conn_s3}
+    AIRFLOW__CORE__FERNET_KEY=${var.airflow__core__fernet_key}
     AIRFLOW_WWW_USER_PASSWORD=${var.airflow_admin_password}
     DATAWAREHOUSE_DI_DATABASE=${var.datawarehouse_di_database}
     DATAWAREHOUSE_DI_USERNAME=${var.datawarehouse_di_username}
