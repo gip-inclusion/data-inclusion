@@ -39,9 +39,9 @@ x-airflow-common:
 
   volumes:
     - airflow-logs:/opt/airflow/logs
-    - ../pipeline/dbt:/opt/airflow/dbt
-    - ../pipeline/dags:/opt/airflow/dags
-    - ../pipeline/src:/opt/airflow/data-inclusion/src
+    - ../pipeline/dbt:/opt/airflow/dbt:ro
+    - ../pipeline/dags:/opt/airflow/dags:ro
+    - ../pipeline/src:/opt/airflow/data-inclusion/src:ro
 
   depends_on:
     &airflow-common-depends-on
