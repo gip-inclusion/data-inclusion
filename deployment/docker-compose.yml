@@ -1,3 +1,5 @@
+# Based on https://airflow.apache.org/docs/apache-airflow/stable/howto/docker-compose/index.html#fetching-docker-compose-yaml
+
 version: "3.9"
 name: "data-inclusion"
 
@@ -63,19 +65,10 @@ services:
 
   airflow-init:
     <<: *airflow-common
-    entrypoint: /bin/bash -c
-    user: 0:0
-    command:
-      - |
-        mkdir -p /opt/airflow/logs
-        chown -R "50000:0" /opt/airflow/logs
-        exec /entrypoint airflow version
+    command: version
     environment:
       <<: *airflow-common-environment
-      # Additional variables for development only
-      # TODO: replace with `airflow db upgrade`
       _AIRFLOW_DB_UPGRADE: 'true'
-      # TODO: replace with `airflow users create`
       _AIRFLOW_WWW_USER_CREATE: 'true'
       _AIRFLOW_WWW_USER_USERNAME: airflow
       _AIRFLOW_WWW_USER_PASSWORD: ${AIRFLOW_WWW_USER_PASSWORD}
