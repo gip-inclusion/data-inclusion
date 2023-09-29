@@ -197,7 +197,7 @@ resource "null_resource" "up" {
       "cd ${local.work_dir}/deployment",
       # The airflow image is currently build from sources at deploy time
       # Ensure that the image is up-to-date
-      "docker compose build airflow-scheduler airflow-webserver airflow-init",
+      "docker compose build --quiet-pull airflow-scheduler airflow-webserver airflow-init 2>&1 | cat",
       "docker compose up --quiet-pull --detach 2>&1 | cat",
       "rm -f ${local.work_dir}/deployment/.env",
     ]
