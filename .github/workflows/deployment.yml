@@ -45,6 +45,7 @@ jobs:
         TF_VAR_public_hostname: ${{ vars.PUBLIC_HOSTNAME }}
         TF_VAR_airflow__core__fernet_key: ${{ secrets.AIRFLOW__CORE__FERNET_KEY }}
         TF_VAR_api_token_enabled: ${{ vars.api_token_enabled }}
+        TF_VAR_dora_api_token: ${{ secrets.DORA_API_TOKEN }}
         ENV: ${{ vars.ENVIRONMENT }}
       volumes:
         - .:/deployment
