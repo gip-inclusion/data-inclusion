@@ -134,6 +134,13 @@ resource "null_resource" "up" {
     private_key = var.ssh_private_key
   }
 
+  provisioner "remote-exec" {
+    inline = [
+      "rm -rf ${local.work_dir}",
+      "mkdir -p ${local.work_dir}/deployment ${local.work_dir}/pipeline",
+    ]
+  }
+
   provisioner "file" {
     content = sensitive(<<-EOT
     STACK_VERSION=${var.stack_version}
@@ -164,22 +171,22 @@ resource "null_resource" "up" {
   }
 
   provisioner "file" {
-    source      = "${path.root}/../pipeline/dags/"
+    source      = "${path.root}/../pipeline/dags"
     destination = "${local.work_dir}/pipeline/dags"
   }
 
   provisioner "file" {
-    source      = "${path.root}/../pipeline/dbt/"
+    source      = "${path.root}/../pipeline/dbt"
     destination = "${local.work_dir}/pipeline/dbt"
   }
 
   provisioner "file" {
-    source      = "${path.root}/../pipeline/requirements/"
+    source      = "${path.root}/../pipeline/requirements"
     destination = "${local.work_dir}/pipeline/requirements"
   }
 
   provisioner "file" {
-    source      = "${path.root}/../pipeline/src/"
+    source      = "${path.root}/../pipeline/src"
     destination = "${local.work_dir}/pipeline/src"
   }
 
@@ -204,7 +211,7 @@ resource "null_resource" "up" {
   }
 
   provisioner "file" {
-    source      = "${path.root}/../deployment/docker-compose.yml"
+    source      = "${path.root}/docker-compose.yml"
     destination = "${local.work_dir}/deployment/docker-compose.yml"
   }
 
@@ -213,7 +220,7 @@ resource "null_resource" "up" {
       "cd ${local.work_dir}/deployment",
       # The airflow image is currently build from sources at deploy time
       # Ensure that the image is up-to-date
-      "docker compose up --build --force-recreate --wait --wait-timeout 1200 --quiet-pull --detach 2>&1 | cat",
+      "docker compose --progress=plain up --build --force-recreate --wait --wait-timeout 1200 --quiet-pull --detach",
       # FIXME: ideally this file should be removed
       # "rm -f ${local.work_dir}/deployment/.env",
     ]
