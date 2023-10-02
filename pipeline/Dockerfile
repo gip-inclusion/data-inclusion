@@ -60,7 +60,7 @@ RUN apt-get update \
 USER airflow
 
 # copy the compiled virtual environments to a `venvs` directory in the airflow home
-COPY --chown=airflow:airflow --from=compile-image /opt/airflow/venvs /opt/airflow/venvs
+COPY --chown=airflow:0 --from=compile-image /opt/airflow/venvs /opt/airflow/venvs
 
 # make the data_inclusion package available in editable mode
 ENV PYTHONPATH "${PYTHONPATH}:/opt/airflow/data-inclusion/src"
