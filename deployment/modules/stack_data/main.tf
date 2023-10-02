@@ -99,6 +99,16 @@ resource "scaleway_object_bucket_policy" "main" {
   )
 }
 
+resource "scaleway_domain_record" "dns" {
+  for_each = toset(["airflow", "api"])
+
+  dns_zone = var.public_hostname
+  name     = each.key
+  type     = "A"
+  data     = scaleway_instance_server.main.public_ip
+  ttl      = 60
+}
+
 locals {
   airflow_conn_pg = format(
     "postgresql://%s:%s@%s:%s/%s",
