@@ -78,6 +78,12 @@ services:
     <<: *airflow-common
     command: webserver
     restart: on-failure
+    healthcheck:
+      test: ["CMD", "curl", "--fail", "http://localhost:8080/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 30s
     ports:
       - 8080:8080
     labels:
