@@ -40,7 +40,7 @@ jobs:
         TF_VAR_airflow_secret_key: ${{ secrets.AIRFLOW_SECRET_KEY }}
         TF_VAR_airflow_admin_password: ${{ secrets.AIRFLOW_ADMIN_PASSWORD }}
         TF_VAR_api_secret_key: ${{ secrets.api_secret_key }}
-        TF_VAR_api_version: pr-63  # TODO
+        TF_VAR_stack_version: ${{ github.sha }}
         TF_VAR_ssh_private_key: ${{ secrets.ssh_private_key }}
         TF_VAR_public_hostname: ${{ vars.PUBLIC_HOSTNAME }}
         TF_VAR_airflow__core__fernet_key: ${{ secrets.AIRFLOW__CORE__FERNET_KEY }}

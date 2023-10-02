@@ -117,7 +117,7 @@ services:
       - ../pipeline/dbt:/usr/app
 
   datawarehouse:
-    image: postgis/postgis:14-3.3
+    image: ghcr.io/betagouv/data-inclusion-datawarehouse:${STACK_VERSION}
     restart: on-failure
     healthcheck:
       test: [ "CMD", "pg_isready", "-U", "${DATAWAREHOUSE_DI_USERNAME}"]
@@ -133,7 +133,7 @@ services:
       - datawarehouse-data:/var/lib/postgresql/data
 
   api:
-    image: ghcr.io/betagouv/data-inclusion-api:${API_VERSION}
+    image: ghcr.io/betagouv/data-inclusion-api:${STACK_VERSION}
     depends_on:
       - datawarehouse
     restart: always

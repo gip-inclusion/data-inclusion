@@ -120,7 +120,7 @@ resource "null_resource" "up" {
 
   provisioner "file" {
     content = sensitive(<<-EOT
-    API_VERSION=${var.api_version}
+    STACK_VERSION=${var.stack_version}
     AIRFLOW_CONN_PG=${local.airflow_conn_pg}
     AIRFLOW_CONN_S3=${local.airflow_conn_s3}
     AIRFLOW__CORE__FERNET_KEY=${var.airflow__core__fernet_key}

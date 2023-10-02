@@ -77,8 +77,8 @@ variable "api_secret_key" {
   sensitive   = true
 }
 
-variable "api_version" {
-  description = "Version (e.g. sha or semver) of the api to deploy"
+variable "stack_version" {
+  description = "Version (e.g. sha or semver) of the stack services to deploy"
   type        = string
 }
 
@@ -127,7 +127,7 @@ module "stack_data" {
   environment                  = var.environment
   airflow_admin_password       = var.airflow_admin_password
   api_secret_key               = var.api_secret_key
-  api_version                  = var.api_version
+  stack_version                = var.stack_version
   ssh_private_key              = var.ssh_private_key
   public_hostname              = var.public_hostname
   airflow__core__fernet_key    = var.airflow__core__fernet_key

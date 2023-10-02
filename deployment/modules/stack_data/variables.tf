@@ -77,8 +77,8 @@ variable "api_secret_key" {
   sensitive   = true
 }
 
-variable "api_version" {
-  description = "Version (e.g. sha or semver) of the api to deploy"
+variable "stack_version" {
+  description = "Version (e.g. sha or semver) of the stack services to deploy"
   type        = string
 }
 
