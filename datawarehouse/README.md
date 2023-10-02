@@ -8,7 +8,7 @@ The image:
 * installs `postgis` and `plpython3u` extensions
 * installs extra python requirements in a dedicated virtualenv
 * makes this virtualenv available to `plpython3u`
-* creates `postgis` and `plpython3u` extensions on the DB target by the `POSTGRES_DB` env variable
+* creates `pg_trgm`, `unaccent`, `postgis` and `plpython3u` extensions on the DB target by the `POSTGRES_DB` env variable
 
 ## compiling the python requirements
 
