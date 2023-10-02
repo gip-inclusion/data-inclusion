@@ -1,35 +1,36 @@
-name: api
+# References
+# https://docs.docker.com/build/ci/github-actions/
+# https://docs.github.com/en/actions/publishing-packages/publishing-docker-images
 
-defaults:
-  run:
-    working-directory: api
+name: build
 
 on:
   push:
     branches:
       - "main"
-    paths:
-      - "api/**"
   pull_request:
     branches:
       - "main"
-    paths:
-      - "api/**"
 
 jobs:
   main:
     runs-on: ubuntu-20.04
+
+    strategy:
+      matrix:
+        service: ["api", "datawarehouse"]
+
     env:
       REGISTRY: ghcr.io
-      IMAGE_NAME: ${{ github.repository }}-api
+      IMAGE_NAME: ${{ github.repository }}-${{ matrix.service }}
 
     permissions:
       contents: read
       packages: write
 
-    # References
-    # https://docs.docker.com/build/ci/github-actions/
-    # https://docs.github.com/en/actions/publishing-packages/publishing-docker-images
+    defaults:
+      run:
+        working-directory: ${{ matrix.service }}
 
     steps:
       - uses: actions/checkout@v3
@@ -58,19 +59,20 @@ jobs:
       - name: Build and export to Docker
         uses: docker/build-push-action@v4
         with:
-          context: ./api
+          context: .
           load: true
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
 
       - name: Run tests
+        if: matrix.service = 'api'
         run: |
           docker compose run --entrypoint pytest api -p no:cacheprovider -vv
 
       - name: Push image to GitHub registry
         uses: docker/build-push-action@v4
         with:
-          context: ./api
+          context: .
           push: true
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
