@@ -54,7 +54,7 @@ x-airflow-common:
 services:
   airflow-db:
     image: postgres:14
-    restart: on-failure
+    restart: always
     healthcheck:
       test: [ "CMD", "pg_isready", "-U", "airflow" ]
       interval: 5s
@@ -77,7 +77,7 @@ services:
   airflow-webserver:
     <<: *airflow-common
     command: webserver
-    restart: on-failure
+    restart: always
     healthcheck:
       test: ["CMD", "curl", "--fail", "http://localhost:8080/health"]
       interval: 30s
@@ -99,7 +99,7 @@ services:
   airflow-scheduler:
     <<: *airflow-common
     command: scheduler
-    restart: on-failure
+    restart: always
     healthcheck:
       test:
         [
@@ -124,7 +124,7 @@ services:
 
   datawarehouse:
     image: ghcr.io/betagouv/data-inclusion-datawarehouse:${STACK_VERSION}
-    restart: on-failure
+    restart: always
     healthcheck:
       test: [ "CMD", "pg_isready", "-U", "${DATAWAREHOUSE_DI_USERNAME}"]
       interval: 5s
