@@ -79,4 +79,5 @@ jobs:
 
   deploy:
     needs: build
+    environment: staging
     uses: ./.github/workflows/deployment.yml
