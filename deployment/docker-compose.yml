@@ -83,7 +83,7 @@ services:
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.airflow.rule=Host(`airflow.${PUBLIC_HOSTNAME}`)"
-      - "traefik.http.routers.airflow.entrypoints=http"
+      - "traefik.http.routers.airflow.entrypoints=websecure"
       - "traefik.http.routers.airflow.tls.certresolver=main"
     depends_on:
       <<: *airflow-common-depends-on
