@@ -16,7 +16,7 @@ x-airflow-common:
     AIRFLOW__CORE__LOAD_EXAMPLES: 'false'
     AIRFLOW__CORE__LOAD_DEFAULT_CONNECTIONS: 'false'
     AIRFLOW__DATABASE__SQL_ALCHEMY_CONN: postgresql://airflow:airflow@airflow-db:5432/airflow
-    AIRFLOW__WEBSERVER__BASE_URL: http://airflow.${PUBLIC_HOSTNAME}
+    AIRFLOW__WEBSERVER__BASE_URL: https://airflow.${PUBLIC_HOSTNAME}
 
     # Connections
     AIRFLOW_CONN_S3: ${AIRFLOW_CONN_S3}
