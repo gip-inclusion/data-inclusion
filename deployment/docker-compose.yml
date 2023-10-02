@@ -177,11 +177,12 @@ services:
       - TRAEFIK_CERTIFICATESRESOLVERS_MAIN_ACME_STORAGE=/letsencrypt/acme.json
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock:ro
-      - ./letsencrypt:/letsencrypt
+      - letsencrypt-data:/letsencrypt
 
 volumes:
   airflow-logs:
   datawarehouse-data:
+  letsencrypt-data:
 
 networks:
   default:
