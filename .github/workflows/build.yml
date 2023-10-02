@@ -79,5 +79,66 @@ jobs:
 
   deploy:
     needs: build
+    runs-on: ubuntu-20.04
     environment: staging
-    uses: ./.github/workflows/deployment.yml
+
+    defaults:
+      run:
+        working-directory: deployment
+
+    container:
+      image: hashicorp/terraform:1.5.7
+      env:
+        TF_IN_AUTOMATION: true
+
+        AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+
+        # `TF_VAR_*` are case sensitive and must match the case of variables
+        TF_VAR_datawarehouse_admin_password: ${{ secrets.DATAWAREHOUSE_ADMIN_PASSWORD }}
+        TF_VAR_datawarehouse_admin_username: ${{ vars.DATAWAREHOUSE_ADMIN_USERNAME }}
+        TF_VAR_datawarehouse_di_database: ${{ vars.DATAWAREHOUSE_DI_DATABASE }}
+        TF_VAR_datawarehouse_di_password: ${{ secrets.DATAWAREHOUSE_DI_PASSWORD }}
+        TF_VAR_datawarehouse_di_username: ${{ vars.DATAWAREHOUSE_DI_USERNAME }}
+        TF_VAR_scaleway_access_key: ${{ vars.SCALEWAY_ACCESS_KEY }}
+        TF_VAR_scaleway_project_id: ${{ vars.SCALEWAY_PROJECT_ID }}
+        TF_VAR_scaleway_secret_key: ${{ secrets.SCALEWAY_SECRET_KEY }}
+        TF_VAR_environment: ${{ vars.ENVIRONMENT }}
+        TF_VAR_airflow_application_id: ${{ vars.AIRFLOW_APPLICATION_ID }}
+        TF_VAR_airflow_access_key: ${{ vars.AIRFLOW_ACCESS_KEY }}
+        TF_VAR_airflow_secret_key: ${{ secrets.AIRFLOW_SECRET_KEY }}
+        TF_VAR_airflow_admin_password: ${{ secrets.AIRFLOW_ADMIN_PASSWORD }}
+        TF_VAR_api_secret_key: ${{ secrets.api_secret_key }}
+        TF_VAR_stack_version: ${{ github.sha }}
+        TF_VAR_ssh_private_key: ${{ secrets.ssh_private_key }}
+        TF_VAR_public_hostname: ${{ vars.PUBLIC_HOSTNAME }}
+        TF_VAR_airflow__core__fernet_key: ${{ secrets.AIRFLOW__CORE__FERNET_KEY }}
+        TF_VAR_api_token_enabled: ${{ vars.api_token_enabled }}
+        TF_VAR_dora_api_token: ${{ secrets.DORA_API_TOKEN }}
+        ENV: ${{ vars.ENVIRONMENT }}
+      volumes:
+        - .:/deployment
+      options: --workdir /deployment
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: tf init
+        run: |
+          terraform init \
+            -backend-config "bucket=data-inclusion-terraform" \
+            -backend-config "key=stack_data/${ENV}" \
+            -backend-config "region=fr-par" \
+            -backend-config "endpoint=https://s3.fr-par.scw.cloud"
+
+      - name: tf validate
+        run: |
+          terraform validate
+
+      - name: tf plan
+        run: |
+          terraform plan
+
+      - name: tf apply
+        run: |
+          terraform apply -auto-approve
