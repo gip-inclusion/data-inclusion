@@ -100,8 +100,24 @@ resource "scaleway_object_bucket_policy" "main" {
 }
 
 locals {
-  airflow_conn_pg = "postgresql://${var.datawarehouse_di_username}:${var.datawarehouse_di_password}@datawarehouse:5432/${var.datawarehouse_di_database}"
-  airflow_conn_s3 = "aws://@/${scaleway_object_bucket.main.name}?endpoint_url=${scaleway_object_bucket.main.endpoint}&region_name=${scaleway_object_bucket.main.region}&aws_access_key_id=${var.airflow_access_key}&aws_secret_access_key=${var.airflow_secret_key}"
+  airflow_conn_pg = format(
+    "postgresql://%s:%s@%s:%s/%s",
+    var.datawarehouse_di_username,
+    var.datawarehouse_di_password,
+    "datawarehouse",
+    "5432",
+    var.datawarehouse_di_database
+  )
+
+  airflow_conn_s3 = format(
+    "aws://@/%s?endpoint_url=%s&region_name=%s&aws_access_key_id=%s&aws_secret_access_key=%s",
+    scaleway_object_bucket.main.name,
+    urlencode(replace(scaleway_object_bucket.main.endpoint, "${scaleway_object_bucket.main.name}.", "")),
+    scaleway_object_bucket.main.region,
+    var.airflow_access_key,
+    var.airflow_secret_key
+  )
+
 
   work_dir = "/root/data-inclusion"
 }
