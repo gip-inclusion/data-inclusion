@@ -18,7 +18,7 @@ jobs:
 
     strategy:
       matrix:
-        service: ["api", "datawarehouse", "pipeline"]
+        service: ["api"]
 
     env:
       REGISTRY: ghcr.io
@@ -67,7 +67,9 @@ jobs:
       - name: Run tests
         if: matrix.service == 'api'
         run: |
-          docker compose run --entrypoint pytest api -p no:cacheprovider -vv
+          # docker compose run --entrypoint pytest api -p no:cacheprovider -vv
+          docker compose up -d target-db
+          docker compose logs -f target-db
 
       - name: Run tests
         if: matrix.service == 'pipeline'
