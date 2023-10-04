@@ -197,8 +197,7 @@ services:
       - minio
 
   target-db:
-    image: data-inclusion/datawarehouse
-    build: datawarehouse
+    image: postgis/postgis:14-3.3
     restart: on-failure
     healthcheck:
       test: [ "CMD", "pg_isready", "-U", "data-inclusion" ]
