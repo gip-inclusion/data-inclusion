@@ -18,7 +18,7 @@ jobs:
 
     strategy:
       matrix:
-        service: ["api", "datawarehouse"]
+        service: ["api", "datawarehouse", "pipeline"]
 
     env:
       REGISTRY: ghcr.io
@@ -68,6 +68,11 @@ jobs:
         if: matrix.service == 'api'
         run: |
           docker compose run --entrypoint pytest api -p no:cacheprovider -vv
+
+      - name: Run tests
+        if: matrix.service == 'pipeline'
+        run: |
+          echo #TODO
 
       - name: Push image to GitHub registry
         uses: docker/build-push-action@v4

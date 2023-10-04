@@ -62,5 +62,11 @@ USER airflow
 # copy the compiled virtual environments to a `venvs` directory in the airflow home
 COPY --chown=airflow:0 --from=compile-image /opt/airflow/venvs /opt/airflow/venvs
 
+COPY --chown=airflow:0 dags /opt/airflow/dags
+COPY --chown=airflow:0 src /opt/airflow/src
+COPY --chown=airflow:0 dbt /opt/airflow/dbt
+
+RUN /opt/airflow/venvs/dbt/venv/bin/dbt deps --project-dir /opt/airflow/dbt
+
 # make the data_inclusion package available in editable mode
 ENV PYTHONPATH "${PYTHONPATH}:/opt/airflow/data-inclusion/src"

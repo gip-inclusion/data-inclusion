@@ -66,6 +66,7 @@ services:
 
   airflow-init:
     <<: *airflow-common
+    image: apache/airflow:2.7.0-python3.10
     command: version
     environment:
       <<: *airflow-common-environment
@@ -76,6 +77,9 @@ services:
 
   airflow-webserver:
     <<: *airflow-common
+    image: data-inclusion/pipeline
+    build:
+      context: pipeline
     command: webserver
     restart: always
     healthcheck:
@@ -98,6 +102,7 @@ services:
 
   airflow-scheduler:
     <<: *airflow-common
+    image: ghcr.io/betagouv/data-inclusion-pipeline:${STACK_VERSION}
     command: scheduler
     restart: always
     healthcheck:
@@ -113,14 +118,6 @@ services:
       <<: *airflow-common-depends-on
       airflow-init:
         condition: service_completed_successfully
-
-  dbt-init:
-    image: ghcr.io/dbt-labs/dbt-postgres:1.5.1
-    command: deps
-    environment:
-      DBT_PROFILES_DIR: /usr/app
-    volumes:
-      - ../pipeline/dbt:/usr/app
 
   datawarehouse:
     image: ghcr.io/betagouv/data-inclusion-datawarehouse:${STACK_VERSION}
