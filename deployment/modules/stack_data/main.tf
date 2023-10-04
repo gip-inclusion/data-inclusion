@@ -147,7 +147,7 @@ resource "null_resource" "up" {
   provisioner "remote-exec" {
     inline = [
       "rm -rf ${local.work_dir}",
-      "mkdir -p ${local.work_dir}/deployment ${local.work_dir}/pipeline",
+      "mkdir -p ${local.work_dir}/deployment",
     ]
   }
 
