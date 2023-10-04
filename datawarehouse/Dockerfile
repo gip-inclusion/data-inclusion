@@ -6,7 +6,6 @@ ENV PYTHONUNBUFFERED 1
 ENV PYTHONDONTWRITEBYTECODE 1
 
 RUN apt-get update \
-    && apt-get upgrade -y \
     && apt-get install -y --no-install-recommends \
     postgresql-14-postgis-3 \
     postgresql-plpython3-14 \

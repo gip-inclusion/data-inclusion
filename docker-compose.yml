@@ -192,7 +192,8 @@ services:
       - minio
 
   target-db:
-    image: postgres:14.9-bookworm
+    image: data-inclusion/datawarehouse
+    build: datawarehouse
     restart: on-failure
     healthcheck:
       test: [ "CMD", "pg_isready", "-U", "data-inclusion" ]
