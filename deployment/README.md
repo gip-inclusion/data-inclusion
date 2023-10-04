@@ -20,7 +20,7 @@ The state backend is shared by environments. There must already be a project for
 1. A scaleway project dedicated for that environment
 2. An IAM application that will be used to provision scaleway resources in the project, together with the API key (access key + secret key) for this application. This application needs a policy attached that gives it:
     * `IAMReadOnly`, `ProjectReadOnly` in the organization;
-    * `InstancesFullAccess`, `ObjectStorageFullAccess`, `RelationalDatabasesFullAccess` in the target project scope
+    * `InstancesFullAccess`, `ObjectStorageFullAccess`, `RelationalDatabasesFullAccess` and `DomainsDNSFullAccess` in the target project scope
 3. Another IAM application that will be used for object storage by Airflow, together with the
   API key (access key + secret key) for this application. This application needs a policy attached
   that gives it `ObjectStorageFullAccess` to the target project.
