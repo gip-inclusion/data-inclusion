@@ -3,7 +3,6 @@ import logging
 import airflow
 import pendulum
 from airflow.operators import empty, python
-from airflow.providers.postgres.operators.postgres import PostgresOperator
 
 from dags.virtualenvs import PYTHON_BIN_PATH
 
@@ -403,18 +402,6 @@ with airflow.DAG(
         python_callable=_import_stock_etablissement_geocode,
     )
 
-    add_stock_etablissement_searchable_name = PostgresOperator(
-        task_id="add_stock_etablissement_searchable_name",
-        postgres_conn_id="pg",
-        sql="sql/sirene/etab_add_searchable_name.sql",
-    )
-
-    add_stock_etablissement_searchable_l4 = PostgresOperator(
-        task_id="add_stock_etablissement_searchable_l4",
-        postgres_conn_id="pg",
-        sql="sql/sirene/etab_add_searchable_l4.sql",
-    )
-
     (
         start
         >> [
@@ -423,13 +410,4 @@ with airflow.DAG(
             import_stock_etablissement_geocode,
             import_stock_unite_legale,
         ]
-    )
-
-    (
-        [
-            import_stock_etablissement_geocode,
-            import_stock_unite_legale,
-        ]
-        >> add_stock_etablissement_searchable_l4
-        >> add_stock_etablissement_searchable_name
     )
