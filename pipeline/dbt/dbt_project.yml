@@ -16,9 +16,6 @@ clean-targets:
   - "target"
   - "dbt_packages"
 
-# Configuring models
-# Full documentation: https://docs.getdbt.com/docs/configuring-models
-
 models:
   data_inclusion:
     staging:
@@ -37,7 +34,6 @@ models:
         +schema: opendata
         +materialized: view
 
-# https://docs.getdbt.com/reference/seed-configs
 seeds:
   data_inclusion:
     schema:
