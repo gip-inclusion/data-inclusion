@@ -188,8 +188,6 @@ resource "null_resource" "up" {
   provisioner "remote-exec" {
     inline = [
       "cd ${local.work_dir}/deployment",
-      # The airflow image is currently build from sources at deploy time
-      # Ensure that the image is up-to-date
       "docker compose --progress=plain up --pull=always --force-recreate --wait --wait-timeout 1200 --quiet-pull --detach",
       # FIXME: ideally this file should be removed
       # "rm -f ${local.work_dir}/deployment/.env",
