@@ -128,7 +128,6 @@ locals {
     var.airflow_secret_key
   )
 
-
   work_dir = "/root/data-inclusion"
 }
 
@@ -147,7 +146,7 @@ resource "null_resource" "up" {
   provisioner "remote-exec" {
     inline = [
       "rm -rf ${local.work_dir}",
-      "mkdir -p ${local.work_dir}/deployment",
+      "mkdir -p ${local.work_dir}",
     ]
   }
 
@@ -177,20 +176,20 @@ resource "null_resource" "up" {
     API_TOKEN_ENABLED=${var.api_token_enabled}
     EOT
     )
-    destination = "${local.work_dir}/deployment/.env"
+    destination = "${local.work_dir}/.env"
   }
 
   provisioner "file" {
-    source      = "${path.root}/docker-compose.yml"
-    destination = "${local.work_dir}/deployment/docker-compose.yml"
+    source      = "${path.module}/docker-compose.yml"
+    destination = "${local.work_dir}/docker-compose.yml"
   }
 
   provisioner "remote-exec" {
     inline = [
-      "cd ${local.work_dir}/deployment",
+      "cd ${local.work_dir}",
       "docker compose --progress=plain up --pull=always --force-recreate --wait --wait-timeout 1200 --quiet-pull --detach",
       # FIXME: ideally this file should be removed
-      # "rm -f ${local.work_dir}/deployment/.env",
+      # "rm -f ${local.work_dir}/.env",
     ]
   }
 }
