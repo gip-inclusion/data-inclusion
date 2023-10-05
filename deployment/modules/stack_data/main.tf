@@ -99,16 +99,6 @@ resource "scaleway_object_bucket_policy" "main" {
   )
 }
 
-resource "scaleway_domain_record" "dns" {
-  for_each = toset(["airflow", "api"])
-
-  dns_zone = var.public_hostname
-  name     = each.key
-  type     = "A"
-  data     = scaleway_instance_server.main.public_ip
-  ttl      = 60
-}
-
 locals {
   airflow_conn_pg = format(
     "postgresql://%s:%s@%s:%s/%s",
@@ -128,7 +118,22 @@ locals {
     var.airflow_secret_key
   )
 
+  base_hostname = "${var.dns_subdomain != "" ? "${var.dns_subdomain}." : ""}${var.dns_zone}"
+
+  airflow_hostname = "airflow.${local.base_hostname}"
+  api_hostname = "api.${local.base_hostname}"
+
   work_dir = "/root/data-inclusion"
+}
+
+resource "scaleway_domain_record" "dns" {
+  for_each = toset([local.airflow_hostname, local.api_hostname])
+
+  dns_zone = var.dns_zone
+  name     = replace(each.key, ".${var.dns_zone}", "")
+  type     = "A"
+  data     = scaleway_instance_server.main.public_ip
+  ttl      = 60
 }
 
 resource "null_resource" "up" {
@@ -172,7 +177,8 @@ resource "null_resource" "up" {
     SIRENE_STOCK_ETAB_LIENS_SUCCESSION_URL=https://www.data.gouv.fr/fr/datasets/r/9c4d5d9c-4bbb-4b9c-837a-6155cb589e26
     SIRENE_STOCK_UNITE_LEGALE_FILE_URL=https://www.data.gouv.fr/fr/datasets/r/825f4199-cadd-486c-ac46-a65a8ea1a047
     UN_JEUNE_UNE_SOLUTION_API_URL=https://mes-aides.1jeune1solution.beta.gouv.fr/api/
-    PUBLIC_HOSTNAME=${var.public_hostname}
+    AIRFLOW_HOSTNAME=${local.airflow_hostname}
+    API_HOSTNAME=${local.api_hostname}
     API_TOKEN_ENABLED=${var.api_token_enabled}
     EOT
     )
@@ -187,7 +193,7 @@ resource "null_resource" "up" {
   provisioner "remote-exec" {
     inline = [
       "cd ${local.work_dir}",
-      "docker compose --progress=plain up --pull=always --force-recreate --wait --wait-timeout 1200 --quiet-pull --detach",
+      "docker compose --progress=plain up --pull=always --force-recreate --remove-orphans --wait --wait-timeout 1200 --quiet-pull --detach",
       # FIXME: ideally this file should be removed
       # "rm -f ${local.work_dir}/.env",
     ]

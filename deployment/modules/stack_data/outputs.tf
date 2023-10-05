@@ -14,3 +14,13 @@ output "airflow_conn_s3" {
   value       = local.airflow_conn_s3
   sensitive   = true
 }
+
+output "airflow_url" {
+  description = "Airflow public URL"
+  value       = "https://${local.airflow_hostname}"
+}
+
+output "api_url" {
+  description = "API public URL"
+  value       = "https://${local.api_hostname}"
+}

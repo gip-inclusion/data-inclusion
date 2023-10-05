@@ -88,9 +88,15 @@ variable "ssh_private_key" {
   sensitive   = true
 }
 
-variable "public_hostname" {
-  description = "Public hostname that will be used to reach the instance"
+variable "dns_zone" {
+  description = "DNS zone where the public hostnames will be created"
   type        = string
+}
+
+variable "dns_subdomain" {
+  description = "DNS subdomain where the public hostnames will be created within dns_zone (optional)"
+  type        = string
+  default     = ""
 }
 
 variable "airflow__core__fernet_key" {

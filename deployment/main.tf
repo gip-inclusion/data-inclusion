@@ -93,9 +93,15 @@ variable "ssh_private_key" {
   sensitive   = true
 }
 
-variable "public_hostname" {
-  description = "Public hostname that will be used to reach the instance"
+variable "dns_zone" {
+  description = "DNS zone where the public hostnames will be created"
   type        = string
+}
+
+variable "dns_subdomain" {
+  description = "DNS subdomain where the public hostnames will be created within dns_zone (optional)"
+  type        = string
+  default     = ""
 }
 
 variable "airflow__core__fernet_key" {
@@ -129,7 +135,8 @@ module "stack_data" {
   api_secret_key               = var.api_secret_key
   stack_version                = var.stack_version
   ssh_private_key              = var.ssh_private_key
-  public_hostname              = var.public_hostname
+  dns_zone                     = var.dns_zone
+  dns_subdomain                = var.dns_subdomain
   airflow__core__fernet_key    = var.airflow__core__fernet_key
   dora_api_token               = var.dora_api_token
   api_token_enabled            = var.api_token_enabled
@@ -150,4 +157,14 @@ output "airflow_conn_s3" {
   description = "Connection string to the datalake for airflow"
   value       = module.stack_data.airflow_conn_s3
   sensitive   = true
+}
+
+output "airflow_url" {
+  description = "Airflow public URL"
+  value       = module.stack_data.airflow_url
+}
+
+output "api_url" {
+  description = "API public URL"
+  value       = module.stack_data.api_url
 }
