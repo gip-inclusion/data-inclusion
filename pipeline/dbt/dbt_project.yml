@@ -23,10 +23,7 @@ models:
   data_inclusion:
     staging:
       +schema: staging
-      +materialized: table
-
-      odspep:
-        +materialized: view
+      +materialized: view
 
     intermediate:
       +schema: intermediate
