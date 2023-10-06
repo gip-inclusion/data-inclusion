@@ -94,7 +94,6 @@ with airflow.DAG(
         select=" ".join(
             [
                 "intermediate",
-                "datalake",
                 "staging,tag:odspep",
                 "staging,tag:immersion_facilitee",
             ]

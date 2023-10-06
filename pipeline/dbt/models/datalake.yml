@@ -1,9 +1,0 @@
-version: 2
-
-models:
-  - name: datalake
-    columns:
-      - name: data
-        description: jsonb column storing the raw data for a single row
-        tests:
-          - not_null
