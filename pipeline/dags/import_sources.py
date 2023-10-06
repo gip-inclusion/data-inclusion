@@ -227,6 +227,15 @@ def _load(
 
             conn.execute(
                 f"""\
+                CREATE TABLE IF NOT EXISTS {schema_name}.{table_name} (
+                    data              JSONB,
+                    _di_batch_id      TEXT,
+                    _di_source_id     TEXT,
+                    _di_stream_id     TEXT,
+                    _di_source_url    TEXT,
+                    _di_stream_s3_key TEXT,
+                    _di_logical_date  DATE
+                );
                 TRUNCATE {schema_name}.{table_name};
                 INSERT INTO {schema_name}.{table_name}
                 SELECT * FROM {schema_name}.{table_name}_tmp;
