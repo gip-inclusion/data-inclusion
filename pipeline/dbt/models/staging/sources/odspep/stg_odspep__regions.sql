@@ -1,5 +1,3 @@
-{% set source_model = source('odspep', 'DD009_HORAIRE') %}
-
 {%-
     set tables_exist = (adapter.get_relation(
         database=source('odspep', 'DD009_REGION_RESSOURCE_1').database,
