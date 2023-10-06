@@ -211,9 +211,10 @@ def _load(
     with pg_engine.connect() as conn:
         with conn.begin():
             schema_name = source_config["id"].replace("-", "_")
+            table_name = stream_config["id"].replace("-", "_")
 
             df.to_sql(
-                stream_config["id"].replace("-", "_"),
+                f"{table_name}_tmp",
                 con=conn,
                 schema=schema_name,
                 if_exists="replace",
@@ -222,6 +223,14 @@ def _load(
                     "data": JSONB,
                     "_di_logical_date": sqla.Date,
                 },
+            )
+
+            conn.execute(
+                f"""\
+                TRUNCATE {schema_name}.{table_name};
+                INSERT INTO {schema_name}.{table_name}
+                SELECT * FROM {schema_name}.{table_name}_tmp;
+                DROP TABLE {schema_name}.{table_name}_tmp;"""
             )
 
 
