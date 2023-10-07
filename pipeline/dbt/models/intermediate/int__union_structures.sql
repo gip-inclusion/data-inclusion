@@ -9,7 +9,6 @@ WITH structures AS (
                 ref('int_cd72__structures'),
                 ref('int_emplois_de_linclusion__structures'),
                 ref('int_finess__structures'),
-                ref('int_immersion_facilitee__structures'),
                 ref('int_mediation_numerique__structures'),
                 ref('int_mes_aides__structures'),
                 ref('int_monenfant__structures'),

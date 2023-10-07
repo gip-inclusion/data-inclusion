@@ -270,14 +270,6 @@ sources:
     tables:
       - name: lieux
 
-  - name: immersion_facilitee
-    schema: immersion_facilitee
-    description: >
-      The team at Immersion Facilitee wants to use the siretisation UI.
-      This source contains the data exported by IF for the purpose of siretisation.
-    tables:
-      - name: structures
-
   - name: monenfant
     schema: monenfant
     tables:

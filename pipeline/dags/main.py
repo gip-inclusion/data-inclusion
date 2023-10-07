@@ -95,7 +95,6 @@ with airflow.DAG(
             [
                 "intermediate",
                 "staging,tag:odspep",
-                "staging,tag:immersion_facilitee",
             ]
         ),
         exclude="int_extra__geocoded_results+",

@@ -9,7 +9,6 @@ WITH adresses AS (
                 ref('int_cd72__adresses'),
                 ref('int_emplois_de_linclusion__adresses'),
                 ref('int_finess__adresses'),
-                ref('int_immersion_facilitee__adresses'),
                 ref('int_mediation_numerique__adresses'),
                 ref('int_mes_aides__adresses'),
                 ref('int_monenfant__adresses'),

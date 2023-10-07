@@ -1,6 +1,0 @@
-version: 2
-
-models:
-  - name: stg_immersion_facilitee__structures
-    config:
-      tags: immersion_facilitee
