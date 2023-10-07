@@ -2,8 +2,4 @@ version: 2
 
 models:
   - name: stg_mediation_numerique_conseiller_numerique__services
-    config:
-      tags: mediation_numerique_conseiller_numerique
   - name: stg_mediation_numerique_conseiller_numerique__structures
-    config:
-      tags: mediation_numerique_conseiller_numerique

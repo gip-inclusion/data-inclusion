@@ -2,8 +2,6 @@ version: 2
 
 models:
   - name: stg_cd72__structures
-    config:
-      tags: cd72
     columns:
       - name: id
         tests:
@@ -12,8 +10,6 @@ models:
           - dbt_utils.not_empty_string
 
   - name: stg_cd72__services
-    config:
-      tags: cd72
     columns:
       - name: id
         tests:

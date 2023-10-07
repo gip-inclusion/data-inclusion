@@ -2,8 +2,6 @@ version: 2
 
 models:
   - name: stg_reseau_alpha__formations
-    config:
-      tags: reseau_alpha
     columns:
       - name: structure_id
         tests:
@@ -15,8 +13,6 @@ models:
           - dbt_utils.not_empty_string
 
   - name: stg_reseau_alpha__structures
-    config:
-      tags: reseau_alpha
     columns:
       - name: id
         tests:

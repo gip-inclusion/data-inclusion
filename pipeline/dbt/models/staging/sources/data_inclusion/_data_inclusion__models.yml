@@ -2,8 +2,6 @@ version: 2
 
 models:
   - name: stg_data_inclusion__services
-    config:
-      tags: data_inclusion
     columns:
       - name: id
         tests:
@@ -12,8 +10,6 @@ models:
           - dbt_utils.not_empty_string
 
   - name: stg_data_inclusion__structures
-    config:
-      tags: data_inclusion
     columns:
       - name: id
         tests:

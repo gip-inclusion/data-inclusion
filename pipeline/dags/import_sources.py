@@ -279,13 +279,13 @@ for source_config in SOURCES_CONFIGS:
         dbt_run_staging = dbt_operator_factory(
             task_id="dbt_run_staging",
             command="run",
-            select=f"tag:{dbt_source_id},staging",
+            select=f"path:models/staging/sources/**/stg_{dbt_source_id}__*.sql",
         )
 
         dbt_test_staging = dbt_operator_factory(
             task_id="dbt_test_staging",
             command="test",
-            select=f"tag:{dbt_source_id},staging",
+            select=f"path:models/staging/sources/**/stg_{dbt_source_id}__*.sql",
         )
 
         # historization of the raw data, if that makes sense

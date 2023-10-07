@@ -2,8 +2,4 @@ version: 2
 
 models:
   - name: stg_mediation_numerique_assembleurs__services
-    config:
-      tags: mediation_numerique_assembleurs
   - name: stg_mediation_numerique_assembleurs__structures
-    config:
-      tags: mediation_numerique_assembleurs

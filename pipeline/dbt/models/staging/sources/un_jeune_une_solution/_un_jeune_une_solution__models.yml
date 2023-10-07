@@ -2,8 +2,4 @@ version: 2
 
 models:
   - name: stg_un_jeune_une_solution__benefits
-    config:
-      tags: un_jeune_une_solution
   - name: stg_un_jeune_une_solution__institutions
-    config:
-      tags: un_jeune_une_solution

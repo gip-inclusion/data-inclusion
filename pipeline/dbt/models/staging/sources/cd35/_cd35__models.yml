@@ -80,5 +80,3 @@ models:
       - name: thematiques
         tests:
           - dbt_utils.at_least_one
-    config:
-      tags: cd35

@@ -2,8 +2,7 @@ version: 2
 
 models:
   - name: stg_mediation_numerique_cd17__services
-    config:
-      tags: mediation_numerique_cd17
+
     columns:
       - name: id
         tests:
@@ -57,8 +56,7 @@ models:
                 severity: warn
           - dbt_utils.not_empty_string
   - name: stg_mediation_numerique_cd17__structures
-    config:
-      tags: mediation_numerique_cd17
+
     columns:
       - name: id
         tests:
