@@ -5,37 +5,37 @@ models:
     columns:
       - name: adresse
         tests:
-          - dbt_utils.at_least_one
+          - dbt_utils.not_constant
           - dbt_utils.not_empty_string
       - name: code_insee
         tests:
-          - dbt_utils.at_least_one
+          - dbt_utils.not_constant
           - dbt_utils.not_empty_string
       - name: code_postal
         tests:
-          - dbt_utils.at_least_one
+          - dbt_utils.not_constant
           - dbt_utils.not_empty_string
       - name: commune
         tests:
-          - dbt_utils.at_least_one
+          - dbt_utils.not_constant
           - dbt_utils.not_empty_string
       - name: complement_adresse
         tests:
-          - dbt_utils.at_least_one
+          - dbt_utils.not_constant
           - dbt_utils.not_empty_string
       - name: courriel
         tests:
-          - dbt_utils.at_least_one
+          - dbt_utils.not_constant
           - dbt_utils.not_empty_string
       - name: date_creation
         tests:
-          - dbt_utils.at_least_one
+          - dbt_utils.not_constant
       - name: date_maj
         tests:
-          - dbt_utils.at_least_one
+          - dbt_utils.not_constant
       - name: horaires_ouvertures
         tests:
-          - dbt_utils.at_least_one
+          - dbt_utils.not_constant
           - dbt_utils.not_empty_string:
               config:
                 severity: warn
@@ -46,37 +46,37 @@ models:
           - dbt_utils.not_empty_string
       - name: latitude
         tests:
-          - dbt_utils.at_least_one
+          - dbt_utils.not_constant
       - name: lien_source
         tests:
-          - dbt_utils.at_least_one
+          - dbt_utils.not_constant
           - dbt_utils.not_empty_string
       - name: longitude
         tests:
-          - dbt_utils.at_least_one
+          - dbt_utils.not_constant
       - name: nom
         tests:
           - not_null
           - dbt_utils.not_empty_string
       - name: presentation_detail
         tests:
-          - dbt_utils.at_least_one
+          - dbt_utils.not_constant
           - dbt_utils.not_empty_string
       - name: profils
         tests:
-          - dbt_utils.at_least_one
+          - dbt_utils.not_constant
       - name: sigle
         tests:
-          - dbt_utils.at_least_one
+          - dbt_utils.not_constant
           - dbt_utils.not_empty_string
       - name: site_web
         tests:
-          - dbt_utils.at_least_one
+          - dbt_utils.not_constant
           - dbt_utils.not_empty_string
       - name: telephone
         tests:
-          - dbt_utils.at_least_one
+          - dbt_utils.not_constant
           - dbt_utils.not_empty_string
       - name: thematiques
         tests:
-          - dbt_utils.at_least_one
+          - dbt_utils.not_constant

@@ -80,12 +80,12 @@ models:
           - not_null:
               config:
                 severity: warn
-          - dbt_utils.at_least_one
+          - dbt_utils.not_constant
           - dbt_utils.not_empty_string
       - name: details_modalite_modalites_inscription
         tests:
           - not_null:
               config:
                 severity: warn
-          - dbt_utils.at_least_one
+          - dbt_utils.not_constant
           - dbt_utils.not_empty_string

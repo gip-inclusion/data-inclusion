@@ -33,12 +33,12 @@ models:
               expression: "<@ ARRAY(SELECT value FROM {{ ref('frais') }})"
       - name: latitude
         tests:
-          - dbt_utils.at_least_one:
+          - dbt_utils.not_constant:
               config:
                 severity: warn
       - name: longitude
         tests:
-          - dbt_utils.at_least_one:
+          - dbt_utils.not_constant:
               config:
                 severity: warn
       - name: nom
@@ -51,7 +51,7 @@ models:
           - dbt_utils.not_empty_string
       - name: prise_rdv
         tests:
-          - dbt_utils.at_least_one:
+          - dbt_utils.not_constant:
               config:
                 severity: warn
           - dbt_utils.not_empty_string
@@ -82,10 +82,10 @@ models:
               expression: "<@ ARRAY(SELECT value FROM {{ ref('thematiques') }})"
       - name: latitude
         tests:
-          - dbt_utils.at_least_one
+          - dbt_utils.not_constant
       - name: longitude
         tests:
-          - dbt_utils.at_least_one
+          - dbt_utils.not_constant
       - name: labels_nationaux
         tests:
           - dbt_utils.expression_is_true:
@@ -100,19 +100,19 @@ models:
           - dbt_utils.not_empty_string
       - name: courriel
         tests:
-          - dbt_utils.at_least_one:
+          - dbt_utils.not_constant:
               config:
                 severity: warn
           - dbt_utils.not_empty_string
       - name: site_web
         tests:
-          - dbt_utils.at_least_one:
+          - dbt_utils.not_constant:
               config:
                 severity: warn
           - dbt_utils.not_empty_string
       - name: telephone
         tests:
-          - dbt_utils.at_least_one:
+          - dbt_utils.not_constant:
               config:
                 severity: warn
           - dbt_utils.not_empty_string
@@ -122,7 +122,7 @@ models:
           - dbt_utils.not_empty_string
       - name: horaires_ouverture
         tests:
-          - dbt_utils.at_least_one:
+          - dbt_utils.not_constant:
               config:
                 severity: warn
           - dbt_utils.not_empty_string

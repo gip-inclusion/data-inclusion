@@ -5,31 +5,31 @@ models:
     columns:
       - name: adresse
         tests:
-          - dbt_utils.at_least_one
+          - dbt_utils.not_constant
           - dbt_utils.not_empty_string
       - name: code_insee
         tests:
-          - dbt_utils.at_least_one
+          - dbt_utils.not_constant
           - dbt_utils.not_empty_string
       - name: code_postal
         tests:
-          - dbt_utils.at_least_one
+          - dbt_utils.not_constant
           - dbt_utils.not_empty_string
       - name: commune
         tests:
-          - dbt_utils.at_least_one
+          - dbt_utils.not_constant
           - dbt_utils.not_empty_string
       - name: complement_adresse
         tests:
-          - dbt_utils.at_least_one
+          - dbt_utils.not_constant
           - dbt_utils.not_empty_string
       - name: contact_nom
         tests:
-          - dbt_utils.at_least_one
+          - dbt_utils.not_constant
           - dbt_utils.not_empty_string
       - name: contact_prenom
         tests:
-          - dbt_utils.at_least_one:
+          - dbt_utils.not_constant:
               config:
                 severity: warn
           - dbt_utils.not_empty_string
@@ -40,7 +40,7 @@ models:
               values: [true, false]
       - name: courriel
         tests:
-          - dbt_utils.at_least_one
+          - dbt_utils.not_constant
           - dbt_utils.not_empty_string
       - name: cumulable
         tests:
@@ -52,7 +52,7 @@ models:
           - not_null:
               config:
                 severity: warn
-          - dbt_utils.at_least_one
+          - dbt_utils.not_constant
       - name: date_maj
         tests:
           - not_null
@@ -62,14 +62,14 @@ models:
                 severity: warn
       - name: date_suspension
         tests:
-          - dbt_utils.at_least_one
+          - dbt_utils.not_constant
       - name: formulaire_en_ligne
         tests:
-          - dbt_utils.at_least_one
+          - dbt_utils.not_constant
           - dbt_utils.not_empty_string
       - name: frais_autres
         tests:
-          - dbt_utils.at_least_one
+          - dbt_utils.not_constant
           - dbt_utils.not_empty_string
       - name: frais
         tests:
@@ -84,17 +84,17 @@ models:
           - dbt_utils.not_empty_string
       - name: justificatifs
         tests:
-          - dbt_utils.at_least_one
+          - dbt_utils.not_constant
       - name: latitude
         tests:
-          - dbt_utils.at_least_one
+          - dbt_utils.not_constant
       - name: lien_source
         tests:
           - not_null
           - dbt_utils.not_empty_string
       - name: longitude
         tests:
-          - dbt_utils.at_least_one
+          - dbt_utils.not_constant
       - name: modes_accueil
         tests:
           - dbt_utils.expression_is_true:
@@ -105,20 +105,20 @@ models:
           - dbt_utils.not_empty_string
       - name: pre_requis
         tests:
-          - dbt_utils.at_least_one
+          - dbt_utils.not_constant
       - name: presentation_resume
         tests:
           - not_null
           - dbt_utils.not_empty_string
       - name: presentation_detail
         tests:
-          - dbt_utils.at_least_one:
+          - dbt_utils.not_constant:
               config:
                 severity: warn
           - dbt_utils.not_empty_string
       - name: prise_rdv
         tests:
-          - dbt_utils.at_least_one:
+          - dbt_utils.not_constant:
               config:
                 severity: warn
           - dbt_utils.not_empty_string
@@ -130,11 +130,11 @@ models:
                 severity: warn
       - name: recurrence
         tests:
-          - dbt_utils.at_least_one
+          - dbt_utils.not_constant
           - dbt_utils.not_empty_string
       - name: source
         tests:
-          - dbt_utils.at_least_one
+          - dbt_utils.not_constant
           - dbt_utils.not_empty_string
       - name: structure_id
         tests:
@@ -148,7 +148,7 @@ models:
                 severity: warn
       - name: telephone
         tests:
-          - dbt_utils.at_least_one
+          - dbt_utils.not_constant
           - dbt_utils.not_empty_string
       - name: thematiques
         tests:
@@ -162,15 +162,15 @@ models:
               expression: "<@ ARRAY(SELECT value FROM {{ ref('typologies_de_services') }})"
       - name: zone_diffusion_code
         tests:
-          - dbt_utils.at_least_one
+          - dbt_utils.not_constant
           - dbt_utils.not_empty_string
       - name: zone_diffusion_nom
         tests:
-          - dbt_utils.at_least_one
+          - dbt_utils.not_constant
           - dbt_utils.not_empty_string
       - name: zone_diffusion_type
         tests:
-          - dbt_utils.at_least_one
+          - dbt_utils.not_constant
           - accepted_values:
               values: [commune, epci, departement, region]
 
@@ -178,14 +178,14 @@ models:
     columns:
       - name: accessibilite
         tests:
-          - dbt_utils.at_least_one
+          - dbt_utils.not_constant
           - dbt_utils.not_empty_string
       - name: adresse
         tests:
           - not_null:
               config:
                 severity: warn
-          - dbt_utils.at_least_one
+          - dbt_utils.not_constant
           - dbt_utils.not_empty_string
       - name: antenne
         tests:
@@ -194,37 +194,37 @@ models:
               values: [true, false]
       - name: code_insee
         tests:
-          - dbt_utils.at_least_one
+          - dbt_utils.not_constant
           - dbt_utils.not_empty_string
       - name: code_postal
         tests:
-          - dbt_utils.at_least_one
+          - dbt_utils.not_constant
           - dbt_utils.not_empty_string
       - name: commune
         tests:
-          - dbt_utils.at_least_one
+          - dbt_utils.not_constant
           - dbt_utils.not_empty_string
       - name: complement_adresse
         tests:
-          - dbt_utils.at_least_one
+          - dbt_utils.not_constant
           - dbt_utils.not_empty_string
       - name: courriel
         tests:
-          - dbt_utils.at_least_one
+          - dbt_utils.not_constant
           - dbt_utils.not_empty_string
       - name: date_maj
         tests:
           - not_null:
               config:
                 severity: warn
-          - dbt_utils.at_least_one
+          - dbt_utils.not_constant
           - dbt_utils.accepted_range:
               min_value: "now() - interval '2 years'"
               config:
                 severity: warn
       - name: horaires_ouverture
         tests:
-          - dbt_utils.at_least_one
+          - dbt_utils.not_constant
           - dbt_utils.not_empty_string
       - name: id
         tests:
@@ -240,32 +240,32 @@ models:
                 severity: warn
       - name: latitude
         tests:
-          - dbt_utils.at_least_one
+          - dbt_utils.not_constant
       - name: lien_source
         tests:
           - not_null
           - dbt_utils.not_empty_string
       - name: longitude
         tests:
-          - dbt_utils.at_least_one
+          - dbt_utils.not_constant
       - name: nom
         tests:
           - not_null:
               config:
                 severity: warn
-          - dbt_utils.at_least_one
+          - dbt_utils.not_constant
           - dbt_utils.not_empty_string
       - name: presentation_detail
         tests:
-          - dbt_utils.at_least_one
+          - dbt_utils.not_constant
           - dbt_utils.not_empty_string
       - name: presentation_resume
         tests:
-          - dbt_utils.at_least_one
+          - dbt_utils.not_constant
           - dbt_utils.not_empty_string
       - name: rna
         tests:
-          - dbt_utils.at_least_one:
+          - dbt_utils.not_constant:
               config:
                 severity: warn
           - dbt_utils.not_empty_string
@@ -274,19 +274,18 @@ models:
           - not_null:
               config:
                 severity: warn
-          - dbt_utils.at_least_one
+          - dbt_utils.not_constant
           - dbt_utils.not_empty_string
       - name: site_web
         tests:
-          - dbt_utils.at_least_one
+          - dbt_utils.not_constant
           - dbt_utils.not_empty_string
       - name: source
         tests:
-          - dbt_utils.at_least_one
           - dbt_utils.not_empty_string
       - name: telephone
         tests:
-          - dbt_utils.at_least_one
+          - dbt_utils.not_constant
           - dbt_utils.not_empty_string
       - name: thematiques
         tests:
@@ -295,7 +294,7 @@ models:
               expression: "IS NULL"
       - name: typologie
         tests:
-          - dbt_utils.at_least_one
+          - dbt_utils.not_constant
           - relationships:
               to: ref('typologies_de_structures')
               field: value
