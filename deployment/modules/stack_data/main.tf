@@ -121,7 +121,7 @@ locals {
   base_hostname = "${var.dns_subdomain != "" ? "${var.dns_subdomain}." : ""}${var.dns_zone}"
 
   airflow_hostname = "airflow.${local.base_hostname}"
-  api_hostname = "api.${local.base_hostname}"
+  api_hostname     = "api.${local.base_hostname}"
 
   work_dir = "/root/data-inclusion"
 }
