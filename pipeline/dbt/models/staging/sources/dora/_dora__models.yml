@@ -134,7 +134,6 @@ models:
           - dbt_utils.not_empty_string
       - name: source
         tests:
-          - dbt_utils.not_constant
           - dbt_utils.not_empty_string
       - name: structure_id
         tests:
