@@ -142,6 +142,8 @@ with airflow.DAG(
         select=" ".join(
             [
                 "path:models/intermediate/extra",
+                "path:models/intermediate/int__deprecated_sirets.sql",
+                "path:models/intermediate/int__plausible_personal_emails.sql",
                 "path:models/intermediate/int__union_adresses__enhanced.sql+",
                 "path:models/intermediate/int__union_services__enhanced.sql+",
                 "path:models/intermediate/int__union_structures__enhanced.sql+",
