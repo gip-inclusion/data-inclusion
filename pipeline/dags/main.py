@@ -107,28 +107,10 @@ with airflow.DAG(
                 select=f"path:models/staging/sources/**/stg_{dbt_source_id}__*.sql",
             )
 
-            dbt_run_intermediate = dbt_operator_factory(
-                task_id="dbt_run_intermediate",
-                command="run",
-                select=(
-                    f"path:models/intermediate/sources/**/int_{dbt_source_id}__*.sql"
-                ),
-            )
+            # TODO: add intermediate models here
+            # this would require to refactor mediation numerique models
 
-            dbt_test_intermediate = dbt_operator_factory(
-                task_id="dbt_test_intermediate",
-                command="test",
-                select=(
-                    f"path:models/intermediate/sources/**/int_{dbt_source_id}__*.sql"
-                ),
-            )
-
-            (
-                dbt_run_staging
-                >> dbt_test_staging
-                >> dbt_run_intermediate
-                >> dbt_test_intermediate
-            )
+            (dbt_run_staging >> dbt_test_staging)
 
         dbt_staging_tasks_list += [source_task_group]
 
@@ -139,7 +121,7 @@ with airflow.DAG(
             [
                 # FIXME: handle odspep as other sources (add to dags/settings.py)
                 "path:models/staging/sources/odspep",
-                "path:models/intermediate/sources/odspep",
+                "path:models/intermediate/sources/**/*",
                 "path:models/intermediate/int__union_adresses.sql",
                 "path:models/intermediate/int__union_services.sql",
                 "path:models/intermediate/int__union_structures.sql",
