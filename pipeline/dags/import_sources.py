@@ -276,18 +276,6 @@ for source_config in SOURCES_CONFIGS:
             select=f"source:{dbt_source_id}",
         )
 
-        dbt_run_staging = dbt_operator_factory(
-            task_id="dbt_run_staging",
-            command="run",
-            select=f"path:models/staging/sources/**/stg_{dbt_source_id}__*.sql",
-        )
-
-        dbt_test_staging = dbt_operator_factory(
-            task_id="dbt_test_staging",
-            command="test",
-            select=f"path:models/staging/sources/**/stg_{dbt_source_id}__*.sql",
-        )
-
         # historization of the raw data, if that makes sense
         if source_config["snapshot"]:
             dbt_snapshot_source = dbt_operator_factory(
@@ -323,11 +311,11 @@ for source_config in SOURCES_CONFIGS:
 
                 start >> setup >> extract >> load
 
-            stream_task_group >> dbt_test_source >> dbt_run_staging >> dbt_test_staging
+            stream_task_group >> dbt_test_source
 
             if dbt_snapshot_source is not None:
-                dbt_test_staging >> dbt_snapshot_source >> end
+                dbt_test_source >> dbt_snapshot_source >> end
             else:
-                dbt_test_staging >> end
+                dbt_test_source >> end
 
     globals()[dag_id] = dag
