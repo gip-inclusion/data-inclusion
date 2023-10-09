@@ -110,7 +110,7 @@ def list_structures(
         query = query.filter_by(source=source)
 
     # FIXME: this is a temporary hack
-    if request.user.username != "dora-staging-stream":
+    if request.user.is_authenticated and request.user.username != "dora-staging-stream":
         query = query.filter(models.Structure.source != "agefiph")
 
     if id_ is not None:
@@ -290,7 +290,7 @@ def list_services(
         query = query.filter(models.Structure.source == source)
 
     # FIXME: this is a temporary hack
-    if request.user.username != "dora-staging-stream":
+    if request.user.is_authenticated and request.user.username != "dora-staging-stream":
         query = query.filter(models.Service.source != "agefiph")
 
     if departement is not None:
@@ -420,7 +420,7 @@ def search_services(
         query = query.filter(models.Service.source == sqla.any_(sqla.literal(sources)))
 
     # FIXME: this is a temporary hack
-    if request.user.username != "dora-staging-stream":
+    if request.user.is_authenticated and request.user.username != "dora-staging-stream":
         query = query.filter(models.Service.source != "agefiph")
 
     if commune_instance is not None:
