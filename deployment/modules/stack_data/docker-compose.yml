@@ -148,6 +148,7 @@ services:
 
   reverse-proxy:
     image: traefik:v2.10
+    restart: always
     ports:
       - 80:80
       - 443:443
