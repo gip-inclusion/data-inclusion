@@ -93,7 +93,7 @@ services:
 
   airflow-scheduler:
     <<: *airflow-common
-    image: ghcr.io/betagouv/data-inclusion-pipeline:${STACK_VERSION}
+    image: rg.fr-par.scw.cloud/data-inclusion/data-inclusion-pipeline:${STACK_VERSION}
     command: scheduler
     restart: always
     healthcheck:
@@ -111,7 +111,7 @@ services:
         condition: service_completed_successfully
 
   datawarehouse:
-    image: ghcr.io/betagouv/data-inclusion-datawarehouse:${STACK_VERSION}
+    image: rg.fr-par.scw.cloud/data-inclusion/data-inclusion-datawarehouse:${STACK_VERSION}
     restart: always
     healthcheck:
       test: [ "CMD", "pg_isready", "-U", "${DATAWAREHOUSE_DI_USERNAME}"]
@@ -127,7 +127,7 @@ services:
       - datawarehouse-data:/var/lib/postgresql/data
 
   api:
-    image: ghcr.io/betagouv/data-inclusion-api:${STACK_VERSION}
+    image: rg.fr-par.scw.cloud/data-inclusion/data-inclusion-api:${STACK_VERSION}
     depends_on:
       - datawarehouse
     restart: always
