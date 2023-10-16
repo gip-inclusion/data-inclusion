@@ -1,3 +1,8 @@
+variable "scaleway_application_id" {
+  description = "ID of the application owning the api keys"
+  type        = string
+}
+
 variable "scaleway_access_key" {
   description = "Scaleway access key (https://console.scaleway.com/iam/api-keys)"
   type        = string

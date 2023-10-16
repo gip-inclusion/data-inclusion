@@ -100,6 +100,7 @@ jobs:
         AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
 
         # `TF_VAR_*` are case sensitive and must match the case of variables
+        TF_VAR_scaleway_application_id: ${{ vars.SCALEWAY_APPLICATION_ID }}
         TF_VAR_datawarehouse_admin_password: ${{ secrets.DATAWAREHOUSE_ADMIN_PASSWORD }}
         TF_VAR_datawarehouse_admin_username: ${{ vars.DATAWAREHOUSE_ADMIN_USERNAME }}
         TF_VAR_datawarehouse_di_database: ${{ vars.DATAWAREHOUSE_DI_DATABASE }}

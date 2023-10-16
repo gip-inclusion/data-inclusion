@@ -40,9 +40,6 @@ data "scaleway_iam_group" "editors" {
 }
 
 resource "scaleway_object_bucket_policy" "main" {
-  # TODO: find a way to retrieve the user/app associated to the access key
-  count = 0 # disable resource
-
   bucket = scaleway_object_bucket.main.name
   policy = jsonencode(
     {
@@ -51,12 +48,7 @@ resource "scaleway_object_bucket_policy" "main" {
         {
           Effect = "Allow",
           Principal = {
-            SCW = concat(
-              [for user_id in data.scaleway_iam_group.editors.user_ids : "user_id:${user_id}"],
-              [
-                "application_id:${var.airflow_application_id}"
-              ]
-            )
+            SCW = ["application_id:${var.airflow_application_id}"]
           },
           Action = [
             "s3:GetObject",
@@ -71,22 +63,8 @@ resource "scaleway_object_bucket_policy" "main" {
           Principal = {
             SCW = concat(
               [for user_id in data.scaleway_iam_group.editors.user_ids : "user_id:${user_id}"],
-              [
-                "application_id:${var.airflow_application_id}"
-              ]
+              ["application_id:${var.scaleway_application_id}"]
             )
-          },
-          Action = [
-            "s3:GetObject"
-          ],
-          Resource = [
-            "${scaleway_object_bucket.main.name}/sources/*"
-          ]
-        },
-        {
-          Effect = "Allow",
-          Principal = {
-            SCW = [for user_id in data.scaleway_iam_group.editors.user_ids : "user_id:${user_id}"]
           },
           Action = "*",
           Resource = [

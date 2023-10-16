@@ -1,3 +1,8 @@
+variable "scaleway_application_id" {
+  description = "ID of the application owning the api keys"
+  type        = string
+}
+
 variable "scaleway_access_key" {
   description = "Scaleway access key (https://console.scaleway.com/iam/api-keys)"
   type        = string
@@ -169,6 +174,7 @@ variable "soliguide_api_token" {
 module "stack_data" {
   source = "./modules/stack_data"
 
+  scaleway_application_id      = var.scaleway_application_id
   scaleway_access_key          = var.scaleway_access_key
   scaleway_secret_key          = var.scaleway_secret_key
   scaleway_project_id          = var.scaleway_project_id
