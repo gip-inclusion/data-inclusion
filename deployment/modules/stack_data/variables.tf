@@ -109,47 +109,56 @@ variable "airflow_conn_s3_sources" {
   description = "Used in extraction tasks orchestrated by airflow"
   type        = string
   sensitive   = true
+  default     = ""
 }
 
 variable "datagouv_api_key" {
   description = "Used in extraction tasks orchestrated by airflow"
   type        = string
   sensitive   = true
+  default     = ""
 }
 
 variable "dora_api_token" {
   description = "Used in extraction tasks orchestrated by airflow"
   type        = string
   sensitive   = true
+  default     = ""
 }
 
 variable "dora_api_url" {
   description = "Used in extraction tasks orchestrated by airflow"
+  type        = string
   sensitive   = true
+  default     = ""
 }
 
 variable "emplois_api_token" {
   description = "Used in extraction tasks orchestrated by airflow"
   type        = string
   sensitive   = true
+  default     = ""
 }
 
 variable "grist_api_token" {
   description = "Used in extraction tasks orchestrated by airflow"
   type        = string
   sensitive   = true
+  default     = ""
 }
 
 variable "mes_aides_airtable_key" {
   description = "Used in extraction tasks orchestrated by airflow"
   type        = string
   sensitive   = true
+  default     = ""
 }
 
 variable "soliguide_api_token" {
   description = "Used in extraction tasks orchestrated by airflow"
   type        = string
   sensitive   = true
+  default     = ""
 }
 
 variable "api_token_enabled" {
