@@ -110,8 +110,13 @@ def list_structures(
         query = query.filter_by(source=source)
 
     # FIXME: this is a temporary hack
-    if request.user.is_authenticated and request.user.username != "dora-staging-stream":
+    if (
+        not request.user.is_authenticated
+        or request.user.username != "dora-staging-stream"
+    ):
         query = query.filter(models.Structure.source != "agefiph")
+    if not request.user.is_authenticated or "dora" not in request.user.username:
+        query = query.filter(models.Structure.source != "soliguide")
 
     if id_ is not None:
         query = query.filter_by(id=id_)
@@ -290,8 +295,13 @@ def list_services(
         query = query.filter(models.Structure.source == source)
 
     # FIXME: this is a temporary hack
-    if request.user.is_authenticated and request.user.username != "dora-staging-stream":
-        query = query.filter(models.Service.source != "agefiph")
+    if (
+        not request.user.is_authenticated
+        or request.user.username != "dora-staging-stream"
+    ):
+        query = query.filter(models.Structure.source != "agefiph")
+    if not request.user.is_authenticated or "dora" not in request.user.username:
+        query = query.filter(models.Structure.source != "soliguide")
 
     if departement is not None:
         query = query.filter(
@@ -420,8 +430,13 @@ def search_services(
         query = query.filter(models.Service.source == sqla.any_(sqla.literal(sources)))
 
     # FIXME: this is a temporary hack
-    if request.user.is_authenticated and request.user.username != "dora-staging-stream":
-        query = query.filter(models.Service.source != "agefiph")
+    if (
+        not request.user.is_authenticated
+        or request.user.username != "dora-staging-stream"
+    ):
+        query = query.filter(models.Structure.source != "agefiph")
+    if not request.user.is_authenticated or "dora" not in request.user.username:
+        query = query.filter(models.Structure.source != "soliguide")
 
     if commune_instance is not None:
         # filter by zone de diffusion
