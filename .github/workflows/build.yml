@@ -114,13 +114,13 @@ jobs:
         TF_VAR_airflow_access_key: ${{ vars.AIRFLOW_ACCESS_KEY }}
         TF_VAR_airflow_secret_key: ${{ secrets.AIRFLOW_SECRET_KEY }}
         TF_VAR_airflow_admin_password: ${{ secrets.AIRFLOW_ADMIN_PASSWORD }}
-        TF_VAR_api_secret_key: ${{ secrets.api_secret_key }}
+        TF_VAR_api_secret_key: ${{ secrets.API_SECRET_KEY }}
         TF_VAR_stack_version: ${{ github.sha }}
-        TF_VAR_ssh_private_key: ${{ secrets.ssh_private_key }}
+        TF_VAR_ssh_private_key: ${{ secrets.SSH_PRIVATE_KEY }}
         TF_VAR_dns_zone: ${{ vars.DNS_ZONE }}
         TF_VAR_dns_subdomain: ${{ vars.DNS_SUBDOMAIN }}
         TF_VAR_airflow__core__fernet_key: ${{ secrets.AIRFLOW__CORE__FERNET_KEY }}
-        TF_VAR_api_token_enabled: ${{ vars.api_token_enabled }}
+        TF_VAR_api_token_enabled: ${{ vars.API_TOKEN_ENABLED }}
         TF_VAR_airflow_conn_s3_sources: ${{ secrets.AIRFLOW_CONN_S3_SOURCES }}
         TF_VAR_datagouv_api_key: ${{ secrets.DATAGOUV_API_KEY }}
         TF_VAR_dora_api_url: ${{ vars.DORA_API_URL }}
