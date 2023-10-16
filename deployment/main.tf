@@ -110,7 +110,48 @@ variable "airflow__core__fernet_key" {
   sensitive   = true
 }
 
+variable "airflow_conn_s3_sources" {
+  description = "Used in extraction tasks orchestrated by airflow"
+  type        = string
+  sensitive   = true
+}
+
+variable "datagouv_api_key" {
+  description = "Used in extraction tasks orchestrated by airflow"
+  type        = string
+  sensitive   = true
+}
+
 variable "dora_api_token" {
+  description = "Used in extraction tasks orchestrated by airflow"
+  type        = string
+  sensitive   = true
+}
+
+variable "dora_api_url" {
+  description = "Used in extraction tasks orchestrated by airflow"
+  sensitive   = true
+}
+
+variable "emplois_api_token" {
+  description = "Used in extraction tasks orchestrated by airflow"
+  type        = string
+  sensitive   = true
+}
+
+variable "grist_api_token" {
+  description = "Used in extraction tasks orchestrated by airflow"
+  type        = string
+  sensitive   = true
+}
+
+variable "mes_aides_airtable_key" {
+  description = "Used in extraction tasks orchestrated by airflow"
+  type        = string
+  sensitive   = true
+}
+
+variable "soliguide_api_token" {
   description = "Used in extraction tasks orchestrated by airflow"
   type        = string
   sensitive   = true
@@ -138,7 +179,14 @@ module "stack_data" {
   dns_zone                     = var.dns_zone
   dns_subdomain                = var.dns_subdomain
   airflow__core__fernet_key    = var.airflow__core__fernet_key
+  airflow_conn_s3_sources      = var.airflow_conn_s3_sources
+  datagouv_api_key             = var.datagouv_api_key
   dora_api_token               = var.dora_api_token
+  dora_api_url                 = var.dora_api_url
+  emplois_api_token            = var.emplois_api_token
+  grist_api_token              = var.grist_api_token
+  mes_aides_airtable_key       = var.mes_aides_airtable_key
+  soliguide_api_token          = var.soliguide_api_token
   api_token_enabled            = var.api_token_enabled
 }
 

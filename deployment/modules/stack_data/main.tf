@@ -157,29 +157,32 @@ resource "null_resource" "up" {
 
   provisioner "file" {
     content = sensitive(<<-EOT
-    STACK_VERSION=${var.stack_version}
+    API_HOSTNAME=${local.api_hostname}
+    API_SECRET_KEY=${var.api_secret_key}
+    API_TOKEN_ENABLED=${var.api_token_enabled}
+
+    # common configuration
+    AIRFLOW__CORE__FERNET_KEY=${var.airflow__core__fernet_key}
     AIRFLOW_CONN_PG=${local.airflow_conn_pg}
     AIRFLOW_CONN_S3=${local.airflow_conn_s3}
-    AIRFLOW__CORE__FERNET_KEY=${var.airflow__core__fernet_key}
+    AIRFLOW_HOSTNAME=${local.airflow_hostname}
     AIRFLOW_WWW_USER_PASSWORD=${var.airflow_admin_password}
     DATAWAREHOUSE_DI_DATABASE=${var.datawarehouse_di_database}
-    DATAWAREHOUSE_DI_USERNAME=${var.datawarehouse_di_username}
     DATAWAREHOUSE_DI_PASSWORD=${var.datawarehouse_di_password}
-    API_SECRET_KEY=${var.api_secret_key}
-    BAN_API_URL=https://api-adresse.data.gouv.fr
-    DORA_API_URL=https://api.dora.incubateur.net/api/v2/
-    DORA_API_TOKEN=${var.dora_api_token}
-    IGN_ADMIN_EXPRESS_FILE_URL=http://files.opendatarchives.fr/professionnels.ign.fr/adminexpress/ADMIN-EXPRESS-COG_3-0__SHP__FRA_WM_2021-05-19.7z
-    INSEE_FIRSTNAME_FILE_URL=https://www.insee.fr/fr/statistiques/fichier/2540004/nat2021_csv.zip
-    INSEE_COG_DATASET_URL=https://www.insee.fr/fr/statistiques/fichier/6800675
-    SIRENE_STOCK_ETAB_GEOCODE_FILE_URL=https://data.cquest.org/geo_sirene/v2019/last/StockEtablissementActif_utf8_geo.csv.gz
-    SIRENE_STOCK_ETAB_HIST_FILE_URL=https://www.data.gouv.fr/fr/datasets/r/88fbb6b4-0320-443e-b739-b4376a012c32
-    SIRENE_STOCK_ETAB_LIENS_SUCCESSION_URL=https://www.data.gouv.fr/fr/datasets/r/9c4d5d9c-4bbb-4b9c-837a-6155cb589e26
-    SIRENE_STOCK_UNITE_LEGALE_FILE_URL=https://www.data.gouv.fr/fr/datasets/r/825f4199-cadd-486c-ac46-a65a8ea1a047
-    UN_JEUNE_UNE_SOLUTION_API_URL=https://mes-aides.1jeune1solution.beta.gouv.fr/api/
-    AIRFLOW_HOSTNAME=${local.airflow_hostname}
-    API_HOSTNAME=${local.api_hostname}
-    API_TOKEN_ENABLED=${var.api_token_enabled}
+    DATAWAREHOUSE_DI_USERNAME=${var.datawarehouse_di_username}
+    STACK_VERSION=${var.stack_version}
+
+    # pipeline secrets
+    AIRFLOW_CONN_S3_SOURCES=${var.airflow_conn_s3_sources}
+    AIRFLOW_VAR_DATAGOUV_API_KEY=${var.datagouv_api_key}
+    AIRFLOW_VAR_DORA_API_TOKEN=${var.dora_api_token}
+    AIRFLOW_VAR_EMPLOIS_API_TOKEN=${var.emplois_api_token}
+    AIRFLOW_VAR_GRIST_API_TOKEN=${var.grist_api_token}
+    AIRFLOW_VAR_MES_AIDES_AIRTABLE_KEY=${var.mes_aides_airtable_key}
+    AIRFLOW_VAR_SOLIGUIDE_API_TOKEN=${var.soliguide_api_token}
+
+    # overrides
+    AIRFLOW_VAR_DORA_API_URL=${var.dora_api_url}
     EOT
     )
     destination = "${local.work_dir}/.env"
@@ -188,6 +191,11 @@ resource "null_resource" "up" {
   provisioner "file" {
     source      = "${path.module}/docker-compose.yml"
     destination = "${local.work_dir}/docker-compose.yml"
+  }
+
+  provisioner "file" {
+    source      = "${path.root}/../pipeline/defaults.env"
+    destination = "${local.work_dir}/defaults.env"
   }
 
   provisioner "remote-exec" {

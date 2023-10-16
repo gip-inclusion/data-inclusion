@@ -1,2 +1,4 @@
 # Airflow temporary artifacts
 logs/
+
+!defaults.env

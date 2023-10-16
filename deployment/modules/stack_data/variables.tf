@@ -105,7 +105,48 @@ variable "airflow__core__fernet_key" {
   sensitive   = true
 }
 
+variable "airflow_conn_s3_sources" {
+  description = "Used in extraction tasks orchestrated by airflow"
+  type        = string
+  sensitive   = true
+}
+
+variable "datagouv_api_key" {
+  description = "Used in extraction tasks orchestrated by airflow"
+  type        = string
+  sensitive   = true
+}
+
 variable "dora_api_token" {
+  description = "Used in extraction tasks orchestrated by airflow"
+  type        = string
+  sensitive   = true
+}
+
+variable "dora_api_url" {
+  description = "Used in extraction tasks orchestrated by airflow"
+  sensitive   = true
+}
+
+variable "emplois_api_token" {
+  description = "Used in extraction tasks orchestrated by airflow"
+  type        = string
+  sensitive   = true
+}
+
+variable "grist_api_token" {
+  description = "Used in extraction tasks orchestrated by airflow"
+  type        = string
+  sensitive   = true
+}
+
+variable "mes_aides_airtable_key" {
+  description = "Used in extraction tasks orchestrated by airflow"
+  type        = string
+  sensitive   = true
+}
+
+variable "soliguide_api_token" {
   description = "Used in extraction tasks orchestrated by airflow"
   type        = string
   sensitive   = true

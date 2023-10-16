@@ -46,6 +46,8 @@ FROM apache/airflow:2.7.0-python3.10
 ENV PYTHONUNBUFFERED 1
 ENV PYTHONDONTWRITEBYTECODE 1
 
+ENV AIRFLOW_VAR_DBT_PROJECT_DIR /opt/airflow/dbt
+
 USER root
 
 RUN apt-get update \
@@ -64,7 +66,7 @@ COPY --chown=airflow:0 --from=compile-image /opt/airflow/venvs /opt/airflow/venv
 
 COPY --chown=airflow:0 dags /opt/airflow/dags
 COPY --chown=airflow:0 src /opt/airflow/src
-COPY --chown=airflow:0 dbt /opt/airflow/dbt
+COPY --chown=airflow:0 dbt ${AIRFLOW_VAR_DBT_PROJECT_DIR}
 
 RUN /opt/airflow/venvs/dbt/venv/bin/dbt deps --project-dir /opt/airflow/dbt
 
