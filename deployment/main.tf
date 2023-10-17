@@ -26,8 +26,10 @@ resource "scaleway_instance_server" "main" {
   security_group_id = scaleway_instance_security_group.main.id
 }
 
+resource "random_pet" "main" {}
+
 resource "scaleway_object_bucket" "main" {
-  name = "data-inclusion-datalake-${var.environment}"
+  name = "data-inclusion-datalake-${var.environment}-${random_pet.main.id}"
 }
 
 data "scaleway_account_project" "main" {
