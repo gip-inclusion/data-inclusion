@@ -94,7 +94,7 @@ jobs:
         working-directory: deployment
 
     container:
-      image: hashicorp/terraform:1.5.7
+      image: hashicorp/terraform:1.6.1
       env:
         TF_IN_AUTOMATION: true
 
