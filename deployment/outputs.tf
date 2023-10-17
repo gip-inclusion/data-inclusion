@@ -1,8 +1,3 @@
-output "public_ip" {
-  description = "Publicly reachable IP (with `ssh root@<public_ip>`)"
-  value       = scaleway_instance_server.main.public_ip
-}
-
 output "airflow_conn_pg" {
   description = "Connection string to the datawarehouse for airflow"
   value       = local.airflow_conn_pg
@@ -23,4 +18,9 @@ output "airflow_url" {
 output "api_url" {
   description = "API public URL"
   value       = "https://${local.api_hostname}"
+}
+
+output "public_ip" {
+  description = "Publicly reachable IP (with `ssh root@<public_ip>`)"
+  value       = scaleway_instance_server.main.public_ip
 }
