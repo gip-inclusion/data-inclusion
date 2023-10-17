@@ -1,240 +1,191 @@
-variable "scaleway_application_id" {
-  description = "ID of the application owning the api keys"
-  type        = string
+resource "scaleway_instance_ip" "main" {}
+
+resource "scaleway_instance_security_group" "main" {
+  inbound_default_policy  = "drop"
+  outbound_default_policy = "accept"
+  stateful                = true
+
+  inbound_rule {
+    action = "accept"
+    port   = 22
+  }
+  inbound_rule {
+    action = "accept"
+    port   = 80
+  }
+  inbound_rule {
+    action = "accept"
+    port   = 443
+  }
 }
 
-variable "scaleway_access_key" {
-  description = "Scaleway access key (https://console.scaleway.com/iam/api-keys)"
-  type        = string
-  sensitive   = true
+resource "scaleway_instance_server" "main" {
+  type              = "DEV1-L"
+  image             = "docker"
+  ip_id             = scaleway_instance_ip.main.id
+  security_group_id = scaleway_instance_security_group.main.id
 }
 
-variable "scaleway_secret_key" {
-  description = "Scaleway secret key (https://console.scaleway.com/iam/api-keys)"
-  type        = string
-  sensitive   = true
+resource "scaleway_object_bucket" "main" {
+  name = "data-inclusion-datalake-${var.environment}"
 }
 
-variable "scaleway_project_id" {
-  description = "Scaleway project id (https://console.scaleway.com/project/settings)"
-  type        = string
+data "scaleway_account_project" "main" {
+  project_id = var.scaleway_project_id
 }
 
-variable "airflow_application_id" {
-  description = "Scaleway app ID for Airflow"
-  type        = string
-  sensitive   = false
+data "scaleway_iam_group" "editors" {
+  organization_id = data.scaleway_account_project.main.organization_id
+  name            = "Editors"
 }
 
-variable "airflow_access_key" {
-  description = "Scaleway access key for Airflow"
-  type        = string
-  sensitive   = false
+resource "scaleway_object_bucket_policy" "main" {
+  bucket = scaleway_object_bucket.main.name
+  policy = jsonencode(
+    {
+      Version = "2023-04-17",
+      Statement = [
+        {
+          Effect = "Allow",
+          Principal = {
+            SCW = ["application_id:${var.airflow_application_id}"]
+          },
+          Action = [
+            "s3:GetObject",
+            "s3:PutObject"
+          ],
+          Resource = [
+            "${scaleway_object_bucket.main.name}/data/*",
+          ]
+        },
+        {
+          Effect = "Allow",
+          Principal = {
+            SCW = concat(
+              [for user_id in data.scaleway_iam_group.editors.user_ids : "user_id:${user_id}"],
+              ["application_id:${var.scaleway_application_id}"]
+            )
+          },
+          Action = "*",
+          Resource = [
+            "${scaleway_object_bucket.main.name}",
+            "${scaleway_object_bucket.main.name}/*"
+          ]
+        }
+      ]
+    }
+  )
 }
 
-variable "airflow_secret_key" {
-  description = "Scaleway secret key for Airflow"
-  type        = string
-  sensitive   = true
+locals {
+  airflow_conn_pg = format(
+    "postgresql://%s:%s@%s:%s/%s",
+    var.datawarehouse_di_username,
+    var.datawarehouse_di_password,
+    "datawarehouse",
+    "5432",
+    var.datawarehouse_di_database
+  )
+
+  airflow_conn_s3 = format(
+    "aws://@/%s?endpoint_url=%s&region_name=%s&aws_access_key_id=%s&aws_secret_access_key=%s",
+    scaleway_object_bucket.main.name,
+    urlencode(replace(scaleway_object_bucket.main.endpoint, "${scaleway_object_bucket.main.name}.", "")),
+    scaleway_object_bucket.main.region,
+    var.airflow_access_key,
+    var.airflow_secret_key
+  )
+
+  base_hostname = "${var.dns_subdomain != "" ? "${var.dns_subdomain}." : ""}${var.dns_zone}"
+
+  airflow_hostname  = "airflow.${local.base_hostname}"
+  api_hostname      = "api.${local.base_hostname}"
+  metabase_hostname = "metabase.${local.base_hostname}"
+
+  work_dir = "/root/data-inclusion"
 }
 
-variable "datawarehouse_admin_username" {
-  description = "Identifier for the first user of the postgres datawarehouse"
-  type        = string
+resource "scaleway_domain_record" "dns" {
+  for_each = toset([local.airflow_hostname, local.api_hostname, local.metabase_hostname])
+
+  dns_zone = var.dns_zone
+  name     = replace(each.key, ".${var.dns_zone}", "")
+  type     = "A"
+  data     = scaleway_instance_server.main.public_ip
+  ttl      = 60
 }
 
-variable "datawarehouse_admin_password" {
-  description = "Password for the first user of the postgres datawarehouse"
-  type        = string
-  sensitive   = true
-}
+resource "null_resource" "up" {
+  triggers = {
+    always_run = timestamp()
+  }
 
-variable "datawarehouse_di_username" {
-  description = "Identifier for the main user of the postgres datawarehouse"
-  type        = string
-}
+  connection {
+    type        = "ssh"
+    user        = "root"
+    host        = scaleway_instance_server.main.public_ip
+    private_key = var.ssh_private_key
+  }
 
-variable "datawarehouse_di_password" {
-  description = "Password for the main user of the postgres datawarehouse"
-  type        = string
-  sensitive   = true
-}
+  provisioner "remote-exec" {
+    inline = [
+      "rm -rf ${local.work_dir}",
+      "mkdir -p ${local.work_dir}",
+    ]
+  }
 
-variable "datawarehouse_di_database" {
-  description = "Identifier for the data inclusion database"
-  type        = string
-}
+  provisioner "file" {
+    content = sensitive(<<-EOT
+    API_HOSTNAME=${local.api_hostname}
+    API_SECRET_KEY=${var.api_secret_key}
+    API_TOKEN_ENABLED=${var.api_token_enabled}
 
-variable "environment" {
-  description = "Identifier of the target environment"
-  type        = string
-}
+    METABASE_HOSTNAME=${local.metabase_hostname}
+    METABASE_SECRET_KEY=${var.metabase_secret_key}
 
-variable "airflow_admin_password" {
-  description = "Password for airflow admin panel"
-  type        = string
-  sensitive   = true
-}
+    # common configuration
+    AIRFLOW__CORE__FERNET_KEY=${var.airflow__core__fernet_key}
+    AIRFLOW_CONN_PG=${local.airflow_conn_pg}
+    AIRFLOW_CONN_S3=${local.airflow_conn_s3}
+    AIRFLOW_HOSTNAME=${local.airflow_hostname}
+    AIRFLOW_WWW_USER_PASSWORD=${var.airflow_admin_password}
+    DATAWAREHOUSE_DI_DATABASE=${var.datawarehouse_di_database}
+    DATAWAREHOUSE_DI_PASSWORD=${var.datawarehouse_di_password}
+    DATAWAREHOUSE_DI_USERNAME=${var.datawarehouse_di_username}
+    STACK_VERSION=${var.stack_version}
 
-variable "api_secret_key" {
-  description = "Secret key used for cryptographic signing by the api"
-  type        = string
-  sensitive   = true
-}
+    # pipeline secrets
+    AIRFLOW_CONN_S3_SOURCES=${var.airflow_conn_s3_sources}
+    AIRFLOW_VAR_DATAGOUV_API_KEY=${var.datagouv_api_key}
+    AIRFLOW_VAR_DORA_API_TOKEN=${var.dora_api_token}
+    AIRFLOW_VAR_EMPLOIS_API_TOKEN=${var.emplois_api_token}
+    AIRFLOW_VAR_GRIST_API_TOKEN=${var.grist_api_token}
+    AIRFLOW_VAR_MES_AIDES_AIRTABLE_KEY=${var.mes_aides_airtable_key}
+    AIRFLOW_VAR_SOLIGUIDE_API_TOKEN=${var.soliguide_api_token}
 
-variable "stack_version" {
-  description = "Version (e.g. sha or semver) of the stack services to deploy"
-  type        = string
-}
+    # overrides
+    AIRFLOW_VAR_DORA_API_URL=${var.dora_api_url}
+    EOT
+    )
+    destination = "${local.work_dir}/.env"
+  }
 
-variable "api_token_enabled" {
-  description = "Whether to enable the api token auth or not"
-  type        = string
-}
+  provisioner "file" {
+    source      = "${path.root}/docker-compose.yml"
+    destination = "${local.work_dir}/docker-compose.yml"
+  }
 
-variable "ssh_private_key" {
-  description = "The associated public key will be deployed to the instance"
-  type        = string
-  sensitive   = true
-}
+  provisioner "file" {
+    source      = "${path.root}/../pipeline/defaults.env"
+    destination = "${local.work_dir}/defaults.env"
+  }
 
-variable "dns_zone" {
-  description = "DNS zone where the public hostnames will be created"
-  type        = string
-}
-
-variable "dns_subdomain" {
-  description = "DNS subdomain where the public hostnames will be created within dns_zone (optional)"
-  type        = string
-  default     = ""
-}
-
-variable "airflow__core__fernet_key" {
-  description = "Secret key to save connection passwords in the db"
-  type        = string
-  sensitive   = true
-}
-
-variable "airflow_conn_s3_sources" {
-  description = "Used in extraction tasks orchestrated by airflow"
-  type        = string
-  sensitive   = true
-  default     = ""
-}
-
-variable "datagouv_api_key" {
-  description = "Used in extraction tasks orchestrated by airflow"
-  type        = string
-  sensitive   = true
-  default     = ""
-}
-
-variable "dora_api_token" {
-  description = "Used in extraction tasks orchestrated by airflow"
-  type        = string
-  sensitive   = true
-  default     = ""
-}
-
-variable "dora_api_url" {
-  description = "Used in extraction tasks orchestrated by airflow"
-  type        = string
-  sensitive   = true
-  default     = ""
-}
-
-variable "emplois_api_token" {
-  description = "Used in extraction tasks orchestrated by airflow"
-  type        = string
-  sensitive   = true
-  default     = ""
-}
-
-variable "grist_api_token" {
-  description = "Used in extraction tasks orchestrated by airflow"
-  type        = string
-  sensitive   = true
-  default     = ""
-}
-
-variable "mes_aides_airtable_key" {
-  description = "Used in extraction tasks orchestrated by airflow"
-  type        = string
-  sensitive   = true
-  default     = ""
-}
-
-variable "soliguide_api_token" {
-  description = "Used in extraction tasks orchestrated by airflow"
-  type        = string
-  sensitive   = true
-  default     = ""
-}
-
-variable "metabase_secret_key" {
-  description = "Secret key to save connection passwords in the db"
-  type        = string
-  sensitive   = true
-}
-
-module "stack_data" {
-  source = "./modules/stack_data"
-
-  scaleway_application_id      = var.scaleway_application_id
-  scaleway_access_key          = var.scaleway_access_key
-  scaleway_secret_key          = var.scaleway_secret_key
-  scaleway_project_id          = var.scaleway_project_id
-  airflow_application_id       = var.airflow_application_id
-  airflow_access_key           = var.airflow_access_key
-  airflow_secret_key           = var.airflow_secret_key
-  datawarehouse_admin_username = var.datawarehouse_admin_username
-  datawarehouse_admin_password = var.datawarehouse_admin_password
-  datawarehouse_di_username    = var.datawarehouse_di_username
-  datawarehouse_di_password    = var.datawarehouse_di_password
-  datawarehouse_di_database    = var.datawarehouse_di_database
-  environment                  = var.environment
-  airflow_admin_password       = var.airflow_admin_password
-  api_secret_key               = var.api_secret_key
-  stack_version                = var.stack_version
-  ssh_private_key              = var.ssh_private_key
-  dns_zone                     = var.dns_zone
-  dns_subdomain                = var.dns_subdomain
-  airflow__core__fernet_key    = var.airflow__core__fernet_key
-  airflow_conn_s3_sources      = var.airflow_conn_s3_sources
-  datagouv_api_key             = var.datagouv_api_key
-  dora_api_token               = var.dora_api_token
-  dora_api_url                 = var.dora_api_url
-  emplois_api_token            = var.emplois_api_token
-  grist_api_token              = var.grist_api_token
-  mes_aides_airtable_key       = var.mes_aides_airtable_key
-  soliguide_api_token          = var.soliguide_api_token
-  api_token_enabled            = var.api_token_enabled
-  metabase_secret_key          = var.metabase_secret_key
-}
-
-output "public_ip" {
-  description = "Publicly reachable IP (with `ssh root@<public_ip>`)"
-  value       = module.stack_data.public_ip
-}
-
-output "airflow_conn_pg" {
-  description = "Connection string to the datawarehouse for airflow"
-  value       = module.stack_data.airflow_conn_pg
-  sensitive   = true
-}
-
-output "airflow_conn_s3" {
-  description = "Connection string to the datalake for airflow"
-  value       = module.stack_data.airflow_conn_s3
-  sensitive   = true
-}
-
-output "airflow_url" {
-  description = "Airflow public URL"
-  value       = module.stack_data.airflow_url
-}
-
-output "api_url" {
-  description = "API public URL"
-  value       = module.stack_data.api_url
+  provisioner "remote-exec" {
+    inline = [
+      "cd ${local.work_dir}",
+      "docker compose --progress=plain up --pull=always --force-recreate --remove-orphans --wait --wait-timeout 1200 --quiet-pull --detach",
+      # FIXME: ideally this file should be removed
+      # "rm -f ${local.work_dir}/.env",
+    ]
+  }
 }
