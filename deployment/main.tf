@@ -24,6 +24,10 @@ resource "scaleway_instance_server" "main" {
   image             = "docker"
   ip_id             = scaleway_instance_ip.main.id
   security_group_id = scaleway_instance_security_group.main.id
+
+  root_volume {
+    delete_on_termination = false
+  }
 }
 
 resource "random_pet" "main" {}
