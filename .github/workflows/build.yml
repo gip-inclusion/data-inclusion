@@ -141,8 +141,8 @@ jobs:
       - name: tf init
         run: |
           terraform init \
-            -backend-config "bucket=data-inclusion-terraform" \
-            -backend-config "key=stack_data/${ENV}" \
+            -backend-config "bucket=data-inclusion-terraform-states" \
+            -backend-config "key=${ENV}" \
             -backend-config "region=fr-par" \
             -backend-config "endpoint=https://s3.fr-par.scw.cloud"
 

@@ -45,8 +45,8 @@ The state backend is shared by environments. There should already be a project `
 ```bash
 set +o history
 terraform init \
-    -backend-config "bucket=data-inclusion-terraform" \
-    -backend-config "key=stack_data/<ENVIRONMENT>" \
+    -backend-config "bucket=data-inclusion-terraform-states" \
+    -backend-config "key=<ENVIRONMENT>" \
     -backend-config "region=fr-par" \
     -backend-config "endpoint=https://s3.fr-par.scw.cloud" \
     -backend-config "access_key=<ACCESS_KEY>" \
