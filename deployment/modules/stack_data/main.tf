@@ -98,14 +98,15 @@ locals {
 
   base_hostname = "${var.dns_subdomain != "" ? "${var.dns_subdomain}." : ""}${var.dns_zone}"
 
-  airflow_hostname = "airflow.${local.base_hostname}"
-  api_hostname     = "api.${local.base_hostname}"
+  airflow_hostname  = "airflow.${local.base_hostname}"
+  api_hostname      = "api.${local.base_hostname}"
+  metabase_hostname = "metabase.${local.base_hostname}"
 
   work_dir = "/root/data-inclusion"
 }
 
 resource "scaleway_domain_record" "dns" {
-  for_each = toset([local.airflow_hostname, local.api_hostname])
+  for_each = toset([local.airflow_hostname, local.api_hostname, local.metabase_hostname])
 
   dns_zone = var.dns_zone
   name     = replace(each.key, ".${var.dns_zone}", "")
@@ -138,6 +139,9 @@ resource "null_resource" "up" {
     API_HOSTNAME=${local.api_hostname}
     API_SECRET_KEY=${var.api_secret_key}
     API_TOKEN_ENABLED=${var.api_token_enabled}
+
+    METABASE_HOSTNAME=${local.metabase_hostname}
+    METABASE_SECRET_KEY=${var.metabase_secret_key}
 
     # common configuration
     AIRFLOW__CORE__FERNET_KEY=${var.airflow__core__fernet_key}

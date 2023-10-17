@@ -129,6 +129,7 @@ jobs:
         TF_VAR_grist_api_token: ${{ secrets.GRIST_API_TOKEN }}
         TF_VAR_mes_aides_airtable_key: ${{ secrets.MES_AIDES_AIRTABLE_KEY }}
         TF_VAR_soliguide_api_token: ${{ secrets.SOLIGUIDE_API_TOKEN }}
+        TF_VAR_metabase_secret_key: ${{ secrets.METABASE_SECRET_KEY }}
         ENV: ${{ vars.ENVIRONMENT }}
       volumes:
         - .:/deployment

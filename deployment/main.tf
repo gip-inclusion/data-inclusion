@@ -171,6 +171,12 @@ variable "soliguide_api_token" {
   default     = ""
 }
 
+variable "metabase_secret_key" {
+  description = "Secret key to save connection passwords in the db"
+  type        = string
+  sensitive   = true
+}
+
 module "stack_data" {
   source = "./modules/stack_data"
 
@@ -203,6 +209,7 @@ module "stack_data" {
   mes_aides_airtable_key       = var.mes_aides_airtable_key
   soliguide_api_token          = var.soliguide_api_token
   api_token_enabled            = var.api_token_enabled
+  metabase_secret_key          = var.metabase_secret_key
 }
 
 output "public_ip" {

@@ -170,3 +170,9 @@ variable "api_token_enabled" {
   description = "Whether to enable the api token auth or not"
   type        = string
 }
+
+variable "metabase_secret_key" {
+  description = "Secret key to save connection passwords in the db"
+  type        = string
+  sensitive   = true
+}

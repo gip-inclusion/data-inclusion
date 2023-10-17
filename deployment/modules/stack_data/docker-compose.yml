@@ -168,10 +168,49 @@ services:
       - /var/run/docker.sock:/var/run/docker.sock:ro
       - letsencrypt-data:/letsencrypt
 
+  metabase-db:
+    image: postgres:14
+    restart: always
+    healthcheck:
+      test: [ "CMD", "pg_isready", "-U", "metabase" ]
+      interval: 5s
+      retries: 5
+    environment:
+      - POSTGRES_DB=metabase
+      - POSTGRES_USER=metabase
+      - POSTGRES_PASSWORD=metabase
+    volumes:
+      - metabase-data:/var/lib/postgresql/data
+
+  metabase:
+    image: metabase/metabase:v0.47.4
+    restart: always
+    healthcheck:
+      test: curl --fail -I http://localhost:3000/api/health || exit 1
+      interval: 15s
+      timeout: 5s
+      retries: 5
+    ports:
+      - 3000:3000
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.metabase.rule=Host(`${METABASE_HOSTNAME}`)"
+      - "traefik.http.routers.metabase.entrypoints=websecure"
+      - "traefik.http.routers.metabase.tls.certresolver=main"
+    environment:
+      - JAVA_TIMEZONE=Europe/Paris
+      - MB_DB_TYPE=postgres
+      - MB_DB_CONNECTION_URI=postgresql://metabase:metabase@metabase-db:5432/metabase
+      - MB_ENCRYPTION_SECRET_KEY=${METABASE_SECRET_KEY}
+      - MB_ANON_TRACKING_ENABLED=false
+      - MB_SITE_URL=${METABASE_HOSTNAME}
+      - MB_REDIRECT_ALL_REQUESTS_TO_HTTPS=true
+
 volumes:
   airflow-logs:
   datawarehouse-data:
   letsencrypt-data:
+  metabase-data:
 
 networks:
   default:
