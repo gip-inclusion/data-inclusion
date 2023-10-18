@@ -20,7 +20,7 @@ resource "scaleway_instance_security_group" "main" {
 }
 
 resource "scaleway_instance_server" "main" {
-  type              = "GP1-XS"
+  type              = var.scaleway_instance_type
   image             = "docker"
   ip_id             = scaleway_instance_ip.main.id
   security_group_id = scaleway_instance_security_group.main.id

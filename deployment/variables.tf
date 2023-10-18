@@ -159,6 +159,12 @@ variable "scaleway_project_id" {
   type        = string
 }
 
+variable "scaleway_instance_type" {
+  description = "Scaleway instance type (ex. GP1-XS, see https://www.scaleway.com/en/pricing/?tags=compute)"
+  type        = string
+  default     = "GP1-XS"
+}
+
 variable "soliguide_api_token" {
   description = "Used in extraction tasks orchestrated by airflow"
   type        = string
