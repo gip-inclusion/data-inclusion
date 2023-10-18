@@ -26,6 +26,7 @@ provider "registry.terraform.io/hashicorp/random" {
   version     = "3.5.1"
   constraints = "3.5.1"
   hashes = [
+    "h1:IL9mSatmwov+e0+++YX2V6uel+dV6bn+fC/cnGDK3Ck=",
     "h1:VSnd9ZIPyfKHOObuQCaKfnjIHRtR7qTw19Rz8tJxm+k=",
     "zh:04e3fbd610cb52c1017d282531364b9c53ef72b6bc533acb2a90671957324a64",
     "zh:119197103301ebaf7efb91df8f0b6e0dd31e6ff943d231af35ee1831c599188d",
@@ -68,6 +69,7 @@ provider "registry.terraform.io/scaleway/scaleway" {
   constraints = "2.30.0"
   hashes = [
     "h1:UV8G6sIfRHgI87Wh8AwLMe6/hqki7SNQIIoHzD801fA=",
+    "h1:gWcVJv6pWAttTMkIEqHvYttE/gnp/ld8Ov4fq/Zxtw4=",
     "zh:1583ba1efafd271978eb5ed73bd67417c8fd05e8d5531cc1d319e37b25af07e6",
     "zh:1639cc8693964ab38cb918dcd4dec1faa6874ed229764a4e9d730d2029489f87",
     "zh:1b5a3765ac6e554538b4d026fa239e53fa60613b1e5ad07c1e33b049865b73ab",
