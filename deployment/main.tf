@@ -1,4 +1,6 @@
-resource "scaleway_instance_ip" "main" {}
+resource "scaleway_instance_ip" "main" {
+  type = "routed_ipv4"
+}
 
 resource "scaleway_instance_security_group" "main" {
   inbound_default_policy  = "drop"
