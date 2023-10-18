@@ -35,9 +35,10 @@ repos:
       - id: terraform-fmt
         name: deployment|terraform-fmt
         language: docker_image
-        entry: hashicorp/terraform:1.4.0
+        entry: hashicorp/terraform:1.6.1
         args: [fmt, -recursive, deployment]
         pass_filenames: false
+        files: ^deployment/
 
   # pipeline
   - repo: https://github.com/psf/black

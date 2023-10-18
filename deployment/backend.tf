@@ -5,7 +5,7 @@ terraform {
     skip_region_validation      = true
     skip_requesting_account_id  = true
     region                      = "fr-par"
-    endpoints                   = {
+    endpoints = {
       s3 = "https://s3.fr-par.scw.cloud"
     }
   }
