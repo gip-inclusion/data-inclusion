@@ -47,8 +47,6 @@ set +o history
 terraform init \
     -backend-config "bucket=data-inclusion-terraform-states" \
     -backend-config "key=<ENVIRONMENT>" \
-    -backend-config "region=fr-par" \
-    -backend-config "endpoint=https://s3.fr-par.scw.cloud" \
     -backend-config "access_key=<ACCESS_KEY>" \
     -backend-config "secret_key=<SECRET_KEY>"
 set -o history
