@@ -33,10 +33,10 @@ resource "scaleway_instance_server" "main" {
   }
 }
 
-resource "random_pet" "main" {}
+resource "random_pet" "datalake_bucket_suffix" {}
 
 resource "scaleway_object_bucket" "main" {
-  name = "data-inclusion-datalake-${var.environment}-${random_pet.main.id}"
+  name = "data-inclusion-datalake-${var.environment}-${random_pet.datalake_bucket_suffix.id}"
 }
 
 data "scaleway_account_project" "main" {
