@@ -1,1 +1,3 @@
-web: ./entrypoint.sh
+web: airflow webserver --port "${PORT}"
+postdeploy: env AIRFLOW__DATABASE__SQL_ALCHEMY_CONN="${DATABASE_URL}" airflow db migrate
+scheduler: ./entrypoint.sh
