@@ -5,9 +5,11 @@ web: env \
     AIRFLOW__API__AUTH_BACKENDS=airflow.api.auth.backend.basic_auth \
     AIRFLOW__DATABASE__SQL_ALCHEMY_CONN="${DATABASE_URL/postgres\:\/\//postgresql\:\/\/}" \
     airflow webserver --port "${PORT}"
+
 postdeploy: env \
     AIRFLOW__DATABASE__SQL_ALCHEMY_CONN="${DATABASE_URL/postgres\:\/\//postgresql\:\/\/}" \
     airflow db migrate
+
 scheduler: env \
     AIRFLOW_HOME=./airflow \
     AIRFLOW__DATABASE__SQL_ALCHEMY_CONN="${DATABASE_URL/postgres\:\/\//postgresql\:\/\/}" \
