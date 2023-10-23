@@ -17,9 +17,16 @@ COMMAND=$1
 # scheme `postgres://`. Therefore it is replaced.
 export AIRFLOW__DATABASE__SQL_ALCHEMY_CONN="${DATABASE_URL/postgres\:\/\//postgresql\:\/\/}"
 
-if [[ "${COMMAND}" = "webserver" ]]; then
-    export AIRFLOW__API__AUTH_BACKENDS=airflow.api.auth.backend.basic_auth
+export AIRFLOW_HOME=./airflow
+export AIRFLOW__API__AUTH_BACKENDS=airflow.api.auth.backend.basic_auth
+export AIRFLOW__CORE__LOAD_DEFAULT_CONNECTIONS=False
+export AIRFLOW__CORE__LOAD_EXAMPLES=False
+export AIRFLOW__CORE__EXECUTOR=LocalExecutor
+export AIRFLOW__CORE__DEFAULT_TIMEZONE=Europe/Paris
+export AIRFLOW__CORE__FERNET_KEY="${SECRET_KEY}"
+export AIRFLOW__CORE__DAGS_FOLDER=./dags
 
+if [[ "${COMMAND}" = "webserver" ]]; then
     airflow webserver --port "${PORT}"
 fi
 
@@ -49,15 +56,6 @@ if [[ "${COMMAND}" = "scheduler" ]]; then
 
     # Install dbt packages (not python packages)
     "${VIRTUAL_ENV}/bin/dbt" deps --project-dir "${AIRFLOW_VAR_DBT_PROJECT_DIR}"
-
-    export AIRFLOW_HOME=./airflow
-    export AIRFLOW__DATABASE__SQL_ALCHEMY_CONN="${DATABASE_URL/postgres\:\/\//postgresql\:\/\/}"
-    export AIRFLOW__CORE__LOAD_DEFAULT_CONNECTIONS=False
-    export AIRFLOW__CORE__LOAD_EXAMPLES=False
-    export AIRFLOW__CORE__EXECUTOR=LocalExecutor
-    export AIRFLOW__CORE__DEFAULT_TIMEZONE=Europe/Paris
-    export AIRFLOW__CORE__FERNET_KEY="${SECRET_KEY}"
-    export AIRFLOW__CORE__DAGS_FOLDER=./dags
 
     airflow scheduler
 fi
