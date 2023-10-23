@@ -35,6 +35,7 @@ final AS (
         data #>> '{position,codePostal}'                      AS "position_code_postal",
         data #>> '{position,adresse}'                         AS "position_adresse",
         data #>> '{position,complementAdresse}'               AS "position_complement_adresse",
+        data #>> '{position,departement}'                     AS "departement",
         NULLIF(data #>> '{entity,mail}', '')                  AS "entity_mail",
         data #>> '{entity,website}'                           AS "entity_website",
         data -> 'newhours'                                    AS "newhours"
