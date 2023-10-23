@@ -1,19 +1,5 @@
-# The `DATABASE_URL` env var is automatically set by Scalingo and uses the depreciated
-# scheme `postgres://`. Therefore it is replaced.
-web: env \
-    AIRFLOW__API__AUTH_BACKENDS=airflow.api.auth.backend.basic_auth \
-    AIRFLOW__DATABASE__SQL_ALCHEMY_CONN="${DATABASE_URL/postgres\:\/\//postgresql\:\/\/}" \
-    airflow webserver --port "${PORT}"
-postdeploy: env \
-    AIRFLOW__DATABASE__SQL_ALCHEMY_CONN="${DATABASE_URL/postgres\:\/\//postgresql\:\/\/}" \
-    airflow db migrate
-scheduler: env \
-    AIRFLOW_HOME=./airflow \
-    AIRFLOW__DATABASE__SQL_ALCHEMY_CONN="${DATABASE_URL/postgres\:\/\//postgresql\:\/\/}" \
-    AIRFLOW__CORE__LOAD_DEFAULT_CONNECTIONS=False \
-    AIRFLOW__CORE__LOAD_EXAMPLES=False \
-    AIRFLOW__CORE__EXECUTOR=LocalExecutor \
-    AIRFLOW__CORE__DEFAULT_TIMEZONE=Europe/Paris \
-    AIRFLOW__CORE__FERNET_KEY="${SECRET_KEY}" \
-    AIRFLOW__CORE__DAGS_FOLDER=./dags \
-    ./entrypoint.sh
+web: ./entrypoint.sh webserver
+
+postdeploy: ./entrypoint.sh migrate
+
+scheduler: ./entrypoint.sh scheduler
