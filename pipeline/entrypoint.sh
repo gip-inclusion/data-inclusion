@@ -17,19 +17,20 @@ COMMAND=$1
 # scheme `postgres://`. Therefore it is replaced.
 export AIRFLOW__DATABASE__SQL_ALCHEMY_CONN="${DATABASE_URL/postgres\:\/\//postgresql\:\/\/}"
 
-export AIRFLOW_HOME=./airflow
+export AIRFLOW_HOME="${HOME}/airflow"
 export AIRFLOW__API__AUTH_BACKENDS=airflow.api.auth.backend.basic_auth
 export AIRFLOW__CORE__LOAD_DEFAULT_CONNECTIONS=False
 export AIRFLOW__CORE__LOAD_EXAMPLES=False
 export AIRFLOW__CORE__EXECUTOR=LocalExecutor
 export AIRFLOW__CORE__DEFAULT_TIMEZONE=Europe/Paris
 export AIRFLOW__CORE__FERNET_KEY="${SECRET_KEY}"
-export AIRFLOW__CORE__DAGS_FOLDER=./dags
+export AIRFLOW__CORE__DAGS_FOLDER=."${HOME}/dags"
 
 export AIRFLOW_CONN_S3_LOGS="${AIRFLOW_CONN_S3_LOGS}"
 export AIRFLOW__LOGGING__REMOTE_LOGGING=True
 export AIRFLOW__LOGGING__REMOTE_BASE_LOG_FOLDER=s3://data-inclusion-lake/logs
 export AIRFLOW__LOGGING__REMOTE_LOG_CONN_ID=s3_logs
+export AIRFLOW__LOGGING__DELETE_LOCAL_LOGS=True
 
 if [[ "${COMMAND}" = "webserver" ]]; then
     airflow webserver --port "${PORT}"
