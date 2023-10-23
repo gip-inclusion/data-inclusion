@@ -100,7 +100,6 @@ x-airflow-common:
   volumes:
     - ./pipeline/dbt:/opt/airflow/dbt
     - ./pipeline/dags:/opt/airflow/dags
-    - ./pipeline/logs:/opt/airflow/logs
     - ./pipeline/src:/opt/airflow/data-inclusion/src
 
   user: ${AIRFLOW_UID:-50000}:0
@@ -158,8 +157,6 @@ services:
     user: 0:0
     command:
       - |
-        mkdir -p /opt/airflow/logs
-        chown -R "${AIRFLOW_UID}:0" /opt/airflow/logs
         exec /entrypoint airflow version
     environment:
       <<: *airflow-common-environment
