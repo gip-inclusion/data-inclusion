@@ -18,7 +18,6 @@ COMMAND=$1
 export AIRFLOW__DATABASE__SQL_ALCHEMY_CONN="${DATABASE_URL/postgres\:\/\//postgresql\:\/\/}"
 
 export AIRFLOW_HOME="${HOME}/airflow"
-export AIRFLOW__API__AUTH_BACKENDS=airflow.api.auth.backend.basic_auth
 export AIRFLOW__CORE__LOAD_DEFAULT_CONNECTIONS=False
 export AIRFLOW__CORE__LOAD_EXAMPLES=False
 export AIRFLOW__CORE__EXECUTOR=LocalExecutor
