@@ -30,7 +30,6 @@ export AIRFLOW_CONN_S3_LOGS="${AIRFLOW_CONN_S3_LOGS}"
 export AIRFLOW__LOGGING__REMOTE_LOGGING=True
 export AIRFLOW__LOGGING__REMOTE_BASE_LOG_FOLDER=s3://data-inclusion-lake/logs
 export AIRFLOW__LOGGING__REMOTE_LOG_CONN_ID=s3_logs
-export AIRFLOW__LOGGING__DELETE_LOCAL_LOGS=True
 
 if [[ "${COMMAND}" = "webserver" ]]; then
     airflow webserver --port "${PORT}"
