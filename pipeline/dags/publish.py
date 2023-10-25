@@ -12,6 +12,7 @@ def _publish_to_datagouv():
     import itertools
     import logging
 
+    import geopandas as gpd
     import pendulum
     from airflow.models import Variable
     from airflow.providers.postgres.hooks import postgres
@@ -35,11 +36,16 @@ def _publish_to_datagouv():
         api_key=DATAGOUV_API_KEY,
     )
 
-    kinds_formats_product = itertools.product(
-        ["structures", "services"],
-        ["csv", "json", "xlsx"],
-    )
     date_str = pendulum.today().to_date_string()
+
+    to_buf_fn_by_format = {
+        "json": lambda df, buf: df.to_json(buf, orient="records", force_ascii=False),
+        "csv": lambda df, buf: df.to_csv(buf, index=False),
+        "xlsx": lambda df, buf: df.to_excel(buf, engine="xlsxwriter"),
+        "shp": lambda df, buf: gpd.GeoDataFrame(
+            df, geometry=gpd.points_from_xy(df.longitude, df.latitude), crs="EPSG:4326"
+        ).to_file(buf),
+    }
 
     # 1. fetch data
     structures_df = pg_hook.get_pandas_df(
@@ -52,16 +58,11 @@ def _publish_to_datagouv():
     )
     log_df_info(services_df, logger)
 
-    for kind, format in kinds_formats_product:
+    for kind, format in itertools.product(
+        ["structures", "services"],
+        ["csv", "json", "xlsx"],
+    ):
         df = structures_df if kind == "structures" else services_df
-
-        to_buf_fn_by_format = {
-            "json": lambda df, buf: df.to_json(
-                buf, orient="records", force_ascii=False
-            ),
-            "csv": lambda df, buf: df.to_csv(buf, index=False),
-            "xlsx": lambda df, buf: df.to_excel(buf, engine="xlsxwriter"),
-        }
 
         with io.BytesIO() as buf:
             # 2. serialize data
