@@ -60,7 +60,7 @@ def _publish_to_datagouv():
 
     for kind, format in itertools.product(
         ["structures", "services"],
-        ["csv", "json", "xlsx"],
+        ["csv", "json", "xlsx", "shp"],
     ):
         df = structures_df if kind == "structures" else services_df
 
