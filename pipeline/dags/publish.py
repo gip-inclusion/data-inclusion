@@ -44,7 +44,7 @@ def _publish_to_datagouv():
         "xlsx": lambda df, buf: df.to_excel(buf, engine="xlsxwriter"),
         "shp": lambda df, buf: gpd.GeoDataFrame(
             df, geometry=gpd.points_from_xy(df.longitude, df.latitude), crs="EPSG:4326"
-        ).to_file(buf),
+        ).to_file(buf, driver="ESRI Shapefile"),
     }
 
     # 1. fetch data
