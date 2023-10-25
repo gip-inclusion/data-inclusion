@@ -42,9 +42,9 @@ def _publish_to_datagouv():
         "json": lambda df, buf: df.to_json(buf, orient="records", force_ascii=False),
         "csv": lambda df, buf: df.to_csv(buf, index=False),
         "xlsx": lambda df, buf: df.to_excel(buf, engine="xlsxwriter"),
-        "shp": lambda df, buf: gpd.GeoDataFrame(
+        "geojson": lambda df, buf: gpd.GeoDataFrame(
             df, geometry=gpd.points_from_xy(df.longitude, df.latitude), crs="EPSG:4326"
-        ).to_file(buf, driver="ESRI Shapefile"),
+        ).to_file(buf, driver="GeoJSON", engine="pyogrio"),
     }
 
     # 1. fetch data
@@ -60,7 +60,7 @@ def _publish_to_datagouv():
 
     for kind, format in itertools.product(
         ["structures", "services"],
-        ["csv", "json", "xlsx", "shp"],
+        ["csv", "json", "xlsx", "geojson"],
     ):
         df = structures_df if kind == "structures" else services_df
 
