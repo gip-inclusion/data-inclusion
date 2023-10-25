@@ -11,6 +11,7 @@ def _publish_to_datagouv():
     import io
     import itertools
     import logging
+    import tempfile
 
     import geopandas as gpd
     import pendulum
@@ -38,13 +39,25 @@ def _publish_to_datagouv():
 
     date_str = pendulum.today().to_date_string()
 
+    def to_geojson(df, buf) -> None:
+        gdf = gpd.GeoDataFrame(
+            df,
+            geometry=gpd.points_from_xy(df.longitude, df.latitude),
+            crs="EPSG:4326",
+        )
+
+        with tempfile.NamedTemporaryFile() as tmp_file:
+            gdf.to_file(tmp_file.name, driver="GeoJSON", engine="pyogrio")
+
+            with open(tmp_file.name, "rb") as fp:
+                buf.write(fp.read())
+                buf.seek(0)
+
     to_buf_fn_by_format = {
         "json": lambda df, buf: df.to_json(buf, orient="records", force_ascii=False),
         "csv": lambda df, buf: df.to_csv(buf, index=False),
         "xlsx": lambda df, buf: df.to_excel(buf, engine="xlsxwriter"),
-        "geojson": lambda df, buf: gpd.GeoDataFrame(
-            df, geometry=gpd.points_from_xy(df.longitude, df.latitude), crs="EPSG:4326"
-        ).to_file(buf, driver="GeoJSON", engine="pyogrio"),
+        "geojson": to_geojson,
     }
 
     # 1. fetch data
