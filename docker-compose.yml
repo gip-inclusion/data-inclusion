@@ -92,13 +92,10 @@ x-airflow-common:
     AIRFLOW_VAR_UN_JEUNE_UNE_SOLUTION_API_URL: ${UN_JEUNE_UNE_SOLUTION_API_URL}
     AIRFLOW_VAR_RESEAU_ALPHA_URL: ${RESEAU_ALPHA_URL}
 
-    # make the data_inclusion package available in editable mode
-    PYTHONPATH: $${PYTHONPATH}:/opt/airflow/data-inclusion/src
-
   volumes:
     - ./pipeline/dbt:/opt/airflow/dbt
     - ./pipeline/dags:/opt/airflow/dags
-    - ./pipeline/src:/opt/airflow/data-inclusion/src
+    - ./pipeline/src:/opt/airflow/src
 
   user: ${AIRFLOW_UID:-50000}:0
 

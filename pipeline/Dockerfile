@@ -69,4 +69,4 @@ COPY --chown=airflow:0 dbt /opt/airflow/dbt
 RUN /opt/airflow/venvs/dbt/venv/bin/dbt deps --project-dir /opt/airflow/dbt
 
 # make the data_inclusion package available in editable mode
-ENV PYTHONPATH "/opt/airflow/src"
+ENV PYTHONPATH "${PYTHONPATH}:/opt/airflow/src"
