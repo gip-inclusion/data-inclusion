@@ -1,0 +1,217 @@
+# Based on https://airflow.apache.org/docs/apache-airflow/stable/howto/docker-compose/index.html#fetching-docker-compose-yaml
+
+version: "3"
+name: "data-inclusion"
+
+x-airflow-common:
+  &airflow-common
+
+  environment:
+    &airflow-common-environment
+    AIRFLOW__CORE__DEFAULT_TIMEZONE: Europe/Paris
+    AIRFLOW__CORE__EXECUTOR: LocalExecutor
+    AIRFLOW__CORE__FERNET_KEY: ${AIRFLOW__CORE__FERNET_KEY}
+    AIRFLOW__CORE__LOAD_EXAMPLES: 'false'
+    AIRFLOW__CORE__LOAD_DEFAULT_CONNECTIONS: 'false'
+    AIRFLOW__DATABASE__SQL_ALCHEMY_CONN: postgresql://airflow:airflow@airflow-db:5432/airflow
+    AIRFLOW__WEBSERVER__BASE_URL: https://${AIRFLOW_HOSTNAME}
+
+    # Connections
+    AIRFLOW_CONN_PG: ${AIRFLOW_CONN_PG}
+    AIRFLOW_CONN_S3: ${AIRFLOW_CONN_S3}
+    AIRFLOW_CONN_S3_SOURCES: ${AIRFLOW_CONN_S3_SOURCES}
+
+    # Variables
+    AIRFLOW_VAR_DATAGOUV_API_KEY: ${AIRFLOW_VAR_DATAGOUV_API_KEY}
+    AIRFLOW_VAR_DORA_API_TOKEN: ${AIRFLOW_VAR_DORA_API_TOKEN}
+    AIRFLOW_VAR_EMPLOIS_API_TOKEN: ${AIRFLOW_VAR_EMPLOIS_API_TOKEN}
+    AIRFLOW_VAR_GRIST_API_TOKEN: ${AIRFLOW_VAR_GRIST_API_TOKEN}
+    AIRFLOW_VAR_MES_AIDES_AIRTABLE_KEY: ${AIRFLOW_VAR_MES_AIDES_AIRTABLE_KEY}
+    AIRFLOW_VAR_SOLIGUIDE_API_TOKEN: ${AIRFLOW_VAR_SOLIGUIDE_API_TOKEN}
+
+    AIRFLOW_VAR_DORA_API_URL: ${AIRFLOW_VAR_DORA_API_URL}
+
+    AIRFLOW_VAR_DBT_LOG_PATH: /opt/airflow/dbt-runtime/logs
+    AIRFLOW_VAR_DBT_TARGET_PATH: /opt/airflow/dbt-runtime/target
+
+  volumes:
+    - airflow-logs:/opt/airflow/logs
+
+  depends_on:
+    &airflow-common-depends-on
+    airflow-db:
+      condition: service_healthy
+
+services:
+  airflow-db:
+    image: postgres:14
+    restart: always
+    healthcheck:
+      test: [ "CMD", "pg_isready", "-U", "airflow" ]
+      interval: 5s
+      retries: 5
+    environment:
+      - POSTGRES_DB=airflow
+      - POSTGRES_USER=airflow
+      - POSTGRES_PASSWORD=airflow
+
+  airflow-init:
+    <<: *airflow-common
+    image: apache/airflow:2.7.0-python3.10
+    command: version
+    environment:
+      <<: *airflow-common-environment
+      _AIRFLOW_DB_MIGRATE: 'true'
+      _AIRFLOW_WWW_USER_CREATE: 'true'
+      _AIRFLOW_WWW_USER_USERNAME: airflow
+      _AIRFLOW_WWW_USER_PASSWORD: ${AIRFLOW_WWW_USER_PASSWORD}
+
+  airflow-webserver:
+    <<: *airflow-common
+    image: apache/airflow:2.7.0-python3.10
+    command: webserver
+    restart: always
+    healthcheck:
+      test: ["CMD", "curl", "--fail", "http://localhost:8080/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 30s
+    ports:
+      - 8080:8080
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.airflow.rule=Host(`${AIRFLOW_HOSTNAME}`)"
+      - "traefik.http.routers.airflow.entrypoints=websecure"
+      - "traefik.http.routers.airflow.tls.certresolver=main"
+    depends_on:
+      <<: *airflow-common-depends-on
+      airflow-init:
+        condition: service_completed_successfully
+
+  airflow-scheduler:
+    <<: *airflow-common
+    image: ghcr.io/betagouv/data-inclusion-pipeline:${STACK_VERSION}
+    command: scheduler
+    restart: always
+    healthcheck:
+      test:
+        [
+          "CMD-SHELL",
+          'airflow jobs check --job-type SchedulerJob --hostname "$${HOSTNAME}"'
+        ]
+      interval: 10s
+      timeout: 10s
+      retries: 5
+    depends_on:
+      <<: *airflow-common-depends-on
+      airflow-init:
+        condition: service_completed_successfully
+    env_file:
+      - ./defaults.env
+
+  datawarehouse:
+    image: ghcr.io/betagouv/data-inclusion-datawarehouse:${STACK_VERSION}
+    restart: always
+    healthcheck:
+      test: [ "CMD", "pg_isready", "-U", "${DATAWAREHOUSE_DI_USERNAME}"]
+      interval: 5s
+      retries: 5
+    ports:
+      - 5432:5432
+    environment:
+      - POSTGRES_DB=${DATAWAREHOUSE_DI_DATABASE}
+      - POSTGRES_USER=${DATAWAREHOUSE_DI_USERNAME}
+      - POSTGRES_PASSWORD=${DATAWAREHOUSE_DI_PASSWORD}
+    volumes:
+      - datawarehouse-data:/var/lib/postgresql/data
+
+  api:
+    image: ghcr.io/betagouv/data-inclusion-api:${STACK_VERSION}
+    depends_on:
+      - datawarehouse
+    restart: always
+    ports:
+      - 8000:8000
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.api.rule=Host(`${API_HOSTNAME}`)"
+      - "traefik.http.routers.api.entrypoints=websecure"
+      - "traefik.http.routers.api.tls.certresolver=main"
+    environment:
+      - ENV=prod
+      - DEBUG=False
+      - DATABASE_URL=${AIRFLOW_CONN_PG}  # TODO: create dedicated RO creds for api
+      - SECRET_KEY=${API_SECRET_KEY}
+      - ROOT_PATH=/api
+      - TOKEN_ENABLED=${API_TOKEN_ENABLED}
+
+  reverse-proxy:
+    image: traefik:v2.10
+    restart: always
+    ports:
+      - 80:80
+      - 443:443
+      - 8081:8080
+    environment:
+      # - TRAEFIK_API_INSECURE=true
+      # - TRAEFIK_LOG_LEVEL=debug
+      - TRAEFIK_PROVIDERS_DOCKER=true
+      - TRAEFIK_PROVIDERS_DOCKER_EXPOSEDBYDEFAULT=false
+      - TRAEFIK_ENTRYPOINTS_WEB_ADDRESS=:80
+      - TRAEFIK_ENTRYPOINTS_WEB_HTTP_REDIRECTIONS_ENTRYPOINT_TO=websecure
+      - TRAEFIK_ENTRYPOINTS_WEBSECURE_ADDRESS=:443
+      - TRAEFIK_CERTIFICATESRESOLVERS_MAIN_ACME_TLSCHALLENGE=true
+      - TRAEFIK_CERTIFICATESRESOLVERS_MAIN_ACME_EMAIL=tech@data.inclusion.beta.gouv.fr
+      - TRAEFIK_CERTIFICATESRESOLVERS_MAIN_ACME_STORAGE=/letsencrypt/acme.json
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - letsencrypt-data:/letsencrypt
+
+  metabase-db:
+    image: postgres:14
+    restart: always
+    healthcheck:
+      test: [ "CMD", "pg_isready", "-U", "metabase" ]
+      interval: 5s
+      retries: 5
+    environment:
+      - POSTGRES_DB=metabase
+      - POSTGRES_USER=metabase
+      - POSTGRES_PASSWORD=metabase
+    volumes:
+      - metabase-data:/var/lib/postgresql/data
+
+  metabase:
+    image: metabase/metabase:v0.47.4
+    restart: always
+    healthcheck:
+      test: curl --fail -I http://localhost:3000/api/health || exit 1
+      interval: 15s
+      timeout: 5s
+      retries: 5
+    ports:
+      - 3000:3000
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.metabase.rule=Host(`${METABASE_HOSTNAME}`)"
+      - "traefik.http.routers.metabase.entrypoints=websecure"
+      - "traefik.http.routers.metabase.tls.certresolver=main"
+    environment:
+      - JAVA_TIMEZONE=Europe/Paris
+      - MB_DB_TYPE=postgres
+      - MB_DB_CONNECTION_URI=postgresql://metabase:metabase@metabase-db:5432/metabase
+      - MB_ENCRYPTION_SECRET_KEY=${METABASE_SECRET_KEY}
+      - MB_ANON_TRACKING_ENABLED=false
+      - MB_SITE_URL=${METABASE_HOSTNAME}
+      - MB_REDIRECT_ALL_REQUESTS_TO_HTTPS=true
+
+volumes:
+  airflow-logs:
+  datawarehouse-data:
+  letsencrypt-data:
+  metabase-data:
+
+networks:
+  default:
+    name: data-inclusion

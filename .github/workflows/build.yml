@@ -1,0 +1,159 @@
+# References
+# https://docs.docker.com/build/ci/github-actions/
+# https://docs.github.com/en/actions/publishing-packages/publishing-docker-images
+
+name: build
+
+on:
+  push:
+    branches:
+      - "main"
+  pull_request:
+    branches:
+      - "main"
+
+jobs:
+  build:
+    runs-on: ubuntu-20.04
+
+    strategy:
+      matrix:
+        service: ["api", "datawarehouse", "pipeline"]
+
+    env:
+      REGISTRY: ghcr.io
+      IMAGE_NAME: ${{ github.repository }}-${{ matrix.service }}
+
+    permissions:
+      contents: read
+      packages: write
+
+    defaults:
+      run:
+        working-directory: ${{ matrix.service }}
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Log in to the Container registry
+        uses: docker/login-action@v2
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Extract metadata (tags, labels) for Docker
+        id: meta
+        uses: docker/metadata-action@v4
+        with:
+          images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
+          tags: |
+            type=ref,event=branch
+            type=ref,event=tag
+            type=ref,event=pr
+            type=sha,format=long,prefix=
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v2
+
+      - name: Build and export to Docker
+        uses: docker/build-push-action@v5
+        with:
+          context: ./${{ matrix.service }}
+          load: true
+          tags: ${{ steps.meta.outputs.tags }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+          labels: ${{ steps.meta.outputs.labels }}
+
+      - name: Run tests
+        if: matrix.service == 'api'
+        run: |
+          docker compose run --entrypoint pytest api -p no:cacheprovider -vv
+
+      - name: Run tests
+        if: matrix.service == 'pipeline'
+        run: |
+          echo #TODO
+
+      - name: Push image to GitHub registry
+        uses: docker/build-push-action@v5
+        with:
+          context: ./${{ matrix.service }}
+          push: true
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-20.04
+    environment: staging
+
+    defaults:
+      run:
+        working-directory: deployment
+
+    container:
+      image: hashicorp/terraform:1.6.1
+      env:
+        TF_IN_AUTOMATION: true
+
+        AWS_ACCESS_KEY_ID: ${{ vars.AWS_ACCESS_KEY_ID }}
+        AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+
+        # `TF_VAR_*` are case sensitive and must match the case of variables
+        TF_VAR_scaleway_application_id: ${{ vars.SCALEWAY_APPLICATION_ID }}
+        TF_VAR_datawarehouse_admin_password: ${{ secrets.DATAWAREHOUSE_ADMIN_PASSWORD }}
+        TF_VAR_datawarehouse_admin_username: ${{ vars.DATAWAREHOUSE_ADMIN_USERNAME }}
+        TF_VAR_datawarehouse_di_database: ${{ vars.DATAWAREHOUSE_DI_DATABASE }}
+        TF_VAR_datawarehouse_di_password: ${{ secrets.DATAWAREHOUSE_DI_PASSWORD }}
+        TF_VAR_datawarehouse_di_username: ${{ vars.DATAWAREHOUSE_DI_USERNAME }}
+        TF_VAR_scaleway_access_key: ${{ vars.SCALEWAY_ACCESS_KEY }}
+        TF_VAR_scaleway_project_id: ${{ vars.SCALEWAY_PROJECT_ID }}
+        TF_VAR_scaleway_secret_key: ${{ secrets.SCALEWAY_SECRET_KEY }}
+        TF_VAR_environment: ${{ vars.ENVIRONMENT }}
+        TF_VAR_airflow_application_id: ${{ vars.AIRFLOW_APPLICATION_ID }}
+        TF_VAR_airflow_access_key: ${{ vars.AIRFLOW_ACCESS_KEY }}
+        TF_VAR_airflow_secret_key: ${{ secrets.AIRFLOW_SECRET_KEY }}
+        TF_VAR_airflow_admin_password: ${{ secrets.AIRFLOW_ADMIN_PASSWORD }}
+        TF_VAR_api_secret_key: ${{ secrets.API_SECRET_KEY }}
+        TF_VAR_stack_version: ${{ github.sha }}
+        TF_VAR_ssh_private_key: ${{ secrets.SSH_PRIVATE_KEY }}
+        TF_VAR_dns_zone: ${{ vars.DNS_ZONE }}
+        TF_VAR_dns_subdomain: ${{ vars.DNS_SUBDOMAIN }}
+        TF_VAR_airflow__core__fernet_key: ${{ secrets.AIRFLOW__CORE__FERNET_KEY }}
+        TF_VAR_api_token_enabled: ${{ vars.API_TOKEN_ENABLED }}
+        TF_VAR_airflow_conn_s3_sources: ${{ secrets.AIRFLOW_CONN_S3_SOURCES }}
+        TF_VAR_datagouv_api_key: ${{ secrets.DATAGOUV_API_KEY }}
+        TF_VAR_dora_api_url: ${{ vars.DORA_API_URL }}
+        TF_VAR_dora_api_token: ${{ secrets.DORA_API_TOKEN }}
+        TF_VAR_emplois_api_token: ${{ secrets.EMPLOIS_API_TOKEN }}
+        TF_VAR_grist_api_token: ${{ secrets.GRIST_API_TOKEN }}
+        TF_VAR_mes_aides_airtable_key: ${{ secrets.MES_AIDES_AIRTABLE_KEY }}
+        TF_VAR_soliguide_api_token: ${{ secrets.SOLIGUIDE_API_TOKEN }}
+        TF_VAR_metabase_secret_key: ${{ secrets.METABASE_SECRET_KEY }}
+        ENV: ${{ vars.ENVIRONMENT }}
+      volumes:
+        - .:/deployment
+      options: --workdir /deployment
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: tf init
+        run: |
+          terraform init \
+            -backend-config "bucket=data-inclusion-terraform-states" \
+            -backend-config "key=${ENV}"
+
+      - name: tf validate
+        run: |
+          terraform validate
+
+      - name: tf plan
+        run: |
+          terraform plan
+
+      - name: tf apply
+        run: |
+          terraform apply -auto-approve

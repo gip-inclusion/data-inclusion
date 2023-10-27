@@ -25,6 +25,8 @@ ALLOWED_HOSTS = os.environ.get("ALLOWED_HOSTS") and os.environ.get("ALLOWED_HOST
 if ENV == "dev":
     INTERNAL_IPS = ["127.0.0.1"]
 
+USE_X_FORWARDED_HOST = ENV != "dev"
+
 # Application definition
 
 INSTALLED_APPS = [

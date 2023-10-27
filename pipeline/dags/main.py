@@ -133,7 +133,6 @@ with airflow.DAG(
         task_id="python_geocode",
         python=str(PYTHON_BIN_PATH),
         python_callable=_geocode,
-        pool="base_adresse_nationale_api",
     )
 
     dbt_run_after_geocoding = dbt_operator_factory(

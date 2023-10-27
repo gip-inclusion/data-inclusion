@@ -2,3 +2,5 @@
 
 !/requirements
 !/src
+!/dags
+!/dbt

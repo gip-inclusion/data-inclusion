@@ -13,6 +13,12 @@
 			"path": "../siretisation"
 		},
 		{
+			"path": "../deployment"
+		},
+		{
+			"path": "../datawarehouse"
+		},
+		{
 			"path": ".."
 		},
 		{
