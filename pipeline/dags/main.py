@@ -114,9 +114,9 @@ with airflow.DAG(
 
         dbt_staging_tasks_list += [source_task_group]
 
-    dbt_run_before_geocoding = dbt_operator_factory(
-        task_id="dbt_run_before_geocoding",
-        command="run",
+    dbt_build_before_geocoding = dbt_operator_factory(
+        task_id="dbt_build_before_geocoding",
+        command="build",
         select=" ".join(
             [
                 # FIXME: handle odspep as other sources (add to dags/settings.py)
@@ -135,9 +135,9 @@ with airflow.DAG(
         python_callable=_geocode,
     )
 
-    dbt_run_after_geocoding = dbt_operator_factory(
-        task_id="dbt_run_after_geocoding",
-        command="run",
+    dbt_build_after_geocoding = dbt_operator_factory(
+        task_id="dbt_build_after_geocoding",
+        command="build",
         select=" ".join(
             [
                 "path:models/intermediate/extra",
@@ -151,9 +151,9 @@ with airflow.DAG(
         ),
     )
 
-    dbt_run_flux = dbt_operator_factory(
-        task_id="dbt_run_flux",
-        command="run",
+    dbt_build_flux = dbt_operator_factory(
+        task_id="dbt_build_flux",
+        command="build",
         select="flux",
     )
 
@@ -162,9 +162,9 @@ with airflow.DAG(
         >> dbt_seed
         >> dbt_create_udfs
         >> dbt_staging_tasks_list
-        >> dbt_run_before_geocoding
+        >> dbt_build_before_geocoding
         >> python_geocode
-        >> dbt_run_after_geocoding
-        >> dbt_run_flux
+        >> dbt_build_after_geocoding
+        >> dbt_build_flux
         >> end
     )
