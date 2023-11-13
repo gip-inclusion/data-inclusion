@@ -30,7 +30,7 @@ You can run dbt commands from your terminal.
 
 ```bash
 # install dbt
-pipx install --include-deps dbt-postgres==1.6.1
+pipx install --include-deps dbt-postgres==1.7.1
 
 # install extra dbt packages (e.g. dbt_utils)
 dbt deps
