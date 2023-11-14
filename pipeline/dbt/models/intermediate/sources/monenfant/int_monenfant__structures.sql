@@ -25,7 +25,6 @@ final AS (
         derniere_modif_date                                                                                                                                                AS "date_maj",
         ARRAY['famille--garde-denfants']                                                                                                                                   AS "thematiques"
     FROM creches
-    WHERE avip  -- temporarily limit results to avip
 )
 
 SELECT * FROM final
