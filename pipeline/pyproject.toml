@@ -18,7 +18,7 @@ skip_gitignore = true
 use_parentheses = true
 
 [tool.black]
-target-version = ["py310"]
+target-version = ["py311"]
 
 [tool.pytest.ini_options]
 testpaths = "tests"
