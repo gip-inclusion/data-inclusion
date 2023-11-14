@@ -55,6 +55,7 @@ RUN apt-get update \
     build-essential \
     libpq-dev \
     git \
+    vim \
     && apt-get autoremove -yqq --purge \
     && apt-get clean -y \
     && rm -rf /var/lib/apt/lists/*
