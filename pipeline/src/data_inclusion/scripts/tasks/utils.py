@@ -54,4 +54,6 @@ def read_excel(path: Path, sheet_name: Optional[str | int] = 0) -> pd.DataFrame:
 
 
 def extract_http_content(url: str, **kwargs) -> bytes:
-    return requests.get(url).content
+    response = requests.get(url)
+    response.raise_for_status()
+    return response.content
