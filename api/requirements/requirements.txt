@@ -4,13 +4,14 @@
 #
 #    pip-compile --output-file=requirements/requirements.txt
 #
-alembic==1.11.1
+alembic==1.12.1
     # via data-inclusion-api (setup.py)
-annotated-types==0.5.0
+annotated-types==0.6.0
     # via pydantic
 anyio==3.7.1
     # via
-    #   httpcore
+    #   fastapi
+    #   httpx
     #   starlette
     #   watchfiles
 certifi==2023.7.22
@@ -20,40 +21,40 @@ certifi==2023.7.22
     #   httpx
     #   requests
     #   sentry-sdk
-cffi==1.15.1
+cffi==1.16.0
     # via cryptography
-charset-normalizer==3.2.0
+charset-normalizer==3.3.2
     # via requests
-click==8.1.6
+click==8.1.7
     # via
     #   data-inclusion-api (setup.py)
     #   uvicorn
-cryptography==41.0.2
+cryptography==41.0.5
     # via
     #   data-inclusion-api (setup.py)
     #   python-jose
 data-inclusion-schema==0.11.0
     # via data-inclusion-api (setup.py)
-dnspython==2.4.1
+dnspython==2.4.2
     # via email-validator
 ecdsa==0.18.0
     # via python-jose
-email-validator==2.0.0.post2
+email-validator==2.1.0.post1
     # via pydantic
-exceptiongroup==1.1.2
+exceptiongroup==1.1.3
     # via anyio
-faker==19.2.0
+faker==20.0.0
     # via data-inclusion-api (setup.py)
-fastapi==0.100.1
+fastapi==0.104.1
     # via
     #   data-inclusion-api (setup.py)
     #   fastapi-pagination
     #   sentry-sdk
-fastapi-pagination==0.12.8
+fastapi-pagination==0.12.12
     # via data-inclusion-api (setup.py)
-geoalchemy2==0.14.1
+geoalchemy2==0.14.2
     # via data-inclusion-api (setup.py)
-greenlet==2.0.2
+greenlet==3.0.1
     # via sqlalchemy
 gunicorn==21.2.0
     # via data-inclusion-api (setup.py)
@@ -61,11 +62,11 @@ h11==0.14.0
     # via
     #   httpcore
     #   uvicorn
-httpcore==0.17.3
+httpcore==1.0.2
     # via httpx
-httptools==0.6.0
+httptools==0.6.1
     # via uvicorn
-httpx==0.24.1
+httpx==0.25.1
     # via data-inclusion-api (setup.py)
 idna==3.4
     # via
@@ -73,15 +74,15 @@ idna==3.4
     #   email-validator
     #   httpx
     #   requests
-mako==1.2.4
+mako==1.3.0
     # via alembic
 markupsafe==2.1.3
     # via mako
-packaging==23.1
+packaging==23.2
     # via
     #   geoalchemy2
     #   gunicorn
-psycopg2==2.9.6
+psycopg2==2.9.9
     # via data-inclusion-api (setup.py)
 pyasn1==0.5.0
     # via
@@ -89,13 +90,13 @@ pyasn1==0.5.0
     #   rsa
 pycparser==2.21
     # via cffi
-pydantic[email]==2.1.1
+pydantic[email]==2.4.2
     # via
     #   data-inclusion-api (setup.py)
     #   data-inclusion-schema
     #   fastapi
     #   fastapi-pagination
-pydantic-core==2.4.0
+pydantic-core==2.10.1
     # via pydantic
 python-dateutil==2.8.2
     # via faker
@@ -105,7 +106,7 @@ python-dotenv==1.0.0
     #   uvicorn
 python-jose[cryptography]==3.3.0
     # via data-inclusion-api (setup.py)
-pytz==2023.3
+pytz==2023.3.post1
     # via data-inclusion-api (setup.py)
 pyyaml==6.0.1
     # via uvicorn
@@ -113,7 +114,7 @@ requests==2.31.0
     # via data-inclusion-api (setup.py)
 rsa==4.9
     # via python-jose
-sentry-sdk[fastapi]==1.29.2
+sentry-sdk[fastapi]==1.35.0
     # via data-inclusion-api (setup.py)
 six==1.16.0
     # via
@@ -122,32 +123,32 @@ six==1.16.0
 sniffio==1.3.0
     # via
     #   anyio
-    #   httpcore
     #   httpx
-sqlalchemy==2.0.19
+sqlalchemy==2.0.23
     # via
     #   alembic
     #   data-inclusion-api (setup.py)
     #   geoalchemy2
 starlette==0.27.0
     # via fastapi
-typing-extensions==4.7.1
+typing-extensions==4.8.0
     # via
     #   alembic
     #   fastapi
+    #   fastapi-pagination
     #   pydantic
     #   pydantic-core
     #   sqlalchemy
     #   uvicorn
-urllib3==2.0.4
+urllib3==2.1.0
     # via
     #   requests
     #   sentry-sdk
-uvicorn[standard]==0.23.2
+uvicorn[standard]==0.24.0.post1
     # via data-inclusion-api (setup.py)
-uvloop==0.17.0
+uvloop==0.19.0
     # via uvicorn
-watchfiles==0.19.0
+watchfiles==0.21.0
     # via uvicorn
-websockets==11.0.3
+websockets==12.0
     # via uvicorn
