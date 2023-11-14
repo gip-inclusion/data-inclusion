@@ -522,8 +522,6 @@ psutil==5.9.6
     # via
     #   -c requirements/airflow/constraints.txt
     #   apache-airflow
-psycopg2==2.9.9
-    # via -r requirements/airflow/base.in
 psycopg2-binary==2.9.9
     # via
     #   -c requirements/airflow/constraints.txt

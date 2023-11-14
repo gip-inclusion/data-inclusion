@@ -398,8 +398,6 @@ protobuf==4.25.0
     #   opentelemetry-proto
 psutil==5.9.6
     # via apache-airflow
-psycopg2==2.9.9
-    # via -r requirements/tasks/python/requirements.in
 psycopg2-binary==2.9.9
     # via apache-airflow-providers-postgres
 pyairtable==2.1.0.post1
