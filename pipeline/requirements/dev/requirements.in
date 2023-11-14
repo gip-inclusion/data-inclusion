@@ -5,3 +5,4 @@ black
 pre-commit
 pytest
 tox
+requests-mock
