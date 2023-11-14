@@ -73,7 +73,7 @@ models:
           - dbt_utils.not_empty_string
       - name: frais
         tests:
-          - not_null
+          - dbt_utils.not_constant
           - relationships:
               to: ref('frais')
               field: value
