@@ -21,7 +21,7 @@ Analyses des jeux de données des partenaires de data.inclusion
 
 ```bash
 # Create a new virtualenv in the project's root directory
-python3.10 -m venv .venv --prompt analyse
+python3 -m venv .venv --prompt analyse
 
 # Activate the environment
 source .venv/bin/activate
