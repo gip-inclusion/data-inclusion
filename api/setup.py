@@ -22,7 +22,7 @@ setup(
         "gunicorn",
         "httpx",
         "psycopg2",
-        "pydantic[email]",
+        "pydantic[email]>=2.5.0",
         "python-dotenv",
         "python-jose[cryptography]",
         "pytz",

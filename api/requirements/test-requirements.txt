@@ -123,13 +123,14 @@ pyasn1==0.5.0
     #   rsa
 pycparser==2.21
     # via cffi
-pydantic[email]==2.4.2
+pydantic[email]==2.5.0
     # via
     #   data-inclusion-api (setup.py)
     #   data-inclusion-schema
     #   fastapi
     #   fastapi-pagination
-pydantic-core==2.10.1
+    #   pydantic
+pydantic-core==2.14.1
     # via pydantic
 pyproj==3.6.1
     # via geopandas
