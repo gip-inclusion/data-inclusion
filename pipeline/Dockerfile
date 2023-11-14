@@ -1,7 +1,7 @@
 ########
 # This image compiles virtual environments for airflow tasks
 ########
-FROM python:3.10-slim AS compile-image
+FROM python:3.11-slim AS compile-image
 
 ENV PYTHONUNBUFFERED 1
 ENV PYTHONDONTWRITEBYTECODE 1
@@ -41,7 +41,7 @@ RUN "${VIRTUAL_ENV}/bin/python" -m pip install --no-cache-dir -r requirements/ta
 ########
 # This image is the runtime
 ########
-FROM apache/airflow:2.7.3-python3.10
+FROM apache/airflow:2.7.3-python3.11
 
 ENV PYTHONUNBUFFERED 1
 ENV PYTHONDONTWRITEBYTECODE 1
