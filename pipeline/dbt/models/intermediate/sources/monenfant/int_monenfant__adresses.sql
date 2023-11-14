@@ -14,7 +14,6 @@ final AS (
         SUBSTRING(adresse FROM '^(.*?) (- .* )?\d{5}') AS "adresse",
         SUBSTRING(adresse FROM '- (.*) \d{5}')         AS "complement_adresse"
     FROM creches
-    WHERE avip  -- temporarily limit results to avip
 )
 
 SELECT * FROM final
