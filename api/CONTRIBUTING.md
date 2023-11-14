@@ -4,7 +4,7 @@
 
 ```bash
 # Create a new virtualenv in the project's root directory
-python3.10 -m venv .venv --prompt di-api
+python3 -m venv .venv --prompt di-api
 
 # Activate the environment and install the dependencies
 source .venv/bin/activate

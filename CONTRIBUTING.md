@@ -45,7 +45,7 @@ See installation instructions [here](https://min.io/docs/minio/linux/reference/m
 
 ### `python`
 
-Project uses `python3.10`
+Project uses `python3.11`
 
 [`pyenv`](https://github.com/pyenv/pyenv) is a clean and easy way to manage multiple python versions on your computer. Installation instructions are available [here](https://github.com/pyenv/pyenv-installer).
 
