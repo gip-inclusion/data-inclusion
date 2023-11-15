@@ -83,7 +83,7 @@ To update the constraints and upgrade the requirements:
 ```bash
 # optionally bump the airflow version
 AIRFLOW_VERSION=
-PYTHON_VERSION=3.10
+PYTHON_VERSION=
 curl https://raw.githubusercontent.com/apache/airflow/constraints-${AIRFLOW_VERSION}/constraints-${PYTHON_VERSION}.txt > requirements/airflow/constraints.txt
 pip-compile --upgrade requirements/airflow/requirements.in
 ```
