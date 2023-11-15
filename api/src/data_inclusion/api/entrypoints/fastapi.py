@@ -35,9 +35,9 @@ Le token doit être renseigné dans chaque requête via un header:
 Les données respectent les schémas (structures et services) de data.inclusion.
 
 Plus d'informations sur le
-[dépôt](https://github.com/betagouv/data-inclusion-schema) versionnant le schéma,
+[dépôt](https://github.com/gip-inclusion/data-inclusion-schema) versionnant le schéma,
 sur la [documentation officielle](https://www.data.inclusion.beta.gouv.fr/schemas-de-donnees-de-loffre/schema-des-structures-dinsertion)
-ou sur la page [schema.gouv](https://schema.data.gouv.fr/betagouv/data-inclusion-schema/) du schéma.
+ou sur la page [schema.gouv](https://schema.data.gouv.fr/gip-inclusion/data-inclusion-schema/) du schéma.
 """  # noqa: E501
 
 

@@ -59,7 +59,7 @@ pipx install pre-commit
 
 ```bash
 # Clone this repository
-git clone git@github.com:betagouv/data-inclusion.git
+git clone git@github.com:gip-inclusion/data-inclusion.git
 
 # Setup code quality tools
 pre-commit install
