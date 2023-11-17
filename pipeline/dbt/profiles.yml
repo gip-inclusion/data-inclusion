@@ -7,7 +7,7 @@ data_inclusion:
       host: "{{ env_var('POSTGRES_HOST', 'localhost') }}"
       port: "{{ env_var('POSTGRES_PORT', '5455') | int }}"
       user: "{{ env_var('POSTGRES_USER', 'data-inclusion') }}"
-      pass: "{{ env_var('POSTGRES_PASSWORD', 'data-inclusion') }}"
+      password: "{{ env_var('POSTGRES_PASSWORD', 'data-inclusion') }}"
       dbname: "{{ env_var('POSTGRES_DB', 'data-inclusion') }}"
       schema: public
 
