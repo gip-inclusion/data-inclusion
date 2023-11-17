@@ -163,37 +163,9 @@ services:
       - DATABASE_URL=postgresql://data-inclusion:data-inclusion@target-db:5432/data-inclusion
       - SECRET_KEY=USE_IN_DEVELOPMENT_ONLY
 
-  siretisation-ui:
-    image: data-inclusion/siretisation-ui
-    build: siretisation
-    depends_on:
-      target-db:
-        condition: service_healthy
-    restart: on-failure
-    ports:
-      - ${SIRETISATION_UI_PORT:-8005}:8000
-    environment:
-      - ENV=${SIRETISATION_UI_ENV:-dev}
-      - DEBUG=${SIRETISATION_UI_DEBUG}
-      - POSTGRES_DB=data-inclusion
-      - POSTGRES_USER=data-inclusion
-      - POSTGRES_PASSWORD=data-inclusion
-      - POSTGRES_HOST=target-db
-      - POSTGRES_PORT=5432
-      - SECRET_KEY=USE_IN_DEVELOPMENT_ONLY
-      - ALLOWED_HOSTS=127.0.0.1,localhost
-      - DJANGO_SUPERUSER_USERNAME=admin
-      - DJANGO_SUPERUSER_EMAIL=admin@admin.admin
-      - DJANGO_SUPERUSER_PASSWORD=admin
-      - ANNUAIRE_ENTREPRISES_API_URL=${ANNUAIRE_ENTREPRISES_API_URL}
-    volumes:
-      - files-data:/var/www
-
 volumes:
   pg-data:
   minio-data:
-  files-data:
-
 
 networks:
   default:
