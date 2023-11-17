@@ -35,7 +35,6 @@ After a few seconds, the services should be avaible as follow:
 | --------------- | ---------------------------------------------------------- | --------------------------------------- |
 | airflow UI      | [http://localhost:8080](http://localhost:8080)             | user: `airflow` pass: `airflow`         |
 | data.inclusion  | [http://localhost:8000](http://localhost:8000/api/v0/docs) | token must be generated                 |
-| siretisation UI | [http://localhost:8005](http://localhost:8005/admin)       | user: `admin@admin.admin` pass: `admin` |
 
 ### `minio` client
 
