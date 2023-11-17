@@ -1,0 +1,73 @@
+- name: public_staging.stg_dora__services
+  columns:
+    _di_source_id: TEXT
+    contact_public: BOOLEAN
+    cumulable: BOOLEAN
+    date_creation: TIMESTAMPTZ
+    date_maj: TIMESTAMPTZ
+    date_suspension: TIMESTAMPTZ
+    latitude: DOUBLE PRECISION
+    longitude: DOUBLE PRECISION
+    modes_accueil: TEXT[]
+    profils: TEXT[]
+    thematiques: TEXT[]
+    types: TEXT[]
+    justificatifs: TEXT[]
+    pre_requis: TEXT[]
+    modes_orientation_accompagnateur: TEXT[]
+    modes_orientation_beneficiaire: TEXT[]
+    modes_orientation_accompagnateur_autres: TEXT
+    modes_orientation_beneficiaire_autres: TEXT
+    adresse: TEXT
+    code_insee: TEXT
+    code_postal: TEXT
+    commune: TEXT
+    complement_adresse: TEXT
+    contact_nom: TEXT
+    contact_prenom: TEXT
+    courriel: TEXT
+    formulaire_en_ligne: TEXT
+    frais_autres: TEXT
+    frais: TEXT
+    id: TEXT
+    lien_source: TEXT
+    nom: TEXT
+    presentation_resume: TEXT
+    presentation_detail: TEXT
+    prise_rdv: TEXT
+    recurrence: TEXT
+    source: TEXT
+    structure_id: TEXT
+    telephone: TEXT
+    zone_diffusion_code: TEXT
+    zone_diffusion_nom: TEXT
+    zone_diffusion_type: TEXT
+- name: public_staging.stg_dora__structures
+  columns:
+    _di_source_id: TEXT
+    antenne: BOOLEAN
+    date_maj: TIMESTAMPTZ
+    labels_autres: TEXT[]
+    labels_nationaux: TEXT[]
+    latitude: DOUBLE PRECISION
+    longitude: DOUBLE PRECISION
+    thematiques: TEXT[]
+    accessibilite: TEXT
+    adresse: TEXT
+    code_insee: TEXT
+    code_postal: TEXT
+    commune: TEXT
+    complement_adresse: TEXT
+    courriel: TEXT
+    horaires_ouverture: TEXT
+    id: TEXT
+    lien_source: TEXT
+    nom: TEXT
+    presentation_detail: TEXT
+    presentation_resume: TEXT
+    rna: TEXT
+    siret: TEXT
+    site_web: TEXT
+    source: TEXT
+    telephone: TEXT
+    typologie: TEXT

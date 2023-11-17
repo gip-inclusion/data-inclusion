@@ -1,0 +1,22 @@
+test_int_dora__contacts:
+  model: dora.int_dora__contacts
+  inputs:
+    public_staging.stg_dora__services:
+      rows:
+      - courriel: truc@batman.com
+      - courriel: ''
+      - courriel: truc@batman.com
+      - courriel: foobar@my-god.url
+
+    public_staging.stg_dora__structures:
+      rows:
+      - courriel: direction@groupe-foobar.org
+      - courriel: truc@batman.com
+
+
+  outputs:
+    query:
+      rows:
+      - courriel: direction@groupe-foobar.org
+      - courriel: foobar@my-god.url
+      - courriel: truc@batman.com
