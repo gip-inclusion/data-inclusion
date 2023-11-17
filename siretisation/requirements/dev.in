@@ -1,4 +1,0 @@
--r tests.in
-
-black
-pre-commit

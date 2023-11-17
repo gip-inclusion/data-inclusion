@@ -1,4 +1,0 @@
--r base.in
-
-gunicorn
-whitenoise
