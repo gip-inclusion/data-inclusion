@@ -1,6 +1,6 @@
 import airflow
 import pendulum
-from airflow.operators import empty, python
+from airflow.operators import empty, python, bash
 from airflow.utils.task_group import TaskGroup
 
 from dags.dbt import dbt_operator_factory
@@ -77,6 +77,8 @@ with airflow.DAG(
     catchup=False,
     concurrency=4,
 ) as dag:
+    from airflow.models import Variable
+
     start = empty.EmptyOperator(task_id="start")
     end = empty.EmptyOperator(task_id="end")
 
@@ -157,6 +159,20 @@ with airflow.DAG(
         select="flux",
     )
 
+    sqlmesh_run = bash.BashOperator(
+        task_id="sqlmesh_run",
+        bash_command="sqlmesh run",
+        append_env=True,
+        env={
+            "POSTGRES_HOST": "{{ conn.pg.host }}",
+            "POSTGRES_PORT": "{{ conn.pg.port }}",
+            "POSTGRES_USER": "{{ conn.pg.login }}",
+            "POSTGRES_PASSWORD": "{{ conn.pg.password }}",
+            "POSTGRES_DB": "{{ conn.pg.schema }}",
+        },
+        cwd=Variable.get("SQLMESH_PROJECT_DIR"),
+    )
+
     (
         start
         >> dbt_seed
@@ -166,5 +182,6 @@ with airflow.DAG(
         >> python_geocode
         >> dbt_build_after_geocoding
         >> dbt_build_flux
+        >> sqlmesh_run
         >> end
     )

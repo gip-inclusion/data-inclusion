@@ -4,3 +4,4 @@
 !/src
 !/dags
 !/dbt
+!/sqlmesh

@@ -13,6 +13,7 @@ x-airflow-common:
     AIRFLOW__DATABASE__SQL_ALCHEMY_CONN: postgresql://airflow:airflow@airflow-db:5432/airflow
     AIRFLOW__SCHEDULER__MIN_FILE_PROCESS_INTERVAL: 60
     AIRFLOW__WEBSERVER__WORKERS: 1
+    AIRFLOW__API__AUTH_BACKENDS: airflow.api.auth.backend.basic_auth,airflow.api.auth.backend.session
 
     # Connections
     AIRFLOW_CONN_PG: postgresql://data-inclusion:data-inclusion@target-db:5432/data-inclusion
@@ -60,7 +61,7 @@ services:
 
   airflow-webserver:
     <<: *airflow-common
-    image: apache/airflow:2.7.3-python3.11
+    image: data-inclusion/pipeline
     command: webserver
     restart: on-failure
     ports:

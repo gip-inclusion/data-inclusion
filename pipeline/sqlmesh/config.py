@@ -19,5 +19,11 @@ config = Config(
                 database=os.getenv("PGDATABASE"),
             ),
         ),
+    },
+    default_scheduler={
+        "type": "airflow",
+        "airflow_url": "http://127.0.0.1:8080/",
+        "username": "airflow",
+        "password": "airflow",
     }
 )

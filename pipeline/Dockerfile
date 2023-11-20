@@ -38,6 +38,7 @@ RUN python -m venv ${VIRTUAL_ENV}
 RUN "${VIRTUAL_ENV}/bin/python" -m pip install --no-cache-dir --upgrade pip setuptools wheel
 RUN "${VIRTUAL_ENV}/bin/python" -m pip install --no-cache-dir -r requirements/tasks/dbt/requirements.txt
 
+
 ########
 # This image is the runtime
 ########
@@ -47,6 +48,7 @@ ENV PYTHONUNBUFFERED 1
 ENV PYTHONDONTWRITEBYTECODE 1
 
 ENV AIRFLOW_VAR_DBT_PROJECT_DIR /opt/airflow/dbt
+ENV AIRFLOW_VAR_SQLMESH_PROJECT_DIR /opt/airflow/sqlmesh
 
 USER root
 
@@ -68,8 +70,10 @@ COPY --chown=airflow:0 --from=compile-image /opt/airflow/venvs /opt/airflow/venv
 COPY --chown=airflow:0 dags /opt/airflow/dags
 COPY --chown=airflow:0 src /opt/airflow/src
 COPY --chown=airflow:0 dbt ${AIRFLOW_VAR_DBT_PROJECT_DIR}
+COPY --chown=airflow:0 sqlmesh ${AIRFLOW_VAR_SQLMESH_PROJECT_DIR}
 
 RUN /opt/airflow/venvs/dbt/venv/bin/dbt deps --project-dir /opt/airflow/dbt
+RUN pip install sqlmesh
 
 # make the data_inclusion package available in editable mode
 ENV PYTHONPATH "${PYTHONPATH}:/opt/airflow/src"
