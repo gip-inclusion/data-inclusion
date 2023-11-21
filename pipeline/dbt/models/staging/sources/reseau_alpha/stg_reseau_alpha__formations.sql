@@ -36,26 +36,8 @@ final AS (
         source.data ->> 'url'                                                    AS "url",
         source.data ->> 'activite'                                               AS "activite",
         TO_DATE(
-            SUBSTRING(
-                (
-                    CASE
-                        -- TODO: remove this after making fr_FR locale available
-                        WHEN (source.data ->> 'content__date_maj') ~ 'janvier' THEN REGEXP_REPLACE(source.data ->> 'content__date_maj', 'janvier', '01')
-                        WHEN (source.data ->> 'content__date_maj') ~ 'février' THEN REGEXP_REPLACE(source.data ->> 'content__date_maj', 'février', '02')
-                        WHEN (source.data ->> 'content__date_maj') ~ 'mars' THEN REGEXP_REPLACE(source.data ->> 'content__date_maj', 'mars', '03')
-                        WHEN (source.data ->> 'content__date_maj') ~ 'avril' THEN REGEXP_REPLACE(source.data ->> 'content__date_maj', 'avril', '04')
-                        WHEN (source.data ->> 'content__date_maj') ~ 'mai' THEN REGEXP_REPLACE(source.data ->> 'content__date_maj', 'mai', '05')
-                        WHEN (source.data ->> 'content__date_maj') ~ 'juin' THEN REGEXP_REPLACE(source.data ->> 'content__date_maj', 'juin', '06')
-                        WHEN (source.data ->> 'content__date_maj') ~ 'juillet' THEN REGEXP_REPLACE(source.data ->> 'content__date_maj', 'juillet', '07')
-                        WHEN (source.data ->> 'content__date_maj') ~ 'août' THEN REGEXP_REPLACE(source.data ->> 'content__date_maj', 'août', '08')
-                        WHEN (source.data ->> 'content__date_maj') ~ 'septembre' THEN REGEXP_REPLACE(source.data ->> 'content__date_maj', 'septembre', '09')
-                        WHEN (source.data ->> 'content__date_maj') ~ 'octobre' THEN REGEXP_REPLACE(source.data ->> 'content__date_maj', 'octobre', '10')
-                        WHEN (source.data ->> 'content__date_maj') ~ 'novembre' THEN REGEXP_REPLACE(source.data ->> 'content__date_maj', 'novembre', '11')
-                        WHEN (source.data ->> 'content__date_maj') ~ 'décembre' THEN REGEXP_REPLACE(source.data ->> 'content__date_maj', 'décembre', '12')
-                    END
-                ) FROM 'Date de la dernière modification : (.*)'
-            ),
-            'DD MM YYYY'
+            SUBSTRING(source.data ->> 'content__date_maj' FROM 'Date de la dernière modification : (.*)'),
+            'DD TMmonth YYYY'
         )                                                                        AS "content__date_maj",
         TRIM(source.data ->> 'content__contenu_et_objectifs__titre')             AS "content__contenu_et_objectifs__titre",
         TRIM(source.data ->> 'content__contenu_et_objectifs__objectifs')         AS "content__contenu_et_objectifs__objectifs",
