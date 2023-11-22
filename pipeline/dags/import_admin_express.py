@@ -4,7 +4,7 @@ import airflow
 import pendulum
 from airflow.operators import bash, empty, python
 
-from dags.virtualenvs import PIPX_PYTHON_BIN_PATH, PYTHON_BIN_PATH
+from dag_utils.virtualenvs import PIPX_PYTHON_BIN_PATH, PYTHON_BIN_PATH
 
 logger = logging.getLogger(__name__)
 

@@ -3,7 +3,7 @@ from typing import Optional
 from airflow.models import Variable
 from airflow.operators import bash
 
-from dags.virtualenvs import DBT_PYTHON_BIN_PATH
+from dag_utils.virtualenvs import DBT_PYTHON_BIN_PATH
 
 
 def dbt_operator_factory(
