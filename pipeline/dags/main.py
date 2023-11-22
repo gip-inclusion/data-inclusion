@@ -3,10 +3,10 @@ import pendulum
 from airflow.operators import empty, python
 from airflow.utils.task_group import TaskGroup
 
-from dags.dbt import dbt_operator_factory
-from dags.notifications import format_failure, notify_webhook
-from dags.settings import SOURCES_CONFIGS
-from dags.virtualenvs import PYTHON_BIN_PATH
+from dag_utils.dbt import dbt_operator_factory
+from dag_utils.notifications import format_failure, notify_webhook
+from dag_utils.settings import SOURCES_CONFIGS
+from dag_utils.virtualenvs import PYTHON_BIN_PATH
 
 default_args = {
     "on_failure_callback": lambda context: notify_webhook(
