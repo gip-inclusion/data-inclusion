@@ -35,7 +35,7 @@ final AS (
         data ->> 'code_postal'                                                              AS "code_postal",
         data ->> 'commune'                                                                  AS "commune",
         NULLIF(TRIM(data ->> 'complement_adresse'), '')                                     AS "complement_adresse",
-        data ->> 'courriel'                                                                 AS "courriel",
+        NULLIF(TRIM(data ->> 'courriel'), '')                                               AS "courriel",
         data ->> 'horaires_ouverture'                                                       AS "horaires_ouverture",
         data ->> 'id'                                                                       AS "id",
         data ->> 'lien_source'                                                              AS "lien_source",
