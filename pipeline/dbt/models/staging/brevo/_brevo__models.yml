@@ -1,0 +1,38 @@
+version: 2
+
+models:
+  - name: stg_brevo__contacts
+    columns:
+      - name: id
+        tests:
+          - unique
+          - not_null
+          - dbt_utils.not_empty_string
+      - name: email
+        tests:
+          - not_null
+          - dbt_utils.not_constant
+          - dbt_utils.not_empty_string
+      - name: email_blacklisted
+        tests:
+          - not_null
+          - accepted_values:
+              values: [true, false]
+      - name: sms_blacklisted
+        tests:
+          - not_null
+          - accepted_values:
+              values: [true, false]
+      - name: created_at
+        tests:
+          - not_null
+          - dbt_utils.not_constant
+      - name: modified_at
+        tests:
+          - not_null
+          - dbt_utils.not_constant
+      - name: contact_uids
+        tests:
+          - not_null
+          - dbt_utils.not_empty_string
+          - dbt_utils.not_constant

@@ -11,6 +11,16 @@ models:
         tests:
           - unique
           - not_null
+
+  - name: int_dora__contacts
+    columns:
+      - name: contact_uid
+        tests:
+          - unique
+          - not_null
+      - name: courriel
+        tests:
+          - not_null
           - dbt_utils.not_empty_string
 
   - name: int_dora__services

@@ -291,3 +291,8 @@ sources:
     tables:
       - name: structures
       - name: formations
+
+  - name: brevo
+    schema: brevo
+    tables:
+      - name: contacts
