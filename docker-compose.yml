@@ -54,6 +54,8 @@ services:
       test: [ "CMD", "pg_isready", "-U", "airflow" ]
       interval: 5s
       retries: 5
+    ports:
+      - ${AIRFLOW_DB_PORT:-5454}:5432
     environment:
       - POSTGRES_DB=airflow
       - POSTGRES_USER=airflow
