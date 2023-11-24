@@ -165,6 +165,7 @@ resource "null_resource" "up" {
 
     # pipeline secrets
     AIRFLOW_CONN_S3_SOURCES=${var.airflow_conn_s3_sources}
+    AIRFLOW_VAR_BREVO_API_KEY=${var.brevo_api_key}
     AIRFLOW_VAR_DATAGOUV_API_KEY=${var.datagouv_api_key}
     AIRFLOW_VAR_DORA_API_TOKEN=${var.dora_api_token}
     AIRFLOW_VAR_DORA_PREPROD_API_TOKEN=${var.dora_preprod_api_token}

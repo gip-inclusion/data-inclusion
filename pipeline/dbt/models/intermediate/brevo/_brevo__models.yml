@@ -1,0 +1,20 @@
+version: 2
+
+models:
+  - name: int_brevo__contacts
+    columns:
+      - name: id
+        tests:
+          - unique
+          - not_null
+          - dbt_utils.not_empty_string
+      - name: courriel
+        tests:
+          - not_null
+          - dbt_utils.not_constant
+          - dbt_utils.not_empty_string
+      - name: est_interdit
+        tests:
+          - not_null
+          - accepted_values:
+              values: [true, false]
