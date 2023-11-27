@@ -281,4 +281,23 @@ SOURCES_CONFIGS = [
             },
         ],
     },
+    {
+        "id": "pole-emploi",
+        "schedule_interval": "@once",
+        "snapshot": False,
+        "streams": [
+            {
+                "id": "structures",
+                "filename": "structures.json",
+                "url": Variable.get("DORA_PREPROD_API_URL", None),
+                "token": Variable.get("DORA_PREPROD_API_TOKEN", None),
+            },
+            {
+                "id": "services",
+                "filename": "services.json",
+                "url": Variable.get("DORA_PREPROD_API_URL", None),
+                "token": Variable.get("DORA_PREPROD_API_TOKEN", None),
+            },
+        ],
+    },
 ]

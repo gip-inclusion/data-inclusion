@@ -88,6 +88,7 @@ def _extract(
             "structures": reseau_alpha.extract_structures,
             "formations": reseau_alpha.extract_formations,
         },
+        "pole-emploi": dora.extract,
     }
 
     if source_config["id"].startswith("mediation-numerique-"):
@@ -165,6 +166,7 @@ def _load(
             "services": agefiph.read,
             "structures": lambda path: utils.read_csv(path, sep=","),
         },
+        "pole-emploi": utils.read_json,
     }
 
     if source_config["id"].startswith("mediation-numerique-"):

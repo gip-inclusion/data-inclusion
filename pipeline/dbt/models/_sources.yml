@@ -34,6 +34,12 @@ sources:
       - name: structures
       - name: services
 
+  - name: pole_emploi
+    schema: pole_emploi
+    tables:
+      - name: structures
+      - name: services
+
   - name: finess
     schema: finess
     tables:

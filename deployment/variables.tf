@@ -98,6 +98,13 @@ variable "dora_api_token" {
   default     = ""
 }
 
+variable "dora_preprod_api_token" {
+  description = "Used in extraction tasks orchestrated by airflow"
+  type        = string
+  sensitive   = true
+  default     = ""
+}
+
 variable "dora_api_url" {
   description = "Used in extraction tasks orchestrated by airflow"
   type        = string
