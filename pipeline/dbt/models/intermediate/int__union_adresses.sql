@@ -13,6 +13,7 @@ WITH adresses AS (
                 ref('int_mes_aides__adresses'),
                 ref('int_monenfant__adresses'),
                 ref('int_odspep__adresses'),
+                ref('int_pole_emploi__adresses'),
                 ref('int_reseau_alpha__adresses'),
                 ref('int_siao__adresses'),
                 ref('int_soliguide__adresses'),
