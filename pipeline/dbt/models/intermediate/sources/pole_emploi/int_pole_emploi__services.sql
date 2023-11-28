@@ -18,7 +18,6 @@ final AS (
     SELECT
         id                                      AS "adresse_id",
         contact_public                          AS "contact_public",
-        contact_nom_prenom                      AS "contact_nom_prenom",
         courriel                                AS "courriel",
         cumulable                               AS "cumulable",
         date_creation::DATE                     AS "date_creation",
@@ -53,6 +52,7 @@ final AS (
         zone_diffusion_nom                      AS "zone_diffusion_nom",
         zone_diffusion_type                     AS "zone_diffusion_type",
         pre_requis                              AS "pre_requis",
+        contact_nom || contact_prenom           AS "contact_nom_prenom",
         ARRAY[frais]                            AS "frais"
     FROM services
 )
