@@ -162,10 +162,7 @@ def _load(
             "structures": reseau_alpha.read_structures,
             "formations": reseau_alpha.read_formations,
         },
-        "agefiph": {
-            "services": agefiph.read,
-            "structures": lambda path: utils.read_csv(path, sep=","),
-        },
+        "agefiph": agefiph.read,
         "pole-emploi": utils.read_json,
     }
 

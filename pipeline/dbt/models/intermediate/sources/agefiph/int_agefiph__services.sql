@@ -7,16 +7,7 @@ services_thematiques AS (
 ),
 
 structures AS (
-    SELECT * FROM {{ ref('stg_agefiph__structures') }}
-),
-
-communes AS (
-    SELECT * FROM {{ source('insee', 'communes') }}
-    WHERE "TYPECOM" != 'COMD'
-),
-
-regions AS (
-    SELECT * FROM {{ source('insee', 'regions') }}
+    SELECT * FROM {{ ref('int_agefiph__structures') }}
 ),
 
 -- https://www.agefiph.fr/jsonapi/taxonomy_term/thematique
@@ -50,32 +41,32 @@ di_type_by_agefiph_type AS (
 
 final AS (
     SELECT
-        structures.id                                                 AS "adresse_id",
-        TRUE                                                          AS "contact_public",
-        NULL                                                          AS "contact_nom_prenom",
-        structures.courriel                                           AS "courriel",
-        NULL                                                          AS "formulaire_en_ligne",
-        NULL                                                          AS "frais_autres",
-        services.attributes__title                                    AS "nom",
-        services.attributes__field_titre_card_employeur               AS "presentation_resume",
-        NULL                                                          AS "prise_rdv",
-        NULL                                                          AS "recurrence",
-        services._di_source_id                                        AS "source",
-        structures.id                                                 AS "structure_id",
-        structures.telephone                                          AS "telephone",
-        regions."REG"                                                 AS "zone_diffusion_code",
-        regions."LIBELLE"                                             AS "zone_diffusion_nom",
-        'region'                                                      AS "zone_diffusion_type",
-        NULL                                                          AS "modes_orientation_accompagnateur_autres",
-        NULL                                                          AS "modes_orientation_beneficiaire_autres",
-        CAST(NULL AS TEXT [])                                         AS "justificatifs",
-        CAST(NULL AS TEXT [])                                         AS "pre_requis",
-        CAST(NULL AS BOOLEAN)                                         AS "cumulable",
-        CAST(NULL AS DATE)                                            AS "date_suspension",
-        'https://www.agefiph.fr' || services.attributes__path__alias  AS "lien_source",
-        CAST(services.attributes__created AS DATE)                    AS "date_creation",
-        CAST(services.attributes__changed AS DATE)                    AS "date_maj",
-        CAST(CAST(MD5(structures.id || services.id) AS UUID) AS TEXT) AS "id",
+        structures.id                                                AS "adresse_id",
+        TRUE                                                         AS "contact_public",
+        NULL                                                         AS "contact_nom_prenom",
+        structures.courriel                                          AS "courriel",
+        NULL                                                         AS "formulaire_en_ligne",
+        NULL                                                         AS "frais_autres",
+        services.attributes__title                                   AS "nom",
+        services.attributes__field_titre_card_employeur              AS "presentation_resume",
+        NULL                                                         AS "prise_rdv",
+        NULL                                                         AS "recurrence",
+        services._di_source_id                                       AS "source",
+        structures.id                                                AS "structure_id",
+        structures.telephone                                         AS "telephone",
+        NULL                                                         AS "zone_diffusion_code",
+        NULL                                                         AS "zone_diffusion_nom",
+        'pays'                                                       AS "zone_diffusion_type",
+        services.id                                                  AS "id",
+        'https://www.agefiph.fr' || services.attributes__path__alias AS "modes_orientation_accompagnateur_autres",
+        'https://www.agefiph.fr' || services.attributes__path__alias AS "modes_orientation_beneficiaire_autres",
+        CAST(NULL AS TEXT [])                                        AS "justificatifs",
+        CAST(NULL AS TEXT [])                                        AS "pre_requis",
+        CAST(NULL AS BOOLEAN)                                        AS "cumulable",
+        CAST(NULL AS DATE)                                           AS "date_suspension",
+        'https://www.agefiph.fr' || services.attributes__path__alias AS "lien_source",
+        CAST(services.attributes__created AS DATE)                   AS "date_creation",
+        CAST(services.attributes__changed AS DATE)                   AS "date_maj",
         NULLIF(
             TRIM(
                 ARRAY_TO_STRING(
@@ -88,28 +79,26 @@ final AS (
                 )
             ),
             ''
-        )                                                             AS "presentation_detail",
+        )                                                            AS "presentation_detail",
         ARRAY(
             SELECT di_thematique_by_agefiph_thematique.thematique
             FROM services_thematiques
             INNER JOIN di_thematique_by_agefiph_thematique ON services_thematiques.thematique_id = di_thematique_by_agefiph_thematique.agefiph_thematique_id
             WHERE services.id = services_thematiques.service_id
-        )                                                             AS "thematiques",
-        ARRAY['a-distance']                                           AS "modes_accueil",
-        CAST(NULL AS TEXT [])                                         AS "modes_orientation_accompagnateur",
-        CAST(NULL AS TEXT [])                                         AS "modes_orientation_beneficiaire",
-        CAST(NULL AS TEXT [])                                         AS "profils",
+        )                                                            AS "thematiques",
+        ARRAY['a-distance']                                          AS "modes_accueil",
+        ARRAY['autre']                                               AS "modes_orientation_accompagnateur",
+        ARRAY['autre']                                               AS "modes_orientation_beneficiaire",
+        CAST(NULL AS TEXT [])                                        AS "profils",
         ARRAY(
             SELECT di_type_by_agefiph_type.type_
             FROM di_type_by_agefiph_type
             WHERE services.relationships__field_type_aide_service__data__id = di_type_by_agefiph_type.agefiph_type
-        )                                                             AS "types",
-        CAST(NULL AS TEXT [])                                         AS "frais"
+        )                                                            AS "types",
+        CAST(NULL AS TEXT [])                                        AS "frais"
     FROM
         structures
     CROSS JOIN services
-    LEFT JOIN communes ON structures.code_insee = communes."COM"
-    LEFT JOIN regions ON communes."REG" = regions."REG"
 )
 
 SELECT * FROM final
