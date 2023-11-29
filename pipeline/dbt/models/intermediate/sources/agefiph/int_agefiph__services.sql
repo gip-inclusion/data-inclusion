@@ -89,7 +89,10 @@ final AS (
         ARRAY['a-distance']                                          AS "modes_accueil",
         ARRAY['autre']                                               AS "modes_orientation_accompagnateur",
         ARRAY['autre']                                               AS "modes_orientation_beneficiaire",
-        CAST(NULL AS TEXT [])                                        AS "profils",
+        ARRAY[
+            'personnes-handicapees',
+            'personnes-en-situation-de-handicap'
+        ]                                                            AS "profils",
         ARRAY(
             SELECT di_type_by_agefiph_type.type_
             FROM di_type_by_agefiph_type
