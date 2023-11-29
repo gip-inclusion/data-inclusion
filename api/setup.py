@@ -30,7 +30,7 @@ setup(
         "sentry-sdk[fastapi]",
         "sqlalchemy",
         "uvicorn[standard]",
-        "data-inclusion-schema==0.11.0",
+        "data-inclusion-schema==0.12.0",
     ],
     extras_require={
         "test": [

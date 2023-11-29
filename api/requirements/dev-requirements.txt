@@ -44,7 +44,7 @@ cryptography==41.0.5
     # via
     #   data-inclusion-api (setup.py)
     #   python-jose
-data-inclusion-schema==0.11.0
+data-inclusion-schema==0.12.0
     # via data-inclusion-api (setup.py)
 distlib==0.3.7
     # via virtualenv
@@ -131,6 +131,7 @@ pydantic[email]==2.5.0
     #   data-inclusion-schema
     #   fastapi
     #   fastapi-pagination
+    #   pydantic
 pydantic-core==2.14.1
     # via pydantic
 pyproject-api==1.6.1
