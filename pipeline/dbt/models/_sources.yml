@@ -285,7 +285,6 @@ sources:
     schema: agefiph
     tables:
       - name: services
-      - name: structures
 
   - name: reseau_alpha
     schema: reseau_alpha
