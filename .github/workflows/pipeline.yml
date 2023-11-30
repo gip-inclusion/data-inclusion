@@ -19,11 +19,62 @@ on:
 jobs:
   tests:
     runs-on: ubuntu-22.04
+    env:
+      CI: 1
+      PYTHONPATH: .
+      PGPASSWORD: password
+      PGHOST: localhost
+      PGUSER: postgres
+      PGPORT: 5432
+      AIRFLOW__DATABASE__SQL_ALCHEMY_CONN: postgresql://postgres:password@localhost:5432/airflow
+      AIRFLOW__CORE__DAGS_FOLDER: ./dags
+      AIRFLOW__CORE__DEFAULT_TIMEZONE: Europe/Paris
+      AIRFLOW__CORE__EXECUTOR: LocalExecutor
+      AIRFLOW__CORE__LOAD_DEFAULT_CONNECTIONS: false
+      AIRFLOW__CORE__LOAD_EXAMPLES: false
+      AIRFLOW_VAR_DBT_PROJECT_DIR: ./dbt
+
+    services:
+      postgres:
+        image: postgres:14
+        env:
+          POSTGRES_PASSWORD: password
+        ports:
+          - 5432:5432
+        # Set health checks to wait until postgres has started
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
 
     steps:
       - uses: actions/checkout@v3
+
       - uses: actions/setup-python@v4
         with:
           python-version: '3.11'
-      - run: pip install tox
-      - run: tox -- -vv
+          cache: pip
+
+      - name: Bootstrap PostgreSQL
+        run: |
+          psql <<SQL
+            ALTER SYSTEM SET fsync=off;
+            ALTER SYSTEM SET synchronous_commit=off;
+            ALTER SYSTEM SET full_page_writes=off;
+            CREATE DATABASE data-inclusion;
+            CREATE DATABASE airflow;
+          SQL
+          docker kill --signal=SIGHUP ${{ job.services.postgres.id }}
+
+      - name: Install Python dependencies
+        run: pip install -r requirements/dev/requirements.txt
+
+      - name: Setup airflow database
+        run: |
+          airflow db reset -y
+          airflow db migrate
+
+      - name: Run tests
+        run: tox -- -vv tests/
+
