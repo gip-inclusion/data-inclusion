@@ -22,7 +22,10 @@ use_parentheses = true
 target-version = ["py311"]
 
 [tool.pytest.ini_options]
-testpaths = "tests"
+testpaths = [
+	"tests/unit",
+	"tests/integration",
+]
 markers = '''
     ban_api: mark test as requiring the base base adresse nationale api
 '''
