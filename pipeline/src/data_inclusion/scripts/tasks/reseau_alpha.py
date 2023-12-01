@@ -261,7 +261,12 @@ def read_structures(path: Path) -> pd.DataFrame:
         tar.extractall(path=path.parent)
 
     with (path.parent / "metadata.json").open() as f:
-        df = pd.DataFrame.from_records(json.load(f)["structures"])
+        data = json.load(f)["structures"]
+
+    for structure_data in data:
+        structure_data["description"] = html_to_markdown(structure_data["description"])
+
+    df = pd.DataFrame.from_records(data)
 
     df = df.join(
         df.apply(
