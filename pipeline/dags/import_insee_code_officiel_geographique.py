@@ -3,6 +3,7 @@ import logging
 import airflow
 import pendulum
 from airflow.operators import empty, python
+
 from dag_utils.virtualenvs import PYTHON_BIN_PATH
 
 logger = logging.getLogger(__name__)
