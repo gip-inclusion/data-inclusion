@@ -63,6 +63,7 @@ def _extract(
         mes_aides,
         reseau_alpha,
         soliguide,
+        un_jeune_une_solution,
         utils,
     )
 
@@ -81,7 +82,7 @@ def _extract(
         "finess": utils.extract_http_content,
         "mes-aides": mes_aides.extract,
         "siao": utils.extract_http_content,
-        "un-jeune-une-solution": utils.extract_http_content,
+        "un-jeune-une-solution": un_jeune_une_solution.extract,
         "soliguide": soliguide.extract,
         "monenfant": utils.extract_http_content,
         "reseau-alpha": {
