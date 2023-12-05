@@ -169,9 +169,10 @@ models:
           - dbt_utils.not_empty_string
       - name: zone_diffusion_type
         tests:
+          - not_null
           - dbt_utils.not_constant
           - accepted_values:
-              values: [commune, epci, departement, region]
+              values: [commune, epci, departement, region, pays]
 
   - name: stg_dora__structures
     columns:
