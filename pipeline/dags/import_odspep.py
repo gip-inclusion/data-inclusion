@@ -31,6 +31,7 @@ def _import_dataset(
         logical_date.astimezone(pendulum.timezone("Europe/Paris"))
     ).date()
 
+    # FIXME(vperron): COuldn't we use the create_schema helper here ?
     with pg_engine.connect() as conn:
         # put dataset in schema (for control access)
         with conn.begin():

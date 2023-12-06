@@ -22,39 +22,12 @@ default_args = {
 }
 
 
-def _setup(source_config: dict):
-    """Ensure the db objects (schema, permissions) subsequently required exist."""
-
-    from airflow.providers.postgres.hooks.postgres import PostgresHook
-
-    pg_hook = PostgresHook(postgres_conn_id="pg")
-    pg_engine = pg_hook.get_sqlalchemy_engine()
-    schema_name = source_config["id"].replace("-", "_")
-
-    with pg_engine.connect() as conn:
-        with conn.begin():
-            conn.execute(
-                f"""\
-                CREATE SCHEMA IF NOT EXISTS {schema_name};
-                GRANT USAGE ON SCHEMA {schema_name} TO PUBLIC;
-                ALTER DEFAULT PRIVILEGES IN SCHEMA {schema_name}
-                GRANT SELECT ON TABLES TO PUBLIC;"""
-            )
-
-
-def _extract(
+def extract_from_source_to_datalake_bucket(
     stream_config: dict,
     source_config: dict,
     run_id: str,
     logical_date,
 ):
-    """Extract raw data from source and store it into datalake bucket."""
-
-    import io
-
-    import pendulum
-    from airflow.providers.amazon.aws.hooks import s3
-
     from data_inclusion.scripts.tasks import (
         dora,
         emplois_de_linclusion,
@@ -67,10 +40,11 @@ def _extract(
         utils,
     )
 
-    logical_date = pendulum.instance(
-        logical_date.astimezone(pendulum.timezone("Europe/Paris"))
-    ).date()
+    from dag_utils import s3
 
+    source_id = source_config["id"]
+
+    # Store this in settings or in a "sources.py" module.
     EXTRACT_FN_BY_SOURCE_ID = {
         "agefiph": utils.extract_http_content,
         "annuaire-du-service-public": utils.extract_http_content,
@@ -92,49 +66,33 @@ def _extract(
         "pole-emploi": dora.extract,
     }
 
-    if source_config["id"].startswith("mediation-numerique-"):
+    # TODO(vperron): Replace by dict of objects
+    if source_id.startswith("mediation-numerique-"):
         extract_fn = mediation_numerique.extract
-    elif isinstance(EXTRACT_FN_BY_SOURCE_ID[source_config["id"]], dict):
-        extract_fn = EXTRACT_FN_BY_SOURCE_ID[source_config["id"]][stream_config["id"]]
+    elif isinstance(EXTRACT_FN_BY_SOURCE_ID[source_id], dict):
+        extract_fn = EXTRACT_FN_BY_SOURCE_ID[source_id][stream_config["id"]]
     else:
-        extract_fn = EXTRACT_FN_BY_SOURCE_ID[source_config["id"]]
+        extract_fn = EXTRACT_FN_BY_SOURCE_ID[source_id]
 
-    s3_hook = s3.S3Hook(aws_conn_id="s3")
-
-    stream_s3_key = "/".join(
-        [
-            "data",
-            "raw",
-            logical_date.to_date_string(),
-            source_config["id"],
-            run_id,
-            stream_config["filename"],
-        ]
+    s3.store_content(
+        path=s3.source_file_path(
+            source_id=source_id,
+            filename=stream_config["filename"],
+            run_id=run_id,
+            logical_date=logical_date,
+        ),
+        content=extract_fn(**stream_config),
     )
 
-    with io.BytesIO(extract_fn(**stream_config)) as buf:
-        s3_hook.load_file_obj(
-            file_obj=buf,
-            key=stream_s3_key,
-            replace=True,
-        )
 
-
-def _load(
+def load_from_s3_to_data_warehouse(
     stream_config: dict,
     source_config: dict,
     run_id: str,
     logical_date,
 ):
-    """Pull raw data from datalake bucket and load it with metadata to postgres."""
-
-    from pathlib import Path
-
     import pandas as pd
-    import pendulum
     import sqlalchemy as sqla
-    from airflow.providers.amazon.aws.hooks import s3
-    from airflow.providers.postgres.hooks.postgres import PostgresHook
     from sqlalchemy.dialects.postgresql import JSONB
 
     from data_inclusion.scripts.tasks import (
@@ -146,6 +104,9 @@ def _load(
         utils,
     )
 
+    from dag_utils import pg, s3
+
+    # Meme remarque.
     READ_FN_BY_SOURCE_ID = {
         "annuaire-du-service-public": annuaire_du_service_public.read,
         "cd35": lambda path: utils.read_csv(path, sep=";"),
@@ -167,80 +128,64 @@ def _load(
         "pole-emploi": utils.read_json,
     }
 
-    if source_config["id"].startswith("mediation-numerique-"):
+    source_id = source_config["id"]
+    stream_id = stream_config["id"]
+
+    if source_id.startswith("mediation-numerique-"):
         read_fn = utils.read_json
-    elif isinstance(READ_FN_BY_SOURCE_ID[source_config["id"]], dict):
-        read_fn = READ_FN_BY_SOURCE_ID[source_config["id"]][stream_config["id"]]
+    elif isinstance(READ_FN_BY_SOURCE_ID[source_id], dict):
+        read_fn = READ_FN_BY_SOURCE_ID[source_id][stream_id]
     else:
-        read_fn = READ_FN_BY_SOURCE_ID[source_config["id"]]
+        read_fn = READ_FN_BY_SOURCE_ID[source_id]
 
-    s3_hook = s3.S3Hook(aws_conn_id="s3")
-    pg_hook = PostgresHook(postgres_conn_id="pg")
-    pg_engine = pg_hook.get_sqlalchemy_engine()
-
-    logical_date = pendulum.instance(
-        logical_date.astimezone(pendulum.timezone("Europe/Paris"))
-    ).date()
-
-    stream_s3_key = "/".join(
-        [
-            "data",
-            "raw",
-            logical_date.to_date_string(),
-            source_config["id"],
-            run_id,
-            stream_config["filename"],
-        ]
+    s3_path = s3.source_file_path(
+        source_id, stream_config["filename"], run_id, logical_date
     )
+    tmp_filename = s3.download_file(s3_path)
+    df = read_fn(path=tmp_filename)
 
-    tmp_filename = s3_hook.download_file(key=stream_s3_key)
-
-    # read in data
-    df = read_fn(path=Path(tmp_filename))
-
-    # add metadata
     df = pd.DataFrame().assign(data=df.apply(lambda row: row.to_dict(), axis="columns"))
     df = df.assign(_di_batch_id=run_id)
-    df = df.assign(_di_source_id=source_config["id"])
-    df = df.assign(_di_stream_id=stream_config["id"])
+    df = df.assign(_di_source_id=source_id)
+    df = df.assign(_di_stream_id=stream_id)
     df = df.assign(_di_source_url=stream_config["url"])
-    df = df.assign(_di_stream_s3_key=stream_s3_key)
+    df = df.assign(_di_stream_s3_key=s3_path)
     df = df.assign(_di_logical_date=logical_date)
 
-    # load to postgres
-    with pg_engine.connect() as conn:
-        with conn.begin():
-            schema_name = source_config["id"].replace("-", "_")
-            table_name = stream_config["id"].replace("-", "_")
+    schema_name = source_id.replace("-", "_")
+    table_name = stream_id.replace("-", "_")
 
-            df.to_sql(
-                f"{table_name}_tmp",
-                con=conn,
-                schema=schema_name,
-                if_exists="replace",
-                index=False,
-                dtype={
-                    "data": JSONB,
-                    "_di_logical_date": sqla.Date,
-                },
-            )
+    pg.create_schema(schema_name)
 
-            conn.execute(
-                f"""\
-                CREATE TABLE IF NOT EXISTS {schema_name}.{table_name} (
-                    data              JSONB,
-                    _di_batch_id      TEXT,
-                    _di_source_id     TEXT,
-                    _di_stream_id     TEXT,
-                    _di_source_url    TEXT,
-                    _di_stream_s3_key TEXT,
-                    _di_logical_date  DATE
-                );
-                TRUNCATE {schema_name}.{table_name};
-                INSERT INTO {schema_name}.{table_name}
-                SELECT * FROM {schema_name}.{table_name}_tmp;
-                DROP TABLE {schema_name}.{table_name}_tmp;"""
-            )
+    with pg.connect_begin() as conn:
+        df.to_sql(
+            f"{table_name}_tmp",
+            con=conn,
+            schema=schema_name,
+            if_exists="replace",
+            index=False,
+            dtype={
+                "data": JSONB,
+                "_di_logical_date": sqla.Date,
+            },
+        )
+
+        conn.execute(
+            f"""\
+            CREATE TABLE IF NOT EXISTS {schema_name}.{table_name} (
+                data              JSONB,
+                _di_batch_id      TEXT,
+                _di_source_id     TEXT,
+                _di_stream_id     TEXT,
+                _di_source_url    TEXT,
+                _di_stream_s3_key TEXT,
+                _di_logical_date  DATE
+            );
+            TRUNCATE {schema_name}.{table_name};
+            INSERT INTO {schema_name}.{table_name}
+            SELECT * FROM {schema_name}.{table_name}_tmp;
+            DROP TABLE {schema_name}.{table_name}_tmp;"""
+        )
 
 
 # generate a dedicated DAG for every configured sources
@@ -258,13 +203,6 @@ for source_config in SOURCES_CONFIGS:
     with dag:
         start = empty.EmptyOperator(task_id="start")
         end = empty.EmptyOperator(task_id="end")
-
-        setup = python.ExternalPythonOperator(
-            task_id="setup",
-            python=str(PYTHON_BIN_PATH),
-            python_callable=_setup,
-            op_kwargs={"source_config": source_config},
-        )
 
         dbt_source_id = source_config["id"].replace("-", "_")
 
@@ -292,7 +230,7 @@ for source_config in SOURCES_CONFIGS:
                 extract = python.ExternalPythonOperator(
                     task_id="extract",
                     python=str(PYTHON_BIN_PATH),
-                    python_callable=_extract,
+                    python_callable=extract_from_source_to_datalake_bucket,
                     retries=2,
                     op_kwargs={
                         "stream_config": stream_config,
@@ -302,14 +240,14 @@ for source_config in SOURCES_CONFIGS:
                 load = python.ExternalPythonOperator(
                     task_id="load",
                     python=str(PYTHON_BIN_PATH),
-                    python_callable=_load,
+                    python_callable=load_from_s3_to_data_warehouse,
                     op_kwargs={
                         "stream_config": stream_config,
                         "source_config": source_config,
                     },
                 )
 
-                start >> setup >> extract >> load
+                start >> extract >> load
 
             stream_task_group >> dbt_test_source
 
