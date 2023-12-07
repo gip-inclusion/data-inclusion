@@ -359,7 +359,11 @@ def list_services(
 @v0_api_router.get(
     "/services",
     response_model=pagination.Page[schema.Service],
-    summary="Lister les services consolidées",
+    summary=(
+        "[DEPRECIE] Lister les services consolidés "
+        "(A ne plus utiliser. Cet endpoint sera retiré au 1er Février 2024)",
+    ),
+    deprecated=True,
 )
 def list_services_endpoint(
     request: fastapi.Request,
