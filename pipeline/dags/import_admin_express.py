@@ -4,6 +4,7 @@ import airflow
 import pendulum
 from airflow.operators import bash, empty, python
 
+from dag_utils.date import TIME_ZONE
 from dag_utils.virtualenvs import PIPX_PYTHON_BIN_PATH, PYTHON_BIN_PATH
 
 logger = logging.getLogger(__name__)
@@ -255,7 +256,7 @@ def _load_regions():
 
 with airflow.DAG(
     dag_id="import_admin_express",
-    start_date=pendulum.datetime(2022, 1, 1, tz="Europe/Paris"),
+    start_date=pendulum.datetime(2022, 1, 1, tz=TIME_ZONE),
     default_args=default_args,
     schedule_interval="@once",
     catchup=False,

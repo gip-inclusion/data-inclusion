@@ -5,6 +5,7 @@ import pendulum
 from airflow.operators import empty, python
 from airflow.utils.task_group import TaskGroup
 
+from dag_utils.date import TIME_ZONE
 from dag_utils.dbt import dbt_operator_factory
 from dag_utils.notifications import format_failure, notify_webhook
 from dag_utils.settings import SOURCES_CONFIGS
@@ -193,7 +194,7 @@ for source_config in SOURCES_CONFIGS:
     dag_id = f"import_{source_config['id']}".replace("-", "_")
     dag = airflow.DAG(
         dag_id=dag_id,
-        start_date=pendulum.datetime(2022, 1, 1, tz="Europe/Paris"),
+        start_date=pendulum.datetime(2022, 1, 1, tz=TIME_ZONE),
         default_args=default_args,
         schedule_interval=source_config["schedule_interval"],
         catchup=False,
