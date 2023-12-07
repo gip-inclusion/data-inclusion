@@ -1,10 +1,11 @@
 import logging
 import textwrap
 
-import pendulum
 from airflow import exceptions
 from airflow.providers.http.hooks.http import HttpHook
 from airflow.utils.context import Context
+
+from dag_utils import date
 
 logger = logging.getLogger(__file__)
 
@@ -13,12 +14,8 @@ def format_failure(context: Context) -> str:
     dag = context["dag"]
     task_name = context["task"].task_id
     task_instance = context["task_instance"]
-    logical_date_ds = pendulum.instance(
-        context["logical_date"].astimezone(pendulum.timezone("Europe/Paris"))
-    ).to_day_datetime_string()
-    start_date_ds = pendulum.instance(
-        task_instance.start_date.astimezone(pendulum.timezone("Europe/Paris"))
-    ).to_day_datetime_string()
+    logical_date_ds = date.local_day_datetime_str(context["logical_date"])
+    start_date_ds = date.local_day_datetime_str(task_instance.start_date)
 
     # AIRFLOW__WEBSERVER__BASE_URL should be set to the public url to be able
     # to access logs

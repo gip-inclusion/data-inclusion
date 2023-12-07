@@ -4,6 +4,7 @@ import airflow
 import pendulum
 from airflow.operators import empty, python
 
+from dag_utils import date
 from dag_utils.virtualenvs import PYTHON_BIN_PATH
 
 logger = logging.getLogger(__name__)
@@ -16,7 +17,6 @@ def _import_dataset(
     logical_date,
 ):
     import pandas as pd
-    import pendulum
     from airflow.models import Variable
     from airflow.providers.amazon.aws.hooks import s3
     from airflow.providers.postgres.hooks import postgres
@@ -26,10 +26,6 @@ def _import_dataset(
     pg_hook = postgres.PostgresHook(postgres_conn_id="pg")
     pg_engine = pg_hook.get_sqlalchemy_engine()
     s3_hook = s3.S3Hook(aws_conn_id="s3_sources")
-
-    logical_date = pendulum.instance(
-        logical_date.astimezone(pendulum.timezone("Europe/Paris"))
-    ).date()
 
     # FIXME(vperron): COuldn't we use the create_schema helper here ?
     with pg_engine.connect() as conn:
@@ -67,7 +63,7 @@ def _import_dataset(
 
 with airflow.DAG(
     dag_id="import_odspep",
-    start_date=pendulum.datetime(2022, 1, 1, tz="Europe/Paris"),
+    start_date=pendulum.datetime(2022, 1, 1, tz=date.TIME_ZONE),
     default_args=default_args,
     schedule_interval="@once",
     catchup=False,

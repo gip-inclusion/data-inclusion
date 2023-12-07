@@ -4,6 +4,7 @@ import airflow
 import pendulum
 from airflow.operators import empty, python
 
+from dag_utils.date import TIME_ZONE
 from dag_utils.virtualenvs import PYTHON_BIN_PATH
 
 logger = logging.getLogger(__name__)
@@ -370,7 +371,7 @@ def _import_stock_etablissement_geocode():
 
 with airflow.DAG(
     dag_id="import_sirene",
-    start_date=pendulum.datetime(2022, 1, 1, tz="Europe/Paris"),
+    start_date=pendulum.datetime(2022, 1, 1, tz=TIME_ZONE),
     default_args=default_args,
     schedule_interval=None,
     catchup=False,

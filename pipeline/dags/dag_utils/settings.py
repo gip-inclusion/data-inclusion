@@ -5,8 +5,6 @@ It is used as a source of truth in general and to generate dedicated dags in par
 
 from airflow.models import Variable
 
-TIME_ZONE = "Europe/Paris"
-
 SOURCES_CONFIGS = [
     {
         "id": "dora",
