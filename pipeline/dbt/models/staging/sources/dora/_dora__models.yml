@@ -23,15 +23,9 @@ models:
         tests:
           - dbt_utils.not_constant
           - dbt_utils.not_empty_string
-      - name: contact_nom
+      - name: contact_nom_prenom
         tests:
           - dbt_utils.not_constant
-          - dbt_utils.not_empty_string
-      - name: contact_prenom
-        tests:
-          - dbt_utils.not_constant:
-              config:
-                severity: warn
           - dbt_utils.not_empty_string
       - name: contact_public
         tests:
