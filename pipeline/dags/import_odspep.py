@@ -19,46 +19,38 @@ def _import_dataset(
     import pandas as pd
     from airflow.models import Variable
     from airflow.providers.amazon.aws.hooks import s3
-    from airflow.providers.postgres.hooks import postgres
+
+    from dag_utils import pg
 
     ODSPEP_S3_KEY_PREFIX = Variable.get("ODSPEP_S3_KEY_PREFIX")
 
-    pg_hook = postgres.PostgresHook(postgres_conn_id="pg")
-    pg_engine = pg_hook.get_sqlalchemy_engine()
     s3_hook = s3.S3Hook(aws_conn_id="s3_sources")
 
-    # FIXME(vperron): COuldn't we use the create_schema helper here ?
-    with pg_engine.connect() as conn:
-        # put dataset in schema (for control access)
-        with conn.begin():
-            conn.execute("DROP SCHEMA IF EXISTS odspep CASCADE;")
-            conn.execute("CREATE SCHEMA odspep;")
+    pg.create_schema("odspep")
 
-            # iterate over source files
-            for s3_key in s3_hook.list_keys(prefix=ODSPEP_S3_KEY_PREFIX):
-                # read in data
-                tmp_filename = s3_hook.download_file(key=s3_key)
-                df = pd.read_excel(tmp_filename, dtype=str, engine="openpyxl")
+    for excel_file_name in s3_hook.list_keys(prefix=ODSPEP_S3_KEY_PREFIX):
+        tmp_filename = s3_hook.download_file(key=excel_file_name)
 
-                # add metadata
-                df = df.assign(batch_id=run_id)
-                df = df.assign(logical_date=logical_date)
+        df = pd.read_excel(tmp_filename, dtype=str, engine="openpyxl")
+        df = df.assign(batch_id=run_id)
+        df = df.assign(logical_date=logical_date)
 
-                # load to postgress
-                table_name = (
-                    s3_key.rstrip(".xlsx")
-                    .split("/")[-1]
-                    .replace(" ", "")
-                    .replace("-", "_")
-                    .upper()
-                )
-                df.to_sql(
-                    table_name,
-                    con=conn,
-                    schema="odspep",
-                    if_exists="replace",
-                    index=False,
-                )
+        table_name = (
+            excel_file_name.rstrip(".xlsx")
+            .split("/")[-1]
+            .replace(" ", "")
+            .replace("-", "_")
+            .upper()
+        )
+
+        with pg.connect_begin() as conn:
+            df.to_sql(
+                table_name,
+                con=conn,
+                schema="odspep",
+                if_exists="replace",
+                index=False,
+            )
 
 
 with airflow.DAG(

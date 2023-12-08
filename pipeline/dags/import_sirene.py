@@ -13,360 +13,281 @@ default_args = {}
 
 
 def _import_stock_etablissement_historique():
-    import textwrap
-
     import pandas as pd
     import sqlalchemy as sqla
-    import tqdm
     from airflow.models import Variable
-    from airflow.providers.postgres.hooks.postgres import PostgresHook
 
-    pg_hook = PostgresHook(postgres_conn_id="pg")
+    from dag_utils import pg
 
-    target_table = "sirene_etablissement_historique"
+    TABLE_NAME = "sirene_etablissement_historique"
+    reader = pd.read_csv(
+        Variable.get("SIRENE_STOCK_ETAB_HIST_FILE_URL"),
+        usecols=[
+            "siret",
+            "dateDebut",
+            "dateFin",
+            "changementEtatAdministratifEtablissement",
+            "etatAdministratifEtablissement",
+        ],
+        parse_dates=["dateFin", "dateDebut"],
+        dtype={"siret": str},
+        chunksize=10000,
+        encoding="utf-8",
+        compression="zip",
+    )
 
-    engine = pg_hook.get_sqlalchemy_engine()
-    with engine.connect() as conn:
-        with conn.begin():
-            # process the csv file by chunk
-            with pd.read_csv(
-                Variable.get("SIRENE_STOCK_ETAB_HIST_FILE_URL"),
-                usecols=[
-                    "siret",
-                    "dateDebut",
-                    "dateFin",
-                    "changementEtatAdministratifEtablissement",
-                    "etatAdministratifEtablissement",
-                ],
-                parse_dates=["dateFin", "dateDebut"],
-                dtype={"siret": str},
-                chunksize=10000,
-                encoding="utf-8",
-                compression="zip",
-            ) as reader:
-                with tqdm.tqdm() as pbar:
-                    for chunck_df in reader:
-                        chunck_df.to_sql(
-                            target_table,
-                            con=conn,
-                            if_exists="replace" if pbar.n == 0 else "append",
-                            index=False,
-                            dtype={"dateDebut": sqla.Date(), "dateFin": sqla.Date()},
-                        )
-
-                        pbar.update(len(chunck_df))
-
-            conn.execute(
-                textwrap.dedent(
-                    f"""
-                        CREATE INDEX sirene_etab_histo_siret_idx
-                        ON {target_table} ("siret");
-                    """
-                )
+    with pg.connect_begin() as conn:
+        for i, df_chunk in enumerate(reader):
+            df_chunk.to_sql(
+                TABLE_NAME,
+                con=conn,
+                if_exists="replace" if i == 0 else "append",
+                index=False,
+                dtype={"dateDebut": sqla.Date(), "dateFin": sqla.Date()},
             )
+
+        conn.execute(
+            f'CREATE INDEX sirene_etab_histo_siret_idx ON {TABLE_NAME} ("siret");'
+        )
 
 
 def _import_stock_etablissement_liens_succession():
-    import textwrap
-
     import pandas as pd
     import sqlalchemy as sqla
-    import tqdm
     from airflow.models import Variable
-    from airflow.providers.postgres.hooks.postgres import PostgresHook
 
-    pg_hook = PostgresHook(postgres_conn_id="pg")
+    from dag_utils import pg
 
-    target_table = "sirene_etablissement_succession"
+    TABLE_NAME = "sirene_etablissement_succession"
+    reader = pd.read_csv(
+        Variable.get("SIRENE_STOCK_ETAB_LIENS_SUCCESSION_URL"),
+        usecols=[
+            "siretEtablissementPredecesseur",
+            "siretEtablissementSuccesseur",
+            "dateLienSuccession",
+            "transfertSiege",
+            "continuiteEconomique",
+            "dateDernierTraitementLienSuccession",
+        ],
+        parse_dates=["dateLienSuccession"],
+        dtype={
+            "siretEtablissementPredecesseur": str,
+            "siretEtablissementSuccesseur": str,
+        },
+        chunksize=10000,
+        encoding="utf-8",
+        compression="zip",
+    )
 
-    engine = pg_hook.get_sqlalchemy_engine()
-    with engine.connect() as conn:
-        with conn.begin():
-            # process the csv file by chunk
-            with pd.read_csv(
-                Variable.get("SIRENE_STOCK_ETAB_LIENS_SUCCESSION_URL"),
-                usecols=[
-                    "siretEtablissementPredecesseur",
-                    "siretEtablissementSuccesseur",
-                    "dateLienSuccession",
-                    "transfertSiege",
-                    "continuiteEconomique",
-                    "dateDernierTraitementLienSuccession",
-                ],
-                parse_dates=["dateLienSuccession"],
-                dtype={
-                    "siretEtablissementPredecesseur": str,
-                    "siretEtablissementSuccesseur": str,
-                },
-                chunksize=10000,
-                encoding="utf-8",
-                compression="zip",
-            ) as reader:
-                with tqdm.tqdm() as pbar:
-                    for chunck_df in reader:
-                        chunck_df.to_sql(
-                            target_table,
-                            con=conn,
-                            if_exists="replace" if pbar.n == 0 else "append",
-                            index=False,
-                            dtype={"dateLienSuccession": sqla.Date()},
-                        )
-
-                        pbar.update(len(chunck_df))
-
-            conn.execute(
-                textwrap.dedent(
-                    f"""
-                        CREATE INDEX sirene_etab_succession_siret_idx
-                        ON {target_table} ("siretEtablissementPredecesseur");
-                    """
-                )
+    with pg.connect_begin() as conn:
+        for i, df_chunk in enumerate(reader):
+            df_chunk.to_sql(
+                TABLE_NAME,
+                con=conn,
+                if_exists="replace" if i == 0 else "append",
+                index=False,
+                dtype={"dateLienSuccession": sqla.Date()},
             )
+
+        conn.execute(
+            "CREATE INDEX sirene_etab_succession_siret_idx "
+            f'ON {TABLE_NAME} ("siretEtablissementPredecesseur");'
+        )
 
 
 def _import_stock_unite_legale():
-    import textwrap
-
     import pandas as pd
-    import tqdm
     from airflow.models import Variable
-    from airflow.providers.postgres.hooks.postgres import PostgresHook
 
-    pg_hook = PostgresHook(postgres_conn_id="pg")
+    from dag_utils import pg
 
-    target_table = "sirene_stock_unite_legale"
+    TABLE_NAME = "sirene_stock_unite_legale"
+    reader = pd.read_csv(
+        Variable.get("SIRENE_STOCK_UNITE_LEGALE_FILE_URL"),
+        usecols=[
+            "caractereEmployeurUniteLegale",
+            "categorieEntreprise",
+            "categorieJuridiqueUniteLegale",
+            "denominationUniteLegale",
+            "denominationUsuelle1UniteLegale",
+            "denominationUsuelle2UniteLegale",
+            "denominationUsuelle3UniteLegale",
+            "economieSocialeSolidaireUniteLegale",
+            "etatAdministratifUniteLegale",
+            "identifiantAssociationUniteLegale",
+            "nicSiegeUniteLegale",
+            "sigleUniteLegale",
+            "siren",
+            "societeMissionUniteLegale",
+            "trancheEffectifsUniteLegale",
+        ],
+        dtype={
+            "siren": str,
+            "denominationUsuelle1UniteLegale": str,
+            "denominationUsuelle2UniteLegale": str,
+            "denominationUsuelle3UniteLegale": str,
+        },
+        chunksize=10000,
+        encoding="utf-8",
+        compression="zip",
+    )
 
-    engine = pg_hook.get_sqlalchemy_engine()
-    with engine.connect() as conn:
-        with conn.begin():
-            # process the csv file by chunk
-            with pd.read_csv(
-                Variable.get("SIRENE_STOCK_UNITE_LEGALE_FILE_URL"),
-                usecols=[
-                    "caractereEmployeurUniteLegale",
-                    "categorieEntreprise",
-                    "categorieJuridiqueUniteLegale",
-                    "denominationUniteLegale",
-                    "denominationUsuelle1UniteLegale",
-                    "denominationUsuelle2UniteLegale",
-                    "denominationUsuelle3UniteLegale",
-                    "economieSocialeSolidaireUniteLegale",
-                    "etatAdministratifUniteLegale",
-                    "identifiantAssociationUniteLegale",
-                    "nicSiegeUniteLegale",
-                    "sigleUniteLegale",
-                    "siren",
-                    "societeMissionUniteLegale",
-                    "trancheEffectifsUniteLegale",
-                ],
-                dtype={
-                    "siren": str,
-                    "denominationUsuelle1UniteLegale": str,
-                    "denominationUsuelle2UniteLegale": str,
-                    "denominationUsuelle3UniteLegale": str,
-                },
-                chunksize=10000,
-                encoding="utf-8",
-                compression="zip",
-            ) as reader:
-                with tqdm.tqdm() as pbar:
-                    for chunck_df in reader:
-                        chunck_df.to_sql(
-                            target_table,
-                            con=conn,
-                            if_exists="replace" if pbar.n == 0 else "append",
-                            index=False,
-                        )
-
-                        pbar.update(len(chunck_df))
-
-            conn.execute(
-                textwrap.dedent(
-                    f"""
-                        CREATE INDEX sirene_stock_unite_legale_siren_idx
-                        ON {target_table} ("siren");
-                    """
-                )
+    with pg.connect_begin() as conn:
+        for i, df_chunk in enumerate(reader):
+            df_chunk.to_sql(
+                TABLE_NAME,
+                con=conn,
+                if_exists="replace" if i == 0 else "append",
+                index=False,
             )
 
-            conn.execute(
-                textwrap.dedent(
-                    f"""
-                        CREATE INDEX sirene_stock_unite_legale_cat_juridique_idx
-                        ON {target_table} ("categorieJuridiqueUniteLegale");
-                    """
-                )
-            )
+        conn.execute(
+            "CREATE INDEX sirene_stock_unite_legale_siren_idx "
+            f'ON {TABLE_NAME} ("siren");'
+        )
+
+        conn.execute(
+            "CREATE INDEX sirene_stock_unite_legale_cat_juridique_idx "
+            f'ON {TABLE_NAME} ("categorieJuridiqueUniteLegale");'
+        )
 
 
 def _import_stock_etablissement_geocode():
-    import textwrap
-
     import geopandas
     import pandas as pd
-    import tqdm
     from airflow.models import Variable
-    from airflow.providers.postgres.hooks.postgres import PostgresHook
 
-    pg_hook = PostgresHook(postgres_conn_id="pg")
+    from dag_utils import pg
 
-    target_table = "sirene_etablissement_geocode"
+    TABLE_NAME = "sirene_etablissement_geocode"
+    reader = pd.read_csv(
+        Variable.get("SIRENE_STOCK_ETAB_GEOCODE_FILE_URL"),
+        usecols=[
+            "activitePrincipaleEtablissement",
+            "caractereEmployeurEtablissement",
+            "codeCedex2Etablissement",
+            "codeCedexEtablissement",
+            "codeCommune2Etablissement",
+            "codeCommuneEtablissement",
+            "codePostal2Etablissement",
+            "codePostalEtablissement",
+            "complementAdresse2Etablissement",
+            "complementAdresseEtablissement",
+            "denominationUsuelleEtablissement",
+            "enseigne1Etablissement",
+            "enseigne2Etablissement",
+            "enseigne3Etablissement",
+            "etablissementSiege",
+            "etatAdministratifEtablissement",
+            "indiceRepetition2Etablissement",
+            "indiceRepetitionEtablissement",
+            "libelleCedex2Etablissement",
+            "libelleCedexEtablissement",
+            "libelleCommune2Etablissement",
+            "libelleCommuneEtablissement",
+            "libelleVoie2Etablissement",
+            "libelleVoieEtablissement",
+            "nomenclatureActivitePrincipaleEtablissement",
+            "numeroVoie2Etablissement",
+            "numeroVoieEtablissement",
+            "statutDiffusionEtablissement",
+            "typeVoie2Etablissement",
+            "typeVoieEtablissement",
+            "siret",
+            "longitude",
+            "latitude",
+            "geo_score",
+            "geo_type",
+            "geo_adresse",
+            "geo_id",
+            "geo_ligne",
+            "geo_l4",
+            "geo_l5",
+        ],
+        dtype={
+            "activitePrincipaleEtablissement": str,
+            "caractereEmployeurEtablissement": str,
+            "codeCedex2Etablissement": str,
+            "codeCedexEtablissement": str,
+            "codeCommune2Etablissement": str,
+            "codeCommuneEtablissement": str,
+            "codePostal2Etablissement": str,
+            "codePostalEtablissement": str,
+            "complementAdresse2Etablissement": str,
+            "complementAdresseEtablissement": str,
+            "denominationUsuelleEtablissement": str,
+            "enseigne1Etablissement": str,
+            "enseigne2Etablissement": str,
+            "enseigne3Etablissement": str,
+            "etatAdministratifEtablissement": str,
+            "indiceRepetition2Etablissement": str,
+            "indiceRepetitionEtablissement": str,
+            "libelleCedex2Etablissement": str,
+            "libelleCedexEtablissement": str,
+            "libelleCommune2Etablissement": str,
+            "libelleCommuneEtablissement": str,
+            "libelleVoie2Etablissement": str,
+            "libelleVoieEtablissement": str,
+            "nomenclatureActivitePrincipaleEtablissement": str,
+            "numeroVoie2Etablissement": str,
+            "numeroVoieEtablissement": str,
+            "statutDiffusionEtablissement": str,
+            "typeVoie2Etablissement": str,
+            "typeVoieEtablissement": str,
+            "siret": str,
+            "geo_type": str,
+            "geo_adresse": str,
+            "geo_id": str,
+            "geo_ligne": str,
+            "geo_l4": str,
+            "geo_l5": str,
+        },
+        chunksize=10000,
+        encoding="utf-8",
+    )
 
-    engine = pg_hook.get_sqlalchemy_engine()
-    with engine.connect() as conn:
-        with conn.begin():
-            # process the csv file by chunk
-            with pd.read_csv(
-                Variable.get("SIRENE_STOCK_ETAB_GEOCODE_FILE_URL"),
-                usecols=[
-                    "activitePrincipaleEtablissement",
-                    "caractereEmployeurEtablissement",
-                    "codeCedex2Etablissement",
-                    "codeCedexEtablissement",
-                    "codeCommune2Etablissement",
-                    "codeCommuneEtablissement",
-                    "codePostal2Etablissement",
-                    "codePostalEtablissement",
-                    "complementAdresse2Etablissement",
-                    "complementAdresseEtablissement",
-                    "denominationUsuelleEtablissement",
-                    "enseigne1Etablissement",
-                    "enseigne2Etablissement",
-                    "enseigne3Etablissement",
-                    "etablissementSiege",
-                    "etatAdministratifEtablissement",
-                    "indiceRepetition2Etablissement",
-                    "indiceRepetitionEtablissement",
-                    "libelleCedex2Etablissement",
-                    "libelleCedexEtablissement",
-                    "libelleCommune2Etablissement",
-                    "libelleCommuneEtablissement",
-                    "libelleVoie2Etablissement",
-                    "libelleVoieEtablissement",
-                    "nomenclatureActivitePrincipaleEtablissement",
-                    "numeroVoie2Etablissement",
-                    "numeroVoieEtablissement",
-                    "statutDiffusionEtablissement",
-                    "typeVoie2Etablissement",
-                    "typeVoieEtablissement",
-                    "siret",
-                    "longitude",
-                    "latitude",
-                    "geo_score",
-                    "geo_type",
-                    "geo_adresse",
-                    "geo_id",
-                    "geo_ligne",
-                    "geo_l4",
-                    "geo_l5",
-                ],
-                dtype={
-                    "activitePrincipaleEtablissement": str,
-                    "caractereEmployeurEtablissement": str,
-                    "codeCedex2Etablissement": str,
-                    "codeCedexEtablissement": str,
-                    "codeCommune2Etablissement": str,
-                    "codeCommuneEtablissement": str,
-                    "codePostal2Etablissement": str,
-                    "codePostalEtablissement": str,
-                    "complementAdresse2Etablissement": str,
-                    "complementAdresseEtablissement": str,
-                    "denominationUsuelleEtablissement": str,
-                    "enseigne1Etablissement": str,
-                    "enseigne2Etablissement": str,
-                    "enseigne3Etablissement": str,
-                    "etatAdministratifEtablissement": str,
-                    "indiceRepetition2Etablissement": str,
-                    "indiceRepetitionEtablissement": str,
-                    "libelleCedex2Etablissement": str,
-                    "libelleCedexEtablissement": str,
-                    "libelleCommune2Etablissement": str,
-                    "libelleCommuneEtablissement": str,
-                    "libelleVoie2Etablissement": str,
-                    "libelleVoieEtablissement": str,
-                    "nomenclatureActivitePrincipaleEtablissement": str,
-                    "numeroVoie2Etablissement": str,
-                    "numeroVoieEtablissement": str,
-                    "statutDiffusionEtablissement": str,
-                    "typeVoie2Etablissement": str,
-                    "typeVoieEtablissement": str,
-                    "siret": str,
-                    "geo_type": str,
-                    "geo_adresse": str,
-                    "geo_id": str,
-                    "geo_ligne": str,
-                    "geo_l4": str,
-                    "geo_l5": str,
-                },
-                chunksize=10000,
-                encoding="utf-8",
-            ) as reader:
-                with tqdm.tqdm() as pbar:
-                    for chunck_df in reader:
-                        # Add geometry from lon/lat
-                        # Computing it now rather than later (unlike searchable fields),
-                        # because it will likely be immutable (whereas searchable fields
-                        # could need small adjustments that would not need full download
-                        # and import)
-                        chunck_df = geopandas.GeoDataFrame(
-                            data=chunck_df,
-                            geometry=geopandas.points_from_xy(
-                                chunck_df.longitude,
-                                chunck_df.latitude,
-                                crs="EPSG:4326",
-                            ),
-                        )
-
-                        chunck_df.to_postgis(
-                            target_table,
-                            con=conn,
-                            if_exists="replace" if pbar.n == 0 else "append",
-                            index=False,
-                        )
-
-                        pbar.update(len(chunck_df))
-
-            # Add primary key (i.e. create much needed indexes on siret column)
-            conn.execute(
-                textwrap.dedent(
-                    f"""
-                        ALTER TABLE {target_table}
-                        ADD PRIMARY KEY (siret);
-                    """
-                )
+    with pg.connect_begin() as conn:
+        for i, chunk in enumerate(reader):
+            # Add geometry from lon/lat
+            # Computing it now rather than later (unlike searchable fields),
+            # because it will likely be immutable (whereas searchable fields
+            # could need small adjustments that would not need full download
+            # and import)
+            df_chunk = geopandas.GeoDataFrame(
+                data=chunk,
+                geometry=geopandas.points_from_xy(
+                    chunk.longitude,
+                    chunk.latitude,
+                    crs="EPSG:4326",
+                ),
             )
 
-            # Index geometry column using the geography type cast (to be able to compute
-            # and compare in meters)
-            conn.execute(
-                textwrap.dedent(
-                    f"""
-                        CREATE INDEX sirene_etablissement_geocode_geom_idx
-                        ON {target_table}
-                        USING gist((geometry::geography));
-                    """
-                )
+            df_chunk.to_postgis(
+                TABLE_NAME,
+                con=conn,
+                if_exists="replace" if i == 0 else "append",
+                index=False,
             )
 
-            conn.execute(
-                textwrap.dedent(
-                    f"""
-                        CREATE INDEX sirene_etablissement_geocode_code_commune_like
-                        ON {target_table}
-                        ("codeCommuneEtablissement" varchar_pattern_ops);
-                    """
-                )
-            )
+        # Add primary key (i.e. create much needed indexes on siret column)
+        conn.execute(f"ALTER TABLE {TABLE_NAME} ADD PRIMARY KEY (siret);")
 
-            conn.execute(
-                textwrap.dedent(
-                    f"""
-                        CREATE INDEX sirene_etablissement_geocode_commune_trgm_idx
-                        ON {target_table}
-                        USING gin ("libelleCommuneEtablissement" gin_trgm_ops);
-                    """
-                )
-            )
+        # Index geometry column using the geography type cast (to be able to compute
+        # and compare in meters)
+        conn.execute(
+            "CREATE INDEX sirene_etablissement_geocode_geom_idx "
+            f"ON {TABLE_NAME} USING gist((geometry::geography));"
+        )
+
+        conn.execute(
+            "CREATE INDEX sirene_etablissement_geocode_code_commune_like "
+            f'ON {TABLE_NAME} ("codeCommuneEtablissement" varchar_pattern_ops)'
+        )
+
+        conn.execute(
+            "CREATE INDEX sirene_etablissement_geocode_commune_trgm_idx "
+            f'ON {TABLE_NAME} USING gin ("libelleCommuneEtablissement" gin_trgm_ops)'
+        )
 
 
 with airflow.DAG(
