@@ -15,16 +15,15 @@ default_args = {}
 def _import_dataset():
     import pandas as pd
     from airflow.models import Variable
-    from airflow.providers.postgres.hooks import postgres
 
-    pg_hook = postgres.PostgresHook(postgres_conn_id="pg")
+    from dag_utils import pg
 
     df = pd.read_csv(Variable.get("INSEE_FIRSTNAME_FILE_URL"), sep=";")
 
-    engine = pg_hook.get_sqlalchemy_engine()
-    with engine.connect() as conn:
+    with pg.connect_begin() as conn:
         df.to_sql(
             "external_insee_fichier_prenoms",
+            # FIXME(vperron): the schema should be "insee" instead of "public"
             con=conn,
             if_exists="replace",
             index=False,
