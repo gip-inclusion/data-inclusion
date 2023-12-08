@@ -1,29 +1,12 @@
-{% set source_model = source('cd35', 'organisations') %}
-
-{% set table_exists = adapter.get_relation(database=source_model.database, schema=source_model.schema, identifier=source_model.name) is not none %}
-
-{% if table_exists %}
-
-    WITH source AS (
-        SELECT * FROM {{ source_model }}
-    ),
-
-{% else %}
-
 WITH source AS (
-    SELECT
-        NULL                AS "_di_source_id",
-        CAST(NULL AS JSONB) AS "data"
-    WHERE FALSE
+    {{ stg_source_header('cd35', 'organisations') }}
 ),
-
-{% endif %}
 
 final AS (
     SELECT
         _di_source_id                                                                                AS "_di_source_id",
-        (data ->> 'LATITUDE')::FLOAT                                                                 AS "latitude",
-        (data ->> 'LONGITUDE')::FLOAT                                                                AS "longitude",
+        CAST((data ->> 'LATITUDE') AS FLOAT)                                                         AS "latitude",
+        CAST((data ->> 'LONGITUDE') AS FLOAT)                                                        AS "longitude",
         data ->> 'ADRESSE'                                                                           AS "adresse",
         data ->> 'CODE_INSEE'                                                                        AS "code_insee",
         data ->> 'CODE_POSTAL'                                                                       AS "code_postal",

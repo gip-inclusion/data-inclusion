@@ -1,23 +1,6 @@
-{% set source_model = source('un_jeune_une_solution', 'benefits') %}
-
-{% set table_exists = adapter.get_relation(database=source_model.database, schema=source_model.schema, identifier=source_model.name) is not none %}
-
-{% if table_exists %}
-
-    WITH source AS (
-        SELECT * FROM {{ source_model }}
-    ),
-
-{% else %}
-
 WITH source AS (
-    SELECT
-        NULL                AS "_di_source_id",
-        CAST(NULL AS JSONB) AS "data"
-    WHERE FALSE
+    {{ stg_source_header('un_jeune_une_solution', 'benefits') }}
 ),
-
-{% endif %}
 
 final AS (
     SELECT
