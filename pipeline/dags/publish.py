@@ -97,8 +97,7 @@ with airflow.DAG(
     description="Publish the consolidated dataset to datagouv",
     start_date=pendulum.datetime(2022, 1, 1),
     default_args=default_args,
-    schedule_interval=None,
-    # schedule_interval=EVERY_MONDAY_AT_2PM,
+    schedule_interval=EVERY_MONDAY_AT_2PM,
     catchup=False,
 ) as dag:
     start = empty.EmptyOperator(task_id="start")
