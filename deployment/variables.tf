@@ -53,6 +53,13 @@ variable "datagouv_api_key" {
   default     = ""
 }
 
+variable "brevo_api_key" {
+  description = "Used in notifications for RGPD users"
+  type        = string
+  sensitive   = true
+  default     = ""
+}
+
 variable "datawarehouse_admin_password" {
   description = "Password for the first user of the postgres datawarehouse"
   type        = string
