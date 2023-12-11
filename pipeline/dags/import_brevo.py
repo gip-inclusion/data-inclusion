@@ -4,6 +4,7 @@ import airflow
 import pendulum
 from airflow.operators import empty, python
 
+from dag_utils.dbt import dbt_operator_factory
 from dag_utils.virtualenvs import PYTHON_BIN_PATH
 
 logger = logging.getLogger(__name__)
@@ -74,4 +75,10 @@ with airflow.DAG(
         op_kwargs={"stream_id": STREAM_ID, "source_id": SOURCE_ID},
     )
 
-    (start >> extract_rgpd_contacts >> load_rgpd_contacts >> end)
+    dbt_build_brevo = dbt_operator_factory(
+        task_id="dbt_build_brevo",
+        command="build",
+        select="path:models/staging/brevo path:models/intermediate/brevo",
+    )
+
+    (start >> extract_rgpd_contacts >> load_rgpd_contacts >> dbt_build_brevo >> end)
