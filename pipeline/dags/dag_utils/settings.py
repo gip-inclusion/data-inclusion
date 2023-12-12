@@ -109,14 +109,12 @@ SOURCES_CONFIGS = [
             {
                 "id": "benefits",
                 "filename": "benefits.json",
-                "url": Variable.get("UN_JEUNE_UNE_SOLUTION_API_URL", None).rstrip("/")
-                + "/benefits",
+                "url": Variable.get("UN_JEUNE_UNE_SOLUTION_API_URL", None),
             },
             {
                 "id": "institutions",
                 "filename": "institutions.json",
-                "url": Variable.get("UN_JEUNE_UNE_SOLUTION_API_URL", None).rstrip("/")
-                + "/institutions",
+                "url": Variable.get("UN_JEUNE_UNE_SOLUTION_API_URL", None),
             },
         ],
     },
