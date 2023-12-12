@@ -2,12 +2,17 @@ import io
 import logging
 from pathlib import Path
 from typing import Optional
+from urllib.parse import urljoin
 
 import numpy as np
 import pandas as pd
 import requests
 
 logger = logging.getLogger(__name__)
+
+
+def safe_urljoin(base, path):
+    return urljoin(base, path) if base is not None else None
 
 
 def log_df_info(df: pd.DataFrame, logger: logging.Logger = logger):
