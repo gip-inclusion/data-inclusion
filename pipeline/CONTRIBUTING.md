@@ -17,6 +17,9 @@ pip install -r requirements/dev/requirements.txt
 ## Running the test suite
 
 ```bash
+# Copy (and optionally edit) the template .env
+cp .template.env .env
+
 # simply use tox (for reproducible environnement, packaging errors, etc.)
 tox
 ```
