@@ -4,5 +4,6 @@
 black
 pre-commit
 pytest
+pytest-dotenv
 tox
 requests-mock

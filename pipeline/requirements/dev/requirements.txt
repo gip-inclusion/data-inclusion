@@ -472,6 +472,10 @@ pyproj==3.6.1
 pyproject-api==1.6.1
     # via tox
 pytest==7.4.3
+    # via
+    #   -r requirements/dev/requirements.in
+    #   pytest-dotenv
+pytest-dotenv==0.5.2
     # via -r requirements/dev/requirements.in
 python-daemon==3.0.1
     # via apache-airflow
@@ -486,6 +490,8 @@ python-dateutil==2.8.2
     #   pandas
     #   pendulum
     #   sib-api-v3-sdk
+python-dotenv==1.0.0
+    # via pytest-dotenv
 python-nvd3==0.15.0
     # via apache-airflow
 python-slugify==8.0.1
