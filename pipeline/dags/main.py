@@ -74,7 +74,7 @@ with airflow.DAG(
     dag_id="main",
     start_date=pendulum.datetime(2022, 1, 1, tz=TIME_ZONE),
     default_args=default_args,
-    schedule_interval="0 4 * * *",
+    schedule="0 4 * * *",
     catchup=False,
     concurrency=4,
 ) as dag:

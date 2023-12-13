@@ -91,7 +91,7 @@ with airflow.DAG(
     description="Sends RGPD notifications to DI users",
     start_date=pendulum.datetime(2023, 11, 1),
     default_args=default_args,
-    schedule_interval="@monthly",
+    schedule="@monthly",
     catchup=False,
 ) as dag:
     start = empty.EmptyOperator(task_id="start")

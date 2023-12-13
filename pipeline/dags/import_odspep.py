@@ -57,7 +57,7 @@ with airflow.DAG(
     dag_id="import_odspep",
     start_date=pendulum.datetime(2022, 1, 1, tz=date.TIME_ZONE),
     default_args=default_args,
-    schedule_interval="@once",
+    schedule="@once",
     catchup=False,
     tags=["source"],
 ) as dag:

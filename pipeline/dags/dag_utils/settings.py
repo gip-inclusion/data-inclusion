@@ -8,7 +8,7 @@ from airflow.models import Variable
 SOURCES_CONFIGS = [
     {
         "id": "dora",
-        "schedule_interval": "@daily",
+        "schedule": "@daily",
         "snapshot": True,
         "streams": [
             {
@@ -27,7 +27,7 @@ SOURCES_CONFIGS = [
     },
     {
         "id": "mes-aides",
-        "schedule_interval": "@daily",
+        "schedule": "@daily",
         "snapshot": True,
         "streams": [
             {
@@ -46,7 +46,7 @@ SOURCES_CONFIGS = [
     },
     {
         "id": "siao",
-        "schedule_interval": "@once",
+        "schedule": "@once",
         "snapshot": False,
         "streams": [
             {
@@ -58,7 +58,7 @@ SOURCES_CONFIGS = [
     },
     {
         "id": "finess",
-        "schedule_interval": "@daily",
+        "schedule": "@daily",
         "snapshot": True,
         "streams": [
             {
@@ -70,7 +70,7 @@ SOURCES_CONFIGS = [
     },
     {
         "id": "cd35",
-        "schedule_interval": "@daily",
+        "schedule": "@daily",
         "snapshot": True,
         "streams": [
             {
@@ -82,7 +82,7 @@ SOURCES_CONFIGS = [
     },
     {
         "id": "emplois-de-linclusion",
-        "schedule_interval": "@daily",
+        "schedule": "@daily",
         "snapshot": True,
         "streams": [
             {
@@ -101,7 +101,7 @@ SOURCES_CONFIGS = [
     },
     {
         "id": "un-jeune-une-solution",
-        "schedule_interval": "@daily",
+        "schedule": "@daily",
         "snapshot": True,
         "streams": [
             {
@@ -118,7 +118,7 @@ SOURCES_CONFIGS = [
     },
     {
         "id": "annuaire-du-service-public",
-        "schedule_interval": "@daily",
+        "schedule": "@daily",
         "snapshot": True,
         "streams": [
             {
@@ -131,7 +131,7 @@ SOURCES_CONFIGS = [
     *[
         {
             "id": f"mediation-numerique-{source_id}",
-            "schedule_interval": "@daily",
+            "schedule": "@daily",
             "snapshot": False,
             "streams": [
                 {
@@ -184,7 +184,7 @@ SOURCES_CONFIGS = [
     ],
     {
         "id": "soliguide",
-        "schedule_interval": "@daily",
+        "schedule": "@daily",
         "snapshot": True,
         "streams": [
             {
@@ -197,7 +197,7 @@ SOURCES_CONFIGS = [
     },
     {
         "id": "monenfant",
-        "schedule_interval": "@once",
+        "schedule": "@once",
         "snapshot": True,
         "streams": [
             {
@@ -209,7 +209,7 @@ SOURCES_CONFIGS = [
     },
     {
         "id": "reseau-alpha",
-        "schedule_interval": "@once",
+        "schedule": "@once",
         "snapshot": False,
         "streams": [
             {
@@ -226,7 +226,7 @@ SOURCES_CONFIGS = [
     },
     {
         "id": "agefiph",
-        "schedule_interval": "@daily",
+        "schedule": "@daily",
         "snapshot": True,
         "streams": [
             {
@@ -238,7 +238,7 @@ SOURCES_CONFIGS = [
     },
     {
         "id": "data-inclusion",
-        "schedule_interval": "@once",
+        "schedule": "@once",
         "snapshot": False,
         "streams": [
             {
@@ -255,7 +255,7 @@ SOURCES_CONFIGS = [
     },
     {
         "id": "cd72",
-        "schedule_interval": "@once",
+        "schedule": "@once",
         "snapshot": False,
         "streams": [
             {
@@ -274,7 +274,7 @@ SOURCES_CONFIGS = [
     },
     {
         "id": "pole-emploi",
-        "schedule_interval": "@once",
+        "schedule": "@once",
         "snapshot": False,
         "streams": [
             {

@@ -196,7 +196,7 @@ for source_config in SOURCES_CONFIGS:
         dag_id=dag_id,
         start_date=pendulum.datetime(2022, 1, 1, tz=TIME_ZONE),
         default_args=default_args,
-        schedule_interval=source_config["schedule_interval"],
+        schedule=source_config["schedule"],
         catchup=False,
         tags=["source"],
     )
