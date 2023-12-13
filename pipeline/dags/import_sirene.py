@@ -294,7 +294,7 @@ with airflow.DAG(
     dag_id="import_sirene",
     start_date=pendulum.datetime(2022, 1, 1, tz=TIME_ZONE),
     default_args=default_args,
-    schedule_interval=None,
+    schedule=None,
     catchup=False,
     concurrency=1,
 ) as dag:

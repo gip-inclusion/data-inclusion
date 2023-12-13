@@ -4,8 +4,8 @@ import airflow
 import pendulum
 from airflow.operators import empty, python
 
-from dag_utils.dbt import dbt_operator_factory
 from dag_utils.date import TIME_ZONE
+from dag_utils.dbt import dbt_operator_factory
 from dag_utils.virtualenvs import PYTHON_BIN_PATH
 
 logger = logging.getLogger(__name__)
@@ -55,7 +55,7 @@ with airflow.DAG(
     dag_id="import_brevo",
     start_date=pendulum.datetime(2023, 1, 1, tz=TIME_ZONE),
     default_args=default_args,
-    schedule_interval="@daily",
+    schedule="@daily",
     catchup=False,
     concurrency=1,
 ) as dag:
