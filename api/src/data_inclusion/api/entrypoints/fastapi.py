@@ -118,6 +118,7 @@ def list_structures(
         query = query.filter(models.Structure.source != "agefiph")
     if not request.user.is_authenticated or "dora" not in request.user.username:
         query = query.filter(models.Structure.source != "soliguide")
+        query = query.filter(models.Structure.source != "data-inclusion")
 
     if id_ is not None:
         query = query.filter_by(id=id_)
@@ -303,6 +304,7 @@ def list_services(
         query = query.filter(models.Structure.source != "agefiph")
     if not request.user.is_authenticated or "dora" not in request.user.username:
         query = query.filter(models.Structure.source != "soliguide")
+        query = query.filter(models.Structure.source != "data-inclusion")
 
     if departement is not None:
         query = query.filter(
@@ -438,6 +440,7 @@ def search_services(
         query = query.filter(models.Structure.source != "agefiph")
     if not request.user.is_authenticated or "dora" not in request.user.username:
         query = query.filter(models.Structure.source != "soliguide")
+        query = query.filter(models.Structure.source != "data-inclusion")
 
     if commune_instance is not None:
         # filter by zone de diffusion
