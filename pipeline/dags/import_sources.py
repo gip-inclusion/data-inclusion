@@ -112,7 +112,7 @@ def load_from_s3_to_data_warehouse(
         "annuaire-du-service-public": annuaire_du_service_public.read,
         "cd35": lambda path: utils.read_csv(path, sep=";"),
         "cd72": lambda path: utils.read_csv(path, sep=","),
-        "data-inclusion": utils.read_json,
+        "data-inclusion": lambda path: utils.read_csv(path, sep=","),
         "dora": utils.read_json,
         "emplois-de-linclusion": utils.read_json,
         "finess": lambda path: utils.read_csv(path, sep=","),
