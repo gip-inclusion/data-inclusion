@@ -243,12 +243,12 @@ SOURCES_CONFIGS = [
         "streams": [
             {
                 "id": "services",
-                "filename": "services.json",
+                "filename": "services.csv",
                 "url": Variable.get("DI_EXTRA_SERVICES_FILE_URL", None),
             },
             {
                 "id": "structures",
-                "filename": "structures.json",
+                "filename": "structures.csv",
                 "url": Variable.get("DI_EXTRA_STRUCTURES_FILE_URL", None),
             },
         ],

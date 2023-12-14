@@ -8,6 +8,12 @@ models:
           - unique
           - not_null
           - dbt_utils.not_empty_string
+      - name: structure_id
+        tests:
+          - not_null
+          - relationships:
+              to: ref('stg_data_inclusion__structures')
+              field: id
 
   - name: stg_data_inclusion__structures
     columns:
