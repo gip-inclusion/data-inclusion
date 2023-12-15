@@ -1,5 +1,0 @@
-version: 2
-
-models:
-  - name: stg_mediation_numerique_francilin__services
-  - name: stg_mediation_numerique_francilin__structures

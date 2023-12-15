@@ -9,91 +9,11 @@ structures.nom || ' propose des services : ' || ARRAY_TO_STRING(
 {% endset %}
 
 WITH services AS (
-    {{
-        dbt_utils.union_relations(
-            relations=[
-                ref('stg_mediation_numerique_aidants_connect__services'),
-                ref('stg_mediation_numerique_angers__services'),
-                ref('stg_mediation_numerique_assembleurs__services'),
-                ref('stg_mediation_numerique_cd17__services'),
-                ref('stg_mediation_numerique_cd23__services'),
-                ref('stg_mediation_numerique_cd28_appui_territorial__services'),
-                ref('stg_mediation_numerique_cd33__services'),
-                ref('stg_mediation_numerique_cd40__services'),
-                ref('stg_mediation_numerique_cd44__services'),
-                ref('stg_mediation_numerique_cd49__services'),
-                ref('stg_mediation_numerique_cd85__services'),
-                ref('stg_mediation_numerique_cd87__services'),
-                ref('stg_mediation_numerique_conseiller_numerique__services'),
-                ref('stg_mediation_numerique_conumm__services'),
-                ref('stg_mediation_numerique_cr93__services'),
-                ref('stg_mediation_numerique_etapes_numerique__services'),
-                ref('stg_mediation_numerique_fibre_64__services'),
-                ref('stg_mediation_numerique_france_services__services'),
-                ref('stg_mediation_numerique_france_tiers_lieux__services'),
-                ref('stg_mediation_numerique_francilin__services'),
-                ref('stg_mediation_numerique_hinaura__services'),
-                ref('stg_mediation_numerique_hub_antilles__services'),
-                ref('stg_mediation_numerique_hub_lo__services'),
-                ref('stg_mediation_numerique_mulhouse__services'),
-                ref('stg_mediation_numerique_res_in__services'),
-                ref('stg_mediation_numerique_rhinocc__services'),
-                ref('stg_mediation_numerique_ultra_numerique__services'),
-            ],
-            column_override={
-                "types": "TEXT[]",
-                "frais": "TEXT[]",
-                "profils": "TEXT[]",
-                "thematiques": "TEXT[]",
-                "modes_accueil": "TEXT[]",
-                "modes_orientation_accompagnateur": "TEXT[]",
-                "modes_orientation_beneficiaire": "TEXT[]",
-            },
-            source_column_name=None,
-        )
-    }}
+    SELECT * FROM {{ ref('stg_mediation_numerique__services') }}
 ),
 
 structures AS (
-    {{
-        dbt_utils.union_relations(
-            relations=[
-                ref('stg_mediation_numerique_aidants_connect__structures'),
-                ref('stg_mediation_numerique_angers__structures'),
-                ref('stg_mediation_numerique_assembleurs__structures'),
-                ref('stg_mediation_numerique_cd17__structures'),
-                ref('stg_mediation_numerique_cd23__structures'),
-                ref('stg_mediation_numerique_cd28_appui_territorial__structures'),
-                ref('stg_mediation_numerique_cd33__structures'),
-                ref('stg_mediation_numerique_cd40__structures'),
-                ref('stg_mediation_numerique_cd44__structures'),
-                ref('stg_mediation_numerique_cd49__structures'),
-                ref('stg_mediation_numerique_cd85__structures'),
-                ref('stg_mediation_numerique_cd87__structures'),
-                ref('stg_mediation_numerique_conseiller_numerique__structures'),
-                ref('stg_mediation_numerique_conumm__structures'),
-                ref('stg_mediation_numerique_cr93__structures'),
-                ref('stg_mediation_numerique_etapes_numerique__structures'),
-                ref('stg_mediation_numerique_fibre_64__structures'),
-                ref('stg_mediation_numerique_france_services__structures'),
-                ref('stg_mediation_numerique_france_tiers_lieux__structures'),
-                ref('stg_mediation_numerique_francilin__structures'),
-                ref('stg_mediation_numerique_hinaura__structures'),
-                ref('stg_mediation_numerique_hub_antilles__structures'),
-                ref('stg_mediation_numerique_hub_lo__structures'),
-                ref('stg_mediation_numerique_mulhouse__structures'),
-                ref('stg_mediation_numerique_res_in__structures'),
-                ref('stg_mediation_numerique_rhinocc__structures'),
-                ref('stg_mediation_numerique_ultra_numerique__structures'),
-            ],
-            column_override={
-                "thematiques": "TEXT[]",
-                "labels_nationaux": "TEXT[]",
-                "labels_autres": "TEXT[]",
-            },
-            source_column_name=None
-        )
-    }}
+    SELECT * FROM {{ ref('stg_mediation_numerique__structures') }}
 ),
 
 di_thematiques AS (
@@ -143,7 +63,7 @@ final AS (
         {{ truncate_text(presentation) }}                                                              AS "presentation_resume",
         {{ presentation }}                                                                             AS "presentation_detail"
     FROM services
-    LEFT JOIN structures ON services.structure_id = structures.id AND services._di_source_id = structures._di_source_id
+    LEFT JOIN structures ON services.structure_id = structures.id
 )
 
 SELECT * FROM final
