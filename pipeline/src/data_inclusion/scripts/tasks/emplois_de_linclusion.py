@@ -26,6 +26,7 @@ class EmploisClient:
         structures_data = []
 
         pbar = None
+        # FIXME(vperron): Remove fucking pbar entirely
 
         while True:
             response = self.session.get(next_url)
@@ -43,7 +44,7 @@ class EmploisClient:
         if pbar is not None:
             pbar.close()
 
-        return structures_data
+        return json.dumps(structures_data).encode()
 
     def list_siaes(self) -> list:
         return self._list_paginated_endpoint("?type=siae")

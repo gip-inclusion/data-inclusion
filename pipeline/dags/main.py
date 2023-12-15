@@ -3,10 +3,9 @@ import pendulum
 from airflow.operators import empty, python
 from airflow.utils.task_group import TaskGroup
 
-from dag_utils import date
+from dag_utils import date, sources
 from dag_utils.dbt import dbt_operator_factory
 from dag_utils.notifications import format_failure, notify_webhook
-from dag_utils.settings import SOURCES_CONFIGS
 from dag_utils.virtualenvs import PYTHON_BIN_PATH
 
 default_args = {
@@ -93,13 +92,13 @@ with airflow.DAG(
 
     dbt_staging_tasks_list = []
 
-    for source_config in sorted(SOURCES_CONFIGS, key=lambda d: d["id"]):
-        dbt_source_id = source_config["id"].replace("-", "_")
+    for source in sorted(sources.SOURCES_CONFIGS, key=lambda d: d.id):
+        model_name = source.id.replace("-", "_")
 
-        stg_selector = f"path:models/staging/sources/**/stg_{dbt_source_id}__*.sql"
-        int_selector = f"path:models/intermediate/sources/**/int_{dbt_source_id}__*.sql"
+        stg_selector = f"path:models/staging/sources/**/stg_{model_name}__*.sql"
+        int_selector = f"path:models/intermediate/sources/**/int_{model_name}__*.sql"
 
-        with TaskGroup(group_id=source_config["id"]) as source_task_group:
+        with TaskGroup(group_id=source.id) as source_task_group:
             dbt_run_staging = dbt_operator_factory(
                 task_id="dbt_run_staging",
                 command="run",

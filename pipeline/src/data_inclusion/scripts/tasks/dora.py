@@ -51,7 +51,7 @@ class DoraClient:
         if pbar is not None:
             pbar.close()
 
-        return return_data
+        return json.dumps(return_data).encode()
 
     def list_structures(self) -> list:
         return self._list_paginated_endpoint("/structures/")

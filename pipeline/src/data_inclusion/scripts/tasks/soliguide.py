@@ -1,4 +1,3 @@
-import io
 import json
 import logging
 import time
@@ -91,16 +90,6 @@ class APIClient:
             pbar.close()
 
         return places_data
-
-
-def extract(url: str, token: str, **kwargs) -> bytes:
-    soliguide_client = APIClient(base_url=url, token=token)
-    data = soliguide_client.search(
-        location_geo_type="pays", location_geo_value="france"
-    )
-    with io.StringIO() as buf:
-        json.dump(data, buf)
-        return buf.getvalue().encode()
 
 
 def html_to_markdown(s: Optional[str]) -> Optional[str]:
