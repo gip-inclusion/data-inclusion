@@ -65,12 +65,10 @@ def extract_from_source_to_datalake_bucket(
             "formations": reseau_alpha.extract_formations,
         },
         "pole-emploi": dora.extract,
+        "mediation-numerique": mediation_numerique.extract,
     }
 
-    # TODO(vperron): Replace by dict of objects
-    if source_id.startswith("mediation-numerique-"):
-        extract_fn = mediation_numerique.extract
-    elif isinstance(EXTRACT_FN_BY_SOURCE_ID[source_id], dict):
+    if isinstance(EXTRACT_FN_BY_SOURCE_ID[source_id], dict):
         extract_fn = EXTRACT_FN_BY_SOURCE_ID[source_id][stream_config["id"]]
     else:
         extract_fn = EXTRACT_FN_BY_SOURCE_ID[source_id]
@@ -127,14 +125,13 @@ def load_from_s3_to_data_warehouse(
         },
         "agefiph": agefiph.read,
         "pole-emploi": utils.read_json,
+        "mediation-numerique": utils.read_json,
     }
 
     source_id = source_config["id"]
     stream_id = stream_config["id"]
 
-    if source_id.startswith("mediation-numerique-"):
-        read_fn = utils.read_json
-    elif isinstance(READ_FN_BY_SOURCE_ID[source_id], dict):
+    if isinstance(READ_FN_BY_SOURCE_ID[source_id], dict):
         read_fn = READ_FN_BY_SOURCE_ID[source_id][stream_id]
     else:
         read_fn = READ_FN_BY_SOURCE_ID[source_id]

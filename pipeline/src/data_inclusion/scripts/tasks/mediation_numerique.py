@@ -1,30 +1,28 @@
+import json
+from urllib.parse import urlencode
+
 import requests
 
-
-def get_resources_url_from_dataset_url(dataset_url: str) -> dict[str, str]:
-    """Identify data.inclusion resource urls in a data.gouv dataset given its url"""
-
-    dataset_id = dataset_url.rstrip("/").split("/")[-1]
-
-    response = requests.get(f"https://www.data.gouv.fr/api/1/datasets/{dataset_id}")
-    dataset_data = response.json()
-
-    # filter resources based on the data.inclusion schema
-    data_inclusion_resources = [
-        resource_data
-        for resource_data in dataset_data["resources"]
-        if resource_data["schema"]["name"] == "gip-inclusion/data-inclusion-schema"
-    ]
-
-    # identify urls based on resource titles
-    return {
-        "structures"
-        if "structures" in resource_data["title"]
-        else "services": resource_data["latest"]
-        for resource_data in data_inclusion_resources
-    }
+from . import utils
 
 
 def extract(id: str, url: str, **kwargs) -> bytes:
-    urls = get_resources_url_from_dataset_url(dataset_url=url)
-    return requests.get(urls[id]).content
+    # TODO(vperron): add a retry mechanism here.
+    params = {
+        "page[number]": 0,
+        "page[size]": 10000,
+        "mergedIds[exists]": "false",
+    }
+
+    full_data = []
+    while True:
+        url = f"{utils.safe_urljoin(url, f'{id}-inclusion')}?{urlencode(params)}"
+        response = requests.get(url)
+        response.raise_for_status()
+        raw_data = response.json()
+        full_data += raw_data["data"]
+        if raw_data["meta"]["number"] == raw_data["meta"]["totalPages"] - 1:
+            break
+        params["page[number]"] += 1
+
+    return json.dumps(full_data).encode()

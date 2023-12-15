@@ -128,60 +128,23 @@ SOURCES_CONFIGS = [
             },
         ],
     },
-    *[
-        {
-            "id": f"mediation-numerique-{source_id}",
-            "schedule": "@daily",
-            "snapshot": False,
-            "streams": [
-                {
-                    "id": "structures",
-                    "filename": "structures.json",
-                    "url": Variable.get(
-                        f"MEDNUM_{source_id.upper().replace('-', '_')}_DATASET_URL",
-                        None,
-                    ),
-                },
-                {
-                    "id": "services",
-                    "filename": "services.json",
-                    "url": Variable.get(
-                        f"MEDNUM_{source_id.upper().replace('-', '_')}_DATASET_URL",
-                        None,
-                    ),
-                },
-            ],
-        }
-        for source_id in [
-            "aidants-connect",
-            "angers",
-            "assembleurs",
-            "cd17",
-            "cd23",
-            "cd28-appui-territorial",
-            "cd33",
-            "cd40",
-            "cd44",
-            "cd49",
-            "cd85",
-            "cd87",
-            "conseiller-numerique",
-            "conumm",
-            "cr93",
-            "etapes-numerique",
-            "fibre-64",
-            "france-services",
-            "france-tiers-lieux",
-            "francilin",
-            "hinaura",
-            "hub-antilles",
-            "hub-lo",
-            "mulhouse",
-            "res-in",
-            "rhinocc",
-            "ultra-numerique",
-        ]
-    ],
+    {
+        "id": "mediation-numerique",
+        "schedule": "@daily",
+        "snapshot": False,
+        "streams": [
+            {
+                "id": "structures",
+                "filename": "structures.json",
+                "url": Variable.get("MEDNUM_API_URL", None),
+            },
+            {
+                "id": "services",
+                "filename": "services.json",
+                "url": Variable.get("MEDNUM_API_URL", None),
+            },
+        ],
+    },
     {
         "id": "soliguide",
         "schedule": "@daily",

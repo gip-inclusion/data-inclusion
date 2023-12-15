@@ -1,8 +1,7 @@
 version: 2
 
 models:
-  - name: stg_mediation_numerique_cd28_appui_territorial__services
-
+  - name: stg_mediation_numerique__services
     columns:
       - name: id
         tests:
@@ -13,7 +12,7 @@ models:
         tests:
           - not_null
           - relationships:
-              to: ref('stg_mediation_numerique_cd28_appui_territorial__structures')
+              to: ref('stg_mediation_numerique__structures')
               field: id
       - name: thematiques
         tests:
@@ -55,8 +54,8 @@ models:
               config:
                 severity: warn
           - dbt_utils.not_empty_string
-  - name: stg_mediation_numerique_cd28_appui_territorial__structures
 
+  - name: stg_mediation_numerique__structures
     columns:
       - name: id
         tests:

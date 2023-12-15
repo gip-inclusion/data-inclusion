@@ -1,25 +1,6 @@
-{% macro stg_mediation_numerique_structures_model() %}
-
-{% set source_model = source('mediation_numerique_' ~ model.fqn[-2], 'structures') %}
-
-{% set table_exists = adapter.get_relation(database=source_model.database, schema=source_model.schema, identifier=source_model.name) is not none %}
-
-{% if table_exists %}
-
 WITH source AS (
-    SELECT * FROM {{ source_model }}
+    {{ stg_source_header('mediation_numerique', 'structures') }}
 ),
-
-{% else %}
-
-WITH source AS (
-    SELECT
-        NULL                AS "_di_source_id",
-        CAST(NULL AS JSONB) AS "data"
-    WHERE FALSE
-),
-
-{% endif %}
 
 final AS (
     SELECT
@@ -40,13 +21,16 @@ final AS (
         data ->> 'site_web'                                                                                         AS "site_web",
         data ->> 'telephone'                                                                                        AS "telephone",
         data ->> 'code_postal'                                                                                      AS "code_postal",
+        data ->> 'code_insee'                                                                                       AS "code_insee",
         data ->> 'horaires_ouverture'                                                                               AS "horaires_ouverture",
         data ->> 'typologie'                                                                                        AS "typologie",
         data ->> 'presentation_resume'                                                                              AS "presentation_resume",
+        data ->> 'accessibilite'                                                                                    AS "accessibilite",
         data ->> 'presentation_detail'                                                                              AS "presentation_detail"
     FROM source
+    WHERE
+        data ->> 'mergedIds' IS NULL
+        AND data ->> 'source' != 'dora'
 )
 
 SELECT * FROM final
-
-{% endmacro %}

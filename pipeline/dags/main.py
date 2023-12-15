@@ -92,26 +92,44 @@ with airflow.DAG(
     )
 
     dbt_staging_tasks_list = []
+
     for source_config in sorted(SOURCES_CONFIGS, key=lambda d: d["id"]):
         dbt_source_id = source_config["id"].replace("-", "_")
+
+        stg_selector = f"path:models/staging/sources/**/stg_{dbt_source_id}__*.sql"
+        int_selector = f"path:models/intermediate/sources/**/int_{dbt_source_id}__*.sql"
 
         with TaskGroup(group_id=source_config["id"]) as source_task_group:
             dbt_run_staging = dbt_operator_factory(
                 task_id="dbt_run_staging",
                 command="run",
-                select=f"path:models/staging/sources/**/stg_{dbt_source_id}__*.sql",
+                select=stg_selector,
             )
 
             dbt_test_staging = dbt_operator_factory(
                 task_id="dbt_test_staging",
                 command="test",
-                select=f"path:models/staging/sources/**/stg_{dbt_source_id}__*.sql",
+                select=stg_selector,
             )
 
-            # TODO: add intermediate models here
-            # this would require to refactor mediation numerique models
+            dbt_run_intermediate = dbt_operator_factory(
+                task_id="dbt_run_intermediate",
+                command="run",
+                select=int_selector,
+            )
 
-            (dbt_run_staging >> dbt_test_staging)
+            dbt_test_intermediate = dbt_operator_factory(
+                task_id="dbt_test_intermediate",
+                command="test",
+                select=int_selector,
+            )
+
+            (
+                dbt_run_staging
+                >> dbt_test_staging
+                >> dbt_run_intermediate
+                >> dbt_test_intermediate
+            )
 
         dbt_staging_tasks_list += [source_task_group]
 
@@ -122,7 +140,6 @@ with airflow.DAG(
             [
                 # FIXME: handle odspep as other sources (add to dags/settings.py)
                 "path:models/staging/sources/odspep",
-                "path:models/intermediate/sources/**/*",
                 "path:models/intermediate/int__union_adresses.sql",
                 "path:models/intermediate/int__union_services.sql",
                 "path:models/intermediate/int__union_structures.sql",
