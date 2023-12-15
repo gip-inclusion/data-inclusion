@@ -1,5 +1,4 @@
 import io
-from pathlib import Path
 
 from airflow.providers.amazon.aws.hooks import s3
 
@@ -34,6 +33,6 @@ def store_content(
         )
 
 
-def download_file(path: str) -> Path:
+def download_file(path: str) -> str:
     s3_hook = s3.S3Hook(aws_conn_id="s3")
-    return Path(s3_hook.download_file(key=path))
+    return s3_hook.download_file(key=path)
