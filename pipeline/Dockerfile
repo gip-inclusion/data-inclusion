@@ -50,9 +50,6 @@ ENV AIRFLOW_VAR_DBT_PROJECT_DIR /opt/airflow/dbt
 
 USER root
 
-# FIXME(vperron) : This is probably temporary, see https://github.com/apache/airflow/issues/36231
-RUN rm /etc/apt/sources.list.d/mysql.list
-
 RUN apt-get update \
     && apt-get install -y --no-install-recommends \
     build-essential \
