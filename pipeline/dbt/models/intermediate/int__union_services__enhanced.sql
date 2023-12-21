@@ -19,13 +19,14 @@ services_with_zone_diffusion AS (
     SELECT
         {{ dbt_utils.star(from=ref('int__union_services'), relation_alias='services', except=["zone_diffusion_code", "zone_diffusion_nom"]) }},
         CASE
-            WHEN services.source = ANY(ARRAY['monenfant', 'soliguide']) OR services.source ~ 'mediation-numerique' THEN adresses.result_citycode
+            WHEN services.source = ANY(ARRAY['monenfant', 'soliguide']) THEN adresses.result_citycode
             WHEN services.source = 'reseau-alpha' THEN LEFT(adresses.result_citycode, 2)
             ELSE services.zone_diffusion_code
         END AS "zone_diffusion_code",
         CASE
-            WHEN services.source = ANY(ARRAY['monenfant', 'soliguide']) OR services.source ~ 'mediation-numerique' THEN adresses.commune
+            WHEN services.source = ANY(ARRAY['monenfant', 'soliguide']) THEN adresses.commune
             WHEN services.source = 'reseau-alpha' THEN (SELECT departements."LIBELLE" FROM departements WHERE departements."DEP" = LEFT(adresses.result_citycode, 2))
+            WHEN services.source = 'mediation-numerique' THEN (SELECT departements."LIBELLE" FROM departements WHERE departements."DEP" = services.zone_diffusion_code)
             ELSE services.zone_diffusion_nom
         END AS "zone_diffusion_nom"
     FROM
