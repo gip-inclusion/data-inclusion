@@ -5,253 +5,268 @@ It is used as a source of truth in general and to generate dedicated dags in par
 
 from airflow.models import Variable
 
-SOURCES_CONFIGS = [
-    {
-        "id": "dora",
+from data_inclusion.scripts.tasks import (
+    agefiph,
+    annuaire_du_service_public,
+    dora,
+    emplois_de_linclusion,
+    grist,
+    mediation_numerique,
+    mes_aides,
+    monenfant,
+    reseau_alpha,
+    soliguide,
+    un_jeune_une_solution,
+    utils,
+)
+
+SOURCES_CONFIGS = {
+    "dora": {
         "schedule": "@daily",
         "snapshot": True,
-        "streams": [
-            {
-                "id": "structures",
+        "extractor": dora.extract,
+        "streams": {
+            "structures": {
                 "filename": "structures.json",
                 "url": Variable.get("DORA_API_URL", None),
                 "token": Variable.get("DORA_API_TOKEN", None),
             },
-            {
-                "id": "services",
+            "services": {
                 "filename": "services.json",
                 "url": Variable.get("DORA_API_URL", None),
                 "token": Variable.get("DORA_API_TOKEN", None),
             },
-        ],
+        },
     },
-    {
-        "id": "mes-aides",
+    "mes-aides": {
         "schedule": "@daily",
         "snapshot": True,
-        "streams": [
-            {
-                "id": "garages",
+        "extractor": mes_aides.extract,
+        "streams": {
+            "garages": {
                 "filename": "garages.json",
                 "url": Variable.get("MES_AIDES_GARAGES_URL", None),
                 "token": Variable.get("MES_AIDES_AIRTABLE_KEY", None),
             },
-            {
-                "id": "aides",
+            "aides": {
                 "filename": "aides.json",
                 "url": Variable.get("MES_AIDES_AIDES_URL", None),
                 "token": Variable.get("MES_AIDES_AIRTABLE_KEY", None),
             },
-        ],
+        },
     },
-    {
-        "id": "siao",
+    "siao": {
         "schedule": "@once",
         "snapshot": False,
-        "streams": [
-            {
-                "id": "etablissements",
+        "reader": utils.read_excel,
+        "streams": {
+            "etablissements": {
                 "filename": "etablissements.xlsx",
                 "url": Variable.get("SIAO_FILE_URL", None),
             },
-        ],
+        },
     },
-    {
-        "id": "finess",
+    "finess": {
         "schedule": "@daily",
         "snapshot": True,
-        "streams": [
-            {
-                "id": "etablissements",
+        "reader": lambda path: utils.read_csv(path, sep=","),
+        "streams": {
+            "etablissements": {
                 "filename": "etablissements.xlsx",
                 "url": Variable.get("FINESS_FILE_URL", None),
             },
-        ],
+        },
     },
-    {
-        "id": "cd35",
+    "cd35": {
         "schedule": "@daily",
         "snapshot": True,
-        "streams": [
-            {
-                "id": "organisations",
+        "reader": lambda path: utils.read_csv(path, sep=";"),
+        "streams": {
+            "organisations": {
                 "filename": "organisations.csv",
                 "url": Variable.get("CD35_FILE_URL", None),
             },
-        ],
+        },
     },
-    {
-        "id": "emplois-de-linclusion",
+    "emplois-de-linclusion": {
         "schedule": "@daily",
         "snapshot": True,
-        "streams": [
-            {
-                "id": "siaes",
+        "extractor": emplois_de_linclusion.extract,
+        "streams": {
+            "siaes": {
                 "filename": "siaes.json",
                 "url": Variable.get("EMPLOIS_API_URL", None),
                 "token": Variable.get("EMPLOIS_API_TOKEN", None),
             },
-            {
-                "id": "organisations",
+            "organisations": {
                 "filename": "organisations.json",
                 "url": Variable.get("EMPLOIS_API_URL", None),
                 "token": Variable.get("EMPLOIS_API_TOKEN", None),
             },
-        ],
+        },
     },
-    {
-        "id": "un-jeune-une-solution",
+    "un-jeune-une-solution": {
         "schedule": "@daily",
         "snapshot": True,
-        "streams": [
-            {
-                "id": "benefits",
+        "extractor": un_jeune_une_solution.extract,
+        "streams": {
+            "benefits": {
                 "filename": "benefits.json",
                 "url": Variable.get("UN_JEUNE_UNE_SOLUTION_API_URL", None),
             },
-            {
-                "id": "institutions",
+            "institutions": {
                 "filename": "institutions.json",
                 "url": Variable.get("UN_JEUNE_UNE_SOLUTION_API_URL", None),
             },
-        ],
+        },
     },
-    {
-        "id": "annuaire-du-service-public",
+    "annuaire-du-service-public": {
         "schedule": "@daily",
         "snapshot": True,
-        "streams": [
-            {
-                "id": "etablissements",
+        "reader": annuaire_du_service_public.read,
+        "streams": {
+            "etablissements": {
                 "filename": "etablissements.json",
                 "url": Variable.get("ETAB_PUB_FILE_URL", None),
             },
-        ],
+        },
     },
-    {
-        "id": "mediation-numerique",
+    "mediation-numerique": {
         "schedule": "@daily",
         "snapshot": False,
-        "streams": [
-            {
-                "id": "structures",
+        "extractor": mediation_numerique.extract,
+        "streams": {
+            "structures": {
                 "filename": "structures.json",
                 "url": Variable.get("MEDNUM_API_URL", None),
             },
-            {
-                "id": "services",
+            "services": {
                 "filename": "services.json",
                 "url": Variable.get("MEDNUM_API_URL", None),
             },
-        ],
+        },
     },
-    {
-        "id": "soliguide",
+    "soliguide": {
         "schedule": "@daily",
         "snapshot": True,
-        "streams": [
-            {
-                "id": "lieux",
+        "extractor": soliguide.extract,
+        "reader": soliguide.read,
+        "streams": {
+            "lieux": {
                 "filename": "lieux.json",
                 "url": Variable.get("SOLIGUIDE_API_URL", None),
                 "token": Variable.get("SOLIGUIDE_API_TOKEN", None),
             }
-        ],
+        },
     },
-    {
-        "id": "monenfant",
+    "monenfant": {
         "schedule": "@once",
         "snapshot": True,
-        "streams": [
-            {
-                "id": "creches",
+        "reader": monenfant.read,
+        "streams": {
+            "creches": {
                 "filename": "creches.json",
                 "url": Variable.get("MONENFANT_CRECHES_FILE_URL", None),
             },
-        ],
+        },
     },
-    {
-        "id": "reseau-alpha",
+    "reseau-alpha": {
         "schedule": "@once",
         "snapshot": False,
-        "streams": [
-            {
-                "id": "structures",
+        "streams": {
+            "structures": {
                 "filename": "structures.tar.gz",
                 "url": Variable.get("RESEAU_ALPHA_URL", None),
+                "extractor": reseau_alpha.extract_structures,
+                "reader": reseau_alpha.read_structures,
             },
-            {
-                "id": "formations",
+            "formations": {
                 "filename": "formations.tar.gz",
                 "url": Variable.get("RESEAU_ALPHA_URL", None),
+                "extractor": reseau_alpha.extract_formations,
+                "reader": reseau_alpha.read_formations,
             },
-        ],
+        },
     },
-    {
-        "id": "agefiph",
+    "agefiph": {
         "schedule": "@daily",
         "snapshot": True,
-        "streams": [
-            {
-                "id": "services",
+        "reader": agefiph.read,
+        "streams": {
+            "services": {
                 "filename": "services.json",
                 "url": Variable.get("AGEFIPH_SERVICES_API_URL", None),
             }
-        ],
+        },
     },
-    {
-        "id": "data-inclusion",
+    "data-inclusion": {
         "schedule": "@once",
         "snapshot": False,
-        "streams": [
-            {
-                "id": "services",
+        "reader": lambda path: utils.read_csv(path, sep=","),
+        "streams": {
+            "services": {
                 "filename": "services.csv",
                 "url": Variable.get("DI_EXTRA_SERVICES_FILE_URL", None),
             },
-            {
-                "id": "structures",
+            "structures": {
                 "filename": "structures.csv",
                 "url": Variable.get("DI_EXTRA_STRUCTURES_FILE_URL", None),
             },
-        ],
+        },
     },
-    {
-        "id": "cd72",
+    "cd72": {
         "schedule": "@once",
         "snapshot": False,
-        "streams": [
-            {
-                "id": "structures",
+        "extractor": grist.extract,
+        "reader": lambda path: utils.read_csv(path, sep=","),
+        "streams": {
+            "structures": {
                 "filename": "structures.csv",
                 "url": Variable.get("CD72_STRUCTURES_FILE_URL", None),
                 "token": Variable.get("GRIST_API_TOKEN", None),
             },
-            {
-                "id": "services",
+            "services": {
                 "filename": "services.csv",
                 "url": Variable.get("CD72_SERVICES_FILE_URL", None),
                 "token": Variable.get("GRIST_API_TOKEN", None),
             },
-        ],
+        },
     },
-    {
-        "id": "pole-emploi",
+    "pole-emploi": {
         "schedule": "@once",
         "snapshot": False,
-        "streams": [
-            {
-                "id": "structures",
+        "extractor": dora.extract,
+        "streams": {
+            "structures": {
                 "filename": "structures.json",
                 "url": Variable.get("DORA_PREPROD_API_URL", None),
                 "token": Variable.get("DORA_PREPROD_API_TOKEN", None),
             },
-            {
-                "id": "services",
+            "services": {
                 "filename": "services.json",
                 "url": Variable.get("DORA_PREPROD_API_URL", None),
                 "token": Variable.get("DORA_PREPROD_API_TOKEN", None),
             },
-        ],
+        },
     },
-]
+}
+
+
+def get_extractor(source_id: str, stream_id: str):
+    source_config = SOURCES_CONFIGS[source_id]
+    stream_config = source_config["streams"][stream_id]
+    if extractor := stream_config.get("extractor"):
+        return extractor
+    if extractor := source_config.get("extractor"):
+        return extractor
+    return utils.extract_http_content
+
+
+def get_reader(source_id: str, stream_id: str):
+    source_config = SOURCES_CONFIGS[source_id]
+    stream_config = source_config["streams"][stream_id]
+    if reader := stream_config.get("reader"):
+        return reader
+    if reader := source_config.get("reader"):
+        return reader
+    return utils.read_json
