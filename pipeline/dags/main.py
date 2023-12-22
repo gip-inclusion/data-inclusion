@@ -6,7 +6,7 @@ from airflow.utils.task_group import TaskGroup
 from dag_utils import date
 from dag_utils.dbt import dbt_operator_factory
 from dag_utils.notifications import format_failure, notify_webhook
-from dag_utils.settings import SOURCES_CONFIGS
+from dag_utils.sources import SOURCES_CONFIGS
 from dag_utils.virtualenvs import PYTHON_BIN_PATH
 
 default_args = {
@@ -93,13 +93,13 @@ with airflow.DAG(
 
     dbt_staging_tasks_list = []
 
-    for source_config in sorted(SOURCES_CONFIGS, key=lambda d: d["id"]):
-        dbt_source_id = source_config["id"].replace("-", "_")
+    for source_id, source_config in sorted(SOURCES_CONFIGS.items()):
+        dbt_source_id = source_id.replace("-", "_")
 
         stg_selector = f"path:models/staging/sources/**/stg_{dbt_source_id}__*.sql"
         int_selector = f"path:models/intermediate/sources/**/int_{dbt_source_id}__*.sql"
 
-        with TaskGroup(group_id=source_config["id"]) as source_task_group:
+        with TaskGroup(group_id=source_id) as source_task_group:
             dbt_run_staging = dbt_operator_factory(
                 task_id="dbt_run_staging",
                 command="run",
