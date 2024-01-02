@@ -18,8 +18,7 @@ def _publish_to_datagouv():
     from airflow.models import Variable
     from airflow.providers.postgres.hooks import postgres
 
-    from data_inclusion.scripts.tasks import datagouv
-    from data_inclusion.scripts.tasks.utils import log_df_info
+    from dag_utils.sources import datagouv, utils
 
     logger = logging.getLogger(__name__)
 
@@ -64,12 +63,12 @@ def _publish_to_datagouv():
     structures_df = pg_hook.get_pandas_df(
         sql="SELECT * FROM public_opendata.opendata_structures",
     )
-    log_df_info(structures_df, logger)
+    utils.log_df_info(structures_df, logger)
 
     services_df = pg_hook.get_pandas_df(
         sql="SELECT * FROM public_opendata.opendata_services",
     )
-    log_df_info(services_df, logger)
+    utils.log_df_info(services_df, logger)
 
     for kind, format in itertools.product(
         ["structures", "services"],

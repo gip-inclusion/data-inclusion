@@ -5,7 +5,7 @@ It is used as a source of truth in general and to generate dedicated dags in par
 
 from airflow.models import Variable
 
-from data_inclusion.scripts.tasks import (
+from . import (
     agefiph,
     annuaire_du_service_public,
     dora,

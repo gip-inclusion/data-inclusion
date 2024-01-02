@@ -1,7 +1,7 @@
 import pytest
 from requests import HTTPError
 
-from data_inclusion.scripts.tasks import utils as task_utils
+from dags.dag_utils.sources import utils as task_utils
 
 
 def test_extract_http_content(requests_mock):
