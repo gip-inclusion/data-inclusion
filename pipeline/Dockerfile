@@ -66,10 +66,9 @@ USER airflow
 COPY --chown=airflow:0 --from=compile-image /opt/airflow/venvs /opt/airflow/venvs
 
 COPY --chown=airflow:0 dags /opt/airflow/dags
-COPY --chown=airflow:0 src /opt/airflow/src
 COPY --chown=airflow:0 dbt ${AIRFLOW_VAR_DBT_PROJECT_DIR}
 
 RUN /opt/airflow/venvs/dbt/venv/bin/dbt deps --project-dir /opt/airflow/dbt
 
-# make the data_inclusion package available in editable mode
-ENV PYTHONPATH "${PYTHONPATH}:/opt/airflow/src"
+# make the dags package available in editable mode
+ENV PYTHONPATH "${PYTHONPATH}:/opt/airflow/dags"

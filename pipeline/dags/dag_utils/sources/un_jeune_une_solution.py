@@ -1,4 +1,4 @@
-from data_inclusion.scripts.tasks import utils
+from . import utils
 
 
 def extract(id: str, url: str, **kwargs) -> bytes:
