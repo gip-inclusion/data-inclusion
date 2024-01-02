@@ -249,6 +249,17 @@ SOURCES_CONFIGS = {
             },
         },
     },
+    "odspep": {
+        "schedule": "@once",
+        "snapshot": False,
+        "reader": lambda path: utils.read_excel(path, engine="openpyxl"),
+        "streams": {
+            "structures": {
+                "filename": "structures.xlsx",
+                "url": Variable.get("ODSPEP_FILE_URL", None),
+            },
+        },
+    },
 }
 
 

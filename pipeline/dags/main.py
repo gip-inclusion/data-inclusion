@@ -139,8 +139,6 @@ with airflow.DAG(
         command="build",
         select=" ".join(
             [
-                # FIXME: handle odspep as other sources (add to dags/settings.py)
-                "path:models/staging/sources/odspep",
                 "path:models/intermediate/int__union_adresses.sql",
                 "path:models/intermediate/int__union_services.sql",
                 "path:models/intermediate/int__union_structures.sql",
