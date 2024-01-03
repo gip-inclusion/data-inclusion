@@ -21,6 +21,7 @@ class BaseAdresseNationaleBackend(GeocodingBackend):
         self.base_url = base_url.strip("/")
 
     def _geocode(self, df: pd.DataFrame) -> pd.DataFrame:
+        logger.info("Will send address batch, dimensions=%s", df.shape)
         with io.BytesIO() as buf:
             df.to_csv(buf, index=False, quoting=csv.QUOTE_ALL, sep="|")
 
@@ -32,6 +33,7 @@ class BaseAdresseNationaleBackend(GeocodingBackend):
                         "columns": ["adresse", "code_postal", "commune"],
                         "postcode": "code_postal",
                     },
+                    timeout=180,  # we upload 2MB of data, so we need a high timeout
                 )
                 response.raise_for_status()
             except requests.RequestException as e:
@@ -50,11 +52,14 @@ class BaseAdresseNationaleBackend(GeocodingBackend):
             )
             results_df = results_df.replace({np.nan: None})
 
+        logger.info("Got result for address batch, dimensions=%s", results_df.shape)
         return results_df
 
     def geocode(self, df: pd.DataFrame) -> pd.DataFrame:
-        # BAN api limits the batch geocoding to 1000 entries per batch
-        batch_size = 1000
+        # BAN api limits the batch geocoding to 50MB of data
+        # In our tests, 10_000 rows is about 1MB; but we'll be conservative
+        # since we also want to avoid upload timeouts.
+        BATCH_SIZE = 20_000
 
         # drop rows with missing input values
         # if not done, the BAN api will fail the entire batch
@@ -91,6 +96,6 @@ class BaseAdresseNationaleBackend(GeocodingBackend):
                 return results_df
 
         return df.groupby(
-            np.arange(len(df)) // batch_size,
+            np.arange(len(df)) // BATCH_SIZE,
             group_keys=False,
         ).apply(_geocode_with_retry)
