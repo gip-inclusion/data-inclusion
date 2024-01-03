@@ -34,7 +34,7 @@ di_type_by_agefiph_type AS (
     FROM (
         VALUES
         ('9f1b3cad-7a62-449a-8ac2-3356c939f827', 'aide-financiere'),
-        ('6a94011c-a840-4ad5-824f-81738e8a1821', 'information'),
+        ('6a94011c-a840-4ad5-824f-81738e8a1821', 'accompagnement'),
         ('0f8de1a1-1b4b-4508-b235-ada518a806e4', 'accompagnement')
     ) AS x (agefiph_type, type_)
 ),
@@ -90,7 +90,6 @@ final AS (
         ARRAY['autre']                                               AS "modes_orientation_accompagnateur",
         ARRAY['autre']                                               AS "modes_orientation_beneficiaire",
         ARRAY[
-            'personnes-handicapees',
             'personnes-en-situation-de-handicap'
         ]                                                            AS "profils",
         ARRAY(
