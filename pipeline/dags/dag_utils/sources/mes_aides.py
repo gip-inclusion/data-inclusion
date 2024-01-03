@@ -1,4 +1,3 @@
-import io
 import json
 
 
@@ -13,7 +12,4 @@ def extract(url: str, token: str, **kwargs) -> bytes:
     api = pyairtable.Api(api_key=token)
     table = api.table(base_id=base_id, table_name=table_name)
     data = table.all()
-
-    with io.StringIO() as buf:
-        json.dump(data, buf)
-        return buf.getvalue().encode()
+    return json.dumps(data).encode()

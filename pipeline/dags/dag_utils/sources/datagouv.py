@@ -1,30 +1,16 @@
-import logging
 from typing import BinaryIO
 
-logger = logging.getLogger(__name__)
+from . import utils
 
 
-def log_and_raise(resp, *args, **kwargs):
-    import requests
-
-    try:
-        resp.raise_for_status()
-    except requests.HTTPError as err:
-        logger.error(resp.json())
-        raise err
-
-
-class DataGouvClient:
+class DataGouvClient(utils.BaseApiClient):
     def __init__(
         self,
         base_url: str,
         api_key: str,
     ):
-        import requests
-
+        super().__init__(base_url)
         self.base_url = base_url + "/1"
-        self.session = requests.Session()
-        self.session.hooks["response"] = [log_and_raise]
         self.session.headers.update({"X-API-KEY": api_key})
 
     def upload_dataset_resource(

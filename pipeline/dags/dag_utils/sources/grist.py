@@ -1,26 +1,14 @@
 import logging
 import re
 
+from . import utils
+
 logger = logging.getLogger(__name__)
 
 
-def log_and_raise(resp, *args, **kwargs):
-    import requests
-
-    try:
-        resp.raise_for_status()
-    except requests.HTTPError as err:
-        logger.error(resp.json())
-        raise err
-
-
-class GristClient:
-    def __init__(self, base_url: str, token: str) -> None:
-        import requests
-
-        self.base_url = base_url.rstrip("/")
-        self.session = requests.Session()
-        self.session.hooks["response"] = [log_and_raise]
+class GristClient(utils.BaseApiClient):
+    def __init__(self, base_url: str, token: str):
+        super().__init__(base_url)
         self.session.headers.update({"Authorization": f"Bearer {token}"})
 
     def _create_document(self, workspace_id: str, document_name: str) -> str:
