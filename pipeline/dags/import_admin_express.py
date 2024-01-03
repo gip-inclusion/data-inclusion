@@ -30,7 +30,6 @@ def _load_communes():
     import textwrap
 
     import geopandas
-    import tqdm
     from airflow.providers.postgres.hooks import postgres
 
     pg_hook = postgres.PostgresHook(postgres_conn_id="pg")
@@ -50,7 +49,7 @@ def _load_communes():
 
     with engine.connect() as conn:
         with conn.begin():
-            for i in tqdm.tqdm(range(100)):
+            for i in range(100):
                 chunck_df = geopandas.read_file(
                     tmp_file_path, rows=slice(1000 * i, 1000 * (i + 1))
                 )

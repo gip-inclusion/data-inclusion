@@ -1,22 +1,14 @@
 import json
 from functools import reduce
 from pathlib import Path
-from typing import Optional
 
-
-def html_to_markdown(s: Optional[str]) -> Optional[str]:
-    import trafilatura
-
-    if s is None or s == "":
-        return s
-    return trafilatura.extract(trafilatura.load_html("<html>" + s + "</html>"))
+from . import utils
 
 
 def read(path: Path):
     # utils.read_json is enough
     # but this adds the conversion of descriptions from html to markdown
     # should eventually be implemented as a python dbt model
-    import numpy as np
     import pandas as pd
 
     with path.open() as file:
@@ -38,9 +30,7 @@ def read(path: Path):
             ["attributes", "field_essentiel_employeur", "processed"],
             ["attributes", "field_texte_brut_long"],
         ]:
-            _set(service_data, keys, html_to_markdown(_get(service_data, keys)))
+            _set(service_data, keys, utils.html_to_markdown(_get(service_data, keys)))
 
     df = pd.DataFrame.from_records(data)
-    df = df.replace({np.nan: None})
-
-    return df
+    return utils.df_clear_nan(df)

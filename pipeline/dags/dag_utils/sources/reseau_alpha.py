@@ -4,32 +4,18 @@ import logging
 import tarfile
 import time
 from pathlib import Path
-from typing import Optional
+
+from . import utils
 
 logger = logging.getLogger(__name__)
 
 
-def log_and_raise(resp, *args, **kwargs):
-    import requests
-
-    try:
-        resp.raise_for_status()
-    except requests.HTTPError as err:
-        logger.error(resp.json())
-        raise err
-
-
 def extract_structures(url: str, **kwargs) -> bytes:
     import pandas as pd
-    import requests
-    from tqdm import tqdm
 
-    url = url.lstrip("/")
+    session = utils.logging_raising_session()
+    response = session.get(utils.safe_urljoin(url, "cartographie.json"))
 
-    session = requests.Session()
-    session.hooks["response"] = [log_and_raise]
-
-    response = session.get(url + "/cartographie.json")
     data = response.json()
 
     structures_df = pd.DataFrame.from_records(data["structures"])
@@ -41,7 +27,7 @@ def extract_structures(url: str, **kwargs) -> bytes:
                 tar_info.size = len(response.content)
                 tar.addfile(tar_info, buf)
 
-            for _, row in tqdm(structures_df.iterrows()):
+            for _, row in structures_df.iterrows():
                 response = session.get(row.url)
 
                 with io.BytesIO(response.content) as buf:
@@ -55,15 +41,9 @@ def extract_structures(url: str, **kwargs) -> bytes:
 
 def extract_formations(url: str, **kwargs) -> bytes:
     import pandas as pd
-    import requests
-    from tqdm import tqdm
 
-    url = url.lstrip("/")
-
-    session = requests.Session()
-    session.hooks["response"] = [log_and_raise]
-
-    response = session.get(url + "/cartographie.json")
+    session = utils.logging_raising_session()
+    response = session.get(utils.safe_urljoin(url, "cartographie.json"))
     data = response.json()
 
     formations_df = pd.json_normalize(
@@ -81,7 +61,7 @@ def extract_formations(url: str, **kwargs) -> bytes:
                 tar_info.size = len(response.content)
                 tar.addfile(tar_info, buf)
 
-            for _, row in tqdm(formations_df.iterrows()):
+            for _, row in formations_df.iterrows():
                 response = session.get(row.url)
 
                 with io.BytesIO(response.content) as buf:
@@ -113,7 +93,7 @@ def scrap_structure_html(html_path: Path) -> dict:
         }
 
         for content_name, node in NODE_BY_CONTENT_NAME.items():
-            data[f"content__{content_name}"] = html_to_markdown(node)
+            data[f"content__{content_name}"] = utils.html_to_markdown(str(node))
 
         return data
 
@@ -252,21 +232,12 @@ def scrap_formation_html(html_path: Path) -> dict:
         }
 
         for content_name, node in NODE_BY_CONTENT_NAME.items():
-            data[f"content__{content_name}"] = html_to_markdown(node)
+            data[f"content__{content_name}"] = utils.html_to_markdown(str(node))
 
         return data
 
 
-def html_to_markdown(s) -> Optional[str]:
-    import trafilatura
-
-    if s is None or s == "":
-        return s
-    return trafilatura.extract(trafilatura.load_html("<html>" + str(s) + "</html>"))
-
-
 def read_structures(path: Path):
-    import numpy as np
     import pandas as pd
 
     with tarfile.open(path, "r:gz") as tar:
@@ -276,7 +247,9 @@ def read_structures(path: Path):
         data = json.load(f)["structures"]
 
     for structure_data in data:
-        structure_data["description"] = html_to_markdown(structure_data["description"])
+        structure_data["description"] = utils.html_to_markdown(
+            str(structure_data["description"])
+        )
 
     df = pd.DataFrame.from_records(data)
 
@@ -287,13 +260,10 @@ def read_structures(path: Path):
             result_type="expand",
         )
     )
-    df = df.replace({np.nan: None})
-
-    return df
+    return utils.df_clear_nan(df)
 
 
 def read_formations(path: Path):
-    import numpy as np
     import pandas as pd
 
     with tarfile.open(path, "r:gz") as tar:
@@ -315,6 +285,4 @@ def read_formations(path: Path):
             result_type="expand",
         )
     )
-    df = df.replace({np.nan: None})
-
-    return df
+    return utils.df_clear_nan(df)

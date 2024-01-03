@@ -25,4 +25,5 @@ def extract(id: str, url: str, **kwargs) -> bytes:
             break
         params["page[number]"] += 1
 
+    print(f"Found {len(full_data)} records.")
     return json.dumps(full_data).encode()

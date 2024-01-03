@@ -18,17 +18,19 @@ def log_df_info(df, logger: logging.Logger = logger):
         logger.info(line, stacklevel=2)
 
 
-def read_json(path: Path):
+def df_clear_nan(df):
     import numpy as np
+
+    return df.replace({np.nan: None})
+
+
+def read_json(path: Path):
     import pandas as pd
 
     # read data while preventing rough conversion of datatypes
     # e.g. siret/code_insee must not be converted to float
     df = pd.read_json(path, dtype=False)
-    # use none for null values
-    df = df.replace({np.nan: None})
-
-    return df
+    return df_clear_nan(df)
 
 
 def to_json(df, path: Path):
@@ -36,7 +38,6 @@ def to_json(df, path: Path):
 
 
 def read_csv(path: Path, sep: str):
-    import numpy as np
     import pandas as pd
 
     df = pd.read_csv(
@@ -46,21 +47,14 @@ def read_csv(path: Path, sep: str):
         on_bad_lines="warn",
         dtype=str,
     )
-    # use none for null values
-    df = df.replace({np.nan: None})
-
-    return df
+    return df_clear_nan(df)
 
 
 def read_excel(path: Path, sheet_name: Optional[str | int] = 0):
-    import numpy as np
     import pandas as pd
 
     df = pd.read_excel(path, sheet_name=sheet_name, dtype=str)
-    # use none for null values
-    df = df.replace({np.nan: None})
-
-    return df
+    return df_clear_nan(df)
 
 
 def extract_http_content(url: str, **kwargs) -> bytes:
@@ -69,3 +63,35 @@ def extract_http_content(url: str, **kwargs) -> bytes:
     response = requests.get(url)
     response.raise_for_status()
     return response.content
+
+
+def html_to_markdown(s: Optional[str]) -> Optional[str]:
+    import trafilatura
+
+    if s is None or s == "":
+        return s
+    return trafilatura.extract(trafilatura.load_html("<html>" + s + "</html>"))
+
+
+def log_and_raise(resp, *args, **kwargs):
+    import requests
+
+    try:
+        resp.raise_for_status()
+    except requests.HTTPError as err:
+        logger.error(resp.json())
+        raise err
+
+
+def logging_raising_session():
+    import requests
+
+    session = requests.Session()
+    session.hooks["response"] = [log_and_raise]
+    return session
+
+
+class BaseApiClient:
+    def __init__(self, base_url: str, **kwargs):
+        self.base_url = base_url.rstrip("/")
+        self.session = logging_raising_session()
