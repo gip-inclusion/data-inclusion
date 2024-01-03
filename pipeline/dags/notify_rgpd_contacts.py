@@ -16,9 +16,8 @@ def _sync_new_contacts_to_brevo():
 
     from airflow.models import Variable
 
-    from data_inclusion.scripts.tasks import brevo
-
     from dag_utils import constants, pg
+    from dag_utils.sources import brevo
 
     dora_contacts = pg.hook().get_records(
         sql=(

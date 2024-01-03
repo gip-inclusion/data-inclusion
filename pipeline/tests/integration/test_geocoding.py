@@ -1,7 +1,7 @@
 import pandas as pd
 import pytest
 
-from data_inclusion.scripts.tasks import geocoding
+from dags.dag_utils import geocoding
 
 pytestmark = pytest.mark.ban_api
 
