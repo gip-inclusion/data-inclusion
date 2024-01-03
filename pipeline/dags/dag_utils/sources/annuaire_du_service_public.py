@@ -2,10 +2,10 @@ import json
 import tarfile
 from pathlib import Path
 
-import pandas as pd
 
+def read(path: Path):
+    import pandas as pd
 
-def read(path: Path) -> pd.DataFrame:
     with tarfile.open(path, "r:bz2") as tar:
         tar.extractall(path=path.parent)
 

@@ -6,16 +6,12 @@ from copy import deepcopy
 from pathlib import Path
 from typing import Optional
 
-import numpy as np
-import pandas as pd
-import requests
-import trafilatura
-from tqdm import tqdm
-
 logger = logging.getLogger(__name__)
 
 
-def log_and_raise(resp: requests.Response, *args, **kwargs):
+def log_and_raise(resp, *args, **kwargs):
+    import requests
+
     try:
         resp.raise_for_status()
     except requests.HTTPError as err:
@@ -28,6 +24,8 @@ class APIClient:
     # https://apisolidarite.soliguide.fr/Documentation-technique-de-l-API-Solidarit-ecaf8198f0e9400d93140b8043c9f2ce
 
     def __init__(self, base_url: str, token: str):
+        import requests
+
         self.base_url = base_url.rstrip("/")
         self.session = requests.Session()
         self.session.headers.update({"Authorization": f"JWT {token}"})
@@ -38,6 +36,8 @@ class APIClient:
         location_geo_type: str,
         location_geo_value: Optional[str] = None,
     ) -> list[dict]:
+        from tqdm import tqdm
+
         if location_geo_type != "position" and location_geo_value is None:
             raise Exception("Missing location.geoValue.")
 
@@ -104,12 +104,17 @@ def extract(url: str, token: str, **kwargs) -> bytes:
 
 
 def html_to_markdown(s: Optional[str]) -> Optional[str]:
+    import trafilatura
+
     if s is None or s == "":
         return s
     return trafilatura.extract(trafilatura.load_html("<html>" + s + "</html>"))
 
 
-def read(path: Path) -> pd.DataFrame:
+def read(path: Path):
+    import numpy as np
+    import pandas as pd
+
     # utils.read_json is enough
     # but this adds the conversion of descriptions from html to markdown
     # should eventually be implemented as a python dbt model

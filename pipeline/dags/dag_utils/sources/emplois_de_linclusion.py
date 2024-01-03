@@ -2,9 +2,6 @@ import io
 import json
 import logging
 
-import requests
-from requests.adapters import HTTPAdapter
-from tqdm import tqdm
 from urllib3.util.retry import Retry
 
 logger = logging.getLogger(__name__)
@@ -12,6 +9,9 @@ logger = logging.getLogger(__name__)
 
 class EmploisClient:
     def __init__(self, base_url: str, token: str) -> None:
+        import requests
+        from requests.adapters import HTTPAdapter
+
         self.base_url = base_url.rstrip("/") + "/"
         self.session = requests.Session()
         adapter = HTTPAdapter(
@@ -22,6 +22,8 @@ class EmploisClient:
         self.session.headers.update({"Authorization": f"Token {token}"})
 
     def _list_paginated_endpoint(self, url_path: str) -> list:
+        from tqdm import tqdm
+
         next_url = f"{self.base_url}{url_path}"
         structures_data = []
 
