@@ -23,7 +23,8 @@ def _geocode():
     from airflow.models import Variable
     from airflow.providers.postgres.hooks.postgres import PostgresHook
 
-    from data_inclusion.scripts.tasks import geocoding, utils
+    from dag_utils import geocoding
+    from dag_utils.sources import utils
 
     logger = logging.getLogger(__name__)
 

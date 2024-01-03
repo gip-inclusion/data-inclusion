@@ -21,9 +21,8 @@ def _extract_rgpd_contacts(run_id: str, stream_id: str, source_id: str, logical_
 
     from airflow.models import Variable
 
-    from data_inclusion.scripts.tasks import brevo
-
     from dag_utils import constants, s3
+    from dag_utils.sources import brevo
 
     brevo_client = brevo.BrevoClient(token=Variable.get("BREVO_API_KEY"))
     contacts = list(brevo_client.list_contacts(constants.BREVO_ALL_CONTACTS_LIST_ID))
@@ -36,8 +35,8 @@ def _extract_rgpd_contacts(run_id: str, stream_id: str, source_id: str, logical_
 def _load_rgpd_contacts(run_id: str, stream_id: str, source_id: str, logical_date):
     import pandas as pd
 
-    from dags.dag_utils import date, pg, s3
-    from data_inclusion.scripts.tasks import utils
+    from dag_utils import date, pg, s3
+    from dag_utils.sources import utils
 
     s3_path = s3.source_file_path(source_id, f"{stream_id}.json", run_id, logical_date)
     tmp_filename = s3.download_file(s3_path)
