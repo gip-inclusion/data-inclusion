@@ -1,12 +1,12 @@
 import json
 from urllib.parse import urlencode
 
-import requests
-
 from . import utils
 
 
 def extract(id: str, url: str, **kwargs) -> bytes:
+    import requests
+
     # TODO(vperron): add a retry mechanism here.
     params = {
         "page[number]": 0,

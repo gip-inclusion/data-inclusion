@@ -6,17 +6,12 @@ import time
 from pathlib import Path
 from typing import Optional
 
-import bs4
-import numpy as np
-import pandas as pd
-import requests
-import trafilatura
-from tqdm import tqdm
-
 logger = logging.getLogger(__name__)
 
 
-def log_and_raise(resp: requests.Response, *args, **kwargs):
+def log_and_raise(resp, *args, **kwargs):
+    import requests
+
     try:
         resp.raise_for_status()
     except requests.HTTPError as err:
@@ -25,6 +20,10 @@ def log_and_raise(resp: requests.Response, *args, **kwargs):
 
 
 def extract_structures(url: str, **kwargs) -> bytes:
+    import pandas as pd
+    import requests
+    from tqdm import tqdm
+
     url = url.lstrip("/")
 
     session = requests.Session()
@@ -55,6 +54,10 @@ def extract_structures(url: str, **kwargs) -> bytes:
 
 
 def extract_formations(url: str, **kwargs) -> bytes:
+    import pandas as pd
+    import requests
+    from tqdm import tqdm
+
     url = url.lstrip("/")
 
     session = requests.Session()
@@ -91,6 +94,8 @@ def extract_formations(url: str, **kwargs) -> bytes:
 
 
 def scrap_structure_html(html_path: Path) -> dict:
+    import bs4
+
     with html_path.open() as f:
         soup = bs4.BeautifulSoup(f, features="lxml")
         data = {}
@@ -114,6 +119,8 @@ def scrap_structure_html(html_path: Path) -> dict:
 
 
 def scrap_formation_html(html_path: Path) -> dict:
+    import bs4
+
     def get_parent(node):
         return node.parent if node is not None else None
 
@@ -251,12 +258,17 @@ def scrap_formation_html(html_path: Path) -> dict:
 
 
 def html_to_markdown(s) -> Optional[str]:
+    import trafilatura
+
     if s is None or s == "":
         return s
     return trafilatura.extract(trafilatura.load_html("<html>" + str(s) + "</html>"))
 
 
-def read_structures(path: Path) -> pd.DataFrame:
+def read_structures(path: Path):
+    import numpy as np
+    import pandas as pd
+
     with tarfile.open(path, "r:gz") as tar:
         tar.extractall(path=path.parent)
 
@@ -280,7 +292,10 @@ def read_structures(path: Path) -> pd.DataFrame:
     return df
 
 
-def read_formations(path: Path) -> pd.DataFrame:
+def read_formations(path: Path):
+    import numpy as np
+    import pandas as pd
+
     with tarfile.open(path, "r:gz") as tar:
         tar.extractall(path=path.parent)
 

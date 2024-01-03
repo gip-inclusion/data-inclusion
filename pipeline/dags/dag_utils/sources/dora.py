@@ -3,13 +3,12 @@ import json
 import logging
 from typing import Optional
 
-import requests
-from tqdm import tqdm
-
 logger = logging.getLogger(__name__)
 
 
-def log_and_raise(resp: requests.Response, *args, **kwargs):
+def log_and_raise(resp, *args, **kwargs):
+    import requests
+
     try:
         resp.raise_for_status()
     except requests.HTTPError as err:
@@ -19,6 +18,8 @@ def log_and_raise(resp: requests.Response, *args, **kwargs):
 
 class DoraClient:
     def __init__(self, base_url: str, token: str) -> None:
+        import requests
+
         self.base_url = base_url.rstrip("/")
         self.session = requests.Session()
         self.session.params.update({"page_size": 1000, "o": "creation_date"})
@@ -30,6 +31,8 @@ class DoraClient:
         url_path: str,
         params: Optional[dict] = None,
     ) -> list:
+        from tqdm import tqdm
+
         next_url = f"{self.base_url}{url_path}"
         return_data = []
 

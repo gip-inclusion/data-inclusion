@@ -1,12 +1,12 @@
 import logging
 import re
 
-import requests
-
 logger = logging.getLogger(__name__)
 
 
-def log_and_raise(resp: requests.Response, *args, **kwargs):
+def log_and_raise(resp, *args, **kwargs):
+    import requests
+
     try:
         resp.raise_for_status()
     except requests.HTTPError as err:
@@ -16,6 +16,8 @@ def log_and_raise(resp: requests.Response, *args, **kwargs):
 
 class GristClient:
     def __init__(self, base_url: str, token: str) -> None:
+        import requests
+
         self.base_url = base_url.rstrip("/")
         self.session = requests.Session()
         self.session.hooks["response"] = [log_and_raise]

@@ -3,20 +3,21 @@ import logging
 from pathlib import Path
 from typing import Optional
 
-import numpy as np
-import pandas as pd
-import trafilatura
-
 logger = logging.getLogger(__name__)
 
 
 def html_to_markdown(s: Optional[str]) -> Optional[str]:
+    import trafilatura
+
     if s is None or s == "":
         return s
     return trafilatura.extract(trafilatura.load_html("<html>" + s + "</html>"))
 
 
-def read(path: Path) -> pd.DataFrame:
+def read(path: Path):
+    import numpy as np
+    import pandas as pd
+
     # utils.read_json is enough
     # but this adds the conversion of descriptions from html to markdown
     # should eventually be implemented as a python dbt model
