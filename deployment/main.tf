@@ -168,6 +168,7 @@ resource "null_resource" "up" {
     AIRFLOW_VAR_BREVO_API_KEY=${var.brevo_api_key}
     AIRFLOW_VAR_DATAGOUV_API_KEY=${var.datagouv_api_key}
     AIRFLOW_VAR_DORA_API_TOKEN=${var.dora_api_token}
+    AIRFLOW_VAR_FT_API_TOKEN=${var.ft_api_token}
     AIRFLOW_VAR_DORA_PREPROD_API_TOKEN=${var.dora_preprod_api_token}
     AIRFLOW_VAR_EMPLOIS_API_TOKEN=${var.emplois_api_token}
     AIRFLOW_VAR_GRIST_API_TOKEN=${var.grist_api_token}

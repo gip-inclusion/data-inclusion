@@ -119,6 +119,13 @@ variable "dora_api_url" {
   default     = ""
 }
 
+variable "ft_api_token" {
+  description = "Used in extraction tasks orchestrated by airflow"
+  type        = string
+  sensitive   = true
+  default     = ""
+}
+
 variable "emplois_api_token" {
   description = "Used in extraction tasks orchestrated by airflow"
   type        = string
