@@ -1,5 +1,6 @@
 apache-airflow-providers-postgres
 apache-airflow-providers-amazon
+sentry-sdk
 
 beautifulsoup4
 GeoAlchemy2
