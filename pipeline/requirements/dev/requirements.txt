@@ -14,10 +14,9 @@ annotated-types==0.6.0
     # via pydantic
 anyio==4.0.0
     # via httpx
-apache-airflow[amazon,postgres]==2.7.3
+apache-airflow[amazon,postgres,sentry]==2.7.3
     # via
     #   -r requirements/dev/../airflow/base.in
-    #   apache-airflow
     #   apache-airflow-providers-amazon
     #   apache-airflow-providers-common-sql
     #   apache-airflow-providers-ftp
@@ -50,9 +49,7 @@ apache-airflow-providers-postgres==5.8.0
 apache-airflow-providers-sqlite==3.5.0
     # via apache-airflow
 apispec[yaml]==6.3.0
-    # via
-    #   apispec
-    #   flask-appbuilder
+    # via flask-appbuilder
 argcomplete==3.1.6
     # via apache-airflow
 asgiref==3.7.2
@@ -114,6 +111,7 @@ certifi==2023.7.22
     #   pyogrio
     #   pyproj
     #   requests
+    #   sentry-sdk
     #   sib-api-v3-sdk
     #   trafilatura
 cffi==1.16.0
@@ -152,9 +150,7 @@ colorlog==4.8.0
 configupdater==3.1.1
     # via apache-airflow
 connexion[flask]==2.14.2
-    # via
-    #   apache-airflow
-    #   connexion
+    # via apache-airflow
 courlan==0.9.4
     # via trafilatura
 cron-descriptor==1.4.0
@@ -552,6 +548,8 @@ s3transfer==0.7.0
     # via boto3
 scramp==1.4.4
     # via redshift-connector
+sentry-sdk==1.39.1
+    # via apache-airflow
 setproctitle==1.3.3
     # via apache-airflow
 shapely==2.0.2
@@ -606,8 +604,6 @@ tld==0.13
     # via courlan
 tox==4.11.3
     # via -r requirements/dev/requirements.in
-tqdm==4.66.1
-    # via -r requirements/dev/../tasks/python/requirements.in
 trafilatura==1.6.2
     # via -r requirements/dev/../tasks/python/requirements.in
 typing-extensions==4.8.0
@@ -636,6 +632,7 @@ urllib3==2.0.7
     #   htmldate
     #   pyairtable
     #   requests
+    #   sentry-sdk
     #   sib-api-v3-sdk
     #   trafilatura
 virtualenv==20.24.6
