@@ -14,6 +14,7 @@ from . import (
     mediation_numerique,
     mes_aides,
     monenfant,
+    pole_emploi,
     reseau_alpha,
     soliguide,
     un_jeune_une_solution,
@@ -233,19 +234,20 @@ SOURCES_CONFIGS = {
         },
     },
     "pole-emploi": {
-        "schedule": "@once",
+        "schedule": "@daily",
         "snapshot": False,
-        "extractor": dora.extract,
         "streams": {
-            "structures": {
-                "filename": "structures.json",
-                "url": Variable.get("DORA_PREPROD_API_URL", None),
-                "token": Variable.get("DORA_PREPROD_API_TOKEN", None),
+            "agences": {
+                "filename": "agences.json",
+                "url": Variable.get("FT_API_URL", None),
+                # the "request token" is the client_id:client_secret string.
+                "token": Variable.get("FT_API_TOKEN", None),
+                "extractor": pole_emploi.extract,
             },
             "services": {
                 "filename": "services.json",
-                "url": Variable.get("DORA_PREPROD_API_URL", None),
-                "token": Variable.get("DORA_PREPROD_API_TOKEN", None),
+                "url": Variable.get("FT_SERVICES_TEMPLATE_URL", None),
+                "reader": lambda path: utils.read_csv(path, sep=","),
             },
         },
     },

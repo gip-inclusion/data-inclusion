@@ -128,6 +128,7 @@ jobs:
         TF_VAR_datagouv_api_key: ${{ secrets.DATAGOUV_API_KEY }}
         TF_VAR_dora_api_url: ${{ vars.DORA_API_URL }}
         TF_VAR_dora_api_token: ${{ secrets.DORA_API_TOKEN }}
+        TF_VAR_ft_api_token: ${{ secrets.FT_API_TOKEN }}
         TF_VAR_dora_preprod_api_token: ${{ secrets.DORA_PREPROD_API_TOKEN }}
         TF_VAR_emplois_api_token: ${{ secrets.EMPLOIS_API_TOKEN }}
         TF_VAR_grist_api_token: ${{ secrets.GRIST_API_TOKEN }}
