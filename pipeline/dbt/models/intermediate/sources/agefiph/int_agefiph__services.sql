@@ -1,5 +1,17 @@
-WITH services AS (
-    SELECT * FROM {{ ref('stg_agefiph__services') }}
+WITH services_publics AS (
+    SELECT * FROM {{ ref('stg_agefiph__services_publics') }}
+),
+
+services AS (
+    SELECT
+        s.*,
+        sp.public_id
+    FROM {{ ref('stg_agefiph__services') }} AS s
+    INNER JOIN services_publics AS sp
+        ON s.id = sp.service_id
+    -- public : "Personne handicapée"
+    -- https://www.agefiph.fr/jsonapi/taxonomy_term/public_cible/0d0b63b6-4043-4b2d-a3f6-d7c85f335070
+    WHERE sp.public_id = '0d0b63b6-4043-4b2d-a3f6-d7c85f335070'
 ),
 
 services_thematiques AS (
