@@ -37,7 +37,7 @@ sources:
   - name: pole_emploi
     schema: pole_emploi
     tables:
-      - name: structures
+      - name: agences
       - name: services
 
   - name: finess
