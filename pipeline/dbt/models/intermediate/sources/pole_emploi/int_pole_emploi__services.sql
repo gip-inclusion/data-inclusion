@@ -2,59 +2,61 @@ WITH services AS (
     SELECT * FROM {{ ref('stg_pole_emploi__services') }}
 ),
 
-di_profil_by_pole_emploi_profil AS (
-    -- pole_emploi's thematiques are not yet normalized
-    SELECT x.*
-    FROM (
-        VALUES
-        ('Adultes', 'adultes'),
-        ('Femmes', 'femmes'),
-        ('Public bénéficiaire du Revenu de Solidarité Active (RSA)', 'beneficiaires-rsa'),
-        ('Demandeur d''emploi', 'demandeurs-demploi')
-    ) AS x (pole_emploi_profil, di_profil)
+agences AS (
+    SELECT * FROM {{ ref('int_pole_emploi__agences') }}
+),
+
+adresses AS (
+    SELECT * FROM {{ ref('int_pole_emploi__adresses') }}
+),
+
+structures_with_commune AS (
+    SELECT
+        agences.*,
+        adresses.code_insee AS "code_insee",
+        adresses.commune    AS "commune"
+    FROM agences
+    LEFT JOIN adresses ON adresses.id = agences.id
 ),
 
 final AS (
     SELECT
-        id                                      AS "adresse_id",
-        contact_public                          AS "contact_public",
-        courriel                                AS "courriel",
-        cumulable                               AS "cumulable",
-        date_creation::DATE                     AS "date_creation",
-        date_maj::DATE                          AS "date_maj",
-        date_suspension::DATE                   AS "date_suspension",
-        formulaire_en_ligne                     AS "formulaire_en_ligne",
-        frais_autres                            AS "frais_autres",
-        id                                      AS "id",
-        justificatifs                           AS "justificatifs",
-        NULL                                    AS "lien_source",  --ignored
-        modes_accueil                           AS "modes_accueil",
-        modes_orientation_accompagnateur        AS "modes_orientation_accompagnateur",
-        modes_orientation_accompagnateur_autres AS "modes_orientation_accompagnateur_autres",
-        modes_orientation_beneficiaire          AS "modes_orientation_beneficiaire",
-        modes_orientation_beneficiaire_autres   AS "modes_orientation_beneficiaire_autres",
-        nom                                     AS "nom",
-        presentation_resume                     AS "presentation_resume",
-        presentation_detail                     AS "presentation_detail",
-        prise_rdv                               AS "prise_rdv",
-        ARRAY(
-            SELECT di_profil_by_pole_emploi_profil.di_profil
-            FROM di_profil_by_pole_emploi_profil
-            WHERE di_profil_by_pole_emploi_profil.pole_emploi_profil = ANY(services.profils)
-        )::TEXT []                              AS "profils",
-        recurrence                              AS "recurrence",
-        _di_source_id                           AS "source",
-        structure_id                            AS "structure_id",
-        telephone                               AS "telephone",
-        thematiques                             AS "thematiques",
-        types                                   AS "types",
-        zone_diffusion_code                     AS "zone_diffusion_code",
-        zone_diffusion_nom                      AS "zone_diffusion_nom",
-        zone_diffusion_type                     AS "zone_diffusion_type",
-        pre_requis                              AS "pre_requis",
-        contact_nom || contact_prenom           AS "contact_nom_prenom",
-        ARRAY[frais]                            AS "frais"
+        services._di_source_id                           AS "source",
+        structures.id                                    AS "structure_id",
+        structures.id                                    AS "adresse_id",
+        structures.courriel                              AS "courriel",
+        services.cumulable                               AS "cumulable",
+        TRUE                                             AS "contact_public",
+        NULL                                             AS "contact_nom_prenom",
+        structures.date_maj                              AS "date_maj",
+        structures.date_maj                              AS "date_creation",
+        services.formulaire_en_ligne                     AS "formulaire_en_ligne",
+        services.frais_autres                            AS "frais_autres",
+        services.justificatifs                           AS "justificatifs",
+        NULL                                             AS "lien_source",
+        services.modes_accueil                           AS "modes_accueil",
+        services.modes_orientation_accompagnateur        AS "modes_orientation_accompagnateur",
+        services.modes_orientation_accompagnateur_autres AS "modes_orientation_accompagnateur_autres",
+        services.modes_orientation_beneficiaire          AS "modes_orientation_beneficiaire",
+        services.modes_orientation_beneficiaire_autres   AS "modes_orientation_beneficiaire_autres",
+        services.nom                                     AS "nom",
+        services.presentation_detail                     AS "presentation_detail",
+        services.presentation_resume                     AS "presentation_resume",
+        services.prise_rdv                               AS "prise_rdv",
+        services.profils                                 AS "profils",
+        services.pre_requis                              AS "pre_requis",
+        services.recurrence                              AS "recurrence",
+        services.thematiques                             AS "thematiques",
+        services.types                                   AS "types",
+        structures.telephone                             AS "telephone",
+        services.frais                                   AS "frais",
+        'commune'                                        AS "zone_diffusion_type",
+        structures.code_insee                            AS "zone_diffusion_code",
+        structures.commune                               AS "zone_diffusion_nom",
+        CAST(NULL AS DATE)                               AS "date_suspension",
+        structures.id || '-' || services.id              AS "id"
     FROM services
+    CROSS JOIN structures_with_commune AS structures
 )
 
 SELECT * FROM final

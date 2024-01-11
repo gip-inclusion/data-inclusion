@@ -28,7 +28,7 @@ models:
         tests:
           - not_null
           - relationships:
-              to: ref('int_pole_emploi__structures')
+              to: ref('int_pole_emploi__agences')
               field: id
       - name: adresse_id
         tests:
@@ -37,7 +37,7 @@ models:
               to: ref('int_pole_emploi__adresses')
               field: id
 
-  - name: int_pole_emploi__structures
+  - name: int_pole_emploi__agences
     tests:
       - check_structure:
           config:

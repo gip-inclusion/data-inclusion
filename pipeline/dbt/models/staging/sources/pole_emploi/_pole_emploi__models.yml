@@ -9,7 +9,7 @@ models:
           - not_null
           - dbt_utils.not_empty_string
 
-  - name: stg_pole_emploi__structures
+  - name: stg_pole_emploi__agences
     columns:
       - name: id
         tests:
