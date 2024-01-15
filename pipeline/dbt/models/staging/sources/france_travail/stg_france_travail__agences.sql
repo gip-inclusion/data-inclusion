@@ -1,5 +1,5 @@
 WITH source AS (
-    {{ stg_source_header('pole_emploi', 'agences') }}
+    {{ stg_source_header('france_travail', 'agences') }}
 ),
 
 final AS (

@@ -34,8 +34,8 @@ sources:
       - name: structures
       - name: services
 
-  - name: pole_emploi
-    schema: pole_emploi
+  - name: france_travail
+    schema: france_travail
     tables:
       - name: agences
       - name: services

@@ -1,13 +1,13 @@
 WITH services AS (
-    SELECT * FROM {{ ref('stg_pole_emploi__services') }}
+    SELECT * FROM {{ ref('stg_france_travail__services') }}
 ),
 
 agences AS (
-    SELECT * FROM {{ ref('int_pole_emploi__agences') }}
+    SELECT * FROM {{ ref('int_france_travail__agences') }}
 ),
 
 adresses AS (
-    SELECT * FROM {{ ref('int_pole_emploi__adresses') }}
+    SELECT * FROM {{ ref('int_france_travail__adresses') }}
 ),
 
 structures_with_commune AS (

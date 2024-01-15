@@ -1,7 +1,7 @@
 version: 2
 
 models:
-  - name: stg_pole_emploi__services
+  - name: stg_france_travail__services
     columns:
       - name: id
         tests:
@@ -9,7 +9,7 @@ models:
           - not_null
           - dbt_utils.not_empty_string
 
-  - name: stg_pole_emploi__agences
+  - name: stg_france_travail__agences
     columns:
       - name: id
         tests:
