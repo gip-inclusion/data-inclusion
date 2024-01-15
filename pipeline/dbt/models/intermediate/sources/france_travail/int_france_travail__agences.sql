@@ -1,5 +1,5 @@
 WITH agences AS (
-    SELECT * FROM {{ ref('stg_pole_emploi__agences') }}
+    SELECT * FROM {{ ref('stg_france_travail__agences') }}
 ),
 
 final AS (
@@ -23,7 +23,7 @@ final AS (
         _di_source_id                  AS "source",
         telephone                      AS "telephone",
         'PE'                           AS "typologie",
-        ARRAY['pole-emploi']           AS "labels_nationaux"
+        ARRAY['france-travail']        AS "labels_nationaux"
     FROM agences
 )
 

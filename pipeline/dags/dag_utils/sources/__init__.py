@@ -10,11 +10,11 @@ from . import (
     annuaire_du_service_public,
     dora,
     emplois_de_linclusion,
+    france_travail,
     grist,
     mediation_numerique,
     mes_aides,
     monenfant,
-    pole_emploi,
     reseau_alpha,
     soliguide,
     un_jeune_une_solution,
@@ -233,7 +233,7 @@ SOURCES_CONFIGS = {
             },
         },
     },
-    "pole-emploi": {
+    "france-travail": {
         "schedule": "@daily",
         "snapshot": False,
         "streams": {
@@ -242,7 +242,7 @@ SOURCES_CONFIGS = {
                 "url": Variable.get("FT_API_URL", None),
                 # the "request token" is the client_id:client_secret string.
                 "token": Variable.get("FT_API_TOKEN", None),
-                "extractor": pole_emploi.extract,
+                "extractor": france_travail.extract,
             },
             "services": {
                 "filename": "services.json",

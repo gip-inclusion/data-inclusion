@@ -1,5 +1,5 @@
 WITH agences AS (
-    SELECT * FROM {{ ref('stg_pole_emploi__agences') }}
+    SELECT * FROM {{ ref('stg_france_travail__agences') }}
 ),
 
 communes AS (

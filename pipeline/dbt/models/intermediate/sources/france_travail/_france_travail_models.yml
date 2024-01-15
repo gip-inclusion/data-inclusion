@@ -1,7 +1,7 @@
 version: 2
 
 models:
-  - name: int_pole_emploi__adresses
+  - name: int_france_travail__adresses
     tests:
       - check_adresse:
           config:
@@ -13,7 +13,7 @@ models:
           - not_null
           - dbt_utils.not_empty_string
 
-  - name: int_pole_emploi__services
+  - name: int_france_travail__services
     tests:
       - check_service:
           config:
@@ -28,16 +28,16 @@ models:
         tests:
           - not_null
           - relationships:
-              to: ref('int_pole_emploi__agences')
+              to: ref('int_france_travail__agences')
               field: id
       - name: adresse_id
         tests:
           - not_null
           - relationships:
-              to: ref('int_pole_emploi__adresses')
+              to: ref('int_france_travail__adresses')
               field: id
 
-  - name: int_pole_emploi__agences
+  - name: int_france_travail__agences
     tests:
       - check_structure:
           config:
@@ -52,5 +52,5 @@ models:
         tests:
           - not_null
           - relationships:
-              to: ref('int_pole_emploi__adresses')
+              to: ref('int_france_travail__adresses')
               field: id
