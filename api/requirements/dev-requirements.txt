@@ -14,7 +14,7 @@ anyio==3.7.1
     #   httpx
     #   starlette
     #   watchfiles
-black==23.11.0
+black==23.12.1
     # via data-inclusion-api (setup.py)
 cachetools==5.3.2
     # via tox
@@ -44,9 +44,9 @@ cryptography==41.0.5
     # via
     #   data-inclusion-api (setup.py)
     #   python-jose
-data-inclusion-schema==0.12.0
+data-inclusion-schema==0.13.0
     # via data-inclusion-api (setup.py)
-distlib==0.3.7
+distlib==0.3.8
     # via virtualenv
 dnspython==2.4.2
     # via email-validator
@@ -83,7 +83,7 @@ httptools==0.6.1
     # via uvicorn
 httpx==0.25.1
     # via data-inclusion-api (setup.py)
-identify==2.5.31
+identify==2.5.33
     # via pre-commit
 idna==3.4
     # via
@@ -106,16 +106,16 @@ packaging==23.2
     #   gunicorn
     #   pyproject-api
     #   tox
-pathspec==0.11.2
+pathspec==0.12.1
     # via black
-platformdirs==3.11.0
+platformdirs==4.1.0
     # via
     #   black
     #   tox
     #   virtualenv
 pluggy==1.3.0
     # via tox
-pre-commit==3.5.0
+pre-commit==3.6.0
     # via data-inclusion-api (setup.py)
 psycopg2==2.9.9
     # via data-inclusion-api (setup.py)
@@ -171,7 +171,7 @@ sqlalchemy==2.0.23
     #   geoalchemy2
 starlette==0.27.0
     # via fastapi
-tox==4.11.3
+tox==4.12.0
     # via data-inclusion-api (setup.py)
 typing-extensions==4.8.0
     # via
@@ -189,7 +189,7 @@ uvicorn[standard]==0.24.0.post1
     # via data-inclusion-api (setup.py)
 uvloop==0.19.0
     # via uvicorn
-virtualenv==20.24.6
+virtualenv==20.25.0
     # via
     #   pre-commit
     #   tox
