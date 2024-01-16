@@ -467,7 +467,8 @@ def search_services(
     if sources is not None:
         query = query.filter(models.Service.source == sqla.any_(sqla.literal(sources)))
 
-    # FIXME: this is a temporary hack
+    # FIXME(vmatton) : hack to enable us to test sources in Dora staging or prod,
+    # without havin a staging environment for DI.
     if (
         not request.user.is_authenticated
         or request.user.username != "dora-staging-stream"
