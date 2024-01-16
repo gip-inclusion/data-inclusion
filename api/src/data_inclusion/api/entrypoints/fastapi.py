@@ -457,6 +457,7 @@ def search_services(
     thematiques: Optional[list[schema.Thematique]] = None,
     frais: Optional[list[schema.Frais]] = None,
     types: Optional[list[schema.TypologieService]] = None,
+    search_point: Optional[str] = None,
 ):
     query = (
         sqla.select(models.Service)
@@ -510,27 +511,34 @@ def search_services(
             )
         )
 
+        src_geometry = sqla.cast(
+            geoalchemy2.functions.ST_MakePoint(
+                models.Service.longitude, models.Service.latitude
+            ),
+            geoalchemy2.Geography(geometry_type="GEOMETRY", srid=4326),
+        )
+
+        if search_point is not None:
+            dest_geometry = search_point
+        else:
+            dest_geometry = (
+                sqla.select(
+                    sqla.cast(
+                        geoalchemy2.functions.ST_Simplify(models.Commune.geom, 0.01),
+                        geoalchemy2.Geography(geometry_type="GEOMETRY", srid=4326),
+                    )
+                )
+                .filter(models.Commune.code == commune_instance.code)
+                .scalar_subquery()
+            )
+
         query = query.filter(
             sqla.or_(
-                # either `en-presentiel` within 100km
+                # either `en-presentiel` within a given distance
                 geoalchemy2.functions.ST_DWithin(
-                    sqla.cast(
-                        geoalchemy2.functions.ST_MakePoint(
-                            models.Service.longitude, models.Service.latitude
-                        ),
-                        geoalchemy2.Geography(geometry_type="GEOMETRY", srid=4326),
-                    ),
-                    sqla.select(
-                        sqla.cast(
-                            geoalchemy2.functions.ST_Simplify(
-                                models.Commune.geom, 0.01
-                            ),
-                            geoalchemy2.Geography(geometry_type="GEOMETRY", srid=4326),
-                        )
-                    )
-                    .filter(models.Commune.code == commune_instance.code)
-                    .scalar_subquery(),
-                    100_000,  # meters
+                    src_geometry,
+                    dest_geometry,
+                    100_000,  # meters or 100km
                 ),
                 # or `a-distance`
                 models.Service.modes_accueil.contains(
@@ -549,25 +557,8 @@ def search_services(
                         ),
                         (
                             geoalchemy2.functions.ST_Distance(
-                                sqla.cast(
-                                    geoalchemy2.functions.ST_MakePoint(
-                                        models.Service.longitude,
-                                        models.Service.latitude,
-                                    ),
-                                    geoalchemy2.Geography(
-                                        geometry_type="GEOMETRY", srid=4326
-                                    ),
-                                ),
-                                sqla.select(
-                                    sqla.cast(
-                                        models.Commune.geom,
-                                        geoalchemy2.Geography(
-                                            geometry_type="GEOMETRY", srid=4326
-                                        ),
-                                    )
-                                )
-                                .filter(models.Commune.code == commune_instance.code)
-                                .scalar_subquery(),
+                                src_geometry,
+                                dest_geometry,
                             )
                             / 1000
                         ).cast(
@@ -578,6 +569,7 @@ def search_services(
                 )
             ).label("distance")
         )
+
     else:
         query = query.add_columns(sqla.null().cast(sqla.Integer).label("distance"))
 
@@ -655,6 +647,24 @@ def search_services_endpoint(
             """
         ),
     ] = None,
+    lat: Annotated[
+        float | SkipJsonSchema[None],
+        fastapi.Query(
+            description="""Latitude du point de recherche.
+                Nécessite également de fournir `lon`.
+                Les résultats sont triés par ordre de distance croissante à ce point.
+            """
+        ),
+    ] = None,
+    lon: Annotated[
+        float | SkipJsonSchema[None],
+        fastapi.Query(
+            description="""Longitude du point de recherche.
+                Nécessite également de fournir `lat`.
+                Les résultats sont triés par ordre de distance croissante à ce point.
+            """
+        ),
+    ] = None,
     thematiques: Annotated[
         list[schema.Thematique] | SkipJsonSchema[None],
         fastapi.Query(
@@ -690,7 +700,7 @@ def search_services_endpoint(
 
     * les services sont filtrés par zone de diffusion lorsque celle-ci est définie.
     * de plus, les services en présentiel sont filtrés dans un rayon de 100km autour de
-    la commune.
+    la commune ou du point de recherche fourni.
     * le champ `distance` est :
         * rempli pour les services (non exclusivement) en présentiel.
         * laissé vide pour les services à distance et par défaut si le mode d'accueil
@@ -699,6 +709,7 @@ def search_services_endpoint(
     """
 
     commune_instance = None
+    search_point = None
     if code_insee is not None:
         code_insee = code_officiel_geographique.CODE_COMMUNE_BY_CODE_ARRONDISSEMENT.get(
             code_insee, code_insee
@@ -708,6 +719,13 @@ def search_services_endpoint(
             raise fastapi.HTTPException(
                 status_code=fastapi.status.HTTP_422_UNPROCESSABLE_ENTITY,
                 detail="This `code_insee` does not exist.",
+            )
+        if lat and lon:
+            search_point = f"POINT({lon} {lat})"
+        elif lat or lon:
+            raise fastapi.HTTPException(
+                status_code=fastapi.status.HTTP_422_UNPROCESSABLE_ENTITY,
+                detail="The `lat` and `lon` must be simultaneously filled.",
             )
 
     if sources is None and source is not None:
@@ -721,6 +739,7 @@ def search_services_endpoint(
         thematiques=thematiques,
         frais=frais,
         types=types,
+        search_point=search_point,
     )
 
 
