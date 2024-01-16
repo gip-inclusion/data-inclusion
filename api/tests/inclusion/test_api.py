@@ -802,6 +802,80 @@ def test_search_services_with_code_insee_farther_than_100km(
     assert resp_data["items"][0]["service"]["id"] == service_1.id
     assert 0 < resp_data["items"][0]["distance"] < 100
 
+    # Do the same but with lat/lon in addition to the code INSEE
+    response = api_client.get(
+        url,
+        params={
+            "code_insee": "59392",  # Maubeuge
+            # Coordinates for Le Mans. We don't enforce lat/lon to be within
+            # the supplied 'code_insee' city limits.
+            "lat": 48.003954,
+            "lon": 0.199134,
+        },
+    )
+
+    assert response.status_code == 200
+    resp_data = response.json()
+    assert_paginated_response_data(resp_data, total=0)
+
+    # This time with coordinates close to the services we know
+    response = api_client.get(
+        url,
+        params={
+            "code_insee": "59392",  # Maubeuge
+            # Coordinates for Lille
+            "lat": 50.6314,
+            "lon": 3.05754,
+        },
+    )
+
+    assert response.status_code == 200
+    resp_data = response.json()
+    # Lille and Dunkerque are less than 100km apart.
+    assert_paginated_response_data(resp_data, total=2)
+    assert resp_data["items"][0]["service"]["id"] == service_1.id
+    assert 0 < resp_data["items"][0]["distance"] < 100
+
+    # What about a request without code_insee but with lat/lon?
+    response = api_client.get(
+        url,
+        params={
+            # Coordinates for Le Mans, should be ignored.
+            # the supplied 'code_insee' city limits.
+            "lat": 48.003954,
+            "lon": 0.199134,
+        },
+    )
+
+    assert response.status_code == 200
+    resp_data = response.json()
+    assert_paginated_response_data(resp_data, total=3)
+
+    # Error cases
+    response = api_client.get(
+        url,
+        params={
+            "code_insee": "59392",
+            "lat": 48.003954,
+        },
+    )
+
+    assert response.status_code == 422
+    resp_data = response.json()
+    assert resp_data["detail"] == "The `lat` and `lon` must be simultaneously filled."
+
+    response = api_client.get(
+        url,
+        params={
+            "code_insee": "59392",
+            "lon": 1.2563,
+        },
+    )
+
+    assert response.status_code == 422
+    resp_data = response.json()
+    assert resp_data["detail"] == "The `lat` and `lon` must be simultaneously filled."
+
 
 @pytest.mark.with_token
 def test_search_services_with_zone_diffusion_pays(
