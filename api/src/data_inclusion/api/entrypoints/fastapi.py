@@ -1,4 +1,6 @@
+import functools
 import logging
+from collections import defaultdict
 from typing import Annotated, Optional
 
 import geoalchemy2
@@ -39,6 +41,39 @@ Plus d'informations sur le
 sur la [documentation officielle](https://www.data.inclusion.beta.gouv.fr/schemas-de-donnees-de-loffre/schema-des-structures-dinsertion)
 ou sur la page [schema.gouv](https://schema.data.gouv.fr/gip-inclusion/data-inclusion-schema/) du schéma.
 """  # noqa: E501
+
+
+@functools.cache
+def get_thematiques_by_group():
+    thematiques = defaultdict(list)
+    for thematique in schema.Thematique:
+        try:
+            theme, _ = str(thematique.value).split("--")
+        except ValueError:
+            continue
+        thematiques[theme].append(thematique.value)
+    return thematiques
+
+
+def get_sub_thematiques(thematiques: list[schema.Thematique]) -> list[str]:
+    """
+    get_sub_thematiques(Thematique.MOBILITE) -> [
+        "mobilite",
+        "mobilite--accompagnement-a-la-mobilite"
+        ...
+    ]
+
+    get_sub_thematiques(Thematique.MOBILITE_ACCOMPAGNEMENT_A_LA_MOBILITE") -> [
+        "mobilite--accompagnement-a-la-mobilite"
+    ]
+    """
+    all_thematiques = set()
+    for t in thematiques:
+        all_thematiques.add(t.value)
+        group = get_thematiques_by_group().get(t.value)
+        if group:
+            all_thematiques.update(group)
+    return list(all_thematiques)
 
 
 def create_app() -> fastapi.FastAPI:
@@ -546,19 +581,9 @@ def search_services(
         query = query.add_columns(sqla.null().cast(sqla.Integer).label("distance"))
 
     if thematiques is not None:
-        filter_stmt = """\
-        EXISTS(
-            SELECT FROM unnest(service.thematiques) thematique
-            WHERE
-                EXISTS(
-                    SELECT FROM unnest(:thematiques) input_thematique
-                    WHERE thematique ^@ input_thematique
-                )
-        )
-        """
         query = query.filter(
-            sqla.text(filter_stmt).bindparams(
-                thematiques=[t.value for t in thematiques]
+            sqla.text("service.thematiques && :thematiques").bindparams(
+                thematiques=get_sub_thematiques(thematiques),
             )
         )
 
