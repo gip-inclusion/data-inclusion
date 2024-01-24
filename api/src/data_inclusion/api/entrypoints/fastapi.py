@@ -80,7 +80,7 @@ def create_app() -> fastapi.FastAPI:
     # sentry must be initialized before app
     sentry_sdk.init(
         dsn=settings.SENTRY_DSN,
-        traces_sample_rate=0.02,
+        traces_sample_rate=1.0,
         enable_tracing=True,
         environment=settings.ENV,
     )
