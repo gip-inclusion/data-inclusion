@@ -15,14 +15,15 @@ final AS (
         'https://www.francetravail.fr' AS "site_web",
         accessibilite                  AS "accessibilite",
         id                             AS "adresse_id",
-        courriel                       AS "courriel",
+        -- As seen with FT, no contact should be displayed in the output.
+        NULL                           AS "courriel",
         date_maj                       AS "date_maj",
         id                             AS "id",
         nom                            AS "nom",
         siret                          AS "siret",
         _di_source_id                  AS "source",
-        telephone                      AS "telephone",
-        'PE'                           AS "typologie",
+        '3949'                         AS "telephone",
+        'FT'                           AS "typologie",
         ARRAY['france-travail']        AS "labels_nationaux"
     FROM agences
 )
