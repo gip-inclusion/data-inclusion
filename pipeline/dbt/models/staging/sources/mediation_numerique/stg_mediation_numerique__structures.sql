@@ -29,8 +29,7 @@ final AS (
         data ->> 'presentation_detail'                                                                              AS "presentation_detail"
     FROM source
     WHERE
-        data ->> 'mergedIds' IS NULL
-        AND data ->> 'source' != 'dora'
+        data ->> 'source' != 'dora'
 )
 
 SELECT * FROM final

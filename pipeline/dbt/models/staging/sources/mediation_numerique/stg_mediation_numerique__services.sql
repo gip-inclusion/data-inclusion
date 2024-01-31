@@ -18,8 +18,7 @@ final AS (
         data ->> 'prise_rdv'                                                                                   AS "prise_rdv"
     FROM source
     WHERE
-        data ->> 'mergedIds' IS NULL
-        AND data ->> 'source' != 'dora'
+        data ->> 'source' != 'dora'
 )
 
 SELECT * FROM final
