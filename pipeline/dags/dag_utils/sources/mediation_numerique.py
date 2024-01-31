@@ -7,11 +7,11 @@ from . import utils
 def extract(id: str, url: str, **kwargs) -> bytes:
     import requests
 
-    # TODO(vperron): add a retry mechanism here.
     params = {
         "page[number]": 0,
         "page[size]": 10000,
-        "mergedIds[exists]": "false",
+        "or[mergedIds][exists]": "true",
+        "or[group][exists]": "false",
     }
 
     full_data = []
