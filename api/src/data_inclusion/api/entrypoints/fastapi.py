@@ -146,12 +146,6 @@ def list_structures(
     if source is not None:
         query = query.filter_by(source=source)
 
-    # FIXME: this is a temporary hack
-    if (
-        not request.user.is_authenticated
-        or request.user.username != "dora-staging-stream"
-    ):
-        query = query.filter(models.Structure.source != "agefiph")
     if not request.user.is_authenticated or "dora" not in request.user.username:
         query = query.filter(models.Structure.source != "soliguide")
         query = query.filter(models.Structure.source != "data-inclusion")
@@ -332,12 +326,6 @@ def list_services(
     if source is not None:
         query = query.filter(models.Structure.source == source)
 
-    # FIXME: this is a temporary hack
-    if (
-        not request.user.is_authenticated
-        or request.user.username != "dora-staging-stream"
-    ):
-        query = query.filter(models.Structure.source != "agefiph")
     if not request.user.is_authenticated or "dora" not in request.user.username:
         query = query.filter(models.Structure.source != "soliguide")
         query = query.filter(models.Structure.source != "data-inclusion")
@@ -469,13 +457,6 @@ def search_services(
     if sources is not None:
         query = query.filter(models.Service.source == sqla.any_(sqla.literal(sources)))
 
-    # FIXME(vmatton) : hack to enable us to test sources in Dora staging or prod,
-    # without havin a staging environment for DI.
-    if (
-        not request.user.is_authenticated
-        or request.user.username != "dora-staging-stream"
-    ):
-        query = query.filter(models.Structure.source != "agefiph")
     if not request.user.is_authenticated or "dora" not in request.user.username:
         query = query.filter(models.Structure.source != "soliguide")
         query = query.filter(models.Structure.source != "data-inclusion")
