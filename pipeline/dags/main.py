@@ -1,12 +1,15 @@
 import airflow
 import pendulum
 from airflow.operators import empty, python
-from airflow.utils.task_group import TaskGroup
 
 from dag_utils import date
-from dag_utils.dbt import dbt_operator_factory
+from dag_utils.dbt import (
+    dbt_operator_factory,
+    get_after_geocoding_tasks,
+    get_before_geocoding_tasks,
+    get_staging_tasks,
+)
 from dag_utils.notifications import format_failure, notify_webhook
-from dag_utils.sources import SOURCES_CONFIGS
 from dag_utils.virtualenvs import PYTHON_BIN_PATH
 
 default_args = {
@@ -92,82 +95,10 @@ with airflow.DAG(
         command="run-operation create_udfs",
     )
 
-    dbt_staging_tasks_list = []
-
-    for source_id, source_config in sorted(SOURCES_CONFIGS.items()):
-        dbt_source_id = source_id.replace("-", "_")
-
-        stg_selector = f"path:models/staging/sources/**/stg_{dbt_source_id}__*.sql"
-        int_selector = f"path:models/intermediate/sources/**/int_{dbt_source_id}__*.sql"
-
-        with TaskGroup(group_id=source_id) as source_task_group:
-            dbt_run_staging = dbt_operator_factory(
-                task_id="dbt_run_staging",
-                command="run",
-                select=stg_selector,
-            )
-
-            dbt_test_staging = dbt_operator_factory(
-                task_id="dbt_test_staging",
-                command="test",
-                select=stg_selector,
-            )
-
-            dbt_run_intermediate = dbt_operator_factory(
-                task_id="dbt_run_intermediate",
-                command="run",
-                select=int_selector,
-            )
-
-            dbt_test_intermediate = dbt_operator_factory(
-                task_id="dbt_test_intermediate",
-                command="test",
-                select=int_selector,
-            )
-
-            (
-                dbt_run_staging
-                >> dbt_test_staging
-                >> dbt_run_intermediate
-                >> dbt_test_intermediate
-            )
-
-        dbt_staging_tasks_list += [source_task_group]
-
-    dbt_build_before_geocoding = dbt_operator_factory(
-        task_id="dbt_build_before_geocoding",
-        command="build",
-        select=" ".join(
-            [
-                # FIXME: handle odspep as other sources (add to dags/settings.py)
-                "path:models/staging/sources/odspep",
-                "path:models/intermediate/int__union_adresses.sql",
-                "path:models/intermediate/int__union_services.sql",
-                "path:models/intermediate/int__union_structures.sql",
-            ]
-        ),
-    )
-
     python_geocode = python.ExternalPythonOperator(
         task_id="python_geocode",
         python=str(PYTHON_BIN_PATH),
         python_callable=_geocode,
-    )
-
-    dbt_build_after_geocoding = dbt_operator_factory(
-        task_id="dbt_build_after_geocoding",
-        command="build",
-        select=" ".join(
-            [
-                "path:models/intermediate/extra",
-                "path:models/intermediate/int__deprecated_sirets.sql",
-                "path:models/intermediate/int__plausible_personal_emails.sql",
-                "path:models/intermediate/int__union_adresses__enhanced.sql+",
-                "path:models/intermediate/int__union_services__enhanced.sql+",
-                "path:models/intermediate/int__union_structures__enhanced.sql+",
-                "marts",
-            ]
-        ),
     )
 
     dbt_build_flux = dbt_operator_factory(
@@ -180,10 +111,10 @@ with airflow.DAG(
         start
         >> dbt_seed
         >> dbt_create_udfs
-        >> dbt_staging_tasks_list
-        >> dbt_build_before_geocoding
+        >> get_staging_tasks()
+        >> get_before_geocoding_tasks()
         >> python_geocode
-        >> dbt_build_after_geocoding
+        >> get_after_geocoding_tasks()
         >> dbt_build_flux
         >> end
     )

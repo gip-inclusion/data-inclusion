@@ -148,7 +148,7 @@ SOURCES_CONFIGS = {
         },
     },
     "soliguide": {
-        "schedule": "@daily",
+        "schedule": "@hourly",
         "snapshot": True,
         "extractor": soliguide.extract,
         "reader": soliguide.read,
