@@ -760,13 +760,14 @@ def test_search_services_with_code_insee(
 
 
 @pytest.mark.with_token
-def test_search_services_with_code_insee_farther_than_100km(
+def test_search_services_with_code_insee_too_far(
     api_client,
     service_factory,
     admin_express_commune_nord,
 ):
-    # Dunkerque to Maubeuge: > 100km
-    # Lille to Maubeuge: <100km
+    # Dunkerque to Hazebrouck: <50km
+    # Hazebrouck to Lille: <50km
+    # Dunkerque to Lille: >50km
     service_1 = service_factory(
         commune="Lille",
         code_insee="59350",
@@ -774,11 +775,11 @@ def test_search_services_with_code_insee_farther_than_100km(
         longitude=3.066667,
         modes_accueil=[schema.ModeAccueil.EN_PRESENTIEL.value],
     )
-    service_factory(
+    service_2 = service_factory(
         commune="Dunkerque",
         code_insee="59183",
-        latitude=51.034368,
-        longitude=2.376776,
+        latitude=51.0361,
+        longitude=2.3770,
         modes_accueil=[schema.ModeAccueil.EN_PRESENTIEL.value],
     )
     service_factory(
@@ -792,7 +793,7 @@ def test_search_services_with_code_insee_farther_than_100km(
     response = api_client.get(
         url,
         params={
-            "code_insee": "59392",  # Maubeuge
+            "code_insee": "59512",  # Roubaix (only close to Lille)
         },
     )
 
@@ -800,13 +801,13 @@ def test_search_services_with_code_insee_farther_than_100km(
     resp_data = response.json()
     assert_paginated_response_data(resp_data, total=1)
     assert resp_data["items"][0]["service"]["id"] == service_1.id
-    assert 0 < resp_data["items"][0]["distance"] < 100
+    assert 0 < resp_data["items"][0]["distance"] < 50
 
     # Do the same but with lat/lon in addition to the code INSEE
     response = api_client.get(
         url,
         params={
-            "code_insee": "59392",  # Maubeuge
+            "code_insee": "59512",  # Roubaix
             # Coordinates for Le Mans. We don't enforce lat/lon to be within
             # the supplied 'code_insee' city limits.
             "lat": 48.003954,
@@ -822,19 +823,19 @@ def test_search_services_with_code_insee_farther_than_100km(
     response = api_client.get(
         url,
         params={
-            "code_insee": "59392",  # Maubeuge
-            # Coordinates for Lille
-            "lat": 50.6314,
-            "lon": 3.05754,
+            "code_insee": "59512",  # Roubaix
+            # Coordinates for Hazebrouck, between Dunkirk & Lille
+            "lat": 50.7262,
+            "lon": 2.5387,
         },
     )
 
     assert response.status_code == 200
     resp_data = response.json()
-    # Lille and Dunkerque are less than 100km apart.
+    # Lille and Hazebrouck are less than 50km apart.
     assert_paginated_response_data(resp_data, total=2)
-    assert resp_data["items"][0]["service"]["id"] == service_1.id
-    assert 0 < resp_data["items"][0]["distance"] < 100
+    assert resp_data["items"][0]["service"]["id"] == service_2.id
+    assert 0 < resp_data["items"][0]["distance"] < 50
 
     # What about a request without code_insee but with lat/lon?
     response = api_client.get(
@@ -1104,10 +1105,10 @@ def test_search_services_with_code_insee_ordering(
     admin_express_commune_nord,
 ):
     service_1 = service_factory(
-        commune="Dunkerque",
-        code_insee="59183",
-        latitude=51.034368,
-        longitude=2.376776,
+        commune="Hazebrouck",
+        code_insee="59295",
+        latitude=50.7262,
+        longitude=2.5387,
         modes_accueil=[schema.ModeAccueil.EN_PRESENTIEL.value],
     )
     service_2 = service_factory(
@@ -1132,7 +1133,7 @@ def test_search_services_with_code_insee_ordering(
     assert resp_data["items"][0]["service"]["id"] == service_2.id
     assert 0 < resp_data["items"][0]["distance"] < 50
     assert resp_data["items"][1]["service"]["id"] == service_1.id
-    assert resp_data["items"][1]["distance"] > 50
+    assert resp_data["items"][1]["distance"] < 50
 
 
 @pytest.mark.with_token
@@ -1152,13 +1153,13 @@ def test_search_services_with_code_insee_sample_distance(api_client, service_fac
     )
 
     url = "/api/v0/search/services"
-    response = api_client.get(url, params={"code_insee": "59183"})
+    response = api_client.get(url, params={"code_insee": "59295"})
 
     assert response.status_code == 200
     resp_data = response.json()
     assert_paginated_response_data(resp_data, total=1)
     assert resp_data["items"][0]["service"]["id"] == service_1.id
-    assert 50 < resp_data["items"][0]["distance"] < 70
+    assert resp_data["items"][0]["distance"] == 35
 
 
 @pytest.mark.with_token

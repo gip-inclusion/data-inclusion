@@ -520,7 +520,7 @@ def search_services(
                 geoalchemy2.functions.ST_DWithin(
                     src_geometry,
                     dest_geometry,
-                    100_000,  # meters or 100km
+                    50_000,  # meters or 50km
                 ),
                 # or `a-distance`
                 models.Service.modes_accueil.contains(
@@ -681,7 +681,7 @@ def search_services_endpoint(
     En particulier, lorsque le `code_insee` d'une commune est fourni :
 
     * les services sont filtrés par zone de diffusion lorsque celle-ci est définie.
-    * de plus, les services en présentiel sont filtrés dans un rayon de 100km autour de
+    * de plus, les services en présentiel sont filtrés dans un rayon de 50km autour de
     la commune ou du point de recherche fourni.
     * le champ `distance` est :
         * rempli pour les services (non exclusivement) en présentiel.
