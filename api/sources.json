@@ -1,0 +1,87 @@
+[
+    {
+        "slug": "agefiph",
+        "nom": "AGEFIPH",
+        "description": null
+    },
+    {
+        "slug": "annuaire-du-service-public",
+        "nom": "Service-Public.fr - Annuaire de l’administration",
+        "description": null
+    },
+    {
+        "slug": "cd35",
+        "nom": "Annuaire social d’Ille-et-Vilaine",
+        "description": null
+    },
+    {
+        "slug": "cd72",
+        "nom": "Conseil départemental de la Sarthe",
+        "description": null
+    },
+    {
+        "slug": "data-inclusion",
+        "nom": "Expérimentation data·inclusion en Essonne",
+        "description": null
+    },
+    {
+        "slug": "dora",
+        "nom": "DORA",
+        "description": null
+    },
+    {
+        "slug": "emplois-de-linclusion",
+        "nom": "Emplois de l’inclusion",
+        "description": null
+    },
+    {
+        "slug": "finess",
+        "nom": "FINESS",
+        "description": null
+    },
+    {
+        "slug": "france-travail",
+        "nom": "Offre nationale de services de France Travail",
+        "description": null
+    },
+    {
+        "slug": "mediation-numerique",
+        "nom": "Cartographie Nationale des lieux de médiation numérique",
+        "description": "Les lieux d’inclusion numériques recensés par l’ANCT et les hubs régionaux."
+    },
+    {
+        "slug": "mes-aides",
+        "nom": "Mes Aides France Travail",
+        "description": null
+    },
+    {
+        "slug": "monenfant",
+        "nom": "Monenfant.fr",
+        "description": null
+    },
+    {
+        "slug": "odspep",
+        "nom": "Base de ressources partenariales de France Travail",
+        "description": null
+    },
+    {
+        "slug": "reseau-alpha",
+        "nom": "Réseau Alpha",
+        "description": null
+    },
+    {
+        "slug": "siao",
+        "nom": "SIAO",
+        "description": null
+    },
+    {
+        "slug": "soliguide",
+        "nom": "Soliguide",
+        "description": null
+    },
+    {
+        "slug": "un-jeune-une-solution",
+        "nom": "Un Jeune Une Solution",
+        "description": null
+    }
+]
