@@ -1,7 +1,8 @@
 import logging
 
-import airflow
 import pendulum
+
+import airflow
 from airflow.operators import empty, python
 
 from dag_utils import date

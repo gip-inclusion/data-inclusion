@@ -70,7 +70,7 @@ class StructureFactory(factory.Factory):
                 schema.Thematique.MOBILITE,
             ]
         ),
-        getter=lambda l: list(map(lambda t: t.value, l)),
+        getter=lambda lst: list(map(lambda t: t.value, lst)),
     )
 
 
@@ -98,7 +98,7 @@ class ServiceFactory(factory.Factory):
                 schema.TypologieService.NUMÉRIQUE,
             ]
         ),
-        getter=lambda l: list(map(lambda t: t.value, l)),
+        getter=lambda lst: list(map(lambda t: t.value, lst)),
     )
     thematiques = factory.Iterator(
         pairwise(
@@ -108,12 +108,12 @@ class ServiceFactory(factory.Factory):
                 schema.Thematique.MOBILITE,
             ]
         ),
-        getter=lambda l: list(map(lambda t: t.value, l)),
+        getter=lambda lst: list(map(lambda t: t.value, lst)),
     )
     prise_rdv = factory.Faker("url", locale="fr_FR")
     frais = factory.Iterator(
         pairwise(schema.Frais),
-        getter=lambda l: list(map(lambda t: t.value, l)),
+        getter=lambda lst: list(map(lambda t: t.value, lst)),
     )
     frais_autres = factory.Faker("text", max_nb_chars=20, locale="fr_FR")
     profils = factory.Iterator(
@@ -124,7 +124,7 @@ class ServiceFactory(factory.Factory):
                 schema.Profil.SENIORS_65,
             ]
         ),
-        getter=lambda l: list(map(lambda t: t.value, l)),
+        getter=lambda lst: list(map(lambda t: t.value, lst)),
     )
     pre_requis = []
     cumulable = False

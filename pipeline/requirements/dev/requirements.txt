@@ -80,8 +80,6 @@ beautifulsoup4==4.12.2
     # via
     #   -r requirements/dev/../tasks/python/requirements.in
     #   redshift-connector
-black==23.11.0
-    # via -r requirements/dev/requirements.in
 blinker==1.7.0
     # via apache-airflow
 boto3==1.29.0
@@ -128,7 +126,6 @@ charset-normalizer==3.3.2
     #   trafilatura
 click==8.1.7
     # via
-    #   black
     #   click-plugins
     #   clickclick
     #   cligj
@@ -349,8 +346,6 @@ multidict==6.0.4
     # via
     #   aiohttp
     #   yarl
-mypy-extensions==1.0.0
-    # via black
 nodeenv==1.8.0
     # via pre-commit
 numpy==1.26.2
@@ -393,7 +388,6 @@ packaging==23.2
     # via
     #   apache-airflow
     #   apispec
-    #   black
     #   connexion
     #   geoalchemy2
     #   geopandas
@@ -411,14 +405,11 @@ pandas==2.1.3
     #   -r requirements/dev/../tasks/python/requirements.in
     #   geopandas
 pathspec==0.11.2
-    # via
-    #   apache-airflow
-    #   black
+    # via apache-airflow
 pendulum==2.1.2
     # via apache-airflow
 platformdirs==3.11.0
     # via
-    #   black
     #   tox
     #   virtualenv
 pluggy==1.3.0
@@ -544,12 +535,16 @@ rpds-py==0.12.0
     # via
     #   jsonschema
     #   referencing
+ruff==0.2.1
+    # via -r requirements/dev/requirements.in
 s3transfer==0.7.0
     # via boto3
 scramp==1.4.4
     # via redshift-connector
 sentry-sdk==1.39.1
-    # via apache-airflow
+    # via
+    #   -r requirements/dev/../tasks/python/requirements.in
+    #   apache-airflow
 setproctitle==1.3.3
     # via apache-airflow
 shapely==2.0.2

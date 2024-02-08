@@ -1,5 +1,6 @@
-import airflow
 import pendulum
+
+import airflow
 from airflow.operators import empty
 
 from dag_utils import date

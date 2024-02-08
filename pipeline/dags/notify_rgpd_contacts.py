@@ -1,7 +1,8 @@
 import logging
 
-import airflow
 import pendulum
+
+import airflow
 from airflow.operators import empty, python
 
 from dag_utils.virtualenvs import PYTHON_BIN_PATH
@@ -70,8 +71,9 @@ def _sync_new_contacts_to_brevo():
 def _send_rgpd_notice():
     from airflow.models import Variable
 
-    from dags.dag_utils import constants
     from data_inclusion.scripts.tasks import brevo
+
+    from dags.dag_utils import constants
 
     brevo_client = brevo.BrevoClient(token=Variable.get("BREVO_API_KEY"))
     brevo_client.create_and_send_email_campaign(

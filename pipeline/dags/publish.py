@@ -1,5 +1,6 @@
-import airflow
 import pendulum
+
+import airflow
 from airflow.operators import empty, python
 
 from dag_utils.virtualenvs import PYTHON_BIN_PATH
@@ -15,6 +16,7 @@ def _publish_to_datagouv():
 
     import geopandas as gpd
     import pendulum
+
     from airflow.models import Variable
     from airflow.providers.postgres.hooks import postgres
 

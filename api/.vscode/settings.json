@@ -1,10 +1,5 @@
 {
-    "editor.rulers": [
-        88, // Max comment length
-        88, // Max line length
-    ],
-    "python.formatting.provider": "black",
-    "python.formatting.blackPath": ".venv/bin/black",
+    "python.formatting.provider": "ruff",
     "python.autoComplete.extraPaths": [
         "./src"
     ],

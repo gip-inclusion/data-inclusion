@@ -1,7 +1,8 @@
 import logging
 
-import airflow
 import pendulum
+
+import airflow
 from airflow.operators import empty, python
 
 from dag_utils import date
@@ -16,6 +17,7 @@ def _import_dataset_ressource():
     from urllib.parse import urljoin
 
     import pandas as pd
+
     from airflow.models import Variable
 
     from dag_utils import pg
