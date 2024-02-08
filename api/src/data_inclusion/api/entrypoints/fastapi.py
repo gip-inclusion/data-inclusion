@@ -289,17 +289,14 @@ def retrieve_structure_endpoint(
     return structure_instance
 
 
-def list_sources(
-    db_session: orm.Session,
-) -> list[str]:
-    query = sqla.select(models.Structure.source).distinct()
-    query = query.order_by(models.Structure.source)
-    return db_session.scalars(query).all()
+def list_sources(db_session: orm.Session):
+    query = sqla.select(models.Source)
+    return db_session.execute(query).scalars()
 
 
 @v0_api_router.get(
     "/sources",
-    response_model=list[str],
+    response_model=list[schema.Source],
     summary="Lister les sources consolidées",
 )
 def list_sources_endpoint(
