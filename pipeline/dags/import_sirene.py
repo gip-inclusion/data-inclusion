@@ -1,7 +1,8 @@
 import logging
 
-import airflow
 import pendulum
+
+import airflow
 from airflow.operators import empty, python
 
 from dag_utils import date
@@ -15,6 +16,7 @@ default_args = {}
 def _import_stock_etablissement_historique():
     import pandas as pd
     import sqlalchemy as sqla
+
     from airflow.models import Variable
 
     from dag_utils import pg
@@ -54,6 +56,7 @@ def _import_stock_etablissement_historique():
 def _import_stock_etablissement_liens_succession():
     import pandas as pd
     import sqlalchemy as sqla
+
     from airflow.models import Variable
 
     from dag_utils import pg
@@ -97,6 +100,7 @@ def _import_stock_etablissement_liens_succession():
 
 def _import_stock_unite_legale():
     import pandas as pd
+
     from airflow.models import Variable
 
     from dag_utils import pg
@@ -155,6 +159,7 @@ def _import_stock_unite_legale():
 def _import_stock_etablissement_geocode():
     import geopandas
     import pandas as pd
+
     from airflow.models import Variable
 
     from dag_utils import pg

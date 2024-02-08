@@ -2,6 +2,7 @@ import functools
 from contextlib import contextmanager
 
 import pandas as pd
+
 from airflow.providers.postgres.hooks.postgres import PostgresHook
 
 

@@ -120,7 +120,7 @@ Then you should update the dev requirements.
 ### dev
 
 These requirements are used for local development (IDE completion, formatting, tests, etc.).
-They merge the previous requirements, without constraints, and add dev packages (black, pytest, etc.).
+They merge the previous requirements, without constraints, and add dev packages (ruff, pytest, etc.).
 
 To add or delete a dependency to these dev requirements:
 

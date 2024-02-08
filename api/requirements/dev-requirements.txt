@@ -14,8 +14,6 @@ anyio==3.7.1
     #   httpx
     #   starlette
     #   watchfiles
-black==23.12.1
-    # via data-inclusion-api (setup.py)
 cachetools==5.3.2
     # via tox
 certifi==2023.7.22
@@ -35,7 +33,6 @@ charset-normalizer==3.3.2
     # via requests
 click==8.1.7
     # via
-    #   black
     #   data-inclusion-api (setup.py)
     #   uvicorn
 colorama==0.4.6
@@ -95,22 +92,16 @@ mako==1.3.0
     # via alembic
 markupsafe==2.1.3
     # via mako
-mypy-extensions==1.0.0
-    # via black
 nodeenv==1.8.0
     # via pre-commit
 packaging==23.2
     # via
-    #   black
     #   geoalchemy2
     #   gunicorn
     #   pyproject-api
     #   tox
-pathspec==0.12.1
-    # via black
 platformdirs==4.1.0
     # via
-    #   black
     #   tox
     #   virtualenv
 pluggy==1.3.0
@@ -131,7 +122,6 @@ pydantic[email]==2.5.0
     #   data-inclusion-schema
     #   fastapi
     #   fastapi-pagination
-    #   pydantic
 pydantic-core==2.14.1
     # via pydantic
 pyproject-api==1.6.1
@@ -154,6 +144,8 @@ requests==2.31.0
     # via data-inclusion-api (setup.py)
 rsa==4.9
     # via python-jose
+ruff==0.2.1
+    # via data-inclusion-api (setup.py)
 sentry-sdk[fastapi]==1.35.0
     # via data-inclusion-api (setup.py)
 six==1.16.0

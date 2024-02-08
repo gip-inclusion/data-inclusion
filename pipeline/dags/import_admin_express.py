@@ -1,7 +1,8 @@
 import logging
 
-import airflow
 import pendulum
+
+import airflow
 from airflow.operators import bash, empty, python
 
 from dag_utils import date
@@ -14,6 +15,7 @@ default_args = {}
 
 def _download_dataset():
     import requests
+
     from airflow.models import Variable
 
     with requests.get(
@@ -30,6 +32,7 @@ def _load_communes():
     import textwrap
 
     import geopandas
+
     from airflow.providers.postgres.hooks import postgres
 
     pg_hook = postgres.PostgresHook(postgres_conn_id="pg")
@@ -103,6 +106,7 @@ def _load_epcis():
     import textwrap
 
     import geopandas
+
     from airflow.providers.postgres.hooks import postgres
 
     pg_hook = postgres.PostgresHook(postgres_conn_id="pg")
@@ -155,6 +159,7 @@ def _load_departements():
     import textwrap
 
     import geopandas
+
     from airflow.providers.postgres.hooks import postgres
 
     pg_hook = postgres.PostgresHook(postgres_conn_id="pg")
@@ -207,6 +212,7 @@ def _load_regions():
     import textwrap
 
     import geopandas
+
     from airflow.providers.postgres.hooks import postgres
 
     pg_hook = postgres.PostgresHook(postgres_conn_id="pg")

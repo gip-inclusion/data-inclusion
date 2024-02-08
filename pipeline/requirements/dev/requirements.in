@@ -1,7 +1,7 @@
 -r ../airflow/base.in
 -r ../tasks/python/requirements.in
 
-black
+ruff
 pre-commit
 pytest
 pytest-dotenv

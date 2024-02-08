@@ -543,9 +543,7 @@ def search_services(
                                 dest_geometry,
                             )
                             / 1000
-                        ).cast(
-                            sqla.Integer
-                        ),  # conversion to kms
+                        ).cast(sqla.Integer),  # conversion to kms
                     ),
                     else_=sqla.null().cast(sqla.Integer),
                 )
@@ -607,7 +605,9 @@ def search_services_endpoint(
     source: Annotated[
         str | SkipJsonSchema[None],
         fastapi.Query(
-            description="""Un identifiant de source. Déprécié en faveur de `sources`.""",
+            description="""Un identifiant de source.
+                Déprécié en faveur de `sources`.
+            """,
             deprecated=True,
         ),
     ] = None,
@@ -615,8 +615,8 @@ def search_services_endpoint(
         list[str] | SkipJsonSchema[None],
         fastapi.Query(
             description="""Une liste d'identifiants de source.
-                La liste des identifiants de source est disponible sur le endpoint dédié.
-                Les résultats seront limités aux sources spécifiées.
+                La liste des identifiants de source est disponible sur le endpoint
+                dédié. Les résultats seront limités aux sources spécifiées.
             """,
         ),
     ] = None,
@@ -624,8 +624,9 @@ def search_services_endpoint(
         schema.CodeCommune | SkipJsonSchema[None],
         fastapi.Query(
             description="""Code insee de la commune considérée.
-                Si fourni, les résultats inclus également les services proches de cette commune.
-                Les résultats sont triés par ordre de distance croissante.
+                Si fourni, les résultats inclus également les services proches de
+                cette commune. Les résultats sont triés par ordre de distance
+                croissante.
             """
         ),
     ] = None,

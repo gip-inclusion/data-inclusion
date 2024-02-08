@@ -1,5 +1,6 @@
-import airflow
 import pendulum
+
+import airflow
 from airflow.operators import empty, python
 
 from dag_utils import date
@@ -23,6 +24,7 @@ def _geocode():
     import logging
 
     import sqlalchemy as sqla
+
     from airflow.models import Variable
     from airflow.providers.postgres.hooks.postgres import PostgresHook
 

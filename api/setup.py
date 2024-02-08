@@ -41,7 +41,7 @@ setup(
             "geopandas",
         ],
         "dev": [
-            "black",
+            "ruff",
             "tox",
             "pre-commit",
         ],

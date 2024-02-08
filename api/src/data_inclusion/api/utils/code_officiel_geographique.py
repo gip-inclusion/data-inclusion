@@ -1,7 +1,7 @@
 # based on
 # https://github.com/gip-inclusion/dora-back/blob/main/dora/admin_express/utils.py
 
-CODES_ARRONDISSEMENTS_BY_CODE_COMMUNE = {
+_DISTRICTS_BY_CITY = {
     # Paris
     "75056": [
         "75101",
@@ -60,6 +60,6 @@ CODES_ARRONDISSEMENTS_BY_CODE_COMMUNE = {
 
 CODE_COMMUNE_BY_CODE_ARRONDISSEMENT = {
     code_arrondissement: code_commune
-    for code_commune, codes_arrondissements in CODES_ARRONDISSEMENTS_BY_CODE_COMMUNE.items()
+    for code_commune, codes_arrondissements in _DISTRICTS_BY_CITY.items()
     for code_arrondissement in codes_arrondissements
 }

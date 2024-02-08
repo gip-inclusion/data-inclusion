@@ -1,7 +1,8 @@
 import logging
 
-import airflow
 import pendulum
+
+import airflow
 from airflow.operators import empty, python
 
 from dag_utils import date
@@ -17,6 +18,7 @@ def _import_dataset(
     logical_date,
 ):
     import pandas as pd
+
     from airflow.models import Variable
     from airflow.providers.amazon.aws.hooks import s3
 
