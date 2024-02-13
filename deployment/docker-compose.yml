@@ -186,13 +186,13 @@ services:
       - metabase-data:/var/lib/postgresql/data
 
   metabase:
-    image: metabase/metabase:v0.47.4
+    image: metabase/metabase:v0.48.6
     restart: always
     healthcheck:
       test: curl --fail -I http://localhost:3000/api/health || exit 1
       interval: 15s
       timeout: 5s
-      retries: 5
+      retries: 10
     ports:
       - 3000:3000
     labels:
