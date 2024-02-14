@@ -7,7 +7,7 @@ final AS (
         id              AS "id",
         ville_nom       AS "commune",
         code_postal     AS "code_postal",
-        NULL            AS "code_insee",
+        code_insee      AS "code_insee",
         adresse         AS "adresse",
         NULL            AS "complement_adresse",
         ville_longitude AS "longitude",

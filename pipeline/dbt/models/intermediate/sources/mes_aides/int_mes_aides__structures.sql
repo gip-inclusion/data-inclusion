@@ -6,7 +6,7 @@ final AS (
     SELECT
         id                AS "id",
         id                AS "adresse_id",
-        NULL              AS "siret",
+        siret             AS "siret",
         NULL::BOOLEAN     AS "antenne",
         NULL              AS "rna",
         nom               AS "nom",
@@ -19,7 +19,7 @@ final AS (
         NULL              AS "accessibilite",
         NULL::TEXT []     AS "labels_nationaux",
         NULL::TEXT []     AS "labels_autres",
-        NULL              AS "typologie",
+        type              AS "typologie",
         NULL              AS "presentation_resume",
         NULL              AS "presentation_detail",
         modifie_le::DATE  AS "date_maj",
