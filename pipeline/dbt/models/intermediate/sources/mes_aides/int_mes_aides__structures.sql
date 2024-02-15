@@ -19,7 +19,7 @@ final AS (
         NULL              AS "accessibilite",
         NULL::TEXT []     AS "labels_nationaux",
         NULL::TEXT []     AS "labels_autres",
-        type              AS "typologie",
+        NULL              AS "typologie",
         NULL              AS "presentation_resume",
         NULL              AS "presentation_detail",
         modifie_le::DATE  AS "date_maj",
