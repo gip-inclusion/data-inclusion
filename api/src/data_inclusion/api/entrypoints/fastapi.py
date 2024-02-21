@@ -1,6 +1,7 @@
 import functools
 import logging
 from collections import defaultdict
+from pathlib import Path
 from typing import Annotated, Optional
 
 import geoalchemy2
@@ -23,25 +24,6 @@ from data_inclusion.api.core.request.middleware import RequestMiddleware
 from data_inclusion.api.utils import code_officiel_geographique, pagination
 
 logger = logging.getLogger(__name__)
-
-description = """### Token
-* En production, un token d'accès est nécessaire et peut être obtenu en contactant
-l'équipe data.inclusion par mail ou sur leur mattermost betagouv.
-
-Le token doit être renseigné dans chaque requête via un header:
-`Authorization: Bearer <VOTRE_TOKEN>`.
-
-* En staging, l'accès est libre.
-
-### Schémas de données
-
-Les données respectent les schémas (structures et services) de data.inclusion.
-
-Plus d'informations sur le
-[dépôt](https://github.com/gip-inclusion/data-inclusion-schema) versionnant le schéma,
-sur la [documentation officielle](https://www.data.inclusion.beta.gouv.fr/schemas-de-donnees-de-loffre/schema-des-structures-dinsertion)
-ou sur la page [schema.gouv](https://schema.data.gouv.fr/gip-inclusion/data-inclusion-schema/) du schéma.
-"""  # noqa: E501
 
 
 @functools.cache
@@ -75,6 +57,9 @@ def get_sub_thematiques(thematiques: list[di_schema.Thematique]) -> list[str]:
         if group:
             all_thematiques.update(group)
     return list(all_thematiques)
+
+
+description = (Path(__file__).parent / "api_description.md").read_text()
 
 
 def create_app() -> fastapi.FastAPI:
