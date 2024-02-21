@@ -1,5 +1,6 @@
 {
     "recommendations": [
-        "dorzey.vscode-sqlfluff"
+        "dorzey.vscode-sqlfluff",
+        "charliermarsh.ruff"
     ]
 }

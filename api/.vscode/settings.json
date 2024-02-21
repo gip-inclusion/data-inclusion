@@ -1,5 +1,7 @@
 {
-    "python.formatting.provider": "ruff",
+    "[python]": {
+        "editor.defaultFormatter": "charliermarsh.ruff"
+    },
     "python.autoComplete.extraPaths": [
         "./src"
     ],
