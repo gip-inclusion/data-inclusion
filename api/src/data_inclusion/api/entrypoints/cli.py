@@ -5,7 +5,7 @@ import numpy as np
 import pandas as pd
 import sqlalchemy as sqla
 
-from data_inclusion.api import models
+from data_inclusion.api import models, services
 from data_inclusion.api.core import db, jwt
 
 logger = logging.getLogger(__name__)
@@ -66,6 +66,15 @@ def load_sources_metadata(path_or_url: str):
             )
             db_session.execute(sqla.delete(models.Source))
             db_session.execute(sqla.insert(models.Source).values(sources_dict_list))
+
+
+@cli.command(name="notify_soliguide")
+def notify_soliguide():
+    with db.SessionLocal() as db_session:
+        services.batch_forward_requests_to_soliguide(
+            db_session=db_session,
+            soliguide_api_client=services.SoliguideAPIClient(),
+        )
 
 
 if __name__ == "__main__":

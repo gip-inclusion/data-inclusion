@@ -5,9 +5,6 @@ from sqlalchemy.dialects.postgresql import JSONB, UUID
 
 from data_inclusion.api.core.db import Base
 
-# all fields are nullable or have a default value. These models will only be used to
-# query valid data coming from the data pipeline.
-
 
 class Request(Base):
     id = sqla.Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
