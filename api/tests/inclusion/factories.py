@@ -7,6 +7,7 @@ from sqlalchemy import orm
 
 from data_inclusion import schema as di_schema
 from data_inclusion.api import models
+from data_inclusion.api.core.request.models import Request
 
 fake = faker.Faker("fr_FR")
 
@@ -18,6 +19,15 @@ def pairwise(iterable):
     a, b = tee(iterable)
     next(b, None)
     return zip(a, b)
+
+
+class RequestFactory(factory.alchemy.SQLAlchemyModelFactory):
+    class Meta:
+        model = Request
+        sqlalchemy_session = TestSession
+        sqlalchemy_session_persistence = "flush"
+
+    status_code = 200
 
 
 class CommuneFactory(factory.alchemy.SQLAlchemyModelFactory):

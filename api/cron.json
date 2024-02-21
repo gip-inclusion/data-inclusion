@@ -1,0 +1,7 @@
+{
+    "jobs": [
+        {
+            "command": "0 20 * * * python src/data_inclusion/api/entrypoints/cli.py notify_soliguide"
+        }
+    ]
+}

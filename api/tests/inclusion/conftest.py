@@ -9,6 +9,7 @@ from . import factories
 @pytest.fixture(autouse=True)
 def predictable_sequences():
     factory.random.reseed_random(0)
+    factories.RequestFactory.reset_sequence()
     factories.CommuneFactory.reset_sequence()
     factories.ServiceFactory.reset_sequence()
     factories.SourceFactory.reset_sequence()
