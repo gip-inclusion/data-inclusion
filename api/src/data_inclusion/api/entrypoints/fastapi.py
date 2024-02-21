@@ -16,7 +16,8 @@ from fastapi.middleware import cors
 from fastapi.security import HTTPBearer
 from fastapi_pagination.ext.sqlalchemy import paginate
 
-from data_inclusion.api import models, schema, settings
+from data_inclusion import schema as di_schema
+from data_inclusion.api import models, schemas, settings
 from data_inclusion.api.core import auth, db, jwt
 from data_inclusion.api.core.request.middleware import RequestMiddleware
 from data_inclusion.api.utils import code_officiel_geographique, pagination
@@ -46,7 +47,7 @@ ou sur la page [schema.gouv](https://schema.data.gouv.fr/gip-inclusion/data-incl
 @functools.cache
 def get_thematiques_by_group():
     thematiques = defaultdict(list)
-    for thematique in schema.Thematique:
+    for thematique in di_schema.Thematique:
         try:
             theme, _ = str(thematique.value).split("--")
         except ValueError:
@@ -55,7 +56,7 @@ def get_thematiques_by_group():
     return thematiques
 
 
-def get_sub_thematiques(thematiques: list[schema.Thematique]) -> list[str]:
+def get_sub_thematiques(thematiques: list[di_schema.Thematique]) -> list[str]:
     """
     get_sub_thematiques(Thematique.MOBILITE) -> [
         "mobilite",
@@ -134,12 +135,12 @@ def list_structures(
     db_session: orm.Session,
     source: Optional[str] = None,
     id_: Optional[str] = None,
-    typologie: Optional[schema.Typologie] = None,
-    label_national: Optional[schema.LabelNational] = None,
-    departement: Optional[schema.DepartementCOG] = None,
-    departement_slug: Optional[schema.DepartementSlug] = None,
-    code_postal: Optional[schema.CodePostal] = None,
-    thematique: Optional[schema.Thematique] = None,
+    typologie: Optional[di_schema.Typologie] = None,
+    label_national: Optional[di_schema.LabelNational] = None,
+    departement: Optional[schemas.DepartementCOG] = None,
+    departement_slug: Optional[schemas.DepartementSlug] = None,
+    code_postal: Optional[di_schema.CodePostal] = None,
+    thematique: Optional[di_schema.Thematique] = None,
 ) -> list:
     query = sqla.select(models.Structure)
 
@@ -165,10 +166,10 @@ def list_structures(
         query = query.filter(
             sqla.or_(
                 models.Structure.code_insee.startswith(
-                    schema.DepartementCOG[departement_slug.name].value
+                    schemas.DepartementCOG[departement_slug.name].value
                 ),
                 models.Structure._di_geocodage_code_insee.startswith(
-                    schema.DepartementCOG[departement_slug.name].value
+                    schemas.DepartementCOG[departement_slug.name].value
                 ),
             )
         )
@@ -206,7 +207,7 @@ def list_structures(
 
 @v0_api_router.get(
     "/structures",
-    response_model=pagination.Page[schema.Structure],
+    response_model=pagination.Page[schemas.Structure],
     summary="Lister les structures consolidées",
 )
 def list_structures_endpoint(
@@ -214,22 +215,22 @@ def list_structures_endpoint(
     source: Annotated[str | SkipJsonSchema[None], fastapi.Query()] = None,
     id: Annotated[str | SkipJsonSchema[None], fastapi.Query()] = None,
     typologie: Annotated[
-        schema.Typologie | SkipJsonSchema[None], fastapi.Query()
+        di_schema.Typologie | SkipJsonSchema[None], fastapi.Query()
     ] = None,
     label_national: Annotated[
-        schema.LabelNational | SkipJsonSchema[None], fastapi.Query()
+        di_schema.LabelNational | SkipJsonSchema[None], fastapi.Query()
     ] = None,
     thematique: Annotated[
-        schema.Thematique | SkipJsonSchema[None], fastapi.Query()
+        di_schema.Thematique | SkipJsonSchema[None], fastapi.Query()
     ] = None,
     departement: Annotated[
-        schema.DepartementCOG | SkipJsonSchema[None], fastapi.Query()
+        schemas.DepartementCOG | SkipJsonSchema[None], fastapi.Query()
     ] = None,
     departement_slug: Annotated[
-        schema.DepartementSlug | SkipJsonSchema[None], fastapi.Query()
+        schemas.DepartementSlug | SkipJsonSchema[None], fastapi.Query()
     ] = None,
     code_postal: Annotated[
-        schema.CodePostal | SkipJsonSchema[None], fastapi.Query()
+        di_schema.CodePostal | SkipJsonSchema[None], fastapi.Query()
     ] = None,
     db_session=fastapi.Depends(db.get_session),
 ):
@@ -268,7 +269,7 @@ def list_structures_endpoint(
 
 @v0_api_router.get(
     "/structures/{source}/{id}",
-    response_model=schema.DetailedStructure,
+    response_model=schemas.DetailedStructure,
     summary="Détailler une structure",
 )
 def retrieve_structure_endpoint(
@@ -296,7 +297,7 @@ def list_sources(db_session: orm.Session):
 
 @v0_api_router.get(
     "/sources",
-    response_model=list[schema.Source],
+    response_model=list[schemas.Source],
     summary="Lister les sources consolidées",
 )
 def list_sources_endpoint(
@@ -309,10 +310,10 @@ def list_services(
     request: fastapi.Request,
     db_session: orm.Session,
     source: Optional[str] = None,
-    thematique: Optional[schema.Thematique] = None,
-    departement: Optional[schema.DepartementCOG] = None,
-    departement_slug: Optional[schema.DepartementSlug] = None,
-    code_insee: Optional[schema.CodeCommune] = None,
+    thematique: Optional[di_schema.Thematique] = None,
+    departement: Optional[schemas.DepartementCOG] = None,
+    departement_slug: Optional[schemas.DepartementSlug] = None,
+    code_insee: Optional[di_schema.CodeCommune] = None,
 ):
     query = (
         sqla.select(models.Service)
@@ -339,10 +340,10 @@ def list_services(
         query = query.filter(
             sqla.or_(
                 models.Service.code_insee.startswith(
-                    schema.DepartementCOG[departement_slug.name].value
+                    schemas.DepartementCOG[departement_slug.name].value
                 ),
                 models.Service._di_geocodage_code_insee.startswith(
-                    schema.DepartementCOG[departement_slug.name].value
+                    schemas.DepartementCOG[departement_slug.name].value
                 ),
             )
         )
@@ -381,7 +382,7 @@ def list_services(
 
 @v0_api_router.get(
     "/services",
-    response_model=pagination.Page[schema.Service],
+    response_model=pagination.Page[schemas.Service],
     summary="Lister les services consolidées",
 )
 def list_services_endpoint(
@@ -389,16 +390,16 @@ def list_services_endpoint(
     db_session=fastapi.Depends(db.get_session),
     source: Annotated[str | SkipJsonSchema[None], fastapi.Query()] = None,
     thematique: Annotated[
-        schema.Thematique | SkipJsonSchema[None], fastapi.Query()
+        di_schema.Thematique | SkipJsonSchema[None], fastapi.Query()
     ] = None,
     departement: Annotated[
-        schema.DepartementCOG | SkipJsonSchema[None], fastapi.Query()
+        schemas.DepartementCOG | SkipJsonSchema[None], fastapi.Query()
     ] = None,
     departement_slug: Annotated[
-        schema.DepartementSlug | SkipJsonSchema[None], fastapi.Query()
+        schemas.DepartementSlug | SkipJsonSchema[None], fastapi.Query()
     ] = None,
     code_insee: Annotated[
-        schema.CodeCommune | SkipJsonSchema[None], fastapi.Query()
+        di_schema.CodeCommune | SkipJsonSchema[None], fastapi.Query()
     ] = None,
 ):
     return list_services(
@@ -414,7 +415,7 @@ def list_services_endpoint(
 
 @v0_api_router.get(
     "/services/{source}/{id}",
-    response_model=schema.DetailedService,
+    response_model=schemas.DetailedService,
     summary="Détailler un service",
 )
 def retrieve_service_endpoint(
@@ -440,9 +441,9 @@ def search_services(
     db_session: orm.Session,
     sources: Optional[list[str]] = None,
     commune_instance: Optional[models.Commune] = None,
-    thematiques: Optional[list[schema.Thematique]] = None,
-    frais: Optional[list[schema.Frais]] = None,
-    types: Optional[list[schema.TypologieService]] = None,
+    thematiques: Optional[list[di_schema.Thematique]] = None,
+    frais: Optional[list[di_schema.Frais]] = None,
+    types: Optional[list[di_schema.TypologieService]] = None,
     search_point: Optional[str] = None,
 ):
     query = (
@@ -464,27 +465,27 @@ def search_services(
             sqla.or_(
                 models.Service.zone_diffusion_type.is_(None),
                 models.Service.zone_diffusion_type
-                == schema.ZoneDiffusionType.PAYS.value,
+                == di_schema.ZoneDiffusionType.PAYS.value,
                 sqla.and_(
                     models.Service.zone_diffusion_type
-                    == schema.ZoneDiffusionType.COMMUNE.value,
+                    == di_schema.ZoneDiffusionType.COMMUNE.value,
                     models.Service.zone_diffusion_code == commune_instance.code,
                 ),
                 sqla.and_(
                     models.Service.zone_diffusion_type
-                    == schema.ZoneDiffusionType.EPCI.value,
+                    == di_schema.ZoneDiffusionType.EPCI.value,
                     sqla.literal(commune_instance.siren_epci).contains(
                         models.Service.zone_diffusion_code
                     ),
                 ),
                 sqla.and_(
                     models.Service.zone_diffusion_type
-                    == schema.ZoneDiffusionType.DEPARTEMENT.value,
+                    == di_schema.ZoneDiffusionType.DEPARTEMENT.value,
                     models.Service.zone_diffusion_code == commune_instance.departement,
                 ),
                 sqla.and_(
                     models.Service.zone_diffusion_type
-                    == schema.ZoneDiffusionType.REGION.value,
+                    == di_schema.ZoneDiffusionType.REGION.value,
                     models.Service.zone_diffusion_code == commune_instance.region,
                 ),
             )
@@ -521,7 +522,7 @@ def search_services(
                 ),
                 # or `a-distance`
                 models.Service.modes_accueil.contains(
-                    sqla.literal([schema.ModeAccueil.A_DISTANCE.value])
+                    sqla.literal([di_schema.ModeAccueil.A_DISTANCE.value])
                 ),
             )
         )
@@ -532,7 +533,7 @@ def search_services(
                 sqla.case(
                     (
                         models.Service.modes_accueil.contains(
-                            sqla.literal([schema.ModeAccueil.EN_PRESENTIEL.value])
+                            sqla.literal([di_schema.ModeAccueil.EN_PRESENTIEL.value])
                         ),
                         (
                             geoalchemy2.functions.ST_Distance(
@@ -593,7 +594,7 @@ def search_services(
 
 @v0_api_router.get(
     "/search/services",
-    response_model=pagination.Page[schema.ServiceSearchResult],
+    response_model=pagination.Page[schemas.ServiceSearchResult],
     summary="Rechercher des services",
 )
 def search_services_endpoint(
@@ -618,7 +619,7 @@ def search_services_endpoint(
         ),
     ] = None,
     code_insee: Annotated[
-        schema.CodeCommune | SkipJsonSchema[None],
+        di_schema.CodeCommune | SkipJsonSchema[None],
         fastapi.Query(
             description="""Code insee de la commune considérée.
                 Si fourni, les résultats inclus également les services proches de
@@ -646,21 +647,21 @@ def search_services_endpoint(
         ),
     ] = None,
     thematiques: Annotated[
-        list[schema.Thematique] | SkipJsonSchema[None],
+        list[di_schema.Thematique] | SkipJsonSchema[None],
         fastapi.Query(
             description="""Une liste de thématique.
                 Chaque résultat renvoyé a (au moins) une thématique dans cette liste."""
         ),
     ] = None,
     frais: Annotated[
-        list[schema.Frais] | SkipJsonSchema[None],
+        list[di_schema.Frais] | SkipJsonSchema[None],
         fastapi.Query(
             description="""Une liste de frais.
                 Chaque résultat renvoyé a (au moins) un frais dans cette liste."""
         ),
     ] = None,
     types: Annotated[
-        list[schema.TypologieService] | SkipJsonSchema[None],
+        list[di_schema.TypologieService] | SkipJsonSchema[None],
         fastapi.Query(
             description="""Une liste de typologies de service.
                 Chaque résultat renvoyé a (au moins) une typologie dans cette liste."""
@@ -725,123 +726,123 @@ def search_services_endpoint(
 
 @v0_doc_api_router.get(
     "/labels-nationaux",
-    response_model=list[schema.EnhancedEnumMember],
+    response_model=list[schemas.EnhancedEnumMember],
     summary="Documente les labels nationaux",
 )
 def list_labels_nationaux_endpoint():
     """
     ## Documente les labels nationaux
     """
-    return schema.LabelNational.as_dict_list()
+    return di_schema.LabelNational.as_dict_list()
 
 
 @v0_doc_api_router.get(
     "/thematiques",
-    response_model=list[schema.EnhancedEnumMember],
+    response_model=list[schemas.EnhancedEnumMember],
     summary="Documente les thématiques",
 )
 def list_thematiques_endpoint():
     """
     ## Documente les thématiques
     """
-    return schema.Thematique.as_dict_list()
+    return di_schema.Thematique.as_dict_list()
 
 
 @v0_doc_api_router.get(
     "/typologies-services",
-    response_model=list[schema.EnhancedEnumMember],
+    response_model=list[schemas.EnhancedEnumMember],
     summary="Documente les typologies de services",
 )
 def list_typologies_services_endpoint():
     """
     ## Documente les typologies de services
     """
-    return schema.TypologieService.as_dict_list()
+    return di_schema.TypologieService.as_dict_list()
 
 
 @v0_doc_api_router.get(
     "/frais",
-    response_model=list[schema.EnhancedEnumMember],
+    response_model=list[schemas.EnhancedEnumMember],
     summary="Documente les frais",
 )
 def list_frais_endpoint():
     """
     ## Documente les frais
     """
-    return schema.Frais.as_dict_list()
+    return di_schema.Frais.as_dict_list()
 
 
 @v0_doc_api_router.get(
     "/profils",
-    response_model=list[schema.EnhancedEnumMember],
+    response_model=list[schemas.EnhancedEnumMember],
     summary="Documente les profils de publics",
 )
 def list_profils_endpoint():
     """
     ## Documente les profils de publics
     """
-    return schema.Profil.as_dict_list()
+    return di_schema.Profil.as_dict_list()
 
 
 @v0_doc_api_router.get(
     "/typologies-structures",
-    response_model=list[schema.EnhancedEnumMember],
+    response_model=list[schemas.EnhancedEnumMember],
     summary="Documente les typologies de structures",
 )
 def list_typologies_structures_endpoint():
     """
     ## Documente les typologies de structures
     """
-    return schema.Typologie.as_dict_list()
+    return di_schema.Typologie.as_dict_list()
 
 
 @v0_doc_api_router.get(
     "/modes-accueil",
-    response_model=list[schema.EnhancedEnumMember],
+    response_model=list[schemas.EnhancedEnumMember],
     summary="Documente les modes d'accueil",
 )
 def list_modes_accueil_endpoint():
     """
     ## Documente les modes d'accueil
     """
-    return schema.ModeAccueil.as_dict_list()
+    return di_schema.ModeAccueil.as_dict_list()
 
 
 @v0_doc_api_router.get(
     "/modes-orientation-accompagnateur",
-    response_model=list[schema.EnhancedEnumMember],
+    response_model=list[schemas.EnhancedEnumMember],
     summary="Documente les modes d'orientation de l'accompagnateur",
 )
 def list_modes_orientation_accompagnateur_endpoint():
     """
     ## Documente les modes d'orientation de l'accompagnateur
     """
-    return schema.ModeOrientationAccompagnateur.as_dict_list()
+    return di_schema.ModeOrientationAccompagnateur.as_dict_list()
 
 
 @v0_doc_api_router.get(
     "/modes-orientation-beneficiaire",
-    response_model=list[schema.EnhancedEnumMember],
+    response_model=list[schemas.EnhancedEnumMember],
     summary="Documente les modes d'orientation du bénéficiaire",
 )
 def list_modes_orientation_beneficiaire_endpoint():
     """
     ## Documente les modes d'orientation du bénéficiaire
     """
-    return schema.ModeOrientationBeneficiaire.as_dict_list()
+    return di_schema.ModeOrientationBeneficiaire.as_dict_list()
 
 
-def create_token(email: str) -> schema.Token:
-    return schema.Token(access=jwt.create_access_token(subject=email))
+def create_token(email: str) -> schemas.Token:
+    return schemas.Token(access=jwt.create_access_token(subject=email))
 
 
 @v0_api_router.post(
     "/create_token",
-    response_model=schema.Token,
+    response_model=schemas.Token,
     include_in_schema=False,
 )
 def create_token_endpoint(
-    token_creation_data: Annotated[schema.TokenCreationData, fastapi.Body()],
+    token_creation_data: Annotated[schemas.TokenCreationData, fastapi.Body()],
     request: fastapi.Request,
 ):
     if "admin" in request.auth.scopes:

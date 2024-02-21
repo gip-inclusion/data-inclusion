@@ -5,7 +5,8 @@ import factory
 import faker
 from sqlalchemy import orm
 
-from data_inclusion.api import models, schema
+from data_inclusion import schema as di_schema
+from data_inclusion.api import models
 
 fake = faker.Faker("fr_FR")
 
@@ -50,9 +51,9 @@ class StructureFactory(factory.alchemy.SQLAlchemyModelFactory):
     latitude = factory.Faker("latitude")
     typologie = factory.Iterator(
         [
-            schema.Typologie.ACI,
-            schema.Typologie.MUNI,
-            schema.Typologie.PE,
+            di_schema.Typologie.ACI,
+            di_schema.Typologie.MUNI,
+            di_schema.Typologie.PE,
         ],
         getter=lambda t: t.value,
     )
@@ -73,9 +74,9 @@ class StructureFactory(factory.alchemy.SQLAlchemyModelFactory):
     thematiques = factory.Iterator(
         pairwise(
             [
-                schema.Thematique.CHOISIR_UN_METIER,
-                schema.Thematique.CREATION_ACTIVITE,
-                schema.Thematique.MOBILITE,
+                di_schema.Thematique.CHOISIR_UN_METIER,
+                di_schema.Thematique.CREATION_ACTIVITE,
+                di_schema.Thematique.MOBILITE,
             ]
         ),
         getter=lambda lst: list(map(lambda t: t.value, lst)),
@@ -116,8 +117,8 @@ class ServiceFactory(factory.alchemy.SQLAlchemyModelFactory):
     types = factory.Iterator(
         pairwise(
             [
-                schema.TypologieService.FORMATION,
-                schema.TypologieService.NUMÉRIQUE,
+                di_schema.TypologieService.FORMATION,
+                di_schema.TypologieService.NUMÉRIQUE,
             ]
         ),
         getter=lambda lst: list(map(lambda t: t.value, lst)),
@@ -125,25 +126,25 @@ class ServiceFactory(factory.alchemy.SQLAlchemyModelFactory):
     thematiques = factory.Iterator(
         pairwise(
             [
-                schema.Thematique.CHOISIR_UN_METIER,
-                schema.Thematique.CREATION_ACTIVITE,
-                schema.Thematique.MOBILITE,
+                di_schema.Thematique.CHOISIR_UN_METIER,
+                di_schema.Thematique.CREATION_ACTIVITE,
+                di_schema.Thematique.MOBILITE,
             ]
         ),
         getter=lambda lst: list(map(lambda t: t.value, lst)),
     )
     prise_rdv = factory.Faker("url", locale="fr_FR")
     frais = factory.Iterator(
-        pairwise(schema.Frais),
+        pairwise(di_schema.Frais),
         getter=lambda lst: list(map(lambda t: t.value, lst)),
     )
     frais_autres = factory.Faker("text", max_nb_chars=20, locale="fr_FR")
     profils = factory.Iterator(
         pairwise(
             [
-                schema.Profil.FEMMES,
-                schema.Profil.JEUNES_16_26,
-                schema.Profil.SENIORS_65,
+                di_schema.Profil.FEMMES,
+                di_schema.Profil.JEUNES_16_26,
+                di_schema.Profil.SENIORS_65,
             ]
         ),
         getter=lambda lst: list(map(lambda t: t.value, lst)),
@@ -170,25 +171,25 @@ class ServiceFactory(factory.alchemy.SQLAlchemyModelFactory):
     date_maj = factory.LazyFunction(lambda: date(2023, 1, 1))
     modes_accueil = factory.Iterator(
         [
-            [schema.ModeAccueil.A_DISTANCE.value],
-            [schema.ModeAccueil.EN_PRESENTIEL.value],
+            [di_schema.ModeAccueil.A_DISTANCE.value],
+            [di_schema.ModeAccueil.EN_PRESENTIEL.value],
             [
-                schema.ModeAccueil.A_DISTANCE.value,
-                schema.ModeAccueil.EN_PRESENTIEL.value,
+                di_schema.ModeAccueil.A_DISTANCE.value,
+                di_schema.ModeAccueil.EN_PRESENTIEL.value,
             ],
         ]
     )
     modes_orientation_accompagnateur = factory.Iterator(
         [
-            [schema.ModeOrientationAccompagnateur.TELEPHONER.value],
-            [schema.ModeOrientationAccompagnateur.ENVOYER_UN_MAIL.value],
+            [di_schema.ModeOrientationAccompagnateur.TELEPHONER.value],
+            [di_schema.ModeOrientationAccompagnateur.ENVOYER_UN_MAIL.value],
         ]
     )
     modes_orientation_accompagnateur_autres = None
     modes_orientation_beneficiaire = factory.Iterator(
         [
-            [schema.ModeOrientationBeneficiaire.TELEPHONER.value],
-            [schema.ModeOrientationBeneficiaire.SE_PRESENTER.value],
+            [di_schema.ModeOrientationBeneficiaire.TELEPHONER.value],
+            [di_schema.ModeOrientationBeneficiaire.SE_PRESENTER.value],
         ]
     )
     modes_orientation_beneficiaire_autres = None

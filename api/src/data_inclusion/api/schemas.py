@@ -1,30 +1,11 @@
 from dataclasses import dataclass
-from datetime import date, datetime
 from enum import Enum
 from typing import Optional
 
-from pydantic import BaseModel, ConfigDict, EmailStr, Field, StringConstraints
+from pydantic import BaseModel, ConfigDict, Field
 from typing_extensions import Annotated
 
-from data_inclusion.schema import (
-    CodeCommune,
-    CodeDepartement,
-    CodeEPCI,
-    CodePostal,
-    CodeRegion,
-    CodeRna,
-    CodeSiret,
-    Frais,
-    LabelNational,
-    ModeAccueil,
-    ModeOrientationAccompagnateur,
-    ModeOrientationBeneficiaire,
-    Profil,
-    Thematique,
-    Typologie,
-    TypologieService,
-    ZoneDiffusionType,
-)
+from data_inclusion import schema
 
 
 class EnhancedEnumMember(BaseModel):
@@ -162,106 +143,38 @@ class Source(BaseModel):
     description: Optional[str]
 
 
-class Service(BaseModel):
+class Service(schema.Service):
     model_config = ConfigDict(from_attributes=True, populate_by_name=True)
 
-    # internal metadata
-    di_geocodage_code_insee: Optional[CodeCommune] = Field(
-        alias="_di_geocodage_code_insee"
-    )
-    di_geocodage_score: Optional[Annotated[float, Field(ge=0, le=1)]] = Field(
-        alias="_di_geocodage_score"
-    )
-
-    # service data
-    id: str
-    structure_id: str
-    source: str
-    nom: str
-    presentation_resume: Optional[
-        Annotated[str, StringConstraints(max_length=280)]
-    ] = None
-    presentation_detail: Optional[str] = None
-    types: Optional[list[TypologieService]] = None
-    thematiques: Optional[list[Thematique]] = None
+    # Dont use pydantic's `HttpUrl`, because it would likely trigger validation errors
     prise_rdv: Optional[str] = None
-    frais: Optional[list[Frais]] = None
-    frais_autres: Optional[str] = None
-    profils: Optional[list[Profil]] = None
-    pre_requis: Optional[list[str]] = None
-    cumulable: Optional[bool] = None
-    justificatifs: Optional[list[str]] = None
     formulaire_en_ligne: Optional[str] = None
-    commune: Optional[str] = None
-    code_postal: Optional[CodePostal] = None
-    code_insee: Optional[CodeCommune] = None
-    adresse: Optional[str] = None
-    complement_adresse: Optional[str] = None
-    longitude: Optional[float] = None
-    latitude: Optional[float] = None
-    recurrence: Optional[str] = None
-    date_creation: Optional[date] = None
-    date_suspension: Optional[date] = None
     lien_source: Optional[str] = None
-    telephone: Optional[str] = None
-    courriel: Optional[EmailStr] = None
-    contact_public: Optional[bool] = None
-    contact_nom_prenom: Optional[str] = None
-    date_maj: Optional[date | datetime] = None
-    modes_accueil: Optional[list[ModeAccueil]] = None
-    modes_orientation_accompagnateur: Optional[
-        list[ModeOrientationAccompagnateur]
-    ] = None
-    modes_orientation_accompagnateur_autres: Optional[str] = None
-    modes_orientation_beneficiaire: Optional[list[ModeOrientationBeneficiaire]] = None
-    modes_orientation_beneficiaire_autres: Optional[str] = None
-    zone_diffusion_type: Optional[ZoneDiffusionType] = None
-    zone_diffusion_code: Optional[
-        CodeCommune | CodeEPCI | CodeDepartement | CodeRegion
-    ] = None
-    zone_diffusion_nom: Optional[str] = None
 
-
-class Structure(BaseModel):
-    model_config = ConfigDict(from_attributes=True, populate_by_name=True)
-
-    # internal metadata
-    di_geocodage_code_insee: Optional[CodeCommune] = Field(
+    # TODO(vmttn): decide whether we should keep these extra fields
+    di_geocodage_code_insee: Optional[schema.CodeCommune] = Field(
         alias="_di_geocodage_code_insee"
     )
     di_geocodage_score: Optional[Annotated[float, Field(ge=0, le=1)]] = Field(
         alias="_di_geocodage_score"
     )
 
-    # structure data
-    id: str
-    siret: Optional[CodeSiret] = None
-    rna: Optional[CodeRna] = None
-    nom: str
-    commune: Optional[str] = None
-    code_postal: Optional[CodePostal] = None
-    code_insee: Optional[CodeCommune] = None
-    adresse: Optional[str] = None
-    complement_adresse: Optional[str] = None
-    longitude: Optional[float] = None
-    latitude: Optional[float] = None
-    typologie: Optional[Typologie] = None
-    telephone: Optional[str] = None
-    courriel: Optional[EmailStr] = None
+
+class Structure(schema.Structure):
+    model_config = ConfigDict(from_attributes=True, populate_by_name=True)
+
+    # Dont use pydantic's `HttpUrl`, because it would likely trigger validation errors
     site_web: Optional[str] = None
-    presentation_resume: Optional[
-        Annotated[str, StringConstraints(max_length=280)]
-    ] = None
-    presentation_detail: Optional[str] = None
-    source: str
-    date_maj: Optional[date | datetime]
-    antenne: Optional[bool] = None
     lien_source: Optional[str] = None
-    horaires_ouverture: Optional[str] = None
     accessibilite: Optional[str] = None
-    labels_nationaux: Optional[list[LabelNational]] = None
-    labels_autres: Optional[list[str]] = None
-    thematiques: Optional[list[Thematique]] = None
+
+    # TODO(vmttn): decide whether we should keep these extra fields
+    di_geocodage_code_insee: Optional[schema.CodeCommune] = Field(
+        alias="_di_geocodage_code_insee"
+    )
+    di_geocodage_score: Optional[Annotated[float, Field(ge=0, le=1)]] = Field(
+        alias="_di_geocodage_score"
+    )
 
 
 class TokenCreationData(BaseModel):
