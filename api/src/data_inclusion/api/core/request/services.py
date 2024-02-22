@@ -19,9 +19,9 @@ def save_request(request: requests.Request, response: responses.Response) -> Non
             },
             client_host=request.client.host if request.client is not None else None,
             client_port=request.client.port if request.client is not None else None,
-            endpoint_name=request.scope["route"].name
-            if "route" in request.scope
-            else None,
+            endpoint_name=(
+                request.scope["route"].name if "route" in request.scope else None
+            ),
         )  # type: ignore
         session.add(request_instance)
         session.commit()

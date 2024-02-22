@@ -1,67 +1,28 @@
-import inspect
 from pathlib import Path
 
+import factory.random
 import pytest
-from factory import Factory
 
 from . import factories
 
 
-def get_factories():
-    return [
-        factory
-        for (_, factory) in inspect.getmembers(
-            factories, lambda o: inspect.isclass(o) and issubclass(o, Factory)
-        )
-    ]
+@pytest.fixture(autouse=True)
+def predictable_sequences():
+    factory.random.reseed_random(0)
+    factories.CommuneFactory.reset_sequence()
+    factories.ServiceFactory.reset_sequence()
+    factories.SourceFactory.reset_sequence()
+    factories.StructureFactory.reset_sequence()
 
 
 @pytest.fixture(autouse=True)
-def reset_factories_sequences():
-    """Reset all sequences for predictable values."""
-
-    for factory in get_factories():
-        factory.reset_sequence()
-
-
-@pytest.fixture
-def commune_factory(db_session):
-    def factory(**kwargs):
-        commune_db_obj = factories.CommuneFactory(**kwargs)
-        db_session.add(commune_db_obj)
-        db_session.commit()
-        db_session.refresh(commune_db_obj)
-        return commune_db_obj
-
-    return factory
-
-
-@pytest.fixture
-def structure_factory(db_session):
-    def factory(**kwargs):
-        structure_db_obj = factories.StructureFactory(**kwargs)
-        db_session.add(structure_db_obj)
-        db_session.commit()
-        db_session.refresh(structure_db_obj)
-        return structure_db_obj
-
-    return factory
-
-
-@pytest.fixture
-def service_factory(db_session):
-    def factory(**kwargs):
-        service_db_obj = factories.ServiceFactory(**kwargs)
-        db_session.add(service_db_obj)
-        db_session.commit()
-        db_session.refresh(service_db_obj)
-        return service_db_obj
-
-    return factory
+def create_default_sources(test_session):
+    factories.SourceFactory(slug="dora")
+    factories.SourceFactory(slug="emplois-de-linclusion")
 
 
 @pytest.fixture(scope="session")
-def admin_express_commune_nord(db_engine):
+def generate_communes_nord(db_engine):
     import geopandas
 
     df = geopandas.read_file(Path(__file__).parent / "data" / "nord.sqlite")

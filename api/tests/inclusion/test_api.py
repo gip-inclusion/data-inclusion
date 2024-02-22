@@ -4,6 +4,8 @@ import pytest
 
 from data_inclusion import schema
 
+from . import factories
+
 
 def test_list_structures_unauthenticated(api_client):
     url = "/api/v0/structures/"
@@ -13,8 +15,8 @@ def test_list_structures_unauthenticated(api_client):
 
 
 @pytest.mark.with_token
-def test_list_structures_all(api_client, structure_factory):
-    structure_factory()
+def test_list_structures_all(api_client):
+    factories.StructureFactory()
 
     url = "/api/v0/structures/"
 
@@ -88,8 +90,8 @@ def assert_structure_data(structure, data):
     assert structure.code_insee == data["code_insee"]
     assert structure.adresse == data["adresse"]
     assert structure.complement_adresse == data["complement_adresse"]
-    assert structure.longitude == data["longitude"]
-    assert structure.latitude == data["latitude"]
+    assert float(structure.longitude) == data["longitude"]
+    assert float(structure.latitude) == data["latitude"]
     assert structure.typologie == data["typologie"]
     assert structure.telephone == data["telephone"]
     assert structure.courriel == data["courriel"]
@@ -110,9 +112,9 @@ def assert_structure_data(structure, data):
 
 
 @pytest.mark.with_token
-def test_list_structures_filter_by_typology(api_client, structure_factory):
-    structure_1 = structure_factory(typologie=schema.Typologie.ASSO.value)
-    structure_factory(typologie=schema.Typologie.CCAS.value)
+def test_list_structures_filter_by_typology(api_client):
+    structure_1 = factories.StructureFactory(typologie=schema.Typologie.ASSO.value)
+    factories.StructureFactory(typologie=schema.Typologie.CCAS.value)
 
     url = "/api/v0/structures/"
     response = api_client.get(url, params={"typologie": schema.Typologie.ASSO.value})
@@ -126,9 +128,13 @@ def test_list_structures_filter_by_typology(api_client, structure_factory):
 
 
 @pytest.mark.with_token
-def test_list_structures_filter_by_label(api_client, structure_factory):
-    structure_factory(labels_nationaux=[schema.LabelNational.POLE_EMPLOI.value])
-    structure_2 = structure_factory(
+def test_list_structures_filter_by_label(
+    api_client,
+):
+    factories.StructureFactory(
+        labels_nationaux=[schema.LabelNational.POLE_EMPLOI.value]
+    )
+    structure_2 = factories.StructureFactory(
         labels_nationaux=[
             schema.LabelNational.MOBIN.value,
             schema.LabelNational.FRANCE_SERVICE.value,
@@ -151,9 +157,9 @@ def test_list_structures_filter_by_label(api_client, structure_factory):
 
 
 @pytest.mark.with_token
-def test_list_structures_filter_by_source(api_client, structure_factory):
-    structure_1 = structure_factory(source="emplois-de-linclusion")
-    structure_factory(source="dora")
+def test_list_structures_filter_by_source(api_client):
+    structure_1 = factories.StructureFactory(source="emplois-de-linclusion")
+    factories.StructureFactory(source="dora")
 
     url = "/api/v0/structures/"
     response = api_client.get(url, params={"source": "emplois-de-linclusion"})
@@ -167,20 +173,27 @@ def test_list_structures_filter_by_source(api_client, structure_factory):
 
 
 @pytest.mark.with_token
-def test_list_sources(api_client, structure_factory):
-    structure_factory(source="emplois-de-linclusion")
-    structure_factory(source="dora")
-
+def test_list_sources(api_client):
     url = "/api/v0/sources/"
     response = api_client.get(url)
-
-    assert response.json() == ["dora", "emplois-de-linclusion"]
+    assert response.json() == [
+        {
+            "description": "Nom asseoir.",
+            "nom": "Thierry",
+            "slug": "dora",
+        },
+        {
+            "description": "Grâce plaindre.",
+            "nom": "Lebon",
+            "slug": "emplois-de-linclusion",
+        },
+    ]
 
 
 @pytest.mark.with_token
-def test_list_structures_filter_by_departement_cog(api_client, structure_factory):
-    structure_1 = structure_factory(code_insee="2A247")
-    structure_factory(code_insee="59350")
+def test_list_structures_filter_by_departement_cog(api_client):
+    structure_1 = factories.StructureFactory(code_insee="2A247")
+    factories.StructureFactory(code_insee="59350")
 
     url = "/api/v0/structures/"
     response = api_client.get(url, params={"departement": "2A"})
@@ -194,9 +207,11 @@ def test_list_structures_filter_by_departement_cog(api_client, structure_factory
 
 
 @pytest.mark.with_token
-def test_list_structures_filter_by_departement_slug(api_client, structure_factory):
-    structure_1 = structure_factory(code_insee="22247")
-    structure_factory(code_insee="59350")
+def test_list_structures_filter_by_departement_slug(
+    api_client,
+):
+    structure_1 = factories.StructureFactory(code_insee="22247")
+    factories.StructureFactory(code_insee="59350")
 
     url = "/api/v0/structures/"
     response = api_client.get(url, params={"departement_slug": "cotes-d-armor"})
@@ -210,11 +225,15 @@ def test_list_structures_filter_by_departement_slug(api_client, structure_factor
 
 
 @pytest.mark.with_token
-def test_list_structures_filter_by_code_postal(api_client, structure_factory):
-    structure_1 = structure_factory(
+def test_list_structures_filter_by_code_postal(
+    api_client,
+):
+    structure_1 = factories.StructureFactory(
         code_postal="59100", code_insee="59512", commune="roubaix"
     )
-    structure_factory(code_postal="59178", code_insee="59100", commune="bousignies")
+    factories.StructureFactory(
+        code_postal="59178", code_insee="59100", commune="bousignies"
+    )
 
     url = "/api/v0/structures/"
     response = api_client.get(url, params={"code_postal": "59100"})
@@ -228,20 +247,22 @@ def test_list_structures_filter_by_code_postal(api_client, structure_factory):
 
 
 @pytest.mark.with_token
-def test_list_structures_filter_by_thematique(api_client, structure_factory):
-    structure_1 = structure_factory(
+def test_list_structures_filter_by_thematique(
+    api_client,
+):
+    structure_1 = factories.StructureFactory(
         thematiques=[
             schema.Thematique.MOBILITE.value,
             schema.Thematique.NUMERIQUE.value,
         ]
     )
-    structure_factory(
+    factories.StructureFactory(
         thematiques=[
             schema.Thematique.TROUVER_UN_EMPLOI.value,
             schema.Thematique.NUMERIQUE.value,
         ]
     )
-    structure_factory(thematiques=[])
+    factories.StructureFactory(thematiques=[])
 
     url = "/api/v0/structures/"
     response = api_client.get(
@@ -259,13 +280,15 @@ def test_list_structures_filter_by_thematique(api_client, structure_factory):
 
 
 @pytest.mark.with_token
-def test_list_structures_filter_by_categorie_thematique(api_client, structure_factory):
-    structure = structure_factory(
+def test_list_structures_filter_by_categorie_thematique(
+    api_client,
+):
+    structure = factories.StructureFactory(
         thematiques=[
             schema.Thematique.MOBILITE__ACHETER_UN_VEHICULE_MOTORISE.value,
         ],
     )
-    structure_factory(thematiques=[])
+    factories.StructureFactory(thematiques=[])
 
     url = "/api/v0/structures/"
 
@@ -281,10 +304,12 @@ def test_list_structures_filter_by_categorie_thematique(api_client, structure_fa
 
 
 @pytest.mark.with_token
-def test_list_structures_filter_by_source_and_id(api_client, structure_factory):
-    structure_factory(source="emplois-de-linclusion", id="foo")
-    structure_2 = structure_factory(source="dora", id="foo")
-    structure_factory(source="dora", id="bar")
+def test_list_structures_filter_by_source_and_id(
+    api_client,
+):
+    factories.StructureFactory(source="emplois-de-linclusion", id="foo")
+    structure_2 = factories.StructureFactory(source="dora", id="foo")
+    factories.StructureFactory(source="dora", id="bar")
 
     url = "/api/v0/structures/"
 
@@ -304,8 +329,8 @@ def test_list_services_unauthenticated(api_client):
 
 
 @pytest.mark.with_token
-def test_list_services_all(api_client, service_factory):
-    service_factory()
+def test_list_services_all(api_client):
+    factories.ServiceFactory()
 
     url = "/api/v0/services/"
 
@@ -484,8 +509,10 @@ def test_list_modes_orientation_beneficiaire(api_client):
 
 
 @pytest.mark.with_token
-def test_list_structures_null_siret(api_client, structure_factory):
-    structure = structure_factory(siret=None)
+def test_list_structures_null_siret(
+    api_client,
+):
+    structure = factories.StructureFactory(siret=None)
 
     url = "/api/v0/structures/"
 
@@ -500,8 +527,10 @@ def test_list_structures_null_siret(api_client, structure_factory):
 
 
 @pytest.mark.with_token
-def test_list_structures_null_code_insee(api_client, structure_factory):
-    structure = structure_factory(code_insee=None)
+def test_list_structures_null_code_insee(
+    api_client,
+):
+    structure = factories.StructureFactory(code_insee=None)
 
     url = "/api/v0/structures/"
 
@@ -516,11 +545,9 @@ def test_list_structures_null_code_insee(api_client, structure_factory):
 
 
 @pytest.mark.with_token
-def test_list_structures_null_code_insee_filter_by_departement_cog(
-    api_client, structure_factory
-):
-    structure_factory(code_insee=None)
-    structure = structure_factory(code_insee="2A247")
+def test_list_structures_null_code_insee_filter_by_departement_cog(api_client):
+    factories.StructureFactory(code_insee=None)
+    structure = factories.StructureFactory(code_insee="2A247")
 
     url = "/api/v0/structures/"
 
@@ -535,11 +562,9 @@ def test_list_structures_null_code_insee_filter_by_departement_cog(
 
 
 @pytest.mark.with_token
-def test_list_structures_null_code_insee_filter_by_departement_slug(
-    api_client, structure_factory
-):
-    structure_factory(code_insee=None)
-    structure = structure_factory(code_insee="22247")
+def test_list_structures_null_code_insee_filter_by_departement_slug(api_client):
+    factories.StructureFactory(code_insee=None)
+    structure = factories.StructureFactory(code_insee="22247")
 
     url = "/api/v0/structures/"
 
@@ -554,10 +579,14 @@ def test_list_structures_null_code_insee_filter_by_departement_slug(
 
 
 @pytest.mark.with_token
-def test_list_structures_order(api_client, structure_factory):
-    structure_1 = structure_factory(source="alpha", id="2")
-    structure_2 = structure_factory(source="beta", id="1")
-    structure_3 = structure_factory(source="alpha", id="1")
+def test_list_structures_order(
+    api_client,
+):
+    factories.SourceFactory(slug="alpha", nom="Alpha")
+    factories.SourceFactory(slug="beta", nom="Beta")
+    structure_1 = factories.StructureFactory(source="alpha", id="2")
+    structure_2 = factories.StructureFactory(source="beta", id="1")
+    structure_3 = factories.StructureFactory(source="alpha", id="1")
 
     url = "/api/v0/structures/"
 
@@ -573,9 +602,9 @@ def test_list_structures_order(api_client, structure_factory):
 
 
 @pytest.mark.with_token
-def test_list_services_filter_by_source(api_client, service_factory):
-    service_1 = service_factory(structure__source="emplois-de-linclusion")
-    service_factory(structure__source="dora")
+def test_list_services_filter_by_source(api_client):
+    service_1 = factories.ServiceFactory(structure__source="emplois-de-linclusion")
+    factories.ServiceFactory(structure__source="dora")
 
     url = "/api/v0/services/"
     response = api_client.get(url, params={"source": "emplois-de-linclusion"})
@@ -590,8 +619,9 @@ def test_list_services_filter_by_source(api_client, service_factory):
 
 
 @pytest.mark.with_token
-def test_list_services_filter_by_thematique(api_client, service_factory):
-    service_1 = service_factory(
+def test_list_services_filter_by_thematique(api_client):
+    factories.SourceFactory(slug="alpha", nom="Alpha")
+    service_1 = factories.ServiceFactory(
         structure__source="alpha",
         id="1",
         thematiques=[
@@ -599,7 +629,7 @@ def test_list_services_filter_by_thematique(api_client, service_factory):
             schema.Thematique.NUMERIQUE.value,
         ],
     )
-    service_2 = service_factory(
+    service_2 = factories.ServiceFactory(
         structure__source="alpha",
         id="2",
         thematiques=[
@@ -607,7 +637,7 @@ def test_list_services_filter_by_thematique(api_client, service_factory):
             schema.Thematique.NUMERIQUE.value,
         ],
     )
-    service_factory(thematiques=[])
+    factories.ServiceFactory(thematiques=[])
 
     url = "/api/v0/services/"
 
@@ -641,15 +671,16 @@ def test_list_services_filter_by_thematique(api_client, service_factory):
 
 
 @pytest.mark.with_token
-def test_list_services_filter_by_categorie_thematique(api_client, service_factory):
-    service = service_factory(
+def test_list_services_filter_by_categorie_thematique(api_client):
+    factories.SourceFactory(slug="alpha", nom="Alpha")
+    service = factories.ServiceFactory(
         structure__source="alpha",
         id="1",
         thematiques=[
             schema.Thematique.MOBILITE__ACHETER_UN_VEHICULE_MOTORISE.value,
         ],
     )
-    service_factory(thematiques=[])
+    factories.ServiceFactory(thematiques=[])
 
     url = "/api/v0/services/"
 
@@ -665,9 +696,9 @@ def test_list_services_filter_by_categorie_thematique(api_client, service_factor
 
 
 @pytest.mark.with_token
-def test_list_services_filter_by_departement_cog(api_client, service_factory):
-    service = service_factory(code_insee="2A247")
-    service_factory(code_insee="59350")
+def test_list_services_filter_by_departement_cog(api_client):
+    service = factories.ServiceFactory(code_insee="2A247")
+    factories.ServiceFactory(code_insee="59350")
 
     url = "/api/v0/services/"
     response = api_client.get(url, params={"departement": "2A"})
@@ -682,9 +713,9 @@ def test_list_services_filter_by_departement_cog(api_client, service_factory):
 
 
 @pytest.mark.with_token
-def test_list_services_filter_by_departement_slug(api_client, service_factory):
-    service = service_factory(code_insee="22247")
-    service_factory(code_insee="59350")
+def test_list_services_filter_by_departement_slug(api_client):
+    service = factories.ServiceFactory(code_insee="22247")
+    factories.ServiceFactory(code_insee="59350")
 
     url = "/api/v0/services/"
     response = api_client.get(url, params={"departement_slug": "cotes-d-armor"})
@@ -708,11 +739,9 @@ def test_list_services_filter_by_departement_slug(api_client, service_factory):
     ],
 )
 @pytest.mark.with_token
-def test_list_services_filter_by_code_insee(
-    api_client, service_factory, code_insee, input, found
-):
-    service = service_factory(code_insee=code_insee)
-    service_factory(code_insee="59350")
+def test_list_services_filter_by_code_insee(api_client, code_insee, input, found):
+    service = factories.ServiceFactory(code_insee=code_insee)
+    factories.ServiceFactory(code_insee="59350")
 
     url = "/api/v0/services/"
     response = api_client.get(url, params={"code_insee": input})
@@ -738,14 +767,12 @@ def test_list_services_filter_by_code_insee(
     ],
 )
 @pytest.mark.with_token
-def test_search_services_with_code_insee(
-    api_client, service_factory, commune_factory, code_insee, input, found
-):
-    commune_factory(code="59350", nom="Lille")
-    commune_factory(code="59183", nom="Dunkerque")
-    commune_factory(code="59392", nom="Maubeuge")
-    commune_factory(code="75056", nom="Paris")
-    service = service_factory(code_insee=code_insee)
+def test_search_services_with_code_insee(api_client, code_insee, input, found):
+    factories.CommuneFactory(code="59350", nom="Lille")
+    factories.CommuneFactory(code="59183", nom="Dunkerque")
+    factories.CommuneFactory(code="59392", nom="Maubeuge")
+    factories.CommuneFactory(code="75056", nom="Paris")
+    service = factories.ServiceFactory(code_insee=code_insee)
 
     url = "/api/v0/search/services"
     response = api_client.get(url, params={"code_insee": input})
@@ -760,29 +787,25 @@ def test_search_services_with_code_insee(
 
 
 @pytest.mark.with_token
-def test_search_services_with_code_insee_too_far(
-    api_client,
-    service_factory,
-    admin_express_commune_nord,
-):
+def test_search_services_with_code_insee_too_far(api_client, generate_communes_nord):
     # Dunkerque to Hazebrouck: <50km
     # Hazebrouck to Lille: <50km
     # Dunkerque to Lille: >50km
-    service_1 = service_factory(
+    service_1 = factories.ServiceFactory(
         commune="Lille",
         code_insee="59350",
         latitude=50.633333,
         longitude=3.066667,
         modes_accueil=[schema.ModeAccueil.EN_PRESENTIEL.value],
     )
-    service_2 = service_factory(
+    service_2 = factories.ServiceFactory(
         commune="Dunkerque",
         code_insee="59183",
         latitude=51.0361,
         longitude=2.3770,
         modes_accueil=[schema.ModeAccueil.EN_PRESENTIEL.value],
     )
-    service_factory(
+    factories.ServiceFactory(
         code_insee=None,
         latitude=None,
         longitude=None,
@@ -879,12 +902,8 @@ def test_search_services_with_code_insee_too_far(
 
 
 @pytest.mark.with_token
-def test_search_services_with_zone_diffusion_pays(
-    api_client,
-    service_factory,
-    admin_express_commune_nord,
-):
-    service_1 = service_factory(
+def test_search_services_with_zone_diffusion_pays(api_client, generate_communes_nord):
+    service_1 = factories.ServiceFactory(
         commune="Dunkerque",
         code_insee="59183",
         latitude=51.034368,
@@ -911,11 +930,9 @@ def test_search_services_with_zone_diffusion_pays(
 
 @pytest.mark.with_token
 def test_search_services_with_zone_diffusion_commune(
-    api_client,
-    service_factory,
-    admin_express_commune_nord,
+    api_client, generate_communes_nord
 ):
-    service_1 = service_factory(
+    service_1 = factories.ServiceFactory(
         commune="Dunkerque",
         code_insee="59183",
         latitude=51.034368,
@@ -925,7 +942,7 @@ def test_search_services_with_zone_diffusion_commune(
         zone_diffusion_code="59183",
         zone_diffusion_nom="Dunkerque",
     )
-    service_factory(
+    factories.ServiceFactory(
         commune="Lille",
         code_insee="59350",
         latitude=50.633333,
@@ -953,10 +970,9 @@ def test_search_services_with_zone_diffusion_commune(
 @pytest.mark.with_token
 def test_search_services_with_zone_diffusion_epci(
     api_client,
-    service_factory,
-    admin_express_commune_nord,
+    generate_communes_nord,
 ):
-    service_1 = service_factory(
+    service_1 = factories.ServiceFactory(
         commune="Dunkerque",
         code_insee="59183",
         latitude=51.034368,
@@ -966,7 +982,7 @@ def test_search_services_with_zone_diffusion_epci(
         zone_diffusion_code="245900428",
         zone_diffusion_nom="CU de Dunkerque",
     )
-    service_factory(
+    factories.ServiceFactory(
         commune="Lille",
         code_insee="59350",
         latitude=50.633333,
@@ -993,11 +1009,9 @@ def test_search_services_with_zone_diffusion_epci(
 
 @pytest.mark.with_token
 def test_search_services_with_zone_diffusion_departement(
-    api_client,
-    service_factory,
-    admin_express_commune_nord,
+    api_client, generate_communes_nord
 ):
-    service_1 = service_factory(
+    service_1 = factories.ServiceFactory(
         commune="Dunkerque",
         code_insee="59183",
         latitude=51.034368,
@@ -1007,7 +1021,7 @@ def test_search_services_with_zone_diffusion_departement(
         zone_diffusion_code="59",
         zone_diffusion_nom="Nord",
     )
-    service_factory(
+    factories.ServiceFactory(
         commune="Lille",
         code_insee="59350",
         latitude=50.633333,
@@ -1033,12 +1047,8 @@ def test_search_services_with_zone_diffusion_departement(
 
 
 @pytest.mark.with_token
-def test_search_services_with_zone_diffusion_region(
-    api_client,
-    service_factory,
-    admin_express_commune_nord,
-):
-    service_1 = service_factory(
+def test_search_services_with_zone_diffusion_region(api_client, generate_communes_nord):
+    service_1 = factories.ServiceFactory(
         commune="Dunkerque",
         code_insee="59183",
         latitude=51.034368,
@@ -1048,7 +1058,7 @@ def test_search_services_with_zone_diffusion_region(
         zone_diffusion_code="32",
         zone_diffusion_nom="Nord",
     )
-    service_factory(
+    factories.ServiceFactory(
         commune="Maubeuge",
         code_insee="59392",
         latitude=50.277500,
@@ -1076,10 +1086,9 @@ def test_search_services_with_zone_diffusion_region(
 @pytest.mark.with_token
 def test_search_services_with_bad_code_insee(
     api_client,
-    service_factory,
-    admin_express_commune_nord,
+    generate_communes_nord,
 ):
-    service_factory(
+    factories.ServiceFactory(
         commune="Lille",
         code_insee="59350",
         latitude=50.633333,
@@ -1101,24 +1110,23 @@ def test_search_services_with_bad_code_insee(
 @pytest.mark.with_token
 def test_search_services_with_code_insee_ordering(
     api_client,
-    service_factory,
-    admin_express_commune_nord,
+    generate_communes_nord,
 ):
-    service_1 = service_factory(
+    service_1 = factories.ServiceFactory(
         commune="Hazebrouck",
         code_insee="59295",
         latitude=50.7262,
         longitude=2.5387,
         modes_accueil=[schema.ModeAccueil.EN_PRESENTIEL.value],
     )
-    service_2 = service_factory(
+    service_2 = factories.ServiceFactory(
         commune="Lille",
         code_insee="59350",
         latitude=50.633333,
         longitude=3.066667,
         modes_accueil=[schema.ModeAccueil.EN_PRESENTIEL.value],
     )
-    service_factory(
+    factories.ServiceFactory(
         code_insee=None,
         _di_geocodage_code_insee=None,
         modes_accueil=[schema.ModeAccueil.EN_PRESENTIEL.value],
@@ -1137,8 +1145,8 @@ def test_search_services_with_code_insee_ordering(
 
 
 @pytest.mark.with_token
-def test_search_services_with_code_insee_sample_distance(api_client, service_factory):
-    service_1 = service_factory(
+def test_search_services_with_code_insee_sample_distance(api_client):
+    service_1 = factories.ServiceFactory(
         commune="Lille",
         code_insee="59350",
         _di_geocodage_code_insee=None,
@@ -1146,7 +1154,7 @@ def test_search_services_with_code_insee_sample_distance(api_client, service_fac
         longitude=3.066667,
         modes_accueil=[schema.ModeAccueil.EN_PRESENTIEL.value],
     )
-    service_factory(
+    factories.ServiceFactory(
         code_insee=None,
         _di_geocodage_code_insee=None,
         modes_accueil=[schema.ModeAccueil.EN_PRESENTIEL.value],
@@ -1163,14 +1171,14 @@ def test_search_services_with_code_insee_sample_distance(api_client, service_fac
 
 
 @pytest.mark.with_token
-def test_search_services_with_code_insee_a_distance(api_client, service_factory):
-    service_1 = service_factory(
+def test_search_services_with_code_insee_a_distance(api_client):
+    service_1 = factories.ServiceFactory(
         commune="Dunkerque",
         code_insee="59183",
         _di_geocodage_code_insee=None,
         modes_accueil=[schema.ModeAccueil.A_DISTANCE.value],
     )
-    service_2 = service_factory(
+    service_2 = factories.ServiceFactory(
         commune="Maubeuge",
         code_insee="59392",
         _di_geocodage_code_insee=None,
@@ -1218,11 +1226,9 @@ def test_search_services_with_code_insee_a_distance(api_client, service_factory)
     ],
 )
 @pytest.mark.with_token
-def test_search_services_with_thematique(
-    api_client, service_factory, thematiques, input, found
-):
-    service = service_factory(thematiques=thematiques)
-    service_factory(thematiques=[schema.Thematique.MOBILITE.value])
+def test_search_services_with_thematique(api_client, thematiques, input, found):
+    service = factories.ServiceFactory(thematiques=thematiques)
+    factories.ServiceFactory(thematiques=[schema.Thematique.MOBILITE.value])
 
     url = "/api/v0/search/services"
     response = api_client.get(url, params={"thematiques": input})
@@ -1237,10 +1243,10 @@ def test_search_services_with_thematique(
 
 
 @pytest.mark.with_token
-def test_search_services_with_frais(api_client, service_factory):
-    service_1 = service_factory(frais=[schema.Frais.GRATUIT.value])
-    service_2 = service_factory(frais=[schema.Frais.ADHESION.value])
-    service_factory(frais=[schema.Frais.PASS_NUMERIQUE.value])
+def test_search_services_with_frais(api_client):
+    service_1 = factories.ServiceFactory(frais=[schema.Frais.GRATUIT.value])
+    service_2 = factories.ServiceFactory(frais=[schema.Frais.ADHESION.value])
+    factories.ServiceFactory(frais=[schema.Frais.PASS_NUMERIQUE.value])
 
     url = "/api/v0/search/services"
     response = api_client.get(
@@ -1269,10 +1275,12 @@ def test_search_services_with_frais(api_client, service_factory):
 
 
 @pytest.mark.with_token
-def test_search_services_with_types(api_client, service_factory):
-    service_1 = service_factory(types=[schema.TypologieService.ACCUEIL.value])
-    service_2 = service_factory(types=[schema.TypologieService.ACCOMPAGNEMENT.value])
-    service_factory(types=[schema.TypologieService.AIDE_FINANCIERE.value])
+def test_search_services_with_types(api_client):
+    service_1 = factories.ServiceFactory(types=[schema.TypologieService.ACCUEIL.value])
+    service_2 = factories.ServiceFactory(
+        types=[schema.TypologieService.ACCOMPAGNEMENT.value]
+    )
+    factories.ServiceFactory(types=[schema.TypologieService.AIDE_FINANCIERE.value])
 
     url = "/api/v0/search/services"
     response = api_client.get(
@@ -1301,10 +1309,11 @@ def test_search_services_with_types(api_client, service_factory):
 
 
 @pytest.mark.with_token
-def test_search_services_with_sources(api_client, service_factory):
-    service_1 = service_factory(source="dora")
-    service_2 = service_factory(source="emplois-de-linclusion")
-    service_factory(source="un-jeune-une-solution")
+def test_search_services_with_sources(api_client):
+    service_1 = factories.ServiceFactory(source="dora")
+    service_2 = factories.ServiceFactory(source="emplois-de-linclusion")
+    factories.SourceFactory(slug="un-jeune-une-solution")
+    factories.ServiceFactory(source="un-jeune-une-solution")
 
     url = "/api/v0/search/services"
     response = api_client.get(
@@ -1330,10 +1339,12 @@ def test_search_services_with_sources(api_client, service_factory):
 
 
 @pytest.mark.with_token
-def test_retrieve_service(api_client, service_factory):
-    service_1 = service_factory(source="foo", id="1")
-    service_2 = service_factory(source="bar", id="1")
-    service_3 = service_factory(source="foo", id="2")
+def test_retrieve_service(api_client):
+    factories.SourceFactory(slug="foo")
+    factories.SourceFactory(slug="bar")
+    service_1 = factories.ServiceFactory(source="foo", id="1")
+    service_2 = factories.ServiceFactory(source="bar", id="1")
+    service_3 = factories.ServiceFactory(source="foo", id="2")
 
     url = "/api/v0/services/"
     response = api_client.get(url + f"{service_1.source}/{service_1.id}")
@@ -1349,12 +1360,14 @@ def test_retrieve_service(api_client, service_factory):
 
 
 @pytest.mark.with_token
-def test_retrieve_structure(api_client, structure_factory, service_factory):
-    structure_1 = structure_factory(source="foo", id="1")
-    service_1 = service_factory(structure=structure_1)
-    structure_2 = structure_factory(source="bar", id="1")
-    service_factory(structure=structure_2)
-    structure_3 = structure_factory(source="foo", id="2")
+def test_retrieve_structure(api_client):
+    factories.SourceFactory(slug="foo")
+    factories.SourceFactory(slug="bar")
+    structure_1 = factories.StructureFactory(source="foo", id="1")
+    service_1 = factories.ServiceFactory(structure=structure_1)
+    structure_2 = factories.StructureFactory(source="bar", id="1")
+    factories.ServiceFactory(structure=structure_2)
+    structure_3 = factories.StructureFactory(source="foo", id="2")
 
     url = "/api/v0/structures/"
     response = api_client.get(url + f"{structure_1.source}/{structure_1.id}")
