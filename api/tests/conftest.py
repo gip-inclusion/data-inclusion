@@ -1,20 +1,22 @@
 import faker
 import pytest
+import sqlalchemy as sqla
+from alembic import command
+from alembic.config import Config
 
+from fastapi.testclient import TestClient
 
-@pytest.fixture(autouse=True)
-def seed():
-    faker.Faker.seed(0)
+from data_inclusion.api.core import db
+from data_inclusion.api.core.request.services import db as middleware_db
+from data_inclusion.api.entrypoints.fastapi import app
+
+from .inclusion import factories
 
 
 @pytest.fixture()
-def api_client(db_session):
-    from fastapi.testclient import TestClient
-
-    from data_inclusion.api.core import db
-    from data_inclusion.api.entrypoints.fastapi import app
-
-    app.dependency_overrides[db.get_session] = lambda: db_session
+def api_client(db_engine, test_session):
+    middleware_db.SessionLocal = factories.TestSession
+    app.dependency_overrides[db.get_session] = lambda: test_session
 
     with TestClient(app) as c:
         yield c
@@ -41,9 +43,7 @@ def force_authenticate(request, api_client):
 
 
 @pytest.fixture(scope="session")
-def test_database_url():
-    import sqlalchemy as sqla
-
+def db_engine():
     from data_inclusion.api import settings
 
     default_database_url = sqla.engine.make_url(settings.DATABASE_URL)
@@ -70,7 +70,25 @@ def test_database_url():
     ).connect() as test_database_conn:
         test_database_conn.execute(sqla.text("CREATE EXTENSION postgis;"))
 
-    yield test_database_url
+    # Migrate the database
+    config = Config()
+    config.set_main_option("script_location", "src/alembic/")
+    config.set_main_option(
+        "sqlalchemy.url", test_database_url.render_as_string(hide_password=False)
+    )
+
+    command.upgrade(config, "head")
+
+    db_engine = sqla.create_engine(test_database_url)
+
+    factories.TestSession.configure(bind=db_engine)
+
+    yield db_engine
+
+    factories.TestSession.remove()
+
+    # Downgrade the database
+    command.downgrade(config, "base")
 
     # Teardown test database
     with default_db_engine.connect() as default_db_conn:
@@ -81,38 +99,8 @@ def test_database_url():
         )
 
 
-@pytest.fixture(scope="session")
-def apply_db_migrations(test_database_url):
-    from alembic import command
-    from alembic.config import Config
-
-    config = Config()
-    config.set_main_option("script_location", "src/alembic/")
-    config.set_main_option(
-        "sqlalchemy.url", test_database_url.render_as_string(hide_password=False)
-    )
-
-    command.upgrade(config, "head")
-    yield
-    command.downgrade(config, "base")
-
-
-@pytest.fixture(scope="session")
-def db_engine(apply_db_migrations, test_database_url):
-    import sqlalchemy as sqla
-
-    # Create a new connection pool for the test database
-    yield sqla.create_engine(test_database_url)
-
-
-@pytest.fixture(scope="function")
-def db_session(db_engine):
-    from data_inclusion.api.core import db
-
-    connection = db_engine.connect()
-    connection.begin()
-    db.SessionLocal.configure(bind=connection)
-    db_session = db.SessionLocal()
-    yield db_session
-    db_session.rollback()
-    connection.close()
+@pytest.fixture()
+def test_session(db_engine):
+    faker.Faker.seed(0)
+    with factories.TestSession() as session:
+        yield session

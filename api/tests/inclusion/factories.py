@@ -3,10 +3,14 @@ from itertools import tee
 
 import factory
 import faker
+from sqlalchemy import orm
 
 from data_inclusion.api import models, schema
 
 fake = faker.Faker("fr_FR")
+
+
+TestSession = orm.scoped_session(orm.sessionmaker())
 
 
 def pairwise(iterable):
@@ -15,14 +19,18 @@ def pairwise(iterable):
     return zip(a, b)
 
 
-class CommuneFactory(factory.Factory):
+class CommuneFactory(factory.alchemy.SQLAlchemyModelFactory):
     class Meta:
         model = models.Commune
+        sqlalchemy_session = TestSession
+        sqlalchemy_session_persistence = "flush"
 
 
-class StructureFactory(factory.Factory):
+class StructureFactory(factory.alchemy.SQLAlchemyModelFactory):
     class Meta:
         model = models.Structure
+        sqlalchemy_session = TestSession
+        sqlalchemy_session_persistence = "flush"
 
     _di_surrogate_id = factory.Faker("uuid4")
     _di_geocodage_code_insee = factory.Faker("postcode")
@@ -74,9 +82,23 @@ class StructureFactory(factory.Factory):
     )
 
 
-class ServiceFactory(factory.Factory):
+class SourceFactory(factory.alchemy.SQLAlchemyModelFactory):
+    class Meta:
+        model = models.Source
+        sqlalchemy_session = TestSession
+        sqlalchemy_session_persistence = "flush"
+        sqlalchemy_get_or_create = ("slug",)
+
+    slug = "dora"
+    nom = factory.Faker("company", locale="fr_FR")
+    description = factory.Faker("text", max_nb_chars=20, locale="fr_FR")
+
+
+class ServiceFactory(factory.alchemy.SQLAlchemyModelFactory):
     class Meta:
         model = models.Service
+        sqlalchemy_session = TestSession
+        sqlalchemy_session_persistence = "flush"
 
     _di_surrogate_id = factory.Faker("uuid4")
     _di_geocodage_code_insee = factory.Faker("postcode")
