@@ -18,10 +18,6 @@ class Base:
         return f"api_{cls.__name__.lower()}"
 
 
-def init_db(engine=default_db_engine):
-    Base.metadata.create_all(bind=engine)
-
-
 def get_session():
     session = SessionLocal()
     try:
