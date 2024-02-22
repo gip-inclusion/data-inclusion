@@ -11,5 +11,6 @@ class RequestMiddleware(base.BaseHTTPMiddleware):
         call_next,
     ) -> responses.Response:
         response = await call_next(request)
-        save_request(request, response)
+        if response.status_code != 307:  # ignore trailing slash redirects
+            save_request(request, response)
         return response
