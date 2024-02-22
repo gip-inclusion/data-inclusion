@@ -71,9 +71,8 @@ def _sync_new_contacts_to_brevo():
 def _send_rgpd_notice():
     from airflow.models import Variable
 
-    from data_inclusion.scripts.tasks import brevo
-
-    from dags.dag_utils import constants
+    from dag_utils import constants
+    from dag_utils.sources import brevo
 
     brevo_client = brevo.BrevoClient(token=Variable.get("BREVO_API_KEY"))
     brevo_client.create_and_send_email_campaign(
