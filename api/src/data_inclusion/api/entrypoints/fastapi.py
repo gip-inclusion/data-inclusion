@@ -1,6 +1,7 @@
 import functools
 import logging
 from collections import defaultdict
+from datetime import date
 from pathlib import Path
 from typing import Annotated, Optional
 
@@ -430,6 +431,7 @@ def search_services(
     frais: Optional[list[di_schema.Frais]] = None,
     types: Optional[list[di_schema.TypologieService]] = None,
     search_point: Optional[str] = None,
+    include_outdated: Optional[bool] = False,
 ):
     query = (
         sqla.select(models.Service)
@@ -567,6 +569,14 @@ def search_services(
             sqla.text(filter_stmt).bindparams(types=[t.value for t in types])
         )
 
+    if not include_outdated:
+        query = query.filter(
+            sqla.or_(
+                models.Service.date_suspension.is_(None),
+                models.Service.date_suspension >= date.today(),
+            )
+        )
+
     query = query.order_by(sqla.column("distance").nulls_last())
 
     def _items_to_mappings(items: list) -> list[dict]:
@@ -652,6 +662,14 @@ def search_services_endpoint(
                 Chaque résultat renvoyé a (au moins) une typologie dans cette liste."""
         ),
     ] = None,
+    inclure_suspendus: Annotated[
+        bool | SkipJsonSchema[None],
+        fastapi.Query(
+            description="""Inclure les services ayant une date de suspension dépassée.
+                Ils sont exclus par défaut.
+            """
+        ),
+    ] = False,
 ):
     """
     ## Rechercher des services
@@ -706,6 +724,7 @@ def search_services_endpoint(
         frais=frais,
         types=types,
         search_point=search_point,
+        include_outdated=inclure_suspendus,
     )
 
 

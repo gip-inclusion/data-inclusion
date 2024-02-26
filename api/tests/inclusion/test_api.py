@@ -1,3 +1,4 @@
+from datetime import date, timedelta
 from unittest.mock import ANY
 
 import pytest
@@ -1336,6 +1337,33 @@ def test_search_services_with_sources(api_client):
         },
     )
     assert_paginated_response_data(response.json(), total=0)
+
+
+@pytest.mark.with_token
+def test_search_services_outdated(api_client):
+    service_1 = factories.ServiceFactory(date_suspension=None)
+    service_2 = factories.ServiceFactory(date_suspension=date.today())
+    factories.ServiceFactory(date_suspension=date.today() - timedelta(days=1))
+
+    url = "/api/v0/search/services"
+
+    # exclude outdated services by default
+    response = api_client.get(url)
+
+    assert response.status_code == 200
+    resp_data = response.json()
+    assert_paginated_response_data(resp_data, total=2)
+    assert {d["service"]["id"] for d in resp_data["items"]} == {
+        service_1.id,
+        service_2.id,
+    }
+
+    # include outdated services with query parameter
+    response = api_client.get(url, params={"inclure_suspendus": True})
+
+    assert response.status_code == 200
+    resp_data = response.json()
+    assert_paginated_response_data(resp_data, total=3)
 
 
 @pytest.mark.with_token
