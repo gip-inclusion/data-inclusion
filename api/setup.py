@@ -21,6 +21,8 @@ setup(
         "GeoAlchemy2",
         "gunicorn",
         "httpx",
+        "numpy",
+        "pandas",
         "psycopg2",
         "pydantic[email]>=2.5.0",
         "python-dotenv",

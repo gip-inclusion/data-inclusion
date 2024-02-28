@@ -76,10 +76,16 @@ mako==1.3.0
     # via alembic
 markupsafe==2.1.3
     # via mako
+numpy==1.26.4
+    # via
+    #   data-inclusion-api (setup.py)
+    #   pandas
 packaging==23.2
     # via
     #   geoalchemy2
     #   gunicorn
+pandas==2.2.1
+    # via data-inclusion-api (setup.py)
 psycopg2==2.9.9
     # via data-inclusion-api (setup.py)
 pyasn1==0.5.0
@@ -98,7 +104,9 @@ pydantic[email]==2.5.0
 pydantic-core==2.14.1
     # via pydantic
 python-dateutil==2.8.2
-    # via faker
+    # via
+    #   faker
+    #   pandas
 python-dotenv==1.0.0
     # via
     #   data-inclusion-api (setup.py)
@@ -106,7 +114,9 @@ python-dotenv==1.0.0
 python-jose[cryptography]==3.3.0
     # via data-inclusion-api (setup.py)
 pytz==2023.3.post1
-    # via data-inclusion-api (setup.py)
+    # via
+    #   data-inclusion-api (setup.py)
+    #   pandas
 pyyaml==6.0.1
     # via uvicorn
 requests==2.31.0
@@ -138,6 +148,8 @@ typing-extensions==4.8.0
     #   pydantic
     #   pydantic-core
     #   sqlalchemy
+tzdata==2024.1
+    # via pandas
 urllib3==2.1.0
     # via
     #   requests
