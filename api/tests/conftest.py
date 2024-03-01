@@ -13,7 +13,7 @@ from data_inclusion.api.core import db
 from data_inclusion.api.core.request.services import db as middleware_db
 from data_inclusion.api.entrypoints.fastapi import app
 
-from .inclusion import factories
+from . import factories
 
 DEFAULT_DATABASE_URL = sqla.engine.make_url(settings.DATABASE_URL)
 TEST_DATABASE_URL = DEFAULT_DATABASE_URL.set(
@@ -118,3 +118,21 @@ def test_session(db_init):
     faker.Faker.seed(0)
     with factories.TestSession() as session:
         yield session
+
+
+@pytest.fixture(autouse=True)
+def predictable_sequences():
+    import factory.random
+
+    factory.random.reseed_random(0)
+    factories.RequestFactory.reset_sequence()
+    factories.CommuneFactory.reset_sequence()
+    factories.ServiceFactory.reset_sequence()
+    factories.SourceFactory.reset_sequence()
+    factories.StructureFactory.reset_sequence()
+
+
+@pytest.fixture(autouse=True)
+def create_default_sources(test_session):
+    factories.SourceFactory(slug="dora")
+    factories.SourceFactory(slug="emplois-de-linclusion")
