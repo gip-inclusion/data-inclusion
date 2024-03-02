@@ -96,7 +96,16 @@ def create_app() -> fastapi.FastAPI:
                 on_error=auth.on_error,
             ),
         ],
+        debug=settings.DEBUG,
     )
+
+    if settings.ENV == "dev":
+        from debug_toolbar.middleware import DebugToolbarMiddleware
+
+        app.add_middleware(
+            DebugToolbarMiddleware,
+            panels=["debug_toolbar.panels.sqlalchemy.SQLAlchemyPanel"],
+        )
 
     app.middleware("http")(db.db_session_middleware)
     app.middleware("http")(save_request_middleware)

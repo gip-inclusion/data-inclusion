@@ -4,6 +4,7 @@ import dotenv
 
 dotenv.load_dotenv(dotenv.find_dotenv())
 
+DEBUG = os.environ.get("DEBUG") == "True"
 DATABASE_URL = os.environ["DATABASE_URL"]
 SECRET_KEY = os.environ["SECRET_KEY"]
 CORS_ALLOWED_ORIGINS = ["*"]
