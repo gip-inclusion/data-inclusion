@@ -21,7 +21,7 @@ from fastapi_pagination.ext.sqlalchemy import paginate
 from data_inclusion import schema as di_schema
 from data_inclusion.api import models, schemas, settings
 from data_inclusion.api.core import auth, db, jwt
-from data_inclusion.api.core.request.middleware import RequestMiddleware
+from data_inclusion.api.core.request.middleware import save_request_middleware
 from data_inclusion.api.utils import code_officiel_geographique, pagination
 
 logger = logging.getLogger(__name__)
@@ -95,9 +95,11 @@ def create_app() -> fastapi.FastAPI:
                 backend=auth.AuthenticationBackend(),
                 on_error=auth.on_error,
             ),
-            middleware.Middleware(RequestMiddleware),
         ],
     )
+
+    app.middleware("http")(db.db_session_middleware)
+    app.middleware("http")(save_request_middleware)
 
     app.include_router(v0_api_router)
     app.include_router(v0_doc_api_router)

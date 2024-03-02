@@ -1,16 +1,12 @@
-from starlette import requests, responses
-from starlette.middleware import base
+import fastapi
 
 from data_inclusion.api.core.request.services import save_request
 
 
-class RequestMiddleware(base.BaseHTTPMiddleware):
-    async def dispatch(
-        self,
-        request: requests.Request,
-        call_next,
-    ) -> responses.Response:
+async def save_request_middleware(request: fastapi.Request, call_next):
+    response = fastapi.Response("Internal server error", status_code=500)
+    try:
         response = await call_next(request)
-        if response.status_code != 307:  # ignore trailing slash redirects
-            save_request(request, response)
-        return response
+    finally:
+        save_request(request, response, db_session=request.state.db_session)
+    return response
