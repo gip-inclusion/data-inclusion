@@ -10,8 +10,7 @@ from fastapi.testclient import TestClient
 
 from data_inclusion.api import settings
 from data_inclusion.api.core import db
-from data_inclusion.api.core.request.services import db as middleware_db
-from data_inclusion.api.entrypoints.fastapi import app
+from data_inclusion.api.entrypoints.fastapi import create_app
 
 from . import factories
 
@@ -21,9 +20,26 @@ TEST_DATABASE_URL = DEFAULT_DATABASE_URL.set(
 )
 
 
+@pytest.fixture(scope="session")
+def app():
+    yield create_app()
+
+
+def swap_middleware(app, before, after):
+    for m in app.user_middleware:
+        if m.kwargs.get("dispatch") == before:
+            m.kwargs["dispatch"] = after
+
+
 @pytest.fixture()
-def api_client(db_init, test_session):
-    middleware_db.SessionLocal = factories.TestSession
+def api_client(app, test_session):
+    async def db_session_middleware(request, call_next):
+        request.state.db_session = test_session
+        return await call_next(request)
+
+    # swapping middleware is a lot faster than recreating the app
+    # with the middleware as a parameter
+    swap_middleware(app, db.db_session_middleware, db_session_middleware)
     app.dependency_overrides[db.get_session] = lambda: test_session
 
     with TestClient(app) as c:
