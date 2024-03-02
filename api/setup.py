@@ -48,6 +48,7 @@ setup(
             "ruff",
             "tox",
             "pre-commit",
+            "fastapi-debug-toolbar",
         ],
     },
 )
