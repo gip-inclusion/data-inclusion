@@ -13,6 +13,10 @@ def save_request(
     if response.status_code == 307:
         return
 
+    endpoint_name = None
+    if (route := request.scope.get("route")) is not None:
+        endpoint_name = route.name
+
     request_instance = models.Request(
         status_code=response.status_code,
         method=request.method,
@@ -26,9 +30,7 @@ def save_request(
         },
         client_host=request.client.host if request.client is not None else None,
         client_port=request.client.port if request.client is not None else None,
-        endpoint_name=(
-            request.scope["route"].name if "route" in request.scope else None
-        ),
+        endpoint_name=endpoint_name,
     )  # type: ignore
 
     db_session.add(request_instance)
