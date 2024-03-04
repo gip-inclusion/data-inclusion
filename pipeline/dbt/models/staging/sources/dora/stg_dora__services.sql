@@ -41,7 +41,7 @@ services AS (
         data ->> 'nom'                                                                                      AS "nom",
         data ->> 'presentation_resume'                                                                      AS "presentation_resume",
         data ->> 'presentation_detail'                                                                      AS "presentation_detail",
-        data ->> 'prise_rdv'                                                                                AS "prise_rdv",
+        NULLIF(TRIM(data ->> 'prise_rdv'), '')                                                              AS "prise_rdv",
         data ->> 'recurrence'                                                                               AS "recurrence",
         data ->> 'source'                                                                                   AS "source",
         data ->> 'structure_id'                                                                             AS "structure_id",
