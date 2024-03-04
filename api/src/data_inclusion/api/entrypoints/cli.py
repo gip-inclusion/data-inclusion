@@ -1,11 +1,8 @@
 import logging
 
 import click
-import numpy as np
-import pandas as pd
-import sqlalchemy as sqla
 
-from data_inclusion.api import models, services
+from data_inclusion.api import services
 from data_inclusion.api.core import db, jwt
 
 logger = logging.getLogger(__name__)
@@ -34,38 +31,6 @@ def generate_token_for_user(
 ):
     """Generate a token associated with the given email."""
     click.echo(jwt.create_access_token(subject=email, admin=admin))
-
-
-@cli.command(name="load_sources_metadata")
-@click.argument("path_or_url", type=click.STRING)
-def load_sources_metadata(path_or_url: str):
-    df = pd.read_json(path_or_url, dtype=False)
-    df = df.replace({np.nan: None})
-    sources_dict_list = df.to_dict(orient="records")
-    with db.SessionLocal() as db_session:
-        with db_session.begin():
-            db_session.execute(
-                sqla.delete(models.Service).filter(
-                    ~(
-                        models.Service.source
-                        == sqla.all_(
-                            sqla.literal([d["slug"] for d in sources_dict_list])
-                        )
-                    )
-                )
-            )
-            db_session.execute(
-                sqla.delete(models.Structure).filter(
-                    ~(
-                        models.Structure.source
-                        == sqla.all_(
-                            sqla.literal([d["slug"] for d in sources_dict_list])
-                        )
-                    )
-                )
-            )
-            db_session.execute(sqla.delete(models.Source))
-            db_session.execute(sqla.insert(models.Source).values(sources_dict_list))
 
 
 @cli.command(name="notify_soliguide")

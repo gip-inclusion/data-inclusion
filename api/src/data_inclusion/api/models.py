@@ -48,17 +48,6 @@ class Region(Base):
     geom = sqla.Column(geoalchemy2.Geometry("Geometry", srid=4326))
 
 
-class Source(Base):
-    __tablename__ = "sources"
-
-    slug = sqla.Column(sqla.Text, primary_key=True)
-    nom = sqla.Column(sqla.Text)
-    description = sqla.Column(sqla.Text)
-
-    services = orm.relationship("Service", back_populates="source_obj")
-    structures = orm.relationship("Structure", back_populates="source_obj")
-
-
 class Structure(Base):
     __tablename__ = "structure"
 
@@ -66,10 +55,9 @@ class Structure(Base):
     _di_surrogate_id = sqla.Column(sqla.Text, primary_key=True)
     _di_geocodage_code_insee = sqla.Column(sqla.Text, nullable=True)
     _di_geocodage_score = sqla.Column(sqla.Float, nullable=True)
-    source = sqla.Column(sqla.ForeignKey("sources.slug"))
-    source_obj = orm.relationship("Source", back_populates="structures")
 
     # structure data
+    source = sqla.Column(sqla.Text, nullable=True)
     id = sqla.Column(sqla.Text, nullable=True)
     siret = sqla.Column(sqla.Text, nullable=True)
     rna = sqla.Column(sqla.Text, nullable=True)
@@ -111,10 +99,8 @@ class Service(Base):
     _di_geocodage_score = sqla.Column(sqla.Float, nullable=True)
     structure = orm.relationship("Structure", back_populates="services")
 
-    source = sqla.Column(sqla.ForeignKey("sources.slug"))
-    source_obj = orm.relationship("Source", back_populates="services")
-
     # service data
+    source = sqla.Column(sqla.Text, nullable=True)
     id = sqla.Column(sqla.Text, nullable=True)
     structure_id = sqla.Column(sqla.Text, nullable=True)
     nom = sqla.Column(sqla.Text, nullable=True)

@@ -136,8 +136,6 @@ DepartementCOG = Enum(
 
 
 class Source(BaseModel):
-    model_config = ConfigDict(from_attributes=True, populate_by_name=True)
-
     slug: str
     nom: str
     description: Optional[str]

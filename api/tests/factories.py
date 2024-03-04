@@ -93,18 +93,6 @@ class StructureFactory(factory.alchemy.SQLAlchemyModelFactory):
     )
 
 
-class SourceFactory(factory.alchemy.SQLAlchemyModelFactory):
-    class Meta:
-        model = models.Source
-        sqlalchemy_session = TestSession
-        sqlalchemy_session_persistence = "flush"
-        sqlalchemy_get_or_create = ("slug",)
-
-    slug = "dora"
-    nom = factory.Faker("company", locale="fr_FR")
-    description = factory.Faker("text", max_nb_chars=20, locale="fr_FR")
-
-
 class ServiceFactory(factory.alchemy.SQLAlchemyModelFactory):
     class Meta:
         model = models.Service

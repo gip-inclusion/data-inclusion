@@ -7,7 +7,7 @@ setup(
     version="0.1.0",
     packages=find_namespace_packages(where="src"),
     package_dir={"": "src"},
-    package_data={"": ["*.md"]},
+    package_data={"": ["*.md", "*.json"]},
     entry_points={
         "console_scripts": ["data-inclusion-api=data_inclusion.api.entrypoints.cli:cli"]
     },
