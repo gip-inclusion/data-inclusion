@@ -68,6 +68,8 @@ jobs:
 
       - name: Run tests
         if: matrix.service == 'api'
+        env:
+          API_ENV: test
         run: |
           docker compose run --entrypoint pytest api -p no:cacheprovider -vv
 
