@@ -177,18 +177,25 @@ def test_list_structures_filter_by_source(api_client):
 def test_list_sources(api_client):
     url = "/api/v0/sources/"
     response = api_client.get(url)
-    assert response.json() == [
-        {
-            "description": "Nom asseoir.",
-            "nom": "Thierry",
-            "slug": "dora",
-        },
-        {
-            "description": "Grâce plaindre.",
-            "nom": "Lebon",
-            "slug": "emplois-de-linclusion",
-        },
-    ]
+
+    resp_data = response.json()
+    assert resp_data != []
+    assert resp_data[0] == {"slug": ANY, "nom": ANY, "description": ANY}
+    assert all(
+        slug in [d["slug"] for d in resp_data]
+        for slug in [
+            "dora",
+            "emplois-de-linclusion",
+            "mediation-numerique",
+        ]
+    )
+    assert not any(
+        slug in [d["slug"] for d in resp_data]
+        for slug in [
+            "soliguide",
+            "data-inclusion",
+        ]
+    )
 
 
 @pytest.mark.with_token
@@ -583,8 +590,6 @@ def test_list_structures_null_code_insee_filter_by_departement_slug(api_client):
 def test_list_structures_order(
     api_client,
 ):
-    factories.SourceFactory(slug="alpha", nom="Alpha")
-    factories.SourceFactory(slug="beta", nom="Beta")
     structure_1 = factories.StructureFactory(source="alpha", id="2")
     structure_2 = factories.StructureFactory(source="beta", id="1")
     structure_3 = factories.StructureFactory(source="alpha", id="1")
@@ -621,7 +626,6 @@ def test_list_services_filter_by_source(api_client):
 
 @pytest.mark.with_token
 def test_list_services_filter_by_thematique(api_client):
-    factories.SourceFactory(slug="alpha", nom="Alpha")
     service_1 = factories.ServiceFactory(
         structure__source="alpha",
         id="1",
@@ -673,7 +677,6 @@ def test_list_services_filter_by_thematique(api_client):
 
 @pytest.mark.with_token
 def test_list_services_filter_by_categorie_thematique(api_client):
-    factories.SourceFactory(slug="alpha", nom="Alpha")
     service = factories.ServiceFactory(
         structure__source="alpha",
         id="1",
@@ -1313,7 +1316,6 @@ def test_search_services_with_types(api_client):
 def test_search_services_with_sources(api_client):
     service_1 = factories.ServiceFactory(source="dora")
     service_2 = factories.ServiceFactory(source="emplois-de-linclusion")
-    factories.SourceFactory(slug="un-jeune-une-solution")
     factories.ServiceFactory(source="un-jeune-une-solution")
 
     url = "/api/v0/search/services"
@@ -1368,8 +1370,6 @@ def test_search_services_outdated(api_client):
 
 @pytest.mark.with_token
 def test_retrieve_service(api_client):
-    factories.SourceFactory(slug="foo")
-    factories.SourceFactory(slug="bar")
     service_1 = factories.ServiceFactory(source="foo", id="1")
     service_2 = factories.ServiceFactory(source="bar", id="1")
     service_3 = factories.ServiceFactory(source="foo", id="2")
@@ -1389,8 +1389,6 @@ def test_retrieve_service(api_client):
 
 @pytest.mark.with_token
 def test_retrieve_structure(api_client):
-    factories.SourceFactory(slug="foo")
-    factories.SourceFactory(slug="bar")
     structure_1 = factories.StructureFactory(source="foo", id="1")
     service_1 = factories.ServiceFactory(structure=structure_1)
     structure_2 = factories.StructureFactory(source="bar", id="1")

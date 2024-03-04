@@ -1,4 +1,5 @@
 import functools
+import json
 import logging
 from collections import defaultdict
 from datetime import date
@@ -287,9 +288,18 @@ def retrieve_structure_endpoint(
     return structure_instance
 
 
-def list_sources(db_session: orm.Session):
-    query = sqla.select(models.Source)
-    return db_session.execute(query).scalars()
+@functools.cache
+def read_sources():
+    return json.loads((Path(__file__).parent.parent / "sources.json").read_text())
+
+
+def list_sources(request: fastapi.Request) -> list[dict]:
+    sources = read_sources()
+    if not request.user.is_authenticated or "dora" not in request.user.username:
+        sources = [
+            d for d in sources if d["slug"] not in ["data-inclusion", "soliguide"]
+        ]
+    return sources
 
 
 @v0_api_router.get(
@@ -298,9 +308,9 @@ def list_sources(db_session: orm.Session):
     summary="Lister les sources consolidées",
 )
 def list_sources_endpoint(
-    db_session=fastapi.Depends(db.get_session),
+    request: fastapi.Request,
 ):
-    return list_sources(db_session)
+    return list_sources(request=request)
 
 
 def list_services(

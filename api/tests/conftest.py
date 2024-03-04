@@ -144,11 +144,4 @@ def predictable_sequences():
     factories.RequestFactory.reset_sequence()
     factories.CommuneFactory.reset_sequence()
     factories.ServiceFactory.reset_sequence()
-    factories.SourceFactory.reset_sequence()
     factories.StructureFactory.reset_sequence()
-
-
-@pytest.fixture(autouse=True)
-def create_default_sources(test_session):
-    factories.SourceFactory(slug="dora")
-    factories.SourceFactory(slug="emplois-de-linclusion")
