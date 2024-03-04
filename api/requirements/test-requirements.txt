@@ -135,7 +135,7 @@ pydantic-core==2.16.3
     # via pydantic
 pyproj==3.6.1
     # via geopandas
-pytest==8.0.2
+pytest==8.1.0
     # via
     #   data-inclusion-api (setup.py)
     #   pytest-dotenv
@@ -175,7 +175,7 @@ sniffio==1.3.1
     # via
     #   anyio
     #   httpx
-sqlalchemy==2.0.27
+sqlalchemy==2.0.28
     # via
     #   alembic
     #   data-inclusion-api (setup.py)
