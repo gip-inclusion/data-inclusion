@@ -4,6 +4,7 @@ from unittest.mock import ANY
 import pytest
 
 from data_inclusion import schema
+from data_inclusion.api.utils import soliguide
 
 from . import factories
 
@@ -1407,3 +1408,50 @@ def test_retrieve_structure(api_client):
 
     response = api_client.get(url + f"{structure_2.source}/{structure_3.id}")
     assert response.status_code == 404
+
+
+class FakeSoliguideClient(soliguide.SoliguideAPIClient):
+    def __init__(self):
+        self.retrieved_ids = []
+
+    def retrieve_place(self, place_id: str):
+        self.retrieved_ids.append(place_id)
+
+
+@pytest.mark.with_token
+def test_retrieve_structure_and_notify_soliguide(api_client, app):
+    structure_1 = factories.StructureFactory(
+        source="soliguide", id="soliguide-structure-id"
+    )
+
+    fake_soliguide_client = FakeSoliguideClient()
+    app.dependency_overrides[soliguide.SoliguideAPIClient] = (
+        lambda: fake_soliguide_client
+    )
+
+    url = "/api/v0/structures/"
+    response = api_client.get(url + f"{structure_1.source}/{structure_1.id}")
+
+    assert response.status_code == 200
+    assert fake_soliguide_client.retrieved_ids == ["soliguide-structure-id"]
+
+
+@pytest.mark.with_token
+def test_retrieve_service_and_notify_soliguide(api_client, app):
+    factories.StructureFactory(source="soliguide", id="soliguide-structure-id")
+    service_1 = factories.ServiceFactory(
+        source="soliguide",
+        id="soliguide-service-id",
+        structure_id="soliguide-structure-id",
+    )
+
+    fake_soliguide_client = FakeSoliguideClient()
+    app.dependency_overrides[soliguide.SoliguideAPIClient] = (
+        lambda: fake_soliguide_client
+    )
+
+    url = "/api/v0/services/"
+    response = api_client.get(url + f"{service_1.source}/{service_1.id}")
+
+    assert response.status_code == 200
+    assert fake_soliguide_client.retrieved_ids == ["soliguide-structure-id"]

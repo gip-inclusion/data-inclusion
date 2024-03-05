@@ -23,7 +23,7 @@ from data_inclusion import schema as di_schema
 from data_inclusion.api import models, schemas, settings
 from data_inclusion.api.core import auth, db, jwt
 from data_inclusion.api.core.request.middleware import save_request_middleware
-from data_inclusion.api.utils import code_officiel_geographique, pagination
+from data_inclusion.api.utils import code_officiel_geographique, pagination, soliguide
 
 logger = logging.getLogger(__name__)
 
@@ -274,6 +274,7 @@ def retrieve_structure_endpoint(
     source: Annotated[str, fastapi.Path()],
     id: Annotated[str, fastapi.Path()],
     db_session=fastapi.Depends(db.get_session),
+    _=fastapi.Depends(soliguide.notify_soliguide_dependency),
 ):
     structure_instance = db_session.scalars(
         sqla.select(models.Structure)
@@ -429,6 +430,7 @@ def retrieve_service_endpoint(
     source: Annotated[str, fastapi.Path()],
     id: Annotated[str, fastapi.Path()],
     db_session=fastapi.Depends(db.get_session),
+    _=fastapi.Depends(soliguide.notify_soliguide_dependency),
 ):
     service_instance = db_session.scalars(
         sqla.select(models.Service)

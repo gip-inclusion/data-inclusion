@@ -2,8 +2,7 @@ import logging
 
 import click
 
-from data_inclusion.api import services
-from data_inclusion.api.core import db, jwt
+from data_inclusion.api.core import jwt
 
 logger = logging.getLogger(__name__)
 
@@ -31,15 +30,6 @@ def generate_token_for_user(
 ):
     """Generate a token associated with the given email."""
     click.echo(jwt.create_access_token(subject=email, admin=admin))
-
-
-@cli.command(name="notify_soliguide")
-def notify_soliguide():
-    with db.SessionLocal() as db_session:
-        services.batch_forward_requests_to_soliguide(
-            db_session=db_session,
-            soliguide_api_client=services.SoliguideAPIClient(),
-        )
 
 
 if __name__ == "__main__":
