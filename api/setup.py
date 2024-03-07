@@ -8,9 +8,7 @@ setup(
     packages=find_namespace_packages(where="src"),
     package_dir={"": "src"},
     package_data={"": ["*.md", "*.json"]},
-    entry_points={
-        "console_scripts": ["data-inclusion-api=data_inclusion.api.entrypoints.cli:cli"]
-    },
+    entry_points={"console_scripts": ["data-inclusion-api=data_inclusion.api.cli:cli"]},
     install_requires=[
         "alembic",
         "certifi",

@@ -291,7 +291,7 @@ def retrieve_structure_endpoint(
 
 @functools.cache
 def read_sources():
-    return json.loads((Path(__file__).parent.parent / "sources.json").read_text())
+    return json.loads((Path(__file__).parent / "sources.json").read_text())
 
 
 def list_sources(request: fastapi.Request) -> list[dict]:
