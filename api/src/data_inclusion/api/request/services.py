@@ -1,7 +1,7 @@
 import fastapi
 
 from data_inclusion.api.core import db
-from data_inclusion.api.core.request import models
+from data_inclusion.api.request import models
 
 
 def save_request(

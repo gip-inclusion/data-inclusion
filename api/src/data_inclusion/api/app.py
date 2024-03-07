@@ -11,9 +11,9 @@ from data_inclusion.api.auth.middleware import AuthenticationMiddleware
 from data_inclusion.api.auth.routes import router as auth_api_router
 from data_inclusion.api.config import settings
 from data_inclusion.api.core import db
-from data_inclusion.api.core.request.middleware import save_request_middleware
 from data_inclusion.api.inclusion_data.routes import router as data_api_router
 from data_inclusion.api.inclusion_schema.routes import router as schema_api_router
+from data_inclusion.api.request.middleware import save_request_middleware
 
 description = (Path(__file__).parent / "api_description.md").read_text()
 

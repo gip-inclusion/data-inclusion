@@ -6,8 +6,8 @@ import faker
 from sqlalchemy import orm
 
 from data_inclusion import schema as di_schema
-from data_inclusion.api.core.request.models import Request
 from data_inclusion.api.inclusion_data import models
+from data_inclusion.api.request.models import Request
 
 fake = faker.Faker("fr_FR")
 

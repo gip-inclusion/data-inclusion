@@ -2,7 +2,7 @@ import logging
 
 import fastapi
 
-from data_inclusion.api.core.request.services import save_request
+from data_inclusion.api.request.services import save_request
 
 logger = logging.getLogger(__name__)
 
