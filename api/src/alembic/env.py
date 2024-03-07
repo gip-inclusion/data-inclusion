@@ -6,7 +6,7 @@ from sqlalchemy import engine_from_config, pool
 from data_inclusion.api import settings
 from data_inclusion.api.core import db
 from data_inclusion.api.core.request import models as _  # noqa: F401 F811
-from data_inclusion.api.data import models as _  # noqa: F401 F811
+from data_inclusion.api.inclusion_data import models as _  # noqa: F401 F811
 
 # this is the Alembic Config object, which provides
 # access to the values within the .ini file in use.

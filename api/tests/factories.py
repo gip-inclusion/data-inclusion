@@ -7,7 +7,7 @@ from sqlalchemy import orm
 
 from data_inclusion import schema as di_schema
 from data_inclusion.api.core.request.models import Request
-from data_inclusion.api.data import models
+from data_inclusion.api.inclusion_data import models
 
 fake = faker.Faker("fr_FR")
 

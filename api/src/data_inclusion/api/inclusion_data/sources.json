@@ -1,0 +1,67 @@
+[
+    {
+        "slug": "agefiph",
+        "nom": "AGEFIPH",
+        "description": "Association chargée de soutenir le développement de l’emploi des personnes handicapées. Contient leur offre de service nationale."
+    },
+    {
+        "slug": "cd35",
+        "nom": "Annuaire social d’Ille-et-Vilaine",
+        "description": "Contient les structures et services inclusifs du département de l’Ille-et-Vilaine."
+    },
+    {
+        "slug": "cd72",
+        "nom": "Conseil départemental de la Sarthe",
+        "description": "Contient les structures inclusives du département de la Sarthe."
+    },
+    {
+        "slug": "data-inclusion",
+        "nom": "Expérimentation data·inclusion en Essonne",
+        "description": "Expérimentation data·inclusion en Essonne."
+    },
+    {
+        "slug": "dora",
+        "nom": "DORA",
+        "description": "Service public numérique de recensement de l’offre d’insertion développé par la Plateforme de l’inclusion. Contient leurs structures et services inclusifs sur de nombreuses thématiques."
+    },
+    {
+        "slug": "emplois-de-linclusion",
+        "nom": "Emplois de l’inclusion",
+        "description": "Service public numérique de mise en relation entre employeurs solidaires et accompagnateurs développé par la Plateforme de l’inclusion. Contient leurs structures inclusives."
+    },
+    {
+        "slug": "france-travail",
+        "nom": "Offre nationale de services de France Travail",
+        "description": "Contient l’offre de service nationale de France Travail."
+    },
+    {
+        "slug": "mediation-numerique",
+        "nom": "Cartographie Nationale des lieux de médiation numérique",
+        "description": "Contient les lieux d’inclusion numériques recensés par l’ANCT et les hubs régionaux."
+    },
+    {
+        "slug": "mes-aides",
+        "nom": "Mes Aides France Travail",
+        "description": "Service numérique public développé par France Travail. Contient leurs structures et services inclusifs sur la thématique Mobillité."
+    },
+    {
+        "slug": "monenfant",
+        "nom": "Monenfant.fr",
+        "description": "Service numérique public développé par la Caisse Nationale des Allocations Familiales. Contient leurs structures et services inclusifs sur la thématique Famille."
+    },
+    {
+        "slug": "odspep",
+        "nom": "Base de ressources partenariales de France Travail",
+        "description": "Contient les structures et services inclusifs des partenaires France Travail."
+    },
+    {
+        "slug": "reseau-alpha",
+        "nom": "Réseau Alpha",
+        "description": "Association référençant l’offre d’apprentissage du français en Île-de-France. Contient leurs structures et services inclusifs sur la thématique Apprendre le Français."
+    },
+    {
+        "slug": "soliguide",
+        "nom": "Soliguide",
+        "description": "Service numérique de recensement de l’offre d’insertion développé par l’association Solinum. Contient leurs structures et services sur des thématiques variées d’urgence sociale."
+    }
+]
