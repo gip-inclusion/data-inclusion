@@ -1,5 +1,7 @@
-from starlette import authentication, middleware, responses
-from starlette.middleware.authentication import AuthenticationMiddleware
+from starlette import authentication, responses
+from starlette.middleware.authentication import (
+    AuthenticationMiddleware as BaseAuthenticationMiddleware,
+)
 from starlette.requests import HTTPConnection
 
 import fastapi
@@ -39,9 +41,6 @@ class AuthenticationBackend(authentication.AuthenticationBackend):
         )
 
 
-def get_auth_middleware() -> middleware.Middleware:
-    return middleware.Middleware(
-        AuthenticationMiddleware,
-        backend=AuthenticationBackend(),
-        on_error=on_error,
-    )
+class AuthenticationMiddleware(BaseAuthenticationMiddleware):
+    def __init__(self, app) -> None:
+        super().__init__(app, backend=AuthenticationBackend(), on_error=on_error)
