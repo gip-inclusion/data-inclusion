@@ -23,6 +23,7 @@ from data_inclusion import schema as di_schema
 from data_inclusion.api import models, schemas, settings
 from data_inclusion.api.core import auth, db, jwt
 from data_inclusion.api.core.request.middleware import save_request_middleware
+from data_inclusion.api.doc_api.router import router as doc_api_router
 from data_inclusion.api.utils import code_officiel_geographique, pagination, soliguide
 
 logger = logging.getLogger(__name__)
@@ -112,7 +113,7 @@ def create_app() -> fastapi.FastAPI:
     app.middleware("http")(save_request_middleware)
 
     app.include_router(v0_api_router)
-    app.include_router(v0_doc_api_router)
+    app.include_router(doc_api_router, prefix="/api/v0/doc", tags=["Documentation"])
 
     fastapi_pagination.add_pagination(app)
 
@@ -124,8 +125,6 @@ v0_api_router = fastapi.APIRouter(
     dependencies=[fastapi.Depends(HTTPBearer())] if settings.TOKEN_ENABLED else [],
     tags=["Données"],
 )
-
-v0_doc_api_router = fastapi.APIRouter(prefix="/api/v0/doc", tags=["Documentation"])
 
 
 def list_structures(
@@ -749,114 +748,6 @@ def search_services_endpoint(
         search_point=search_point,
         include_outdated=inclure_suspendus,
     )
-
-
-@v0_doc_api_router.get(
-    "/labels-nationaux",
-    response_model=list[schemas.EnhancedEnumMember],
-    summary="Documente les labels nationaux",
-)
-def list_labels_nationaux_endpoint():
-    """
-    ## Documente les labels nationaux
-    """
-    return di_schema.LabelNational.as_dict_list()
-
-
-@v0_doc_api_router.get(
-    "/thematiques",
-    response_model=list[schemas.EnhancedEnumMember],
-    summary="Documente les thématiques",
-)
-def list_thematiques_endpoint():
-    """
-    ## Documente les thématiques
-    """
-    return di_schema.Thematique.as_dict_list()
-
-
-@v0_doc_api_router.get(
-    "/typologies-services",
-    response_model=list[schemas.EnhancedEnumMember],
-    summary="Documente les typologies de services",
-)
-def list_typologies_services_endpoint():
-    """
-    ## Documente les typologies de services
-    """
-    return di_schema.TypologieService.as_dict_list()
-
-
-@v0_doc_api_router.get(
-    "/frais",
-    response_model=list[schemas.EnhancedEnumMember],
-    summary="Documente les frais",
-)
-def list_frais_endpoint():
-    """
-    ## Documente les frais
-    """
-    return di_schema.Frais.as_dict_list()
-
-
-@v0_doc_api_router.get(
-    "/profils",
-    response_model=list[schemas.EnhancedEnumMember],
-    summary="Documente les profils de publics",
-)
-def list_profils_endpoint():
-    """
-    ## Documente les profils de publics
-    """
-    return di_schema.Profil.as_dict_list()
-
-
-@v0_doc_api_router.get(
-    "/typologies-structures",
-    response_model=list[schemas.EnhancedEnumMember],
-    summary="Documente les typologies de structures",
-)
-def list_typologies_structures_endpoint():
-    """
-    ## Documente les typologies de structures
-    """
-    return di_schema.Typologie.as_dict_list()
-
-
-@v0_doc_api_router.get(
-    "/modes-accueil",
-    response_model=list[schemas.EnhancedEnumMember],
-    summary="Documente les modes d'accueil",
-)
-def list_modes_accueil_endpoint():
-    """
-    ## Documente les modes d'accueil
-    """
-    return di_schema.ModeAccueil.as_dict_list()
-
-
-@v0_doc_api_router.get(
-    "/modes-orientation-accompagnateur",
-    response_model=list[schemas.EnhancedEnumMember],
-    summary="Documente les modes d'orientation de l'accompagnateur",
-)
-def list_modes_orientation_accompagnateur_endpoint():
-    """
-    ## Documente les modes d'orientation de l'accompagnateur
-    """
-    return di_schema.ModeOrientationAccompagnateur.as_dict_list()
-
-
-@v0_doc_api_router.get(
-    "/modes-orientation-beneficiaire",
-    response_model=list[schemas.EnhancedEnumMember],
-    summary="Documente les modes d'orientation du bénéficiaire",
-)
-def list_modes_orientation_beneficiaire_endpoint():
-    """
-    ## Documente les modes d'orientation du bénéficiaire
-    """
-    return di_schema.ModeOrientationBeneficiaire.as_dict_list()
 
 
 def create_token(email: str) -> schemas.Token:
