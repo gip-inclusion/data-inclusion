@@ -1,13 +1,11 @@
-from starlette import authentication, responses
-from starlette.middleware.authentication import (  # noqa: F401
-    AuthenticationMiddleware as AuthenticationMiddleware,
-)
+from starlette import authentication, middleware, responses
+from starlette.middleware.authentication import AuthenticationMiddleware
 from starlette.requests import HTTPConnection
 
 import fastapi
 from fastapi.security import HTTPBearer
 
-from data_inclusion.api.core import jwt
+from data_inclusion.api.auth import services
 
 
 def on_error(conn: HTTPConnection, exc: Exception) -> responses.Response:
@@ -26,7 +24,7 @@ class AuthenticationBackend(authentication.AuthenticationBackend):
         except fastapi.HTTPException as exc:
             raise authentication.AuthenticationError(exc.detail)
 
-        payload = jwt.verify_token(token.credentials)
+        payload = services.verify_token(token.credentials)
 
         if payload is None:
             raise authentication.AuthenticationError("Not authenticated")
@@ -39,3 +37,11 @@ class AuthenticationBackend(authentication.AuthenticationBackend):
         return authentication.AuthCredentials(scopes=scopes), authentication.SimpleUser(
             username=payload["sub"]
         )
+
+
+def get_auth_middleware() -> middleware.Middleware:
+    return middleware.Middleware(
+        AuthenticationMiddleware,
+        backend=AuthenticationBackend(),
+        on_error=on_error,
+    )

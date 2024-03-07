@@ -3,7 +3,7 @@ from typing_extensions import Annotated
 
 import fastapi
 
-from data_inclusion.api.core import jwt
+from data_inclusion.api.auth import services
 
 router = fastapi.APIRouter()
 
@@ -17,7 +17,7 @@ class Token(BaseModel):
 
 
 def create_token(email: str) -> Token:
-    return Token(access=jwt.create_access_token(subject=email))
+    return Token(access=services.create_access_token(subject=email))
 
 
 @router.post(
