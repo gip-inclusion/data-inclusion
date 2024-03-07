@@ -1,0 +1,21 @@
+from pydantic_settings import BaseSettings, SettingsConfigDict
+
+
+class Settings(BaseSettings):
+    model_config = SettingsConfigDict(env_file=".env")
+
+    DEBUG: bool = False
+    DATABASE_URL: str
+    SECRET_KEY: str
+    CORS_ALLOWED_ORIGINS: list[str] = ["*"]
+    TOKEN_ENABLED: bool = True
+    SENTRY_DSN: str | None = None
+    ENV: str = "prod"
+    SOLIGUIDE_API_URL: str = "https://api.soliguide.fr"
+    SOLIGUIDE_API_TOKEN: str | None = None
+
+    DEFAULT_PAGE_SIZE: int = 500
+    MAX_PAGE_SIZE: int = 1000
+
+
+settings = Settings()

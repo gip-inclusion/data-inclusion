@@ -25,6 +25,7 @@ setup(
         "psycopg2",
         "pyarrow",
         "pydantic[email]>=2.5.0",
+        "pydantic-settings",
         "python-dotenv",
         "python-jose[cryptography]",
         "pytz",
