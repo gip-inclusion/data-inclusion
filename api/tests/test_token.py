@@ -2,7 +2,7 @@ from unittest.mock import ANY
 
 import pytest
 
-from data_inclusion.api.core import jwt
+from data_inclusion.api.auth import services
 
 
 def test_create_token_unauthenticated(api_client):
@@ -30,7 +30,7 @@ def test_create_token(api_client):
     resp_data = response.json()
 
     assert resp_data == {"access": ANY}
-    assert jwt.verify_token(token=resp_data["access"]) == {
+    assert services.verify_token(token=resp_data["access"]) == {
         "sub": "foo@bar.com",
         "admin": False,
     }

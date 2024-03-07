@@ -9,11 +9,12 @@ from fastapi.middleware import cors
 from fastapi.security import HTTPBearer
 
 from data_inclusion.api import settings
-from data_inclusion.api.auth.router import router as auth_api_router
-from data_inclusion.api.core import auth, db
+from data_inclusion.api.auth.middleware import get_auth_middleware
+from data_inclusion.api.auth.routes import router as auth_api_router
+from data_inclusion.api.core import db
 from data_inclusion.api.core.request.middleware import save_request_middleware
-from data_inclusion.api.inclusion_data.router import router as data_api_router
-from data_inclusion.api.inclusion_schema.router import router as schema_api_router
+from data_inclusion.api.inclusion_data.routes import router as data_api_router
+from data_inclusion.api.inclusion_schema.routes import router as schema_api_router
 
 description = (Path(__file__).parent / "api_description.md").read_text()
 
@@ -45,11 +46,7 @@ def create_app() -> fastapi.FastAPI:
                 allow_methods=["*"],
                 allow_headers=["*"],
             ),
-            middleware.Middleware(
-                auth.AuthenticationMiddleware,
-                backend=auth.AuthenticationBackend(),
-                on_error=auth.on_error,
-            ),
+            get_auth_middleware(),
         ],
         debug=settings.DEBUG,
     )
