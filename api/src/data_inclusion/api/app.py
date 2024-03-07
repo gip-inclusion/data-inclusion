@@ -77,6 +77,11 @@ def create_app() -> fastapi.FastAPI:
     app.middleware("http")(save_request_middleware)
 
     app.include_router(v0_api_router)
+    app.include_router(
+        schema_api_router,
+        prefix="/api/v0/doc",
+        tags=["Documentation"],
+    )
 
     fastapi_pagination.add_pagination(app)
 
@@ -96,11 +101,6 @@ v0_api_router.include_router(
     auth_api_router,
     include_in_schema=False,
     tags=["Authentication"],
-)
-v0_api_router.include_router(
-    schema_api_router,
-    prefix="/doc",
-    tags=["Documentation"],
 )
 
 

@@ -648,12 +648,7 @@
                 }
               }
             }
-          },
-          "security": [
-            {
-              "HTTPBearer": []
-            }
-          ]
+          }
         }
       },
       "/api/v0/doc/thematiques": {
@@ -679,12 +674,7 @@
                 }
               }
             }
-          },
-          "security": [
-            {
-              "HTTPBearer": []
-            }
-          ]
+          }
         }
       },
       "/api/v0/doc/typologies-services": {
@@ -710,12 +700,7 @@
                 }
               }
             }
-          },
-          "security": [
-            {
-              "HTTPBearer": []
-            }
-          ]
+          }
         }
       },
       "/api/v0/doc/frais": {
@@ -741,12 +726,7 @@
                 }
               }
             }
-          },
-          "security": [
-            {
-              "HTTPBearer": []
-            }
-          ]
+          }
         }
       },
       "/api/v0/doc/profils": {
@@ -772,12 +752,7 @@
                 }
               }
             }
-          },
-          "security": [
-            {
-              "HTTPBearer": []
-            }
-          ]
+          }
         }
       },
       "/api/v0/doc/typologies-structures": {
@@ -803,12 +778,7 @@
                 }
               }
             }
-          },
-          "security": [
-            {
-              "HTTPBearer": []
-            }
-          ]
+          }
         }
       },
       "/api/v0/doc/modes-accueil": {
@@ -834,12 +804,7 @@
                 }
               }
             }
-          },
-          "security": [
-            {
-              "HTTPBearer": []
-            }
-          ]
+          }
         }
       },
       "/api/v0/doc/modes-orientation-accompagnateur": {
@@ -865,12 +830,7 @@
                 }
               }
             }
-          },
-          "security": [
-            {
-              "HTTPBearer": []
-            }
-          ]
+          }
         }
       },
       "/api/v0/doc/modes-orientation-beneficiaire": {
@@ -896,12 +856,7 @@
                 }
               }
             }
-          },
-          "security": [
-            {
-              "HTTPBearer": []
-            }
-          ]
+          }
         }
       }
     },
