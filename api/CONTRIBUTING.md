@@ -27,7 +27,7 @@ cp .template.env .env
 alembic upgrade head
 
 # Start the development server
-uvicorn data_inclusion.api.entrypoints.fastapi:app --reload
+uvicorn data_inclusion.api.app:app --reload
 ```
 
 ## Running the test suite
@@ -45,9 +45,9 @@ tox
 # 1. add/remove packages from the requirements in setup.py
 
 # 2. compile dependencies
-pip-compile --output-file=requirements/requirements.txt
-pip-compile --extra=dev --output-file=requirements/dev-requirements.txt
-pip-compile --extra=test --output-file=requirements/test-requirements.txt
+pip-compile --output-file=requirements/requirements.txt && \
+    pip-compile --extra=dev --output-file=requirements/dev-requirements.txt && \
+    pip-compile --extra=test --output-file=requirements/test-requirements.txt
 ```
 
 ### 2. Upgrading packages
