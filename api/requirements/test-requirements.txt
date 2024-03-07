@@ -158,6 +158,7 @@ pytest==8.1.0
     # via
     #   data-inclusion-api (setup.py)
     #   pytest-dotenv
+    #   syrupy
 pytest-dotenv==0.5.2
     # via data-inclusion-api (setup.py)
 python-dateutil==2.9.0.post0
@@ -204,6 +205,8 @@ sqlparse==0.4.4
     # via fastapi-debug-toolbar
 starlette==0.36.3
     # via fastapi
+syrupy==4.6.1
+    # via data-inclusion-api (setup.py)
 typing-extensions==4.10.0
     # via
     #   alembic
