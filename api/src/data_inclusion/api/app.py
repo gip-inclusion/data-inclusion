@@ -4,11 +4,10 @@ import sentry_sdk
 
 import fastapi
 import fastapi_pagination
-from fastapi import middleware
 from fastapi.middleware import cors
 from fastapi.security import HTTPBearer
 
-from data_inclusion.api.auth.middleware import get_auth_middleware
+from data_inclusion.api.auth.middleware import AuthenticationMiddleware
 from data_inclusion.api.auth.routes import router as auth_api_router
 from data_inclusion.api.config import settings
 from data_inclusion.api.core import db
@@ -17,6 +16,29 @@ from data_inclusion.api.inclusion_data.routes import router as data_api_router
 from data_inclusion.api.inclusion_schema.routes import router as schema_api_router
 
 description = (Path(__file__).parent / "api_description.md").read_text()
+
+
+def setup_cors_middleware(app: fastapi.FastAPI) -> None:
+    app.add_middleware(
+        cors.CORSMiddleware,
+        allow_origins=settings.CORS_ALLOWED_ORIGINS,
+        allow_credentials=True,
+        allow_methods=["*"],
+        allow_headers=["*"],
+    )
+
+
+def setup_auth_middleware(app: fastapi.FastAPI) -> None:
+    app.add_middleware(AuthenticationMiddleware)
+
+
+def setup_debug_toolbar_middleware(app: fastapi.FastAPI) -> None:
+    from debug_toolbar.middleware import DebugToolbarMiddleware
+
+    app.add_middleware(
+        DebugToolbarMiddleware,
+        panels=["debug_toolbar.panels.sqlalchemy.SQLAlchemyPanel"],
+    )
 
 
 def create_app() -> fastapi.FastAPI:
@@ -38,26 +60,14 @@ def create_app() -> fastapi.FastAPI:
             "email": "data.inclusion@beta.gouv.fr",
             "url": "https://www.data.inclusion.beta.gouv.fr/",
         },
-        middleware=[
-            middleware.Middleware(
-                cors.CORSMiddleware,
-                allow_origins=settings.CORS_ALLOWED_ORIGINS,
-                allow_credentials=True,
-                allow_methods=["*"],
-                allow_headers=["*"],
-            ),
-            get_auth_middleware(),
-        ],
         debug=settings.DEBUG,
     )
 
-    if settings.ENV == "dev":
-        from debug_toolbar.middleware import DebugToolbarMiddleware
+    setup_cors_middleware(app)
+    setup_auth_middleware(app)
 
-        app.add_middleware(
-            DebugToolbarMiddleware,
-            panels=["debug_toolbar.panels.sqlalchemy.SQLAlchemyPanel"],
-        )
+    if settings.ENV == "dev":
+        setup_debug_toolbar_middleware(app)
 
     app.middleware("http")(db.db_session_middleware)
     app.middleware("http")(save_request_middleware)
