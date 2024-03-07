@@ -16,6 +16,7 @@ router = fastapi.APIRouter()
     "/structures",
     response_model=pagination.Page[schemas.Structure],
     summary="Lister les structures consolidées",
+    deprecated=True,
 )
 def list_structures_endpoint(
     request: fastapi.Request,
@@ -84,6 +85,7 @@ def list_sources_endpoint(
     "/services",
     response_model=pagination.Page[schemas.Service],
     summary="Lister les services consolidés",
+    deprecated=True,
 )
 def list_services_endpoint(
     request: fastapi.Request,
