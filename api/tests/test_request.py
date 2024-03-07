@@ -1,7 +1,7 @@
 import pytest
 import sqlalchemy as sqla
 
-from data_inclusion.api.core.request import models
+from data_inclusion.api.request import models
 
 
 @pytest.mark.with_token
