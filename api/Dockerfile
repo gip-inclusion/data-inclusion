@@ -70,4 +70,6 @@ RUN chmod +x docker-entrypoint.sh
 USER gunicorn
 EXPOSE 8000
 
+HEALTHCHECK --interval=30s --timeout=30s --start-period=5s --retries=3 CMD curl --fail http://localhost:8000/api/openapi.json
+
 ENTRYPOINT ["/srv/docker-entrypoint.sh"]
