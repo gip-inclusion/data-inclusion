@@ -41,25 +41,6 @@ def list_structures_endpoint(
     ] = None,
     db_session=fastapi.Depends(db.get_session),
 ):
-    """
-    ## Lister les structures consolidées par data.inclusion
-
-    Il s'agit du point d'entrée principal de l'API, permettant d'accéder finement au
-    données structures publiées régulièrement en open data sur data.gouv.
-
-    ### Filtres disponibles
-
-    Les structures peuvent être filtrées par thematique, typologie, label, source, id,
-    etc.
-
-    ### Identification des structures
-
-    Les structures sont identifiées de manière unique par le couple :
-    * `source` : slug précisant la source de manière unique
-    * `id` : l'identifiant local dans la source
-
-    """
-
     return services.list_structures(
         request,
         db_session,
@@ -102,7 +83,7 @@ def list_sources_endpoint(
 @router.get(
     "/services",
     response_model=pagination.Page[schemas.Service],
-    summary="Lister les services consolidées",
+    summary="Lister les services consolidés",
 )
 def list_services_endpoint(
     request: fastapi.Request,
