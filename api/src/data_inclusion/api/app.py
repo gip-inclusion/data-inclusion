@@ -61,6 +61,10 @@ def create_app() -> fastapi.FastAPI:
             "url": "https://www.data.inclusion.beta.gouv.fr/",
         },
         debug=settings.DEBUG,
+        swagger_ui_parameters={
+            # this makes the search services endpoint first
+            "operationsSorter": "alpha",
+        },
     )
 
     setup_cors_middleware(app)
