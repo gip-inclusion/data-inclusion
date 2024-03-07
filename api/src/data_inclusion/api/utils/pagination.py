@@ -1,7 +1,7 @@
 import fastapi
 import fastapi_pagination
 
-from data_inclusion.api import settings
+from data_inclusion.api.config import settings
 
 Page = fastapi_pagination.Page.with_custom_options(
     size=fastapi.Query(

@@ -8,9 +8,9 @@ from fastapi import middleware
 from fastapi.middleware import cors
 from fastapi.security import HTTPBearer
 
-from data_inclusion.api import settings
 from data_inclusion.api.auth.middleware import get_auth_middleware
 from data_inclusion.api.auth.routes import router as auth_api_router
+from data_inclusion.api.config import settings
 from data_inclusion.api.core import db
 from data_inclusion.api.core.request.middleware import save_request_middleware
 from data_inclusion.api.inclusion_data.routes import router as data_api_router

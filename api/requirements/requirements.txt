@@ -103,8 +103,11 @@ pydantic[email]==2.6.3
     #   fastapi
     #   fastapi-pagination
     #   pydantic
+    #   pydantic-settings
 pydantic-core==2.16.3
     # via pydantic
+pydantic-settings==2.2.1
+    # via data-inclusion-api (setup.py)
 python-dateutil==2.9.0.post0
     # via
     #   faker
@@ -112,6 +115,7 @@ python-dateutil==2.9.0.post0
 python-dotenv==1.0.1
     # via
     #   data-inclusion-api (setup.py)
+    #   pydantic-settings
     #   uvicorn
 python-jose[cryptography]==3.3.0
     # via data-inclusion-api (setup.py)

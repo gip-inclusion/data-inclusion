@@ -3,7 +3,7 @@ from typing import Any, Optional, Union
 import jose
 from jose import jwt
 
-from data_inclusion.api import settings
+from data_inclusion.api.config import settings
 
 ALGORITHM = "HS256"
 

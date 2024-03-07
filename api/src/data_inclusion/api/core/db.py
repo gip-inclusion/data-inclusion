@@ -3,7 +3,7 @@ from sqlalchemy import orm
 
 import fastapi
 
-from data_inclusion.api import settings
+from data_inclusion.api.config import settings
 
 default_db_engine = sqla.create_engine(settings.DATABASE_URL, pool_pre_ping=True)
 SessionLocal = orm.sessionmaker(autoflush=False, bind=default_db_engine)

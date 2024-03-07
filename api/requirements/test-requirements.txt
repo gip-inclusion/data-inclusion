@@ -144,10 +144,12 @@ pydantic[email]==2.6.3
     #   pydantic-settings
 pydantic-core==2.16.3
     # via pydantic
+    #   pydantic-settings
 pydantic-extra-types==2.6.0
     # via fastapi-debug-toolbar
 pydantic-settings==2.2.1
     # via fastapi-debug-toolbar
+    #   data-inclusion-api (setup.py)
 pyinstrument==4.6.2
     # via fastapi-debug-toolbar
 pyproj==3.6.1

@@ -6,7 +6,7 @@ import sqlalchemy as sqla
 
 import fastapi
 
-from data_inclusion.api import settings
+from data_inclusion.api.config import settings
 from data_inclusion.api.core import db
 from data_inclusion.api.inclusion_data import models
 
