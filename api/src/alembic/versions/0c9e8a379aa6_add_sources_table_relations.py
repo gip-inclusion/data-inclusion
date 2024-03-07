@@ -9,7 +9,7 @@ Create Date: 2024-02-15 16:07:33.512466
 import sqlalchemy as sa
 from alembic import op
 
-from data_inclusion.api import models
+from data_inclusion.api.data import models
 
 # revision identifiers, used by Alembic.
 revision = "0c9e8a379aa6"

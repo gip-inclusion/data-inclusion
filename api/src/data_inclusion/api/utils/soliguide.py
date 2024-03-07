@@ -6,8 +6,9 @@ import sqlalchemy as sqla
 
 import fastapi
 
-from data_inclusion.api import models, settings
+from data_inclusion.api import settings
 from data_inclusion.api.core import db
+from data_inclusion.api.data import models
 
 logger = logging.getLogger(__name__)
 
