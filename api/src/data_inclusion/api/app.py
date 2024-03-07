@@ -1,4 +1,3 @@
-import logging
 from pathlib import Path
 
 import sentry_sdk
@@ -13,11 +12,8 @@ from data_inclusion.api import settings
 from data_inclusion.api.auth.router import router as auth_api_router
 from data_inclusion.api.core import auth, db
 from data_inclusion.api.core.request.middleware import save_request_middleware
-from data_inclusion.api.data.router import router as data_api_router
-from data_inclusion.api.schema.router import router as schema_api_router
-
-logger = logging.getLogger(__name__)
-
+from data_inclusion.api.inclusion_data.router import router as data_api_router
+from data_inclusion.api.inclusion_schema.router import router as schema_api_router
 
 description = (Path(__file__).parent / "api_description.md").read_text()
 
