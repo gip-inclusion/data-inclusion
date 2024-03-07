@@ -15,7 +15,7 @@ pip install -e .
 # Running database migrations
 alembic upgrade head
 
-gunicorn data_inclusion.api.entrypoints.fastapi:app \
+gunicorn data_inclusion.api.app:app \
     --workers 4 \
     --worker-class uvicorn.workers.UvicornWorker \
     --access-logfile '-'
