@@ -8,12 +8,6 @@ from typing_extensions import Annotated
 from data_inclusion import schema
 
 
-class EnhancedEnumMember(BaseModel):
-    value: str
-    label: str
-    description: Optional[str] = None
-
-
 @dataclass(frozen=True)
 class _Departement:
     slug: str
