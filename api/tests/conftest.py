@@ -9,8 +9,8 @@ from alembic.config import Config
 from fastapi.testclient import TestClient
 
 from data_inclusion.api import settings
+from data_inclusion.api.app import create_app
 from data_inclusion.api.core import db
-from data_inclusion.api.entrypoints.fastapi import create_app
 
 from . import factories
 
