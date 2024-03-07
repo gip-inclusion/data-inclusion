@@ -1,5 +1,3 @@
-from typing import Optional
-
 from pydantic import BaseModel
 
 import fastapi
@@ -12,7 +10,7 @@ router = fastapi.APIRouter()
 class EnhancedEnumMember(BaseModel):
     value: str
     label: str
-    description: Optional[str] = None
+    description: str | None = None
 
 
 @router.get(

@@ -4,7 +4,6 @@ import logging
 from collections import defaultdict
 from datetime import date
 from pathlib import Path
-from typing import Optional
 
 import geoalchemy2
 import sqlalchemy as sqla
@@ -58,14 +57,14 @@ def get_sub_thematiques(thematiques: list[di_schema.Thematique]) -> list[str]:
 def list_structures(
     request: fastapi.Request,
     db_session: orm.Session,
-    source: Optional[str] = None,
-    id_: Optional[str] = None,
-    typologie: Optional[di_schema.Typologie] = None,
-    label_national: Optional[di_schema.LabelNational] = None,
-    departement: Optional[schemas.DepartementCOG] = None,
-    departement_slug: Optional[schemas.DepartementSlug] = None,
-    code_postal: Optional[di_schema.CodePostal] = None,
-    thematique: Optional[di_schema.Thematique] = None,
+    source: str | None = None,
+    id_: str | None = None,
+    typologie: di_schema.Typologie | None = None,
+    label_national: di_schema.LabelNational | None = None,
+    departement: schemas.DepartementCOG | None = None,
+    departement_slug: schemas.DepartementSlug | None = None,
+    code_postal: di_schema.CodePostal | None = None,
+    thematique: di_schema.Thematique | None = None,
 ) -> list:
     query = sqla.select(models.Structure)
 
@@ -165,11 +164,11 @@ def list_sources(request: fastapi.Request) -> list[dict]:
 def list_services(
     request: fastapi.Request,
     db_session: orm.Session,
-    source: Optional[str] = None,
-    thematique: Optional[di_schema.Thematique] = None,
-    departement: Optional[schemas.DepartementCOG] = None,
-    departement_slug: Optional[schemas.DepartementSlug] = None,
-    code_insee: Optional[di_schema.CodeCommune] = None,
+    source: str | None = None,
+    thematique: di_schema.Thematique | None = None,
+    departement: schemas.DepartementCOG | None = None,
+    departement_slug: schemas.DepartementSlug | None = None,
+    code_insee: di_schema.CodeCommune | None = None,
 ):
     query = (
         sqla.select(models.Service)
@@ -239,13 +238,13 @@ def list_services(
 def search_services(
     request: fastapi.Request,
     db_session: orm.Session,
-    sources: Optional[list[str]] = None,
-    commune_instance: Optional[models.Commune] = None,
-    thematiques: Optional[list[di_schema.Thematique]] = None,
-    frais: Optional[list[di_schema.Frais]] = None,
-    types: Optional[list[di_schema.TypologieService]] = None,
-    search_point: Optional[str] = None,
-    include_outdated: Optional[bool] = False,
+    sources: list[str] | None = None,
+    commune_instance: models.Commune | None = None,
+    thematiques: list[di_schema.Thematique] | None = None,
+    frais: list[di_schema.Frais] | None = None,
+    types: list[di_schema.TypologieService] | None = None,
+    search_point: str | None = None,
+    include_outdated: bool | None = False,
 ):
     query = (
         sqla.select(models.Service)

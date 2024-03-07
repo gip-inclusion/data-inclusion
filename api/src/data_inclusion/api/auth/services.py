@@ -1,5 +1,3 @@
-from typing import Any, Optional, Union
-
 import jose
 from jose import jwt
 
@@ -9,8 +7,8 @@ ALGORITHM = "HS256"
 
 
 def create_access_token(
-    subject: Union[str, Any],
-    admin: Optional[bool] = False,
+    subject,
+    admin: bool | None = False,
 ) -> str:
     encoded_jwt = jwt.encode(
         claims={
@@ -23,7 +21,7 @@ def create_access_token(
     return encoded_jwt
 
 
-def verify_token(token: str) -> Optional[dict]:
+def verify_token(token: str) -> dict | None:
     try:
         payload = jwt.decode(
             token=token, key=settings.SECRET_KEY, algorithms=[ALGORITHM]

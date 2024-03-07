@@ -1,6 +1,5 @@
 from dataclasses import dataclass
 from enum import Enum
-from typing import Optional
 
 from pydantic import BaseModel, ConfigDict, Field
 from typing_extensions import Annotated
@@ -132,22 +131,22 @@ DepartementCOG = Enum(
 class Source(BaseModel):
     slug: str
     nom: str
-    description: Optional[str]
+    description: str | None
 
 
 class Service(schema.Service):
     model_config = ConfigDict(from_attributes=True, populate_by_name=True)
 
     # Dont use pydantic's `HttpUrl`, because it would likely trigger validation errors
-    prise_rdv: Optional[str] = None
-    formulaire_en_ligne: Optional[str] = None
-    lien_source: Optional[str] = None
+    prise_rdv: str | None = None
+    formulaire_en_ligne: str | None = None
+    lien_source: str | None = None
 
     # TODO(vmttn): decide whether we should keep these extra fields
-    di_geocodage_code_insee: Optional[schema.CodeCommune] = Field(
+    di_geocodage_code_insee: schema.CodeCommune | None = Field(
         alias="_di_geocodage_code_insee"
     )
-    di_geocodage_score: Optional[Annotated[float, Field(ge=0, le=1)]] = Field(
+    di_geocodage_score: Annotated[float, Field(ge=0, le=1)] | None = Field(
         alias="_di_geocodage_score"
     )
 
@@ -156,15 +155,15 @@ class Structure(schema.Structure):
     model_config = ConfigDict(from_attributes=True, populate_by_name=True)
 
     # Dont use pydantic's `HttpUrl`, because it would likely trigger validation errors
-    site_web: Optional[str] = None
-    lien_source: Optional[str] = None
-    accessibilite: Optional[str] = None
+    site_web: str | None = None
+    lien_source: str | None = None
+    accessibilite: str | None = None
 
     # TODO(vmttn): decide whether we should keep these extra fields
-    di_geocodage_code_insee: Optional[schema.CodeCommune] = Field(
+    di_geocodage_code_insee: schema.CodeCommune | None = Field(
         alias="_di_geocodage_code_insee"
     )
-    di_geocodage_score: Optional[Annotated[float, Field(ge=0, le=1)]] = Field(
+    di_geocodage_score: Annotated[float, Field(ge=0, le=1)] | None = Field(
         alias="_di_geocodage_score"
     )
 
@@ -175,7 +174,7 @@ class DetailedService(Service):
 
 class ServiceSearchResult(BaseModel):
     service: DetailedService
-    distance: Optional[int] = None
+    distance: int | None = None
 
 
 class DetailedStructure(Structure):
