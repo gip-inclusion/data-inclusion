@@ -43,6 +43,7 @@ setup(
             "pytest-dotenv",
             "geopandas",
             "fastapi-debug-toolbar",
+            "syrupy",
         ],
         "dev": [
             "ruff",

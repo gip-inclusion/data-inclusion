@@ -1,3 +1,4 @@
+import json
 from datetime import date, timedelta
 from unittest.mock import ANY
 
@@ -7,6 +8,14 @@ from data_inclusion import schema
 from data_inclusion.api.utils import soliguide
 
 from . import factories
+
+
+def test_openapi_spec(api_client, snapshot):
+    url = "/api/openapi.json"
+    response = api_client.get(url)
+
+    assert response.status_code == 200
+    assert json.dumps(response.json(), indent=2, ensure_ascii=False) == snapshot
 
 
 def test_list_structures_unauthenticated(api_client):
