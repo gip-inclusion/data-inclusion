@@ -107,6 +107,8 @@ open_services AS (
 ),
 
 
+-- TODO(vmttn): clean up modes_orientation_* with dbt macros ?
+
 final AS (
     SELECT
         open_services.id                                              AS "id",
@@ -132,10 +134,6 @@ final AS (
         NULL                                                          AS "zone_diffusion_nom",  -- will be overridden after geocoding
         NULL                                                          AS "formulaire_en_ligne",
         open_services.lieu_id                                         AS "structure_id",
-        NULL::TEXT []                                                 AS "modes_orientation_accompagnateur",
-        NULL                                                          AS "modes_orientation_accompagnateur_autres",
-        NULL::TEXT []                                                 AS "modes_orientation_beneficiaire",
-        NULL                                                          AS "modes_orientation_beneficiaire_autres",
         (
             SELECT di_thematique_by_soliguide_categorie_code.thematique
             FROM di_thematique_by_soliguide_categorie_code
@@ -156,7 +154,49 @@ final AS (
             WHEN open_services.different_hours
                 THEN UDF_SOLIGUIDE__NEW_HOURS_TO_OSM_OPENING_HOURS(open_services.hours)
             ELSE UDF_SOLIGUIDE__NEW_HOURS_TO_OSM_OPENING_HOURS(lieux.newhours)
-        END                                                           AS "recurrence"
+        END                                                           AS "recurrence",
+        ARRAY(
+            SELECT DISTINCT m
+            FROM
+                UNNEST(
+                    ARRAY_REMOVE(
+                        CASE WHEN open_services.modalities__inconditionnel THEN ARRAY['telephoner'] END
+                        || CASE WHEN open_services.modalities__appointment__checked THEN ARRAY['telephoner', 'envoyer-un-mail'] END
+                        || CASE WHEN open_services.modalities__inscription__checked THEN ARRAY['telephoner', 'envoyer-un-mail'] END
+                        || CASE WHEN open_services.modalities__orientation__checked THEN ARRAY['telephoner', 'envoyer-un-mail', 'envoyer-un-mail-avec-une-fiche-de-prescription'] END,
+                        NULL
+                    )
+                ) AS m
+        )                                                             AS "modes_orientation_accompagnateur",
+        ARRAY_TO_STRING(
+            ARRAY[
+                CASE WHEN open_services.modalities__appointment__checked THEN '## Sur rendez-vous :' || E'\n' || open_services.modalities__appointment__precisions END,
+                CASE WHEN open_services.modalities__inscription__checked THEN '## Sur inscription :' || E'\n' || open_services.modalities__inscription__precisions END,
+                CASE WHEN open_services.modalities__orientation__checked THEN '## Sur orientation :' || E'\n' || open_services.modalities__orientation__precisions END
+            ],
+            E'\n\n'
+        )                                                             AS "modes_orientation_accompagnateur_autres",
+        ARRAY(
+            SELECT DISTINCT m
+            FROM
+                UNNEST(
+                    ARRAY_REMOVE(
+                        CASE WHEN open_services.modalities__inconditionnel THEN ARRAY['se-presenter'] END
+                        || CASE WHEN open_services.modalities__appointment__checked THEN ARRAY['telephoner', 'envoyer-un-mail'] END
+                        || CASE WHEN open_services.modalities__inscription__checked THEN ARRAY['se-presenter', 'telephoner'] END
+                        || CASE WHEN open_services.modalities__orientation__checked THEN ARRAY['autre'] END,
+                        NULL
+                    )
+                ) AS m
+        )                                                             AS "modes_orientation_beneficiaire",
+        ARRAY_TO_STRING(
+            ARRAY[
+                CASE WHEN open_services.modalities__orientation__checked THEN '## Orientation par un professionnel' END,
+                CASE WHEN open_services.modalities__appointment__checked THEN '## Sur rendez-vous :' || E'\n' || open_services.modalities__appointment__precisions END,
+                CASE WHEN open_services.modalities__inscription__checked THEN '## Sur inscription :' || E'\n' || open_services.modalities__inscription__precisions END
+            ],
+            E'\n\n'
+        )                                                             AS "modes_orientation_beneficiaire_autres"
     FROM open_services
     LEFT JOIN lieux ON open_services.lieu_id = lieux.id
     LEFT JOIN categories ON open_services.categorie = categories.code
