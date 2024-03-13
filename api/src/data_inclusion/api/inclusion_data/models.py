@@ -57,11 +57,11 @@ class Structure(Base):
     _di_geocodage_score = sqla.Column(sqla.Float, nullable=True)
 
     # structure data
-    source = sqla.Column(sqla.Text, nullable=True)
-    id = sqla.Column(sqla.Text, nullable=True)
+    source = sqla.Column(sqla.Text, nullable=False)
+    id = sqla.Column(sqla.Text, nullable=False)
     siret = sqla.Column(sqla.Text, nullable=True)
     rna = sqla.Column(sqla.Text, nullable=True)
-    nom = sqla.Column(sqla.Text, nullable=True)
+    nom = sqla.Column(sqla.Text, nullable=False)
     commune = sqla.Column(sqla.Text, nullable=True)
     code_postal = sqla.Column(sqla.Text, nullable=True)
     code_insee = sqla.Column(sqla.Text, nullable=True)
@@ -93,17 +93,17 @@ class Service(Base):
     # internal metadata
     _di_surrogate_id = sqla.Column(sqla.Text, primary_key=True)
     _di_structure_surrogate_id = sqla.Column(
-        sqla.ForeignKey("structure._di_surrogate_id")
+        sqla.ForeignKey("structure._di_surrogate_id"), nullable=False
     )
     _di_geocodage_code_insee = sqla.Column(sqla.Text, nullable=True)
     _di_geocodage_score = sqla.Column(sqla.Float, nullable=True)
     structure = orm.relationship("Structure", back_populates="services")
 
     # service data
-    source = sqla.Column(sqla.Text, nullable=True)
-    id = sqla.Column(sqla.Text, nullable=True)
-    structure_id = sqla.Column(sqla.Text, nullable=True)
-    nom = sqla.Column(sqla.Text, nullable=True)
+    source = sqla.Column(sqla.Text, nullable=False)
+    id = sqla.Column(sqla.Text, nullable=False)
+    structure_id = sqla.Column(sqla.Text, nullable=False)
+    nom = sqla.Column(sqla.Text, nullable=False)
     presentation_resume = sqla.Column(sqla.Text, nullable=True)
     presentation_detail = sqla.Column(sqla.Text, nullable=True)
     types = sqla.Column(ARRAY(sqla.Text), default=list)
