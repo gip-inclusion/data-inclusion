@@ -1,5 +1,11 @@
+import uuid
+from datetime import datetime
+from typing import Annotated
+
 import sqlalchemy as sqla
 from sqlalchemy import orm
+from sqlalchemy.dialects.postgresql import ARRAY, JSONB
+from sqlalchemy.orm import mapped_column
 
 import fastapi
 
@@ -8,9 +14,19 @@ from data_inclusion.api.config import settings
 default_db_engine = sqla.create_engine(settings.DATABASE_URL, pool_pre_ping=True)
 SessionLocal = orm.sessionmaker(autoflush=False, bind=default_db_engine)
 
+uuid_pk = Annotated[uuid.UUID, mapped_column(primary_key=True, default=uuid.uuid4)]
+timestamp = Annotated[
+    datetime,
+    mapped_column(sqla.DateTime(timezone=True), server_default=sqla.func.now()),
+]
 
-@orm.as_declarative()
-class Base:
+
+class Base(orm.DeclarativeBase):
+    type_annotation_map = {
+        list[str]: ARRAY(sqla.Text),
+        dict: JSONB,
+    }
+
     __name__: str
     # Generate __tablename__ automatically
 

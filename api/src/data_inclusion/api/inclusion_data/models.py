@@ -1,7 +1,8 @@
+from datetime import date
+
 import geoalchemy2
 import sqlalchemy as sqla
-from sqlalchemy import orm
-from sqlalchemy.dialects.postgresql import ARRAY
+from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from data_inclusion.api.core.db import Base
 
@@ -12,135 +13,135 @@ from data_inclusion.api.core.db import Base
 class Commune(Base):
     __tablename__ = "admin_express_communes"
 
-    code = sqla.Column(sqla.Text, primary_key=True)
-    nom = sqla.Column(sqla.Text)
-    departement = sqla.Column(sqla.Text)
-    region = sqla.Column(sqla.Text)
-    siren_epci = sqla.Column(sqla.Text)
-    geom = sqla.Column(geoalchemy2.Geometry("Geometry", srid=4326))
+    code: Mapped[str] = mapped_column(primary_key=True)
+    nom: Mapped[str]
+    departement: Mapped[str]
+    region: Mapped[str]
+    siren_epci: Mapped[str]
+    geom = mapped_column(geoalchemy2.Geometry("Geometry", srid=4326))
 
-    services = orm.relationship("Service", back_populates="commune_")
+    services: Mapped[list["Service"]] = relationship(back_populates="commune_")
 
 
 class EPCI(Base):
     __tablename__ = "admin_express_epcis"
 
-    code = sqla.Column(sqla.Text, primary_key=True)
-    nom = sqla.Column(sqla.Text)
-    nature = sqla.Column(sqla.Text)
-    geom = sqla.Column(geoalchemy2.Geometry("Geometry", srid=4326))
+    code: Mapped[str] = mapped_column(primary_key=True)
+    nom: Mapped[str]
+    nature: Mapped[str]
+    geom = mapped_column(geoalchemy2.Geometry("Geometry", srid=4326))
 
 
 class Departement(Base):
     __tablename__ = "admin_express_departements"
 
-    code = sqla.Column(sqla.Text, primary_key=True)
-    nom = sqla.Column(sqla.Text)
-    insee_reg = sqla.Column(sqla.Text)
-    geom = sqla.Column(geoalchemy2.Geometry("Geometry", srid=4326))
+    code: Mapped[str] = mapped_column(primary_key=True)
+    nom: Mapped[str]
+    insee_reg: Mapped[str]
+    geom = mapped_column(geoalchemy2.Geometry("Geometry", srid=4326))
 
 
 class Region(Base):
     __tablename__ = "admin_express_regions"
 
-    code = sqla.Column(sqla.Text, primary_key=True)
-    nom = sqla.Column(sqla.Text)
-    geom = sqla.Column(geoalchemy2.Geometry("Geometry", srid=4326))
+    code: Mapped[str] = mapped_column(primary_key=True)
+    nom: Mapped[str]
+    geom = mapped_column(geoalchemy2.Geometry("Geometry", srid=4326))
 
 
 class Structure(Base):
     __tablename__ = "structure"
 
     # internal metadata
-    _di_surrogate_id = sqla.Column(sqla.Text, primary_key=True)
-    _di_geocodage_code_insee = sqla.Column(sqla.Text, nullable=True)
-    _di_geocodage_score = sqla.Column(sqla.Float, nullable=True)
+    _di_surrogate_id: Mapped[str] = mapped_column(primary_key=True)
+    _di_geocodage_code_insee: Mapped[str | None]
+    _di_geocodage_score: Mapped[float | None]
 
     # structure data
-    source = sqla.Column(sqla.Text, nullable=False)
-    id = sqla.Column(sqla.Text, nullable=False)
-    siret = sqla.Column(sqla.Text, nullable=True)
-    rna = sqla.Column(sqla.Text, nullable=True)
-    nom = sqla.Column(sqla.Text, nullable=False)
-    commune = sqla.Column(sqla.Text, nullable=True)
-    code_postal = sqla.Column(sqla.Text, nullable=True)
-    code_insee = sqla.Column(sqla.Text, nullable=True)
-    adresse = sqla.Column(sqla.Text, nullable=True)
-    complement_adresse = sqla.Column(sqla.Text, nullable=True)
-    longitude = sqla.Column(sqla.Float, nullable=True)
-    latitude = sqla.Column(sqla.Float, nullable=True)
-    typologie = sqla.Column(sqla.Text, nullable=True)
-    telephone = sqla.Column(sqla.Text, nullable=True)
-    courriel = sqla.Column(sqla.Text, nullable=True)
-    site_web = sqla.Column(sqla.Text, nullable=True)
-    presentation_resume = sqla.Column(sqla.Text, nullable=True)
-    presentation_detail = sqla.Column(sqla.Text, nullable=True)
-    date_maj = sqla.Column(sqla.Date(), nullable=True)
-    antenne = sqla.Column(sqla.Boolean, default=False)
-    lien_source = sqla.Column(sqla.Text, nullable=True)
-    horaires_ouverture = sqla.Column(sqla.Text, nullable=True)
-    accessibilite = sqla.Column(sqla.Text, nullable=True)
-    labels_nationaux = sqla.Column(ARRAY(sqla.Text), default=list)
-    labels_autres = sqla.Column(ARRAY(sqla.Text), default=list)
-    thematiques = sqla.Column(ARRAY(sqla.Text), default=list)
+    source: Mapped[str]
+    id: Mapped[str]
+    siret: Mapped[str | None]
+    rna: Mapped[str | None]
+    nom: Mapped[str]
+    commune: Mapped[str | None]
+    code_postal: Mapped[str | None]
+    code_insee: Mapped[str | None]
+    adresse: Mapped[str | None]
+    complement_adresse: Mapped[str | None]
+    longitude: Mapped[float | None]
+    latitude: Mapped[float | None]
+    typologie: Mapped[str | None]
+    telephone: Mapped[str | None]
+    courriel: Mapped[str | None]
+    site_web: Mapped[str | None]
+    presentation_resume: Mapped[str | None]
+    presentation_detail: Mapped[str | None]
+    date_maj: Mapped[date | None]
+    antenne: Mapped[bool | None] = mapped_column(default=False)
+    lien_source: Mapped[str | None]
+    horaires_ouverture: Mapped[str | None]
+    accessibilite: Mapped[str | None]
+    labels_nationaux: Mapped[list[str] | None]
+    labels_autres: Mapped[list[str] | None]
+    thematiques: Mapped[list[str] | None]
 
-    services = orm.relationship("Service", back_populates="structure")
+    services: Mapped[list["Service"]] = relationship(back_populates="structure")
 
 
 class Service(Base):
     __tablename__ = "service"
 
     # internal metadata
-    _di_surrogate_id = sqla.Column(sqla.Text, primary_key=True)
-    _di_structure_surrogate_id = sqla.Column(
-        sqla.ForeignKey("structure._di_surrogate_id"), nullable=False
+    _di_surrogate_id: Mapped[str] = mapped_column(primary_key=True)
+    _di_structure_surrogate_id: Mapped[str] = mapped_column(
+        sqla.ForeignKey("structure._di_surrogate_id")
     )
-    _di_geocodage_code_insee = sqla.Column(sqla.Text, nullable=True)
-    _di_geocodage_score = sqla.Column(sqla.Float, nullable=True)
-    structure = orm.relationship("Structure", back_populates="services")
+    _di_geocodage_code_insee: Mapped[str | None]
+    _di_geocodage_score: Mapped[float | None]
+    structure: Mapped["Structure"] = relationship(back_populates="services")
 
     # service data
-    source = sqla.Column(sqla.Text, nullable=False)
-    id = sqla.Column(sqla.Text, nullable=False)
-    structure_id = sqla.Column(sqla.Text, nullable=False)
-    nom = sqla.Column(sqla.Text, nullable=False)
-    presentation_resume = sqla.Column(sqla.Text, nullable=True)
-    presentation_detail = sqla.Column(sqla.Text, nullable=True)
-    types = sqla.Column(ARRAY(sqla.Text), default=list)
-    thematiques = sqla.Column(ARRAY(sqla.Text), default=list)
-    prise_rdv = sqla.Column(sqla.Text, nullable=True)
-    frais = sqla.Column(ARRAY(sqla.Text), default=list)
-    frais_autres = sqla.Column(sqla.Text, nullable=True)
-    profils = sqla.Column(ARRAY(sqla.Text), default=list)
-    pre_requis = sqla.Column(ARRAY(sqla.Text), default=list)
-    cumulable = sqla.Column(sqla.Boolean, default=False)
-    justificatifs = sqla.Column(ARRAY(sqla.Text), default=list)
-    formulaire_en_ligne = sqla.Column(sqla.Text, nullable=True)
-    commune = sqla.Column(sqla.Text, nullable=True)
-    code_postal = sqla.Column(sqla.Text, nullable=True)
-    code_insee = sqla.Column(
-        sqla.ForeignKey("admin_express_communes.code"), nullable=True
+    source: Mapped[str]
+    id: Mapped[str]
+    structure_id: Mapped[str]
+    nom: Mapped[str]
+    presentation_resume: Mapped[str | None]
+    presentation_detail: Mapped[str | None]
+    types: Mapped[list[str] | None]
+    thematiques: Mapped[list[str] | None]
+    prise_rdv: Mapped[str | None]
+    frais: Mapped[list[str] | None]
+    frais_autres: Mapped[str | None]
+    profils: Mapped[list[str] | None]
+    pre_requis: Mapped[list[str] | None]
+    cumulable: Mapped[bool | None] = mapped_column(default=False)
+    justificatifs: Mapped[list[str] | None]
+    formulaire_en_ligne: Mapped[str | None]
+    commune: Mapped[str | None]
+    code_postal: Mapped[str | None]
+    code_insee: Mapped[str | None] = mapped_column(
+        sqla.ForeignKey("admin_express_communes.code")
     )
-    adresse = sqla.Column(sqla.Text, nullable=True)
-    complement_adresse = sqla.Column(sqla.Text, nullable=True)
-    longitude = sqla.Column(sqla.Float, nullable=True)
-    latitude = sqla.Column(sqla.Float, nullable=True)
-    recurrence = sqla.Column(sqla.Text, nullable=True)
-    date_creation = sqla.Column(sqla.Date(), nullable=True)
-    date_suspension = sqla.Column(sqla.Date(), nullable=True)
-    lien_source = sqla.Column(sqla.Text, nullable=True)
-    telephone = sqla.Column(sqla.Text, nullable=True)
-    courriel = sqla.Column(sqla.Text, nullable=True)
-    contact_public = sqla.Column(sqla.Boolean, default=False)
-    contact_nom_prenom = sqla.Column(sqla.Text, default=False)
-    date_maj = sqla.Column(sqla.Date(), nullable=True)
-    modes_accueil = sqla.Column(ARRAY(sqla.Text), default=list)
-    modes_orientation_accompagnateur = sqla.Column(ARRAY(sqla.Text), default=list)
-    modes_orientation_accompagnateur_autres = sqla.Column(sqla.Text, nullable=True)
-    modes_orientation_beneficiaire = sqla.Column(ARRAY(sqla.Text), default=list)
-    modes_orientation_beneficiaire_autres = sqla.Column(sqla.Text, nullable=True)
-    zone_diffusion_type = sqla.Column(sqla.Text, nullable=True)
-    zone_diffusion_code = sqla.Column(sqla.Text, nullable=True)
-    zone_diffusion_nom = sqla.Column(sqla.Text, nullable=True)
+    adresse: Mapped[str | None]
+    complement_adresse: Mapped[str | None]
+    longitude: Mapped[float | None]
+    latitude: Mapped[float | None]
+    recurrence: Mapped[str | None]
+    date_creation: Mapped[date | None]
+    date_suspension: Mapped[date | None]
+    lien_source: Mapped[str | None]
+    telephone: Mapped[str | None]
+    courriel: Mapped[str | None]
+    contact_public: Mapped[bool | None] = mapped_column(default=False)
+    contact_nom_prenom: Mapped[str]
+    date_maj: Mapped[date | None]
+    modes_accueil: Mapped[list[str] | None]
+    modes_orientation_accompagnateur: Mapped[list[str] | None]
+    modes_orientation_accompagnateur_autres: Mapped[str | None]
+    modes_orientation_beneficiaire: Mapped[list[str] | None]
+    modes_orientation_beneficiaire_autres: Mapped[str | None]
+    zone_diffusion_type: Mapped[str | None]
+    zone_diffusion_code: Mapped[str | None]
+    zone_diffusion_nom: Mapped[str | None]
 
-    commune_ = orm.relationship("Commune", back_populates="services")
+    commune_: Mapped["Commune"] = relationship(back_populates="services")
