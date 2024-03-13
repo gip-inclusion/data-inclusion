@@ -1,23 +1,18 @@
-import uuid
+from sqlalchemy.orm import Mapped
 
-import sqlalchemy as sqla
-from sqlalchemy.dialects.postgresql import JSONB, UUID
-
-from data_inclusion.api.core.db import Base
+from data_inclusion.api.core import db
 
 
-class Request(Base):
-    id = sqla.Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
-    created_at = sqla.Column(
-        sqla.DateTime(timezone=True), server_default=sqla.func.now()
-    )
-    status_code = sqla.Column(sqla.SmallInteger)
-    method = sqla.Column(sqla.Text)
-    path = sqla.Column(sqla.Text)
-    base_url = sqla.Column(sqla.Text)
-    user = sqla.Column(sqla.Text, nullable=True)
-    path_params = sqla.Column(JSONB)
-    query_params = sqla.Column(JSONB)
-    client_host = sqla.Column(sqla.Text)
-    client_port = sqla.Column(sqla.Integer)
-    endpoint_name = sqla.Column(sqla.Text)
+class Request(db.Base):
+    id: Mapped[db.uuid_pk]
+    created_at: Mapped[db.timestamp]
+    status_code: Mapped[int]
+    method: Mapped[str]
+    path: Mapped[str]
+    base_url: Mapped[str]
+    user: Mapped[str | None]
+    path_params: Mapped[dict]
+    query_params: Mapped[dict]
+    client_host: Mapped[str | None]
+    client_port: Mapped[int | None]
+    endpoint_name: Mapped[str | None]
