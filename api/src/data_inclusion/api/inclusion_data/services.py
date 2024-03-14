@@ -15,8 +15,13 @@ import fastapi
 from fastapi_pagination.ext.sqlalchemy import paginate
 
 from data_inclusion import schema as di_schema
-from data_inclusion.api.inclusion_data import models, schemas
-from data_inclusion.api.utils import code_officiel_geographique
+from data_inclusion.api.code_officiel_geo.constants import (
+    CODE_COMMUNE_BY_CODE_ARRONDISSEMENT,
+    DepartementCOG,
+    DepartementSlug,
+)
+from data_inclusion.api.code_officiel_geo.models import Commune
+from data_inclusion.api.inclusion_data import models
 
 logger = logging.getLogger(__name__)
 
@@ -61,8 +66,8 @@ def list_structures(
     id_: str | None = None,
     typologie: di_schema.Typologie | None = None,
     label_national: di_schema.LabelNational | None = None,
-    departement: schemas.DepartementCOG | None = None,
-    departement_slug: schemas.DepartementSlug | None = None,
+    departement: DepartementCOG | None = None,
+    departement_slug: DepartementSlug | None = None,
     code_postal: di_schema.CodePostal | None = None,
     thematique: di_schema.Thematique | None = None,
 ) -> list:
@@ -90,10 +95,10 @@ def list_structures(
         query = query.filter(
             sqla.or_(
                 models.Structure.code_insee.startswith(
-                    schemas.DepartementCOG[departement_slug.name].value
+                    DepartementCOG[departement_slug.name].value
                 ),
                 models.Structure._di_geocodage_code_insee.startswith(
-                    schemas.DepartementCOG[departement_slug.name].value
+                    DepartementCOG[departement_slug.name].value
                 ),
             )
         )
@@ -166,8 +171,8 @@ def list_services(
     db_session: orm.Session,
     source: str | None = None,
     thematique: di_schema.Thematique | None = None,
-    departement: schemas.DepartementCOG | None = None,
-    departement_slug: schemas.DepartementSlug | None = None,
+    departement: DepartementCOG | None = None,
+    departement_slug: DepartementSlug | None = None,
     code_insee: di_schema.CodeCommune | None = None,
 ):
     query = (
@@ -195,18 +200,16 @@ def list_services(
         query = query.filter(
             sqla.or_(
                 models.Service.code_insee.startswith(
-                    schemas.DepartementCOG[departement_slug.name].value
+                    DepartementCOG[departement_slug.name].value
                 ),
                 models.Service._di_geocodage_code_insee.startswith(
-                    schemas.DepartementCOG[departement_slug.name].value
+                    DepartementCOG[departement_slug.name].value
                 ),
             )
         )
 
     if code_insee is not None:
-        code_insee = code_officiel_geographique.CODE_COMMUNE_BY_CODE_ARRONDISSEMENT.get(
-            code_insee, code_insee
-        )
+        code_insee = CODE_COMMUNE_BY_CODE_ARRONDISSEMENT.get(code_insee, code_insee)
 
         query = query.filter(
             sqla.or_(
@@ -239,7 +242,7 @@ def search_services(
     request: fastapi.Request,
     db_session: orm.Session,
     sources: list[str] | None = None,
-    commune_instance: models.Commune | None = None,
+    commune_instance: Commune | None = None,
     thematiques: list[di_schema.Thematique] | None = None,
     frais: list[di_schema.Frais] | None = None,
     types: list[di_schema.TypologieService] | None = None,
@@ -304,11 +307,11 @@ def search_services(
             dest_geometry = (
                 sqla.select(
                     sqla.cast(
-                        geoalchemy2.functions.ST_Simplify(models.Commune.geom, 0.01),
+                        geoalchemy2.functions.ST_Simplify(Commune.geom, 0.01),
                         geoalchemy2.Geography(geometry_type="GEOMETRY", srid=4326),
                     )
                 )
-                .filter(models.Commune.code == commune_instance.code)
+                .filter(Commune.code == commune_instance.code)
                 .scalar_subquery()
             )
 

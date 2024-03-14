@@ -6,6 +6,7 @@ import faker
 from sqlalchemy import orm
 
 from data_inclusion import schema as di_schema
+from data_inclusion.api.code_officiel_geo.models import Commune
 from data_inclusion.api.inclusion_data import models
 from data_inclusion.api.request.models import Request
 
@@ -32,7 +33,7 @@ class RequestFactory(factory.alchemy.SQLAlchemyModelFactory):
 
 class CommuneFactory(factory.alchemy.SQLAlchemyModelFactory):
     class Meta:
-        model = models.Commune
+        model = Commune
         sqlalchemy_session = TestSession
         sqlalchemy_session_persistence = "commit"
 

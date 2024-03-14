@@ -1,52 +1,13 @@
 from datetime import date
 
-import geoalchemy2
 import sqlalchemy as sqla
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
+from data_inclusion.api.code_officiel_geo.models import Commune
 from data_inclusion.api.core.db import Base
 
 # all fields are nullable or have a default value. These models will only be used to
 # query valid data coming from the data pipeline.
-
-
-class Commune(Base):
-    __tablename__ = "admin_express_communes"
-
-    code: Mapped[str] = mapped_column(primary_key=True)
-    nom: Mapped[str]
-    departement: Mapped[str]
-    region: Mapped[str]
-    siren_epci: Mapped[str]
-    geom = mapped_column(geoalchemy2.Geometry("Geometry", srid=4326))
-
-    services: Mapped[list["Service"]] = relationship(back_populates="commune_")
-
-
-class EPCI(Base):
-    __tablename__ = "admin_express_epcis"
-
-    code: Mapped[str] = mapped_column(primary_key=True)
-    nom: Mapped[str]
-    nature: Mapped[str]
-    geom = mapped_column(geoalchemy2.Geometry("Geometry", srid=4326))
-
-
-class Departement(Base):
-    __tablename__ = "admin_express_departements"
-
-    code: Mapped[str] = mapped_column(primary_key=True)
-    nom: Mapped[str]
-    insee_reg: Mapped[str]
-    geom = mapped_column(geoalchemy2.Geometry("Geometry", srid=4326))
-
-
-class Region(Base):
-    __tablename__ = "admin_express_regions"
-
-    code: Mapped[str] = mapped_column(primary_key=True)
-    nom: Mapped[str]
-    geom = mapped_column(geoalchemy2.Geometry("Geometry", srid=4326))
 
 
 class Structure(Base):
@@ -98,7 +59,7 @@ class Service(Base):
     )
     _di_geocodage_code_insee: Mapped[str | None]
     _di_geocodage_score: Mapped[float | None]
-    structure: Mapped["Structure"] = relationship(back_populates="services")
+    structure: Mapped[Structure] = relationship(back_populates="services")
 
     # service data
     source: Mapped[str]
@@ -144,4 +105,7 @@ class Service(Base):
     zone_diffusion_code: Mapped[str | None]
     zone_diffusion_nom: Mapped[str | None]
 
-    commune_: Mapped["Commune"] = relationship(back_populates="services")
+    commune_: Mapped[Commune] = relationship(back_populates="services")
+
+
+Commune.services = relationship(Service, back_populates="commune_")
