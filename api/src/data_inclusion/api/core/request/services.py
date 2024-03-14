@@ -34,3 +34,4 @@ def save_request(
     )  # type: ignore
 
     db_session.add(request_instance)
+    db_session.flush()
