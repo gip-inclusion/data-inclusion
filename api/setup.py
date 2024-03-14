@@ -43,6 +43,7 @@ setup(
             "factory_boy",
             "pytest-dotenv",
             "geopandas",
+            "fastapi-debug-toolbar",
         ],
         "dev": [
             "ruff",
