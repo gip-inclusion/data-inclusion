@@ -136,16 +136,11 @@ def conn(db_init):
 def test_session(conn):
     faker.Faker.seed(0)
 
+    # https://docs.sqlalchemy.org/en/20/orm/session_transaction.html#joining-a-session-into-an-external-transaction-such-as-for-test-suites  # noqa
     transaction = conn.begin()
-    factories.TestSession.configure(bind=conn)
+    factories.TestSession.configure(bind=conn, join_transaction_mode="create_savepoint")
     session = factories.TestSession()
     session.begin_nested()
-
-    @sqla.event.listens_for(session, "after_transaction_end")
-    def restart_savepoint(db_session, transaction):
-        if transaction.nested and not transaction._parent.nested:
-            session.expire_all()
-            session.begin_nested()
 
     yield session
 
