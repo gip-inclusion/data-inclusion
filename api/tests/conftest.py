@@ -94,11 +94,7 @@ def db_init():
 
     command.upgrade(config, "head")
 
-    factories.TestSession.configure(bind=test_engine)
-
     yield test_engine
-
-    factories.TestSession.remove()
 
     with default_engine.connect() as conn:
         conn.execute(
@@ -129,11 +125,32 @@ def generate_communes_nord(db_engine):
         )
 
 
+@pytest.fixture(scope="session")
+def conn(db_init):
+    conn = db_init.connect()
+    yield conn
+    conn.close()
+
+
 @pytest.fixture()
-def test_session(db_init):
+def test_session(conn):
     faker.Faker.seed(0)
-    with factories.TestSession() as session:
-        yield session
+
+    transaction = conn.begin()
+    factories.TestSession.configure(bind=conn)
+    session = factories.TestSession()
+    session.begin_nested()
+
+    @sqla.event.listens_for(session, "after_transaction_end")
+    def restart_savepoint(db_session, transaction):
+        if transaction.nested and not transaction._parent.nested:
+            session.expire_all()
+            session.begin_nested()
+
+    yield session
+
+    factories.TestSession.remove()
+    transaction.rollback()
 
 
 @pytest.fixture(autouse=True)

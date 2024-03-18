@@ -25,7 +25,7 @@ class RequestFactory(factory.alchemy.SQLAlchemyModelFactory):
     class Meta:
         model = Request
         sqlalchemy_session = TestSession
-        sqlalchemy_session_persistence = "flush"
+        sqlalchemy_session_persistence = "commit"
 
     status_code = 200
 
@@ -34,14 +34,14 @@ class CommuneFactory(factory.alchemy.SQLAlchemyModelFactory):
     class Meta:
         model = models.Commune
         sqlalchemy_session = TestSession
-        sqlalchemy_session_persistence = "flush"
+        sqlalchemy_session_persistence = "commit"
 
 
 class StructureFactory(factory.alchemy.SQLAlchemyModelFactory):
     class Meta:
         model = models.Structure
         sqlalchemy_session = TestSession
-        sqlalchemy_session_persistence = "flush"
+        sqlalchemy_session_persistence = "commit"
 
     _di_surrogate_id = factory.Faker("uuid4")
     _di_geocodage_code_insee = factory.Faker("postcode")
@@ -97,7 +97,7 @@ class ServiceFactory(factory.alchemy.SQLAlchemyModelFactory):
     class Meta:
         model = models.Service
         sqlalchemy_session = TestSession
-        sqlalchemy_session_persistence = "flush"
+        sqlalchemy_session_persistence = "commit"
 
     _di_surrogate_id = factory.Faker("uuid4")
     _di_geocodage_code_insee = factory.Faker("postcode")
