@@ -17,6 +17,7 @@ setup(
         "faker",
         "fastapi",
         "fastapi-pagination",
+        "furl",
         "GeoAlchemy2",
         "gunicorn",
         "httpx",
