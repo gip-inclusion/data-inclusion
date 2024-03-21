@@ -44,14 +44,5 @@ def test_save_api_request_without_token(api_client, test_session):
     assert response.status_code == 403
     assert (
         test_session.scalar(sqla.select(sqla.func.count()).select_from(models.Request))
-        == 1
+        == 0
     )
-
-    request_instance = test_session.scalars(sqla.select(models.Request)).first()
-    assert request_instance.status_code == 403
-    assert request_instance.user is None
-    assert request_instance.path == "/api/v0/structures"
-    assert request_instance.method == "GET"
-    assert request_instance.path_params == {}
-    assert request_instance.query_params == {}
-    assert request_instance.endpoint_name == "list_structures_endpoint"

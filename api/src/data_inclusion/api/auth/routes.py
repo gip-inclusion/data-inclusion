@@ -4,8 +4,9 @@ from typing_extensions import Annotated
 import fastapi
 
 from data_inclusion.api.auth import services
+from data_inclusion.api.auth.dependencies import admin_dependency
 
-router = fastapi.APIRouter()
+router = fastapi.APIRouter(tags=["Auth"])
 
 
 class TokenCreationData(BaseModel):
@@ -23,15 +24,9 @@ def create_token(email: str) -> Token:
 @router.post(
     "/create_token",
     response_model=Token,
+    dependencies=[admin_dependency],
 )
 def create_token_endpoint(
     token_creation_data: Annotated[TokenCreationData, fastapi.Body()],
-    request: fastapi.Request,
 ):
-    if "admin" in request.auth.scopes:
-        return create_token(email=token_creation_data.email)
-    else:
-        raise fastapi.HTTPException(
-            status_code=fastapi.status.HTTP_401_UNAUTHORIZED,
-            detail="Unauthorized.",
-        )
+    return create_token(email=token_creation_data.email)
