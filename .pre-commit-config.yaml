@@ -4,11 +4,14 @@ repos:
     rev: v0.2.1
     hooks:
       - id: ruff
-        name: api|ruff
-        args: [--config=api/pyproject.toml]
+        name: api|ruff-lint
+        args:
+          - --config=api/pyproject.toml
+          - --fix
+          - --fixable=I
         files: ^api
       - id: ruff-format
-        name: api|ruff
+        name: api|ruff-format
         args: [--config=api/pyproject.toml]
         files: ^api
 
@@ -28,11 +31,14 @@ repos:
     rev: v0.2.1
     hooks:
       - id: ruff
-        name: pipeline|ruff
-        args: [--config=pipeline/pyproject.toml]
+        name: pipeline|ruff-lint
+        args:
+          - --config=pipeline/pyproject.toml
+          - --fix
+          - --fixable=I
         files: ^pipeline
       - id: ruff-format
-        name: pipeline|ruff
+        name: pipeline|ruff-format
         args: [--config=pipeline/pyproject.toml]
         files: ^pipeline
 
