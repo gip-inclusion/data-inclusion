@@ -70,6 +70,8 @@ fastapi-pagination==0.12.17
     # via data-inclusion-api (setup.py)
 fiona==1.9.5
     # via geopandas
+furl==2.1.3
+    # via data-inclusion-api (setup.py)
 geoalchemy2==0.14.6
     # via data-inclusion-api (setup.py)
 geopandas==0.14.3
@@ -110,6 +112,8 @@ numpy==1.26.4
     #   pandas
     #   pyarrow
     #   shapely
+orderedmultidict==1.0.1
+    # via furl
 packaging==23.2
     # via
     #   geoalchemy2
@@ -144,12 +148,12 @@ pydantic[email]==2.6.3
     #   pydantic-settings
 pydantic-core==2.16.3
     # via pydantic
-    #   pydantic-settings
 pydantic-extra-types==2.6.0
     # via fastapi-debug-toolbar
 pydantic-settings==2.2.1
-    # via fastapi-debug-toolbar
+    # via
     #   data-inclusion-api (setup.py)
+    #   fastapi-debug-toolbar
 pyinstrument==4.6.2
     # via fastapi-debug-toolbar
 pyproj==3.6.1
@@ -191,6 +195,8 @@ six==1.16.0
     # via
     #   ecdsa
     #   fiona
+    #   furl
+    #   orderedmultidict
     #   python-dateutil
 sniffio==1.3.1
     # via
