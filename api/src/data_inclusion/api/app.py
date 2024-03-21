@@ -5,9 +5,7 @@ import sentry_sdk
 import fastapi
 import fastapi_pagination
 from fastapi.middleware import cors
-from fastapi.security import HTTPBearer
 
-from data_inclusion.api.auth.middleware import AuthenticationMiddleware
 from data_inclusion.api.auth.routes import router as auth_api_router
 from data_inclusion.api.config import settings
 from data_inclusion.api.core import db
@@ -26,10 +24,6 @@ def setup_cors_middleware(app: fastapi.FastAPI) -> None:
         allow_methods=["*"],
         allow_headers=["*"],
     )
-
-
-def setup_auth_middleware(app: fastapi.FastAPI) -> None:
-    app.add_middleware(AuthenticationMiddleware)
 
 
 def setup_debug_toolbar_middleware(app: fastapi.FastAPI) -> None:
@@ -68,7 +62,6 @@ def create_app() -> fastapi.FastAPI:
     )
 
     setup_cors_middleware(app)
-    setup_auth_middleware(app)
 
     if settings.ENV == "dev":
         setup_debug_toolbar_middleware(app)
@@ -88,20 +81,10 @@ def create_app() -> fastapi.FastAPI:
     return app
 
 
-v0_api_router = fastapi.APIRouter(
-    prefix="/api/v0",
-    dependencies=[fastapi.Depends(HTTPBearer())] if settings.TOKEN_ENABLED else [],
-)
+v0_api_router = fastapi.APIRouter(prefix="/api/v0")
 
-v0_api_router.include_router(
-    data_api_router,
-    tags=["Données"],
-)
-v0_api_router.include_router(
-    auth_api_router,
-    include_in_schema=False,
-    tags=["Authentication"],
-)
+v0_api_router.include_router(data_api_router)
+v0_api_router.include_router(auth_api_router, include_in_schema=False)
 
 
 app = create_app()

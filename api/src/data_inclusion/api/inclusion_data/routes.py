@@ -5,11 +5,12 @@ from pydantic.json_schema import SkipJsonSchema
 import fastapi
 
 from data_inclusion import schema as di_schema
+from data_inclusion.api.auth.dependencies import authenticated_dependency
 from data_inclusion.api.core import db
 from data_inclusion.api.inclusion_data import models, schemas, services
 from data_inclusion.api.utils import code_officiel_geographique, pagination, soliguide
 
-router = fastapi.APIRouter()
+router = fastapi.APIRouter(tags=["Données"])
 
 
 @router.get(
@@ -17,6 +18,7 @@ router = fastapi.APIRouter()
     response_model=pagination.Page[schemas.Structure],
     summary="Lister les structures consolidées",
     deprecated=True,
+    dependencies=[authenticated_dependency],
 )
 def list_structures_endpoint(
     request: fastapi.Request,
@@ -60,6 +62,7 @@ def list_structures_endpoint(
     "/structures/{source}/{id}",
     response_model=schemas.DetailedStructure,
     summary="Détailler une structure",
+    dependencies=[authenticated_dependency],
 )
 def retrieve_structure_endpoint(
     source: Annotated[str, fastapi.Path()],
@@ -74,6 +77,7 @@ def retrieve_structure_endpoint(
     "/sources",
     response_model=list[schemas.Source],
     summary="Lister les sources consolidées",
+    dependencies=[authenticated_dependency],
 )
 def list_sources_endpoint(
     request: fastapi.Request,
@@ -86,6 +90,7 @@ def list_sources_endpoint(
     response_model=pagination.Page[schemas.Service],
     summary="Lister les services consolidés",
     deprecated=True,
+    dependencies=[authenticated_dependency],
 )
 def list_services_endpoint(
     request: fastapi.Request,
@@ -119,6 +124,7 @@ def list_services_endpoint(
     "/services/{source}/{id}",
     response_model=schemas.DetailedService,
     summary="Détailler un service",
+    dependencies=[authenticated_dependency],
 )
 def retrieve_service_endpoint(
     source: Annotated[str, fastapi.Path()],
@@ -133,6 +139,7 @@ def retrieve_service_endpoint(
     "/search/services",
     response_model=pagination.Page[schemas.ServiceSearchResult],
     summary="Rechercher des services",
+    dependencies=[authenticated_dependency],
 )
 def search_services_endpoint(
     request: fastapi.Request,
