@@ -1,8 +1,10 @@
 from typing import Annotated
 
+from furl import furl
 from pydantic.json_schema import SkipJsonSchema
 
 import fastapi
+from fastapi.responses import RedirectResponse
 
 from data_inclusion import schema as di_schema
 from data_inclusion.api import auth
@@ -133,6 +135,44 @@ def retrieve_service_endpoint(
     _=fastapi.Depends(soliguide.notify_soliguide_dependency),
 ):
     return services.retrieve_service(db_session=db_session, source=source, id_=id)
+
+
+@router.get(
+    "/services/{source}/{id}/redirige",
+    include_in_schema=False,
+)
+def redirect_service_endpoint(
+    request: fastapi.Request,
+    source: Annotated[str, fastapi.Path()],
+    id: Annotated[str, fastapi.Path()],
+    depuis: Annotated[str, fastapi.Query()],
+    db_session=fastapi.Depends(db.get_session),
+):
+    """Redirige vers le lien source du service donné"""
+
+    # This endpoint is not token restricted.
+    # This is to record redirections stemming from 3rd party website
+    # like les emplois, while keeping things simple for the 3rd party.
+
+    # The required `depuis` query param only purpose is to associate
+    # the query to a consumer, since there is not token authentication.
+
+    # The redirection should forward any other query parameters, such
+    # as utm query parameters
+
+    service_instance = services.retrieve_service(
+        db_session=db_session, source=source, id_=id
+    )
+
+    if service_instance.lien_source is None:
+        return fastapi.Response(status_code=fastapi.status.HTTP_404_NOT_FOUND)
+
+    params = dict(request.query_params)
+    del params["depuis"]
+
+    target_url = furl(str(service_instance.lien_source)).add(params)
+
+    return RedirectResponse(str(target_url))
 
 
 @router.get(

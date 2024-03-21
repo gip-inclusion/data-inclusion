@@ -67,6 +67,8 @@ filelock==3.13.1
     # via
     #   tox
     #   virtualenv
+furl==2.1.3
+    # via data-inclusion-api (setup.py)
 geoalchemy2==0.14.6
     # via data-inclusion-api (setup.py)
 greenlet==3.0.3
@@ -106,6 +108,8 @@ numpy==1.26.4
     #   data-inclusion-api (setup.py)
     #   pandas
     #   pyarrow
+orderedmultidict==1.0.1
+    # via furl
 packaging==23.2
     # via
     #   geoalchemy2
@@ -184,6 +188,8 @@ sentry-sdk[fastapi]==1.40.6
 six==1.16.0
     # via
     #   ecdsa
+    #   furl
+    #   orderedmultidict
     #   python-dateutil
 sniffio==1.3.1
     # via
