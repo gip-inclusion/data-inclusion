@@ -2,7 +2,7 @@ import logging
 
 import click
 
-from data_inclusion.api.auth import services
+from data_inclusion.api import auth
 
 logger = logging.getLogger(__name__)
 
@@ -29,7 +29,7 @@ def generate_token_for_user(
     admin: bool,
 ):
     """Generate a token associated with the given email."""
-    click.echo(services.create_access_token(subject=email, admin=admin))
+    click.echo(auth.create_access_token(subject=email, admin=admin))
 
 
 if __name__ == "__main__":
