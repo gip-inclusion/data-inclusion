@@ -630,8 +630,7 @@
           "tags": [
             "Documentation"
           ],
-          "summary": "Documente les labels nationaux",
-          "description": "## Documente les labels nationaux",
+          "summary": "Récupérer le référentiel des labels nationaux",
           "operationId": "list_labels_nationaux_endpoint_api_v0_doc_labels_nationaux_get",
           "responses": {
             "200": {
@@ -656,8 +655,7 @@
           "tags": [
             "Documentation"
           ],
-          "summary": "Documente les thématiques",
-          "description": "## Documente les thématiques",
+          "summary": "Récupérer le référentiel des thématiques",
           "operationId": "list_thematiques_endpoint_api_v0_doc_thematiques_get",
           "responses": {
             "200": {
@@ -682,8 +680,7 @@
           "tags": [
             "Documentation"
           ],
-          "summary": "Documente les typologies de services",
-          "description": "## Documente les typologies de services",
+          "summary": "Récupérer le référentiel des typologies de services",
           "operationId": "list_typologies_services_endpoint_api_v0_doc_typologies_services_get",
           "responses": {
             "200": {
@@ -708,8 +705,7 @@
           "tags": [
             "Documentation"
           ],
-          "summary": "Documente les frais",
-          "description": "## Documente les frais",
+          "summary": "Récupérer le référentiel des frais",
           "operationId": "list_frais_endpoint_api_v0_doc_frais_get",
           "responses": {
             "200": {
@@ -734,8 +730,7 @@
           "tags": [
             "Documentation"
           ],
-          "summary": "Documente les profils de publics",
-          "description": "## Documente les profils de publics",
+          "summary": "Récupérer le référentiel des profils de publics",
           "operationId": "list_profils_endpoint_api_v0_doc_profils_get",
           "responses": {
             "200": {
@@ -760,8 +755,7 @@
           "tags": [
             "Documentation"
           ],
-          "summary": "Documente les typologies de structures",
-          "description": "## Documente les typologies de structures",
+          "summary": "Récupérer le référentiel des typologies de structures",
           "operationId": "list_typologies_structures_endpoint_api_v0_doc_typologies_structures_get",
           "responses": {
             "200": {
@@ -786,8 +780,7 @@
           "tags": [
             "Documentation"
           ],
-          "summary": "Documente les modes d'accueil",
-          "description": "## Documente les modes d'accueil",
+          "summary": "Récupérer le référentiel des modes d'accueil",
           "operationId": "list_modes_accueil_endpoint_api_v0_doc_modes_accueil_get",
           "responses": {
             "200": {
@@ -812,8 +805,7 @@
           "tags": [
             "Documentation"
           ],
-          "summary": "Documente les modes d'orientation de l'accompagnateur",
-          "description": "## Documente les modes d'orientation de l'accompagnateur",
+          "summary": "Récupérer le référentiel des modes d'orientation de l'accompagnateur",
           "operationId": "list_modes_orientation_accompagnateur_endpoint_api_v0_doc_modes_orientation_accompagnateur_get",
           "responses": {
             "200": {
@@ -838,8 +830,7 @@
           "tags": [
             "Documentation"
           ],
-          "summary": "Documente les modes d'orientation du bénéficiaire",
-          "description": "## Documente les modes d'orientation du bénéficiaire",
+          "summary": "Récupérer le référentiel des modes d'orientation du bénéficiaire",
           "operationId": "list_modes_orientation_beneficiaire_endpoint_api_v0_doc_modes_orientation_beneficiaire_get",
           "responses": {
             "200": {
