@@ -3,8 +3,7 @@ from typing_extensions import Annotated
 
 import fastapi
 
-from data_inclusion.api.auth import services
-from data_inclusion.api.auth.dependencies import admin_dependency
+from data_inclusion.api import auth
 
 router = fastapi.APIRouter(tags=["Auth"])
 
@@ -18,15 +17,15 @@ class Token(BaseModel):
 
 
 def create_token(email: str) -> Token:
-    return Token(access=services.create_access_token(subject=email))
+    return Token(access=auth.create_access_token(subject=email))
 
 
 @router.post(
     "/create_token",
     response_model=Token,
-    dependencies=[admin_dependency],
+    dependencies=[auth.admin_dependency],
 )
 def create_token_endpoint(
     token_creation_data: Annotated[TokenCreationData, fastapi.Body()],
 ):
-    return create_token(email=token_creation_data.email)
+    return Token(access=auth.create_access_token(subject=token_creation_data.email))

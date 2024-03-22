@@ -5,7 +5,7 @@ from starlette.authentication import AuthCredentials, SimpleUser, Unauthenticate
 import fastapi
 from fastapi import security, status
 
-from data_inclusion.api.auth import services
+from data_inclusion.api import auth
 from data_inclusion.api.config import settings
 
 credentials = security.HTTPBearer() if settings.TOKEN_ENABLED else None
@@ -32,7 +32,7 @@ def _authenticate(
     fine-grained permission at the route level, in a way that is compatible
     with fastapi's swagger generation.
     """
-    payload = services.verify_token(credentials.credentials)
+    payload = auth.verify_token(credentials.credentials)
 
     if payload is None:
         request.scope["user"] = UnauthenticatedUser()

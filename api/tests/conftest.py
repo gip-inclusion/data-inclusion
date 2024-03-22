@@ -53,14 +53,14 @@ def force_authenticate(request, api_client):
     Inject a valid token header to the test client, when tests are flagged with the
     `with_token` mark.
     """
-    from data_inclusion.api.auth import services
+    from data_inclusion.api import auth
 
     token = None
 
     if request.node.get_closest_marker("with_token"):
-        token = services.create_access_token("some_user")
+        token = auth.create_access_token("some_user")
     elif request.node.get_closest_marker("with_admin_token"):
-        token = services.create_access_token("admin_user", admin=True)
+        token = auth.create_access_token("admin_user", admin=True)
 
     if token is not None:
         api_client.headers.update({"Authorization": f"Bearer {token}"})
