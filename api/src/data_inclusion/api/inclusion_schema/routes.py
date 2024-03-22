@@ -7,7 +7,9 @@ from data_inclusion import schema
 router = fastapi.APIRouter()
 
 
-class EnhancedEnumMember(BaseModel):
+class FrameworkValue(BaseModel):
+    """Schema for members of a domain taxonomy"""
+
     value: str
     label: str
     description: str | None = None
@@ -15,7 +17,7 @@ class EnhancedEnumMember(BaseModel):
 
 @router.get(
     "/labels-nationaux",
-    response_model=list[EnhancedEnumMember],
+    response_model=list[FrameworkValue],
     summary="Récupérer le référentiel des labels nationaux",
 )
 def list_labels_nationaux_endpoint():
@@ -24,7 +26,7 @@ def list_labels_nationaux_endpoint():
 
 @router.get(
     "/thematiques",
-    response_model=list[EnhancedEnumMember],
+    response_model=list[FrameworkValue],
     summary="Récupérer le référentiel des thématiques",
 )
 def list_thematiques_endpoint():
@@ -33,7 +35,7 @@ def list_thematiques_endpoint():
 
 @router.get(
     "/typologies-services",
-    response_model=list[EnhancedEnumMember],
+    response_model=list[FrameworkValue],
     summary="Récupérer le référentiel des typologies de services",
 )
 def list_typologies_services_endpoint():
@@ -42,7 +44,7 @@ def list_typologies_services_endpoint():
 
 @router.get(
     "/frais",
-    response_model=list[EnhancedEnumMember],
+    response_model=list[FrameworkValue],
     summary="Récupérer le référentiel des frais",
 )
 def list_frais_endpoint():
@@ -51,7 +53,7 @@ def list_frais_endpoint():
 
 @router.get(
     "/profils",
-    response_model=list[EnhancedEnumMember],
+    response_model=list[FrameworkValue],
     summary="Récupérer le référentiel des profils de publics",
 )
 def list_profils_endpoint():
@@ -60,7 +62,7 @@ def list_profils_endpoint():
 
 @router.get(
     "/typologies-structures",
-    response_model=list[EnhancedEnumMember],
+    response_model=list[FrameworkValue],
     summary="Récupérer le référentiel des typologies de structures",
 )
 def list_typologies_structures_endpoint():
@@ -69,7 +71,7 @@ def list_typologies_structures_endpoint():
 
 @router.get(
     "/modes-accueil",
-    response_model=list[EnhancedEnumMember],
+    response_model=list[FrameworkValue],
     summary="Récupérer le référentiel des modes d'accueil",
 )
 def list_modes_accueil_endpoint():
@@ -78,7 +80,7 @@ def list_modes_accueil_endpoint():
 
 @router.get(
     "/modes-orientation-accompagnateur",
-    response_model=list[EnhancedEnumMember],
+    response_model=list[FrameworkValue],
     summary="Récupérer le référentiel des modes d'orientation de l'accompagnateur",
 )
 def list_modes_orientation_accompagnateur_endpoint():
@@ -87,7 +89,7 @@ def list_modes_orientation_accompagnateur_endpoint():
 
 @router.get(
     "/modes-orientation-beneficiaire",
-    response_model=list[EnhancedEnumMember],
+    response_model=list[FrameworkValue],
     summary="Récupérer le référentiel des modes d'orientation du bénéficiaire",
 )
 def list_modes_orientation_beneficiaire_endpoint():
