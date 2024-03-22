@@ -639,7 +639,7 @@
                 "application/json": {
                   "schema": {
                     "items": {
-                      "$ref": "#/components/schemas/EnhancedEnumMember"
+                      "$ref": "#/components/schemas/FrameworkValue"
                     },
                     "type": "array",
                     "title": "Response List Labels Nationaux Endpoint Api V0 Doc Labels Nationaux Get"
@@ -664,7 +664,7 @@
                 "application/json": {
                   "schema": {
                     "items": {
-                      "$ref": "#/components/schemas/EnhancedEnumMember"
+                      "$ref": "#/components/schemas/FrameworkValue"
                     },
                     "type": "array",
                     "title": "Response List Thematiques Endpoint Api V0 Doc Thematiques Get"
@@ -689,7 +689,7 @@
                 "application/json": {
                   "schema": {
                     "items": {
-                      "$ref": "#/components/schemas/EnhancedEnumMember"
+                      "$ref": "#/components/schemas/FrameworkValue"
                     },
                     "type": "array",
                     "title": "Response List Typologies Services Endpoint Api V0 Doc Typologies Services Get"
@@ -714,7 +714,7 @@
                 "application/json": {
                   "schema": {
                     "items": {
-                      "$ref": "#/components/schemas/EnhancedEnumMember"
+                      "$ref": "#/components/schemas/FrameworkValue"
                     },
                     "type": "array",
                     "title": "Response List Frais Endpoint Api V0 Doc Frais Get"
@@ -739,7 +739,7 @@
                 "application/json": {
                   "schema": {
                     "items": {
-                      "$ref": "#/components/schemas/EnhancedEnumMember"
+                      "$ref": "#/components/schemas/FrameworkValue"
                     },
                     "type": "array",
                     "title": "Response List Profils Endpoint Api V0 Doc Profils Get"
@@ -764,7 +764,7 @@
                 "application/json": {
                   "schema": {
                     "items": {
-                      "$ref": "#/components/schemas/EnhancedEnumMember"
+                      "$ref": "#/components/schemas/FrameworkValue"
                     },
                     "type": "array",
                     "title": "Response List Typologies Structures Endpoint Api V0 Doc Typologies Structures Get"
@@ -789,7 +789,7 @@
                 "application/json": {
                   "schema": {
                     "items": {
-                      "$ref": "#/components/schemas/EnhancedEnumMember"
+                      "$ref": "#/components/schemas/FrameworkValue"
                     },
                     "type": "array",
                     "title": "Response List Modes Accueil Endpoint Api V0 Doc Modes Accueil Get"
@@ -814,7 +814,7 @@
                 "application/json": {
                   "schema": {
                     "items": {
-                      "$ref": "#/components/schemas/EnhancedEnumMember"
+                      "$ref": "#/components/schemas/FrameworkValue"
                     },
                     "type": "array",
                     "title": "Response List Modes Orientation Accompagnateur Endpoint Api V0 Doc Modes Orientation Accompagnateur Get"
@@ -839,7 +839,7 @@
                 "application/json": {
                   "schema": {
                     "items": {
-                      "$ref": "#/components/schemas/EnhancedEnumMember"
+                      "$ref": "#/components/schemas/FrameworkValue"
                     },
                     "type": "array",
                     "title": "Response List Modes Orientation Beneficiaire Endpoint Api V0 Doc Modes Orientation Beneficiaire Get"
@@ -2125,7 +2125,18 @@
           ],
           "title": "DetailedStructure"
         },
-        "EnhancedEnumMember": {
+        "Frais": {
+          "type": "string",
+          "enum": [
+            "gratuit",
+            "gratuit-sous-conditions",
+            "payant",
+            "adhesion",
+            "pass-numerique"
+          ],
+          "title": "Frais"
+        },
+        "FrameworkValue": {
           "properties": {
             "value": {
               "type": "string",
@@ -2152,18 +2163,8 @@
             "value",
             "label"
           ],
-          "title": "EnhancedEnumMember"
-        },
-        "Frais": {
-          "type": "string",
-          "enum": [
-            "gratuit",
-            "gratuit-sous-conditions",
-            "payant",
-            "adhesion",
-            "pass-numerique"
-          ],
-          "title": "Frais"
+          "title": "FrameworkValue",
+          "description": "Schema for members of a domain taxonomy"
         },
         "HTTPValidationError": {
           "properties": {
