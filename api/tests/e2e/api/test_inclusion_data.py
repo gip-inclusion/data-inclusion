@@ -7,7 +7,7 @@ import pytest
 from data_inclusion import schema
 from data_inclusion.api.utils import soliguide
 
-from . import factories
+from ... import factories
 
 
 def test_openapi_spec(api_client, snapshot):
@@ -407,123 +407,6 @@ def test_list_services_all(api_client):
         "size": ANY,
         "pages": 1,
     }
-
-
-@pytest.mark.with_token
-def test_list_labels_nationaux(api_client):
-    url = "/api/v0/doc/labels-nationaux/"
-
-    response = api_client.get(url)
-
-    assert response.status_code == 200
-
-    resp_data = response.json()
-
-    assert resp_data[0] == {"value": ANY, "label": ANY, "description": ANY}
-
-
-@pytest.mark.with_token
-def test_list_thematiques(api_client):
-    url = "/api/v0/doc/thematiques/"
-
-    response = api_client.get(url)
-
-    assert response.status_code == 200
-
-    resp_data = response.json()
-
-    assert resp_data[0] == {"value": ANY, "label": ANY, "description": ANY}
-
-
-@pytest.mark.with_token
-def test_list_typologies_services(api_client):
-    url = "/api/v0/doc/typologies-services/"
-
-    response = api_client.get(url)
-
-    assert response.status_code == 200
-
-    resp_data = response.json()
-
-    assert resp_data[0] == {"value": ANY, "label": ANY, "description": ANY}
-
-
-@pytest.mark.with_token
-def test_list_frais(api_client):
-    url = "/api/v0/doc/frais/"
-
-    response = api_client.get(url)
-
-    assert response.status_code == 200
-
-    resp_data = response.json()
-
-    assert resp_data[0] == {"value": ANY, "label": ANY, "description": ANY}
-
-
-@pytest.mark.with_token
-def test_list_profils(api_client):
-    url = "/api/v0/doc/profils/"
-
-    response = api_client.get(url)
-
-    assert response.status_code == 200
-
-    resp_data = response.json()
-
-    assert resp_data[0] == {"value": ANY, "label": ANY, "description": ANY}
-
-
-@pytest.mark.with_token
-def test_list_typologies_structures(api_client):
-    url = "/api/v0/doc/typologies-structures/"
-
-    response = api_client.get(url)
-
-    assert response.status_code == 200
-
-    resp_data = response.json()
-
-    assert resp_data[0] == {"value": ANY, "label": ANY, "description": ANY}
-
-
-@pytest.mark.with_token
-def test_list_modes_accueil(api_client):
-    url = "/api/v0/doc/modes-accueil/"
-
-    response = api_client.get(url)
-
-    assert response.status_code == 200
-
-    resp_data = response.json()
-
-    assert resp_data[0] == {"value": ANY, "label": ANY, "description": ANY}
-
-
-@pytest.mark.with_token
-def test_list_modes_orientation_accompagnateur(api_client):
-    url = "/api/v0/doc/modes-orientation-accompagnateur/"
-
-    response = api_client.get(url)
-
-    assert response.status_code == 200
-
-    resp_data = response.json()
-
-    assert resp_data[0] == {"value": ANY, "label": ANY, "description": ANY}
-
-
-@pytest.mark.with_token
-def test_list_modes_orientation_beneficiaire(api_client):
-    url = "/api/v0/doc/modes-orientation-beneficiaire/"
-
-    response = api_client.get(url)
-
-    assert response.status_code == 200
-
-    resp_data = response.json()
-
-    assert resp_data[0] == {"value": ANY, "label": ANY, "description": ANY}
 
 
 @pytest.mark.with_token
