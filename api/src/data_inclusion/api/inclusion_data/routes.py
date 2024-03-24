@@ -1,4 +1,4 @@
-from typing import Annotated
+from typing import Annotated, TypeVar
 
 from furl import furl
 from pydantic.json_schema import SkipJsonSchema
@@ -15,6 +15,12 @@ from data_inclusion.api.utils import code_officiel_geographique, pagination, sol
 router = fastapi.APIRouter(tags=["Données"])
 
 
+# This ensures a dropdown is shown in the openapi doc
+# for optional enum query parameters.
+T = TypeVar("T")
+Optional = T | SkipJsonSchema[None]
+
+
 @router.get(
     "/structures",
     response_model=pagination.Page[schemas.Structure],
@@ -24,26 +30,18 @@ router = fastapi.APIRouter(tags=["Données"])
 )
 def list_structures_endpoint(
     request: fastapi.Request,
-    source: Annotated[str | SkipJsonSchema[None], fastapi.Query()] = None,
-    id: Annotated[str | SkipJsonSchema[None], fastapi.Query()] = None,
-    typologie: Annotated[
-        di_schema.Typologie | SkipJsonSchema[None], fastapi.Query()
-    ] = None,
+    source: Annotated[Optional[str], fastapi.Query()] = None,
+    id: Annotated[Optional[str], fastapi.Query()] = None,
+    typologie: Annotated[Optional[di_schema.Typologie], fastapi.Query()] = None,
     label_national: Annotated[
-        di_schema.LabelNational | SkipJsonSchema[None], fastapi.Query()
+        Optional[di_schema.LabelNational], fastapi.Query()
     ] = None,
-    thematique: Annotated[
-        di_schema.Thematique | SkipJsonSchema[None], fastapi.Query()
-    ] = None,
-    departement: Annotated[
-        schemas.DepartementCOG | SkipJsonSchema[None], fastapi.Query()
-    ] = None,
+    thematique: Annotated[Optional[di_schema.Thematique], fastapi.Query()] = None,
+    departement: Annotated[Optional[schemas.DepartementCOG], fastapi.Query()] = None,
     departement_slug: Annotated[
-        schemas.DepartementSlug | SkipJsonSchema[None], fastapi.Query()
+        Optional[schemas.DepartementSlug], fastapi.Query()
     ] = None,
-    code_postal: Annotated[
-        di_schema.CodePostal | SkipJsonSchema[None], fastapi.Query()
-    ] = None,
+    code_postal: Annotated[Optional[di_schema.CodePostal], fastapi.Query()] = None,
     db_session=fastapi.Depends(db.get_session),
 ):
     return services.list_structures(
@@ -97,19 +95,13 @@ def list_sources_endpoint(
 def list_services_endpoint(
     request: fastapi.Request,
     db_session=fastapi.Depends(db.get_session),
-    source: Annotated[str | SkipJsonSchema[None], fastapi.Query()] = None,
-    thematique: Annotated[
-        di_schema.Thematique | SkipJsonSchema[None], fastapi.Query()
-    ] = None,
-    departement: Annotated[
-        schemas.DepartementCOG | SkipJsonSchema[None], fastapi.Query()
-    ] = None,
+    source: Annotated[Optional[str], fastapi.Query()] = None,
+    thematique: Annotated[Optional[di_schema.Thematique], fastapi.Query()] = None,
+    departement: Annotated[Optional[schemas.DepartementCOG], fastapi.Query()] = None,
     departement_slug: Annotated[
-        schemas.DepartementSlug | SkipJsonSchema[None], fastapi.Query()
+        Optional[schemas.DepartementSlug], fastapi.Query()
     ] = None,
-    code_insee: Annotated[
-        di_schema.CodeCommune | SkipJsonSchema[None], fastapi.Query()
-    ] = None,
+    code_insee: Annotated[Optional[di_schema.CodeCommune], fastapi.Query()] = None,
 ):
     return services.list_services(
         request,
@@ -185,7 +177,7 @@ def search_services_endpoint(
     request: fastapi.Request,
     db_session=fastapi.Depends(db.get_session),
     source: Annotated[
-        str | SkipJsonSchema[None],
+        Optional[str],
         fastapi.Query(
             description="""Un identifiant de source.
                 Déprécié en faveur de `sources`.
@@ -194,7 +186,7 @@ def search_services_endpoint(
         ),
     ] = None,
     sources: Annotated[
-        list[str] | SkipJsonSchema[None],
+        Optional[list[str]],
         fastapi.Query(
             description="""Une liste d'identifiants de source.
                 La liste des identifiants de source est disponible sur le endpoint
@@ -203,7 +195,7 @@ def search_services_endpoint(
         ),
     ] = None,
     code_insee: Annotated[
-        di_schema.CodeCommune | SkipJsonSchema[None],
+        Optional[di_schema.CodeCommune],
         fastapi.Query(
             description="""Code insee de la commune considérée.
                 Si fourni, les résultats inclus également les services proches de
@@ -213,7 +205,7 @@ def search_services_endpoint(
         ),
     ] = None,
     lat: Annotated[
-        float | SkipJsonSchema[None],
+        Optional[float],
         fastapi.Query(
             description="""Latitude du point de recherche.
                 Nécessite également de fournir `lon`.
@@ -222,7 +214,7 @@ def search_services_endpoint(
         ),
     ] = None,
     lon: Annotated[
-        float | SkipJsonSchema[None],
+        Optional[float],
         fastapi.Query(
             description="""Longitude du point de recherche.
                 Nécessite également de fournir `lat`.
@@ -231,28 +223,28 @@ def search_services_endpoint(
         ),
     ] = None,
     thematiques: Annotated[
-        list[di_schema.Thematique] | SkipJsonSchema[None],
+        Optional[list[di_schema.Thematique]],
         fastapi.Query(
             description="""Une liste de thématique.
                 Chaque résultat renvoyé a (au moins) une thématique dans cette liste."""
         ),
     ] = None,
     frais: Annotated[
-        list[di_schema.Frais] | SkipJsonSchema[None],
+        Optional[list[di_schema.Frais]],
         fastapi.Query(
             description="""Une liste de frais.
                 Chaque résultat renvoyé a (au moins) un frais dans cette liste."""
         ),
     ] = None,
     types: Annotated[
-        list[di_schema.TypologieService] | SkipJsonSchema[None],
+        Optional[list[di_schema.TypologieService]],
         fastapi.Query(
             description="""Une liste de typologies de service.
                 Chaque résultat renvoyé a (au moins) une typologie dans cette liste."""
         ),
     ] = None,
     inclure_suspendus: Annotated[
-        bool | SkipJsonSchema[None],
+        Optional[bool],
         fastapi.Query(
             description="""Inclure les services ayant une date de suspension dépassée.
                 Ils sont exclus par défaut.
