@@ -3,7 +3,7 @@ import pendulum
 import airflow
 from airflow.operators import empty, python
 
-from dag_utils import date
+from dag_utils import date, marts
 from dag_utils.dbt import (
     dbt_operator_factory,
     get_after_geocoding_tasks,
@@ -111,5 +111,7 @@ with airflow.DAG(
         >> get_before_geocoding_tasks()
         >> python_geocode
         >> get_after_geocoding_tasks()
+        >> marts.pg_dump_api()
+        >> marts.export_to_s3()
         >> end
     )
