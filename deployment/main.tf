@@ -198,6 +198,8 @@ resource "null_resource" "up" {
 
   provisioner "remote-exec" {
     inline = [
+      "docker image prune --all --force --filter 'until=7d'",
+      "docker container prune --force --filter 'until=7d'",
       "cd ${local.work_dir}",
       "docker compose --progress=plain up --pull=always --force-recreate --remove-orphans --wait --wait-timeout 1200 --quiet-pull --detach",
       # FIXME: ideally this file should be removed
