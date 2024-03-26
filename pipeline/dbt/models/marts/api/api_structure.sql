@@ -20,11 +20,7 @@ final AS (
                 relation_alias='structures',
                 from=ref('int__union_structures__enhanced'),
                 except=[
-                    '_di_sirene_date_fermeture',
-                    '_di_sirene_etab_successeur',
                     '_di_adresse_surrogate_id',
-                    '_di_annotated_antenne',
-                    '_di_annotated_siret',
                     '_di_email_is_pii',
                     'adresse_id',
                 ]
