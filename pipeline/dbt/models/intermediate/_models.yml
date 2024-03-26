@@ -36,7 +36,6 @@ models:
       - check_structure: *union-common-check-args
 
   - name: int__plausible_personal_emails
-  - name: int__deprecated_sirets
 
   - name: int__union_adresses__enhanced
     description: |
@@ -56,6 +55,4 @@ models:
       All valid structures, with extra data:
 
       * geocoded addresses
-      * siret deprecation flag & data
-      * siret annotations data
       * email with pii flag

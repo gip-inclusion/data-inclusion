@@ -6,10 +6,6 @@ plausible_personal_emails AS (
     SELECT * FROM {{ ref('int__plausible_personal_emails') }}
 ),
 
-deprecated_sirets AS (
-    SELECT * FROM {{ ref('int__deprecated_sirets') }}
-),
-
 adresses AS (
     SELECT * FROM {{ ref('int__union_adresses__enhanced') }}
 ),
@@ -45,8 +41,6 @@ valid_structures AS (
 final AS (
     SELECT
         valid_structures.*,
-        deprecated_sirets.sirene_date_fermeture                                 AS "_di_sirene_date_fermeture",
-        deprecated_sirets.sirene_etab_successeur                                AS "_di_sirene_etab_successeur",
         adresses.longitude                                                      AS "longitude",
         adresses.latitude                                                       AS "latitude",
         adresses.complement_adresse                                             AS "complement_adresse",
@@ -60,7 +54,6 @@ final AS (
     FROM
         valid_structures
     LEFT JOIN plausible_personal_emails ON valid_structures._di_surrogate_id = plausible_personal_emails._di_surrogate_id
-    LEFT JOIN deprecated_sirets ON valid_structures._di_surrogate_id = deprecated_sirets._di_surrogate_id
     LEFT JOIN adresses ON valid_structures._di_adresse_surrogate_id = adresses._di_surrogate_id
 )
 
