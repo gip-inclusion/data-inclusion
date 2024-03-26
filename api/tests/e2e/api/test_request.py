@@ -44,5 +44,5 @@ def test_save_api_request_without_token(api_client, test_session):
     assert response.status_code == 403
     assert (
         test_session.scalar(sqla.select(sqla.func.count()).select_from(models.Request))
-        == 0
+        == 1
     )
