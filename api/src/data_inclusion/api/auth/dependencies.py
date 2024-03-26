@@ -1,5 +1,3 @@
-from typing import Annotated
-
 from starlette.authentication import AuthCredentials, SimpleUser, UnauthenticatedUser
 
 import fastapi
@@ -8,12 +6,12 @@ from fastapi import security, status
 from data_inclusion.api import auth
 from data_inclusion.api.config import settings
 
-credentials = security.HTTPBearer() if settings.TOKEN_ENABLED else None
-
-credentials_dependency = fastapi.Depends(credentials, use_cache=True)
-CredentialsDependency = Annotated[
-    security.HTTPAuthorizationCredentials, credentials_dependency
-]
+credentials_dependency = (
+    fastapi.Depends(security.HTTPBearer(), use_cache=True)
+    if settings.TOKEN_ENABLED
+    # hide auth from openapi UI
+    else fastapi.Depends(lambda: None)
+)
 
 
 async def authenticate(request: fastapi.Request):
