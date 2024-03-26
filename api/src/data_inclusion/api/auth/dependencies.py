@@ -16,10 +16,7 @@ CredentialsDependency = Annotated[
 ]
 
 
-def _authenticate(
-    request: fastapi.Request,
-    credentials: CredentialsDependency,
-):
+async def authenticate(request: fastapi.Request):
     """Process authentication for the current request
 
     This dependency should probably not be used directly in routes.
@@ -32,27 +29,45 @@ def _authenticate(
     fine-grained permission at the route level, in a way that is compatible
     with fastapi's swagger generation.
     """
+    request.scope["user"], request.scope["auth"] = (
+        UnauthenticatedUser(),
+        AuthCredentials(),
+    )
+
+    if not settings.TOKEN_ENABLED:
+        return
+
+    # extract token from header
+    http_bearer_instance = security.HTTPBearer()
+    try:
+        credentials = await http_bearer_instance(request=request)
+    except fastapi.HTTPException:
+        credentials = None
+
+    if credentials is None:
+        return
+
+    # extract payload from token
     payload = auth.verify_token(credentials.credentials)
 
-    if payload is None:
-        request.scope["user"] = UnauthenticatedUser()
-        request.scope["auth"] = AuthCredentials()
-
-    else:
+    if payload is not None:
         scopes = ["authenticated"]
         if payload.get("admin", False):
             scopes += ["admin"]
 
-        request.scope["user"] = SimpleUser(username=payload["sub"])
-        request.scope["auth"] = AuthCredentials(scopes=scopes)
+        request.scope["user"], request.scope["auth"] = (
+            SimpleUser(username=payload["sub"]),
+            AuthCredentials(scopes=scopes),
+        )
 
 
-_authenticate_dependency = fastapi.Depends(_authenticate, use_cache=True)
+authenticate_dependency = fastapi.Depends(authenticate, use_cache=True)
 
 
-def authenticated(
+async def authenticated(
     request: fastapi.Request,
-    _authenticate=_authenticate_dependency,
+    _authenticate=authenticate_dependency,
+    _credentials=credentials_dependency,
 ) -> None:
     """Ensure the request is authenticated"""
     if not request.user.is_authenticated:
@@ -62,9 +77,10 @@ def authenticated(
 authenticated_dependency = fastapi.Security(authenticated, scopes=["authenticated"])
 
 
-def admin(
+async def admin(
     request: fastapi.Request,
     _authenticated=authenticated_dependency,
+    _credentials=credentials_dependency,
 ) -> None:
     """Ensure the request is authenticated and has admin permissions"""
     if "admin" not in request.auth.scopes:

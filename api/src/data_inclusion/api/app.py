@@ -6,6 +6,7 @@ import fastapi
 import fastapi_pagination
 from fastapi.middleware import cors
 
+from data_inclusion.api import auth
 from data_inclusion.api.auth.routes import router as auth_api_router
 from data_inclusion.api.config import settings
 from data_inclusion.api.core import db
@@ -59,6 +60,7 @@ def create_app() -> fastapi.FastAPI:
             # this makes the search services endpoint first
             "operationsSorter": "alpha",
         },
+        dependencies=[auth.authenticate_dependency],
     )
 
     setup_cors_middleware(app)
