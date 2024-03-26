@@ -30,3 +30,27 @@ models:
           - relationships:
               to: ref('int_mes_aides__adresses')
               field: id
+
+  - name: int_mes_aides__services
+    tests:
+      - check_service:
+          config:
+            severity: warn
+    columns:
+      - name: id
+        tests:
+          - unique
+          - not_null
+          - dbt_utils.not_empty_string
+      - name: structure_id
+        tests:
+          - not_null
+          - relationships:
+              to: ref('int_mes_aides__structures')
+              field: id
+      - name: adresse_id
+        tests:
+          - not_null
+          - relationships:
+              to: ref('int_mes_aides__adresses')
+              field: id

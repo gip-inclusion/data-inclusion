@@ -4,26 +4,43 @@ WITH source AS (
 
 final AS (
     SELECT
-        _di_source_id                                                    AS "_di_source_id",
-        data #>> '{fields,Adresse}'                                      AS "adresse",
-        data #>> '{fields,Code INSEE}'                                   AS "code_insee",
-        data #>> '{fields,Code Postal}'                                  AS "code_postal",
-        CAST(data #>> '{fields,Créé le}' AS DATE)                        AS "cree_le",
-        data #>> '{fields,Département Nom}'                              AS "departement_nom",
-        data #>> '{fields,Email}'                                        AS "email",
-        CAST(data #>> '{fields,En Ligne}' AS BOOLEAN)                    AS "en_ligne",
-        data #>> '{fields,ID}'                                           AS "id",
+        _di_source_id                                                                        AS "_di_source_id",
+        data #>> '{fields,Adresse}'                                                          AS "adresse",
+        data #>> '{fields,Code INSEE}'                                                       AS "code_insee",
+        data #>> '{fields,Code Postal}'                                                      AS "code_postal",
+        CAST(data #>> '{fields,Créé le}' AS DATE)                                            AS "cree_le",
+        CASE
+            WHEN data #>> '{fields,Critères d''éligibilité}' IS NULL THEN NULL
+            -- if bullet points list, split to array
+            WHEN data #>> '{fields,Critères d''éligibilité}' ~ '^\W '
+                THEN
+                    ARRAY_REMOVE(
+                        ARRAY(
+                            SELECT (REGEXP_MATCHES(data #>> '{fields,Critères d''éligibilité}', '^\W (.*?)( )*?$', 'gn'))[1]
+                        ),
+                        NULL
+                    )
+            -- else use the whole field
+            ELSE ARRAY[data #>> '{fields,Critères d''éligibilité}']
+        END                                                                                  AS "criteres_eligibilite",
+        data #>> '{fields,Département Nom}'                                                  AS "departement_nom",
+        data #>> '{fields,Email}'                                                            AS "email",
+        CAST(data #>> '{fields,En Ligne}' AS BOOLEAN)                                        AS "en_ligne",
+        data #>> '{fields,ID}'                                                               AS "id",
         -- some rows are formatted as `LAT, LAT`... use first value
-        CAST(SPLIT_PART(data #>> '{fields,Latitude}', ',', 1) AS FLOAT)  AS "latitude",
-        CAST(SPLIT_PART(data #>> '{fields,Longitude}', ',', 1) AS FLOAT) AS "longitude",
-        CAST(data #>> '{fields,Modifié le}' AS DATE)                     AS "modifie_le",
-        data #>> '{fields,Nom}'                                          AS "nom",
-        data #>> '{fields,Région Nom}'                                   AS "region_nom",
-        data #>> '{fields,SIRET}'                                        AS "siret",
-        data #>> '{fields,Téléphone}'                                    AS "telephone",
-        data #>> '{fields,Type}'                                         AS "type",
-        data #>> '{fields,Url}'                                          AS "url",
-        data #>> '{fields,Ville Nom}'                                    AS "ville_nom"
+        CAST(SPLIT_PART(data #>> '{fields,Latitude}', ',', 1) AS FLOAT)                      AS "latitude",
+        CAST(SPLIT_PART(data #>> '{fields,Longitude}', ',', 1) AS FLOAT)                     AS "longitude",
+        CAST(data #>> '{fields,Modifié le}' AS DATE)                                         AS "modifie_le",
+        data #>> '{fields,Nom}'                                                              AS "nom",
+        data #>> '{fields,Partenaire Nom}'                                                   AS "partenaire_nom",
+        data #>> '{fields,Région Nom}'                                                       AS "region_nom",
+        ARRAY(SELECT * FROM JSONB_ARRAY_ELEMENTS_TEXT(data #> '{fields,Services}'))          AS "services",
+        data #>> '{fields,SIRET}'                                                            AS "siret",
+        data #>> '{fields,Téléphone}'                                                        AS "telephone",
+        data #>> '{fields,Type}'                                                             AS "type",
+        ARRAY(SELECT * FROM JSONB_ARRAY_ELEMENTS_TEXT(data #> '{fields,Types de véhicule}')) AS "types_de_vehicule",
+        data #>> '{fields,Url}'                                                              AS "url",
+        data #>> '{fields,Ville Nom}'                                                        AS "ville_nom"
     FROM source
 )
 
