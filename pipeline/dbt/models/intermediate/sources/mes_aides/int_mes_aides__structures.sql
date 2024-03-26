@@ -25,6 +25,8 @@ final AS (
         modifie_le::DATE  AS "date_maj",
         ARRAY['mobilite'] AS "thematiques"
     FROM garages
+    WHERE
+        en_ligne
 )
 
 SELECT * FROM final

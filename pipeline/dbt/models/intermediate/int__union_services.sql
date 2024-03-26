@@ -8,6 +8,7 @@ WITH services AS (
                 ref('int_dora__services'),
                 ref('int_france_travail__services'),
                 ref('int_mediation_numerique__services'),
+                ref('int_mes_aides__services'),
                 ref('int_monenfant__services'),
                 ref('int_odspep__services'),
                 ref('int_reseau_alpha__services'),
