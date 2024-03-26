@@ -103,12 +103,6 @@ with airflow.DAG(
         python_callable=_geocode,
     )
 
-    dbt_build_flux = dbt_operator_factory(
-        task_id="dbt_build_flux",
-        command="build",
-        select="flux",
-    )
-
     (
         start
         >> dbt_seed
@@ -117,6 +111,5 @@ with airflow.DAG(
         >> get_before_geocoding_tasks()
         >> python_geocode
         >> get_after_geocoding_tasks()
-        >> dbt_build_flux
         >> end
     )
