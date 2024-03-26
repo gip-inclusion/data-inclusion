@@ -8,6 +8,7 @@ from fastapi.responses import RedirectResponse
 
 from data_inclusion import schema as di_schema
 from data_inclusion.api import auth
+from data_inclusion.api.config import settings
 from data_inclusion.api.core import db
 from data_inclusion.api.inclusion_data import models, schemas, services
 from data_inclusion.api.utils import code_officiel_geographique, pagination, soliguide
@@ -26,7 +27,7 @@ Optional = T | SkipJsonSchema[None]
     response_model=pagination.Page[schemas.Structure],
     summary="Lister les structures consolidées",
     deprecated=True,
-    dependencies=[auth.authenticated_dependency],
+    dependencies=[auth.authenticated_dependency] if settings.TOKEN_ENABLED else [],
 )
 def list_structures_endpoint(
     request: fastapi.Request,
@@ -62,7 +63,7 @@ def list_structures_endpoint(
     "/structures/{source}/{id}",
     response_model=schemas.DetailedStructure,
     summary="Détailler une structure",
-    dependencies=[auth.authenticated_dependency],
+    dependencies=[auth.authenticated_dependency] if settings.TOKEN_ENABLED else [],
 )
 def retrieve_structure_endpoint(
     source: Annotated[str, fastapi.Path()],
@@ -77,7 +78,7 @@ def retrieve_structure_endpoint(
     "/sources",
     response_model=list[schemas.Source],
     summary="Lister les sources consolidées",
-    dependencies=[auth.authenticated_dependency],
+    dependencies=[auth.authenticated_dependency] if settings.TOKEN_ENABLED else [],
 )
 def list_sources_endpoint(
     request: fastapi.Request,
@@ -90,7 +91,7 @@ def list_sources_endpoint(
     response_model=pagination.Page[schemas.Service],
     summary="Lister les services consolidés",
     deprecated=True,
-    dependencies=[auth.authenticated_dependency],
+    dependencies=[auth.authenticated_dependency] if settings.TOKEN_ENABLED else [],
 )
 def list_services_endpoint(
     request: fastapi.Request,
@@ -118,7 +119,7 @@ def list_services_endpoint(
     "/services/{source}/{id}",
     response_model=schemas.DetailedService,
     summary="Détailler un service",
-    dependencies=[auth.authenticated_dependency],
+    dependencies=[auth.authenticated_dependency] if settings.TOKEN_ENABLED else [],
 )
 def retrieve_service_endpoint(
     source: Annotated[str, fastapi.Path()],
@@ -171,7 +172,7 @@ def redirect_service_endpoint(
     "/search/services",
     response_model=pagination.Page[schemas.ServiceSearchResult],
     summary="Rechercher des services",
-    dependencies=[auth.authenticated_dependency],
+    dependencies=[auth.authenticated_dependency] if settings.TOKEN_ENABLED else [],
 )
 def search_services_endpoint(
     request: fastapi.Request,
