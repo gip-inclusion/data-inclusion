@@ -70,6 +70,7 @@ final AS (
                     WHEN 'Achat' THEN 'mobilite--acheter-un-vehicule-motorise'
                     WHEN 'Location' THEN 'mobilite--louer-un-vehicule'
                     WHEN 'Réparation' THEN 'mobilite--entretenir-reparer-son-vehicule'
+                    ELSE 'mobilite'
                 END,
                 CASE
                     WHEN
