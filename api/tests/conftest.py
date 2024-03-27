@@ -31,22 +31,22 @@ def swap_middleware(app, before, after):
             m.kwargs["dispatch"] = after
 
 
-@pytest.fixture()
-def api_client(app, test_session):
+@pytest.fixture(scope="function")
+def api_client(app, db_session):
     async def db_session_middleware(request, call_next):
-        request.state.db_session = test_session
+        request.state.db_session = db_session
         return await call_next(request)
 
     # swapping middleware is a lot faster than recreating the app
     # with the middleware as a parameter
     swap_middleware(app, db.db_session_middleware, db_session_middleware)
-    app.dependency_overrides[db.get_session] = lambda: test_session
+    app.dependency_overrides[db.get_session] = lambda: db_session
 
     with TestClient(app) as c:
         yield c
 
 
-@pytest.fixture(autouse=True)
+@pytest.fixture(scope="function", autouse=True)
 def force_authenticate(request, api_client):
     """Automatically authenticate generated requests.
 
@@ -126,19 +126,21 @@ def generate_communes_nord(db_engine):
 
 
 @pytest.fixture(scope="session")
-def conn(db_init):
-    conn = db_init.connect()
-    yield conn
-    conn.close()
+def db_connection(db_init):
+    connnection = db_init.connect()
+    yield connnection
+    connnection.close()
 
 
-@pytest.fixture()
-def test_session(conn):
+@pytest.fixture(scope="function")
+def db_session(db_connection):
     faker.Faker.seed(0)
 
     # https://docs.sqlalchemy.org/en/20/orm/session_transaction.html#joining-a-session-into-an-external-transaction-such-as-for-test-suites  # noqa
-    transaction = conn.begin()
-    factories.TestSession.configure(bind=conn, join_transaction_mode="create_savepoint")
+    transaction = db_connection.begin()
+    factories.TestSession.configure(
+        bind=db_connection, join_transaction_mode="create_savepoint"
+    )
     session = factories.TestSession()
     session.begin_nested()
 
