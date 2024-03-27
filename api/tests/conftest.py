@@ -1,6 +1,7 @@
 from pathlib import Path
 
 import faker
+import geopandas
 import pytest
 import sqlalchemy as sqla
 from alembic import command
@@ -9,6 +10,7 @@ from alembic.config import Config
 from fastapi.testclient import TestClient
 
 from data_inclusion.api.app import create_app
+from data_inclusion.api.code_officiel_geo import models
 from data_inclusion.api.config import settings
 from data_inclusion.api.core import db
 
@@ -18,6 +20,8 @@ DEFAULT_DATABASE_URL = sqla.engine.make_url(settings.DATABASE_URL)
 TEST_DATABASE_URL = DEFAULT_DATABASE_URL.set(
     database=f"{DEFAULT_DATABASE_URL.database}_test"
 )
+
+DIR = Path(__file__).parent
 
 
 @pytest.fixture(scope="session")
@@ -109,20 +113,14 @@ def db_engine(db_init):
     yield db_init
 
 
-@pytest.fixture(scope="session")
-def generate_communes_nord(db_engine):
-    import geopandas
+@pytest.fixture(scope="session", autouse=True)
+def communes(db_connection):
+    df = geopandas.read_parquet(DIR / "communes.parquet.gzip")
+    df = df.to_wkt()
+    commune_data_list = df.to_dict(orient="records")
 
-    df = geopandas.read_file(Path(__file__).parent / "communes_nord.sqlite")
-    df = df.rename_geometry("geom")
-
-    with db_engine.connect() as conn:
-        df.to_postgis(
-            "admin_express_communes",
-            con=conn,
-            if_exists="replace",
-            index=False,
-        )
+    db_connection.execute(sqla.insert(models.Commune).values(commune_data_list))
+    db_connection.commit()
 
 
 @pytest.fixture(scope="session")
@@ -158,6 +156,5 @@ def predictable_sequences():
 
     factory.random.reseed_random(0)
     factories.RequestFactory.reset_sequence()
-    factories.CommuneFactory.reset_sequence()
     factories.ServiceFactory.reset_sequence()
     factories.StructureFactory.reset_sequence()
