@@ -93,7 +93,7 @@ class Service(Base):
     telephone: Mapped[str | None]
     courriel: Mapped[str | None]
     contact_public: Mapped[bool | None] = mapped_column(default=False)
-    contact_nom_prenom: Mapped[str]
+    contact_nom_prenom: Mapped[str | None]
     date_maj: Mapped[date | None]
     modes_accueil: Mapped[list[str] | None]
     modes_orientation_accompagnateur: Mapped[list[str] | None]
