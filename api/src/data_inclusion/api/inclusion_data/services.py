@@ -222,7 +222,7 @@ def list_services(
         filter_stmt = """\
         EXISTS(
             SELECT
-            FROM unnest(service.thematiques) thematique
+            FROM unnest(api__services.thematiques) thematique
             WHERE thematique ~ ('^' || :thematique)
         )
         """
@@ -356,7 +356,7 @@ def search_services(
 
     if thematiques is not None:
         query = query.filter(
-            sqla.text("service.thematiques && :thematiques").bindparams(
+            sqla.text("api__services.thematiques && :thematiques").bindparams(
                 thematiques=get_sub_thematiques(thematiques),
             )
         )
@@ -365,7 +365,7 @@ def search_services(
         filter_stmt = """\
         EXISTS(
             SELECT
-            FROM unnest(service.frais) frais
+            FROM unnest(api__services.frais) frais
             WHERE frais = ANY(:frais)
         )
         """
@@ -377,7 +377,7 @@ def search_services(
         filter_stmt = """\
         EXISTS(
             SELECT
-            FROM unnest(service.types) types
+            FROM unnest(api__services.types) types
             WHERE types = ANY(:types)
         )
         """

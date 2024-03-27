@@ -11,8 +11,6 @@ from data_inclusion.api.core.db import Base
 
 
 class Structure(Base):
-    __tablename__ = "structure"
-
     # internal metadata
     _di_surrogate_id: Mapped[str] = mapped_column(primary_key=True)
     _di_geocodage_code_insee: Mapped[str | None]
@@ -48,14 +46,14 @@ class Structure(Base):
 
     services: Mapped[list["Service"]] = relationship(back_populates="structure")
 
+    __table_args__ = (sqla.Index(None, "source"),)
+
 
 class Service(Base):
-    __tablename__ = "service"
-
     # internal metadata
     _di_surrogate_id: Mapped[str] = mapped_column(primary_key=True)
     _di_structure_surrogate_id: Mapped[str] = mapped_column(
-        sqla.ForeignKey("structure._di_surrogate_id")
+        sqla.ForeignKey(Structure._di_surrogate_id)
     )
     _di_geocodage_code_insee: Mapped[str | None]
     _di_geocodage_score: Mapped[float | None]
@@ -80,9 +78,7 @@ class Service(Base):
     formulaire_en_ligne: Mapped[str | None]
     commune: Mapped[str | None]
     code_postal: Mapped[str | None]
-    code_insee: Mapped[str | None] = mapped_column(
-        sqla.ForeignKey("admin_express_communes.code")
-    )
+    code_insee: Mapped[str | None] = mapped_column(sqla.ForeignKey(Commune.code))
     adresse: Mapped[str | None]
     complement_adresse: Mapped[str | None]
     longitude: Mapped[float | None]
