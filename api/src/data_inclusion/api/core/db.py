@@ -22,6 +22,15 @@ timestamp = Annotated[
 
 
 class Base(orm.DeclarativeBase):
+    metadata = sqla.MetaData(
+        naming_convention={
+            "ix": "ix_%(table_name)s__%(column_0_N_name)s",
+            "uq": "uq_%(table_name)s__%(column_0_N_name)s",
+            "ck": "ck_%(table_name)s__%(constraint_name)s",
+            "fk": "fk_%(table_name)s__%(column_0_N_name)s__%(referred_table_name)s",
+            "pk": "pk_%(table_name)s",
+        }
+    )
     type_annotation_map = {
         list[str]: ARRAY(sqla.Text),
         dict: JSONB,
@@ -32,7 +41,7 @@ class Base(orm.DeclarativeBase):
 
     @orm.declared_attr.directive
     def __tablename__(cls) -> str:
-        return f"api_{cls.__name__.lower()}"
+        return f"api__{cls.__name__}s".lower()
 
 
 def get_session(request: fastapi.Request):
