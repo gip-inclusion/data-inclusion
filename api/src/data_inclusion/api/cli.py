@@ -3,6 +3,7 @@ import logging
 import click
 
 from data_inclusion.api import auth
+from data_inclusion.api.code_officiel_geo.commands import import_admin_express
 
 logger = logging.getLogger(__name__)
 
@@ -30,6 +31,12 @@ def _generate_token_for_user(
 ):
     """Generate a token associated with the given email."""
     click.echo(auth.create_access_token(subject=email, admin=admin))
+
+
+@cli.command(name="import_admin_express")
+def _import_admin_express():
+    """Import the latest Admin Express COG database"""
+    click.echo(import_admin_express())
 
 
 if __name__ == "__main__":
