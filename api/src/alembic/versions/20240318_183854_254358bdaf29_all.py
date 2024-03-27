@@ -38,6 +38,12 @@ def upgrade() -> None:
         ),
         sa.PrimaryKeyConstraint("code", name=op.f("pk_api__communes")),
     )
+    op.create_index(
+        "ix_api__communes__geography",
+        "api__communes",
+        [sa.text("CAST(ST_Simplify(geom, 0.01) AS geography(geometry, 4326))")],
+        unique=False,
+    )
     op.create_table(
         "api__departements",
         sa.Column("code", sa.String(), nullable=False),
@@ -54,6 +60,12 @@ def upgrade() -> None:
             nullable=True,
         ),
         sa.PrimaryKeyConstraint("code", name=op.f("pk_api__departements")),
+    )
+    op.create_index(
+        "ix_api__departements__geography",
+        "api__departements",
+        [sa.text("CAST(ST_Simplify(geom, 0.01) AS geography(geometry, 4326))")],
+        unique=False,
     )
     op.create_table(
         "api__epcis",
@@ -72,6 +84,12 @@ def upgrade() -> None:
         ),
         sa.PrimaryKeyConstraint("code", name=op.f("pk_api__epcis")),
     )
+    op.create_index(
+        "ix_api__epcis__geography",
+        "api__epcis",
+        [sa.text("CAST(ST_Simplify(geom, 0.01) AS geography(geometry, 4326))")],
+        unique=False,
+    )
     op.create_table(
         "api__regions",
         sa.Column("code", sa.String(), nullable=False),
@@ -87,6 +105,12 @@ def upgrade() -> None:
             nullable=True,
         ),
         sa.PrimaryKeyConstraint("code", name=op.f("pk_api__regions")),
+    )
+    op.create_index(
+        "ix_api__regions__geography",
+        "api__regions",
+        [sa.text("CAST(ST_Simplify(geom, 0.01) AS geography(geometry, 4326))")],
+        unique=False,
     )
     op.create_table(
         "api__requests",
@@ -145,6 +169,9 @@ def upgrade() -> None:
         sa.Column("labels_autres", postgresql.ARRAY(sa.Text()), nullable=True),
         sa.Column("thematiques", postgresql.ARRAY(sa.Text()), nullable=True),
         sa.PrimaryKeyConstraint("_di_surrogate_id", name=op.f("pk_api__structures")),
+    )
+    op.create_index(
+        op.f("ix_api__structures__source"), "api__structures", ["source"], unique=False
     )
     op.create_table(
         "api__services",
@@ -212,13 +239,71 @@ def upgrade() -> None:
         ),
         sa.PrimaryKeyConstraint("_di_surrogate_id", name=op.f("pk_api__services")),
     )
+    op.create_index(
+        op.f("ix_api__services___di_structure_surrogate_id"),
+        "api__services",
+        ["_di_structure_surrogate_id"],
+        unique=False,
+    )
+    op.create_index(
+        "ix_api__services__geography",
+        "api__services",
+        [
+            sa.text(
+                "CAST(ST_MakePoint(longitude, latitude) AS geography(geometry, 4326))"
+            )
+        ],
+        unique=False,
+        postgresql_using="gist",
+    )
+    op.create_index(
+        op.f("ix_api__services__modes_accueil"),
+        "api__services",
+        ["modes_accueil"],
+        unique=False,
+        postgresql_using="gin",
+    )
+    op.create_index(
+        op.f("ix_api__services__source"), "api__services", ["source"], unique=False
+    )
+    op.create_index(
+        op.f("ix_api__services__thematiques"),
+        "api__services",
+        ["thematiques"],
+        unique=False,
+        postgresql_using="gin",
+    )
 
 
 def downgrade() -> None:
+    op.drop_index(
+        op.f("ix_api__services__thematiques"),
+        table_name="api__services",
+        postgresql_using="gin",
+    )
+    op.drop_index(op.f("ix_api__services__source"), table_name="api__services")
+    op.drop_index(
+        op.f("ix_api__services__modes_accueil"),
+        table_name="api__services",
+        postgresql_using="gin",
+    )
+    op.drop_index(
+        "ix_api__services__geography",
+        table_name="api__services",
+        postgresql_using="gist",
+    )
+    op.drop_index(
+        op.f("ix_api__services___di_structure_surrogate_id"), table_name="api__services"
+    )
     op.drop_table("api__services")
+    op.drop_index(op.f("ix_api__structures__source"), table_name="api__structures")
     op.drop_table("api__structures")
     op.drop_table("api__requests")
+    op.drop_index("ix_api__regions__geography", table_name="api__regions")
     op.drop_table("api__regions")
+    op.drop_index("ix_api__epcis__geography", table_name="api__epcis")
     op.drop_table("api__epcis")
+    op.drop_index("ix_api__departements__geography", table_name="api__departements")
     op.drop_table("api__departements")
+    op.drop_index("ix_api__communes__geography", table_name="api__communes")
     op.drop_table("api__communes")
