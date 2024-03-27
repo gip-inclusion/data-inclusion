@@ -103,5 +103,19 @@ class Service(Base):
 
     commune_: Mapped[Commune] = relationship(back_populates="services")
 
+    __table_args__ = (
+        sqla.Index(None, "_di_structure_surrogate_id"),
+        sqla.Index(None, "source"),
+        sqla.Index(None, "modes_accueil", postgresql_using="gin"),
+        sqla.Index(None, "thematiques", postgresql_using="gin"),
+        sqla.Index(
+            "ix_api__services__geography",
+            sqla.text(
+                "CAST(ST_MakePoint(longitude, latitude) AS geography(geometry, 4326))"
+            ),
+            postgresql_using="gist",
+        ),
+    )
+
 
 Commune.services = relationship(Service, back_populates="commune_")
