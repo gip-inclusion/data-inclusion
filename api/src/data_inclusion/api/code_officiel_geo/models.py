@@ -1,4 +1,5 @@
 import geoalchemy2
+import sqlalchemy as sqla
 from sqlalchemy.orm import Mapped, mapped_column
 
 from data_inclusion.api.core.db import Base
@@ -17,6 +18,12 @@ class Commune(Base):
         geoalchemy2.Geometry("Geometry", srid=4326, spatial_index=False)
     )
 
+    __table_args__ = (
+        sqla.Index(
+            "ix_api__communes__geography",
+            sqla.text("CAST(ST_Simplify(geom, 0.01) AS geography(geometry, 4326))"),
+        ),
+    )
 
 
 class EPCI(Base):
@@ -27,6 +34,12 @@ class EPCI(Base):
         geoalchemy2.Geometry("Geometry", srid=4326, spatial_index=False)
     )
 
+    __table_args__ = (
+        sqla.Index(
+            "ix_api__epcis__geography",
+            sqla.text("CAST(ST_Simplify(geom, 0.01) AS geography(geometry, 4326))"),
+        ),
+    )
 
 
 class Departement(Base):
@@ -37,6 +50,12 @@ class Departement(Base):
         geoalchemy2.Geometry("Geometry", srid=4326, spatial_index=False)
     )
 
+    __table_args__ = (
+        sqla.Index(
+            "ix_api__departements__geography",
+            sqla.text("CAST(ST_Simplify(geom, 0.01) AS geography(geometry, 4326))"),
+        ),
+    )
 
 
 class Region(Base):
@@ -44,4 +63,11 @@ class Region(Base):
     nom: Mapped[str]
     geom = mapped_column(
         geoalchemy2.Geometry("Geometry", srid=4326, spatial_index=False)
+    )
+
+    __table_args__ = (
+        sqla.Index(
+            "ix_api__regions__geography",
+            sqla.text("CAST(ST_Simplify(geom, 0.01) AS geography(geometry, 4326))"),
+        ),
     )
