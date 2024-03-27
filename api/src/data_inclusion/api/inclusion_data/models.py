@@ -48,6 +48,9 @@ class Structure(Base):
 
     __table_args__ = (sqla.Index(None, "source"),)
 
+    def __repr__(self) -> str:
+        return f"<Structure(source={self.source}, id={self.id}, nom={self.nom})>"
+
 
 class Service(Base):
     # internal metadata
@@ -116,6 +119,9 @@ class Service(Base):
             postgresql_using="gist",
         ),
     )
+
+    def __repr__(self) -> str:
+        return f"<Service(source={self.source}, id={self.id}, nom={self.nom})>"
 
 
 Commune.services = relationship(Service, back_populates="commune_")
