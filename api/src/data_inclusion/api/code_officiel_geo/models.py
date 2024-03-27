@@ -25,6 +25,9 @@ class Commune(Base):
         ),
     )
 
+    def __repr__(self) -> str:
+        return f"<Commune(code={self.code}, nom={self.nom})>"
+
 
 class EPCI(Base):
     code: Mapped[str] = mapped_column(primary_key=True)
@@ -40,6 +43,9 @@ class EPCI(Base):
             sqla.text("CAST(ST_Simplify(geom, 0.01) AS geography(geometry, 4326))"),
         ),
     )
+
+    def __repr__(self) -> str:
+        return f"<EPCI(code={self.code}, nom={self.nom})>"
 
 
 class Departement(Base):
@@ -57,6 +63,9 @@ class Departement(Base):
         ),
     )
 
+    def __repr__(self) -> str:
+        return f"<Departement(code={self.code}, nom={self.nom})>"
+
 
 class Region(Base):
     code: Mapped[str] = mapped_column(primary_key=True)
@@ -71,3 +80,6 @@ class Region(Base):
             sqla.text("CAST(ST_Simplify(geom, 0.01) AS geography(geometry, 4326))"),
         ),
     )
+
+    def __repr__(self) -> str:
+        return f"<Region(code={self.code}, nom={self.nom})>"
