@@ -24,7 +24,7 @@ def cli(verbose: int):
     default=False,
     help="Generate an admin token",
 )
-def generate_token_for_user(
+def _generate_token_for_user(
     email: str,
     admin: bool,
 ):
