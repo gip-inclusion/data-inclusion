@@ -9,6 +9,13 @@ from data_inclusion.api.utils import soliguide
 
 from ... import factories
 
+DUNKERQUE = {"code_insee": "59183", "latitude": 51.0361, "longitude": 2.3770}
+HAZEBROUCK = {"code_insee": "59295", "latitude": 50.7262, "longitude": 2.5387}
+LILLE = {"code_insee": "59350", "latitude": 50.633333, "longitude": 3.066667}
+MAUBEUGE = {"code_insee": "59392"}
+PARIS = {"code_insee": "75056", "latitude": 48.866667, "longitude": 2.333333}
+ROUBAIX = {"code_insee": "59512"}
+
 
 def test_openapi_spec(api_client, snapshot):
     url = "/api/openapi.json"
@@ -210,11 +217,11 @@ def test_list_sources(api_client):
 
 @pytest.mark.with_token
 def test_list_structures_filter_by_departement_cog(api_client):
-    structure_1 = factories.StructureFactory(code_insee="2A247")
-    factories.StructureFactory(code_insee="59350")
+    structure_1 = factories.StructureFactory(code_insee=PARIS["code_insee"])
+    factories.StructureFactory(code_insee=LILLE["code_insee"])
 
     url = "/api/v0/structures/"
-    response = api_client.get(url, params={"departement": "2A"})
+    response = api_client.get(url, params={"departement": "75"})
 
     resp_data = response.json()
     assert_paginated_response_data(response.json(), total=1)
@@ -228,11 +235,11 @@ def test_list_structures_filter_by_departement_cog(api_client):
 def test_list_structures_filter_by_departement_slug(
     api_client,
 ):
-    structure_1 = factories.StructureFactory(code_insee="22247")
-    factories.StructureFactory(code_insee="59350")
+    structure_1 = factories.StructureFactory(code_insee=PARIS["code_insee"])
+    factories.StructureFactory(code_insee=LILLE["code_insee"])
 
     url = "/api/v0/structures/"
-    response = api_client.get(url, params={"departement_slug": "cotes-d-armor"})
+    response = api_client.get(url, params={"departement_slug": "paris"})
 
     resp_data = response.json()
     assert_paginated_response_data(response.json(), total=1)
@@ -247,7 +254,7 @@ def test_list_structures_filter_by_code_postal(
     api_client,
 ):
     structure_1 = factories.StructureFactory(
-        code_postal="59100", code_insee="59512", commune="roubaix"
+        code_postal="59100", code_insee=ROUBAIX["code_insee"], commune="roubaix"
     )
     factories.StructureFactory(
         code_postal="59178", code_insee="59100", commune="bousignies"
@@ -260,7 +267,7 @@ def test_list_structures_filter_by_code_postal(
     assert_paginated_response_data(response.json(), total=1)
     assert_structure_data(structure_1, resp_data["items"][0])
 
-    response = api_client.get(url, params={"code_postal": "59512"})
+    response = api_client.get(url, params={"code_postal": ROUBAIX["code_insee"]})
     assert_paginated_response_data(response.json(), total=0)
 
 
@@ -358,48 +365,48 @@ def test_list_services_all(api_client):
     assert resp_data == {
         "items": [
             {
-                "_di_geocodage_code_insee": "55626",
-                "_di_geocodage_score": 0.33,
-                "id": "cacher-violent",
-                "structure_id": "rouge-empire",
-                "source": "dora",
-                "nom": "Munoz",
-                "presentation_resume": "Puissant fine.",
-                "presentation_detail": "Épaule élever un.",
-                "types": ["formation", "numerique"],
-                "thematiques": ["choisir-un-metier", "creation-activite"],
-                "prise_rdv": "https://teixeira.fr/",
-                "frais": ["gratuit", "gratuit-sous-conditions"],
-                "frais_autres": "Camarade il.",
-                "profils": ["femmes", "jeunes-16-26"],
-                "pre_requis": [],
-                "cumulable": False,
-                "justificatifs": [],
-                "formulaire_en_ligne": None,
-                "commune": "Sainte Jacquelineboeuf",
+                "_di_geocodage_code_insee": LILLE["code_insee"],
+                "_di_geocodage_score": 0.5,
+                "adresse": "5, rue Guichard",
+                "code_insee": LILLE["code_insee"],
                 "code_postal": "25454",
-                "code_insee": "32356",
-                "adresse": "chemin de Ferreira",
+                "commune": "Sainte Jacquelineboeuf",
                 "complement_adresse": None,
-                "longitude": -61.64115,
-                "latitude": 9.8741475,
-                "recurrence": None,
-                "date_creation": "2022-01-01",
-                "date_suspension": "2054-01-01",
-                "lien_source": "https://dora.fr/cacher-violent",
-                "telephone": "0102030405",
-                "courriel": "xavierlaunay@example.org",
+                "contact_nom_prenom": "Alphonse Baudry-Couturier",
                 "contact_public": False,
-                "contact_nom_prenom": "David Rocher",
+                "courriel": "gbonnet@example.org",
+                "cumulable": False,
+                "date_creation": "2022-01-01",
                 "date_maj": "2023-01-01",
+                "date_suspension": "2054-01-01",
+                "formulaire_en_ligne": None,
+                "frais_autres": "Camarade il.",
+                "frais": ["gratuit", "gratuit-sous-conditions"],
+                "id": "cacher-violent",
+                "justificatifs": [],
+                "latitude": -0.7355065,
+                "lien_source": "https://dora.fr/cacher-violent",
+                "longitude": -88.473296,
                 "modes_accueil": ["a-distance"],
-                "modes_orientation_accompagnateur": ["telephoner"],
                 "modes_orientation_accompagnateur_autres": None,
-                "modes_orientation_beneficiaire": ["telephoner"],
+                "modes_orientation_accompagnateur": ["telephoner"],
                 "modes_orientation_beneficiaire_autres": None,
-                "zone_diffusion_type": None,
+                "modes_orientation_beneficiaire": ["telephoner"],
+                "nom": "Munoz",
+                "pre_requis": [],
+                "presentation_detail": "Épaule élever un.",
+                "presentation_resume": "Puissant fine.",
+                "prise_rdv": "https://teixeira.fr/",
+                "profils": ["femmes", "jeunes-16-26"],
+                "recurrence": None,
+                "source": "dora",
+                "structure_id": "libre-rouge-empire",
+                "telephone": "0102030405",
+                "thematiques": ["choisir-un-metier", "creation-activite"],
+                "types": ["formation", "numerique"],
                 "zone_diffusion_code": None,
                 "zone_diffusion_nom": None,
+                "zone_diffusion_type": None,
             }
         ],
         "total": 1,
@@ -448,11 +455,11 @@ def test_list_structures_null_code_insee(
 @pytest.mark.with_token
 def test_list_structures_null_code_insee_filter_by_departement_cog(api_client):
     factories.StructureFactory(code_insee=None)
-    structure = factories.StructureFactory(code_insee="2A247")
+    structure = factories.StructureFactory(code_insee=LILLE["code_insee"])
 
     url = "/api/v0/structures/"
 
-    response = api_client.get(url, params={"departement": "2A"})
+    response = api_client.get(url, params={"departement": "59"})
 
     assert response.status_code == 200
 
@@ -465,11 +472,11 @@ def test_list_structures_null_code_insee_filter_by_departement_cog(api_client):
 @pytest.mark.with_token
 def test_list_structures_null_code_insee_filter_by_departement_slug(api_client):
     factories.StructureFactory(code_insee=None)
-    structure = factories.StructureFactory(code_insee="22247")
+    structure = factories.StructureFactory(code_insee=LILLE["code_insee"])
 
     url = "/api/v0/structures/"
 
-    response = api_client.get(url, params={"departement_slug": "cotes-d-armor"})
+    response = api_client.get(url, params={"departement_slug": "nord"})
 
     assert response.status_code == 200
 
@@ -594,11 +601,11 @@ def test_list_services_filter_by_categorie_thematique(api_client):
 
 @pytest.mark.with_token
 def test_list_services_filter_by_departement_cog(api_client):
-    service = factories.ServiceFactory(code_insee="2A247")
-    factories.ServiceFactory(code_insee="59350")
+    service = factories.ServiceFactory(code_insee=PARIS["code_insee"])
+    factories.ServiceFactory(code_insee=LILLE["code_insee"])
 
     url = "/api/v0/services/"
-    response = api_client.get(url, params={"departement": "2A"})
+    response = api_client.get(url, params={"departement": "75"})
 
     assert response.status_code == 200
     resp_data = response.json()
@@ -611,11 +618,11 @@ def test_list_services_filter_by_departement_cog(api_client):
 
 @pytest.mark.with_token
 def test_list_services_filter_by_departement_slug(api_client):
-    service = factories.ServiceFactory(code_insee="22247")
-    factories.ServiceFactory(code_insee="59350")
+    service = factories.ServiceFactory(code_insee=PARIS["code_insee"])
+    factories.ServiceFactory(code_insee=LILLE["code_insee"])
 
     url = "/api/v0/services/"
-    response = api_client.get(url, params={"departement_slug": "cotes-d-armor"})
+    response = api_client.get(url, params={"departement_slug": "paris"})
 
     assert response.status_code == 200
     resp_data = response.json()
@@ -629,16 +636,16 @@ def test_list_services_filter_by_departement_slug(api_client):
 @pytest.mark.parametrize(
     "code_insee, input, found",
     [
-        (None, "22247", False),
-        ("22247", "22247", True),
-        ("22247", "62041", False),
-        ("75056", "75101", True),
+        (None, DUNKERQUE["code_insee"], False),
+        (DUNKERQUE["code_insee"], DUNKERQUE["code_insee"], True),
+        (DUNKERQUE["code_insee"], "62041", False),
+        (PARIS["code_insee"], "75101", True),
     ],
 )
 @pytest.mark.with_token
 def test_list_services_filter_by_code_insee(api_client, code_insee, input, found):
     service = factories.ServiceFactory(code_insee=code_insee)
-    factories.ServiceFactory(code_insee="59350")
+    factories.ServiceFactory(code_insee=LILLE["code_insee"])
 
     url = "/api/v0/services/"
     response = api_client.get(url, params={"code_insee": input})
@@ -653,23 +660,21 @@ def test_list_services_filter_by_code_insee(api_client, code_insee, input, found
 
 
 @pytest.mark.parametrize(
-    "code_insee, input, found",
+    "commune_data, input, found",
     [
-        (None, "59183", True),
-        ("59183", "59183", True),
-        ("59183", "59392", False),
-        ("75056", "75101", True),
-        ("75101", "75101", True),
-        pytest.param("75101", "75056", True, marks=pytest.mark.xfail),  # TODO
+        (None, DUNKERQUE["code_insee"], False),
+        (DUNKERQUE, DUNKERQUE["code_insee"], True),
+        (DUNKERQUE, MAUBEUGE["code_insee"], False),
+        (PARIS, "75101", True),
+        pytest.param(PARIS, PARIS["code_insee"], True, marks=pytest.mark.xfail),
     ],
 )
 @pytest.mark.with_token
-def test_search_services_with_code_insee(api_client, code_insee, input, found):
-    factories.CommuneFactory(code="59350", nom="Lille")
-    factories.CommuneFactory(code="59183", nom="Dunkerque")
-    factories.CommuneFactory(code="59392", nom="Maubeuge")
-    factories.CommuneFactory(code="75056", nom="Paris")
-    service = factories.ServiceFactory(code_insee=code_insee)
+def test_search_services_with_code_insee_foo(api_client, commune_data, input, found):
+    service = factories.ServiceFactory(
+        modes_accueil=[schema.ModeAccueil.EN_PRESENTIEL.value],
+        **(commune_data if commune_data is not None else {}),
+    )
 
     url = "/api/v0/search/services"
     response = api_client.get(url, params={"code_insee": input})
@@ -684,22 +689,18 @@ def test_search_services_with_code_insee(api_client, code_insee, input, found):
 
 
 @pytest.mark.with_token
-def test_search_services_with_code_insee_too_far(api_client, generate_communes_nord):
+def test_search_services_with_code_insee_too_far(api_client):
     # Dunkerque to Hazebrouck: <50km
     # Hazebrouck to Lille: <50km
     # Dunkerque to Lille: >50km
     service_1 = factories.ServiceFactory(
         commune="Lille",
-        code_insee="59350",
-        latitude=50.633333,
-        longitude=3.066667,
+        **LILLE,
         modes_accueil=[schema.ModeAccueil.EN_PRESENTIEL.value],
     )
     service_2 = factories.ServiceFactory(
         commune="Dunkerque",
-        code_insee="59183",
-        latitude=51.0361,
-        longitude=2.3770,
+        **DUNKERQUE,
         modes_accueil=[schema.ModeAccueil.EN_PRESENTIEL.value],
     )
     factories.ServiceFactory(
@@ -713,7 +714,7 @@ def test_search_services_with_code_insee_too_far(api_client, generate_communes_n
     response = api_client.get(
         url,
         params={
-            "code_insee": "59512",  # Roubaix (only close to Lille)
+            "code_insee": ROUBAIX["code_insee"],  # Roubaix (only close to Lille)
         },
     )
 
@@ -727,7 +728,7 @@ def test_search_services_with_code_insee_too_far(api_client, generate_communes_n
     response = api_client.get(
         url,
         params={
-            "code_insee": "59512",  # Roubaix
+            "code_insee": ROUBAIX["code_insee"],  # Roubaix
             # Coordinates for Le Mans. We don't enforce lat/lon to be within
             # the supplied 'code_insee' city limits.
             "lat": 48.003954,
@@ -743,7 +744,7 @@ def test_search_services_with_code_insee_too_far(api_client, generate_communes_n
     response = api_client.get(
         url,
         params={
-            "code_insee": "59512",  # Roubaix
+            "code_insee": ROUBAIX["code_insee"],  # Roubaix
             # Coordinates for Hazebrouck, between Dunkirk & Lille
             "lat": 50.7262,
             "lon": 2.5387,
@@ -776,7 +777,7 @@ def test_search_services_with_code_insee_too_far(api_client, generate_communes_n
     response = api_client.get(
         url,
         params={
-            "code_insee": "59392",
+            "code_insee": MAUBEUGE["code_insee"],
             "lat": 48.003954,
         },
     )
@@ -788,7 +789,7 @@ def test_search_services_with_code_insee_too_far(api_client, generate_communes_n
     response = api_client.get(
         url,
         params={
-            "code_insee": "59392",
+            "code_insee": MAUBEUGE["code_insee"],
             "lon": 1.2563,
         },
     )
@@ -799,10 +800,10 @@ def test_search_services_with_code_insee_too_far(api_client, generate_communes_n
 
 
 @pytest.mark.with_token
-def test_search_services_with_zone_diffusion_pays(api_client, generate_communes_nord):
+def test_search_services_with_zone_diffusion_pays(api_client):
     service_1 = factories.ServiceFactory(
         commune="Dunkerque",
-        code_insee="59183",
+        code_insee=DUNKERQUE["code_insee"],
         latitude=51.034368,
         longitude=2.376776,
         modes_accueil=[schema.ModeAccueil.A_DISTANCE.value],
@@ -815,7 +816,7 @@ def test_search_services_with_zone_diffusion_pays(api_client, generate_communes_
     response = api_client.get(
         url,
         params={
-            "code_insee": "59392",  # Maubeuge
+            "code_insee": MAUBEUGE["code_insee"],  # Maubeuge
         },
     )
 
@@ -826,27 +827,25 @@ def test_search_services_with_zone_diffusion_pays(api_client, generate_communes_
 
 
 @pytest.mark.with_token
-def test_search_services_with_zone_diffusion_commune(
-    api_client, generate_communes_nord
-):
+def test_search_services_with_zone_diffusion_commune(api_client):
     service_1 = factories.ServiceFactory(
         commune="Dunkerque",
-        code_insee="59183",
+        code_insee=DUNKERQUE["code_insee"],
         latitude=51.034368,
         longitude=2.376776,
         modes_accueil=[schema.ModeAccueil.EN_PRESENTIEL.value],
         zone_diffusion_type=schema.ZoneDiffusionType.COMMUNE.value,
-        zone_diffusion_code="59183",
+        zone_diffusion_code=DUNKERQUE["code_insee"],
         zone_diffusion_nom="Dunkerque",
     )
     factories.ServiceFactory(
         commune="Lille",
-        code_insee="59350",
+        code_insee=LILLE["code_insee"],
         latitude=50.633333,
         longitude=3.066667,
         modes_accueil=[schema.ModeAccueil.EN_PRESENTIEL.value],
         zone_diffusion_type=schema.ZoneDiffusionType.COMMUNE.value,
-        zone_diffusion_code="59350",
+        zone_diffusion_code=LILLE["code_insee"],
         zone_diffusion_nom="Lille",
     )
 
@@ -854,7 +853,7 @@ def test_search_services_with_zone_diffusion_commune(
     response = api_client.get(
         url,
         params={
-            "code_insee": "59183",  # Dunkerque
+            "code_insee": DUNKERQUE["code_insee"],  # Dunkerque
         },
     )
 
@@ -865,13 +864,10 @@ def test_search_services_with_zone_diffusion_commune(
 
 
 @pytest.mark.with_token
-def test_search_services_with_zone_diffusion_epci(
-    api_client,
-    generate_communes_nord,
-):
+def test_search_services_with_zone_diffusion_epci(api_client):
     service_1 = factories.ServiceFactory(
         commune="Dunkerque",
-        code_insee="59183",
+        code_insee=DUNKERQUE["code_insee"],
         latitude=51.034368,
         longitude=2.376776,
         modes_accueil=[schema.ModeAccueil.EN_PRESENTIEL.value],
@@ -881,7 +877,7 @@ def test_search_services_with_zone_diffusion_epci(
     )
     factories.ServiceFactory(
         commune="Lille",
-        code_insee="59350",
+        code_insee=LILLE["code_insee"],
         latitude=50.633333,
         longitude=3.066667,
         modes_accueil=[schema.ModeAccueil.EN_PRESENTIEL.value],
@@ -894,7 +890,7 @@ def test_search_services_with_zone_diffusion_epci(
     response = api_client.get(
         url,
         params={
-            "code_insee": "59183",  # Dunkerque
+            "code_insee": DUNKERQUE["code_insee"],  # Dunkerque
         },
     )
 
@@ -905,12 +901,10 @@ def test_search_services_with_zone_diffusion_epci(
 
 
 @pytest.mark.with_token
-def test_search_services_with_zone_diffusion_departement(
-    api_client, generate_communes_nord
-):
+def test_search_services_with_zone_diffusion_departement(api_client):
     service_1 = factories.ServiceFactory(
         commune="Dunkerque",
-        code_insee="59183",
+        code_insee=DUNKERQUE["code_insee"],
         latitude=51.034368,
         longitude=2.376776,
         modes_accueil=[schema.ModeAccueil.EN_PRESENTIEL.value],
@@ -920,7 +914,7 @@ def test_search_services_with_zone_diffusion_departement(
     )
     factories.ServiceFactory(
         commune="Lille",
-        code_insee="59350",
+        code_insee=LILLE["code_insee"],
         latitude=50.633333,
         longitude=3.066667,
         modes_accueil=[schema.ModeAccueil.EN_PRESENTIEL.value],
@@ -933,7 +927,7 @@ def test_search_services_with_zone_diffusion_departement(
     response = api_client.get(
         url,
         params={
-            "code_insee": "59183",  # Dunkerque
+            "code_insee": DUNKERQUE["code_insee"],  # Dunkerque
         },
     )
 
@@ -944,10 +938,10 @@ def test_search_services_with_zone_diffusion_departement(
 
 
 @pytest.mark.with_token
-def test_search_services_with_zone_diffusion_region(api_client, generate_communes_nord):
+def test_search_services_with_zone_diffusion_region(api_client):
     service_1 = factories.ServiceFactory(
         commune="Dunkerque",
-        code_insee="59183",
+        code_insee=DUNKERQUE["code_insee"],
         latitude=51.034368,
         longitude=2.376776,
         modes_accueil=[schema.ModeAccueil.EN_PRESENTIEL.value],
@@ -957,7 +951,7 @@ def test_search_services_with_zone_diffusion_region(api_client, generate_commune
     )
     factories.ServiceFactory(
         commune="Maubeuge",
-        code_insee="59392",
+        code_insee=MAUBEUGE["code_insee"],
         latitude=50.277500,
         longitude=3.973400,
         modes_accueil=[schema.ModeAccueil.EN_PRESENTIEL.value],
@@ -970,7 +964,7 @@ def test_search_services_with_zone_diffusion_region(api_client, generate_commune
     response = api_client.get(
         url,
         params={
-            "code_insee": "59183",  # Dunkerque
+            "code_insee": DUNKERQUE["code_insee"],  # Dunkerque
         },
     )
 
@@ -981,13 +975,10 @@ def test_search_services_with_zone_diffusion_region(api_client, generate_commune
 
 
 @pytest.mark.with_token
-def test_search_services_with_bad_code_insee(
-    api_client,
-    generate_communes_nord,
-):
+def test_search_services_with_bad_code_insee(api_client):
     factories.ServiceFactory(
         commune="Lille",
-        code_insee="59350",
+        code_insee=LILLE["code_insee"],
         latitude=50.633333,
         longitude=3.066667,
         modes_accueil=[schema.ModeAccueil.A_DISTANCE.value],
@@ -1005,22 +996,15 @@ def test_search_services_with_bad_code_insee(
 
 
 @pytest.mark.with_token
-def test_search_services_with_code_insee_ordering(
-    api_client,
-    generate_communes_nord,
-):
+def test_search_services_with_code_insee_ordering(api_client):
     service_1 = factories.ServiceFactory(
         commune="Hazebrouck",
-        code_insee="59295",
-        latitude=50.7262,
-        longitude=2.5387,
+        **HAZEBROUCK,
         modes_accueil=[schema.ModeAccueil.EN_PRESENTIEL.value],
     )
     service_2 = factories.ServiceFactory(
         commune="Lille",
-        code_insee="59350",
-        latitude=50.633333,
-        longitude=3.066667,
+        **LILLE,
         modes_accueil=[schema.ModeAccueil.EN_PRESENTIEL.value],
     )
     factories.ServiceFactory(
@@ -1030,7 +1014,7 @@ def test_search_services_with_code_insee_ordering(
     )
 
     url = "/api/v0/search/services"
-    response = api_client.get(url, params={"code_insee": "59009"})
+    response = api_client.get(url, params={"code_insee": ROUBAIX["code_insee"]})
 
     assert response.status_code == 200
     resp_data = response.json()
@@ -1045,10 +1029,8 @@ def test_search_services_with_code_insee_ordering(
 def test_search_services_with_code_insee_sample_distance(api_client):
     service_1 = factories.ServiceFactory(
         commune="Lille",
-        code_insee="59350",
         _di_geocodage_code_insee=None,
-        latitude=50.633333,
-        longitude=3.066667,
+        **LILLE,
         modes_accueil=[schema.ModeAccueil.EN_PRESENTIEL.value],
     )
     factories.ServiceFactory(
@@ -1058,7 +1040,7 @@ def test_search_services_with_code_insee_sample_distance(api_client):
     )
 
     url = "/api/v0/search/services"
-    response = api_client.get(url, params={"code_insee": "59295"})
+    response = api_client.get(url, params={"code_insee": HAZEBROUCK["code_insee"]})
 
     assert response.status_code == 200
     resp_data = response.json()
@@ -1071,19 +1053,19 @@ def test_search_services_with_code_insee_sample_distance(api_client):
 def test_search_services_with_code_insee_a_distance(api_client):
     service_1 = factories.ServiceFactory(
         commune="Dunkerque",
-        code_insee="59183",
+        code_insee=DUNKERQUE["code_insee"],
         _di_geocodage_code_insee=None,
         modes_accueil=[schema.ModeAccueil.A_DISTANCE.value],
     )
     service_2 = factories.ServiceFactory(
         commune="Maubeuge",
-        code_insee="59392",
+        code_insee=MAUBEUGE["code_insee"],
         _di_geocodage_code_insee=None,
         modes_accueil=[schema.ModeAccueil.A_DISTANCE.value],
     )
 
     url = "/api/v0/search/services"
-    response = api_client.get(url, params={"code_insee": "59183"})
+    response = api_client.get(url, params={"code_insee": DUNKERQUE["code_insee"]})
 
     assert response.status_code == 200
     resp_data = response.json()

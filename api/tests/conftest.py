@@ -1,6 +1,7 @@
 from pathlib import Path
 
 import faker
+import geopandas
 import pytest
 import sqlalchemy as sqla
 from alembic import command
@@ -9,6 +10,7 @@ from alembic.config import Config
 from fastapi.testclient import TestClient
 
 from data_inclusion.api.app import create_app
+from data_inclusion.api.code_officiel_geo import models
 from data_inclusion.api.config import settings
 from data_inclusion.api.core import db
 
@@ -18,6 +20,8 @@ DEFAULT_DATABASE_URL = sqla.engine.make_url(settings.DATABASE_URL)
 TEST_DATABASE_URL = DEFAULT_DATABASE_URL.set(
     database=f"{DEFAULT_DATABASE_URL.database}_test"
 )
+
+DIR = Path(__file__).parent
 
 
 @pytest.fixture(scope="session")
@@ -31,22 +35,22 @@ def swap_middleware(app, before, after):
             m.kwargs["dispatch"] = after
 
 
-@pytest.fixture()
-def api_client(app, test_session):
+@pytest.fixture(scope="function")
+def api_client(app, db_session):
     async def db_session_middleware(request, call_next):
-        request.state.db_session = test_session
+        request.state.db_session = db_session
         return await call_next(request)
 
     # swapping middleware is a lot faster than recreating the app
     # with the middleware as a parameter
     swap_middleware(app, db.db_session_middleware, db_session_middleware)
-    app.dependency_overrides[db.get_session] = lambda: test_session
+    app.dependency_overrides[db.get_session] = lambda: db_session
 
     with TestClient(app) as c:
         yield c
 
 
-@pytest.fixture(autouse=True)
+@pytest.fixture(scope="function", autouse=True)
 def force_authenticate(request, api_client):
     """Automatically authenticate generated requests.
 
@@ -109,42 +113,40 @@ def db_engine(db_init):
     yield db_init
 
 
-@pytest.fixture(scope="session")
-def generate_communes_nord(db_engine):
-    import geopandas
+@pytest.fixture(scope="session", autouse=True)
+def communes(db_connection):
+    df = geopandas.read_parquet(DIR / "communes.parquet.gzip")
+    df = df.to_wkt()
+    commune_data_list = df.to_dict(orient="records")
 
-    df = geopandas.read_file(Path(__file__).parent / "communes_nord.sqlite")
-    df = df.rename_geometry("geom")
-
-    with db_engine.connect() as conn:
-        df.to_postgis(
-            "admin_express_communes",
-            con=conn,
-            if_exists="replace",
-            index=False,
-        )
+    db_connection.execute(sqla.insert(models.Commune).values(commune_data_list))
+    db_connection.commit()
 
 
 @pytest.fixture(scope="session")
-def conn(db_init):
-    conn = db_init.connect()
-    yield conn
-    conn.close()
+def db_connection(db_init):
+    connnection = db_init.connect()
+    yield connnection
+    connnection.close()
 
 
-@pytest.fixture()
-def test_session(conn):
+@pytest.fixture(scope="function")
+def db_session(db_connection):
     faker.Faker.seed(0)
 
     # https://docs.sqlalchemy.org/en/20/orm/session_transaction.html#joining-a-session-into-an-external-transaction-such-as-for-test-suites  # noqa
-    transaction = conn.begin()
-    factories.TestSession.configure(bind=conn, join_transaction_mode="create_savepoint")
-    session = factories.TestSession()
-    session.begin_nested()
+    transaction = db_connection.begin()
+    session = sqla.orm.Session(
+        bind=db_connection, join_transaction_mode="create_savepoint"
+    )
+
+    factories.StructureFactory._meta.sqlalchemy_session = session
+    factories.ServiceFactory._meta.sqlalchemy_session = session
+    factories.RequestFactory._meta.sqlalchemy_session = session
 
     yield session
 
-    factories.TestSession.remove()
+    session.close()
     transaction.rollback()
 
 
@@ -154,6 +156,5 @@ def predictable_sequences():
 
     factory.random.reseed_random(0)
     factories.RequestFactory.reset_sequence()
-    factories.CommuneFactory.reset_sequence()
     factories.ServiceFactory.reset_sequence()
     factories.StructureFactory.reset_sequence()

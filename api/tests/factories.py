@@ -3,16 +3,12 @@ from itertools import tee
 
 import factory
 import faker
-from sqlalchemy import orm
 
 from data_inclusion import schema as di_schema
 from data_inclusion.api.inclusion_data import models
 from data_inclusion.api.request.models import Request
 
 fake = faker.Faker("fr_FR")
-
-
-TestSession = orm.scoped_session(orm.sessionmaker())
 
 
 def pairwise(iterable):
@@ -24,23 +20,14 @@ def pairwise(iterable):
 class RequestFactory(factory.alchemy.SQLAlchemyModelFactory):
     class Meta:
         model = Request
-        sqlalchemy_session = TestSession
         sqlalchemy_session_persistence = "commit"
 
     status_code = 200
 
 
-class CommuneFactory(factory.alchemy.SQLAlchemyModelFactory):
-    class Meta:
-        model = models.Commune
-        sqlalchemy_session = TestSession
-        sqlalchemy_session_persistence = "commit"
-
-
 class StructureFactory(factory.alchemy.SQLAlchemyModelFactory):
     class Meta:
         model = models.Structure
-        sqlalchemy_session = TestSession
         sqlalchemy_session_persistence = "commit"
 
     _di_surrogate_id = factory.Faker("uuid4")
@@ -96,11 +83,10 @@ class StructureFactory(factory.alchemy.SQLAlchemyModelFactory):
 class ServiceFactory(factory.alchemy.SQLAlchemyModelFactory):
     class Meta:
         model = models.Service
-        sqlalchemy_session = TestSession
         sqlalchemy_session_persistence = "commit"
 
     _di_surrogate_id = factory.Faker("uuid4")
-    _di_geocodage_code_insee = factory.Faker("postcode")
+    _di_geocodage_code_insee = factory.SelfAttribute("code_insee")
     _di_geocodage_score = factory.Faker(
         "pyfloat", right_digits=2, positive=True, max_value=1
     )
@@ -153,7 +139,7 @@ class ServiceFactory(factory.alchemy.SQLAlchemyModelFactory):
     formulaire_en_ligne = None
     commune = factory.Faker("city", locale="fr_FR")
     code_postal = factory.Faker("postcode")
-    code_insee = factory.Faker("postcode")
+    code_insee = "59350"
     adresse = factory.Faker("street_address", locale="fr_FR")
     complement_adresse = None
     longitude = factory.Faker("longitude")

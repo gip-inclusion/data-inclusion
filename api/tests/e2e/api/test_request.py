@@ -5,17 +5,17 @@ from data_inclusion.api.request import models
 
 
 @pytest.mark.with_token
-def test_save_api_request_with_token(api_client, test_session):
+def test_save_api_request_with_token(api_client, db_session):
     url = "/api/v0/structures/foo/bar?baz=1"
     response = api_client.get(url)
 
     assert response.status_code == 404
     assert (
-        test_session.scalar(sqla.select(sqla.func.count()).select_from(models.Request))
+        db_session.scalar(sqla.select(sqla.func.count()).select_from(models.Request))
         == 1
     )
 
-    request_instance = test_session.scalars(sqla.select(models.Request)).first()
+    request_instance = db_session.scalars(sqla.select(models.Request)).first()
     assert request_instance.status_code == 404
     assert request_instance.user == "some_user"
     assert request_instance.path == "/api/v0/structures/foo/bar"
@@ -26,23 +26,32 @@ def test_save_api_request_with_token(api_client, test_session):
 
 
 @pytest.mark.with_token
-def test_ignore_redirect(api_client, test_session):
+def test_ignore_redirect(api_client, db_session):
     url = "/api/v0/structures/"
     response = api_client.get(url)
 
     assert response.status_code == 200
     assert (
-        test_session.scalar(sqla.select(sqla.func.count()).select_from(models.Request))
+        db_session.scalar(sqla.select(sqla.func.count()).select_from(models.Request))
         == 1
     )
 
 
-def test_save_api_request_without_token(api_client, test_session):
+def test_save_api_request_without_token(api_client, db_session):
     url = "/api/v0/structures"
     response = api_client.get(url)
 
     assert response.status_code == 403
     assert (
-        test_session.scalar(sqla.select(sqla.func.count()).select_from(models.Request))
+        db_session.scalar(sqla.select(sqla.func.count()).select_from(models.Request))
         == 1
     )
+
+    request_instance = db_session.scalars(sqla.select(models.Request)).first()
+    assert request_instance.status_code == 403
+    assert request_instance.user is None
+    assert request_instance.path == "/api/v0/structures"
+    assert request_instance.method == "GET"
+    assert request_instance.path_params == {}
+    assert request_instance.query_params == {}
+    assert request_instance.endpoint_name == "list_structures_endpoint"

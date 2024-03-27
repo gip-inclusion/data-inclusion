@@ -8,10 +8,16 @@ from fastapi.responses import RedirectResponse
 
 from data_inclusion import schema as di_schema
 from data_inclusion.api import auth
+from data_inclusion.api.code_officiel_geo.constants import (
+    CODE_COMMUNE_BY_CODE_ARRONDISSEMENT,
+    DepartementCOG,
+    DepartementSlug,
+)
+from data_inclusion.api.code_officiel_geo.models import Commune
 from data_inclusion.api.config import settings
 from data_inclusion.api.core import db
-from data_inclusion.api.inclusion_data import models, schemas, services
-from data_inclusion.api.utils import code_officiel_geographique, pagination, soliguide
+from data_inclusion.api.inclusion_data import schemas, services
+from data_inclusion.api.utils import pagination, soliguide
 
 router = fastapi.APIRouter(tags=["Données"])
 
@@ -38,9 +44,9 @@ def list_structures_endpoint(
         Optional[di_schema.LabelNational], fastapi.Query()
     ] = None,
     thematique: Annotated[Optional[di_schema.Thematique], fastapi.Query()] = None,
-    departement: Annotated[Optional[schemas.DepartementCOG], fastapi.Query()] = None,
+    departement: Annotated[Optional[DepartementCOG], fastapi.Query()] = None,
     departement_slug: Annotated[
-        Optional[schemas.DepartementSlug], fastapi.Query()
+        Optional[DepartementSlug], fastapi.Query()
     ] = None,
     code_postal: Annotated[Optional[di_schema.CodePostal], fastapi.Query()] = None,
     db_session=fastapi.Depends(db.get_session),
@@ -98,9 +104,9 @@ def list_services_endpoint(
     db_session=fastapi.Depends(db.get_session),
     source: Annotated[Optional[str], fastapi.Query()] = None,
     thematique: Annotated[Optional[di_schema.Thematique], fastapi.Query()] = None,
-    departement: Annotated[Optional[schemas.DepartementCOG], fastapi.Query()] = None,
+    departement: Annotated[Optional[DepartementCOG], fastapi.Query()] = None,
     departement_slug: Annotated[
-        Optional[schemas.DepartementSlug], fastapi.Query()
+        Optional[DepartementSlug], fastapi.Query()
     ] = None,
     code_insee: Annotated[Optional[di_schema.CodeCommune], fastapi.Query()] = None,
 ):
@@ -277,10 +283,8 @@ def search_services_endpoint(
     commune_instance = None
     search_point = None
     if code_insee is not None:
-        code_insee = code_officiel_geographique.CODE_COMMUNE_BY_CODE_ARRONDISSEMENT.get(
-            code_insee, code_insee
-        )
-        commune_instance = db_session.get(models.Commune, code_insee)
+        code_insee = CODE_COMMUNE_BY_CODE_ARRONDISSEMENT.get(code_insee, code_insee)
+        commune_instance = db_session.get(Commune, code_insee)
         if commune_instance is None:
             raise fastapi.HTTPException(
                 status_code=fastapi.status.HTTP_422_UNPROCESSABLE_ENTITY,
