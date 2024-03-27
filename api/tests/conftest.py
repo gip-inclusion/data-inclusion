@@ -138,15 +138,17 @@ def db_session(db_connection):
 
     # https://docs.sqlalchemy.org/en/20/orm/session_transaction.html#joining-a-session-into-an-external-transaction-such-as-for-test-suites  # noqa
     transaction = db_connection.begin()
-    factories.TestSession.configure(
+    session = sqla.orm.Session(
         bind=db_connection, join_transaction_mode="create_savepoint"
     )
-    session = factories.TestSession()
-    session.begin_nested()
+
+    factories.StructureFactory._meta.sqlalchemy_session = session
+    factories.ServiceFactory._meta.sqlalchemy_session = session
+    factories.RequestFactory._meta.sqlalchemy_session = session
 
     yield session
 
-    factories.TestSession.remove()
+    session.close()
     transaction.rollback()
 
 
