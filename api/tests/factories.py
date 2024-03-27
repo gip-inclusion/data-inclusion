@@ -3,7 +3,6 @@ from itertools import tee
 
 import factory
 import faker
-from sqlalchemy import orm
 
 from data_inclusion import schema as di_schema
 from data_inclusion.api.code_officiel_geo.models import Commune
@@ -11,9 +10,6 @@ from data_inclusion.api.inclusion_data import models
 from data_inclusion.api.request.models import Request
 
 fake = faker.Faker("fr_FR")
-
-
-TestSession = orm.scoped_session(orm.sessionmaker())
 
 
 def pairwise(iterable):
@@ -25,7 +21,6 @@ def pairwise(iterable):
 class RequestFactory(factory.alchemy.SQLAlchemyModelFactory):
     class Meta:
         model = Request
-        sqlalchemy_session = TestSession
         sqlalchemy_session_persistence = "commit"
 
     status_code = 200
@@ -34,14 +29,12 @@ class RequestFactory(factory.alchemy.SQLAlchemyModelFactory):
 class CommuneFactory(factory.alchemy.SQLAlchemyModelFactory):
     class Meta:
         model = Commune
-        sqlalchemy_session = TestSession
         sqlalchemy_session_persistence = "commit"
 
 
 class StructureFactory(factory.alchemy.SQLAlchemyModelFactory):
     class Meta:
         model = models.Structure
-        sqlalchemy_session = TestSession
         sqlalchemy_session_persistence = "commit"
 
     _di_surrogate_id = factory.Faker("uuid4")
@@ -97,7 +90,6 @@ class StructureFactory(factory.alchemy.SQLAlchemyModelFactory):
 class ServiceFactory(factory.alchemy.SQLAlchemyModelFactory):
     class Meta:
         model = models.Service
-        sqlalchemy_session = TestSession
         sqlalchemy_session_persistence = "commit"
 
     _di_surrogate_id = factory.Faker("uuid4")
