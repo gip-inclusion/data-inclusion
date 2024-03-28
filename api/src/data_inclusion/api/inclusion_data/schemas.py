@@ -1,5 +1,4 @@
 from pydantic import BaseModel, ConfigDict, Field
-from typing_extensions import Annotated
 
 from data_inclusion import schema
 
@@ -20,10 +19,10 @@ class Service(schema.Service):
 
     # TODO(vmttn): decide whether we should keep these extra fields
     di_geocodage_code_insee: schema.CodeCommune | None = Field(
-        alias="_di_geocodage_code_insee"
+        default=None, alias="_di_geocodage_code_insee"
     )
-    di_geocodage_score: Annotated[float, Field(ge=0, le=1)] | None = Field(
-        alias="_di_geocodage_score"
+    di_geocodage_score: float | None = Field(
+        default=None, ge=0, le=1, alias="_di_geocodage_score"
     )
 
 
@@ -37,10 +36,10 @@ class Structure(schema.Structure):
 
     # TODO(vmttn): decide whether we should keep these extra fields
     di_geocodage_code_insee: schema.CodeCommune | None = Field(
-        alias="_di_geocodage_code_insee"
+        default=None, alias="_di_geocodage_code_insee"
     )
-    di_geocodage_score: Annotated[float, Field(ge=0, le=1)] | None = Field(
-        alias="_di_geocodage_score"
+    di_geocodage_score: float | None = Field(
+        default=None, ge=0, le=1, alias="_di_geocodage_score"
     )
 
 
