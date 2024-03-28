@@ -1,2 +1,1 @@
--c constraints.txt
--r base.in
+apache-airflow[amazon,postgres,sentry]==2.8.4

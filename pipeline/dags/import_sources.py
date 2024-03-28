@@ -131,6 +131,7 @@ for source_id, source_config in sources.SOURCES_CONFIGS.items():
         schedule=source_config["schedule"],
         catchup=False,
         tags=["source"],
+        user_defined_macros={"local_ds": date.local_date_str},
     ) as dag:
         start = empty.EmptyOperator(task_id="start")
         end = empty.EmptyOperator(task_id="end")

@@ -68,70 +68,22 @@ dbt run --select marts
 python scripts/update_schema_seeds.py
 ```
 
-## Project requirements
+## Manage the pipeline requirements
 
-* `pip-compile~=7.3`
+In order to prevent conflicts:
 
-### airflow
+* tasks requirements are compiled separately
+* cli based tasks (like dbt and pipx) are also compiled separately
+* python tasks run in dedicated virtuale envs using `ExternalPythonOperator`
+* python tasks requirements must comply to airflow constraints
 
-These requirements are mainly used for the deployment on scalingo.
-
-Unlike the local dev setup, which uses the airflow official docker image, scalingo
-installs our requirements listed in our files.
-
-When installing from PyPi, it is recommended to use the `constraints.txt` file ([source](https://airflow.apache.org/docs/apache-airflow/stable/installation/installing-from-pypi.html#constraints-files)).
-
-To update the constraints and upgrade the requirements:
 
 ```bash
-# optionally bump the airflow version
-AIRFLOW_VERSION=
-PYTHON_VERSION=
-curl https://raw.githubusercontent.com/apache/airflow/constraints-${AIRFLOW_VERSION}/constraints-${PYTHON_VERSION}.txt > requirements/airflow/constraints.txt
-pip-compile --upgrade requirements/airflow/requirements.in
-```
+# cd to pipeline/requirements
 
-### tasks
+# to simply add or remove a dependency
+make all
 
-These sets of requirements are used to create isolated environments for python tasks on airflow.
-They are independent from the airflow requirements.
-
-- `requirements/tasks/dbt/`: requirements for dbt tasks
-- `requirements/tasks/python/`: requirements for various python tasks (pandas, openpyxl, requests, etc.)
-
-To add or delete a dependency to these requirements:
-
-```bash
-# 1. edit the target requirements/tasks/...../requirements.in
-# 2. compile the dependencies
-pip-compile requirements/tasks/dbt/requirements.in
-pip-compile requirements/tasks/python/requirements.in
-```
-
-To upgrade these requirements:
-
-```bash
-pip-compile --upgrade requirements/tasks/dbt/requirements.in
-pip-compile --upgrade requirements/tasks/python/requirements.in
-```
-
-Then you should update the dev requirements.
-
-### dev
-
-These requirements are used for local development (IDE completion, formatting, tests, etc.).
-They merge the previous requirements, without constraints, and add dev packages (ruff, pytest, etc.).
-
-To add or delete a dependency to these dev requirements:
-
-```bash
-# 1. edit the target requirements/dev/requirements.in
-# 2. compile the dependencies
-pip-compile requirements/dev/requirements.in
-```
-
-To upgrade these requirements:
-
-```bash
-pip-compile --upgrade requirements/dev/requirements.in
+# to upgrade dependencies
+make upgrade all
 ```

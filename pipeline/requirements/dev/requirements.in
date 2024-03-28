@@ -1,4 +1,4 @@
--r ../airflow/base.in
+-r ../airflow/requirements.in
 -r ../tasks/python/requirements.in
 
 ruff

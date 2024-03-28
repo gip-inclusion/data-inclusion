@@ -41,7 +41,7 @@ RUN "${VIRTUAL_ENV}/bin/python" -m pip install --no-cache-dir -r requirements/ta
 ########
 # This image is the runtime
 ########
-FROM apache/airflow:2.7.3-python3.11
+FROM apache/airflow:2.8.4-python3.11
 
 ENV PYTHONUNBUFFERED 1
 ENV PYTHONDONTWRITEBYTECODE 1

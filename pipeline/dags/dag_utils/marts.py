@@ -1,44 +1,29 @@
-from airflow.operators import bash, python
-
-from dag_utils.virtualenvs import PYTHON_BIN_PATH
-
-TMP_FILE_PATH = "/tmp/out.dump"
+from airflow.providers.amazon.aws.hooks import s3
+from airflow.providers.amazon.aws.transfers.sql_to_s3 import SqlToS3Operator
+from airflow.utils.task_group import TaskGroup
 
 
-def _export_to_s3(tmp_file_path, logical_date, run_id):
-    import logging
+def export_di_dataset_to_s3():
+    with TaskGroup(group_id="export_di_dataset_to_s3") as task_group:
+        for ressource in ["structures", "services"]:
+            # TODO(vmttn): normalize table name after db split
+            table_name = ressource.rstrip("s")
 
-    from airflow.providers.amazon.aws.hooks import s3
+            s3_bucket = s3.S3Hook(aws_conn_id="s3").get_bucket().name
+            prefix = "data/marts/{{ local_ds(ts) }}/{{ run_id }}/"
+            s3_key = f"{prefix}{table_name}.parquet.gzip"
+            query = f"SELECT * FROM public.{table_name}"
 
-    from dag_utils import date
+            SqlToS3Operator(
+                task_id=ressource,
+                sql_conn_id="pg",
+                aws_conn_id="s3",
+                s3_key=s3_key,
+                s3_bucket=s3_bucket,
+                query=query,
+                replace=True,
+                pd_kwargs={"compression": "gzip"},
+                file_format="parquet",
+            )
 
-    logger = logging.getLogger(__name__)
-    s3_file_path = f"data/marts/{date.local_date_str(logical_date)}/{run_id}/api.dump"
-
-    logger.info("Uploading dump to s3_path=%s", s3_file_path)
-
-    s3_hook = s3.S3Hook(aws_conn_id="s3")
-    s3_hook.load_file(filename=tmp_file_path, key=s3_file_path)
-
-
-def pg_dump_api():
-    return bash.BashOperator(
-        task_id="pg_dump_api",
-        bash_command=(
-            "pg_dump --format=custom "
-            "--dbname={{ conn.pg.get_uri() }} "
-            "--schema=public "
-            "--table=service "
-            "--table=structure "
-            f"--file={TMP_FILE_PATH}"
-        ),
-    )
-
-
-def export_to_s3():
-    return python.ExternalPythonOperator(
-        task_id="export_to_s3",
-        python=str(PYTHON_BIN_PATH),
-        python_callable=_export_to_s3,
-        op_kwargs={"tmp_file_path": TMP_FILE_PATH},
-    )
+        return task_group

@@ -83,6 +83,7 @@ with airflow.DAG(
     schedule="0 4 * * *",
     catchup=False,
     concurrency=4,
+    user_defined_macros={"local_ds": date.local_date_str},
 ) as dag:
     start = empty.EmptyOperator(task_id="start")
     end = empty.EmptyOperator(task_id="end")
@@ -111,7 +112,6 @@ with airflow.DAG(
         >> get_before_geocoding_tasks()
         >> python_geocode
         >> get_after_geocoding_tasks()
-        >> marts.pg_dump_api()
-        >> marts.export_to_s3()
+        >> marts.export_di_dataset_to_s3()
         >> end
     )
