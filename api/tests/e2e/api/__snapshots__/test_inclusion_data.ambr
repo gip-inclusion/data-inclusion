@@ -1781,8 +1781,6 @@
             "structure_id",
             "source",
             "nom",
-            "_di_geocodage_code_insee",
-            "_di_geocodage_score",
             "structure"
           ],
           "title": "DetailedService"
@@ -2119,8 +2117,6 @@
             "nom",
             "source",
             "date_maj",
-            "_di_geocodage_code_insee",
-            "_di_geocodage_score",
             "services"
           ],
           "title": "DetailedStructure"
@@ -2832,9 +2828,7 @@
             "id",
             "structure_id",
             "source",
-            "nom",
-            "_di_geocodage_code_insee",
-            "_di_geocodage_score"
+            "nom"
           ],
           "title": "Service"
         },
@@ -3215,9 +3209,7 @@
             "id",
             "nom",
             "source",
-            "date_maj",
-            "_di_geocodage_code_insee",
-            "_di_geocodage_score"
+            "date_maj"
           ],
           "title": "Structure"
         },
