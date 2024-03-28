@@ -14,6 +14,12 @@ anyio==4.3.0
     #   httpx
     #   starlette
     #   watchfiles
+argon2-cffi==23.1.0
+    # via minio
+argon2-cffi-bindings==21.2.0
+    # via argon2-cffi
+brotli==1.1.0
+    # via py7zr
 cachetools==5.3.3
     # via tox
 certifi==2024.2.2
@@ -21,10 +27,13 @@ certifi==2024.2.2
     #   data-inclusion-api (setup.py)
     #   httpcore
     #   httpx
+    #   minio
     #   requests
     #   sentry-sdk
 cffi==1.16.0
-    # via cryptography
+    # via
+    #   argon2-cffi-bindings
+    #   cryptography
 cfgv==3.4.0
     # via pre-commit
 chardet==5.2.0
@@ -93,6 +102,8 @@ idna==3.6
     #   email-validator
     #   httpx
     #   requests
+inflate64==1.0.0
+    # via py7zr
 jinja2==3.1.3
     # via fastapi-debug-toolbar
 mako==1.3.2
@@ -101,6 +112,10 @@ markupsafe==2.1.5
     # via
     #   jinja2
     #   mako
+minio==7.2.5
+    # via data-inclusion-api (setup.py)
+multivolumefile==0.2.3
+    # via py7zr
 nodeenv==1.8.0
     # via pre-commit
 numpy==1.26.4
@@ -126,7 +141,11 @@ pluggy==1.4.0
     # via tox
 pre-commit==3.6.2
     # via data-inclusion-api (setup.py)
+psutil==5.9.8
+    # via py7zr
 psycopg2==2.9.9
+    # via data-inclusion-api (setup.py)
+py7zr==0.21.0
     # via data-inclusion-api (setup.py)
 pyarrow==15.0.0
     # via data-inclusion-api (setup.py)
@@ -134,8 +153,14 @@ pyasn1==0.5.1
     # via
     #   python-jose
     #   rsa
+pybcj==1.0.2
+    # via py7zr
 pycparser==2.21
     # via cffi
+pycryptodome==3.20.0
+    # via minio
+pycryptodomex==3.20.0
+    # via py7zr
 pydantic[email]==2.6.3
     # via
     #   data-inclusion-api (setup.py)
@@ -156,6 +181,8 @@ pydantic-settings==2.2.1
     #   fastapi-debug-toolbar
 pyinstrument==4.6.2
     # via fastapi-debug-toolbar
+pyppmd==1.1.0
+    # via py7zr
 pyproject-api==1.6.1
     # via tox
 python-dateutil==2.9.0.post0
@@ -177,6 +204,8 @@ pyyaml==6.0.1
     # via
     #   pre-commit
     #   uvicorn
+pyzstd==0.15.10
+    # via py7zr
 requests==2.31.0
     # via data-inclusion-api (setup.py)
 rsa==4.9
@@ -204,13 +233,18 @@ sqlparse==0.4.4
     # via fastapi-debug-toolbar
 starlette==0.36.3
     # via fastapi
+texttable==1.7.0
+    # via py7zr
 tox==4.13.0
+    # via data-inclusion-api (setup.py)
+tqdm==4.66.2
     # via data-inclusion-api (setup.py)
 typing-extensions==4.10.0
     # via
     #   alembic
     #   fastapi
     #   fastapi-pagination
+    #   minio
     #   pydantic
     #   pydantic-core
     #   sqlalchemy
@@ -218,6 +252,7 @@ tzdata==2024.1
     # via pandas
 urllib3==2.2.1
     # via
+    #   minio
     #   requests
     #   sentry-sdk
 uvicorn[standard]==0.27.1

@@ -4,6 +4,7 @@ import click
 
 from data_inclusion.api import auth
 from data_inclusion.api.code_officiel_geo.commands import import_admin_express
+from data_inclusion.api.inclusion_data.commands import load_inclusion_data
 
 logger = logging.getLogger(__name__)
 
@@ -37,6 +38,12 @@ def _generate_token_for_user(
 def _import_admin_express():
     """Import the latest Admin Express COG database"""
     click.echo(import_admin_express())
+
+
+@cli.command(name="load_inclusion_data")
+def _load_inclusion_data():
+    """Load the latest inclusion data"""
+    click.echo(load_inclusion_data())
 
 
 if __name__ == "__main__":
