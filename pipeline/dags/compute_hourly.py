@@ -33,7 +33,6 @@ with airflow.DAG(
         >> get_staging_tasks(schedule="@hourly")
         >> get_before_geocoding_tasks()
         >> get_after_geocoding_tasks()
-        >> marts.pg_dump_api()
-        >> marts.export_to_s3()
+        >> marts.export_di_dataset_to_s3()
         >> end
     )
