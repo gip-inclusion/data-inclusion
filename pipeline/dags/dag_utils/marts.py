@@ -1,44 +1,33 @@
-from airflow.operators import bash, python
+from airflow.operators import python
 
 from dag_utils.virtualenvs import PYTHON_BIN_PATH
 
-TMP_FILE_PATH = "/tmp/out.dump"
 
-
-def _export_to_s3(tmp_file_path, logical_date, run_id):
-    import logging
-
+def _export_di_dataset_to_s3(logical_date, run_id):
     from airflow.providers.amazon.aws.hooks import s3
+    from airflow.providers.postgres.hooks import postgres
 
     from dag_utils import date
 
-    logger = logging.getLogger(__name__)
-    s3_file_path = f"data/marts/{date.local_date_str(logical_date)}/{run_id}/api.dump"
-
-    logger.info("Uploading dump to s3_path=%s", s3_file_path)
-
+    pg_hook = postgres.PostgresHook(postgres_conn_id="pg")
     s3_hook = s3.S3Hook(aws_conn_id="s3")
-    s3_hook.load_file(filename=tmp_file_path, key=s3_file_path)
+
+    prefix = f"data/marts/{date.local_date_str(logical_date)}/{run_id}/"
+
+    for ressource in ["structures", "services"]:
+        # TODO(vmttn): normalize table name after db split
+        table_name = ressource.rstrip("s")
+        key = f"{prefix}{ressource}.parquet"
+        query = f"SELECT * FROM public.{table_name}"
+
+        df = pg_hook.get_pandas_df(sql=query)
+        bytes_data = df.to_parquet(compression="gzip")
+        s3_hook.load_bytes(bytes_data, key=key, replace=True)
 
 
-def pg_dump_api():
-    return bash.BashOperator(
-        task_id="pg_dump_api",
-        bash_command=(
-            "pg_dump --format=custom "
-            "--dbname={{ conn.pg.get_uri() }} "
-            "--schema=public "
-            "--table=service "
-            "--table=structure "
-            f"--file={TMP_FILE_PATH}"
-        ),
-    )
-
-
-def export_to_s3():
+def export_di_dataset_to_s3():
     return python.ExternalPythonOperator(
-        task_id="export_to_s3",
+        task_id="python_export_di_dataset_to_s3",
         python=str(PYTHON_BIN_PATH),
-        python_callable=_export_to_s3,
-        op_kwargs={"tmp_file_path": TMP_FILE_PATH},
+        python_callable=_export_di_dataset_to_s3,
     )
