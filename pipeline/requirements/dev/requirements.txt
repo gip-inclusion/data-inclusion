@@ -515,6 +515,7 @@ numpy==1.24.4
     # via
     #   -c airflow/constraints.txt
     #   pandas
+    #   pyarrow
     #   pyogrio
     #   shapely
 openpyxl==3.1.2
@@ -634,6 +635,10 @@ psycopg2-binary==2.9.9
     #   apache-airflow-providers-postgres
 pyairtable==2.3.3
     # via -r dev/../tasks/python/requirements.in
+pyarrow==14.0.2
+    # via
+    #   -c airflow/constraints.txt
+    #   -r dev/../tasks/python/requirements.in
 pyathena==3.5.1
     # via
     #   -c airflow/constraints.txt
