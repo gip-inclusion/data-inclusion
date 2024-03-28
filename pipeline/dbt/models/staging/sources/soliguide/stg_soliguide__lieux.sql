@@ -24,7 +24,7 @@ final AS (
         data #>> '{position,complementAdresse}'                AS "position_complement_adresse",
         data #>> '{position,departement}'                      AS "departement",
         NULLIF(data #>> '{entity,mail}', '')                   AS "entity_mail",
-        data #>> '{entity,website}'                            AS "entity_website",
+        NULLIF(data #>> '{entity,website}', '')                AS "entity_website",
         data -> 'newhours'                                     AS "newhours",
         data #>> '{modalities,appointment,precisions}'         AS "modalities__appointment__precisions",
         data #>> '{modalities,inscription,precisions}'         AS "modalities__inscription__precisions",
