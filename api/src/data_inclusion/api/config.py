@@ -17,5 +17,10 @@ class Settings(BaseSettings):
     DEFAULT_PAGE_SIZE: int = 500
     MAX_PAGE_SIZE: int = 1000
 
+    DATALAKE_ENDPOINT_URL: str | None = None
+    DATALAKE_BUCKET_NAME: str | None = None
+    DATALAKE_SECRET_KEY: str | None = None
+    DATALAKE_ACCESS_KEY: str | None = None
+
 
 settings = Settings()

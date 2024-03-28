@@ -21,6 +21,7 @@ setup(
         "GeoAlchemy2",
         "gunicorn",
         "httpx",
+        "minio",
         "numpy",
         "pandas",
         "psycopg2",
