@@ -1,5 +1,3 @@
 web: ./entrypoint.sh webserver
 
-postdeploy: ./entrypoint.sh migrate
-
 scheduler: ./entrypoint.sh scheduler
