@@ -30,12 +30,14 @@ export AIRFLOW__LOGGING__REMOTE_BASE_LOG_FOLDER=s3://data-inclusion-lake/logs
 export AIRFLOW__LOGGING__REMOTE_LOG_CONN_ID=s3_logs
 export AIRFLOW__LOGGING__DELETE_LOCAL_LOGS=True
 
-if [[ "${COMMAND}" = "webserver" ]]; then
-    airflow webserver --port "${PORT}"
+# migrate is run as post-deploy hook, but sometimes we also want to migrate
+# before the deployment.
+if [[ "${COMMAND}" = "migrate" ]] || [[ "${_AIRFLOW_DB_MIGRATE}" = "true" ]]; then
+    airflow db migrate
 fi
 
-if [[ "${COMMAND}" = "migrate" ]]; then
-    airflow db migrate
+if [[ "${COMMAND}" = "webserver" ]]; then
+    airflow webserver --port "${PORT}"
 fi
 
 if [[ "${COMMAND}" = "scheduler" ]]; then
