@@ -17,12 +17,16 @@ def save_request(
     if (route := request.scope.get("route")) is not None:
         endpoint_name = route.name
 
+    username = None
+    if (user := request.scope.get("user")) is not None and user.is_authenticated:
+        username = user.username
+
     request_instance = models.Request(
         status_code=response.status_code,
         method=request.method,
         path=request.url.path,
         base_url=str(request.base_url),
-        user=request.user.username if request.user.is_authenticated else None,
+        user=username,
         path_params=request.path_params,
         query_params={
             key: ",".join(request.query_params.getlist(key))
