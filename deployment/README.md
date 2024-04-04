@@ -22,10 +22,11 @@ The state backend is shared by environments. There should already be a project `
     * `IAMReadOnly`, `ProjectReadOnly` in the organization;
     * `InstancesFullAccess`, `ObjectStorageFullAccess`, `RelationalDatabasesFullAccess` and `DomainsDNSFullAccess` in the target project scope
 3. Another IAM application `<ENVIRONMENT>--manual--airflow` that will be used for object storage by Airflow, together with the API key (access key + secret key) for this application. This application needs a policy `<ENVIRONMENT>--manual--airflow-object-storage-access` attached that gives it `ObjectStorageFullAccess` in the target project.
-4. A SSH key pair:
+4. Another IAM application `<ENVIRONMENT>--manual--api` used by the api to load the data·inclusion dataset regularly, together with the API key (access key + secret key) for this application. This application needs a policy `<ENVIRONMENT>--manual--api-object-storage-access` attached that gives it `ObjectStorageReadOnly` in the target project.
+5. A SSH key pair:
     * generated with `ssh-keygen -t ed25519 -C <ENVIRONMENT> -f /tmp/<ENVIRONMENT> -N ''`)
     * the public key must have been uploaded to scaleway
-5. A domain (`<ENVIRONMENT>.data.inclusion.beta.gouv.fr`) registered on AlwaysData and declared on scaleway as an external domain in the environment project.
+6. A domain (`<ENVIRONMENT>.data.inclusion.beta.gouv.fr`) registered on AlwaysData and declared on scaleway as an external domain in the environment project.
 
 💡 IAM applications are not created with terraform, because it would require the `<ENVIRONMENT>--manual--github-ci` application to have full access to IAM management at the organization level.
 

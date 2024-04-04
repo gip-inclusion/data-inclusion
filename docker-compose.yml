@@ -164,6 +164,10 @@ services:
       - DEBUG=${API_DEBUG:-False}
       - DATABASE_URL=postgresql://data-inclusion:data-inclusion@target-db:5432/data-inclusion
       - SECRET_KEY=USE_IN_DEVELOPMENT_ONLY
+      - DATALAKE_ENDPOINT_URL=http://minio:9000
+      - DATALAKE_BUCKET_NAME=data-inclusion-lake
+      - DATALAKE_SECRET_KEY=minioadmin
+      - DATALAKE_ACCESS_KEY=minioadmin
 
 volumes:
   pg-data:
