@@ -74,6 +74,20 @@ resource "scaleway_object_bucket_policy" "main" {
         {
           Effect = "Allow",
           Principal = {
+            SCW = ["application_id:${var.api_scw_application_id}"]
+          },
+          Action = [
+            "s3:ListBucket",
+            "s3:GetObject",
+          ],
+          Resource = [
+            "${scaleway_object_bucket.main.name}",
+            "${scaleway_object_bucket.main.name}/data/marts/*",
+          ]
+        },
+        {
+          Effect = "Allow",
+          Principal = {
             SCW = concat(
               [for user_id in data.scaleway_iam_group.editors.user_ids : "user_id:${user_id}"],
               ["application_id:${var.scaleway_application_id}"]
@@ -100,10 +114,12 @@ locals {
     var.datawarehouse_di_database
   )
 
+  s3_endpoint = replace(scaleway_object_bucket.main.endpoint, "${scaleway_object_bucket.main.name}.", "")
+
   airflow_conn_s3 = format(
     "aws://@/%s?endpoint_url=%s&region_name=%s&aws_access_key_id=%s&aws_secret_access_key=%s",
     scaleway_object_bucket.main.name,
-    urlencode(replace(scaleway_object_bucket.main.endpoint, "${scaleway_object_bucket.main.name}.", "")),
+    urlencode(local.s3_endpoint),
     scaleway_object_bucket.main.region,
     var.airflow_access_key,
     var.airflow_secret_key
@@ -149,6 +165,10 @@ resource "null_resource" "up" {
 
   provisioner "file" {
     content = sensitive(<<-EOT
+    API_DATALAKE_ENDPOINT_URL=${local.s3_endpoint}
+    API_DATALAKE_BUCKET_NAME=${scaleway_object_bucket.main.name}
+    API_DATALAKE_SECRET_KEY=${var.api_scw_secret_key}
+    API_DATALAKE_ACCESS_KEY=${var.api_scw_access_key}
     API_HOSTNAME=${local.api_hostname}
     API_SECRET_KEY=${var.api_secret_key}
     API_TOKEN_ENABLED=${var.api_token_enabled}

@@ -31,6 +31,7 @@ class DatalakeClient:
             access_key=settings.DATALAKE_ACCESS_KEY,
             secret_key=settings.DATALAKE_SECRET_KEY,
             secure=endpoint_url.scheme == "https",
+            region="fr-par" if "fr-par" in str(endpoint_url) else None,
         )
 
     def get_latest_dataset_path(self) -> Path:
