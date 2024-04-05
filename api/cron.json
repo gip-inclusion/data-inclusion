@@ -1,0 +1,12 @@
+{
+    "jobs": [
+        {
+            "command": "30 * * * * test $ENV = 'prod' && data-inclusion-api load_inclusion_data",
+            "size": "XL"
+        },
+        {
+            "command": "30 * * * * test $ENV != 'prod' && data-inclusion-api load_inclusion_data",
+            "size": "S"
+        }
+    ]
+}
