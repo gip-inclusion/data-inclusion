@@ -3,8 +3,10 @@ from datetime import date, timedelta
 from unittest.mock import ANY
 
 import pytest
+import sqlalchemy as sqla
 
 from data_inclusion import schema
+from data_inclusion.api.request import models
 from data_inclusion.api.utils import soliguide
 
 from ... import factories
@@ -1339,7 +1341,7 @@ def test_retrieve_service_and_notify_soliguide(api_client, app):
         (None, "les-emplois", 404),
     ],
 )
-def test_redirect_service(api_client, lien_source, depuis, status_code):
+def test_redirect_service(api_client, lien_source, depuis, status_code, db_session):
     service = factories.ServiceFactory(lien_source=lien_source)
 
     url = "/api/v0/services/"
@@ -1356,3 +1358,10 @@ def test_redirect_service(api_client, lien_source, depuis, status_code):
 
     if status_code == 307:
         assert response.headers["location"] == f"{lien_source}?mtm_campaign=LesEmplois"
+
+        assert (
+            db_session.scalar(
+                sqla.select(sqla.func.count()).select_from(models.Request)
+            )
+            == 1
+        )

@@ -4,13 +4,19 @@ from data_inclusion.api.core import db
 from data_inclusion.api.request import models
 
 
+def is_trailing_slash_redirect(
+    request: fastapi.Request, response: fastapi.Response
+) -> bool:
+    redirect_url = response.headers.get("location")
+    return response.status_code == 307 and str(request.url) == f"{redirect_url}/"
+
+
 def save_request(
     request: fastapi.Request,
     response: fastapi.Response,
     db_session=fastapi.Depends(db.get_session),
 ) -> None:
-    # ignore trailing slash redirects
-    if response.status_code == 307:
+    if is_trailing_slash_redirect(request=request, response=response):
         return
 
     endpoint_name = None
