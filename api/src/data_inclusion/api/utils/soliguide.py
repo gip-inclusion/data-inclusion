@@ -52,20 +52,22 @@ def notify_soliguide_dependency(
     if route is None:
         return
 
-    if route.name == "retrieve_structure_endpoint":
-        place_id = id
-    elif route.name == "retrieve_service_endpoint":
-        place_id = (
-            db_session.execute(
+    match route.name:
+        case "retrieve_structure_endpoint":
+            place_id = id
+        case "retrieve_service_endpoint":
+            service_instance = db_session.scalar(
                 sqla.select(models.Service)
                 .filter(models.Service.source == "soliguide")
                 .filter(models.Service.id == id)
             )
-            .scalar()
-            .structure_id
-        )
-    else:
-        return
+
+            if service_instance is None:
+                return
+
+            place_id = service_instance.structure_id
+        case _:
+            return
 
     logger.info(f"Notifying soliguide for place_id={place_id}")
     background_tasks.add_task(soliguide_client.retrieve_place, place_id=place_id)

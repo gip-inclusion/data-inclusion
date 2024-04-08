@@ -1310,8 +1310,17 @@ def test_retrieve_structure_and_notify_soliguide(api_client, app):
     assert fake_soliguide_client.retrieved_ids == ["soliguide-structure-id"]
 
 
+@pytest.mark.parametrize(
+    ("requested_id", "status_code", "retrieved_ids"),
+    [
+        ("soliguide-service-id", 200, ["soliguide-structure-id"]),
+        ("not-a-soliguide-service-id", 404, []),
+    ],
+)
 @pytest.mark.with_token
-def test_retrieve_service_and_notify_soliguide(api_client, app):
+def test_retrieve_service_and_notify_soliguide(
+    api_client, app, requested_id, status_code, retrieved_ids
+):
     factories.StructureFactory(source="soliguide", id="soliguide-structure-id")
     service_1 = factories.ServiceFactory(
         source="soliguide",
@@ -1325,10 +1334,10 @@ def test_retrieve_service_and_notify_soliguide(api_client, app):
     )
 
     url = "/api/v0/services/"
-    response = api_client.get(url + f"{service_1.source}/{service_1.id}")
+    response = api_client.get(url + f"{service_1.source}/{requested_id}")
 
-    assert response.status_code == 200
-    assert fake_soliguide_client.retrieved_ids == ["soliguide-structure-id"]
+    assert response.status_code == status_code
+    assert fake_soliguide_client.retrieved_ids == retrieved_ids
 
 
 @pytest.mark.parametrize(
