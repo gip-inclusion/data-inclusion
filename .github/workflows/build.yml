@@ -115,8 +115,6 @@ jobs:
         TF_VAR_scaleway_secret_key: ${{ secrets.SCALEWAY_SECRET_KEY }}
         TF_VAR_environment: ${{ vars.ENVIRONMENT }}
         TF_VAR_api_scw_application_id: ${{ vars.API_SCW_APPLICATION_ID }}
-        TF_VAR_api_scw_access_key: ${{ vars.API_SCW_ACCESS_KEY }}
-        TF_VAR_api_scw_secret_key: ${{ secrets.API_SCW_SECRET_KEY }}
         TF_VAR_airflow_application_id: ${{ vars.AIRFLOW_APPLICATION_ID }}
         TF_VAR_airflow_access_key: ${{ vars.AIRFLOW_ACCESS_KEY }}
         TF_VAR_airflow_secret_key: ${{ secrets.AIRFLOW_SECRET_KEY }}

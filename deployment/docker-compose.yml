@@ -129,30 +129,6 @@ services:
     volumes:
       - datawarehouse-data:/var/lib/postgresql/data
 
-  api:
-    image: ghcr.io/gip-inclusion/data-inclusion-api:${STACK_VERSION}
-    depends_on:
-      - datawarehouse
-    restart: always
-    ports:
-      - 8000:8000
-    labels:
-      - "traefik.enable=true"
-      - "traefik.http.routers.api.rule=Host(`${API_HOSTNAME}`)"
-      - "traefik.http.routers.api.entrypoints=websecure"
-      - "traefik.http.routers.api.tls.certresolver=main"
-    environment:
-      - ENV=prod
-      - DEBUG=False
-      - DATABASE_URL=${AIRFLOW_CONN_PG}  # TODO: create dedicated RO creds for api
-      - SECRET_KEY=${API_SECRET_KEY}
-      - ROOT_PATH=/api
-      - TOKEN_ENABLED=${API_TOKEN_ENABLED}
-      - DATALAKE_ENDPOINT_URL=${API_DATALAKE_ENDPOINT_URL}
-      - DATALAKE_BUCKET_NAME=${API_DATALAKE_BUCKET_NAME}
-      - DATALAKE_SECRET_KEY=${API_DATALAKE_SECRET_KEY}
-      - DATALAKE_ACCESS_KEY=${API_DATALAKE_ACCESS_KEY}
-
   reverse-proxy:
     image: traefik:v2.10
     restart: always
