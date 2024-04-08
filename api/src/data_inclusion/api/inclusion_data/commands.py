@@ -132,17 +132,17 @@ def load_inclusion_data():
     structure_errors_df = validate_df(structures_df, model_schema=schema.Structure)
     service_errors_df = validate_df(services_df, model_schema=schema.Service)
 
-    logger.info("Logging structure errors")
+    logger.info("Structure validation errors:")
     log_errors(structure_errors_df)
-    logger.info("Logging services errors")
+    logger.info("Services validation errors:")
     log_errors(service_errors_df)
 
-    # exclude unvalid data
+    # exclude invalid data
     structures_df = structures_df[
         ~structures_df._di_surrogate_id.isin(structure_errors_df._di_surrogate_id)
     ]
     services_df = services_df[
-        ~structures_df._di_surrogate_id.isin(structure_errors_df._di_surrogate_id)
+        ~services_df._di_surrogate_id.isin(service_errors_df._di_surrogate_id)
         & ~services_df._di_structure_surrogate_id.isin(
             structure_errors_df._di_surrogate_id
         )
