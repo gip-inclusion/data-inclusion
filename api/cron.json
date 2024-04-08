@@ -1,11 +1,11 @@
 {
     "jobs": [
         {
-            "command": "30 * * * * test $ENV = 'prod' && data-inclusion-api load_inclusion_data",
+            "command": "30 * * * * TQDM_DISABLE=1 test $ENV = 'prod' && data-inclusion-api load_inclusion_data",
             "size": "XL"
         },
         {
-            "command": "30 * * * * test $ENV != 'prod' && data-inclusion-api load_inclusion_data",
+            "command": "30 * * * * TQDM_DISABLE=1 test $ENV != 'prod' && data-inclusion-api load_inclusion_data",
             "size": "S"
         }
     ]
