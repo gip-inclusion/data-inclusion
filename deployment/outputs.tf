@@ -15,11 +15,6 @@ output "airflow_url" {
   value       = "https://${local.airflow_hostname}"
 }
 
-output "api_url" {
-  description = "API public URL"
-  value       = "https://${local.api_hostname}"
-}
-
 output "public_ip" {
   description = "Publicly reachable IP (with `ssh root@<public_ip>`)"
   value       = scaleway_instance_server.main.public_ip
