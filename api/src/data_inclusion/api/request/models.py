@@ -17,6 +17,7 @@ class Request(db.Base):
     client_host: Mapped[str | None]
     client_port: Mapped[int | None]
     endpoint_name: Mapped[str | None]
+    session_id: Mapped[str | None]
 
     __table_args__ = (
         sqla.Index(None, "endpoint_name"),

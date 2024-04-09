@@ -1,3 +1,4 @@
+from textwrap import dedent
 from typing import Annotated, TypeVar
 
 from furl import furl
@@ -28,6 +29,21 @@ T = TypeVar("T")
 Optional = T | SkipJsonSchema[None]
 
 
+SessionIdHeader = Annotated[
+    str | None,
+    fastapi.Header(
+        alias="session-id",
+        description=dedent(
+            """\
+            Un identifiant de session utilisateur unique sur votre produit.
+            Cet identifiant doit être généré par vos soins et anonymisé.
+            Utilisé par data·inclusion exclusivement à des fins d'analyse d'usage.
+        """,
+        ),
+    ),
+]
+
+
 @router.get(
     "/structures",
     response_model=pagination.Page[schemas.Structure],
@@ -37,6 +53,7 @@ Optional = T | SkipJsonSchema[None]
 )
 def list_structures_endpoint(
     request: fastapi.Request,
+    session_id: SessionIdHeader = None,
     source: Annotated[Optional[str], fastapi.Query()] = None,
     id: Annotated[Optional[str], fastapi.Query()] = None,
     typologie: Annotated[Optional[di_schema.Typologie], fastapi.Query()] = None,
@@ -45,9 +62,7 @@ def list_structures_endpoint(
     ] = None,
     thematique: Annotated[Optional[di_schema.Thematique], fastapi.Query()] = None,
     departement: Annotated[Optional[DepartementCOG], fastapi.Query()] = None,
-    departement_slug: Annotated[
-        Optional[DepartementSlug], fastapi.Query()
-    ] = None,
+    departement_slug: Annotated[Optional[DepartementSlug], fastapi.Query()] = None,
     code_postal: Annotated[Optional[di_schema.CodePostal], fastapi.Query()] = None,
     db_session=fastapi.Depends(db.get_session),
 ):
@@ -74,6 +89,7 @@ def list_structures_endpoint(
 def retrieve_structure_endpoint(
     source: Annotated[str, fastapi.Path()],
     id: Annotated[str, fastapi.Path()],
+    session_id: SessionIdHeader = None,
     db_session=fastapi.Depends(db.get_session),
     _=fastapi.Depends(soliguide.notify_soliguide_dependency),
 ):
@@ -88,6 +104,7 @@ def retrieve_structure_endpoint(
 )
 def list_sources_endpoint(
     request: fastapi.Request,
+    session_id: SessionIdHeader = None,
 ):
     return services.list_sources(request=request)
 
@@ -101,13 +118,12 @@ def list_sources_endpoint(
 )
 def list_services_endpoint(
     request: fastapi.Request,
+    session_id: SessionIdHeader = None,
     db_session=fastapi.Depends(db.get_session),
     source: Annotated[Optional[str], fastapi.Query()] = None,
     thematique: Annotated[Optional[di_schema.Thematique], fastapi.Query()] = None,
     departement: Annotated[Optional[DepartementCOG], fastapi.Query()] = None,
-    departement_slug: Annotated[
-        Optional[DepartementSlug], fastapi.Query()
-    ] = None,
+    departement_slug: Annotated[Optional[DepartementSlug], fastapi.Query()] = None,
     code_insee: Annotated[Optional[di_schema.CodeCommune], fastapi.Query()] = None,
 ):
     return services.list_services(
@@ -130,6 +146,7 @@ def list_services_endpoint(
 def retrieve_service_endpoint(
     source: Annotated[str, fastapi.Path()],
     id: Annotated[str, fastapi.Path()],
+    session_id: SessionIdHeader = None,
     db_session=fastapi.Depends(db.get_session),
     _=fastapi.Depends(soliguide.notify_soliguide_dependency),
 ):
@@ -145,6 +162,7 @@ def redirect_service_endpoint(
     source: Annotated[str, fastapi.Path()],
     id: Annotated[str, fastapi.Path()],
     depuis: Annotated[str, fastapi.Query()],
+    session_id: SessionIdHeader = None,
     db_session=fastapi.Depends(db.get_session),
 ):
     """Redirige vers le lien source du service donné"""
@@ -183,6 +201,7 @@ def redirect_service_endpoint(
 def search_services_endpoint(
     request: fastapi.Request,
     db_session=fastapi.Depends(db.get_session),
+    session_id: SessionIdHeader = None,
     source: Annotated[
         Optional[str],
         fastapi.Query(

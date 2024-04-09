@@ -672,7 +672,7 @@ def test_list_services_filter_by_code_insee(api_client, code_insee, input, found
     ],
 )
 @pytest.mark.with_token
-def test_search_services_with_code_insee_foo(api_client, commune_data, input, found):
+def test_search_services_with_code_insee(api_client, commune_data, input, found):
     service = factories.ServiceFactory(
         modes_accueil=[schema.ModeAccueil.EN_PRESENTIEL.value],
         **(commune_data if commune_data is not None else {}),
@@ -1374,3 +1374,38 @@ def test_redirect_service(api_client, lien_source, depuis, status_code, db_sessi
             )
             == 1
         )
+
+
+@pytest.mark.parametrize(
+    "url",
+    [
+        "/api/v0/structures",
+        "/api/v0/structures/dora/structure-id",
+        "/api/v0/sources",
+        "/api/v0/services",
+        "/api/v0/services/dora/service-id",
+        "/api/v0/services/dora/service-id/redirige?depuis=les-emplois",
+        "/api/v0/search/services",
+    ],
+)
+@pytest.mark.with_token
+def test_foo(api_client, url, db_session):
+    factories.StructureFactory(source="dora", id="structure-id")
+    factories.ServiceFactory(
+        source="dora", id="service-id", structure_id="structure-id"
+    )
+
+    response = api_client.get(
+        url,
+        headers={"session-id": "anonymous-123"},
+        follow_redirects="redirige" not in url,
+    )
+
+    assert not response.is_error
+    assert (
+        db_session.scalar(sqla.select(sqla.func.count()).select_from(models.Request))
+        == 1
+    )
+
+    request_instance = db_session.scalars(sqla.select(models.Request)).first()
+    assert request_instance.session_id == "anonymous-123"

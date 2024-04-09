@@ -41,6 +41,7 @@ def save_request(
         client_host=request.client.host if request.client is not None else None,
         client_port=request.client.port if request.client is not None else None,
         endpoint_name=endpoint_name,
+        session_id=request.headers.get("session-id"),
     )  # type: ignore
 
     db_session.add(request_instance)
