@@ -10,6 +10,8 @@ set -e
 # scheme `postgres://`. Replace it.
 export DATABASE_URL="${DATABASE_URL/postgres\:\/\//postgresql\:\/\/}"
 
+pip install -e .
+
 gunicorn data_inclusion.api.app:app \
     --workers 4 \
     --worker-class uvicorn.workers.UvicornWorker \
