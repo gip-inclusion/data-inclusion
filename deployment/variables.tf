@@ -41,18 +41,6 @@ variable "api_scw_application_id" {
   sensitive   = false
 }
 
-variable "api_scw_secret_key" {
-  description = "Used to load the data·inclusion dataset"
-  type        = string
-  sensitive   = true
-}
-
-variable "api_scw_access_key" {
-  description = "Used to load the data·inclusion dataset"
-  type        = string
-  sensitive   = false
-}
-
 variable "api_secret_key" {
   description = "Secret key used for cryptographic signing by the api"
   type        = string

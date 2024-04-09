@@ -128,7 +128,6 @@ locals {
   base_hostname = "${var.dns_subdomain != "" ? "${var.dns_subdomain}." : ""}${var.dns_zone}"
 
   airflow_hostname  = "airflow.${local.base_hostname}"
-  api_hostname      = "api.${local.base_hostname}"
   metabase_hostname = "metabase.${local.base_hostname}"
 
   work_dir = "/root/data-inclusion"
@@ -165,11 +164,6 @@ resource "null_resource" "up" {
 
   provisioner "file" {
     content = sensitive(<<-EOT
-    API_DATALAKE_ENDPOINT_URL=${local.s3_endpoint}
-    API_DATALAKE_BUCKET_NAME=${scaleway_object_bucket.main.name}
-    API_DATALAKE_SECRET_KEY=${var.api_scw_secret_key}
-    API_DATALAKE_ACCESS_KEY=${var.api_scw_access_key}
-    API_HOSTNAME=${local.api_hostname}
     API_SECRET_KEY=${var.api_secret_key}
     API_TOKEN_ENABLED=${var.api_token_enabled}
 
