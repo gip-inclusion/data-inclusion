@@ -1,1 +1,2 @@
 web: ./entrypoint.sh
+postdeploy: alembic upgrade head
