@@ -151,7 +151,7 @@ jobs:
       - name: tf init
         run: |
           terraform init \
-            -backend-config "bucket=data-inclusion-terraform-states" \
+            -backend-config "bucket=data-inclusion-tf-states" \
             -backend-config "key=${ENV}"
 
       - name: tf validate

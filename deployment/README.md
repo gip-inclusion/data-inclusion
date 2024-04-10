@@ -46,7 +46,7 @@ The state backend is shared by environments. There should already be a project `
 ```bash
 set +o history
 terraform init \
-    -backend-config "bucket=data-inclusion-terraform-states" \
+    -backend-config "bucket=data-inclusion-tf-states" \
     -backend-config "key=<ENVIRONMENT>" \
     -backend-config "access_key=<ACCESS_KEY>" \
     -backend-config "secret_key=<SECRET_KEY>"
