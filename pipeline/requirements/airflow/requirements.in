@@ -1,1 +1,1 @@
-apache-airflow[amazon,postgres,sentry]==2.9.0
+apache-airflow[amazon,postgres,sentry,ssh]==2.9.0

@@ -20,7 +20,7 @@ anyio==4.3.0
     # via
     #   -c airflow/constraints.txt
     #   httpcore
-apache-airflow[amazon,postgres,sentry]==2.9.0
+apache-airflow[amazon,postgres,sentry,ssh]==2.9.0
     # via
     #   -r airflow/requirements.in
     #   apache-airflow
@@ -34,6 +34,7 @@ apache-airflow[amazon,postgres,sentry]==2.9.0
     #   apache-airflow-providers-postgres
     #   apache-airflow-providers-smtp
     #   apache-airflow-providers-sqlite
+    #   apache-airflow-providers-ssh
 apache-airflow-providers-amazon==8.19.0
     # via
     #   -c airflow/constraints.txt
@@ -78,6 +79,10 @@ apache-airflow-providers-sqlite==3.7.1
     # via
     #   -c airflow/constraints.txt
     #   apache-airflow
+apache-airflow-providers-ssh==3.10.1
+    # via
+    #   -c airflow/constraints.txt
+    #   apache-airflow
 apispec[yaml]==6.6.0
     # via
     #   -c airflow/constraints.txt
@@ -108,6 +113,10 @@ babel==2.14.0
     # via
     #   -c airflow/constraints.txt
     #   flask-babel
+bcrypt==4.1.2
+    # via
+    #   -c airflow/constraints.txt
+    #   paramiko
 beautifulsoup4==4.12.3
     # via
     #   -c airflow/constraints.txt
@@ -147,6 +156,7 @@ cffi==1.16.0
     # via
     #   -c airflow/constraints.txt
     #   cryptography
+    #   pynacl
 charset-normalizer==3.3.2
     # via
     #   -c airflow/constraints.txt
@@ -190,6 +200,7 @@ cryptography==41.0.7
     # via
     #   -c airflow/constraints.txt
     #   apache-airflow
+    #   paramiko
 deprecated==1.2.14
     # via
     #   -c airflow/constraints.txt
@@ -492,6 +503,11 @@ packaging==24.0
     #   marshmallow-sqlalchemy
     #   redshift-connector
     #   sqlalchemy-redshift
+paramiko==3.4.0
+    # via
+    #   -c airflow/constraints.txt
+    #   apache-airflow-providers-ssh
+    #   sshtunnel
 pathspec==0.12.1
     # via
     #   -c airflow/constraints.txt
@@ -544,6 +560,10 @@ pyjwt==2.8.0
     #   apache-airflow
     #   flask-appbuilder
     #   flask-jwt-extended
+pynacl==1.5.0
+    # via
+    #   -c airflow/constraints.txt
+    #   paramiko
 python-daemon==3.0.1
     # via
     #   -c airflow/constraints.txt
@@ -683,6 +703,10 @@ sqlparse==0.4.4
     # via
     #   -c airflow/constraints.txt
     #   apache-airflow-providers-common-sql
+sshtunnel==0.4.0
+    # via
+    #   -c airflow/constraints.txt
+    #   apache-airflow-providers-ssh
 tabulate==0.9.0
     # via
     #   -c airflow/constraints.txt
