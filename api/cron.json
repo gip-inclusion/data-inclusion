@@ -7,6 +7,10 @@
         {
             "command": "30 * * * * TQDM_DISABLE=1 test $ENV != 'prod' && data-inclusion-api load_inclusion_data",
             "size": "S"
+        },
+        {
+            "command": "0 4 * * * vacuumdb --full --analyze --verbose --table api__structures --table api__services $DATABASE_URL",
+            "size": "S"
         }
     ]
 }
