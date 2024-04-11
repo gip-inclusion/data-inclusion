@@ -28,13 +28,13 @@ click==8.1.7
     #   dbt-semantic-interfaces
 colorama==0.4.6
     # via dbt-core
-dbt-core==1.7.10
+dbt-core==1.7.11
     # via
     #   -r tasks/dbt/requirements.in
     #   dbt-postgres
 dbt-extractor==0.5.1
     # via dbt-core
-dbt-postgres==1.7.10
+dbt-postgres==1.7.11
     # via -r tasks/dbt/requirements.in
 dbt-semantic-interfaces==0.4.4
     # via dbt-core
@@ -74,7 +74,7 @@ more-itertools==10.2.0
     # via dbt-semantic-interfaces
 msgpack==1.0.8
     # via mashumaro
-networkx==3.2.1
+networkx==3.3
     # via dbt-core
 packaging==24.0
     # via dbt-core
@@ -86,7 +86,7 @@ protobuf==4.25.3
     # via dbt-core
 psycopg2-binary==2.9.9
     # via dbt-postgres
-pycparser==2.21
+pycparser==2.22
     # via cffi
 pydantic==2.6.4
     # via dbt-semantic-interfaces
@@ -125,7 +125,7 @@ sqlparse==0.4.4
     # via dbt-core
 text-unidecode==1.3
     # via python-slugify
-typing-extensions==4.10.0
+typing-extensions==4.11.0
     # via
     #   dbt-core
     #   dbt-semantic-interfaces
