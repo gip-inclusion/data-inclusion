@@ -10,7 +10,7 @@ click==8.1.7
     # via userpath
 packaging==24.0
     # via pipx
-pipx==1.4.3
+pipx==1.5.0
     # via -r tasks/pipx/requirements.in
 platformdirs==4.2.0
     # via pipx
