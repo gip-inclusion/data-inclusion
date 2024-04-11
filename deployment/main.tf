@@ -49,7 +49,7 @@ data "scaleway_account_project" "main" {
 
 data "scaleway_iam_group" "editors" {
   organization_id = data.scaleway_account_project.main.organization_id
-  name            = "Editors"
+  name            = "data-inclusion-terraform-editors"
 }
 
 resource "scaleway_object_bucket_policy" "main" {
