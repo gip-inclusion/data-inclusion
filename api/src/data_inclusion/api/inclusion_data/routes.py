@@ -45,9 +45,7 @@ def list_structures_endpoint(
     ] = None,
     thematique: Annotated[Optional[di_schema.Thematique], fastapi.Query()] = None,
     departement: Annotated[Optional[DepartementCOG], fastapi.Query()] = None,
-    departement_slug: Annotated[
-        Optional[DepartementSlug], fastapi.Query()
-    ] = None,
+    departement_slug: Annotated[Optional[DepartementSlug], fastapi.Query()] = None,
     code_postal: Annotated[Optional[di_schema.CodePostal], fastapi.Query()] = None,
     db_session=fastapi.Depends(db.get_session),
 ):
@@ -105,9 +103,7 @@ def list_services_endpoint(
     source: Annotated[Optional[str], fastapi.Query()] = None,
     thematique: Annotated[Optional[di_schema.Thematique], fastapi.Query()] = None,
     departement: Annotated[Optional[DepartementCOG], fastapi.Query()] = None,
-    departement_slug: Annotated[
-        Optional[DepartementSlug], fastapi.Query()
-    ] = None,
+    departement_slug: Annotated[Optional[DepartementSlug], fastapi.Query()] = None,
     code_insee: Annotated[Optional[di_schema.CodeCommune], fastapi.Query()] = None,
 ):
     return services.list_services(
@@ -133,7 +129,12 @@ def retrieve_service_endpoint(
     db_session=fastapi.Depends(db.get_session),
     _=fastapi.Depends(soliguide.notify_soliguide_dependency),
 ):
-    return services.retrieve_service(db_session=db_session, source=source, id_=id)
+    service_instance = services.retrieve_service(
+        db_session=db_session, source=source, id_=id
+    )
+    if service_instance is None:
+        raise fastapi.HTTPException(status_code=404)
+    return service_instance
 
 
 @router.get(
@@ -147,7 +148,7 @@ def redirect_service_endpoint(
     depuis: Annotated[str, fastapi.Query()],
     db_session=fastapi.Depends(db.get_session),
 ):
-    """Redirige vers le lien source du service donné"""
+    # Redirect to show the given service on dora
 
     # This endpoint is not token restricted.
     # This is to record redirections stemming from 3rd party website
@@ -162,14 +163,21 @@ def redirect_service_endpoint(
     service_instance = services.retrieve_service(
         db_session=db_session, source=source, id_=id
     )
+    if service_instance is None:
+        raise fastapi.HTTPException(status_code=404)
 
-    if service_instance.lien_source is None:
-        return fastapi.Response(status_code=fastapi.status.HTTP_404_NOT_FOUND)
+    if service_instance.source == "dora":
+        target_url = furl(str(service_instance.lien_source))
+    else:
+        target_url = (
+            furl(settings.DORA_URL)
+            / "services"
+            / f"di--{service_instance.source}--{service_instance.id}"
+        )
 
     params = dict(request.query_params)
     del params["depuis"]
-
-    target_url = furl(str(service_instance.lien_source)).add(params)
+    target_url.add(params)
 
     return RedirectResponse(str(target_url))
 

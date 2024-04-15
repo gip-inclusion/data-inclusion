@@ -4,8 +4,10 @@ from unittest.mock import ANY
 
 import pytest
 import sqlalchemy as sqla
+from furl import furl
 
 from data_inclusion import schema
+from data_inclusion.api.config import settings
 from data_inclusion.api.request import models
 from data_inclusion.api.utils import soliguide
 
@@ -1343,15 +1345,52 @@ def test_retrieve_service_and_notify_soliguide(
 
 
 @pytest.mark.parametrize(
-    ("lien_source", "depuis", "status_code"),
+    ("source", "lien_source", "depuis", "status_code", "redirect_url"),
     [
-        ("https://dora.incubateur.net/", "les-emplois", 307),
-        ("https://dora.incubateur.net/", None, 422),
-        (None, "les-emplois", 404),
+        # `depuis` is a required query parameter
+        ("reseau-alpha", "https://www.reseau-alpha.org/", None, 422, None),
+        # redirect to dora
+        (
+            "reseau-alpha",
+            "https://www.reseau-alpha.org/",
+            "les-emplois",
+            307,
+            str(
+                (
+                    furl(settings.DORA_URL)
+                    / "services"
+                    / "di--reseau-alpha--some-service-id"
+                ).add({"mtm_campaign": "LesEmplois"})
+            ),
+        ),
+        # redirect to dora when dora
+        (
+            "dora",
+            str(furl(settings.DORA_URL) / "services" / "some-service-id"),
+            "les-emplois",
+            307,
+            str(
+                (furl(settings.DORA_URL) / "services" / "some-service-id").add(
+                    {"mtm_campaign": "LesEmplois"}
+                )
+            ),
+        ),
     ],
 )
-def test_redirect_service(api_client, lien_source, depuis, status_code, db_session):
-    service = factories.ServiceFactory(lien_source=lien_source)
+def test_redirect_service(
+    api_client,
+    source,
+    lien_source,
+    depuis,
+    status_code,
+    redirect_url,
+    db_session,
+):
+    service = factories.ServiceFactory(
+        id="some-service-id",
+        source=source,
+        lien_source=lien_source,
+    )
 
     url = "/api/v0/services/"
     params = {"mtm_campaign": "LesEmplois"}
@@ -1366,8 +1405,7 @@ def test_redirect_service(api_client, lien_source, depuis, status_code, db_sessi
     assert response.status_code == status_code
 
     if status_code == 307:
-        assert response.headers["location"] == f"{lien_source}?mtm_campaign=LesEmplois"
-
+        assert response.headers["location"] == redirect_url
         assert (
             db_session.scalar(
                 sqla.select(sqla.func.count()).select_from(models.Request)

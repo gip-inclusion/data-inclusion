@@ -407,15 +407,10 @@ def retrieve_service(
     db_session: orm.Session,
     source: str,
     id_: str,
-) -> models.Service:
-    service_instance = db_session.scalars(
+) -> models.Service | None:
+    return db_session.scalars(
         sqla.select(models.Service)
         .options(orm.selectinload(models.Service.structure))
         .filter_by(source=source)
         .filter_by(id=id_)
     ).first()
-
-    if service_instance is None:
-        raise fastapi.HTTPException(status_code=404)
-
-    return service_instance

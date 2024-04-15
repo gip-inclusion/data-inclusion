@@ -13,6 +13,7 @@ class Settings(BaseSettings):
     ENV: str = "prod"
     SOLIGUIDE_API_URL: str = "https://api.soliguide.fr"
     SOLIGUIDE_API_TOKEN: str | None = None
+    DORA_URL: str = "https://dora.inclusion.beta.gouv.fr/"
 
     DEFAULT_PAGE_SIZE: int = 500
     MAX_PAGE_SIZE: int = 1000
