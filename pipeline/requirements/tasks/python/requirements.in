@@ -16,6 +16,9 @@ requests==2.*
 sib-api-v3-sdk
 SQLAlchemy
 tenacity
-trafilatura!=1.8.0
+trafilatura
 urllib3
 xlsxwriter
+
+# this is temporary fix until trafilatura can be updated to >1.8.1
+lxml[html_clean]
