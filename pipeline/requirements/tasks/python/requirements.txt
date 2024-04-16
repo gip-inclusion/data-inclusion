@@ -349,7 +349,7 @@ h11==0.14.0
     # via
     #   -c airflow/constraints.txt
     #   httpcore
-htmldate==1.8.0
+htmldate==1.8.1
     # via trafilatura
 httpcore==0.16.3
     # via
@@ -836,7 +836,7 @@ time-machine==2.14.1
     #   pendulum
 tld==0.13
     # via courlan
-trafilatura==1.8.0
+trafilatura==1.7.0
     # via -r tasks/python/requirements.in
 typing-extensions==4.11.0
     # via
