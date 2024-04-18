@@ -147,12 +147,6 @@ variable "mes_aides_airtable_key" {
   default     = ""
 }
 
-variable "metabase_secret_key" {
-  description = "Secret key to save connection passwords in the db"
-  type        = string
-  sensitive   = true
-}
-
 variable "scaleway_access_key" {
   description = "Scaleway access key (https://console.scaleway.com/iam/api-keys)"
   type        = string
