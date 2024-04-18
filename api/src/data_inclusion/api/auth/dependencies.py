@@ -32,9 +32,6 @@ async def authenticate(request: fastapi.Request):
         AuthCredentials(),
     )
 
-    if not settings.TOKEN_ENABLED:
-        return
-
     # extract token from header
     http_bearer_instance = security.HTTPBearer()
     try:
