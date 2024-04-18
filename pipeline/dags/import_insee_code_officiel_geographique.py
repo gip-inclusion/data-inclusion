@@ -28,7 +28,7 @@ def _import_dataset_ressource():
 
     for resource in ["region", "departement", "commune"]:
         schema, table_name = "insee", f"{resource}s"
-        url = urljoin(base_url, f"v_{resource}_2023.csv")
+        url = urljoin(base_url, f"v_{resource}_2024.csv")
 
         print(f"Extracting {url}...")
         df = pd.read_csv(url, sep=",", dtype=str)
