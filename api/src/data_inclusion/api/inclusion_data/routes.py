@@ -30,7 +30,7 @@ Optional = T | SkipJsonSchema[None]
 
 @router.get(
     "/structures",
-    response_model=pagination.Page[schemas.Structure],
+    response_model=pagination.BigPage[schemas.Structure],
     summary="Lister les structures consolidées",
     deprecated=True,
     dependencies=[auth.authenticated_dependency] if settings.TOKEN_ENABLED else [],
@@ -45,9 +45,7 @@ def list_structures_endpoint(
     ] = None,
     thematique: Annotated[Optional[di_schema.Thematique], fastapi.Query()] = None,
     departement: Annotated[Optional[DepartementCOG], fastapi.Query()] = None,
-    departement_slug: Annotated[
-        Optional[DepartementSlug], fastapi.Query()
-    ] = None,
+    departement_slug: Annotated[Optional[DepartementSlug], fastapi.Query()] = None,
     code_postal: Annotated[Optional[di_schema.CodePostal], fastapi.Query()] = None,
     db_session=fastapi.Depends(db.get_session),
 ):
@@ -94,7 +92,7 @@ def list_sources_endpoint(
 
 @router.get(
     "/services",
-    response_model=pagination.Page[schemas.Service],
+    response_model=pagination.BigPage[schemas.Service],
     summary="Lister les services consolidés",
     deprecated=True,
     dependencies=[auth.authenticated_dependency] if settings.TOKEN_ENABLED else [],
@@ -105,9 +103,7 @@ def list_services_endpoint(
     source: Annotated[Optional[str], fastapi.Query()] = None,
     thematique: Annotated[Optional[di_schema.Thematique], fastapi.Query()] = None,
     departement: Annotated[Optional[DepartementCOG], fastapi.Query()] = None,
-    departement_slug: Annotated[
-        Optional[DepartementSlug], fastapi.Query()
-    ] = None,
+    departement_slug: Annotated[Optional[DepartementSlug], fastapi.Query()] = None,
     code_insee: Annotated[Optional[di_schema.CodeCommune], fastapi.Query()] = None,
 ):
     return services.list_services(
@@ -176,7 +172,7 @@ def redirect_service_endpoint(
 
 @router.get(
     "/search/services",
-    response_model=pagination.Page[schemas.ServiceSearchResult],
+    response_model=pagination.BigPage[schemas.ServiceSearchResult],
     summary="Rechercher des services",
     dependencies=[auth.authenticated_dependency] if settings.TOKEN_ENABLED else [],
 )
