@@ -50,10 +50,11 @@ setup(
             "syrupy",
         ],
         "dev": [
+            "fastapi-debug-toolbar",
+            "pre-commit",
             "ruff",
             "tox",
-            "pre-commit",
-            "fastapi-debug-toolbar",
+            "uv",
         ],
     },
 )
