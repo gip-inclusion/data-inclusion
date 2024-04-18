@@ -27,12 +27,17 @@ def _import_dataset_ressource():
     pg.create_schema("insee")
 
     for resource in ["region", "departement", "commune"]:
+        schema, table_name = "insee", f"{resource}s"
         url = urljoin(base_url, f"v_{resource}_2023.csv")
+
+        print(f"Extracting {url}...")
         df = pd.read_csv(url, sep=",", dtype=str)
+
+        print(f"Loading to {schema}.{table_name}")
         with pg.connect_begin() as conn:
             df.to_sql(
-                f"{resource}s",
-                schema="insee",
+                schema=schema,
+                name=table_name,
                 con=conn,
                 if_exists="replace",
                 index=False,
