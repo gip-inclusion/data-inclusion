@@ -94,7 +94,7 @@ jobs:
     environment: staging
 
     env:
-      ENV: ${{ vars.ENVIRONMENT }}  # used by this workflow
+      ENV: ${{ vars.ENVIRONMENT }}  # used in this workflow
 
       # used by terraform cli
       AWS_ACCESS_KEY_ID: ${{ vars.AWS_ACCESS_KEY_ID }}
@@ -102,43 +102,50 @@ jobs:
 
       # `TF_VAR_*` are case sensitive and must match the case of variables
 
-      # used in docker compose
+      # Scaleway ressources configuration
+      TF_VAR_dns_subdomain: ${{ vars.DNS_SUBDOMAIN }}
+      TF_VAR_dns_zone: ${{ vars.DNS_ZONE }}
+      TF_VAR_environment: ${{ vars.ENVIRONMENT }}
+      TF_VAR_scaleway_access_key: ${{ vars.SCALEWAY_ACCESS_KEY }}
+      TF_VAR_scaleway_application_id: ${{ vars.SCALEWAY_APPLICATION_ID }}
+      TF_VAR_scaleway_project_id: ${{ vars.SCALEWAY_PROJECT_ID }}
+      TF_VAR_scaleway_secret_key: ${{ secrets.SCALEWAY_SECRET_KEY }}
+      TF_VAR_api_scw_application_id: ${{ vars.API_SCW_APPLICATION_ID }}
+      TF_VAR_ssh_private_key: ${{ secrets.SSH_PRIVATE_KEY }}
+
       TF_VAR_stack_version: ${{ github.sha }}
 
-      # used by applications
-      TF_VAR_scaleway_application_id: ${{ vars.SCALEWAY_APPLICATION_ID }}
-      TF_VAR_datawarehouse_admin_password: ${{ secrets.DATAWAREHOUSE_ADMIN_PASSWORD }}
-      TF_VAR_datawarehouse_admin_username: ${{ vars.DATAWAREHOUSE_ADMIN_USERNAME }}
+      # Datawarehouse
       TF_VAR_datawarehouse_di_database: ${{ vars.DATAWAREHOUSE_DI_DATABASE }}
       TF_VAR_datawarehouse_di_password: ${{ secrets.DATAWAREHOUSE_DI_PASSWORD }}
       TF_VAR_datawarehouse_di_username: ${{ vars.DATAWAREHOUSE_DI_USERNAME }}
-      TF_VAR_scaleway_access_key: ${{ vars.SCALEWAY_ACCESS_KEY }}
-      TF_VAR_scaleway_project_id: ${{ vars.SCALEWAY_PROJECT_ID }}
-      TF_VAR_scaleway_secret_key: ${{ secrets.SCALEWAY_SECRET_KEY }}
-      TF_VAR_environment: ${{ vars.ENVIRONMENT }}
-      TF_VAR_api_scw_application_id: ${{ vars.API_SCW_APPLICATION_ID }}
+
+      # Airflow settings
+      TF_VAR_airflow__core__fernet_key: ${{ secrets.AIRFLOW__CORE__FERNET_KEY }}
+      TF_VAR_airflow_admin_password: ${{ secrets.AIRFLOW_ADMIN_PASSWORD }}
+      TF_VAR_airflow__sentry__sentry_dsn: ${{ vars.AIRFLOW__SENTRY__SENTRY_DSN }}
+
+      # Airflow connections
+      TF_VAR_airflow_conn_mattermost: ${{ secrets.AIRFLOW_CONN_MATTERMOST }}
+      TF_VAR_airflow_conn_s3_sources: ${{ secrets.AIRFLOW_CONN_S3_SOURCES }}
+      TF_VAR_airflow_conn_pg_api: ${{ secrets.AIRFLOW_CONN_PG_API }}
+      TF_VAR_airflow_conn_ssh_api: ${{ secrets.AIRFLOW_CONN_SSH_API }}
+
       TF_VAR_airflow_application_id: ${{ vars.AIRFLOW_APPLICATION_ID }}
       TF_VAR_airflow_access_key: ${{ vars.AIRFLOW_ACCESS_KEY }}
       TF_VAR_airflow_secret_key: ${{ secrets.AIRFLOW_SECRET_KEY }}
-      TF_VAR_airflow_admin_password: ${{ secrets.AIRFLOW_ADMIN_PASSWORD }}
-      TF_VAR_api_secret_key: ${{ secrets.API_SECRET_KEY }}
-      TF_VAR_ssh_private_key: ${{ secrets.SSH_PRIVATE_KEY }}
-      TF_VAR_dns_zone: ${{ vars.DNS_ZONE }}
-      TF_VAR_dns_subdomain: ${{ vars.DNS_SUBDOMAIN }}
-      TF_VAR_airflow__core__fernet_key: ${{ secrets.AIRFLOW__CORE__FERNET_KEY }}
-      TF_VAR_api_token_enabled: ${{ vars.API_TOKEN_ENABLED }}
-      TF_VAR_airflow_conn_s3_sources: ${{ secrets.AIRFLOW_CONN_S3_SOURCES }}
+
+      # Airflow variables
       TF_VAR_brevo_api_key: ${{ secrets.BREVO_API_KEY }}
       TF_VAR_datagouv_api_key: ${{ secrets.DATAGOUV_API_KEY }}
-      TF_VAR_dora_api_url: ${{ vars.DORA_API_URL }}
       TF_VAR_dora_api_token: ${{ secrets.DORA_API_TOKEN }}
-      TF_VAR_ft_api_token: ${{ secrets.FT_API_TOKEN }}
-      TF_VAR_dora_preprod_api_token: ${{ secrets.DORA_PREPROD_API_TOKEN }}
+      TF_VAR_dora_api_url: ${{ vars.DORA_API_URL }}
       TF_VAR_emplois_api_token: ${{ secrets.EMPLOIS_API_TOKEN }}
+      TF_VAR_ft_api_token: ${{ secrets.FT_API_TOKEN }}
       TF_VAR_grist_api_token: ${{ secrets.GRIST_API_TOKEN }}
       TF_VAR_mes_aides_airtable_key: ${{ secrets.MES_AIDES_AIRTABLE_KEY }}
+      TF_VAR_siao_file_url: ${{ vars.SIAO_FILE_URL }}
       TF_VAR_soliguide_api_token: ${{ secrets.SOLIGUIDE_API_TOKEN }}
-      TF_VAR_metabase_secret_key: ${{ secrets.METABASE_SECRET_KEY }}
 
     defaults:
       run:

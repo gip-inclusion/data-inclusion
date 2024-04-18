@@ -55,17 +55,6 @@ variable "brevo_api_key" {
   default     = ""
 }
 
-variable "datawarehouse_admin_password" {
-  description = "Password for the first user of the postgres datawarehouse"
-  type        = string
-  sensitive   = true
-}
-
-variable "datawarehouse_admin_username" {
-  description = "Identifier for the first user of the postgres datawarehouse"
-  type        = string
-}
-
 variable "datawarehouse_di_database" {
   description = "Identifier for the data inclusion database"
   type        = string
@@ -190,5 +179,33 @@ variable "ssh_private_key" {
 
 variable "stack_version" {
   description = "Version (e.g. sha or semver) of the stack services to deploy"
+  type        = string
+}
+
+variable "airflow__sentry__sentry_dsn" {
+  description = "Sentry DSN for airflow monitoring"
+  type        = string
+}
+
+variable "airflow_conn_pg_api" {
+  description = "Postgres URI similar to the api scalingo app SCALINGO_POSTGRESQL_URL, but with a dedicated read-only credentials"
+  type        = string
+  sensitive   = true
+}
+
+variable "airflow_conn_ssh_api" {
+  description = "SSH connection string used to open a tunnel to scalingo. The associated private_key must have been uploaded to scalingo"
+  type        = string
+  sensitive   = true
+}
+
+variable "airflow_conn_mattermost" {
+  description = "Mattermost webhook used by airflow to notifications"
+  type        = string
+  sensitive   = true
+}
+
+variable "siao_file_url" {
+  description = "Public URL to the siao export on our s3 bucket"
   type        = string
 }
