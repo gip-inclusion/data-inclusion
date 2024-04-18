@@ -1,9 +1,10 @@
 -r ../airflow/requirements.in
 -r ../tasks/python/requirements.in
 
-ruff
 pre-commit
 pytest
 pytest-dotenv
-tox
 requests-mock
+ruff
+tox
+uv
