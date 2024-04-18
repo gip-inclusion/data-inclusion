@@ -45,16 +45,12 @@ tox
 # 1. add/remove packages from the requirements in setup.py
 
 # 2. compile dependencies
-pip-compile --output-file=requirements/requirements.txt && \
-    pip-compile --extra=dev --output-file=requirements/dev-requirements.txt && \
-    pip-compile --extra=test --output-file=requirements/test-requirements.txt
+
+make
 ```
 
 ### 2. Upgrading packages
 
 ```bash
-# 1. compile dependencies with the upgrade flag set
-pip-compile --upgrade --output-file=requirements/requirements.txt && \
-    pip-compile --upgrade --extra=dev --output-file=requirements/dev-requirements.txt && \
-    pip-compile --upgrade --extra=test --output-file=requirements/test-requirements.txt
+make upgrade all
 ```
