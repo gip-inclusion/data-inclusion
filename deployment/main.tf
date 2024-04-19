@@ -26,13 +26,14 @@ resource "scaleway_instance_security_group" "main" {
 }
 
 resource "scaleway_instance_server" "main" {
-  type              = var.scaleway_instance_type
+  type              = var.environment == "prod" ? "POP2-HM-2C-16G" : "GP1-XS"
   image             = "docker"
   ip_id             = scaleway_instance_ip.main.id
   routed_ip_enabled = true
   security_group_id = scaleway_instance_security_group.main.id
 
   root_volume {
+    size_in_gb            = var.environment == "prod" ? 150 : 50
     delete_on_termination = false
   }
 }
