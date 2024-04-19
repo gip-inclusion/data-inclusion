@@ -90,17 +90,23 @@ jobs:
 
   deploy:
     needs: build
-    runs-on: ubuntu-20.04
-    environment: staging
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        environment: [staging, prod]
+
+      # prevent deployment failure in an environment to interrupt other deployments
+      fail-fast: true
+
+    environment: ${{ matrix.environment }}
 
     env:
-      ENV: ${{ vars.ENVIRONMENT }}  # used in this workflow
-
-      # used by terraform cli
+      ENV: ${{ vars.ENVIRONMENT }}
       AWS_ACCESS_KEY_ID: ${{ vars.AWS_ACCESS_KEY_ID }}
       AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-
-      TF_VARS: ${{ secrets.TF_VARS }}
+      TF_VARS_BASE64: ${{ secrets.TF_VARS_BASE64 }}
+      TF_VAR_stack_version: ${{ github.sha }}
 
     defaults:
       run:
@@ -115,12 +121,10 @@ jobs:
 
       - name: mask tf variables
         run: |
-          echo "${TF_VARS}" | jq --raw-output 'to_entries | map("::add-mask::\(.value // empty)") | .[]'
-
-      # `TF_VAR_*` are case sensitive and must match the case of variables
-      - name: set tf variables
-        run: |
-          echo "${TF_VARS}" | jq --raw-output 'to_entries | map("TF_VAR_\(.key)=\(.value //  "")") | .[]' >> "${GITHUB_ENV}"
+          echo "${TF_VARS_BASE64}" \
+            | base64 --decode \
+            | jq 'to_entries | map(.value // empty) | .[]' \
+            | xargs -I{} echo '::add-mask::{}'
 
       - name: tf init
         run: |
@@ -134,8 +138,12 @@ jobs:
 
       - name: tf plan
         run: |
-          terraform plan
+          trap "rm -f terraform.tfvars.json" EXIT
+          echo "${TF_VARS_BASE64}" | base64 --decode > terraform.tfvars.json
+          terraform plan -input=false
 
       - name: tf apply
         run: |
-          terraform apply -auto-approve
+          trap "rm -f terraform.tfvars.json" EXIT
+          echo "${TF_VARS_BASE64}" | base64 --decode > terraform.tfvars.json
+          terraform apply -input=false -auto-approve
