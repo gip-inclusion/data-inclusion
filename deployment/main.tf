@@ -163,39 +163,39 @@ resource "null_resource" "up" {
 
   provisioner "file" {
     content = sensitive(<<-EOT
-    STACK_VERSION=${var.stack_version}
-    AIRFLOW_HOSTNAME=${local.airflow_hostname}
+    STACK_VERSION='${var.stack_version}'
+    AIRFLOW_HOSTNAME='${local.airflow_hostname}'
 
     # Datawarehouse
-    DATAWAREHOUSE_DI_DATABASE=${var.datawarehouse_di_database}
-    DATAWAREHOUSE_DI_PASSWORD=${var.datawarehouse_di_password}
-    DATAWAREHOUSE_DI_USERNAME=${var.datawarehouse_di_username}
+    DATAWAREHOUSE_DI_DATABASE='${var.datawarehouse_di_database}'
+    DATAWAREHOUSE_DI_PASSWORD='${var.datawarehouse_di_password}'
+    DATAWAREHOUSE_DI_USERNAME='${var.datawarehouse_di_username}'
 
     # Airflow settings
-    AIRFLOW_WWW_USER_PASSWORD=${var.airflow_admin_password}
-    AIRFLOW__CORE__FERNET_KEY=${var.airflow__core__fernet_key}
-    AIRFLOW__SENTRY__SENTRY_DSN=${var.airflow__sentry__sentry_dsn}
-    AIRFLOW__WEBSERVER__BASE_URL=https://${local.airflow_hostname}
+    AIRFLOW_WWW_USER_PASSWORD='${var.airflow_admin_password}'
+    AIRFLOW__CORE__FERNET_KEY='${var.airflow__core__fernet_key}'
+    AIRFLOW__SENTRY__SENTRY_DSN='${var.airflow__sentry__sentry_dsn}'
+    AIRFLOW__WEBSERVER__BASE_URL='https://${local.airflow_hostname}'
 
     # Airflow connections
-    AIRFLOW_CONN_MATTERMOST=${var.airflow_conn_mattermost}
-    AIRFLOW_CONN_PG_API=${var.airflow_conn_pg_api}
-    AIRFLOW_CONN_PG=${local.airflow_conn_pg}
-    AIRFLOW_CONN_S3_SOURCES=${var.airflow_conn_s3_sources}
-    AIRFLOW_CONN_S3=${local.airflow_conn_s3}
-    AIRFLOW_CONN_SSH_API=${var.airflow_conn_ssh_api}
+    AIRFLOW_CONN_MATTERMOST='${var.airflow_conn_mattermost}'
+    AIRFLOW_CONN_PG_API='${var.airflow_conn_pg_api}'
+    AIRFLOW_CONN_PG='${local.airflow_conn_pg}'
+    AIRFLOW_CONN_S3_SOURCES='${var.airflow_conn_s3_sources}'
+    AIRFLOW_CONN_S3='${local.airflow_conn_s3}'
+    AIRFLOW_CONN_SSH_API='${var.airflow_conn_ssh_api}'
 
     # Airflow variables
-    AIRFLOW_VAR_BREVO_API_KEY=${var.brevo_api_key}
-    AIRFLOW_VAR_DATAGOUV_API_KEY=${var.datagouv_api_key}
-    AIRFLOW_VAR_DORA_API_TOKEN=${var.dora_api_token}
-    AIRFLOW_VAR_DORA_API_URL=${var.dora_api_url}
-    AIRFLOW_VAR_EMPLOIS_API_TOKEN=${var.emplois_api_token}
-    AIRFLOW_VAR_FT_API_TOKEN=${var.ft_api_token}
-    AIRFLOW_VAR_GRIST_API_TOKEN=${var.grist_api_token}
-    AIRFLOW_VAR_MES_AIDES_AIRTABLE_KEY=${var.mes_aides_airtable_key}
-    AIRFLOW_VAR_SIAO_FILE_URL=${var.siao_file_url}
-    AIRFLOW_VAR_SOLIGUIDE_API_TOKEN=${var.soliguide_api_token}
+    AIRFLOW_VAR_BREVO_API_KEY='${var.brevo_api_key}'
+    AIRFLOW_VAR_DATAGOUV_API_KEY='${var.datagouv_api_key}'
+    AIRFLOW_VAR_DORA_API_TOKEN='${var.dora_api_token}'
+    AIRFLOW_VAR_DORA_API_URL='${var.dora_api_url}'
+    AIRFLOW_VAR_EMPLOIS_API_TOKEN='${var.emplois_api_token}'
+    AIRFLOW_VAR_FT_API_TOKEN='${var.ft_api_token}'
+    AIRFLOW_VAR_GRIST_API_TOKEN='${var.grist_api_token}'
+    AIRFLOW_VAR_MES_AIDES_AIRTABLE_KEY='${var.mes_aides_airtable_key}'
+    AIRFLOW_VAR_SIAO_FILE_URL='${var.siao_file_url}'
+    AIRFLOW_VAR_SOLIGUIDE_API_TOKEN='${var.soliguide_api_token}'
     EOT
     )
     destination = "${local.work_dir}/.env"

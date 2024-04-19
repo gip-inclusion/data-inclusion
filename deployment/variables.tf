@@ -185,27 +185,32 @@ variable "stack_version" {
 variable "airflow__sentry__sentry_dsn" {
   description = "Sentry DSN for airflow monitoring"
   type        = string
+  default     = ""
 }
 
 variable "airflow_conn_pg_api" {
   description = "Postgres URI similar to the api scalingo app SCALINGO_POSTGRESQL_URL, but with a dedicated read-only credentials"
   type        = string
   sensitive   = true
+  default     = ""
 }
 
 variable "airflow_conn_ssh_api" {
   description = "SSH connection string used to open a tunnel to scalingo. The associated private_key must have been uploaded to scalingo"
   type        = string
   sensitive   = true
+  default     = ""
 }
 
 variable "airflow_conn_mattermost" {
   description = "Mattermost webhook used by airflow to notifications"
   type        = string
   sensitive   = true
+  default     = ""
 }
 
 variable "siao_file_url" {
   description = "Public URL to the siao export on our s3 bucket"
   type        = string
+  default     = ""
 }
