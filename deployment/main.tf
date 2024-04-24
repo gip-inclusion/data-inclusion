@@ -173,7 +173,7 @@ resource "scaleway_domain_record" "dns" {
   name     = replace(each.key, ".${var.dns_zone}", "")
   type     = "A"
   data     = scaleway_instance_server.main.public_ip
-  ttl      = 60
+  ttl      = 3600
 }
 
 resource "null_resource" "up" {
