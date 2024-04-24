@@ -48,6 +48,9 @@ ENV PYTHONDONTWRITEBYTECODE 1
 
 ENV AIRFLOW_VAR_DBT_PROJECT_DIR /opt/airflow/dbt
 
+COPY requirements requirements
+RUN pip install -r requirements/airflow/requirements.txt
+
 USER root
 
 RUN apt-get update \
