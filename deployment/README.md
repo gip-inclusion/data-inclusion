@@ -1,5 +1,11 @@
 # deployment
 
+Only the pipeline is currently managed by this terraform configuration.
+
+The pipeline is deployed on scaleway, from compiled images, using terraform in a github workflow.
+
+The api and metabase are deployed on scalingo, from sources, using the scalingo github integration.
+
 ## provisioning
 
 ### prerequisites
@@ -8,27 +14,40 @@
 
 #### for the state backend
 
-* A scaleway project `terraform`
-* A policy `terraform--manual--edit-tf-states` allowing edits to object storage
-* An IAM application `terraform--manual--github-ci` with the `terraform--manual--edit-tf-states` policy assigned
-* An API key for this application
+The state backend is shared by environments.
 
-The state backend is shared by environments. There should already be a project `terraform`.
+| resource type         | resource name                      | description                                                                               | details                                                                                                                                                                                     |
+|-----------------------|------------------------------------|-------------------------------------------------------------------------------------------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| scaleway project      | `data-inclusion-terraform`         | Common to all environments                                                                |                                                                                                                                                                                             |
+| object storage bucket | `data-inclusion-tf-states`         | Store terraform states for all environments                                               |                                                                                                                                                                                             |
+| IAM group             | `data-inclusion-terraform-editors` | Contains all apps or users who want to deploy                                             |  A team member who wants to deploy using the `terraform` cli locally must add himself to this group                                                                                                                                                                                       |
+| IAM policy            | `data-inclusion-terraform-editors` | Assigned to the IAM group of the same name. Allow it to provision the resources required. | `IAMReadOnly`, `ProjectReadOnly` in the organization AND `InstancesFullAccess`, `ObjectStorageFullAccess`, `RelationalDatabasesFullAccess` and `DomainsDNSFullAccess` in the target project |
+| IAM application       | `data-inclusion-terraform-github`  | Used by GH action to provision on SCW                                                   |  Must be in the `data-inclusion-terraform-editors` group |                                                                                                                                                                                         |
+| API key               | -                                  | Creds for  `data-inclusion-terraform-github`                                            | Set secret `AWS_SECRET_ACCESS_KEY` and variable `AWS_ACCESS_KEY_ID` in the target GH environment ([here](https://github.com/gip-inclusion/data-inclusion/settings/environments))            |
 
 #### to provision an environment
 
-1. A scaleway project dedicated for that environment (`prod`, `staging`, etc.)
-2. An IAM application `<ENVIRONMENT>--manual--github-ci` that will be used to provision scaleway resources in the project, together with the API key (access key + secret key) for this application. This application needs a policy `<ENVIRONMENT>--manual--edit-stack-data-resources` attached that gives it:
-    * `IAMReadOnly`, `ProjectReadOnly` in the organization;
-    * `InstancesFullAccess`, `ObjectStorageFullAccess`, `RelationalDatabasesFullAccess` and `DomainsDNSFullAccess` in the target project scope
-3. Another IAM application `<ENVIRONMENT>--manual--airflow` that will be used for object storage by Airflow, together with the API key (access key + secret key) for this application. This application needs a policy `<ENVIRONMENT>--manual--airflow-object-storage-access` attached that gives it `ObjectStorageFullAccess` in the target project.
-4. Another IAM application `<ENVIRONMENT>--manual--api` used by the api to load the data·inclusion dataset regularly, together with the API key (access key + secret key) for this application. This application needs a policy `<ENVIRONMENT>--manual--api-object-storage-access` attached that gives it `ObjectStorageReadOnly` in the target project.
-5. A SSH key pair:
-    * generated with `ssh-keygen -t ed25519 -C <ENVIRONMENT> -f /tmp/<ENVIRONMENT> -N ''`)
-    * the public key must have been uploaded to scaleway
-6. A domain (`<ENVIRONMENT>.data.inclusion.beta.gouv.fr`) registered on AlwaysData and declared on scaleway as an external domain in the environment project.
+The following resources must be created manually **before** running `terraform apply`.
 
-💡 IAM applications are not created with terraform, because it would require the `<ENVIRONMENT>--manual--github-ci` application to have full access to IAM management at the organization level.
+Replace `<ENVIRONMENT>` with the identifier for the target environment : `prod`, `staging`, etc.
+
+| resource type    | resource name                         | description                                                                             | details                                                                                                                                                                                     |
+|------------------|---------------------------------------|-----------------------------------------------------------------------------------------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| scaleway project | `data-inclusion-<ENVIRONMENT>`        |                                                                                         |                                                                                                                                                                                             |
+| IAM application  | `data-inclusion-<ENVIRONMENT>-github` | Used by GH action to provision on SCW                                                   |                                                                                                                                                                                             |
+| IAM policy       | `data-inclusion-<ENVIRONMENT>-github` | Assigned to the IAM app of the same name. Allow it to provision the resources required. | `IAMReadOnly`, `ProjectReadOnly` in the organization AND `InstancesFullAccess`, `ObjectStorageFullAccess`, `RelationalDatabasesFullAccess` and `DomainsDNSFullAccess` in the target project |
+| API key          | -                                     | Creds for  `data-inclusion-<ENVIRONMENT>-github`                                        | Set `scaleway_access_key` and `scaleway_secret_key` in the terraform config for that env stored in bitwarden |
+| IAM application | `data-inclusion-<ENVIRONMENT>-airflow` | Used by airflow to read from & write to the datalake |
+| IAM policy | `data-inclusion-<ENVIRONMENT>-airflow` | Assigned to the IAM app of the same name. Allow it to read from & write to object storage. | `ObjectStorageFullAccess` in the target project |
+| API key | - | Creds for `data-inclusion-<ENVIRONMENT>-airflow` | Set `airflow_access_key` and `airflow_secret_key` in the terraform config for that env stored in bitwarden |
+| IAM application | `data-inclusion-<ENVIRONMENT>-api` | Used by the api to read in the `data/marts` directory in the datalake |
+| IAM policy | `data-inclusion-<ENVIRONMENT>-api` | Assigned to the IAM app of the same name. Allow it to read from object storage. | `ObjectStorageReadOnly` in the target project |
+| API key | - | Creds for `data-inclusion-<ENVIRONMENT>-api` | Set `DATALAKE_SECRET_KEY` and `DATALAKE_ACCESS_KEY` in the scalingo app `data-inclusion-api-<ENVIRONMENT>` |
+| SSH key | - | Used by GH action to connect to the server and deploy docker services | Generated with `ssh-keygen -t ed25519 -C <ENVIRONMENT> -f /tmp/<ENVIRONMENT> -N ''`. The public key must be uploaded to SCW. |
+| External domain | `<ENVIRONMENT>.data.inclusion.beta.gouv.fr` | Used to generate subdomains pointing to the server | The `data.inclusion.beta.gouv.fr` domain is registered on AlwaysData |
+
+
+💡 IAM applications must be created manually, because it would require the `data-inclusion-<ENVIRONMENT>-github` application to have full access to IAM management at the organization level.
 
 #### links
 
