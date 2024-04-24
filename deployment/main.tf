@@ -162,7 +162,12 @@ locals {
 }
 
 resource "scaleway_domain_record" "dns" {
-  for_each = toset([local.airflow_hostname])
+  for_each = toset(
+    [
+      "",
+      local.airflow_hostname
+    ]
+  )
 
   dns_zone = var.dns_zone
   name     = replace(each.key, ".${var.dns_zone}", "")
