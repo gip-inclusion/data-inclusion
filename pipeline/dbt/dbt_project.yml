@@ -28,18 +28,27 @@ models:
       +materialized: table
 
     marts:
-      api:
+      +schema: marts
+      +contract:
+        enforced: true
+
+      inclusion:
         +materialized: table
-      
+
       opendata:
         +schema: opendata
         +materialized: view
+        +contract:
+          enforced: false
 
 seeds:
   data_inclusion:
     schema:
       +schema: schema
+      +full_refresh: true
       +column_types:
         value: text
         label: text
         description: text
+      +post-hook:
+        - "ALTER TABLE {{ this }} ADD UNIQUE (value)"
