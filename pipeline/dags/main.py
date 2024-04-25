@@ -89,7 +89,7 @@ with airflow.DAG(
 
     dbt_seed = dbt_operator_factory(
         task_id="dbt_seed",
-        command="seed --full-refresh",
+        command="seed",
     )
 
     dbt_create_udfs = dbt_operator_factory(

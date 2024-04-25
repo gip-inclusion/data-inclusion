@@ -1,0 +1,401 @@
+version: 2
+
+models:
+  - name: marts_inclusion__structures
+    config:
+      indexes:
+        - columns: ['source']
+    columns:
+      - name: _di_surrogate_id
+        data_type: text
+        constraints:
+          - type: primary_key
+      - name: _di_geocodage_code_insee
+        data_type: text
+        constraints:
+          - type: check
+            expression: '(CHECK_CODE_INSEE(_di_geocodage_code_insee))'
+      - name: _di_geocodage_score
+        data_type: float
+      - name: id
+        data_type: text
+        constraints:
+          - type: not_null
+      - name: siret
+        data_type: text
+      - name: rna
+        data_type: text
+      - name: nom
+        data_type: text
+        constraints:
+          - type: not_null
+      - name: commune
+        data_type: text
+      - name: code_postal
+        data_type: text
+        constraints:
+          - type: check
+            expression: '(CHECK_CODE_POSTAL(code_postal))'
+      - name: code_insee
+        data_type: text
+        constraints:
+          - type: check
+            expression: '(CHECK_CODE_INSEE(code_insee))'
+      - name: adresse
+        data_type: text
+      - name: complement_adresse
+        data_type: text
+      - name: longitude
+        data_type: float
+      - name: latitude
+        data_type: float
+      - name: typologie
+        data_type: text
+      - name: telephone
+        data_type: text
+      - name: courriel
+        data_type: text
+      - name: site_web
+        data_type: text
+      - name: presentation_resume
+        data_type: text
+      - name: presentation_detail
+        data_type: text
+      - name: source
+        data_type: text
+        constraints:
+          - type: not_null
+      - name: date_maj
+        data_type: date
+      - name: antenne
+        data_type: boolean
+      - name: lien_source
+        data_type: text
+      - name: horaires_ouverture
+        data_type: text
+      - name: accessibilite
+        data_type: text
+      - name: labels_nationaux
+        data_type: text[]
+      - name: labels_autres
+        data_type: text[]
+      - name: thematiques
+        data_type: text[]
+
+  - name: marts_inclusion__structures_labels_nationaux
+    config:
+      indexes:
+        - columns: ['value']
+    columns:
+      - name: structure_surrogate_id
+        data_type: text
+        constraints:
+          - type: not_null
+          - type: foreign_key
+            expression: "public_marts.marts_inclusion__structures (_di_surrogate_id)"
+      - name: value
+        data_type: text
+        constraints:
+          - type: not_null
+          - type: foreign_key
+            expression: "public_schema.labels_nationaux (value)"
+
+  - name: marts_inclusion__structures_thematiques
+    config:
+      indexes:
+        - columns: ['value']
+    columns:
+      - name: structure_surrogate_id
+        data_type: text
+        constraints:
+          - type: not_null
+          - type: foreign_key
+            expression: "public_marts.marts_inclusion__structures (_di_surrogate_id)"
+      - name: value
+        data_type: text
+        constraints:
+          - type: not_null
+          - type: foreign_key
+            expression: "public_schema.thematiques (value)"
+
+  - name: marts_inclusion__services
+    config:
+      indexes:
+        - columns: ['_di_structure_surrogate_id']
+        - columns: ['source']
+        - columns: ['modes_accueil']
+          type: gin
+        - columns: ['thematiques']
+          type: gin
+        - columns: ['CAST(ST_MakePoint(longitude, latitude) AS geography(geometry, 4326))']
+          type: gist
+    columns:
+      - name: _di_surrogate_id
+        data_type: text
+        constraints:
+          - type: primary_key
+      - name: _di_structure_surrogate_id
+        data_type: text
+        constraints:
+          - type: not_null
+          - type: foreign_key
+            expression: "public_marts.marts_inclusion__structures (_di_surrogate_id)"
+      - name: _di_geocodage_code_insee
+        data_type: text
+        constraints:
+          - type: check
+            expression: '(CHECK_CODE_INSEE(_di_geocodage_code_insee))'
+      - name: _di_geocodage_score
+        data_type: float
+      - name: id
+        data_type: text
+        constraints:
+          - type: not_null
+      - name: structure_id
+        data_type: text
+        constraints:
+          - type: not_null
+      - name: source
+        data_type: text
+        constraints:
+          - type: not_null
+      - name: nom
+        data_type: text
+        constraints:
+          - type: not_null
+      - name: presentation_resume
+        data_type: text
+      - name: presentation_detail
+        data_type: text
+      - name: types
+        data_type: text[]
+      - name: thematiques
+        data_type: text[]
+      - name: prise_rdv
+        data_type: text
+      - name: frais
+        data_type: text[]
+      - name: frais_autres
+        data_type: text
+      - name: profils
+        data_type: text[]
+      - name: pre_requis
+        data_type: text[]
+      - name: cumulable
+        data_type: boolean
+      - name: justificatifs
+        data_type: text[]
+      - name: formulaire_en_ligne
+        data_type: text
+      - name: commune
+        data_type: text
+      - name: code_postal
+        data_type: text
+        constraints:
+          - type: check
+            expression: '(CHECK_CODE_POSTAL(code_postal))'
+      - name: code_insee
+        data_type: text
+        constraints:
+          - type: check
+            expression: '(CHECK_CODE_INSEE(code_insee))'
+      - name: adresse
+        data_type: text
+      - name: complement_adresse
+        data_type: text
+      - name: longitude
+        data_type: float
+      - name: latitude
+        data_type: float
+      - name: recurrence
+        data_type: text
+      - name: date_creation
+        data_type: date
+      - name: date_suspension
+        data_type: date
+      - name: lien_source
+        data_type: text
+      - name: telephone
+        data_type: text
+      - name: courriel
+        data_type: text
+      - name: contact_public
+        data_type: boolean
+      - name: contact_nom_prenom
+        data_type: text
+      - name: date_maj
+        data_type: date
+      - name: modes_accueil
+        data_type: text[]
+      - name: modes_orientation_accompagnateur
+        data_type: text[]
+      - name: modes_orientation_accompagnateur_autres
+        data_type: text
+      - name: modes_orientation_beneficiaire
+        data_type: text[]
+      - name: modes_orientation_beneficiaire_autres
+        data_type: text
+      - name: zone_diffusion_type
+        data_type: text
+      - name: zone_diffusion_code
+        data_type: text
+      - name: zone_diffusion_nom
+        data_type: text
+
+  - name: marts_inclusion__services_frais
+    config:
+      indexes:
+        - columns: ['value']
+    columns:
+      - name: service_surrogate_id
+        data_type: text
+        constraints:
+          - type: not_null
+          - type: foreign_key
+            expression: "public_marts.marts_inclusion__services (_di_surrogate_id)"
+      - name: value
+        data_type: text
+        constraints:
+          - type: not_null
+          - type: foreign_key
+            expression: "public_schema.frais (value)"
+
+  - name: marts_inclusion__services_justificatifs
+    config:
+      indexes:
+        - columns: ['value']
+    columns:
+      - name: service_surrogate_id
+        data_type: text
+        constraints:
+          - type: not_null
+          - type: foreign_key
+            expression: "public_marts.marts_inclusion__services (_di_surrogate_id)"
+      - name: value
+        data_type: text
+        constraints:
+          - type: not_null
+
+  - name: marts_inclusion__services_modes_accueil
+    config:
+      indexes:
+        - columns: ['value']
+    columns:
+      - name: service_surrogate_id
+        data_type: text
+        constraints:
+          - type: not_null
+          - type: foreign_key
+            expression: "public_marts.marts_inclusion__services (_di_surrogate_id)"
+      - name: value
+        data_type: text
+        constraints:
+          - type: not_null
+          - type: foreign_key
+            expression: "public_schema.modes_accueil (value)"
+
+  - name: marts_inclusion__services_modes_orientation_accompagnateur
+    config:
+      indexes:
+        - columns: ['value']
+    columns:
+      - name: service_surrogate_id
+        data_type: text
+        constraints:
+          - type: not_null
+          - type: foreign_key
+            expression: "public_marts.marts_inclusion__services (_di_surrogate_id)"
+      - name: value
+        data_type: text
+        constraints:
+          - type: not_null
+          - type: foreign_key
+            expression: "public_schema.modes_orientation_accompagnateur (value)"
+
+  - name: marts_inclusion__services_modes_orientation_beneficiaire
+    config:
+      indexes:
+        - columns: ['value']
+    columns:
+      - name: service_surrogate_id
+        data_type: text
+        constraints:
+          - type: not_null
+          - type: foreign_key
+            expression: "public_marts.marts_inclusion__services (_di_surrogate_id)"
+      - name: value
+        data_type: text
+        constraints:
+          - type: not_null
+          - type: foreign_key
+            expression: "public_schema.modes_orientation_beneficiaire (value)"
+
+  - name: marts_inclusion__services_profils
+    config:
+      indexes:
+        - columns: ['value']
+    columns:
+      - name: service_surrogate_id
+        data_type: text
+        constraints:
+          - type: not_null
+          - type: foreign_key
+            expression: "public_marts.marts_inclusion__services (_di_surrogate_id)"
+      - name: value
+        data_type: text
+        constraints:
+          - type: not_null
+          - type: foreign_key
+            expression: "public_schema.profils (value)"
+
+  - name: marts_inclusion__services_pre_requis
+    config:
+      indexes:
+        - columns: ['value']
+    columns:
+      - name: service_surrogate_id
+        data_type: text
+        constraints:
+          - type: not_null
+          - type: foreign_key
+            expression: "public_marts.marts_inclusion__services (_di_surrogate_id)"
+      - name: value
+        data_type: text
+        constraints:
+          - type: not_null
+
+  - name: marts_inclusion__services_thematiques
+    config:
+      indexes:
+        - columns: ['value']
+    columns:
+      - name: service_surrogate_id
+        data_type: text
+        constraints:
+          - type: not_null
+          - type: foreign_key
+            expression: "public_marts.marts_inclusion__services (_di_surrogate_id)"
+      - name: value
+        data_type: text
+        constraints:
+          - type: not_null
+          - type: foreign_key
+            expression: "public_schema.thematiques (value)"
+
+  - name: marts_inclusion__services_types
+    config:
+      indexes:
+        - columns: ['value']
+    columns:
+      - name: service_surrogate_id
+        data_type: text
+        constraints:
+          - type: not_null
+          - type: foreign_key
+            expression: "public_marts.marts_inclusion__services (_di_surrogate_id)"
+      - name: value
+        data_type: text
+        constraints:
+          - type: not_null
+          - type: foreign_key
+            expression: "public_schema.typologies_de_services (value)"

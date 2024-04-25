@@ -1,14 +1,3 @@
-{{
-    config(
-        pre_hook=[
-            "DROP INDEX IF EXISTS structure_source_idx",
-        ],
-        post_hook=[
-            "CREATE INDEX IF NOT EXISTS structure_source_idx ON {{ this }} (source);",
-        ]
-    )
-}}
-
 WITH structures AS (
     SELECT * FROM {{ ref('int__union_structures__enhanced') }}
 ),
