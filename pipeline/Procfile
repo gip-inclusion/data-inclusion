@@ -1,3 +1,0 @@
-web: ./entrypoint.sh webserver
-
-scheduler: ./entrypoint.sh scheduler
