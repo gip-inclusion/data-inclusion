@@ -232,7 +232,9 @@ def scrap_formation_html(html_path: Path) -> dict:
         }
 
         for content_name, node in NODE_BY_CONTENT_NAME.items():
-            data[f"content__{content_name}"] = utils.html_to_markdown(str(node))
+            data[f"content__{content_name}"] = utils.html_to_markdown(
+                str(node) if node is not None else None
+            )
 
         return data
 
