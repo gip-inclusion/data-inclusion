@@ -20,10 +20,8 @@ def _export_di_dataset_to_s3(logical_date, run_id):
     prefix = f"data/marts/{date.local_date_str(logical_date)}/{run_id}/"
 
     for ressource in ["structures", "services"]:
-        # TODO(vmttn): normalize table name after db split
-        table_name = ressource.rstrip("s")
         key = f"{prefix}{ressource}.parquet"
-        query = f"SELECT * FROM public_marts.marts_inclusion__{table_name}"
+        query = f"SELECT * FROM public_marts.marts_inclusion__{ressource}"
 
         logger.info("downloading data from query='%s'", query)
         df = pg_hook.get_pandas_df(sql=query)
