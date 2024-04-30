@@ -1,0 +1,50 @@
+version: 2
+
+models:
+  - name: stg_code_officiel_geographique__communes
+    columns:
+      - name: type_commune
+        tests:
+          - not_null
+          - dbt_utils.not_constant
+          - accepted_values:
+              values: ['commune', 'commune-associee', 'arrondissement-municipal']
+      - name: code
+        tests:
+          - unique
+          - not_null
+          - dbt_utils.not_constant
+          - dbt_utils.not_empty_string
+      - name: libelle
+        tests:
+          - not_null
+          - dbt_utils.not_constant
+          - dbt_utils.not_empty_string
+
+  - name: stg_code_officiel_geographique__departements
+    columns:
+      - name: code
+        tests:
+          - unique
+          - not_null
+          - dbt_utils.not_constant
+          - dbt_utils.not_empty_string
+      - name: libelle
+        tests:
+          - not_null
+          - dbt_utils.not_constant
+          - dbt_utils.not_empty_string
+
+  - name: stg_code_officiel_geographique__regions
+    columns:
+      - name: code
+        tests:
+          - unique
+          - not_null
+          - dbt_utils.not_constant
+          - dbt_utils.not_empty_string
+      - name: libelle
+        tests:
+          - not_null
+          - dbt_utils.not_constant
+          - dbt_utils.not_empty_string
