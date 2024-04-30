@@ -65,9 +65,7 @@ class APIClient(utils.BaseApiClient):
 
 def extract(url: str, token: str, **kwargs) -> bytes:
     soliguide_client = APIClient(base_url=url, token=token)
-    data = soliguide_client.search(
-        location_geo_type="pays", location_geo_value="france"
-    )
+    data = soliguide_client.search(location_geo_type="pays", location_geo_value="fr")
     return json.dumps(data).encode()
 
 
