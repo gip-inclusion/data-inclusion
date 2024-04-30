@@ -2,6 +2,8 @@
 
 {% set table_exists = adapter.get_relation(database=source_model.database, schema=source_model.schema, identifier=source_model.name) is not none %}
 
+-- depends_on: {{ ref('stg_code_officiel_geographique__communes') }}
+
 {% if table_exists %}
 
     WITH source AS (
@@ -9,14 +11,7 @@
     ),
 
     communes AS (
-        SELECT * FROM {{ source('insee', 'communes') }}
-    ),
-
-    -- exclude communes déléguées (duplicated codes)
-    filtered_communes AS (
-        SELECT *
-        FROM communes
-        WHERE "TYPECOM" != 'COMD'
+        SELECT * FROM {{ ref('stg_code_officiel_geographique__communes') }}
     ),
 
     final AS (
@@ -25,9 +20,9 @@
             source."ID_COM"             AS "id_com",
             source."ID_RES"             AS "id_res",
             source."CODE_COMMUNE_COM"   AS "code_commune_com",
-            filtered_communes."LIBELLE" AS "libelle"
+            communes.libelle            AS "libelle"
         FROM source
-        LEFT JOIN filtered_communes ON source."CODE_COMMUNE_COM" = filtered_communes."COM"
+        LEFT JOIN communes ON source."CODE_COMMUNE_COM" = communes.code
     )
 
     SELECT * FROM final

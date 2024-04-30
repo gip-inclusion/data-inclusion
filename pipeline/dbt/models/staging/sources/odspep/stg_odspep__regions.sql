@@ -10,6 +10,8 @@
     ) is not none)
 -%}
 
+-- depends_on: {{ ref('stg_code_officiel_geographique__regions') }}
+
 {% if tables_exist %}
 
     WITH source AS (
@@ -21,7 +23,7 @@
     ),
 
     regions AS (
-        SELECT * FROM {{ source('insee', 'regions') }}
+        SELECT * FROM {{ ref('stg_code_officiel_geographique__regions') }}
     ),
 
     final AS (
@@ -30,11 +32,11 @@
             source."ID_REG"          AS "id_reg",
             source."ID_RES"          AS "id_res",
             source."CODE_REGION_REG" AS "code_region_reg",
-            'Région'                AS "zone_diffusion_type",
-            regions."LIBELLE"        AS "libelle"
+            'Région'                 AS "zone_diffusion_type",
+            regions.libelle          AS "libelle"
 
         FROM source
-        LEFT JOIN regions ON source."CODE_REGION_REG" = regions."REG"
+        LEFT JOIN regions ON source."CODE_REGION_REG" = regions.code
 
     )
 
