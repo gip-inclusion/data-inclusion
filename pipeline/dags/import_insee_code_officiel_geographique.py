@@ -5,7 +5,7 @@ import pendulum
 import airflow
 from airflow.operators import empty, python
 
-from dag_utils import date
+from dag_utils import date, dbt
 from dag_utils.virtualenvs import PYTHON_BIN_PATH
 
 logger = logging.getLogger(__name__)
@@ -69,4 +69,10 @@ with airflow.DAG(
         python_callable=_import_dataset_ressource,
     )
 
-    start >> import_insee_dataset >> end
+    dbt_build_staging = dbt.dbt_operator_factory(
+        task_id="dbt_build_staging",
+        command="build",
+        select="path:models/staging/code_officiel_geographique",
+    )
+
+    start >> import_insee_dataset >> dbt_build_staging >> end
