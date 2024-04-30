@@ -4,15 +4,15 @@ WITH lieux AS (
 
 final AS (
     SELECT
-        lieux.lieu_id                     AS "id",
-        lieux._di_source_id               AS "source",
-        lieux.position_coordinates_x      AS "longitude",
-        lieux.position_coordinates_y      AS "latitude",
-        lieux.position_complement_adresse AS "complement_adresse",
-        lieux.position_ville              AS "commune",
-        lieux.position_adresse            AS "adresse",
-        lieux.position_code_postal        AS "code_postal",
-        NULL                              AS "code_insee"
+        lieu_id                          AS "id",
+        _di_source_id                    AS "source",
+        position__coordinates__x         AS "longitude",
+        position__coordinates__y         AS "latitude",
+        position__additional_information AS "complement_adresse",
+        position__city                   AS "commune",
+        position__address                AS "adresse",
+        position__postal_code            AS "code_postal",
+        position__city_code              AS "code_insee"
     FROM lieux
     ORDER BY 1
 )
