@@ -23,52 +23,52 @@ di_thematique_by_soliguide_categorie_code AS (
     FROM (
         VALUES
         -- Mapping: https://grist.incubateur.net/o/datainclusion/mDqdLZVGVmER/Mappings/p/4
-        ('100', ARRAY['sante']),
-        ('101', ARRAY['sante--faire-face-a-une-situation-daddiction']),
-        ('102', ARRAY['sante--prevention-et-acces-aux-soins']),
-        ('103', ARRAY['sante--bien-etre-psychologique']),
-        ('201', ARRAY(SELECT value FROM thematiques WHERE value ~ '^numerique--')),
-        ('202', ARRAY['apprendre-francais--suivre-formation']),
-        ('303', ARRAY['remobilisation--bien-etre']),
-        ('401', ARRAY['acces-aux-droits-et-citoyennete--accompagnement-juridique']),
-        ('404', ARRAY[
+        ('health', ARRAY['sante']),
+        ('addiction', ARRAY['sante--faire-face-a-une-situation-daddiction']),
+        ('std_testing', ARRAY['sante--prevention-et-acces-aux-soins']),
+        ('psychological_support', ARRAY['sante--bien-etre-psychologique']),
+        ('digital_tools_training', ARRAY(SELECT value FROM thematiques WHERE value ~ '^numerique--')),
+        ('french_course', ARRAY['apprendre-francais--suivre-formation']),
+        ('wellness', ARRAY['remobilisation--bien-etre']),
+        ('legal_advice', ARRAY['acces-aux-droits-et-citoyennete--accompagnement-juridique']),
+        ('public_writer', ARRAY[
             'acces-aux-droits-et-citoyennete--accompagnement-dans-les-demarches-administratives',
             'numerique--realiser-des-demarches-administratives-avec-un-accompagnement'
         ]),
-        ('406', ARRAY[
+        ('administrative_assistance', ARRAY[
             'acces-aux-droits-et-citoyennete--connaitre-ses-droits',
             'acces-aux-droits-et-citoyennete--accompagnement-dans-les-demarches-administratives'
         ]),
-        ('407', ARRAY[
+        ('parent_assistance', ARRAY[
             'famille--information-et-accompagnement-des-parents',
             'famille--soutien-a-la-parentalite',
             'famille--soutien-aux-familles'
         ]),
-        ('408', ARRAY(SELECT value FROM thematiques WHERE value ~ '^gestion-financiere--')),
-        ('501', ARRAY['numerique--acceder-a-du-materiel']),
-        ('502', ARRAY['numerique--acceder-a-une-connexion-internet']),
-        ('504', ARRAY['equipement-et-alimentation--acces-a-un-telephone-et-un-abonnement']),
-        ('600', ARRAY['equipement-et-alimentation--alimentation']),
-        ('601', ARRAY['equipement-et-alimentation--alimentation']),
-        ('602', ARRAY['equipement-et-alimentation--alimentation']),
-        ('603', ARRAY['equipement-et-alimentation--alimentation']),
-        ('604', ARRAY['equipement-et-alimentation--alimentation']),
-        ('701', ARRAY['remobilisation--lien-social']),
-        ('703', ARRAY['famille--garde-denfants']),
-        ('704', ARRAY['famille--soutien-a-la-parentalite']),
-        ('801', ARRAY['remobilisation--decouvrir-son-potentiel-via-le-sport-et-la-culture']),
-        ('804', ARRAY['remobilisation--decouvrir-son-potentiel-via-le-sport-et-la-culture']),
-        ('902', ARRAY['equipement-et-alimentation--habillement']),
-        ('903', ARRAY['equipement-et-alimentation--habillement']),
-        ('1200', ARRAY['mobilite']),
-        ('1201', ARRAY['mobilite--comprendre-et-utiliser-les-transports-en-commun']),
-        ('1202', ARRAY['mobilite--louer-un-vehicule']),
-        ('1203', ARRAY['mobilite--comprendre-et-utiliser-les-transports-en-commun']),
-        ('1300', ARRAY['logement-hebergement']),
-        ('1301', ARRAY['logement-hebergement--mal-loges-sans-logis']),
-        ('1302', ARRAY['logement-hebergement--mal-loges-sans-logis']),
-        ('1303', ARRAY['logement-hebergement--mal-loges-sans-logis']),
-        ('1305', ARRAY['logement-hebergement--etre-accompagne-pour-se-loger'])
+        ('budget_advice', ARRAY(SELECT value FROM thematiques WHERE value ~ '^gestion-financiere--')),
+        ('computers_at_your_disposal', ARRAY['numerique--acceder-a-du-materiel']),
+        ('wifi', ARRAY['numerique--acceder-a-une-connexion-internet']),
+        ('telephone_at_your_disposal', ARRAY['equipement-et-alimentation--acces-a-un-telephone-et-un-abonnement']),
+        ('food', ARRAY['equipement-et-alimentation--alimentation']),
+        ('food_distribution', ARRAY['equipement-et-alimentation--alimentation']),
+        ('seated_catering', ARRAY['equipement-et-alimentation--alimentation']),
+        ('food_packages', ARRAY['equipement-et-alimentation--alimentation']),
+        ('social_grocery_stores', ARRAY['equipement-et-alimentation--alimentation']),
+        ('day_hosting', ARRAY['remobilisation--lien-social']),
+        ('babysitting', ARRAY['famille--garde-denfants']),
+        ('family_area', ARRAY['famille--soutien-a-la-parentalite']),
+        ('sport_activities', ARRAY['remobilisation--decouvrir-son-potentiel-via-le-sport-et-la-culture']),
+        ('other_activities', ARRAY['remobilisation--decouvrir-son-potentiel-via-le-sport-et-la-culture']),
+        ('solidarity_store', ARRAY['equipement-et-alimentation--habillement']),
+        ('clothing', ARRAY['equipement-et-alimentation--habillement']),
+        ('mobility', ARRAY['mobilite']),
+        ('carpooling', ARRAY['mobilite--comprendre-et-utiliser-les-transports-en-commun']),
+        ('provision_of_vehicles', ARRAY['mobilite--louer-un-vehicule']),
+        ('chauffeur_driven_transport', ARRAY['mobilite--comprendre-et-utiliser-les-transports-en-commun']),
+        ('accomodation_and_housing', ARRAY['logement-hebergement']),
+        ('overnight_stop', ARRAY['logement-hebergement--mal-loges-sans-logis']),
+        ('emergency_accommodation', ARRAY['logement-hebergement--mal-loges-sans-logis']),
+        ('long_term_accomodation', ARRAY['logement-hebergement--mal-loges-sans-logis']),
+        ('access_to_housing', ARRAY['logement-hebergement--etre-accompagne-pour-se-loger'])
     ) AS x (categorie, thematique)
 ),
 
