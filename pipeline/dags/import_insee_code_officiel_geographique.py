@@ -37,10 +37,19 @@ def _import_dataset_ressource():
         with pg.connect_begin() as conn:
             df.to_sql(
                 schema=schema,
-                name=table_name,
+                name=f"{table_name}_tmp",
                 con=conn,
                 if_exists="replace",
                 index=False,
+            )
+
+            conn.execute(
+                f"""\
+                CREATE TABLE IF NOT EXISTS {schema}.{table_name} (LIKE {schema}.{table_name}_tmp);
+                TRUNCATE {schema}.{table_name};
+                INSERT INTO {schema}.{table_name}
+                SELECT * FROM {schema}.{table_name}_tmp;
+                DROP TABLE {schema}.{table_name}_tmp;"""  # noqa: E501
             )
 
 
