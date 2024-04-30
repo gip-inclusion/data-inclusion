@@ -9,7 +9,7 @@ final AS (
         source.data ->> 'lieu_id'                                             AS "lieu_id",
         services.data ->> 'serviceObjectId'                                   AS "id",
         NULLIF(services.data ->> 'name', '')                                  AS "name",
-        services.data ->> 'categorie'                                         AS "categorie",
+        services.data ->> 'category'                                          AS "category",
         NULLIF(services.data ->> 'description', '')                           AS "description",
         services.data -> 'hours'                                              AS "hours",
         CAST(services.data ->> 'differentHours' AS BOOLEAN)                   AS "different_hours",
