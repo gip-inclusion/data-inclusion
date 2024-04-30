@@ -10,12 +10,55 @@ models:
       - name: label
         tests:
           - not_null
+
   - name: stg_soliguide__lieux
     columns:
       - name: lieu_id
         tests:
           - not_null
           - unique
+      - name: position__country
+        tests:
+          - not_null
+          - dbt_utils.not_empty_string
+          - accepted_values:
+              values: ['fr']
+      - name: position__department
+        tests:
+          - not_null
+          - dbt_utils.not_empty_string
+      - name: position__coordinates__x
+        tests:
+          - not_null
+      - name: position__coordinates__y
+        tests:
+          - not_null
+      - name: position__additional_information
+        tests:
+          - dbt_utils.not_constant
+          - dbt_utils.not_empty_string
+      - name: position__city
+        tests:
+          - not_null
+          - dbt_utils.not_empty_string
+      - name: position__address
+        tests:
+          - dbt_utils.not_constant
+          - dbt_utils.not_empty_string
+      - name: position__postal_code
+        tests:
+          - not_null
+          - dbt_utils.not_empty_string
+      - name: position__city_code
+        tests:
+          - not_null
+          - dbt_utils.not_empty_string
+          - relationships:
+              to: ref('stg_code_officiel_geographique__communes')
+              field: code
+              config:
+                severity: warn
+
   - name: stg_soliguide__services
     columns:
       - name: id
@@ -28,6 +71,14 @@ models:
           - relationships:
               to: ref('stg_soliguide__lieux')
               field: lieu_id
+      - name: category
+        tests:
+          - not_null
+          - dbt_utils.not_constant
+          - relationships:
+              to: ref('stg_soliguide__categories')
+              field: code
+
   - name: stg_soliguide__phones
     columns:
       - name: lieu_id
