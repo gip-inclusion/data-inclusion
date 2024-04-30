@@ -106,4 +106,4 @@ SELECT x.* FROM
   "citizen_housing": "Hébergement citoyen",
   "access_to_housing": "Conseil logement" 
 }
-$$ AS JSONB)) AS x (code, label);
+$$ AS JSONB)) AS x (code, label)
