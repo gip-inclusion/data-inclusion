@@ -12,7 +12,9 @@ final AS (
         position__city                   AS "commune",
         position__address                AS "adresse",
         position__postal_code            AS "code_postal",
-        position__city_code              AS "code_insee"
+        -- TODO: use position__city_code
+        -- currently the field contains a majority of postal codes...
+        NULL                             AS "code_insee"
     FROM lieux
     ORDER BY 1
 )
