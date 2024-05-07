@@ -18,7 +18,7 @@ thematiques AS (
     SELECT * FROM {{ ref('thematiques') }}
 ),
 
-di_thematique_by_soliguide_categorie_code AS (
+di_thematique_by_soliguide_category_code AS (
     SELECT x.*
     FROM (
         VALUES
@@ -59,7 +59,7 @@ di_thematique_by_soliguide_categorie_code AS (
         ('telephone_at_your_disposal', ARRAY['equipement-et-alimentation--acces-a-un-telephone-et-un-abonnement']),
         ('wellness', ARRAY['remobilisation--bien-etre']),
         ('wifi', ARRAY['numerique--acceder-a-une-connexion-internet'])
-    ) AS x (categorie, thematique)
+    ) AS x (category, thematique)
 ),
 
 filtered_phones AS (
@@ -72,7 +72,7 @@ filtered_phones AS (
 relevant_services AS (
     SELECT *
     FROM services
-    WHERE categorie IN (SELECT categorie FROM di_thematique_by_soliguide_categorie_code)
+    WHERE category IN (SELECT category FROM di_thematique_by_soliguide_category_code)
 ),
 
 -- remove temporarily suspended services from downstream data
@@ -125,9 +125,9 @@ final AS (
         NULL                                                          AS "formulaire_en_ligne",
         open_services.lieu_id                                         AS "structure_id",
         (
-            SELECT di_thematique_by_soliguide_categorie_code.thematique
-            FROM di_thematique_by_soliguide_categorie_code
-            WHERE open_services.categorie = di_thematique_by_soliguide_categorie_code.categorie
+            SELECT di_thematique_by_soliguide_category_code.thematique
+            FROM di_thematique_by_soliguide_category_code
+            WHERE open_services.category = di_thematique_by_soliguide_category_code.category
         )::TEXT []                                                    AS "thematiques",
         ARRAY['en-presentiel']                                        AS "modes_accueil",
         categories.label || COALESCE(' : ' || open_services.name, '') AS "nom",
@@ -189,7 +189,7 @@ final AS (
         )                                                             AS "modes_orientation_beneficiaire_autres"
     FROM open_services
     LEFT JOIN lieux ON open_services.lieu_id = lieux.id
-    LEFT JOIN categories ON open_services.categorie = categories.code
+    LEFT JOIN categories ON open_services.category = categories.code
     LEFT JOIN filtered_phones ON open_services.lieu_id = filtered_phones.lieu_id
     ORDER BY 1
 )
