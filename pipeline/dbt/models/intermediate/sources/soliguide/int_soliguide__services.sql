@@ -23,7 +23,7 @@ di_thematique_by_soliguide_categorie_code AS (
     FROM (
         VALUES
         -- Mapping: https://grist.incubateur.net/o/datainclusion/mDqdLZVGVmER/Mappings/p/4
-        ('access_to_housing', ARRAY['logement-hebergement--etre-accompagne-pour-se-loger'])
+        ('access_to_housing', ARRAY['logement-hebergement--etre-accompagne-pour-se-loger']),
         ('accomodation_and_housing', ARRAY['logement-hebergement']),
         ('addiction', ARRAY['sante--faire-face-a-une-situation-daddiction']),
         ('administrative_assistance', ARRAY['acces-aux-droits-et-citoyennete--connaitre-ses-droits', 'acces-aux-droits-et-citoyennete--accompagnement-dans-les-demarches-administratives']),
@@ -58,7 +58,7 @@ di_thematique_by_soliguide_categorie_code AS (
         ('std_testing', ARRAY['sante--prevention-et-acces-aux-soins']),
         ('telephone_at_your_disposal', ARRAY['equipement-et-alimentation--acces-a-un-telephone-et-un-abonnement']),
         ('wellness', ARRAY['remobilisation--bien-etre']),
-        ('wifi', ARRAY['numerique--acceder-a-une-connexion-internet']),
+        ('wifi', ARRAY['numerique--acceder-a-une-connexion-internet'])
     ) AS x (categorie, thematique)
 ),
 
