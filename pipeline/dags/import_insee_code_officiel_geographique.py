@@ -47,8 +47,7 @@ def _import_dataset_ressource():
                 f"""\
                 CREATE TABLE IF NOT EXISTS {schema}.{table_name} (LIKE {schema}.{table_name}_tmp);
                 TRUNCATE {schema}.{table_name};
-                INSERT INTO {schema}.{table_name}
-                SELECT * FROM {schema}.{table_name}_tmp;
+                INSERT INTO {schema}.{table_name} SELECT * FROM {schema}.{table_name}_tmp;
                 DROP TABLE {schema}.{table_name}_tmp;"""  # noqa: E501
             )
 
