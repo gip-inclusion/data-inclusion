@@ -30,7 +30,7 @@ final AS (
         data ->> 'site_web'                                                                 AS "site_web",
         data ->> 'source'                                                                   AS "source",
         data ->> 'telephone'                                                                AS "telephone",
-        data ->> 'typologie'                                                                AS "typologie"
+        NULLIF(TRIM(data ->> 'typologie'), '')                                              AS "typologie"
     FROM source
 )
 
