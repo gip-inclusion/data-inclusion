@@ -4,6 +4,7 @@ apache-airflow-providers-ssh
 sentry-sdk
 
 beautifulsoup4
+furl
 GeoAlchemy2
 geopandas
 openpyxl
