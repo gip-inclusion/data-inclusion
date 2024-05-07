@@ -1,4 +1,4 @@
-{% set source_model = source('data_inclusion', 'external_insee_fichier_prenoms') %}
+{% set source_model = source('insee', 'etat_civil_prenoms') %}
 
 {% set table_exists = adapter.get_relation(database=source_model.database, schema=source_model.schema, identifier=source_model.name) is not none %}
 
@@ -10,14 +10,14 @@
 
 {% else %}
 
-WITH source AS (
-    SELECT
-        CAST(NULL AS BIGINT) AS "sexe",
-        NULL                 AS "preusuel",
-        NULL                 AS "annais",
-        CAST(NULL AS BIGINT) AS "nombre"
-    WHERE FALSE
-),
+    WITH source AS (
+        SELECT
+            NULL                 AS "preusuel",
+            NULL                 AS "annais",
+            CAST(NULL AS BIGINT) AS "sexe",
+            CAST(NULL AS BIGINT) AS "nombre"
+        WHERE FALSE
+    ),
 
 {% endif %}
 

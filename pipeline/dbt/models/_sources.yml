@@ -4,14 +4,7 @@ sources:
   - name: data_inclusion
     schema: public
     tables:
-      - name: annotation_dataset
-      - name: annotation_datasetrow
-      - name: annotation_annotation
-      - name: external_insee_fichier_prenoms
-      - name: sirene_etablissement_historique
-      - name: sirene_etablissement_succession
       - name: extra__geocoded_results
-      - name: adresses_geocoded
 
   - name: data_inclusion_extra
     schema: data_inclusion
@@ -27,6 +20,9 @@ sources:
       - name: regions
       - name: departements
       - name: communes
+      - name: sirene_etablissement_historique
+      - name: sirene_etablissement_succession
+      - name: etat_civil_prenoms
 
   - name: dora
     schema: dora

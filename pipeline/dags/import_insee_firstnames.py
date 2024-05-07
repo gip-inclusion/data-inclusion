@@ -24,7 +24,8 @@ def _import_dataset():
 
     with pg.connect_begin() as conn:
         df.to_sql(
-            "external_insee_fichier_prenoms",
+            schema="insee",
+            name="etat_civil_prenoms",
             # FIXME(vperron): the schema should be "insee" instead of "public"
             con=conn,
             if_exists="replace",

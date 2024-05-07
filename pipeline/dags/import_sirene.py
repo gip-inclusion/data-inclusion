@@ -41,7 +41,8 @@ def _import_stock_etablissement_historique():
     with pg.connect_begin() as conn:
         for i, df_chunk in enumerate(reader):
             df_chunk.to_sql(
-                TABLE_NAME,
+                schema="insee",
+                name=TABLE_NAME,
                 con=conn,
                 if_exists="replace" if i == 0 else "append",
                 index=False,
@@ -85,7 +86,8 @@ def _import_stock_etablissement_liens_succession():
     with pg.connect_begin() as conn:
         for i, df_chunk in enumerate(reader):
             df_chunk.to_sql(
-                TABLE_NAME,
+                schema="insee",
+                name=TABLE_NAME,
                 con=conn,
                 if_exists="replace" if i == 0 else "append",
                 index=False,
@@ -139,7 +141,8 @@ def _import_stock_unite_legale():
     with pg.connect_begin() as conn:
         for i, df_chunk in enumerate(reader):
             df_chunk.to_sql(
-                TABLE_NAME,
+                schema="insee",
+                name=TABLE_NAME,
                 con=conn,
                 if_exists="replace" if i == 0 else "append",
                 index=False,
@@ -268,7 +271,8 @@ def _import_stock_etablissement_geocode():
             )
 
             df_chunk.to_postgis(
-                TABLE_NAME,
+                schema="insee",
+                name=TABLE_NAME,
                 con=conn,
                 if_exists="replace" if i == 0 else "append",
                 index=False,

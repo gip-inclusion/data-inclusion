@@ -65,6 +65,7 @@ def _geocode():
         with conn.begin():
             output_df.to_sql(
                 "extra__geocoded_results",
+                schema="public",
                 con=conn,
                 if_exists="replace",
                 index=False,
