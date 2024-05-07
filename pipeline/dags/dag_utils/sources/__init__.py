@@ -8,6 +8,7 @@ from airflow.models import Variable
 from . import (
     agefiph,
     annuaire_du_service_public,
+    cd35,
     dora,
     emplois_de_linclusion,
     france_travail,
@@ -81,11 +82,11 @@ SOURCES_CONFIGS = {
     "cd35": {
         "schedule": "@daily",
         "snapshot": True,
-        "reader": lambda path: utils.read_csv(path, sep=";"),
+        "extractor": cd35.extract,
         "streams": {
             "organisations": {
-                "filename": "organisations.csv",
-                "url": Variable.get("CD35_FILE_URL", None),
+                "filename": "organisations.json",
+                "url": Variable.get("CD35_API_URL", None),
             },
         },
     },
