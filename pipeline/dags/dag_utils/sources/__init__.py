@@ -15,7 +15,6 @@ from . import (
     grist,
     mediation_numerique,
     mes_aides,
-    monenfant,
     reseau_alpha,
     soliguide,
     un_jeune_une_solution,
@@ -159,17 +158,6 @@ SOURCES_CONFIGS = {
                 "url": Variable.get("SOLIGUIDE_API_URL", None),
                 "token": Variable.get("SOLIGUIDE_API_TOKEN", None),
             }
-        },
-    },
-    "monenfant": {
-        "schedule": "@once",
-        "snapshot": True,
-        "reader": monenfant.read,
-        "streams": {
-            "creches": {
-                "filename": "creches.json",
-                "url": Variable.get("MONENFANT_CRECHES_FILE_URL", None),
-            },
         },
     },
     "reseau-alpha": {

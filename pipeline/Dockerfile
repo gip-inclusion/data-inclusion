@@ -41,7 +41,7 @@ RUN "${VIRTUAL_ENV}/bin/python" -m pip install --no-cache-dir -r requirements/ta
 ########
 # This image is the runtime
 ########
-FROM apache/airflow:2.9.0-python3.11
+FROM apache/airflow:2.9.0-python3.11 as runtime-image
 
 ENV PYTHONUNBUFFERED 1
 ENV PYTHONDONTWRITEBYTECODE 1
@@ -50,6 +50,9 @@ ENV AIRFLOW_VAR_DBT_PROJECT_DIR /opt/airflow/dbt
 
 COPY requirements requirements
 RUN pip install -r requirements/airflow/requirements.txt
+
+# copy the compiled virtual environments to a `venvs` directory in the airflow home
+COPY --chown=airflow:0 --from=compile-image /opt/airflow/venvs /opt/airflow/venvs
 
 USER root
 
@@ -63,15 +66,15 @@ RUN apt-get update \
     && apt-get clean -y \
     && rm -rf /var/lib/apt/lists/*
 
-USER airflow
+RUN /opt/airflow/venvs/python/venv/bin/playwright install-deps chromium
 
-# copy the compiled virtual environments to a `venvs` directory in the airflow home
-COPY --chown=airflow:0 --from=compile-image /opt/airflow/venvs /opt/airflow/venvs
+USER airflow
 
 COPY --chown=airflow:0 dags /opt/airflow/dags
 COPY --chown=airflow:0 dbt ${AIRFLOW_VAR_DBT_PROJECT_DIR}
 
 RUN /opt/airflow/venvs/dbt/venv/bin/dbt deps --project-dir /opt/airflow/dbt
+RUN /opt/airflow/venvs/python/venv/bin/playwright install chromium
 
 # make the dags package available in editable mode
 ENV PYTHONPATH "${PYTHONPATH}:/opt/airflow/dags"

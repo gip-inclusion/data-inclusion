@@ -3,12 +3,15 @@ apache-airflow-providers-amazon
 apache-airflow-providers-ssh
 sentry-sdk
 
+2captcha-python
 beautifulsoup4
 furl
 GeoAlchemy2
 geopandas
+httpx
 openpyxl
 pandas==2.*
+playwright
 psycopg2==2.*
 pyairtable
 pyarrow

@@ -208,3 +208,10 @@ variable "siao_file_url" {
   type        = string
   default     = ""
 }
+
+variable "twocaptcha_api_key" {
+  description = "Used in extraction tasks orchestrated by airflow"
+  type        = string
+  sensitive   = true
+  default     = ""
+}
