@@ -12,6 +12,7 @@ x-airflow-common:
     AIRFLOW__CORE__LOAD_DEFAULT_CONNECTIONS: 'false'
     AIRFLOW__DATABASE__SQL_ALCHEMY_CONN: postgresql://airflow:airflow@airflow-db:5432/airflow
     AIRFLOW__SCHEDULER__MIN_FILE_PROCESS_INTERVAL: 60
+    AIRFLOW__WEBSERVER__SECRET_KEY: USE_IN_DEVELOPMENT_ONLY
     AIRFLOW__WEBSERVER__WORKERS: 1
 
     # Connections
@@ -20,12 +21,6 @@ x-airflow-common:
     AIRFLOW_CONN_S3_SOURCES: ${AIRFLOW_CONN_S3_SOURCES}
     AIRFLOW_CONN_SSH_API: ${AIRFLOW_CONN_SSH_API}
     AIRFLOW_CONN_PG_API: ${AIRFLOW_CONN_PG_API}
-
-    AIRFLOW_CONN_S3_LOGS: aws://@/data-inclusion-lake?endpoint_url=http%3A%2F%2Fminio%3A9000&aws_access_key_id=minioadmin&aws_secret_access_key=minioadmin
-    AIRFLOW__LOGGING__REMOTE_LOGGING: 'True'
-    AIRFLOW__LOGGING__REMOTE_BASE_LOG_FOLDER: s3://data-inclusion-lake/logs
-    AIRFLOW__LOGGING__REMOTE_LOG_CONN_ID: s3_logs
-    AIRFLOW__LOGGING__DELETE_LOCAL_LOGS: 'True'
 
     # Variables
     AIRFLOW_VAR_BREVO_API_KEY: ${AIRFLOW_VAR_BREVO_API_KEY}
