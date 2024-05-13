@@ -1,4 +1,4 @@
-PIP_COMPILE := pipx run uv pip compile --quiet
+PIP_COMPILE := uv pip compile --quiet
 
 ifeq ($(filter upgrade,$(MAKECMDGOALS)),upgrade)
 PIP_COMPILE += --upgrade
@@ -6,15 +6,11 @@ endif
 
 AIRFLOW_VERSION := 2.9.0
 PYTHON_VERSION := 3.11
-UV_VERSION := 0.1.33
 CONSTRAINTS_FILE_URL := https://raw.githubusercontent.com/apache/airflow/constraints-$(AIRFLOW_VERSION)/constraints-$(PYTHON_VERSION).txt
 
-.PHONY: all airflow dbt pipx python dev upgrade constraints uv
+.PHONY: all airflow dbt pipx python dev upgrade constraints
 
-all: uv airflow dbt pipx python dev constraints
-
-uv:
-	pip install uv==$(UV_VERSION)
+all: airflow dbt pipx python dev constraints
 
 # https://airflow.apache.org/docs/apache-airflow/stable/installation/installing-from-pypi.html#constraints-files
 constraints:
@@ -22,21 +18,21 @@ constraints:
 
 # airflow requirements for scalingo deployments
 # unlike docker based deployments, scalingo requires airflow to be installed from pypi
-airflow: airflow/requirements.in constraints uv
+airflow: airflow/requirements.in constraints
 	$(PIP_COMPILE) --constraint airflow/constraints.txt airflow/requirements.in --output-file=airflow/requirements.txt
 
 # isolated env for dbt, which should be invoked using a bash operator
-dbt: tasks/dbt/requirements.in uv
+dbt: tasks/dbt/requirements.in
 	$(PIP_COMPILE) tasks/dbt/requirements.in --output-file=tasks/dbt/requirements.txt
 
 # isolated env for pipx, which should be invoked using a bash operator
-pipx: tasks/pipx/requirements.in uv
+pipx: tasks/pipx/requirements.in
 	$(PIP_COMPILE) tasks/pipx/requirements.in --output-file=tasks/pipx/requirements.txt
 
 # python based tasks requirements must be compatible with airflow requirements
 # therefore these requirements are compiled with airflow constraints
-python: airflow tasks/python/requirements.in uv
+python: airflow tasks/python/requirements.in
 	$(PIP_COMPILE) --constraint airflow/constraints.txt tasks/python/requirements.in --output-file=tasks/python/requirements.txt
 
-dev: python dev/requirements.in uv
+dev: python dev/requirements.in
 	$(PIP_COMPILE) --constraint airflow/constraints.txt dev/requirements.in --output-file=dev/requirements.txt
