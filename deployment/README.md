@@ -109,7 +109,7 @@ Use the following gh cli command to update this file on github:
 ```bash
 # using gh cli
 # replace <ENVIRONMENT>
-base64 -w0 <ENVIRONMENT>.terraform.tfvars.json | gh secret --repo gip-inclusion/data-inclusion --environment <ENVIRONMENT> set TF_VARS_BASE64
+base64 -w0 <ENVIRONMENT>.terraform.tfvars.json | gh secret --repo gip-inclusion/data-inclusion --env <ENVIRONMENT> set TF_VARS_BASE64
 ```
 
 Make sure to update the config on bitwarden.
