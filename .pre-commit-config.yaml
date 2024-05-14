@@ -1,63 +1,66 @@
 repos:
   # api
   - repo: https://github.com/astral-sh/ruff-pre-commit
-    rev: v0.2.1
+    rev: v0.4.4
     hooks:
+      - id: ruff-format
+        name: api|ruff-format
+        args: [--config=api/pyproject.toml]
+        files: ^api
+        types_or: [python,json]
       - id: ruff
-        name: api|ruff-lint
+        name: api|ruff-check
         args:
           - --config=api/pyproject.toml
           - --fix
           - --fixable=I
         files: ^api
-      - id: ruff-format
-        name: api|ruff-format
-        args: [--config=api/pyproject.toml]
-        files: ^api
+        types_or: [python]
 
   # deployment
-  - repo: local
+  - repo: https://github.com/antonbabenko/pre-commit-terraform
+    rev: v1.89.1
     hooks:
-      - id: terraform-fmt
+      - id: terraform_fmt
         name: deployment|terraform-fmt
-        language: docker_image
-        entry: hashicorp/terraform:1.6.1
-        args: [fmt, -recursive, deployment]
-        pass_filenames: false
         files: ^deployment/
 
   # pipeline
   - repo: https://github.com/astral-sh/ruff-pre-commit
-    rev: v0.2.1
+    rev: v0.4.4
     hooks:
+      - id: ruff-format
+        name: pipeline|ruff-format
+        args: [--config=pipeline/pyproject.toml]
+        files: ^pipeline
+        types_or: [python,json]
       - id: ruff
-        name: pipeline|ruff-lint
+        name: pipeline|ruff-check
         args:
           - --config=pipeline/pyproject.toml
           - --fix
           - --fixable=I
         files: ^pipeline
-      - id: ruff-format
-        name: pipeline|ruff-format
-        args: [--config=pipeline/pyproject.toml]
-        files: ^pipeline
+        types_or: [python]
 
   - repo: https://github.com/sqlfluff/sqlfluff
-    rev: 2.0.3
+    rev: 2.3.5
     hooks:
-      - id: sqlfluff-lint
-        name: pipeline|sqlfluff-lint
-        files: ^(pipeline/(dags|dbt)/)
-        additional_dependencies:
-          - sqlfluff-templater-dbt==2.0.3
-          - dbt-postgres==1.4.5
-        args:
-          - --config=./pipeline/pyproject.toml
       - id: sqlfluff-fix
         name: pipeline|sqlfluff-fix
-        files: ^(pipeline/(dags|dbt)/)
+        files: ^pipeline
+        types: [sql]
         additional_dependencies:
-          - sqlfluff-templater-dbt==2.0.3
-          - dbt-postgres==1.4.5
+          - sqlfluff-templater-dbt==2.3.5
+          - dbt-postgres==1.7.11
+        args:
+          - --config=./pipeline/pyproject.toml
+      - id: sqlfluff-lint
+        name: pipeline|sqlfluff-lint
+        files: ^pipeline
+        types: [sql]
+        additional_dependencies:
+          - sqlfluff-templater-dbt==2.3.5
+          - dbt-postgres==1.7.11
         args:
           - --config=./pipeline/pyproject.toml
