@@ -456,18 +456,6 @@
           ],
           "parameters": [
             {
-              "name": "source",
-              "in": "query",
-              "required": false,
-              "schema": {
-                "type": "string",
-                "description": "Un identifiant de source.\n                Déprécié en faveur de `sources`.\n            ",
-                "title": "Source"
-              },
-              "description": "Un identifiant de source.\n                Déprécié en faveur de `sources`.\n            ",
-              "deprecated": true
-            },
-            {
               "name": "sources",
               "in": "query",
               "required": false,
