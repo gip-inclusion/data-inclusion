@@ -9,6 +9,7 @@ select = [
     "E",  # pycodestyle errors
     "W",  # pycodestyle warnings
     "I",  # isort
+    "UP",  # pyupgrade
     # Do not enable bandit yet as too many violations are reported.
     # "S",  # bandit
 ]
