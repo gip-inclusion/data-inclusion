@@ -32,7 +32,6 @@ Optional = T | SkipJsonSchema[None]
     "/structures",
     response_model=pagination.BigPage[schemas.Structure],
     summary="Lister les structures consolidées",
-    deprecated=True,
     dependencies=[auth.authenticated_dependency] if settings.TOKEN_ENABLED else [],
 )
 def list_structures_endpoint(
@@ -94,7 +93,6 @@ def list_sources_endpoint(
     "/services",
     response_model=pagination.BigPage[schemas.Service],
     summary="Lister les services consolidés",
-    deprecated=True,
     dependencies=[auth.authenticated_dependency] if settings.TOKEN_ENABLED else [],
 )
 def list_services_endpoint(
