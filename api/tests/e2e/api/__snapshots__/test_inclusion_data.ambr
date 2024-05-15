@@ -546,6 +546,20 @@
               "description": "Une liste de frais.\n                Chaque résultat renvoyé a (au moins) un frais dans cette liste."
             },
             {
+              "name": "modes_accueil",
+              "in": "query",
+              "required": false,
+              "schema": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/ModeAccueil"
+                },
+                "description": "Une liste de modes d'accueil.\n                Chaque résultat renvoyé a (au moins) un mode d'accueil dans cette liste.\n            ",
+                "title": "Modes Accueil"
+              },
+              "description": "Une liste de modes d'accueil.\n                Chaque résultat renvoyé a (au moins) un mode d'accueil dans cette liste.\n            "
+            },
+            {
               "name": "types",
               "in": "query",
               "required": false,
