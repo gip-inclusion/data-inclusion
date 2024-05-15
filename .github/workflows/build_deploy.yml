@@ -10,7 +10,7 @@ on:
   pull_request:
     branches: [main]
     # default types + ready_for_review
-    types: [opened, synchronize, repopened, ready_for_review]
+    types: [opened, synchronize, reopened, ready_for_review]
 
 jobs:
   build:
