@@ -107,24 +107,27 @@ services:
       _AIRFLOW_WWW_USER_PASSWORD: airflow
 
   minio:
-    image: minio/minio:RELEASE.2022-10-08T20-11-00Z
+    image: minio/minio:RELEASE.2024-05-10T01-41-38Z
     command: server /data
     restart: on-failure
     ports:
       - 9000:9000
+      - 9001:9001
     environment:
+      - MINIO_CONSOLE_ADDRESS=:9001
       - MINIO_ROOT_USER=minioadmin
       - MINIO_ROOT_PASSWORD=minioadmin
     volumes:
       - minio-data:/data
 
   minio-init:
-    image: minio/mc:RELEASE.2022-12-24T15-21-38Z
+    image: minio/mc:RELEASE.2024-05-09T17-04-24Z
     entrypoint: /bin/bash -c
     command:
       - |
         mc alias set tmp http://minio:9000 minioadmin minioadmin
-        mc mb tmp/data-inclusion-lake
+        mc admin update --yes tmp
+        mc mb --ignore-existing tmp/data-inclusion-lake
     depends_on:
       - minio
 
