@@ -137,15 +137,6 @@ def retrieve_service_endpoint(
 def search_services_endpoint(
     request: fastapi.Request,
     db_session=fastapi.Depends(db.get_session),
-    source: Annotated[
-        Optional[str],
-        fastapi.Query(
-            description="""Un identifiant de source.
-                Déprécié en faveur de `sources`.
-            """,
-            deprecated=True,
-        ),
-    ] = None,
     sources: Annotated[
         Optional[list[str]],
         fastapi.Query(
@@ -267,9 +258,6 @@ def search_services_endpoint(
                 status_code=fastapi.status.HTTP_422_UNPROCESSABLE_ENTITY,
                 detail="The `lat` and `lon` must be simultaneously filled.",
             )
-
-    if sources is None and source is not None:
-        sources = [source]
 
     return services.search_services(
         request,
