@@ -246,6 +246,7 @@ def search_services(
     thematiques: list[di_schema.Thematique] | None = None,
     frais: list[di_schema.Frais] | None = None,
     modes_accueil: list[di_schema.ModeAccueil] | None = None,
+    profils: list[di_schema.Profil] | None = None,
     types: list[di_schema.TypologieService] | None = None,
     search_point: str | None = None,
     include_outdated: bool | None = False,
@@ -386,6 +387,18 @@ def search_services(
             sqla.text(filter_stmt).bindparams(
                 modes_accueil=[m.value for m in modes_accueil]
             )
+        )
+
+    if profils is not None:
+        filter_stmt = """\
+        EXISTS(
+            SELECT
+            FROM unnest(api__services.profils) profils
+            WHERE profils = ANY(:profils)
+        )
+        """
+        query = query.filter(
+            sqla.text(filter_stmt).bindparams(profils=[p.value for p in profils])
         )
 
     if types is not None:

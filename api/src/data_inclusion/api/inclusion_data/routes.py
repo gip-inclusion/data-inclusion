@@ -205,6 +205,14 @@ def search_services_endpoint(
             """
         ),
     ] = None,
+    profils: Annotated[
+        Optional[list[di_schema.Profil]],
+        fastapi.Query(
+            description="""Une liste de profils.
+                Chaque résultat renvoyé a (au moins) un profil dans cette liste.
+            """
+        ),
+    ] = None,
     types: Annotated[
         Optional[list[di_schema.TypologieService]],
         fastapi.Query(
@@ -271,6 +279,7 @@ def search_services_endpoint(
         thematiques=thematiques,
         frais=frais,
         modes_accueil=modes_accueil,
+        profils=profils,
         types=types,
         search_point=search_point,
         include_outdated=inclure_suspendus,

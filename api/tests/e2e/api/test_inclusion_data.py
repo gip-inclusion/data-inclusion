@@ -1180,6 +1180,40 @@ def test_search_services_with_modes_accueil(api_client):
 
 
 @pytest.mark.with_token
+def test_search_services_with_profils(api_client):
+    service_1 = factories.ServiceFactory(profils=[schema.Profil.FEMMES.value])
+    service_2 = factories.ServiceFactory(profils=[schema.Profil.JEUNES_16_26.value])
+    factories.ServiceFactory(profils=[schema.Profil.ADULTES.value])
+    factories.ServiceFactory(profils=[])
+    factories.ServiceFactory(profils=None)
+
+    url = "/api/v0/search/services"
+    response = api_client.get(
+        url,
+        params={
+            "profils": [
+                schema.Profil.FEMMES.value,
+                schema.Profil.JEUNES_16_26.value,
+            ],
+        },
+    )
+
+    assert response.status_code == 200
+    resp_data = response.json()
+    assert_paginated_response_data(resp_data, total=2)
+    assert resp_data["items"][0]["service"]["id"] in [service_1.id, service_2.id]
+    assert resp_data["items"][1]["service"]["id"] in [service_1.id, service_2.id]
+
+    response = api_client.get(
+        url,
+        params={
+            "profils": schema.Profil.BENEFICIAIRES_RSA.value,
+        },
+    )
+    assert_paginated_response_data(response.json(), total=0)
+
+
+@pytest.mark.with_token
 def test_search_services_with_types(api_client):
     service_1 = factories.ServiceFactory(types=[schema.TypologieService.ACCUEIL.value])
     service_2 = factories.ServiceFactory(
