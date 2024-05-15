@@ -21,7 +21,6 @@
           ],
           "summary": "Lister les structures consolidées",
           "operationId": "list_structures_endpoint_api_v0_structures_get",
-          "deprecated": true,
           "security": [
             {
               "HTTPBearer": []
@@ -268,7 +267,6 @@
           ],
           "summary": "Lister les services consolidés",
           "operationId": "list_services_endpoint_api_v0_services_get",
-          "deprecated": true,
           "security": [
             {
               "HTTPBearer": []
