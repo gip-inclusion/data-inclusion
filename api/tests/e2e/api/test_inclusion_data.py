@@ -1155,6 +1155,31 @@ def test_search_services_with_frais(api_client):
 
 
 @pytest.mark.with_token
+def test_search_services_with_modes_accueil(api_client):
+    service_1 = factories.ServiceFactory(
+        modes_accueil=[schema.ModeAccueil.EN_PRESENTIEL.value]
+    )
+    factories.ServiceFactory(modes_accueil=[schema.ModeAccueil.A_DISTANCE.value])
+    factories.ServiceFactory(modes_accueil=[])
+    factories.ServiceFactory(modes_accueil=None)
+
+    url = "/api/v0/search/services"
+    response = api_client.get(
+        url,
+        params={
+            "modes_accueil": [
+                schema.ModeAccueil.EN_PRESENTIEL.value,
+            ],
+        },
+    )
+
+    assert response.status_code == 200
+    resp_data = response.json()
+    assert_paginated_response_data(resp_data, total=1)
+    assert resp_data["items"][0]["service"]["id"] == service_1.id
+
+
+@pytest.mark.with_token
 def test_search_services_with_types(api_client):
     service_1 = factories.ServiceFactory(types=[schema.TypologieService.ACCUEIL.value])
     service_2 = factories.ServiceFactory(

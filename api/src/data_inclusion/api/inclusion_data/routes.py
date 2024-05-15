@@ -197,6 +197,14 @@ def search_services_endpoint(
                 Chaque résultat renvoyé a (au moins) un frais dans cette liste."""
         ),
     ] = None,
+    modes_accueil: Annotated[
+        Optional[list[di_schema.ModeAccueil]],
+        fastapi.Query(
+            description="""Une liste de modes d'accueil.
+                Chaque résultat renvoyé a (au moins) un mode d'accueil dans cette liste.
+            """
+        ),
+    ] = None,
     types: Annotated[
         Optional[list[di_schema.TypologieService]],
         fastapi.Query(
@@ -262,6 +270,7 @@ def search_services_endpoint(
         commune_instance=commune_instance,
         thematiques=thematiques,
         frais=frais,
+        modes_accueil=modes_accueil,
         types=types,
         search_point=search_point,
         include_outdated=inclure_suspendus,
