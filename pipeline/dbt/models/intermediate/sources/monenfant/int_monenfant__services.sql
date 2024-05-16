@@ -28,7 +28,7 @@ final AS (
         _di_source_id                                                                     AS "source",
         TRUE                                                                              AS "cumulable",
         NULL                                                                              AS "formulaire_en_ligne",
-        details_infos_pratiques_jour_horaire                                              AS "recurrence",
+        details__infos_pratiques__jour_horaire                                            AS "recurrence",
         NULL::DATE                                                                        AS "date_creation",
         NULL::DATE                                                                        AS "date_suspension",
         telephone                                                                         AS "telephone",
@@ -53,14 +53,14 @@ final AS (
         ARRAY['en-presentiel']                                                            AS "modes_accueil",
         CASE
             WHEN avip THEN {{ presentation_resume_avip }}
-            ELSE {{ truncate_text("details_presentation_structure_projet") }}
+            ELSE {{ truncate_text("details__presentation__structure_projet") }}
         END                                                                               AS "presentation_resume",
         ARRAY_TO_STRING(
             ARRAY[
                 CASE WHEN avip THEN {{ presentation_detail_avip }} END,
-                CASE WHEN details_presentation_structure_projet IS NOT NULL THEN '## La structure :' || E'\n\n' || details_presentation_structure_projet END,
-                CASE WHEN details_modalite_condition_admision IS NOT NULL THEN '## Les conditions d''admission :' || E'\n\n' || details_modalite_condition_admision END,
-                CASE WHEN details_modalite_modalites_inscription IS NOT NULL THEN '## Les modalités d''inscription :' || E'\n\n' || details_modalite_modalites_inscription END
+                CASE WHEN details__presentation__structure_projet IS NOT NULL THEN '## La structure :' || E'\n\n' || details__presentation__structure_projet END,
+                CASE WHEN details__modalite__condition_admision IS NOT NULL THEN '## Les conditions d''admission :' || E'\n\n' || details__modalite__condition_admision END,
+                CASE WHEN details__modalite__modalites_inscription IS NOT NULL THEN '## Les modalités d''inscription :' || E'\n\n' || details__modalite__modalites_inscription END
             ],
             E'\n\n'
         )                                                                                 AS "presentation_detail"
