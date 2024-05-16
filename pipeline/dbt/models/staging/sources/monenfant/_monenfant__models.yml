@@ -51,7 +51,7 @@ models:
         tests:
           - not_null
           - dbt_utils.not_empty_string
-      - name: details_website
+      - name: details__website
         tests:
           - not_null:
               config:
@@ -59,7 +59,7 @@ models:
           - dbt_utils.not_null_proportion:
               at_least: 0.1
           - dbt_utils.not_empty_string
-      - name: details_infos_pratiques_jour_horaire
+      - name: details__infos_pratiques__jour_horaire
         tests:
           - not_null:
               config:
@@ -67,7 +67,7 @@ models:
           - dbt_utils.not_null_proportion:
               at_least: 0.1
           - dbt_utils.not_empty_string
-      - name: details_presentation_structure_projet
+      - name: details__presentation__structure_projet
         tests:
           - not_null:
               config:
@@ -75,14 +75,14 @@ models:
           - dbt_utils.not_null_proportion:
               at_least: 0.5
           - dbt_utils.not_empty_string
-      - name: details_modalite_condition_admision
+      - name: details__modalite__condition_admision
         tests:
           - not_null:
               config:
                 severity: warn
           - dbt_utils.not_constant
           - dbt_utils.not_empty_string
-      - name: details_modalite_modalites_inscription
+      - name: details__modalite__modalites_inscription
         tests:
           - not_null:
               config:
