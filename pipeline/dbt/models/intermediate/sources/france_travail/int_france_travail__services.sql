@@ -16,7 +16,7 @@ structures_with_commune AS (
         adresses.code_insee AS "code_insee",
         adresses.commune    AS "commune"
     FROM agences
-    LEFT JOIN adresses ON adresses.id = agences.id
+    LEFT JOIN adresses ON agences.id = adresses.id
 ),
 
 final AS (

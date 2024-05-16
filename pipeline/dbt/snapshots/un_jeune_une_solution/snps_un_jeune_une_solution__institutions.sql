@@ -17,11 +17,11 @@
 
     {% if table_exists %}
 
-    WITH source AS (
-        SELECT * FROM {{ source_model }}
-    )
+        WITH source AS (
+            SELECT * FROM {{ source_model }}
+        )
 
-{% else %}
+    {% else %}
 
         WITH source AS (
             SELECT

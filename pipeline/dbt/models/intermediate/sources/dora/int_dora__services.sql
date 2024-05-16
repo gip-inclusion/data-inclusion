@@ -79,7 +79,7 @@ final AS (
         END                                              AS "telephone",
         ARRAY[services.frais]                            AS "frais"
     FROM services
-    LEFT JOIN blocked_services_uids ON blocked_services_uids.id = services.id
+    LEFT JOIN blocked_services_uids ON services.id = blocked_services_uids.id
 )
 
 SELECT * FROM final

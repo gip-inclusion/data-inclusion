@@ -39,8 +39,7 @@ def _get_client():
                 )
                 if len(response.contacts) == 0:
                     break
-                for contact in response.contacts:
-                    yield contact
+                yield from response.contacts
                 index += self.CONTACT_LIST_PAGE_SIZE
 
         def empty_list(self, list_id) -> None:
