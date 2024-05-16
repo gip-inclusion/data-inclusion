@@ -49,7 +49,7 @@ def list_cities(max_number_of_cities: int):
 
 @task.external_python(
     python=str(PYTHON_BIN_PATH),
-    retries=2,
+    retries=15,
 )
 def extract(
     city_code: str,
@@ -131,7 +131,7 @@ def load(
     pg.load_source_df(source_id=source_id, stream_id=stream_id, df=df)
 
 
-MAX_NUMBER_OF_CITIES = 200
+MAX_NUMBER_OF_CITIES = 2000
 
 # number of concurrent extract tasks
 # keep this number low to stay under the radar

@@ -25,10 +25,11 @@ def get_location(city_code: str, commune: str, region: str) -> str:
     The location string is formatted as "Xeme Arrondissement Paris" for Paris.
     For other cities, it is formatted like "Lille Nord".
     """
-    if city_code.startswith("751"):
+    if "Arrondissement" in commune:
+        commune = commune.split()[0]
         num_arrondissement = city_code[3:].lstrip("0")
         suffix = "er" if num_arrondissement == "1" else "eme"
-        return f"{num_arrondissement}{suffix} Arrondissement Paris"
+        return f"{num_arrondissement}{suffix} Arrondissement {commune}"
 
     return f"{commune} {region}"
 
@@ -89,15 +90,20 @@ SEARCH_TIMEOUT_MS = 2 * 60 * 1000
 class SearchRadius(enum.IntEnum):
     """Selectable search radius as defined monenfant.fr"""
 
+    ONE_KM = 1
+    TWO_KM = 2
     FIVE_KM = 5
     TEN_KM = 10
     THIRTY_KM = 30
 
 
+DEFAULT_RADIUS = SearchRadius.FIVE_KM
+
+
 def search_at_location(
     browser: Browser,
     location: str,
-    radius: SearchRadius = SearchRadius.THIRTY_KM,
+    radius: SearchRadius = SearchRadius.ONE_KM,
 ) -> list:
     # user action code is partly generated using `playwright codegen https://monenfant.fr`
 
@@ -113,10 +119,16 @@ def search_at_location(
     page.get_by_placeholder("Où ?").press_sequentially(location)
     page.locator(".input-geoloc").locator(".spaced-items").first.click()
 
-    if radius == SearchRadius.TEN_KM:
-        page.get_by_label("Dans un rayon autour de").press("ArrowRight")
-    if radius == SearchRadius.THIRTY_KM:
-        page.get_by_label("Dans un rayon autour de").press("ArrowRight")
+    if (
+        delta := (
+            list(SearchRadius).index(radius) - list(SearchRadius).index(DEFAULT_RADIUS)
+        )
+    ) >= 0:
+        for _ in range(delta):
+            page.get_by_label("Dans un rayon autour de").press("ArrowRight")
+    else:
+        for _ in range(-delta):
+            page.get_by_label("Dans un rayon autour de").press("ArrowLeft")
 
     # 2. submit form
     with page.expect_response(
@@ -199,12 +211,14 @@ def extract(
         browser = playwright.chromium.launch(headless=not debug)
         location = get_location(city_code=city_code, commune=commune, region=region)
 
-        # search radius is set to 30km for most cities, because it gives more results
-        # per search. This is useful for cities with a low density of creches.
-        # But given that monenfant limits the number of total search results to 1500 and
-        # that creches are more densely located in Paris, use a smaller search radius in
-        # Paris
-        radius = SearchRadius.FIVE_KM if "Paris" in location else SearchRadius.THIRTY_KM
+        if city_code[:3] in [
+            "750",  # arrondissements de Paris
+            "132",  # arrondissements de Marseille
+            "693",  # arrondissements de Lyon
+        ]:
+            radius = SearchRadius.ONE_KM
+        else:
+            radius = SearchRadius.FIVE_KM
 
         logger.info("Searching for creches at %s (radius=%skm)", location, radius)
         search_results = search_at_location(
