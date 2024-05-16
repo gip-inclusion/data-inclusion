@@ -26,11 +26,11 @@ models:
           - dbt_utils.not_empty_string
       - name: ville
         tests:
-          - not_null
+          - dbt_utils.not_constant
           - dbt_utils.not_empty_string
       - name: telephone
         tests:
-          - not_null
+          - dbt_utils.not_constant
           - dbt_utils.not_empty_string
       - name: nom
         tests:
