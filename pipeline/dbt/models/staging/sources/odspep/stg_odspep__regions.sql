@@ -32,7 +32,7 @@
             source."ID_REG"          AS "id_reg",
             source."ID_RES"          AS "id_res",
             source."CODE_REGION_REG" AS "code_region_reg",
-            'Région'                 AS "zone_diffusion_type",
+            'Région'                AS "zone_diffusion_type",
             regions.libelle          AS "libelle"
 
         FROM source
