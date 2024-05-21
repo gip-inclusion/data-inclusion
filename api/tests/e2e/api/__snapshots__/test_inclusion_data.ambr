@@ -390,6 +390,18 @@
               "description": "Une liste de typologies de service.\n                Chaque résultat renvoyé a (au moins) une typologie dans cette liste."
             },
             {
+              "name": "inclure_suspendus",
+              "in": "query",
+              "required": false,
+              "schema": {
+                "type": "boolean",
+                "description": "Inclure les services ayant une date de suspension dépassée.\n                Ils sont exclus par défaut.\n            ",
+                "default": false,
+                "title": "Inclure Suspendus"
+              },
+              "description": "Inclure les services ayant une date de suspension dépassée.\n                Ils sont exclus par défaut.\n            "
+            },
+            {
               "name": "page",
               "in": "query",
               "required": false,
