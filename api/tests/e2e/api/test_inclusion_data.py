@@ -761,6 +761,33 @@ def test_list_services_by_frais(api_client):
 
 
 @pytest.mark.with_token
+def test_list_services_outdated(api_client):
+    service_1 = factories.ServiceFactory(date_suspension=None)
+    service_2 = factories.ServiceFactory(date_suspension=date.today())
+    factories.ServiceFactory(date_suspension=date.today() - timedelta(days=1))
+
+    url = "/api/v0/services"
+
+    # exclude outdated services by default
+    response = api_client.get(url)
+
+    assert response.status_code == 200
+    resp_data = response.json()
+    assert_paginated_response_data(resp_data, total=2)
+    assert {d["id"] for d in resp_data["items"]} == {
+        service_1.id,
+        service_2.id,
+    }
+
+    # include outdated services with query parameter
+    response = api_client.get(url, params={"inclure_suspendus": True})
+
+    assert response.status_code == 200
+    resp_data = response.json()
+    assert_paginated_response_data(resp_data, total=3)
+
+
+@pytest.mark.with_token
 def test_list_services_filter_by_modes_accueil(api_client):
     service_1 = factories.ServiceFactory(
         modes_accueil=[schema.ModeAccueil.EN_PRESENTIEL.value]
