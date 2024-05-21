@@ -296,6 +296,20 @@
               }
             },
             {
+              "name": "thematiques",
+              "in": "query",
+              "required": false,
+              "schema": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/Thematique"
+                },
+                "description": "Une liste de thématique.\n                Chaque résultat renvoyé a (au moins) une thématique dans cette liste.",
+                "title": "Thematiques"
+              },
+              "description": "Une liste de thématique.\n                Chaque résultat renvoyé a (au moins) une thématique dans cette liste."
+            },
+            {
               "name": "departement",
               "in": "query",
               "required": false,

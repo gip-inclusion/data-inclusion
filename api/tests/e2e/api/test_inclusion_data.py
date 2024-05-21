@@ -600,6 +600,51 @@ def test_list_services_filter_by_categorie_thematique(api_client):
     assert resp_data["items"][0]["id"] == service.id
 
 
+@pytest.mark.parametrize(
+    "thematiques,input,found",
+    [
+        ([], [schema.Thematique.FAMILLE.value], False),
+        ([schema.Thematique.FAMILLE.value], [schema.Thematique.FAMILLE.value], True),
+        ([schema.Thematique.NUMERIQUE.value], [schema.Thematique.FAMILLE.value], False),
+        (
+            [schema.Thematique.NUMERIQUE.value, schema.Thematique.FAMILLE.value],
+            [schema.Thematique.FAMILLE.value],
+            True,
+        ),
+        (
+            [schema.Thematique.SANTE.value, schema.Thematique.NUMERIQUE.value],
+            [schema.Thematique.FAMILLE.value, schema.Thematique.NUMERIQUE.value],
+            True,
+        ),
+        (
+            [schema.Thematique.SANTE.value, schema.Thematique.NUMERIQUE.value],
+            [schema.Thematique.FAMILLE.value, schema.Thematique.NUMERIQUE.value],
+            True,
+        ),
+        (
+            [schema.Thematique.FAMILLE__GARDE_DENFANTS.value],
+            [schema.Thematique.FAMILLE.value],
+            True,
+        ),
+    ],
+)
+@pytest.mark.with_token
+def test_list_services_filter_by_thematiques(api_client, thematiques, input, found):
+    service = factories.ServiceFactory(thematiques=thematiques)
+    factories.ServiceFactory(thematiques=[schema.Thematique.MOBILITE.value])
+
+    url = "/api/v0/services"
+    response = api_client.get(url, params={"thematiques": input})
+
+    assert response.status_code == 200
+    resp_data = response.json()
+    if found:
+        assert_paginated_response_data(resp_data, total=1)
+        assert resp_data["items"][0]["id"] in [service.id]
+    else:
+        assert_paginated_response_data(resp_data, total=0)
+
+
 @pytest.mark.with_token
 def test_list_services_filter_by_departement_cog(api_client):
     service = factories.ServiceFactory(code_insee=PARIS["code_insee"])
