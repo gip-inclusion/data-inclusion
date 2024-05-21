@@ -101,6 +101,13 @@ def list_services_endpoint(
     departement: Annotated[Optional[DepartementCOG], fastapi.Query()] = None,
     departement_slug: Annotated[Optional[DepartementSlug], fastapi.Query()] = None,
     code_insee: Annotated[Optional[di_schema.CodeCommune], fastapi.Query()] = None,
+    frais: Annotated[
+        Optional[list[di_schema.Frais]],
+        fastapi.Query(
+            description="""Une liste de frais.
+                Chaque résultat renvoyé a (au moins) un frais dans cette liste."""
+        ),
+    ] = None,
     profils: Annotated[
         Optional[list[di_schema.Profil]],
         fastapi.Query(
@@ -133,6 +140,7 @@ def list_services_endpoint(
         departement=departement,
         departement_slug=departement_slug,
         code_insee=code_insee,
+        frais=frais,
         profils=profils,
         modes_accueil=modes_accueil,
         types=types,
