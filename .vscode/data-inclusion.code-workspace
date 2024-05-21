@@ -1,4 +1,16 @@
 {
+	"settings": {
+		// mark files as secret
+		"files.associations": {
+			"*.env": "secrets",
+			"*.tfvars.json": "secrets"
+		},
+		// disable copilot for files marked as secret
+		"github.copilot.enable": {
+			"*": true,
+			"secrets": false
+		}
+	},
 	"folders": [
 		{
 			"path": "../api"
