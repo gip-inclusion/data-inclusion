@@ -97,7 +97,13 @@ def list_services_endpoint(
     request: fastapi.Request,
     db_session=fastapi.Depends(db.get_session),
     source: Annotated[Optional[str], fastapi.Query()] = None,
-    thematique: Annotated[Optional[di_schema.Thematique], fastapi.Query()] = None,
+    thematique: Annotated[
+        Optional[di_schema.Thematique],
+        fastapi.Query(
+            deprecated=True,
+            description="Déprécié en faveur de `thematiques`.",
+        ),
+    ] = None,
     thematiques: Annotated[
         Optional[list[di_schema.Thematique]],
         fastapi.Query(
