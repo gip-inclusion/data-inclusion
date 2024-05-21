@@ -660,6 +660,40 @@ def test_list_services_filter_by_code_insee(api_client, code_insee, input, found
         assert_paginated_response_data(resp_data, total=0)
 
 
+@pytest.mark.with_token
+def test_list_services_filter_by_profils(api_client):
+    service_1 = factories.ServiceFactory(profils=[schema.Profil.FEMMES.value])
+    service_2 = factories.ServiceFactory(profils=[schema.Profil.JEUNES_16_26.value])
+    factories.ServiceFactory(profils=[schema.Profil.ADULTES.value])
+    factories.ServiceFactory(profils=[])
+    factories.ServiceFactory(profils=None)
+
+    url = "/api/v0/services"
+    response = api_client.get(
+        url,
+        params={
+            "profils": [
+                schema.Profil.FEMMES.value,
+                schema.Profil.JEUNES_16_26.value,
+            ],
+        },
+    )
+
+    assert response.status_code == 200
+    resp_data = response.json()
+    assert_paginated_response_data(resp_data, total=2)
+    assert resp_data["items"][0]["id"] in [service_1.id, service_2.id]
+    assert resp_data["items"][1]["id"] in [service_1.id, service_2.id]
+
+    response = api_client.get(
+        url,
+        params={
+            "profils": schema.Profil.BENEFICIAIRES_RSA.value,
+        },
+    )
+    assert_paginated_response_data(response.json(), total=0)
+
+
 @pytest.mark.parametrize(
     "commune_data, input, found",
     [

@@ -251,6 +251,7 @@ def list_services(
     departement: DepartementCOG | None = None,
     departement_slug: DepartementSlug | None = None,
     code_insee: di_schema.CodeCommune | None = None,
+    profils: list[di_schema.Profil] | None = None,
 ):
     query = (
         sqla.select(models.Service)
@@ -306,6 +307,9 @@ def list_services(
         query = query.filter(
             sqla.text(filter_stmt).bindparams(thematique=thematique.value)
         )
+
+    if profils is not None:
+        query = filter_services_by_profils(query, profils)
 
     query = query.order_by(
         models.Service.source,
