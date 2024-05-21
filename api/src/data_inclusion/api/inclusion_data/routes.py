@@ -98,6 +98,13 @@ def list_services_endpoint(
     db_session=fastapi.Depends(db.get_session),
     source: Annotated[Optional[str], fastapi.Query()] = None,
     thematique: Annotated[Optional[di_schema.Thematique], fastapi.Query()] = None,
+    thematiques: Annotated[
+        Optional[list[di_schema.Thematique]],
+        fastapi.Query(
+            description="""Une liste de thématique.
+                Chaque résultat renvoyé a (au moins) une thématique dans cette liste."""
+        ),
+    ] = None,
     departement: Annotated[Optional[DepartementCOG], fastapi.Query()] = None,
     departement_slug: Annotated[Optional[DepartementSlug], fastapi.Query()] = None,
     code_insee: Annotated[Optional[di_schema.CodeCommune], fastapi.Query()] = None,
@@ -140,11 +147,14 @@ def list_services_endpoint(
         ),
     ] = False,
 ):
+    if thematiques is None and thematique is not None:
+        thematiques = [thematique]
+
     return services.list_services(
         request,
         db_session,
         source=source,
-        thematique=thematique,
+        thematiques=thematiques,
         departement=departement,
         departement_slug=departement_slug,
         code_insee=code_insee,
