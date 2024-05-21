@@ -109,6 +109,14 @@ def list_services_endpoint(
             """
         ),
     ] = None,
+    modes_accueil: Annotated[
+        Optional[list[di_schema.ModeAccueil]],
+        fastapi.Query(
+            description="""Une liste de modes d'accueil.
+                Chaque résultat renvoyé a (au moins) un mode d'accueil dans cette liste.
+            """
+        ),
+    ] = None,
 ):
     return services.list_services(
         request,
@@ -119,6 +127,7 @@ def list_services_endpoint(
         departement_slug=departement_slug,
         code_insee=code_insee,
         profils=profils,
+        modes_accueil=modes_accueil,
     )
 
 
