@@ -117,6 +117,13 @@ def list_services_endpoint(
             """
         ),
     ] = None,
+    types: Annotated[
+        Optional[list[di_schema.TypologieService]],
+        fastapi.Query(
+            description="""Une liste de typologies de service.
+                Chaque résultat renvoyé a (au moins) une typologie dans cette liste."""
+        ),
+    ] = None,
 ):
     return services.list_services(
         request,
@@ -128,6 +135,7 @@ def list_services_endpoint(
         code_insee=code_insee,
         profils=profils,
         modes_accueil=modes_accueil,
+        types=types,
     )
 
 
