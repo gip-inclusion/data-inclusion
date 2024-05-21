@@ -59,6 +59,83 @@ def get_sub_thematiques(thematiques: list[di_schema.Thematique]) -> list[str]:
     return list(all_thematiques)
 
 
+def filter_services_by_thematiques(
+    query: sqla.Select,
+    thematiques: list[di_schema.Thematique],
+):
+    return query.filter(
+        sqla.text("api__services.thematiques && :thematiques").bindparams(
+            thematiques=get_sub_thematiques(thematiques),
+        )
+    )
+
+
+def filter_services_by_frais(
+    query: sqla.Select,
+    frais: list[di_schema.Frais],
+):
+    filter_stmt = """\
+    EXISTS(
+        SELECT
+        FROM unnest(api__services.frais) frais
+        WHERE frais = ANY(:frais)
+    )
+    """
+    return query.filter(
+        sqla.text(filter_stmt).bindparams(frais=[f.value for f in frais])
+    )
+
+
+def filter_services_by_modes_accueil(
+    query: sqla.Select,
+    modes_accueil: list[di_schema.ModeAccueil],
+):
+    filter_stmt = """\
+    EXISTS(
+        SELECT
+        FROM unnest(api__services.modes_accueil) modes_accueil
+        WHERE modes_accueil = ANY(:modes_accueil)
+    )
+    """
+    return query.filter(
+        sqla.text(filter_stmt).bindparams(
+            modes_accueil=[m.value for m in modes_accueil]
+        )
+    )
+
+
+def filter_services_by_profils(
+    query: sqla.Select,
+    profils: list[di_schema.Profil],
+):
+    filter_stmt = """\
+    EXISTS(
+        SELECT
+        FROM unnest(api__services.profils) profils
+        WHERE profils = ANY(:profils)
+    )
+    """
+    return query.filter(
+        sqla.text(filter_stmt).bindparams(profils=[p.value for p in profils])
+    )
+
+
+def filter_services_by_types(
+    query: sqla.Select,
+    types: list[di_schema.TypologieService],
+):
+    filter_stmt = """\
+    EXISTS(
+        SELECT
+        FROM unnest(api__services.types) types
+        WHERE types = ANY(:types)
+    )
+    """
+    return query.filter(
+        sqla.text(filter_stmt).bindparams(types=[t.value for t in types])
+    )
+
+
 def list_structures(
     request: fastapi.Request,
     db_session: orm.Session,
@@ -357,61 +434,19 @@ def search_services(
         query = query.add_columns(sqla.null().cast(sqla.Integer).label("distance"))
 
     if thematiques is not None:
-        query = query.filter(
-            sqla.text("api__services.thematiques && :thematiques").bindparams(
-                thematiques=get_sub_thematiques(thematiques),
-            )
-        )
+        query = filter_services_by_thematiques(query, thematiques)
 
     if frais is not None:
-        filter_stmt = """\
-        EXISTS(
-            SELECT
-            FROM unnest(api__services.frais) frais
-            WHERE frais = ANY(:frais)
-        )
-        """
-        query = query.filter(
-            sqla.text(filter_stmt).bindparams(frais=[f.value for f in frais])
-        )
+        query = filter_services_by_frais(query, frais)
 
     if modes_accueil is not None:
-        filter_stmt = """\
-        EXISTS(
-            SELECT
-            FROM unnest(api__services.modes_accueil) modes_accueil
-            WHERE modes_accueil = ANY(:modes_accueil)
-        )
-        """
-        query = query.filter(
-            sqla.text(filter_stmt).bindparams(
-                modes_accueil=[m.value for m in modes_accueil]
-            )
-        )
+        query = filter_services_by_modes_accueil(query, modes_accueil)
 
     if profils is not None:
-        filter_stmt = """\
-        EXISTS(
-            SELECT
-            FROM unnest(api__services.profils) profils
-            WHERE profils = ANY(:profils)
-        )
-        """
-        query = query.filter(
-            sqla.text(filter_stmt).bindparams(profils=[p.value for p in profils])
-        )
+        query = filter_services_by_profils(query, profils)
 
     if types is not None:
-        filter_stmt = """\
-        EXISTS(
-            SELECT
-            FROM unnest(api__services.types) types
-            WHERE types = ANY(:types)
-        )
-        """
-        query = query.filter(
-            sqla.text(filter_stmt).bindparams(types=[t.value for t in types])
-        )
+        query = filter_services_by_types(query, types)
 
     if not include_outdated:
         query = query.filter(
