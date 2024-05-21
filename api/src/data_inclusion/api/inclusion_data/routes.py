@@ -131,6 +131,14 @@ def list_services_endpoint(
                 Chaque résultat renvoyé a (au moins) une typologie dans cette liste."""
         ),
     ] = None,
+    inclure_suspendus: Annotated[
+        Optional[bool],
+        fastapi.Query(
+            description="""Inclure les services ayant une date de suspension dépassée.
+                Ils sont exclus par défaut.
+            """
+        ),
+    ] = False,
 ):
     return services.list_services(
         request,
@@ -144,6 +152,7 @@ def list_services_endpoint(
         profils=profils,
         modes_accueil=modes_accueil,
         types=types,
+        include_outdated=inclure_suspendus,
     )
 
 

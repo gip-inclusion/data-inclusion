@@ -136,6 +136,17 @@ def filter_services_by_types(
     )
 
 
+def filter_outdated_services(
+    query: sqla.Select,
+):
+    return query.filter(
+        sqla.or_(
+            models.Service.date_suspension.is_(None),
+            models.Service.date_suspension >= date.today(),
+        )
+    )
+
+
 def list_structures(
     request: fastapi.Request,
     db_session: orm.Session,
@@ -255,6 +266,7 @@ def list_services(
     profils: list[di_schema.Profil] | None = None,
     modes_accueil: list[di_schema.ModeAccueil] | None = None,
     types: list[di_schema.TypologieService] | None = None,
+    include_outdated: bool | None = False,
 ):
     query = (
         sqla.select(models.Service)
@@ -322,6 +334,9 @@ def list_services(
 
     if types is not None:
         query = filter_services_by_types(query, types)
+
+    if not include_outdated:
+        query = filter_outdated_services(query)
 
     query = query.order_by(
         models.Service.source,
@@ -465,12 +480,7 @@ def search_services(
         query = filter_services_by_types(query, types)
 
     if not include_outdated:
-        query = query.filter(
-            sqla.or_(
-                models.Service.date_suspension.is_(None),
-                models.Service.date_suspension >= date.today(),
-            )
-        )
+        query = filter_outdated_services(query)
 
     query = query.order_by(sqla.column("distance").nulls_last())
 
