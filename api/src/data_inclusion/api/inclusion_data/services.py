@@ -258,7 +258,7 @@ def list_services(
     request: fastapi.Request,
     db_session: orm.Session,
     source: str | None = None,
-    thematique: di_schema.Thematique | None = None,
+    thematiques: list[di_schema.Thematique] | None = None,
     departement: DepartementCOG | None = None,
     departement_slug: DepartementSlug | None = None,
     code_insee: di_schema.CodeCommune | None = None,
@@ -311,17 +311,8 @@ def list_services(
             )
         )
 
-    if thematique is not None:
-        filter_stmt = """\
-        EXISTS(
-            SELECT
-            FROM unnest(api__services.thematiques) thematique
-            WHERE thematique ~ ('^' || :thematique)
-        )
-        """
-        query = query.filter(
-            sqla.text(filter_stmt).bindparams(thematique=thematique.value)
-        )
+    if thematiques is not None:
+        query = filter_services_by_thematiques(query, thematiques)
 
     if frais is not None:
         query = filter_services_by_frais(query, frais)
