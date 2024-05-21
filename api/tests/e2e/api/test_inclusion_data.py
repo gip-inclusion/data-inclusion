@@ -695,6 +695,40 @@ def test_list_services_filter_by_profils(api_client):
 
 
 @pytest.mark.with_token
+def test_list_services_by_types(api_client):
+    service_1 = factories.ServiceFactory(types=[schema.TypologieService.ACCUEIL.value])
+    service_2 = factories.ServiceFactory(
+        types=[schema.TypologieService.ACCOMPAGNEMENT.value]
+    )
+    factories.ServiceFactory(types=[schema.TypologieService.AIDE_FINANCIERE.value])
+
+    url = "/api/v0/services"
+    response = api_client.get(
+        url,
+        params={
+            "types": [
+                schema.TypologieService.ACCUEIL.value,
+                schema.TypologieService.ACCOMPAGNEMENT.value,
+            ],
+        },
+    )
+
+    assert response.status_code == 200
+    resp_data = response.json()
+    assert_paginated_response_data(resp_data, total=2)
+    assert resp_data["items"][0]["id"] in [service_1.id, service_2.id]
+    assert resp_data["items"][1]["id"] in [service_1.id, service_2.id]
+
+    response = api_client.get(
+        url,
+        params={
+            "types": schema.TypologieService.ATELIER.value,
+        },
+    )
+    assert_paginated_response_data(response.json(), total=0)
+
+
+@pytest.mark.with_token
 def test_list_services_filter_by_modes_accueil(api_client):
     service_1 = factories.ServiceFactory(
         modes_accueil=[schema.ModeAccueil.EN_PRESENTIEL.value]

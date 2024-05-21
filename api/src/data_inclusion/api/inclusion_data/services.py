@@ -253,6 +253,7 @@ def list_services(
     code_insee: di_schema.CodeCommune | None = None,
     profils: list[di_schema.Profil] | None = None,
     modes_accueil: list[di_schema.ModeAccueil] | None = None,
+    types: list[di_schema.TypologieService] | None = None,
 ):
     query = (
         sqla.select(models.Service)
@@ -314,6 +315,9 @@ def list_services(
 
     if modes_accueil is not None:
         query = filter_services_by_modes_accueil(query, modes_accueil)
+
+    if types is not None:
+        query = filter_services_by_types(query, types)
 
     query = query.order_by(
         models.Service.source,

@@ -362,6 +362,20 @@
               "description": "Une liste de modes d'accueil.\n                Chaque résultat renvoyé a (au moins) un mode d'accueil dans cette liste.\n            "
             },
             {
+              "name": "types",
+              "in": "query",
+              "required": false,
+              "schema": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/TypologieService"
+                },
+                "description": "Une liste de typologies de service.\n                Chaque résultat renvoyé a (au moins) une typologie dans cette liste.",
+                "title": "Types"
+              },
+              "description": "Une liste de typologies de service.\n                Chaque résultat renvoyé a (au moins) une typologie dans cette liste."
+            },
+            {
               "name": "page",
               "in": "query",
               "required": false,
