@@ -694,6 +694,31 @@ def test_list_services_filter_by_profils(api_client):
     assert_paginated_response_data(response.json(), total=0)
 
 
+@pytest.mark.with_token
+def test_list_services_filter_by_modes_accueil(api_client):
+    service_1 = factories.ServiceFactory(
+        modes_accueil=[schema.ModeAccueil.EN_PRESENTIEL.value]
+    )
+    factories.ServiceFactory(modes_accueil=[schema.ModeAccueil.A_DISTANCE.value])
+    factories.ServiceFactory(modes_accueil=[])
+    factories.ServiceFactory(modes_accueil=None)
+
+    url = "/api/v0/services"
+    response = api_client.get(
+        url,
+        params={
+            "modes_accueil": [
+                schema.ModeAccueil.EN_PRESENTIEL.value,
+            ],
+        },
+    )
+
+    assert response.status_code == 200
+    resp_data = response.json()
+    assert_paginated_response_data(resp_data, total=1)
+    assert resp_data["items"][0]["id"] == service_1.id
+
+
 @pytest.mark.parametrize(
     "commune_data, input, found",
     [

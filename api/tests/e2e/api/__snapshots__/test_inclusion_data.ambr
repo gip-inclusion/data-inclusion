@@ -348,6 +348,20 @@
               "description": "Une liste de profils.\n                Chaque résultat renvoyé a (au moins) un profil dans cette liste.\n            "
             },
             {
+              "name": "modes_accueil",
+              "in": "query",
+              "required": false,
+              "schema": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/ModeAccueil"
+                },
+                "description": "Une liste de modes d'accueil.\n                Chaque résultat renvoyé a (au moins) un mode d'accueil dans cette liste.\n            ",
+                "title": "Modes Accueil"
+              },
+              "description": "Une liste de modes d'accueil.\n                Chaque résultat renvoyé a (au moins) un mode d'accueil dans cette liste.\n            "
+            },
+            {
               "name": "page",
               "in": "query",
               "required": false,
