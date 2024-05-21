@@ -334,6 +334,20 @@
               }
             },
             {
+              "name": "frais",
+              "in": "query",
+              "required": false,
+              "schema": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/Frais"
+                },
+                "description": "Une liste de frais.\n                Chaque résultat renvoyé a (au moins) un frais dans cette liste.",
+                "title": "Frais"
+              },
+              "description": "Une liste de frais.\n                Chaque résultat renvoyé a (au moins) un frais dans cette liste."
+            },
+            {
               "name": "profils",
               "in": "query",
               "required": false,

@@ -251,6 +251,7 @@ def list_services(
     departement: DepartementCOG | None = None,
     departement_slug: DepartementSlug | None = None,
     code_insee: di_schema.CodeCommune | None = None,
+    frais: list[di_schema.Frais] | None = None,
     profils: list[di_schema.Profil] | None = None,
     modes_accueil: list[di_schema.ModeAccueil] | None = None,
     types: list[di_schema.TypologieService] | None = None,
@@ -309,6 +310,9 @@ def list_services(
         query = query.filter(
             sqla.text(filter_stmt).bindparams(thematique=thematique.value)
         )
+
+    if frais is not None:
+        query = filter_services_by_frais(query, frais)
 
     if profils is not None:
         query = filter_services_by_profils(query, profils)
