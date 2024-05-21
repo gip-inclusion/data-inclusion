@@ -729,6 +729,38 @@ def test_list_services_by_types(api_client):
 
 
 @pytest.mark.with_token
+def test_list_services_by_frais(api_client):
+    service_1 = factories.ServiceFactory(frais=[schema.Frais.GRATUIT.value])
+    service_2 = factories.ServiceFactory(frais=[schema.Frais.ADHESION.value])
+    factories.ServiceFactory(frais=[schema.Frais.PASS_NUMERIQUE.value])
+
+    url = "/api/v0/services"
+    response = api_client.get(
+        url,
+        params={
+            "frais": [
+                schema.Frais.GRATUIT.value,
+                schema.Frais.ADHESION.value,
+            ],
+        },
+    )
+
+    assert response.status_code == 200
+    resp_data = response.json()
+    assert_paginated_response_data(resp_data, total=2)
+    assert resp_data["items"][0]["id"] in [service_1.id, service_2.id]
+    assert resp_data["items"][1]["id"] in [service_1.id, service_2.id]
+
+    response = api_client.get(
+        url,
+        params={
+            "frais": schema.Frais.PAYANT.value,
+        },
+    )
+    assert_paginated_response_data(response.json(), total=0)
+
+
+@pytest.mark.with_token
 def test_list_services_filter_by_modes_accueil(api_client):
     service_1 = factories.ServiceFactory(
         modes_accueil=[schema.ModeAccueil.EN_PRESENTIEL.value]
