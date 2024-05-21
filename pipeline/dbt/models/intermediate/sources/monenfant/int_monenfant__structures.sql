@@ -20,7 +20,7 @@ final AS (
         NULL::TEXT []                                                                                                                                                         AS "labels_nationaux",
         NULL::TEXT []                                                                                                                                                         AS "labels_autres",
         CASE WHEN avip THEN 'AVIP' END                                                                                                                                        AS "typologie",
-        {{ truncate_text("details__presentation_structure_projet") }}              AS "presentation_resume",
+        {{ truncate_text("details__presentation__structure_projet") }}              AS "presentation_resume",
         details__presentation__structure_projet                                                                                                                               AS "presentation_detail",
         derniere_modif_date                                                                                                                                                   AS "date_maj",
         ARRAY['famille--garde-denfants']                                                                                                                                      AS "thematiques"
