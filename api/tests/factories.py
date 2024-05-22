@@ -83,10 +83,12 @@ class ServiceFactory(factory.alchemy.SQLAlchemyModelFactory):
         "pyfloat", right_digits=2, positive=True, max_value=1
     )
 
-    structure = factory.SubFactory(StructureFactory)
+    structure = factory.SubFactory(
+        StructureFactory, source=factory.SelfAttribute("..source")
+    )
     id = factory.Faker("slug", locale="fr_FR")
     structure_id = factory.SelfAttribute("structure.id")
-    source = factory.SelfAttribute("structure.source")
+    source = factory.Iterator(["dora", "emplois-de-linclusion"])
     nom = factory.Faker("company", locale="fr_FR")
     presentation_resume = factory.Faker("text", max_nb_chars=20, locale="fr_FR")
     presentation_detail = factory.Faker("text", max_nb_chars=20, locale="fr_FR")

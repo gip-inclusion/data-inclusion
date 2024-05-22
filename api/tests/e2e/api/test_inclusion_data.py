@@ -510,8 +510,8 @@ def test_list_structures_order(
 
 @pytest.mark.with_token
 def test_list_services_filter_by_source(api_client):
-    service_1 = factories.ServiceFactory(structure__source="emplois-de-linclusion")
-    factories.ServiceFactory(structure__source="dora")
+    service_1 = factories.ServiceFactory(source="emplois-de-linclusion")
+    factories.ServiceFactory(source="dora")
 
     url = "/api/v0/services/"
     response = api_client.get(url, params={"source": "emplois-de-linclusion"})
@@ -528,7 +528,7 @@ def test_list_services_filter_by_source(api_client):
 @pytest.mark.with_token
 def test_list_services_filter_by_thematique(api_client):
     service_1 = factories.ServiceFactory(
-        structure__source="alpha",
+        source="alpha",
         id="1",
         thematiques=[
             schema.Thematique.MOBILITE.value,
@@ -536,7 +536,7 @@ def test_list_services_filter_by_thematique(api_client):
         ],
     )
     service_2 = factories.ServiceFactory(
-        structure__source="alpha",
+        source="alpha",
         id="2",
         thematiques=[
             schema.Thematique.TROUVER_UN_EMPLOI.value,
@@ -579,7 +579,7 @@ def test_list_services_filter_by_thematique(api_client):
 @pytest.mark.with_token
 def test_list_services_filter_by_categorie_thematique(api_client):
     service = factories.ServiceFactory(
-        structure__source="alpha",
+        source="alpha",
         id="1",
         thematiques=[
             schema.Thematique.MOBILITE__ACHETER_UN_VEHICULE_MOTORISE.value,
