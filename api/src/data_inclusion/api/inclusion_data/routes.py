@@ -97,6 +97,15 @@ def list_services_endpoint(
     request: fastapi.Request,
     db_session=fastapi.Depends(db.get_session),
     source: Annotated[Optional[str], fastapi.Query()] = None,
+    sources: Annotated[
+        Optional[list[str]],
+        fastapi.Query(
+            description="""Une liste d'identifiants de source.
+                La liste des identifiants de source est disponible sur le endpoint
+                dédié. Les résultats seront limités aux sources spécifiées.
+            """,
+        ),
+    ] = None,
     thematique: Annotated[
         Optional[di_schema.Thematique],
         fastapi.Query(
@@ -156,10 +165,13 @@ def list_services_endpoint(
     if thematiques is None and thematique is not None:
         thematiques = [thematique]
 
+    if sources is None and source is not None:
+        sources = [source]
+
     return services.list_services(
         request,
         db_session,
-        source=source,
+        sources=sources,
         thematiques=thematiques,
         departement=departement,
         departement_slug=departement_slug,

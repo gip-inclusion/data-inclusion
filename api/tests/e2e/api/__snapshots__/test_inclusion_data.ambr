@@ -283,6 +283,20 @@
               }
             },
             {
+              "name": "sources",
+              "in": "query",
+              "required": false,
+              "schema": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                },
+                "description": "Une liste d'identifiants de source.\n                La liste des identifiants de source est disponible sur le endpoint\n                dédié. Les résultats seront limités aux sources spécifiées.\n            ",
+                "title": "Sources"
+              },
+              "description": "Une liste d'identifiants de source.\n                La liste des identifiants de source est disponible sur le endpoint\n                dédié. Les résultats seront limités aux sources spécifiées.\n            "
+            },
+            {
               "name": "thematique",
               "in": "query",
               "required": false,

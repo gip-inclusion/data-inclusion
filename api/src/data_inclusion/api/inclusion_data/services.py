@@ -26,6 +26,13 @@ from data_inclusion.api.inclusion_data import models
 logger = logging.getLogger(__name__)
 
 
+def filter_services_by_sources(
+    query: sqla.Select,
+    sources: list[str],
+):
+    return query.filter(models.Service.source == sqla.any_(sqla.literal(sources)))
+
+
 @functools.cache
 def get_thematiques_by_group():
     thematiques = defaultdict(list)
@@ -257,7 +264,7 @@ def list_sources(request: fastapi.Request) -> list[dict]:
 def list_services(
     request: fastapi.Request,
     db_session: orm.Session,
-    source: str | None = None,
+    sources: list[str] | None = None,
     thematiques: list[di_schema.Thematique] | None = None,
     departement: DepartementCOG | None = None,
     departement_slug: DepartementSlug | None = None,
@@ -274,8 +281,8 @@ def list_services(
         .options(orm.contains_eager(models.Service.structure))
     )
 
-    if source is not None:
-        query = query.filter(models.Structure.source == source)
+    if sources is not None:
+        query = filter_services_by_sources(query, sources)
 
     if not request.user.is_authenticated or "dora" not in request.user.username:
         query = query.filter(models.Structure.source != "soliguide")
@@ -357,7 +364,7 @@ def search_services(
     )
 
     if sources is not None:
-        query = query.filter(models.Service.source == sqla.any_(sqla.literal(sources)))
+        query = filter_services_by_sources(query, sources)
 
     if not request.user.is_authenticated or "dora" not in request.user.username:
         query = query.filter(models.Structure.source != "soliguide")
