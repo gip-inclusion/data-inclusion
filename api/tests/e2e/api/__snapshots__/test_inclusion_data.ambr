@@ -279,8 +279,11 @@
               "required": false,
               "schema": {
                 "type": "string",
+                "description": "Déprécié en faveur de `sources`.",
                 "title": "Source"
-              }
+              },
+              "description": "Déprécié en faveur de `sources`.",
+              "deprecated": true
             },
             {
               "name": "sources",

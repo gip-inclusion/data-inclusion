@@ -96,7 +96,13 @@ def list_sources_endpoint(
 def list_services_endpoint(
     request: fastapi.Request,
     db_session=fastapi.Depends(db.get_session),
-    source: Annotated[Optional[str], fastapi.Query()] = None,
+    source: Annotated[
+        Optional[str],
+        fastapi.Query(
+            deprecated=True,
+            description="Déprécié en faveur de `sources`.",
+        ),
+    ] = None,
     sources: Annotated[
         Optional[list[str]],
         fastapi.Query(
