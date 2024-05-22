@@ -34,7 +34,13 @@ Optional = T | SkipJsonSchema[None]
 )
 def list_structures_endpoint(
     request: fastapi.Request,
-    source: Annotated[Optional[str], fastapi.Query()] = None,
+    source: Annotated[
+        Optional[str],
+        fastapi.Query(
+            deprecated=True,
+            description="Déprécié en faveur de `sources`.",
+        ),
+    ] = None,
     sources: Annotated[
         Optional[list[str]],
         fastapi.Query(
