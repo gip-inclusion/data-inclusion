@@ -55,7 +55,13 @@ def list_structures_endpoint(
     label_national: Annotated[
         Optional[di_schema.LabelNational], fastapi.Query()
     ] = None,
-    thematique: Annotated[Optional[di_schema.Thematique], fastapi.Query()] = None,
+    thematique: Annotated[
+        Optional[di_schema.Thematique],
+        fastapi.Query(
+            deprecated=True,
+            description="Déprécié en faveur de `thematiques`.",
+        ),
+    ] = None,
     thematiques: Annotated[
         Optional[list[di_schema.Thematique]],
         fastapi.Query(
