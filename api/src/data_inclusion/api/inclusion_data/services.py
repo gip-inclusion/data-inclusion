@@ -26,11 +26,11 @@ from data_inclusion.api.inclusion_data import models
 logger = logging.getLogger(__name__)
 
 
-def filter_services_by_sources(
+def filter_by_sources(
     query: sqla.Select,
     sources: list[str],
 ):
-    return query.filter(models.Service.source == sqla.any_(sqla.literal(sources)))
+    return query.filter(models.Structure.source == sqla.any_(sqla.literal(sources)))
 
 
 @functools.cache
@@ -157,7 +157,7 @@ def filter_outdated_services(
 def list_structures(
     request: fastapi.Request,
     db_session: orm.Session,
-    source: str | None = None,
+    sources: list[str] | None = None,
     id_: str | None = None,
     typologie: di_schema.Typologie | None = None,
     label_national: di_schema.LabelNational | None = None,
@@ -168,8 +168,8 @@ def list_structures(
 ) -> list:
     query = sqla.select(models.Structure)
 
-    if source is not None:
-        query = query.filter_by(source=source)
+    if sources is not None:
+        query = filter_by_sources(query, sources)
 
     if not request.user.is_authenticated or "dora" not in request.user.username:
         query = query.filter(models.Structure.source != "soliguide")
@@ -277,12 +277,12 @@ def list_services(
 ):
     query = (
         sqla.select(models.Service)
-        .join(models.Service.structure)
+        .join(models.Structure)
         .options(orm.contains_eager(models.Service.structure))
     )
 
     if sources is not None:
-        query = filter_services_by_sources(query, sources)
+        query = filter_by_sources(query, sources)
 
     if not request.user.is_authenticated or "dora" not in request.user.username:
         query = query.filter(models.Structure.source != "soliguide")
@@ -359,12 +359,12 @@ def search_services(
 ):
     query = (
         sqla.select(models.Service)
-        .join(models.Service.structure)
+        .join(models.Structure)
         .options(orm.contains_eager(models.Service.structure))
     )
 
     if sources is not None:
-        query = filter_services_by_sources(query, sources)
+        query = filter_by_sources(query, sources)
 
     if not request.user.is_authenticated or "dora" not in request.user.username:
         query = query.filter(models.Structure.source != "soliguide")

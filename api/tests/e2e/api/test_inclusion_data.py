@@ -191,6 +191,35 @@ def test_list_structures_filter_by_source(api_client):
 
 
 @pytest.mark.with_token
+def test_list_structures_filter_by_sources(api_client):
+    structure_1 = factories.StructureFactory(source="dora")
+    structure_2 = factories.StructureFactory(source="emplois-de-linclusion")
+    factories.StructureFactory(source="un-jeune-une-solution")
+
+    url = "/api/v0/structures"
+    response = api_client.get(
+        url,
+        params={
+            "sources": ["dora", "emplois-de-linclusion"],
+        },
+    )
+
+    assert response.status_code == 200
+    resp_data = response.json()
+    assert_paginated_response_data(resp_data, total=2)
+    assert resp_data["items"][0]["id"] in [structure_1.id, structure_2.id]
+    assert resp_data["items"][1]["id"] in [structure_1.id, structure_2.id]
+
+    response = api_client.get(
+        url,
+        params={
+            "sources": ["foobar"],
+        },
+    )
+    assert_paginated_response_data(response.json(), total=0)
+
+
+@pytest.mark.with_token
 def test_list_sources(api_client):
     url = "/api/v0/sources/"
     response = api_client.get(url)

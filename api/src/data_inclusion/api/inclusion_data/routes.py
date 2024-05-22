@@ -35,6 +35,15 @@ Optional = T | SkipJsonSchema[None]
 def list_structures_endpoint(
     request: fastapi.Request,
     source: Annotated[Optional[str], fastapi.Query()] = None,
+    sources: Annotated[
+        Optional[list[str]],
+        fastapi.Query(
+            description="""Une liste d'identifiants de source.
+                La liste des identifiants de source est disponible sur le endpoint
+                dédié. Les résultats seront limités aux sources spécifiées.
+            """,
+        ),
+    ] = None,
     id: Annotated[Optional[str], fastapi.Query()] = None,
     typologie: Annotated[Optional[di_schema.Typologie], fastapi.Query()] = None,
     label_national: Annotated[
@@ -46,10 +55,13 @@ def list_structures_endpoint(
     code_postal: Annotated[Optional[di_schema.CodePostal], fastapi.Query()] = None,
     db_session=fastapi.Depends(db.get_session),
 ):
+    if sources is None and source is not None:
+        sources = [source]
+
     return services.list_structures(
         request,
         db_session,
-        source=source,
+        sources=sources,
         id_=id,
         typologie=typologie,
         label_national=label_national,
