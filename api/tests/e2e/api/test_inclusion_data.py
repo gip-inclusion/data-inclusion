@@ -857,6 +857,35 @@ def test_list_services_filter_by_modes_accueil(api_client):
     assert resp_data["items"][0]["id"] == service_1.id
 
 
+@pytest.mark.with_token
+def test_list_services_filter_by_sources(api_client):
+    service_1 = factories.ServiceFactory(source="dora")
+    service_2 = factories.ServiceFactory(source="emplois-de-linclusion")
+    factories.ServiceFactory(source="un-jeune-une-solution")
+
+    url = "/api/v0/services"
+    response = api_client.get(
+        url,
+        params={
+            "sources": ["dora", "emplois-de-linclusion"],
+        },
+    )
+
+    assert response.status_code == 200
+    resp_data = response.json()
+    assert_paginated_response_data(resp_data, total=2)
+    assert resp_data["items"][0]["id"] in [service_1.id, service_2.id]
+    assert resp_data["items"][1]["id"] in [service_1.id, service_2.id]
+
+    response = api_client.get(
+        url,
+        params={
+            "sources": ["foobar"],
+        },
+    )
+    assert_paginated_response_data(response.json(), total=0)
+
+
 @pytest.mark.parametrize(
     "commune_data, input, found",
     [
