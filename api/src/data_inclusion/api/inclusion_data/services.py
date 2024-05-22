@@ -77,6 +77,17 @@ def filter_services_by_thematiques(
     )
 
 
+def filter_structures_by_thematiques(
+    query: sqla.Select,
+    thematiques: list[di_schema.Thematique],
+):
+    return query.filter(
+        sqla.text("api__structures.thematiques && :thematiques").bindparams(
+            thematiques=get_sub_thematiques(thematiques),
+        )
+    )
+
+
 def filter_services_by_frais(
     query: sqla.Select,
     frais: list[di_schema.Frais],
@@ -164,7 +175,7 @@ def list_structures(
     departement: DepartementCOG | None = None,
     departement_slug: DepartementSlug | None = None,
     code_postal: di_schema.CodePostal | None = None,
-    thematique: di_schema.Thematique | None = None,
+    thematiques: list[di_schema.Thematique] | None = None,
 ) -> list:
     query = sqla.select(models.Structure)
 
@@ -209,17 +220,8 @@ def list_structures(
             models.Structure.labels_nationaux.contains([label_national.value])
         )
 
-    if thematique is not None:
-        filter_stmt = """\
-        EXISTS(
-            SELECT
-            FROM unnest(thematiques) thematique
-            WHERE thematique ~ ('^' || :thematique)
-        )
-        """
-        query = query.filter(
-            sqla.text(filter_stmt).bindparams(thematique=thematique.value)
-        )
+    if thematiques is not None:
+        query = filter_structures_by_thematiques(query, thematiques)
 
     query = query.order_by(
         models.Structure.source,

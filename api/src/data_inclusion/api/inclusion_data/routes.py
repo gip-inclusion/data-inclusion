@@ -56,11 +56,21 @@ def list_structures_endpoint(
         Optional[di_schema.LabelNational], fastapi.Query()
     ] = None,
     thematique: Annotated[Optional[di_schema.Thematique], fastapi.Query()] = None,
+    thematiques: Annotated[
+        Optional[list[di_schema.Thematique]],
+        fastapi.Query(
+            description="""Une liste de thématique.
+                Chaque résultat renvoyé a (au moins) une thématique dans cette liste."""
+        ),
+    ] = None,
     departement: Annotated[Optional[DepartementCOG], fastapi.Query()] = None,
     departement_slug: Annotated[Optional[DepartementSlug], fastapi.Query()] = None,
     code_postal: Annotated[Optional[di_schema.CodePostal], fastapi.Query()] = None,
     db_session=fastapi.Depends(db.get_session),
 ):
+    if thematiques is None and thematique is not None:
+        thematiques = [thematique]
+
     if sources is None and source is not None:
         sources = [source]
 
@@ -74,7 +84,7 @@ def list_structures_endpoint(
         departement=departement,
         departement_slug=departement_slug,
         code_postal=code_postal,
-        thematique=thematique,
+        thematiques=thematiques,
     )
 
 
