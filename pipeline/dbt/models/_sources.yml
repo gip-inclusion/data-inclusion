@@ -136,3 +136,8 @@ sources:
     schema: brevo
     tables:
       - name: contacts
+
+  - name: fredo
+    schema: fredo
+    tables:
+      - name: structures

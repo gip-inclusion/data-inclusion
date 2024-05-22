@@ -215,3 +215,10 @@ variable "twocaptcha_api_key" {
   sensitive   = true
   default     = ""
 }
+
+variable "fredo_api_token" {
+  description = "Used in extraction tasks orchestrated by airflow"
+  type        = string
+  sensitive   = true
+  default     = ""
+}
