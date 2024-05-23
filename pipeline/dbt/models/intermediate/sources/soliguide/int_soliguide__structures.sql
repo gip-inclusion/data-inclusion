@@ -28,13 +28,13 @@ final AS (
         NULL                                                          AS "telephone",
         'https://soliguide.fr/fr/fiche/' || lieux.seo_url             AS "lien_source",
         UDF_SOLIGUIDE__NEW_HOURS_TO_OSM_OPENING_HOURS(lieux.newhours) AS "horaires_ouverture",
-        CASE LENGTH(lieux.description) <= 280
-            WHEN TRUE THEN lieux.description
-            WHEN FALSE THEN LEFT(lieux.description, 279) || '…'
+        CASE
+            WHEN LENGTH(lieux.description) <= 280 THEN lieux.description
+            ELSE LEFT(lieux.description, 279) || '…'
         END                                                           AS "presentation_resume",
-        CASE LENGTH(lieux.description) <= 280
-            WHEN TRUE THEN NULL
-            WHEN FALSE THEN lieux.description
+        CASE
+            WHEN LENGTH(lieux.description) <= 280 THEN NULL
+            ELSE lieux.description
         END                                                           AS "presentation_detail"
     FROM lieux
     ORDER BY 1
