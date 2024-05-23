@@ -55,12 +55,3 @@ repos:
           - dbt-postgres==1.7.11
         args:
           - --config=./pipeline/pyproject.toml
-      - id: sqlfluff-lint
-        name: pipeline|sqlfluff-lint
-        files: ^pipeline
-        types: [sql]
-        additional_dependencies:
-          - sqlfluff-templater-dbt==2.3.5
-          - dbt-postgres==1.7.11
-        args:
-          - --config=./pipeline/pyproject.toml
