@@ -25,13 +25,13 @@ final AS (
             WHEN 'CCAS' THEN 'CCAS'
             WHEN 'MAIRIE' THEN 'MUNI'
         END                 AS "typologie",
-        CASE LENGTH(presentation_detail) <= 280
-            WHEN TRUE THEN presentation_detail
-            WHEN FALSE THEN LEFT(presentation_detail, 279) || '…'
+        CASE
+            WHEN LENGTH(presentation_detail) <= 280 THEN presentation_detail
+            ELSE LEFT(presentation_detail, 279) || '…'
         END                 AS "presentation_resume",
-        CASE LENGTH(presentation_detail) <= 280
-            WHEN TRUE THEN NULL
-            WHEN FALSE THEN presentation_detail
+        CASE
+            WHEN LENGTH(presentation_detail) <= 280 THEN NULL
+            ELSE presentation_detail
         END                 AS "presentation_detail"
     FROM organisations
 )

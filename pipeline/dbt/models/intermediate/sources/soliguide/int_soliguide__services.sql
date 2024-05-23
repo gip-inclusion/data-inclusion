@@ -47,7 +47,7 @@ di_thematique_by_soliguide_category_code AS (
         ('mobility', ARRAY['mobilite']),
         ('other_activities', ARRAY['remobilisation--decouvrir-son-potentiel-via-le-sport-et-la-culture']),
         ('overnight_stop', ARRAY['logement-hebergement--mal-loges-sans-logis']),
-        ('parent_assistance', ARRAY['famille--information-et-accompagnement-des-parents','famille--soutien-a-la-parentalite', 'famille--soutien-aux-familles']),
+        ('parent_assistance', ARRAY['famille--information-et-accompagnement-des-parents', 'famille--soutien-a-la-parentalite', 'famille--soutien-aux-familles']),
         ('provision_of_vehicles', ARRAY['mobilite--louer-un-vehicule']),
         ('psychological_support', ARRAY['sante--bien-etre-psychologique']),
         ('public_writer', ARRAY['acces-aux-droits-et-citoyennete--accompagnement-dans-les-demarches-administratives', 'numerique--realiser-des-demarches-administratives-avec-un-accompagnement']),
@@ -89,7 +89,7 @@ open_services AS (
             CURRENT_DATE AT TIME ZONE 'Europe/Paris',
             CURRENT_DATE AT TIME ZONE 'Europe/Paris'
         )
-        OVERLAPS
+        OVERLAPS  -- noqa: LT02
         (
             COALESCE(close__date_debut, CURRENT_DATE - INTERVAL '1 year'),
             COALESCE(close__date_fin, CURRENT_DATE + INTERVAL '1 year')
@@ -132,13 +132,13 @@ final AS (
         ARRAY['en-presentiel']                                        AS "modes_accueil",
         categories.label || COALESCE(' : ' || open_services.name, '') AS "nom",
         'https://soliguide.fr/fr/fiche/' || lieux.seo_url             AS "lien_source",
-        CASE LENGTH(open_services.description) <= 280
-            WHEN TRUE THEN open_services.description
-            WHEN FALSE THEN LEFT(open_services.description, 279) || '…'
+        CASE
+            WHEN LENGTH(open_services.description) <= 280 THEN open_services.description
+            ELSE LEFT(open_services.description, 279) || '…'
         END                                                           AS "presentation_resume",
-        CASE LENGTH(open_services.description) <= 280
-            WHEN TRUE THEN NULL
-            WHEN FALSE THEN open_services.description
+        CASE
+            WHEN LENGTH(open_services.description) <= 280 THEN NULL
+            ELSE open_services.description
         END                                                           AS "presentation_detail",
         CASE
             WHEN open_services.different_hours

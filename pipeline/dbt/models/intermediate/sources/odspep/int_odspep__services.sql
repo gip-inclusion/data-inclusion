@@ -53,13 +53,13 @@ final AS (
             WHERE ressources_partenariales.type_res_part = di_thematique_by_odspep_type_res_part.type_res_part
         )::TEXT []                                      AS "thematiques",
         CONCAT(id_res, '_', zone_diffusion_unique_code) AS "id",
-        CASE LENGTH(service_description) <= 280
-            WHEN TRUE THEN service_description
-            WHEN FALSE THEN LEFT(service_description, 279) || '…'
+        CASE
+            WHEN LENGTH(service_description) <= 280 THEN service_description
+            ELSE LEFT(service_description, 279) || '…'
         END                                             AS "presentation_resume",
-        CASE LENGTH(service_description) <= 280
-            WHEN TRUE THEN NULL
-            WHEN FALSE THEN service_description
+        CASE
+            WHEN LENGTH(service_description) <= 280 THEN NULL
+            ELSE service_description
         END                                             AS "presentation_detail"
     FROM ressources_partenariales
     ORDER BY 1
