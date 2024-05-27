@@ -24,7 +24,7 @@ class Structure(Base):
     nom: Mapped[str]
     commune: Mapped[str | None]
     code_postal: Mapped[str | None]
-    code_insee: Mapped[str | None]
+    code_insee: Mapped[str | None] = mapped_column(sqla.ForeignKey(Commune.code))
     adresse: Mapped[str | None]
     complement_adresse: Mapped[str | None]
     longitude: Mapped[float | None]
@@ -45,6 +45,7 @@ class Structure(Base):
     thematiques: Mapped[list[str] | None]
 
     services: Mapped[list["Service"]] = relationship(back_populates="structure")
+    commune_: Mapped[Commune] = relationship(back_populates="structures")
 
     __table_args__ = (sqla.Index(None, "source"),)
 
@@ -125,3 +126,4 @@ class Service(Base):
 
 
 Commune.services = relationship(Service, back_populates="commune_")
+Commune.structures = relationship(Structure, back_populates="commune_")
