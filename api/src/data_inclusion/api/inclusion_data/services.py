@@ -176,6 +176,7 @@ def list_structures(
     departement: DepartementCOG | None = None,
     departement_slug: DepartementSlug | None = None,
     region_code: RegionCOG | None = None,
+    commune_code: di_schema.CodeCommune | None = None,
     thematiques: list[di_schema.Thematique] | None = None,
 ) -> list:
     query = sqla.select(models.Structure)
@@ -189,6 +190,12 @@ def list_structures(
 
     if id_ is not None:
         query = query.filter_by(id=id_)
+
+    if commune_code is not None:
+        commune_code = CODE_COMMUNE_BY_CODE_ARRONDISSEMENT.get(
+            commune_code, commune_code
+        )
+        query = query.filter(models.Structure.code_insee == commune_code)
 
     if departement is not None:
         query = query.filter(
