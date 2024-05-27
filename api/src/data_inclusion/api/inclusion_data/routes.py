@@ -75,6 +75,7 @@ def list_structures_endpoint(
     departement_slug: Annotated[Optional[DepartementSlug], fastapi.Query()] = None,
     code_region: Annotated[Optional[RegionCOG], fastapi.Query()] = None,
     slug_region: Annotated[Optional[RegionSlug], fastapi.Query()] = None,
+    code_commune: Annotated[Optional[di_schema.CodeCommune], fastapi.Query()] = None,
     db_session=fastapi.Depends(db.get_session),
 ):
     if thematiques is None and thematique is not None:
@@ -96,6 +97,7 @@ def list_structures_endpoint(
         departement=departement,
         departement_slug=departement_slug,
         region_code=code_region,
+        commune_code=code_commune,
         thematiques=thematiques,
     )
 
