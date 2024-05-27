@@ -5,7 +5,7 @@
     "openapi": "3.1.0",
     "info": {
       "title": "data·inclusion API",
-      "description": "### Token\n\nUn token est nécessaire pour accéder aux données.\n\nLes demandes de tokens s'effectuent via [ce formulaire](https://tally.so/r/mYjJ85). L'équipe data·inclusion prendra contact avec vous.\n\nLe token doit être renseigné dans chaque requête via un header:\n`Authorization: Bearer <VOTRE_TOKEN>`.\n\n### Schéma des données\n\nLes données utilisent le schéma data·inclusion. Ce schéma comprend deux modèles principaux :\n\n* les structures proposant des services\n* les services proposés par ces structures\n\nCes deux modèles utilisent des référentiels faisant également partie du schéma data·inclusion : les types de structures et de services, les thématiques, etc.\n\nPlus d'informations sur le\n[dépôt](https://github.com/gip-inclusion/data-inclusion-schema) versionnant le schéma,\nsur la [documentation officielle](https://www.data.inclusion.beta.gouv.fr/schemas-de-donnees-de-loffre/schema-des-structures-dinsertion)\nou sur la page [schema.gouv](https://schema.data.gouv.fr/gip-inclusion/data-inclusion-schema/) du schéma.\n\n### Sources des données\n\nLes données data·inclusion sont issues d'un ensemble de sources (emplois de l'inclusion, France Travail, etc.).\n\nLe endpoint `/sources` permet de lister les sources disponibles.\n\n### Nous contacter\n\n#### via notre [formulaire de contact](https://tally.so/r/w7N6Zz)\n\n#### par mail à [data.inclusion@beta.gouv.fr](mailto:data.inclusion@beta.gouv.fr)",
+      "description": "### Token\n\nUn token est nécessaire pour accéder aux données.\n\nLes demandes de tokens s'effectuent via [ce formulaire](https://tally.so/r/mYjJ85). L'équipe data·inclusion prendra contact avec vous.\n\nLe token doit être renseigné dans chaque requête via un header:\n`Authorization: Bearer <VOTRE_TOKEN>`.\n\n### Schéma des données\n\nLes données utilisent le schéma data·inclusion. Ce schéma comprend deux modèles principaux :\n\n* les structures proposant des services\n* les services proposés par ces structures\n\nCes deux modèles utilisent des référentiels faisant également partie du schéma data·inclusion : les types de structures et de services, les thématiques, etc.\n\nPlus d'informations sur le\n[dépôt](https://github.com/gip-inclusion/data-inclusion-schema) versionnant le schéma,\nsur la [documentation officielle](https://www.data.inclusion.beta.gouv.fr/schemas-de-donnees-de-loffre/schema-des-structures-dinsertion)\nou sur la page [schema.gouv](https://schema.data.gouv.fr/gip-inclusion/data-inclusion-schema/) du schéma.\n\n### Sources des données\n\nLes données data·inclusion sont issues d'un ensemble de sources (emplois de l'inclusion, France Travail, etc.).\n\nLe endpoint `/sources` permet de lister les sources disponibles.\n\n\n### Filtrer géographiquement les données\n\nLes données renvoyées par certains endpoints peuvent être filtrées géographiquement.\n\nLes codes communes, départements et régions utilisés sont issus du [code officiel géographique produit par l'INSEE](https://www.insee.fr/fr/information/2560452).\n\nL'[api de la base adresse nationale](https://adresse.data.gouv.fr/api-doc/adresse) peut être utilisée afin d'automatiser l'identification de codes insee associés à partir d'adresses ou de parties d'adresses (e.g. nom de commune, code postal).\n\n\n### Nous contacter\n\n#### via notre [formulaire de contact](https://tally.so/r/w7N6Zz)\n\n#### par mail à [data.inclusion@beta.gouv.fr](mailto:data.inclusion@beta.gouv.fr)",
       "contact": {
         "name": "data·inclusion",
         "url": "https://www.data.inclusion.beta.gouv.fr/",
@@ -128,8 +128,10 @@
                     "$ref": "#/components/schemas/DepartementCOG"
                   }
                 ],
+                "description": "Code insee géographique d'un département.",
                 "title": "Departement"
-              }
+              },
+              "description": "Code insee géographique d'un département."
             },
             {
               "name": "departement_slug",
@@ -154,8 +156,10 @@
                     "$ref": "#/components/schemas/RegionCOG"
                   }
                 ],
+                "description": "Code insee géographique d'une région.",
                 "title": "Code Region"
-              }
+              },
+              "description": "Code insee géographique d'une région."
             },
             {
               "name": "slug_region",
@@ -179,8 +183,10 @@
                 "minLength": 5,
                 "maxLength": 5,
                 "pattern": "^\\w{5}$",
+                "description": "Code insee géographique d'une commune.",
                 "title": "Code Commune"
-              }
+              },
+              "description": "Code insee géographique d'une commune."
             },
             {
               "name": "page",
@@ -399,8 +405,10 @@
                     "$ref": "#/components/schemas/DepartementCOG"
                   }
                 ],
+                "description": "Code insee géographique d'un département.",
                 "title": "Departement"
-              }
+              },
+              "description": "Code insee géographique d'un département."
             },
             {
               "name": "departement_slug",
@@ -425,8 +433,10 @@
                     "$ref": "#/components/schemas/RegionCOG"
                   }
                 ],
+                "description": "Code insee géographique d'une région.",
                 "title": "Code Region"
-              }
+              },
+              "description": "Code insee géographique d'une région."
             },
             {
               "name": "slug_region",
@@ -465,8 +475,10 @@
                 "minLength": 5,
                 "maxLength": 5,
                 "pattern": "^\\w{5}$",
+                "description": "Code insee géographique d'une commune.",
                 "title": "Code Commune"
-              }
+              },
+              "description": "Code insee géographique d'une commune."
             },
             {
               "name": "frais",
@@ -650,7 +662,7 @@
             "Données"
           ],
           "summary": "Rechercher des services",
-          "description": "## Rechercher des services\n\nLa recherche de services permet de trouver des services dans une commune et à\nproximité.\n\nLes services peuvent être filtrés selon par thématiques, frais, typologies et\ncode_insee de commune.\n\nEn particulier, lorsque le `code_insee` d'une commune est fourni :\n\n* les services sont filtrés par zone de diffusion lorsque celle-ci est définie.\n* de plus, les services en présentiel sont filtrés dans un rayon de 50km autour de\nla commune ou du point de recherche fourni.\n* le champ `distance` est :\n    * rempli pour les services (non exclusivement) en présentiel.\n    * laissé vide pour les services à distance et par défaut si le mode d'accueil\n    n'est pas définie.\n* les résultats sont triés par distance croissante.",
+          "description": "## Rechercher des services\n\nLa recherche de services permet de trouver des services dans une commune et à\nproximité.\n\nLes services peuvent être filtrés selon par thématiques, frais, typologies et\ncode_insee de commune.\n\nEn particulier, lorsqu'un `code_commune` est fourni :\n\n* les services sont filtrés par zone de diffusion lorsque celle-ci est définie.\n* de plus, les services en présentiel sont filtrés dans un rayon de 50km autour de\nla commune ou du point de recherche fourni.\n* le champ `distance` est :\n    * rempli pour les services (non exclusivement) en présentiel.\n    * laissé vide pour les services à distance et par défaut si le mode d'accueil\n    n'est pas définie.\n* les résultats sont triés par distance croissante.",
           "operationId": "search_services_endpoint_api_v0_search_services_get",
           "security": [
             {
@@ -673,7 +685,7 @@
               "description": "Une liste d'identifiants de source.\n                La liste des identifiants de source est disponible sur le endpoint\n                dédié. Les résultats seront limités aux sources spécifiées.\n            "
             },
             {
-              "name": "code_insee",
+              "name": "code_commune",
               "in": "query",
               "required": false,
               "schema": {
@@ -682,9 +694,24 @@
                 "maxLength": 5,
                 "pattern": "^\\w{5}$",
                 "description": "Code insee de la commune considérée.\n                Si fourni, les résultats inclus également les services proches de\n                cette commune. Les résultats sont triés par ordre de distance\n                croissante.\n            ",
-                "title": "Code Insee"
+                "title": "Code Commune"
               },
               "description": "Code insee de la commune considérée.\n                Si fourni, les résultats inclus également les services proches de\n                cette commune. Les résultats sont triés par ordre de distance\n                croissante.\n            "
+            },
+            {
+              "name": "code_insee",
+              "in": "query",
+              "required": false,
+              "schema": {
+                "type": "string",
+                "minLength": 5,
+                "maxLength": 5,
+                "pattern": "^\\w{5}$",
+                "description": "Déprécié en faveur de `code_commune`.",
+                "title": "Code Insee"
+              },
+              "description": "Déprécié en faveur de `code_commune`.",
+              "deprecated": true
             },
             {
               "name": "lat",
