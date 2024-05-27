@@ -35,7 +35,7 @@ class StructureFactory(factory.alchemy.SQLAlchemyModelFactory):
     nom = factory.Faker("company", locale="fr_FR")
     commune = factory.Faker("city", locale="fr_FR")
     code_postal = factory.Faker("postcode")
-    code_insee = factory.Faker("postcode")
+    code_insee = "59350"
     adresse = factory.Faker("street_address", locale="fr_FR")
     longitude = factory.Faker("longitude")
     latitude = factory.Faker("latitude")
@@ -84,7 +84,9 @@ class ServiceFactory(factory.alchemy.SQLAlchemyModelFactory):
     )
 
     structure = factory.SubFactory(
-        StructureFactory, source=factory.SelfAttribute("..source")
+        StructureFactory,
+        source=factory.SelfAttribute("..source"),
+        code_insee=factory.SelfAttribute("..code_insee"),
     )
     id = factory.Faker("slug", locale="fr_FR")
     structure_id = factory.SelfAttribute("structure.id")
