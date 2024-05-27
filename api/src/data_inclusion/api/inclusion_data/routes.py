@@ -172,7 +172,13 @@ def list_services_endpoint(
     departement_slug: Annotated[Optional[DepartementSlug], fastapi.Query()] = None,
     code_region: Annotated[Optional[RegionCOG], fastapi.Query()] = None,
     slug_region: Annotated[Optional[RegionSlug], fastapi.Query()] = None,
-    code_insee: Annotated[Optional[di_schema.CodeCommune], fastapi.Query()] = None,
+    code_insee: Annotated[
+        Optional[di_schema.CodeCommune],
+        fastapi.Query(
+            deprecated=True,
+            description="Déprécié en faveur de `code_commune`.",
+        ),
+    ] = None,
     code_commune: Annotated[Optional[di_schema.CodeCommune], fastapi.Query()] = None,
     frais: Annotated[
         Optional[list[di_schema.Frais]],
