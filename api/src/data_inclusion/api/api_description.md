@@ -27,6 +27,16 @@ Les données data·inclusion sont issues d'un ensemble de sources (emplois de l'
 
 Le endpoint `/sources` permet de lister les sources disponibles.
 
+
+### Filtrer géographiquement les données
+
+Les données renvoyées par certains endpoints peuvent être filtrées géographiquement.
+
+Les codes communes, départements et régions utilisés sont issus du [code officiel géographique produit par l'INSEE](https://www.insee.fr/fr/information/2560452).
+
+L'[api de la base adresse nationale](https://adresse.data.gouv.fr/api-doc/adresse) peut être utilisée afin d'automatiser l'identification de codes insee associés à partir d'adresses ou de parties d'adresses (e.g. nom de commune, code postal).
+
+
 ### Nous contacter
 
 #### via notre [formulaire de contact](https://tally.so/r/w7N6Zz)
