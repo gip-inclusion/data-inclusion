@@ -281,7 +281,7 @@ def search_services_endpoint(
             """,
         ),
     ] = None,
-    code_insee: Annotated[
+    code_commune: Annotated[
         Optional[di_schema.CodeCommune],
         fastapi.Query(
             description="""Code insee de la commune considérée.
@@ -289,6 +289,13 @@ def search_services_endpoint(
                 cette commune. Les résultats sont triés par ordre de distance
                 croissante.
             """
+        ),
+    ] = None,
+    code_insee: Annotated[
+        Optional[di_schema.CodeCommune],
+        fastapi.Query(
+            deprecated=True,
+            description="Déprécié en faveur de `code_commune`.",
         ),
     ] = None,
     lat: Annotated[
@@ -364,7 +371,7 @@ def search_services_endpoint(
     Les services peuvent être filtrés selon par thématiques, frais, typologies et
     code_insee de commune.
 
-    En particulier, lorsque le `code_insee` d'une commune est fourni :
+    En particulier, lorsqu'un `code_commune` est fourni :
 
     * les services sont filtrés par zone de diffusion lorsque celle-ci est définie.
     * de plus, les services en présentiel sont filtrés dans un rayon de 50km autour de
@@ -376,15 +383,20 @@ def search_services_endpoint(
     * les résultats sont triés par distance croissante.
     """
 
+    if code_commune is None and code_insee is not None:
+        code_commune = code_insee
+
     commune_instance = None
     search_point = None
-    if code_insee is not None:
-        code_insee = CODE_COMMUNE_BY_CODE_ARRONDISSEMENT.get(code_insee, code_insee)
-        commune_instance = db_session.get(Commune, code_insee)
+    if code_commune is not None:
+        code_commune = CODE_COMMUNE_BY_CODE_ARRONDISSEMENT.get(
+            code_commune, code_commune
+        )
+        commune_instance = db_session.get(Commune, code_commune)
         if commune_instance is None:
             raise fastapi.HTTPException(
                 status_code=fastapi.status.HTTP_422_UNPROCESSABLE_ENTITY,
-                detail="This `code_insee` does not exist.",
+                detail="This `code_commune` does not exist.",
             )
         if lat and lon:
             search_point = f"POINT({lon} {lat})"
