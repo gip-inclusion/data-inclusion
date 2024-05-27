@@ -581,6 +581,32 @@ def test_list_structures_filter_by_slug_region(api_client):
     assert_paginated_response_data(response.json(), total=0)
 
 
+@pytest.mark.parametrize(
+    "code_commune, input, found",
+    [
+        (None, DUNKERQUE["code_insee"], False),
+        (DUNKERQUE["code_insee"], DUNKERQUE["code_insee"], True),
+        (DUNKERQUE["code_insee"], "62041", False),
+        (PARIS["code_insee"], "75101", True),
+    ],
+)
+@pytest.mark.with_token
+def test_list_structures_filter_by_code_commune(api_client, code_commune, input, found):
+    service = factories.StructureFactory(code_insee=code_commune)
+    factories.StructureFactory(code_insee=LILLE["code_insee"])
+
+    url = "/api/v0/structures/"
+    response = api_client.get(url, params={"code_commune": input})
+
+    assert response.status_code == 200
+    resp_data = response.json()
+    if found:
+        assert_paginated_response_data(resp_data, total=1)
+        assert resp_data["items"][0]["id"] == service.id
+    else:
+        assert_paginated_response_data(resp_data, total=0)
+
+
 @pytest.mark.with_token
 def test_list_structures_order(
     api_client,
