@@ -390,6 +390,32 @@
               }
             },
             {
+              "name": "code_region",
+              "in": "query",
+              "required": false,
+              "schema": {
+                "allOf": [
+                  {
+                    "$ref": "#/components/schemas/RegionCOG"
+                  }
+                ],
+                "title": "Code Region"
+              }
+            },
+            {
+              "name": "slug_region",
+              "in": "query",
+              "required": false,
+              "schema": {
+                "allOf": [
+                  {
+                    "$ref": "#/components/schemas/RegionSlug"
+                  }
+                ],
+                "title": "Slug Region"
+              }
+            },
+            {
               "name": "code_insee",
               "in": "query",
               "required": false,
@@ -2504,6 +2530,54 @@
             "surdite"
           ],
           "title": "Profil"
+        },
+        "RegionCOG": {
+          "type": "string",
+          "enum": [
+            "01",
+            "02",
+            "03",
+            "04",
+            "06",
+            "11",
+            "24",
+            "27",
+            "28",
+            "32",
+            "44",
+            "52",
+            "53",
+            "75",
+            "76",
+            "84",
+            "93",
+            "94"
+          ],
+          "title": "RegionCOG"
+        },
+        "RegionSlug": {
+          "type": "string",
+          "enum": [
+            "guadeloupe",
+            "martinique",
+            "guyane",
+            "la-reunion",
+            "mayotte",
+            "ile-de-france",
+            "centre-val-de-loire",
+            "bourgogne-franche-comte",
+            "normandie",
+            "hauts-de-france",
+            "grand-est",
+            "pays-de-la-loire",
+            "bretagne",
+            "nouvelle-aquitaine",
+            "occitanie",
+            "auvergne-rhone-alpes",
+            "provence-alpes-cote-d-azur",
+            "corse"
+          ],
+          "title": "RegionSlug"
         },
         "Service": {
           "properties": {
