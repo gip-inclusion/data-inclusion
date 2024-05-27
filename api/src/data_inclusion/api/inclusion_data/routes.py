@@ -27,6 +27,21 @@ router = fastapi.APIRouter(tags=["Données"])
 T = TypeVar("T")
 Optional = T | SkipJsonSchema[None]
 
+CodeCommuneFilter = Annotated[
+    Optional[di_schema.CodeCommune],
+    fastapi.Query(description="Code insee géographique d'une commune."),
+]
+
+CodeDepartementFilter = Annotated[
+    Optional[DepartementCOG],
+    fastapi.Query(description="Code insee géographique d'un département."),
+]
+
+CodeRegionFilter = Annotated[
+    Optional[RegionCOG],
+    fastapi.Query(description="Code insee géographique d'une région."),
+]
+
 
 @router.get(
     "/structures",
@@ -71,11 +86,11 @@ def list_structures_endpoint(
                 Chaque résultat renvoyé a (au moins) une thématique dans cette liste."""
         ),
     ] = None,
-    departement: Annotated[Optional[DepartementCOG], fastapi.Query()] = None,
+    departement: CodeDepartementFilter = None,
     departement_slug: Annotated[Optional[DepartementSlug], fastapi.Query()] = None,
-    code_region: Annotated[Optional[RegionCOG], fastapi.Query()] = None,
+    code_region: CodeRegionFilter = None,
     slug_region: Annotated[Optional[RegionSlug], fastapi.Query()] = None,
-    code_commune: Annotated[Optional[di_schema.CodeCommune], fastapi.Query()] = None,
+    code_commune: CodeCommuneFilter = None,
     db_session=fastapi.Depends(db.get_session),
 ):
     if thematiques is None and thematique is not None:
@@ -168,9 +183,9 @@ def list_services_endpoint(
                 Chaque résultat renvoyé a (au moins) une thématique dans cette liste."""
         ),
     ] = None,
-    departement: Annotated[Optional[DepartementCOG], fastapi.Query()] = None,
+    departement: CodeDepartementFilter = None,
     departement_slug: Annotated[Optional[DepartementSlug], fastapi.Query()] = None,
-    code_region: Annotated[Optional[RegionCOG], fastapi.Query()] = None,
+    code_region: CodeRegionFilter = None,
     slug_region: Annotated[Optional[RegionSlug], fastapi.Query()] = None,
     code_insee: Annotated[
         Optional[di_schema.CodeCommune],
@@ -179,7 +194,7 @@ def list_services_endpoint(
             description="Déprécié en faveur de `code_commune`.",
         ),
     ] = None,
-    code_commune: Annotated[Optional[di_schema.CodeCommune], fastapi.Query()] = None,
+    code_commune: CodeCommuneFilter = None,
     frais: Annotated[
         Optional[list[di_schema.Frais]],
         fastapi.Query(
