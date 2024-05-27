@@ -122,6 +122,44 @@ DepartementCOG = Enum(
     {k: departement.cog for k, departement in _departements_dict.items()},
 )
 
+
+@dataclass(frozen=True)
+class _Region:
+    slug: str
+    cog: str
+
+
+_regions_dict = {
+    "GUADELOUPE": _Region("guadeloupe", "01"),
+    "MARTINIQUE": _Region("martinique", "02"),
+    "GUYANE": _Region("guyane", "03"),
+    "LA_REUNION": _Region("la-reunion", "04"),
+    "MAYOTTE": _Region("mayotte", "06"),
+    "ILE_DE_FRANCE": _Region("ile-de-france", "11"),
+    "CENTRE_VAL_DE_LOIRE": _Region("centre-val-de-loire", "24"),
+    "BOURGOGNE_FRANCHE_COMTE": _Region("bourgogne-franche-comte", "27"),
+    "NORMANDIE": _Region("normandie", "28"),
+    "HAUTS_DE_FRANCE": _Region("hauts-de-france", "32"),
+    "GRAND_EST": _Region("grand-est", "44"),
+    "PAYS_DE_LA_LOIRE": _Region("pays-de-la-loire", "52"),
+    "BRETAGNE": _Region("bretagne", "53"),
+    "NOUVELLE_AQUITAINE": _Region("nouvelle-aquitaine", "75"),
+    "OCCITANIE": _Region("occitanie", "76"),
+    "AUVERGNE_RHONE_ALPES": _Region("auvergne-rhone-alpes", "84"),
+    "PROVENCE_ALPES_COTE_D_AZUR": _Region("provence-alpes-cote-d-azur", "93"),
+    "CORSE": _Region("corse", "94"),
+}
+
+RegionSlug = Enum(
+    "RegionSlug",
+    {k: region.slug for k, region in _regions_dict.items()},
+)
+RegionCOG = Enum(
+    "RegionCOG",
+    {k: region.cog for k, region in _regions_dict.items()},
+)
+
+
 # based on
 # https://github.com/gip-inclusion/dora-back/blob/main/dora/admin_express/utils.py
 

@@ -19,6 +19,7 @@ from data_inclusion.api.code_officiel_geo.constants import (
     CODE_COMMUNE_BY_CODE_ARRONDISSEMENT,
     DepartementCOG,
     DepartementSlug,
+    RegionCOG,
 )
 from data_inclusion.api.code_officiel_geo.models import Commune
 from data_inclusion.api.inclusion_data import models
@@ -270,6 +271,7 @@ def list_services(
     thematiques: list[di_schema.Thematique] | None = None,
     departement: DepartementCOG | None = None,
     departement_slug: DepartementSlug | None = None,
+    region_code: RegionCOG | None = None,
     code_insee: di_schema.CodeCommune | None = None,
     frais: list[di_schema.Frais] | None = None,
     profils: list[di_schema.Profil] | None = None,
@@ -309,6 +311,10 @@ def list_services(
                 ),
             )
         )
+
+    if region_code is not None:
+        query = query.join(Commune).options(orm.contains_eager(models.Service.commune_))
+        query = query.filter(Commune.region == region_code.value)
 
     if code_insee is not None:
         code_insee = CODE_COMMUNE_BY_CODE_ARRONDISSEMENT.get(code_insee, code_insee)
