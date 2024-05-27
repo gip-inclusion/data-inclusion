@@ -450,8 +450,11 @@
                 "minLength": 5,
                 "maxLength": 5,
                 "pattern": "^\\w{5}$",
+                "description": "Déprécié en faveur de `code_commune`.",
                 "title": "Code Insee"
-              }
+              },
+              "description": "Déprécié en faveur de `code_commune`.",
+              "deprecated": true
             },
             {
               "name": "code_commune",
