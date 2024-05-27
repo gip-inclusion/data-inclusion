@@ -50,32 +50,32 @@ def test_list_structures_all(api_client):
             {
                 "_di_geocodage_code_insee": "55626",
                 "_di_geocodage_score": 0.33,
-                "id": "prince-point-monde",
-                "siret": "59382421200611",
-                "rna": "W948924115",
-                "nom": "Vaillant",
-                "commune": "Sainte Bernadetteboeuf",
-                "code_postal": "80571",
-                "code_insee": "84442",
-                "adresse": "977, rue Susan Lévy",
-                "complement_adresse": None,
-                "longitude": -172.461419,
-                "latitude": -64.9625245,
-                "typologie": "ACI",
-                "telephone": "0102030405",
-                "courriel": "ylacombe@example.net",
-                "site_web": "http://berger.fr/",
-                "presentation_resume": "Voie battre.",
-                "presentation_detail": "Or personne jambe.",
-                "source": "dora",
-                "date_maj": "2023-01-01",
-                "antenne": False,
-                "lien_source": "https://dora.fr/prince-point-monde",
-                "horaires_ouverture": 'Mo-Fr 10:00-20:00 "sur rendez-vous"; PH off',
                 "accessibilite": "https://acceslibre.beta.gouv.fr/app/prince-point-monde/",
-                "labels_nationaux": [],
+                "adresse": "88, boulevard Raymond Bonnet",
+                "antenne": False,
+                "code_insee": "59350",
+                "code_postal": "80571",
+                "commune": "Sainte Bernadetteboeuf",
+                "complement_adresse": None,
+                "courriel": "fouquetzoe@example.com",
+                "date_maj": "2023-01-01",
+                "horaires_ouverture": 'Mo-Fr 10:00-20:00 "sur rendez-vous"; PH off',
+                "id": "prince-point-monde",
                 "labels_autres": ["Nièvre médiation numérique"],
+                "labels_nationaux": [],
+                "latitude": -86.2307095,
+                "lien_source": "https://dora.fr/prince-point-monde",
+                "longitude": 114.580692,
+                "nom": "Vaillant",
+                "presentation_detail": "Or personne jambe.",
+                "presentation_resume": "Voie battre.",
+                "rna": "W948924115",
+                "siret": "59382421200611",
+                "site_web": "http://berger.fr/",
+                "source": "dora",
+                "telephone": "0102030405",
                 "thematiques": ["choisir-un-metier"],
+                "typologie": "ACI",
             }
         ],
         "total": 1,
@@ -289,9 +289,7 @@ def test_list_structures_filter_by_code_postal(
     structure_1 = factories.StructureFactory(
         code_postal="59100", code_insee=ROUBAIX["code_insee"], commune="roubaix"
     )
-    factories.StructureFactory(
-        code_postal="59178", code_insee="59100", commune="bousignies"
-    )
+    factories.StructureFactory(code_postal="59178", commune="bousignies")
 
     url = "/api/v0/structures/"
     response = api_client.get(url, params={"code_postal": "59100"})
