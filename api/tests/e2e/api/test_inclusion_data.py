@@ -283,26 +283,6 @@ def test_list_structures_filter_by_departement_slug(
 
 
 @pytest.mark.with_token
-def test_list_structures_filter_by_code_postal(
-    api_client,
-):
-    structure_1 = factories.StructureFactory(
-        code_postal="59100", code_insee=ROUBAIX["code_insee"], commune="roubaix"
-    )
-    factories.StructureFactory(code_postal="59178", commune="bousignies")
-
-    url = "/api/v0/structures/"
-    response = api_client.get(url, params={"code_postal": "59100"})
-
-    resp_data = response.json()
-    assert_paginated_response_data(response.json(), total=1)
-    assert_structure_data(structure_1, resp_data["items"][0])
-
-    response = api_client.get(url, params={"code_postal": ROUBAIX["code_insee"]})
-    assert_paginated_response_data(response.json(), total=0)
-
-
-@pytest.mark.with_token
 def test_list_structures_filter_by_thematique(
     api_client,
 ):

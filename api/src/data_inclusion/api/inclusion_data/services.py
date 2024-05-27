@@ -176,7 +176,6 @@ def list_structures(
     departement: DepartementCOG | None = None,
     departement_slug: DepartementSlug | None = None,
     region_code: RegionCOG | None = None,
-    code_postal: di_schema.CodePostal | None = None,
     thematiques: list[di_schema.Thematique] | None = None,
 ) -> list:
     query = sqla.select(models.Structure)
@@ -216,9 +215,6 @@ def list_structures(
             orm.contains_eager(models.Structure.commune_)
         )
         query = query.filter(Commune.region == region_code.value)
-
-    if code_postal is not None:
-        query = query.filter_by(code_postal=code_postal)
 
     if typologie is not None:
         query = query.filter_by(typologie=typologie.value)
