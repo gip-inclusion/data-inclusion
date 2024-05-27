@@ -282,7 +282,7 @@ def list_services(
     departement: DepartementCOG | None = None,
     departement_slug: DepartementSlug | None = None,
     region_code: RegionCOG | None = None,
-    code_insee: di_schema.CodeCommune | None = None,
+    code_commune: di_schema.CodeCommune | None = None,
     frais: list[di_schema.Frais] | None = None,
     profils: list[di_schema.Profil] | None = None,
     modes_accueil: list[di_schema.ModeAccueil] | None = None,
@@ -326,13 +326,15 @@ def list_services(
         query = query.join(Commune).options(orm.contains_eager(models.Service.commune_))
         query = query.filter(Commune.region == region_code.value)
 
-    if code_insee is not None:
-        code_insee = CODE_COMMUNE_BY_CODE_ARRONDISSEMENT.get(code_insee, code_insee)
+    if code_commune is not None:
+        code_commune = CODE_COMMUNE_BY_CODE_ARRONDISSEMENT.get(
+            code_commune, code_commune
+        )
 
         query = query.filter(
             sqla.or_(
-                models.Service.code_insee == code_insee,
-                models.Service._di_geocodage_code_insee == code_insee,
+                models.Service.code_insee == code_commune,
+                models.Service._di_geocodage_code_insee == code_commune,
             )
         )
 
