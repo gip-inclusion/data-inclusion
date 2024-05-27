@@ -564,6 +564,44 @@ def test_list_structures_null_code_insee_filter_by_departement_slug(api_client):
 
 
 @pytest.mark.with_token
+def test_list_structures_filter_by_code_region(api_client):
+    service = factories.StructureFactory(code_insee=PARIS["code_insee"])
+    factories.StructureFactory(code_insee=LILLE["code_insee"])
+
+    url = "/api/v0/structures/"
+    response = api_client.get(
+        url, params={"code_region": RegionCOG.ILE_DE_FRANCE.value}
+    )
+
+    assert response.status_code == 200
+    resp_data = response.json()
+    assert_paginated_response_data(resp_data, total=1)
+    assert resp_data["items"][0]["id"] == service.id
+
+    response = api_client.get(url, params={"code_region": RegionCOG.LA_REUNION.value})
+    assert_paginated_response_data(response.json(), total=0)
+
+
+@pytest.mark.with_token
+def test_list_structures_filter_by_slug_region(api_client):
+    service = factories.StructureFactory(code_insee=PARIS["code_insee"])
+    factories.StructureFactory(code_insee=LILLE["code_insee"])
+
+    url = "/api/v0/structures/"
+    response = api_client.get(
+        url, params={"slug_region": RegionSlug.ILE_DE_FRANCE.value}
+    )
+
+    assert response.status_code == 200
+    resp_data = response.json()
+    assert_paginated_response_data(resp_data, total=1)
+    assert resp_data["items"][0]["id"] == service.id
+
+    response = api_client.get(url, params={"slug_region": RegionSlug.LA_REUNION.value})
+    assert_paginated_response_data(response.json(), total=0)
+
+
+@pytest.mark.with_token
 def test_list_structures_order(
     api_client,
 ):

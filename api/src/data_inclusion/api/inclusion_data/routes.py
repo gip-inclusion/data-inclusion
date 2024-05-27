@@ -73,6 +73,8 @@ def list_structures_endpoint(
     ] = None,
     departement: Annotated[Optional[DepartementCOG], fastapi.Query()] = None,
     departement_slug: Annotated[Optional[DepartementSlug], fastapi.Query()] = None,
+    code_region: Annotated[Optional[RegionCOG], fastapi.Query()] = None,
+    slug_region: Annotated[Optional[RegionSlug], fastapi.Query()] = None,
     code_postal: Annotated[Optional[di_schema.CodePostal], fastapi.Query()] = None,
     db_session=fastapi.Depends(db.get_session),
 ):
@@ -81,6 +83,9 @@ def list_structures_endpoint(
 
     if sources is None and source is not None:
         sources = [source]
+
+    if code_region is None and slug_region is not None:
+        code_region = RegionCOG[slug_region.name]
 
     return services.list_structures(
         request,
@@ -91,6 +96,7 @@ def list_structures_endpoint(
         label_national=label_national,
         departement=departement,
         departement_slug=departement_slug,
+        region_code=code_region,
         code_postal=code_postal,
         thematiques=thematiques,
     )
