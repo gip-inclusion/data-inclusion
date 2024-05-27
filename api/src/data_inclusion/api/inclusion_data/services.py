@@ -175,6 +175,7 @@ def list_structures(
     label_national: di_schema.LabelNational | None = None,
     departement: DepartementCOG | None = None,
     departement_slug: DepartementSlug | None = None,
+    region_code: RegionCOG | None = None,
     code_postal: di_schema.CodePostal | None = None,
     thematiques: list[di_schema.Thematique] | None = None,
 ) -> list:
@@ -209,6 +210,12 @@ def list_structures(
                 ),
             )
         )
+
+    if region_code is not None:
+        query = query.join(Commune).options(
+            orm.contains_eager(models.Structure.commune_)
+        )
+        query = query.filter(Commune.region == region_code.value)
 
     if code_postal is not None:
         query = query.filter_by(code_postal=code_postal)

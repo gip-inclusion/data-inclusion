@@ -145,6 +145,32 @@
               }
             },
             {
+              "name": "code_region",
+              "in": "query",
+              "required": false,
+              "schema": {
+                "allOf": [
+                  {
+                    "$ref": "#/components/schemas/RegionCOG"
+                  }
+                ],
+                "title": "Code Region"
+              }
+            },
+            {
+              "name": "slug_region",
+              "in": "query",
+              "required": false,
+              "schema": {
+                "allOf": [
+                  {
+                    "$ref": "#/components/schemas/RegionSlug"
+                  }
+                ],
+                "title": "Slug Region"
+              }
+            },
+            {
               "name": "code_postal",
               "in": "query",
               "required": false,
