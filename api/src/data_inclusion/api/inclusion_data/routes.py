@@ -173,6 +173,7 @@ def list_services_endpoint(
     code_region: Annotated[Optional[RegionCOG], fastapi.Query()] = None,
     slug_region: Annotated[Optional[RegionSlug], fastapi.Query()] = None,
     code_insee: Annotated[Optional[di_schema.CodeCommune], fastapi.Query()] = None,
+    code_commune: Annotated[Optional[di_schema.CodeCommune], fastapi.Query()] = None,
     frais: Annotated[
         Optional[list[di_schema.Frais]],
         fastapi.Query(
@@ -221,6 +222,9 @@ def list_services_endpoint(
     if code_region is None and slug_region is not None:
         code_region = RegionCOG[slug_region.name]
 
+    if code_commune is None and code_insee is not None:
+        code_commune = code_insee
+
     return services.list_services(
         request,
         db_session,
@@ -229,7 +233,7 @@ def list_services_endpoint(
         departement=departement,
         departement_slug=departement_slug,
         region_code=code_region,
-        code_insee=code_insee,
+        code_commune=code_commune,
         frais=frais,
         profils=profils,
         modes_accueil=modes_accueil,
