@@ -5,6 +5,10 @@ from unittest.mock import ANY
 import pytest
 
 from data_inclusion import schema
+from data_inclusion.api.code_officiel_geo.constants import (
+    RegionCOG,
+    RegionSlug,
+)
 from data_inclusion.api.utils import soliguide
 
 from ... import factories
@@ -750,6 +754,44 @@ def test_list_services_filter_by_departement_slug(api_client):
     assert resp_data["items"][0]["id"] == service.id
 
     response = api_client.get(url, params={"departement_slug": "pas-de-calais"})
+    assert_paginated_response_data(response.json(), total=0)
+
+
+@pytest.mark.with_token
+def test_list_services_filter_by_code_region(api_client):
+    service = factories.ServiceFactory(code_insee=PARIS["code_insee"])
+    factories.ServiceFactory(code_insee=LILLE["code_insee"])
+
+    url = "/api/v0/services/"
+    response = api_client.get(
+        url, params={"code_region": RegionCOG.ILE_DE_FRANCE.value}
+    )
+
+    assert response.status_code == 200
+    resp_data = response.json()
+    assert_paginated_response_data(resp_data, total=1)
+    assert resp_data["items"][0]["id"] == service.id
+
+    response = api_client.get(url, params={"code_region": RegionCOG.LA_REUNION.value})
+    assert_paginated_response_data(response.json(), total=0)
+
+
+@pytest.mark.with_token
+def test_list_services_filter_by_slug_region(api_client):
+    service = factories.ServiceFactory(code_insee=PARIS["code_insee"])
+    factories.ServiceFactory(code_insee=LILLE["code_insee"])
+
+    url = "/api/v0/services/"
+    response = api_client.get(
+        url, params={"slug_region": RegionSlug.ILE_DE_FRANCE.value}
+    )
+
+    assert response.status_code == 200
+    resp_data = response.json()
+    assert_paginated_response_data(resp_data, total=1)
+    assert resp_data["items"][0]["id"] == service.id
+
+    response = api_client.get(url, params={"slug_region": RegionSlug.LA_REUNION.value})
     assert_paginated_response_data(response.json(), total=0)
 
 

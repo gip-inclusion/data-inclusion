@@ -10,6 +10,8 @@ from data_inclusion.api.code_officiel_geo.constants import (
     CODE_COMMUNE_BY_CODE_ARRONDISSEMENT,
     DepartementCOG,
     DepartementSlug,
+    RegionCOG,
+    RegionSlug,
 )
 from data_inclusion.api.code_officiel_geo.models import Commune
 from data_inclusion.api.config import settings
@@ -162,6 +164,8 @@ def list_services_endpoint(
     ] = None,
     departement: Annotated[Optional[DepartementCOG], fastapi.Query()] = None,
     departement_slug: Annotated[Optional[DepartementSlug], fastapi.Query()] = None,
+    code_region: Annotated[Optional[RegionCOG], fastapi.Query()] = None,
+    slug_region: Annotated[Optional[RegionSlug], fastapi.Query()] = None,
     code_insee: Annotated[Optional[di_schema.CodeCommune], fastapi.Query()] = None,
     frais: Annotated[
         Optional[list[di_schema.Frais]],
@@ -208,6 +212,9 @@ def list_services_endpoint(
     if sources is None and source is not None:
         sources = [source]
 
+    if code_region is None and slug_region is not None:
+        code_region = RegionCOG[slug_region.name]
+
     return services.list_services(
         request,
         db_session,
@@ -215,6 +222,7 @@ def list_services_endpoint(
         thematiques=thematiques,
         departement=departement,
         departement_slug=departement_slug,
+        region_code=code_region,
         code_insee=code_insee,
         frais=frais,
         profils=profils,
