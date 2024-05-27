@@ -1081,7 +1081,7 @@ def test_list_services_filter_by_sources(api_client):
     ],
 )
 @pytest.mark.with_token
-def test_search_services_with_code_insee_foo(api_client, commune_data, input, found):
+def test_search_services_with_code_insee(api_client, commune_data, input, found):
     service = factories.ServiceFactory(
         modes_accueil=[schema.ModeAccueil.EN_PRESENTIEL.value],
         **(commune_data if commune_data is not None else {}),
@@ -1099,8 +1099,37 @@ def test_search_services_with_code_insee_foo(api_client, commune_data, input, fo
         assert_paginated_response_data(resp_data, total=0)
 
 
+@pytest.mark.parametrize(
+    "commune_data, input, found",
+    [
+        (None, DUNKERQUE["code_insee"], False),
+        (DUNKERQUE, DUNKERQUE["code_insee"], True),
+        (DUNKERQUE, MAUBEUGE["code_insee"], False),
+        (PARIS, "75101", True),
+        pytest.param(PARIS, PARIS["code_insee"], True, marks=pytest.mark.xfail),
+    ],
+)
 @pytest.mark.with_token
-def test_search_services_with_code_insee_too_far(api_client):
+def test_search_services_with_code_commune(api_client, commune_data, input, found):
+    service = factories.ServiceFactory(
+        modes_accueil=[schema.ModeAccueil.EN_PRESENTIEL.value],
+        **(commune_data if commune_data is not None else {}),
+    )
+
+    url = "/api/v0/search/services"
+    response = api_client.get(url, params={"code_commune": input})
+
+    assert response.status_code == 200
+    resp_data = response.json()
+    if found:
+        assert_paginated_response_data(resp_data, total=1)
+        assert resp_data["items"][0]["service"]["id"] == service.id
+    else:
+        assert_paginated_response_data(resp_data, total=0)
+
+
+@pytest.mark.with_token
+def test_search_services_with_code_commune_too_far(api_client):
     # Dunkerque to Hazebrouck: <50km
     # Hazebrouck to Lille: <50km
     # Dunkerque to Lille: >50km
@@ -1125,7 +1154,7 @@ def test_search_services_with_code_insee_too_far(api_client):
     response = api_client.get(
         url,
         params={
-            "code_insee": ROUBAIX["code_insee"],  # Roubaix (only close to Lille)
+            "code_commune": ROUBAIX["code_insee"],  # Roubaix (only close to Lille)
         },
     )
 
@@ -1139,9 +1168,9 @@ def test_search_services_with_code_insee_too_far(api_client):
     response = api_client.get(
         url,
         params={
-            "code_insee": ROUBAIX["code_insee"],  # Roubaix
+            "code_commune": ROUBAIX["code_insee"],  # Roubaix
             # Coordinates for Le Mans. We don't enforce lat/lon to be within
-            # the supplied 'code_insee' city limits.
+            # the supplied 'code_commune' city limits.
             "lat": 48.003954,
             "lon": 0.199134,
         },
@@ -1155,7 +1184,7 @@ def test_search_services_with_code_insee_too_far(api_client):
     response = api_client.get(
         url,
         params={
-            "code_insee": ROUBAIX["code_insee"],  # Roubaix
+            "code_commune": ROUBAIX["code_insee"],  # Roubaix
             # Coordinates for Hazebrouck, between Dunkirk & Lille
             "lat": 50.7262,
             "lon": 2.5387,
@@ -1169,12 +1198,12 @@ def test_search_services_with_code_insee_too_far(api_client):
     assert resp_data["items"][0]["service"]["id"] == service_2.id
     assert 0 < resp_data["items"][0]["distance"] < 50
 
-    # What about a request without code_insee but with lat/lon?
+    # What about a request without code_commune but with lat/lon?
     response = api_client.get(
         url,
         params={
             # Coordinates for Le Mans, should be ignored.
-            # the supplied 'code_insee' city limits.
+            # the supplied 'code_commune' city limits.
             "lat": 48.003954,
             "lon": 0.199134,
         },
@@ -1188,7 +1217,7 @@ def test_search_services_with_code_insee_too_far(api_client):
     response = api_client.get(
         url,
         params={
-            "code_insee": MAUBEUGE["code_insee"],
+            "code_commune": MAUBEUGE["code_insee"],
             "lat": 48.003954,
         },
     )
@@ -1200,7 +1229,7 @@ def test_search_services_with_code_insee_too_far(api_client):
     response = api_client.get(
         url,
         params={
-            "code_insee": MAUBEUGE["code_insee"],
+            "code_commune": MAUBEUGE["code_insee"],
             "lon": 1.2563,
         },
     )
@@ -1227,7 +1256,7 @@ def test_search_services_with_zone_diffusion_pays(api_client):
     response = api_client.get(
         url,
         params={
-            "code_insee": MAUBEUGE["code_insee"],  # Maubeuge
+            "code_commune": MAUBEUGE["code_insee"],  # Maubeuge
         },
     )
 
@@ -1264,7 +1293,7 @@ def test_search_services_with_zone_diffusion_commune(api_client):
     response = api_client.get(
         url,
         params={
-            "code_insee": DUNKERQUE["code_insee"],  # Dunkerque
+            "code_commune": DUNKERQUE["code_insee"],  # Dunkerque
         },
     )
 
@@ -1301,7 +1330,7 @@ def test_search_services_with_zone_diffusion_epci(api_client):
     response = api_client.get(
         url,
         params={
-            "code_insee": DUNKERQUE["code_insee"],  # Dunkerque
+            "code_commune": DUNKERQUE["code_insee"],  # Dunkerque
         },
     )
 
@@ -1338,7 +1367,7 @@ def test_search_services_with_zone_diffusion_departement(api_client):
     response = api_client.get(
         url,
         params={
-            "code_insee": DUNKERQUE["code_insee"],  # Dunkerque
+            "code_commune": DUNKERQUE["code_insee"],  # Dunkerque
         },
     )
 
@@ -1375,7 +1404,7 @@ def test_search_services_with_zone_diffusion_region(api_client):
     response = api_client.get(
         url,
         params={
-            "code_insee": DUNKERQUE["code_insee"],  # Dunkerque
+            "code_commune": DUNKERQUE["code_insee"],  # Dunkerque
         },
     )
 
@@ -1386,7 +1415,7 @@ def test_search_services_with_zone_diffusion_region(api_client):
 
 
 @pytest.mark.with_token
-def test_search_services_with_bad_code_insee(api_client):
+def test_search_services_with_bad_code_commune(api_client):
     factories.ServiceFactory(
         commune="Lille",
         code_insee=LILLE["code_insee"],
@@ -1399,7 +1428,7 @@ def test_search_services_with_bad_code_insee(api_client):
     response = api_client.get(
         url,
         params={
-            "code_insee": "59999",  # Does not exist
+            "code_commune": "59999",  # Does not exist
         },
     )
 
@@ -1407,7 +1436,7 @@ def test_search_services_with_bad_code_insee(api_client):
 
 
 @pytest.mark.with_token
-def test_search_services_with_code_insee_ordering(api_client):
+def test_search_services_with_code_commune_ordering(api_client):
     service_1 = factories.ServiceFactory(
         commune="Hazebrouck",
         **HAZEBROUCK,
@@ -1425,7 +1454,7 @@ def test_search_services_with_code_insee_ordering(api_client):
     )
 
     url = "/api/v0/search/services"
-    response = api_client.get(url, params={"code_insee": ROUBAIX["code_insee"]})
+    response = api_client.get(url, params={"code_commune": ROUBAIX["code_insee"]})
 
     assert response.status_code == 200
     resp_data = response.json()
@@ -1437,7 +1466,7 @@ def test_search_services_with_code_insee_ordering(api_client):
 
 
 @pytest.mark.with_token
-def test_search_services_with_code_insee_sample_distance(api_client):
+def test_search_services_with_code_commune_sample_distance(api_client):
     service_1 = factories.ServiceFactory(
         commune="Lille",
         _di_geocodage_code_insee=None,
@@ -1451,7 +1480,7 @@ def test_search_services_with_code_insee_sample_distance(api_client):
     )
 
     url = "/api/v0/search/services"
-    response = api_client.get(url, params={"code_insee": HAZEBROUCK["code_insee"]})
+    response = api_client.get(url, params={"code_commune": HAZEBROUCK["code_insee"]})
 
     assert response.status_code == 200
     resp_data = response.json()
@@ -1461,7 +1490,7 @@ def test_search_services_with_code_insee_sample_distance(api_client):
 
 
 @pytest.mark.with_token
-def test_search_services_with_code_insee_a_distance(api_client):
+def test_search_services_with_code_commune_a_distance(api_client):
     service_1 = factories.ServiceFactory(
         commune="Dunkerque",
         code_insee=DUNKERQUE["code_insee"],
@@ -1476,7 +1505,7 @@ def test_search_services_with_code_insee_a_distance(api_client):
     )
 
     url = "/api/v0/search/services"
-    response = api_client.get(url, params={"code_insee": DUNKERQUE["code_insee"]})
+    response = api_client.get(url, params={"code_commune": DUNKERQUE["code_insee"]})
 
     assert response.status_code == 200
     resp_data = response.json()
