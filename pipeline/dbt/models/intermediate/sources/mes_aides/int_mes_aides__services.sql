@@ -92,7 +92,8 @@ final AS (
         NULL                                                                                      AS "contact_nom_prenom",
         garages.email                                                                             AS "courriel",
         garages.telephone                                                                         AS "telephone",
-        CAST(NULL AS TEXT [])                                                                     AS "frais"
+        CAST(NULL AS TEXT [])                                                                     AS "frais",
+        NULL                                                                                      AS "page_web"
     FROM garages
     LEFT JOIN service_types_by_garage ON garages.id = service_types_by_garage.id
     WHERE

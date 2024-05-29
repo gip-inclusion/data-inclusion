@@ -65,6 +65,7 @@ final AS (
         services.zone_diffusion_nom                      AS "zone_diffusion_nom",
         services.zone_diffusion_type                     AS "zone_diffusion_type",
         services.pre_requis                              AS "pre_requis",
+        NULL                                             AS "page_web",
         CASE
             WHEN blocked_services_uids.id IS NULL
                 THEN services.contact_nom_prenom
