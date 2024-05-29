@@ -136,6 +136,12 @@ for source_id, source_config in sources.SOURCES_CONFIGS.items():
         start = empty.EmptyOperator(task_id="start")
         end = empty.EmptyOperator(task_id="end")
 
+        dbt_snapshot_source = dbt_operator_factory(
+            task_id="dbt_snapshot_source",
+            command="snapshot",
+            select=model_name,
+        )
+
         for stream_id in source_config["streams"]:
             with TaskGroup(group_id=stream_id) as stream_task_group:
                 extract = python.ExternalPythonOperator(
@@ -160,15 +166,10 @@ for source_id, source_config in sources.SOURCES_CONFIGS.items():
 
                 start >> extract >> load
 
-        # FIXME(vperron) : didn't Valentin say that snapshots aren't actually used ?
-        if source_config["snapshot"]:
-            dbt_snapshot_source = dbt_operator_factory(
-                task_id="dbt_snapshot_source",
-                command="snapshot",
-                select=model_name,
-            )
-            stream_task_group >> dbt_snapshot_source >> end
-        else:
-            stream_task_group >> end
+            # FIXME(vperron) : didn't Valentin say that snapshots aren't actually used ?
+            if source_config["snapshot"]:
+                stream_task_group >> dbt_snapshot_source >> end
+            else:
+                stream_task_group >> end
 
     globals()[dag_id] = dag
