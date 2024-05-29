@@ -2,6 +2,7 @@ WITH structures AS (
     {{ 
         dbt_utils.union_relations(
             relations=[
+                ref('int_action_logement__structures'),
                 ref('int_agefiph__structures'),
                 ref('int_data_inclusion__structures'),
                 ref('int_dora__structures'),

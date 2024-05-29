@@ -60,7 +60,8 @@ final AS (
         CASE
             WHEN LENGTH(service_description) <= 280 THEN NULL
             ELSE service_description
-        END                                             AS "presentation_detail"
+        END                                             AS "presentation_detail",
+        NULL                                            AS "page_web"
     FROM ressources_partenariales
     ORDER BY 1
 
