@@ -30,6 +30,7 @@ final AS (
         zone_diffusion_code                                         AS "zone_diffusion_code",
         NULL                                                        AS "zone_diffusion_nom",
         zone_diffusion_type                                         AS "zone_diffusion_type",
+        NULL                                                        AS "page_web",
         CAST(NULL AS BOOLEAN)                                       AS "cumulable",
         CAST(NULL AS TEXT [])                                       AS "justificatifs",
         CAST(NULL AS TEXT [])                                       AS "modes_accueil",

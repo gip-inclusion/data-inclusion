@@ -163,6 +163,8 @@ models:
         data_type: text
         constraints:
           - type: not_null
+      - name: page_web
+        data_type: text
       - name: presentation_resume
         data_type: text
       - name: presentation_detail

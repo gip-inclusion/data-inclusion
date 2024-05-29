@@ -186,7 +186,8 @@ final AS (
                 CASE WHEN open_services.modalities__inscription__checked THEN '## Sur inscription :' || E'\n' || open_services.modalities__inscription__precisions END
             ],
             E'\n\n'
-        )                                                             AS "modes_orientation_beneficiaire_autres"
+        )                                                             AS "modes_orientation_beneficiaire_autres",
+        NULL AS "page_web"
     FROM open_services
     LEFT JOIN lieux ON open_services.lieu_id = lieux.id
     LEFT JOIN categories ON open_services.category = categories.code

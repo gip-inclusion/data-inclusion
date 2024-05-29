@@ -1,22 +1,9 @@
 WITH services AS (
-    SELECT * FROM {{ ref('stg_france_travail__services') }}
+    SELECT * FROM {{ ref('stg_action_logement__services') }}
 ),
 
-agences AS (
-    SELECT * FROM {{ ref('int_france_travail__agences') }}
-),
-
-adresses AS (
-    SELECT * FROM {{ ref('int_france_travail__adresses') }}
-),
-
-structures_with_commune AS (
-    SELECT
-        agences.*,
-        adresses.code_insee AS "code_insee",
-        adresses.commune    AS "commune"
-    FROM agences
-    LEFT JOIN adresses ON agences.id = adresses.id
+structures AS (
+    SELECT * FROM {{ ref('int_action_logement__structures') }}
 ),
 
 final AS (
@@ -40,6 +27,7 @@ final AS (
         services.modes_orientation_beneficiaire          AS "modes_orientation_beneficiaire",
         services.modes_orientation_beneficiaire_autres   AS "modes_orientation_beneficiaire_autres",
         services.nom                                     AS "nom",
+        services.page_web                                AS "page_web",
         services.presentation_detail                     AS "presentation_detail",
         services.presentation_resume                     AS "presentation_resume",
         services.prise_rdv                               AS "prise_rdv",
@@ -50,14 +38,13 @@ final AS (
         services.types                                   AS "types",
         structures.telephone                             AS "telephone",
         services.frais                                   AS "frais",
-        'commune'                                        AS "zone_diffusion_type",
-        structures.code_insee                            AS "zone_diffusion_code",
-        structures.commune                               AS "zone_diffusion_nom",
-        NULL                                             AS "page_web",
+        'departement'                                    AS "zone_diffusion_type",
+        NULL                                             AS "zone_diffusion_code",
+        NULL                                             AS "zone_diffusion_nom",
         CAST(NULL AS DATE)                               AS "date_suspension",
         structures.id || '-' || services.id              AS "id"
     FROM services
-    CROSS JOIN structures_with_commune AS structures
+    CROSS JOIN structures
 )
 
 SELECT * FROM final

@@ -63,7 +63,8 @@ final AS (
                 CASE WHEN details__modalite__modalites_inscription IS NOT NULL THEN '## Les modalités d''inscription :' || E'\n\n' || details__modalite__modalites_inscription END
             ],
             E'\n\n'
-        )                                                                                 AS "presentation_detail"
+        )                                                                                 AS "presentation_detail",
+        NULL                                                                              AS "page_web"
     FROM creches
 )
 

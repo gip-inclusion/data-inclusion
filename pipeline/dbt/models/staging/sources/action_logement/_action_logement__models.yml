@@ -1,0 +1,18 @@
+version: 2
+
+models:
+  - name: stg_action_logement__services
+    columns:
+      - name: id
+        tests:
+          - unique
+          - not_null
+          - dbt_utils.not_empty_string
+
+  - name: stg_action_logement__structures
+    columns:
+      - name: id
+        tests:
+          - unique
+          - not_null
+          - dbt_utils.not_empty_string

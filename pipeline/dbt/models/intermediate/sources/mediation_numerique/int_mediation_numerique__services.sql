@@ -64,7 +64,8 @@ final AS (
         CASE WHEN CARDINALITY(services.types) > 0 THEN services.types ELSE ARRAY['accompagnement'] END AS "types",
         ARRAY['en-presentiel']                                                                         AS "modes_accueil",
         {{ truncate_text(presentation) }}                                                              AS "presentation_resume",
-        {{ presentation }}                                                                             AS "presentation_detail"
+        {{ presentation }}                                                                             AS "presentation_detail",
+        NULL                                                                                           AS "page_web"
     FROM services
     LEFT JOIN structures ON services.structure_id = structures.id
 )
