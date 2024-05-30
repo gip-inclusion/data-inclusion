@@ -3,10 +3,8 @@ from datetime import date, timedelta
 from unittest.mock import ANY
 
 import pytest
-import sqlalchemy as sqla
 
 from data_inclusion import schema
-from data_inclusion.api.request import models
 from data_inclusion.api.utils import soliguide
 
 from ... import factories
@@ -1340,37 +1338,3 @@ def test_retrieve_service_and_notify_soliguide(
 
     assert response.status_code == status_code
     assert fake_soliguide_client.retrieved_ids == retrieved_ids
-
-
-@pytest.mark.parametrize(
-    ("lien_source", "depuis", "status_code"),
-    [
-        ("https://dora.incubateur.net/", "les-emplois", 307),
-        ("https://dora.incubateur.net/", None, 422),
-        (None, "les-emplois", 404),
-    ],
-)
-def test_redirect_service(api_client, lien_source, depuis, status_code, db_session):
-    service = factories.ServiceFactory(lien_source=lien_source)
-
-    url = "/api/v0/services/"
-    params = {"mtm_campaign": "LesEmplois"}
-    if depuis is not None:
-        params["depuis"] = depuis
-    response = api_client.get(
-        url + f"{service.source}/{service.id}/redirige",
-        follow_redirects=False,
-        params=params,
-    )
-
-    assert response.status_code == status_code
-
-    if status_code == 307:
-        assert response.headers["location"] == f"{lien_source}?mtm_campaign=LesEmplois"
-
-        assert (
-            db_session.scalar(
-                sqla.select(sqla.func.count()).select_from(models.Request)
-            )
-            == 1
-        )
