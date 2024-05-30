@@ -35,7 +35,7 @@ def get_location(city_code: str, commune: str, region: str) -> str:
 
 
 @contextlib.contextmanager
-def solve_captcha(page, timeout: int = 500):
+def solve_captcha(page, timeout: int = 1000):
     """Wait for captcha and solve it if ever it shows up.
 
     Args:
@@ -143,6 +143,7 @@ def search_at_location(
 
     total_pages = data["totalPages"]
     nb_of_main_results = data["nbOfMainResults"]
+    search_results += data["mainResults"]
 
     logger.info("%s search results, %s pages", nb_of_main_results, total_pages)
 
@@ -245,20 +246,20 @@ def read(path: Path):
         data = json.load(file)
 
     for creche_data in data:
-        creche_data["details"]["presentation"][
-            "structureProjet"
-        ] = utils.html_to_markdown(
-            creche_data["details"]["presentation"]["structureProjet"]
+        creche_data["details"]["presentation"]["structureProjet"] = (
+            utils.html_to_markdown(
+                creche_data["details"]["presentation"]["structureProjet"]
+            )
         )
-        creche_data["details"]["modalite"][
-            "conditionAdmision"
-        ] = utils.html_to_markdown(
-            creche_data["details"]["modalite"]["conditionAdmision"]
+        creche_data["details"]["modalite"]["conditionAdmision"] = (
+            utils.html_to_markdown(
+                creche_data["details"]["modalite"]["conditionAdmision"]
+            )
         )
-        creche_data["details"]["modalite"][
-            "modalitesInscription"
-        ] = utils.html_to_markdown(
-            creche_data["details"]["modalite"]["modalitesInscription"]
+        creche_data["details"]["modalite"]["modalitesInscription"] = (
+            utils.html_to_markdown(
+                creche_data["details"]["modalite"]["modalitesInscription"]
+            )
         )
         creche_data["details"]["infosPratiques"]["handicap"] = utils.html_to_markdown(
             creche_data["details"]["infosPratiques"]["handicap"]
