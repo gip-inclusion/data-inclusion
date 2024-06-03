@@ -141,7 +141,7 @@ EXTRACT_TASK_CONCURRENCY = 2
 @dag(
     start_date=pendulum.datetime(2022, 1, 1, tz=date.TIME_ZONE),
     default_args=default_args,
-    schedule="@weekly",
+    schedule="@monthly",
     catchup=False,
     tags=["source"],
 )
