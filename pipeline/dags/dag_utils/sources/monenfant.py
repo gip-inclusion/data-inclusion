@@ -3,6 +3,7 @@ import enum
 import json
 import logging
 import os
+import unicodedata
 from datetime import datetime
 from pathlib import Path
 
@@ -19,12 +20,22 @@ from . import utils
 logger = logging.getLogger(__name__)
 
 
+def unaccent(text: str) -> str:
+    # Decompose the unicode string into its base and combining characters
+    nfkd_form = unicodedata.normalize("NFKD", text)
+    # Filter out the combining characters (like accents)
+    return "".join([c for c in nfkd_form if not unicodedata.combining(c)])
+
+
 def get_location(city_code: str, commune: str, region: str) -> str:
     """Return a location string suitable for the search form on monenfant.fr.
 
     The location string is formatted as "Xeme Arrondissement Paris" for Paris.
     For other cities, it is formatted like "Lille Nord".
     """
+    commune = unaccent(commune)
+    region = unaccent(region)
+
     if "Arrondissement" in commune:
         commune = commune.split()[0]
         num_arrondissement = city_code[3:].lstrip("0")
@@ -221,7 +232,9 @@ def extract(
         else:
             radius = SearchRadius.FIVE_KM
 
-        logger.info("Searching for creches at %s (radius=%skm)", location, radius)
+        logger.info(
+            "Searching for creches at %s, %s (radius=%skm)", location, city_code, radius
+        )
         search_results = search_at_location(
             browser=browser,
             location=location,
