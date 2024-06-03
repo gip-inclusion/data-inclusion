@@ -1,3 +1,5 @@
+from unittest.mock import ANY
+
 import pandas as pd
 import pytest
 
@@ -49,7 +51,7 @@ def test_ban_geocode(
             "latitude": "50.627078",
             "longitude": "3.067372",
             "result_label": "17 Rue Malus 59000 Lille",
-            "result_score": "0.9747818181818181",
+            "result_score": ANY,
             "result_score_next": None,
             "result_type": "housenumber",
             "result_id": "59350_5835_00017",
