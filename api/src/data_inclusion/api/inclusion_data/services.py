@@ -166,6 +166,17 @@ def filter_outdated_services(
     )
 
 
+def filter_restricted(
+    query: sqla.Select,
+    request: fastapi.Request,
+) -> sqla.Select:
+    if not request.user.is_authenticated or "dora" not in request.user.username:
+        query = query.filter(models.Structure.source != "soliguide")
+        query = query.filter(models.Structure.source != "data-inclusion")
+
+    return query
+
+
 def list_structures(
     request: fastapi.Request,
     db_session: orm.Session,
@@ -180,13 +191,10 @@ def list_structures(
     thematiques: list[di_schema.Thematique] | None = None,
 ) -> list:
     query = sqla.select(models.Structure)
+    query = filter_restricted(query, request)
 
     if sources is not None:
         query = filter_by_sources(query, sources)
-
-    if not request.user.is_authenticated or "dora" not in request.user.username:
-        query = query.filter(models.Structure.source != "soliguide")
-        query = query.filter(models.Structure.source != "data-inclusion")
 
     if id_ is not None:
         query = query.filter_by(id=id_)
@@ -274,6 +282,42 @@ def list_sources(request: fastapi.Request) -> list[dict]:
     return sources
 
 
+def filter_services(
+    query: sqla.Select,
+    sources: list[str] | None = None,
+    thematiques: list[di_schema.Thematique] | None = None,
+    frais: list[di_schema.Frais] | None = None,
+    profils: list[di_schema.Profil] | None = None,
+    modes_accueil: list[di_schema.ModeAccueil] | None = None,
+    types: list[di_schema.TypologieService] | None = None,
+    include_outdated: bool | None = False,
+) -> sqla.Select:
+    """Common filters for services."""
+
+    if sources is not None:
+        query = filter_by_sources(query, sources)
+
+    if thematiques is not None:
+        query = filter_services_by_thematiques(query, thematiques)
+
+    if frais is not None:
+        query = filter_services_by_frais(query, frais)
+
+    if profils is not None:
+        query = filter_services_by_profils(query, profils)
+
+    if modes_accueil is not None:
+        query = filter_services_by_modes_accueil(query, modes_accueil)
+
+    if types is not None:
+        query = filter_services_by_types(query, types)
+
+    if not include_outdated:
+        query = filter_outdated_services(query)
+
+    return query
+
+
 def list_services(
     request: fastapi.Request,
     db_session: orm.Session,
@@ -294,13 +338,7 @@ def list_services(
         .join(models.Structure)
         .options(orm.contains_eager(models.Service.structure))
     )
-
-    if sources is not None:
-        query = filter_by_sources(query, sources)
-
-    if not request.user.is_authenticated or "dora" not in request.user.username:
-        query = query.filter(models.Structure.source != "soliguide")
-        query = query.filter(models.Structure.source != "data-inclusion")
+    query = filter_restricted(query, request)
 
     if departement is not None:
         query = query.filter(
@@ -338,23 +376,16 @@ def list_services(
             )
         )
 
-    if thematiques is not None:
-        query = filter_services_by_thematiques(query, thematiques)
-
-    if frais is not None:
-        query = filter_services_by_frais(query, frais)
-
-    if profils is not None:
-        query = filter_services_by_profils(query, profils)
-
-    if modes_accueil is not None:
-        query = filter_services_by_modes_accueil(query, modes_accueil)
-
-    if types is not None:
-        query = filter_services_by_types(query, types)
-
-    if not include_outdated:
-        query = filter_outdated_services(query)
+    query = filter_services(
+        query=query,
+        sources=sources,
+        thematiques=thematiques,
+        frais=frais,
+        profils=profils,
+        modes_accueil=modes_accueil,
+        types=types,
+        include_outdated=include_outdated,
+    )
 
     query = query.order_by(
         models.Service.source,
@@ -382,13 +413,7 @@ def search_services(
         .join(models.Structure)
         .options(orm.contains_eager(models.Service.structure))
     )
-
-    if sources is not None:
-        query = filter_by_sources(query, sources)
-
-    if not request.user.is_authenticated or "dora" not in request.user.username:
-        query = query.filter(models.Structure.source != "soliguide")
-        query = query.filter(models.Structure.source != "data-inclusion")
+    query = filter_restricted(query, request)
 
     if commune_instance is not None:
         # filter by zone de diffusion
@@ -482,23 +507,16 @@ def search_services(
     else:
         query = query.add_columns(sqla.null().cast(sqla.Integer).label("distance"))
 
-    if thematiques is not None:
-        query = filter_services_by_thematiques(query, thematiques)
-
-    if frais is not None:
-        query = filter_services_by_frais(query, frais)
-
-    if modes_accueil is not None:
-        query = filter_services_by_modes_accueil(query, modes_accueil)
-
-    if profils is not None:
-        query = filter_services_by_profils(query, profils)
-
-    if types is not None:
-        query = filter_services_by_types(query, types)
-
-    if not include_outdated:
-        query = filter_outdated_services(query)
+    query = filter_services(
+        query=query,
+        sources=sources,
+        thematiques=thematiques,
+        frais=frais,
+        profils=profils,
+        modes_accueil=modes_accueil,
+        types=types,
+        include_outdated=include_outdated,
+    )
 
     query = query.order_by(sqla.column("distance").nulls_last())
 
