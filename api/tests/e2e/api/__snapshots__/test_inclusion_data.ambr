@@ -119,8 +119,24 @@
                     "$ref": "#/components/schemas/DepartementCodeEnum"
                   }
                 ],
-                "description": "Code insee géographique d'un département.",
+                "description": "Déprécié en faveur de `code_departement`.",
                 "title": "Departement"
+              },
+              "description": "Déprécié en faveur de `code_departement`.",
+              "deprecated": true
+            },
+            {
+              "name": "code_departement",
+              "in": "query",
+              "required": false,
+              "schema": {
+                "allOf": [
+                  {
+                    "$ref": "#/components/schemas/DepartementCodeEnum"
+                  }
+                ],
+                "description": "Code insee géographique d'un département.",
+                "title": "Code Departement"
               },
               "description": "Code insee géographique d'un département."
             },
@@ -134,7 +150,23 @@
                     "$ref": "#/components/schemas/DepartementSlugEnum"
                   }
                 ],
+                "description": "Déprécié en faveur de `slug_departement`.",
                 "title": "Departement Slug"
+              },
+              "description": "Déprécié en faveur de `slug_departement`.",
+              "deprecated": true
+            },
+            {
+              "name": "slug_departement",
+              "in": "query",
+              "required": false,
+              "schema": {
+                "allOf": [
+                  {
+                    "$ref": "#/components/schemas/DepartementSlugEnum"
+                  }
+                ],
+                "title": "Slug Departement"
               }
             },
             {
@@ -396,8 +428,24 @@
                     "$ref": "#/components/schemas/DepartementCodeEnum"
                   }
                 ],
-                "description": "Code insee géographique d'un département.",
+                "description": "Déprécié en faveur de `code_departement`.",
                 "title": "Departement"
+              },
+              "description": "Déprécié en faveur de `code_departement`.",
+              "deprecated": true
+            },
+            {
+              "name": "code_departement",
+              "in": "query",
+              "required": false,
+              "schema": {
+                "allOf": [
+                  {
+                    "$ref": "#/components/schemas/DepartementCodeEnum"
+                  }
+                ],
+                "description": "Code insee géographique d'un département.",
+                "title": "Code Departement"
               },
               "description": "Code insee géographique d'un département."
             },
@@ -411,7 +459,23 @@
                     "$ref": "#/components/schemas/DepartementSlugEnum"
                   }
                 ],
+                "description": "Déprécié en faveur de `slug_departement`.",
                 "title": "Departement Slug"
+              },
+              "description": "Déprécié en faveur de `slug_departement`.",
+              "deprecated": true
+            },
+            {
+              "name": "slug_departement",
+              "in": "query",
+              "required": false,
+              "schema": {
+                "allOf": [
+                  {
+                    "$ref": "#/components/schemas/DepartementSlugEnum"
+                  }
+                ],
+                "title": "Slug Departement"
               }
             },
             {
