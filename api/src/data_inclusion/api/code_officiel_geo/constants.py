@@ -8,160 +8,159 @@ from enum import Enum
 
 
 @dataclass(frozen=True)
-class _Departement:
+class Departement:
     slug: str
-    cog: str
+    code: str
 
 
-_departements_dict = {
-    "AIN": _Departement("ain", "01"),
-    "AISNE": _Departement("aisne", "02"),
-    "ALLIER": _Departement("allier", "03"),
-    "ALPES_DE_HAUTE_PROVENCE": _Departement("alpes-de-haute-provence", "04"),
-    "ALPES_MARITIMES": _Departement("alpes-maritimes", "06"),
-    "ARDECHE": _Departement("ardeche", "07"),
-    "ARDENNES": _Departement("ardennes", "08"),
-    "ARIEGE": _Departement("ariege", "09"),
-    "AUBE": _Departement("aube", "10"),
-    "AUDE": _Departement("aude", "11"),
-    "AVEYRON": _Departement("aveyron", "12"),
-    "BAS_RHIN": _Departement("bas-rhin", "67"),
-    "BOUCHES_DU_RHONE": _Departement("bouches-du-rhone", "13"),
-    "CALVADOS": _Departement("calvados", "14"),
-    "CANTAL": _Departement("cantal", "15"),
-    "CHARENTE_MARITIME": _Departement("charente-maritime", "17"),
-    "CHARENTE": _Departement("charente", "16"),
-    "CHER": _Departement("cher", "18"),
-    "CORREZE": _Departement("correze", "19"),
-    "CORSE_DU_SUD": _Departement("corse-du-sud", "2A"),
-    "COTE_D_OR": _Departement("cote-d-or", "21"),
-    "COTES_D_ARMOR": _Departement("cotes-d-armor", "22"),
-    "CREUSE": _Departement("creuse", "23"),
-    "DEUX_SEVRES": _Departement("deux-sevres", "79"),
-    "DORDOGNE": _Departement("dordogne", "24"),
-    "DOUBS": _Departement("doubs", "25"),
-    "DROME": _Departement("drome", "26"),
-    "ESSONNE": _Departement("essonne", "91"),
-    "EURE_ET_LOIR": _Departement("eure-et-loir", "28"),
-    "EURE": _Departement("eure", "27"),
-    "FINISTERE": _Departement("finistere", "29"),
-    "GARD": _Departement("gard", "30"),
-    "GERS": _Departement("gers", "32"),
-    "GIRONDE": _Departement("gironde", "33"),
-    "GUADELOUPE": _Departement("guadeloupe", "971"),
-    "GUYANE": _Departement("guyane", "973"),
-    "HAUT_RHIN": _Departement("haut-rhin", "68"),
-    "HAUTE_CORSE": _Departement("haute-corse", "2B"),
-    "HAUTE_GARONNE": _Departement("haute-garonne", "31"),
-    "HAUTE_LOIRE": _Departement("haute-loire", "43"),
-    "HAUTE_MARNE": _Departement("haute-marne", "52"),
-    "HAUTE_SAONE": _Departement("haute-saone", "70"),
-    "HAUTE_SAVOIE": _Departement("haute-savoie", "74"),
-    "HAUTE_VIENNE": _Departement("haute-vienne", "87"),
-    "HAUTES_ALPES": _Departement("hautes-alpes", "05"),
-    "HAUTES_PYRENEES": _Departement("hautes-pyrenees", "65"),
-    "HAUTS_DE_SEINE": _Departement("hauts-de-seine", "92"),
-    "HERAULT": _Departement("herault", "34"),
-    "ILLE_ET_VILAINE": _Departement("ille-et-vilaine", "35"),
-    "INDRE_ET_LOIRE": _Departement("indre-et-loire", "37"),
-    "INDRE": _Departement("indre", "36"),
-    "ISERE": _Departement("isere", "38"),
-    "JURA": _Departement("jura", "39"),
-    "LA_REUNION": _Departement("la-reunion", "974"),
-    "LANDES": _Departement("landes", "40"),
-    "LOIR_ET_CHER": _Departement("loir-et-cher", "41"),
-    "LOIRE_ATLANTIQUE": _Departement("loire-atlantique", "44"),
-    "LOIRE": _Departement("loire", "42"),
-    "LOIRET": _Departement("loiret", "45"),
-    "LOT_ET_GARONNE": _Departement("lot-et-garonne", "47"),
-    "LOT": _Departement("lot", "46"),
-    "LOZERE": _Departement("lozere", "48"),
-    "MAINE_ET_LOIRE": _Departement("maine-et-loire", "49"),
-    "MANCHE": _Departement("manche", "50"),
-    "MARNE": _Departement("marne", "51"),
-    "MARTINIQUE": _Departement("martinique", "972"),
-    "MAYENNE": _Departement("mayenne", "53"),
-    "MAYOTTE": _Departement("mayotte", "976"),
-    "MEURTHE_ET_MOSELLE": _Departement("meurthe-et-moselle", "54"),
-    "MEUSE": _Departement("meuse", "55"),
-    "MORBIHAN": _Departement("morbihan", "56"),
-    "MOSELLE": _Departement("moselle", "57"),
-    "NIEVRE": _Departement("nievre", "58"),
-    "NORD": _Departement("nord", "59"),
-    "OISE": _Departement("oise", "60"),
-    "ORNE": _Departement("orne", "61"),
-    "PARIS": _Departement("paris", "75"),
-    "PAS_DE_CALAIS": _Departement("pas-de-calais", "62"),
-    "PUY_DE_DOME": _Departement("puy-de-dome", "63"),
-    "PYRENEES_ATLANTIQUES": _Departement("pyrenees-atlantiques", "64"),
-    "PYRENEES_ORIENTALES": _Departement("pyrenees-orientales", "66"),
-    "RHONE": _Departement("rhone", "69"),
-    "SAONE_ET_LOIRE": _Departement("saone-et-loire", "71"),
-    "SARTHE": _Departement("sarthe", "72"),
-    "SAVOIE": _Departement("savoie", "73"),
-    "SEINE_ET_MARNE": _Departement("seine-et-marne", "77"),
-    "SEINE_MARITIME": _Departement("seine-maritime", "76"),
-    "SEINE_SAINT_DENIS": _Departement("seine-saint-denis", "93"),
-    "SOMME": _Departement("somme", "80"),
-    "TARN_ET_GARONNE": _Departement("tarn-et-garonne", "82"),
-    "TARN": _Departement("tarn", "81"),
-    "TERRITOIRE_DE_BELFORT": _Departement("territoire-de-belfort", "90"),
-    "VAL_D_OISE": _Departement("val-d-oise", "95"),
-    "VAL_DE_MARNE": _Departement("val-de-marne", "94"),
-    "VAR": _Departement("var", "83"),
-    "VAUCLUSE": _Departement("vaucluse", "84"),
-    "VENDEE": _Departement("vendee", "85"),
-    "VIENNE": _Departement("vienne", "86"),
-    "VOSGES": _Departement("vosges", "88"),
-    "YONNE": _Departement("yonne", "89"),
-    "YVELINES": _Departement("yvelines", "78"),
-}
+class DepartementEnum(Enum):
+    AIN = Departement("ain", "01")
+    AISNE = Departement("aisne", "02")
+    ALLIER = Departement("allier", "03")
+    ALPES_DE_HAUTE_PROVENCE = Departement("alpes-de-haute-provence", "04")
+    ALPES_MARITIMES = Departement("alpes-maritimes", "06")
+    ARDECHE = Departement("ardeche", "07")
+    ARDENNES = Departement("ardennes", "08")
+    ARIEGE = Departement("ariege", "09")
+    AUBE = Departement("aube", "10")
+    AUDE = Departement("aude", "11")
+    AVEYRON = Departement("aveyron", "12")
+    BAS_RHIN = Departement("bas-rhin", "67")
+    BOUCHES_DU_RHONE = Departement("bouches-du-rhone", "13")
+    CALVADOS = Departement("calvados", "14")
+    CANTAL = Departement("cantal", "15")
+    CHARENTE_MARITIME = Departement("charente-maritime", "17")
+    CHARENTE = Departement("charente", "16")
+    CHER = Departement("cher", "18")
+    CORREZE = Departement("correze", "19")
+    CORSE_DU_SUD = Departement("corse-du-sud", "2A")
+    COTE_D_OR = Departement("cote-d-or", "21")
+    COTES_D_ARMOR = Departement("cotes-d-armor", "22")
+    CREUSE = Departement("creuse", "23")
+    DEUX_SEVRES = Departement("deux-sevres", "79")
+    DORDOGNE = Departement("dordogne", "24")
+    DOUBS = Departement("doubs", "25")
+    DROME = Departement("drome", "26")
+    ESSONNE = Departement("essonne", "91")
+    EURE_ET_LOIR = Departement("eure-et-loir", "28")
+    EURE = Departement("eure", "27")
+    FINISTERE = Departement("finistere", "29")
+    GARD = Departement("gard", "30")
+    GERS = Departement("gers", "32")
+    GIRONDE = Departement("gironde", "33")
+    GUADELOUPE = Departement("guadeloupe", "971")
+    GUYANE = Departement("guyane", "973")
+    HAUT_RHIN = Departement("haut-rhin", "68")
+    HAUTE_CORSE = Departement("haute-corse", "2B")
+    HAUTE_GARONNE = Departement("haute-garonne", "31")
+    HAUTE_LOIRE = Departement("haute-loire", "43")
+    HAUTE_MARNE = Departement("haute-marne", "52")
+    HAUTE_SAONE = Departement("haute-saone", "70")
+    HAUTE_SAVOIE = Departement("haute-savoie", "74")
+    HAUTE_VIENNE = Departement("haute-vienne", "87")
+    HAUTES_ALPES = Departement("hautes-alpes", "05")
+    HAUTES_PYRENEES = Departement("hautes-pyrenees", "65")
+    HAUTS_DE_SEINE = Departement("hauts-de-seine", "92")
+    HERAULT = Departement("herault", "34")
+    ILLE_ET_VILAINE = Departement("ille-et-vilaine", "35")
+    INDRE_ET_LOIRE = Departement("indre-et-loire", "37")
+    INDRE = Departement("indre", "36")
+    ISERE = Departement("isere", "38")
+    JURA = Departement("jura", "39")
+    LA_REUNION = Departement("la-reunion", "974")
+    LANDES = Departement("landes", "40")
+    LOIR_ET_CHER = Departement("loir-et-cher", "41")
+    LOIRE_ATLANTIQUE = Departement("loire-atlantique", "44")
+    LOIRE = Departement("loire", "42")
+    LOIRET = Departement("loiret", "45")
+    LOT_ET_GARONNE = Departement("lot-et-garonne", "47")
+    LOT = Departement("lot", "46")
+    LOZERE = Departement("lozere", "48")
+    MAINE_ET_LOIRE = Departement("maine-et-loire", "49")
+    MANCHE = Departement("manche", "50")
+    MARNE = Departement("marne", "51")
+    MARTINIQUE = Departement("martinique", "972")
+    MAYENNE = Departement("mayenne", "53")
+    MAYOTTE = Departement("mayotte", "976")
+    MEURTHE_ET_MOSELLE = Departement("meurthe-et-moselle", "54")
+    MEUSE = Departement("meuse", "55")
+    MORBIHAN = Departement("morbihan", "56")
+    MOSELLE = Departement("moselle", "57")
+    NIEVRE = Departement("nievre", "58")
+    NORD = Departement("nord", "59")
+    OISE = Departement("oise", "60")
+    ORNE = Departement("orne", "61")
+    PARIS = Departement("paris", "75")
+    PAS_DE_CALAIS = Departement("pas-de-calais", "62")
+    PUY_DE_DOME = Departement("puy-de-dome", "63")
+    PYRENEES_ATLANTIQUES = Departement("pyrenees-atlantiques", "64")
+    PYRENEES_ORIENTALES = Departement("pyrenees-orientales", "66")
+    RHONE = Departement("rhone", "69")
+    SAONE_ET_LOIRE = Departement("saone-et-loire", "71")
+    SARTHE = Departement("sarthe", "72")
+    SAVOIE = Departement("savoie", "73")
+    SEINE_ET_MARNE = Departement("seine-et-marne", "77")
+    SEINE_MARITIME = Departement("seine-maritime", "76")
+    SEINE_SAINT_DENIS = Departement("seine-saint-denis", "93")
+    SOMME = Departement("somme", "80")
+    TARN_ET_GARONNE = Departement("tarn-et-garonne", "82")
+    TARN = Departement("tarn", "81")
+    TERRITOIRE_DE_BELFORT = Departement("territoire-de-belfort", "90")
+    VAL_D_OISE = Departement("val-d-oise", "95")
+    VAL_DE_MARNE = Departement("val-de-marne", "94")
+    VAR = Departement("var", "83")
+    VAUCLUSE = Departement("vaucluse", "84")
+    VENDEE = Departement("vendee", "85")
+    VIENNE = Departement("vienne", "86")
+    VOSGES = Departement("vosges", "88")
+    YONNE = Departement("yonne", "89")
+    YVELINES = Departement("yvelines", "78")
 
 
-DepartementSlug = Enum(
-    "DepartementSlug",
-    {k: departement.slug for k, departement in _departements_dict.items()},
+DepartementSlugEnum = Enum(
+    "DepartementSlugEnum",
+    {member.name: member.value.slug for member in DepartementEnum},
 )
-DepartementCOG = Enum(
-    "DepartementCOG",
-    {k: departement.cog for k, departement in _departements_dict.items()},
+DepartementCodeEnum = Enum(
+    "DepartementCodeEnum",
+    {member.name: member.value.code for member in DepartementEnum},
 )
 
 
 @dataclass(frozen=True)
-class _Region:
+class Region:
     slug: str
-    cog: str
+    code: str
 
 
-_regions_dict = {
-    "AUVERGNE_RHONE_ALPES": _Region("auvergne-rhone-alpes", "84"),
-    "BOURGOGNE_FRANCHE_COMTE": _Region("bourgogne-franche-comte", "27"),
-    "BRETAGNE": _Region("bretagne", "53"),
-    "CENTRE_VAL_DE_LOIRE": _Region("centre-val-de-loire", "24"),
-    "CORSE": _Region("corse", "94"),
-    "GRAND_EST": _Region("grand-est", "44"),
-    "GUADELOUPE": _Region("guadeloupe", "01"),
-    "GUYANE": _Region("guyane", "03"),
-    "HAUTS_DE_FRANCE": _Region("hauts-de-france", "32"),
-    "ILE_DE_FRANCE": _Region("ile-de-france", "11"),
-    "LA_REUNION": _Region("la-reunion", "04"),
-    "MARTINIQUE": _Region("martinique", "02"),
-    "MAYOTTE": _Region("mayotte", "06"),
-    "NORMANDIE": _Region("normandie", "28"),
-    "NOUVELLE_AQUITAINE": _Region("nouvelle-aquitaine", "75"),
-    "OCCITANIE": _Region("occitanie", "76"),
-    "PAYS_DE_LA_LOIRE": _Region("pays-de-la-loire", "52"),
-    "PROVENCE_ALPES_COTE_D_AZUR": _Region("provence-alpes-cote-d-azur", "93"),
-}
+class RegionEnum(Enum):
+    AUVERGNE_RHONE_ALPES = Region("auvergne-rhone-alpes", "84")
+    BOURGOGNE_FRANCHE_COMTE = Region("bourgogne-franche-comte", "27")
+    BRETAGNE = Region("bretagne", "53")
+    CENTRE_VAL_DE_LOIRE = Region("centre-val-de-loire", "24")
+    CORSE = Region("corse", "94")
+    GRAND_EST = Region("grand-est", "44")
+    GUADELOUPE = Region("guadeloupe", "01")
+    GUYANE = Region("guyane", "03")
+    HAUTS_DE_FRANCE = Region("hauts-de-france", "32")
+    ILE_DE_FRANCE = Region("ile-de-france", "11")
+    LA_REUNION = Region("la-reunion", "04")
+    MARTINIQUE = Region("martinique", "02")
+    MAYOTTE = Region("mayotte", "06")
+    NORMANDIE = Region("normandie", "28")
+    NOUVELLE_AQUITAINE = Region("nouvelle-aquitaine", "75")
+    OCCITANIE = Region("occitanie", "76")
+    PAYS_DE_LA_LOIRE = Region("pays-de-la-loire", "52")
+    PROVENCE_ALPES_COTE_D_AZUR = Region("provence-alpes-cote-d-azur", "93")
 
-RegionSlug = Enum(
-    "RegionSlug",
-    {k: region.slug for k, region in _regions_dict.items()},
+
+RegionSlugEnum = Enum(
+    "RegionSlugEnum",
+    {member.name: member.value.slug for member in RegionEnum},
 )
-RegionCOG = Enum(
-    "RegionCOG",
-    {k: region.cog for k, region in _regions_dict.items()},
+RegionCodeEnum = Enum(
+    "RegionCodeEnum",
+    {member.name: member.value.code for member in RegionEnum},
 )
 
 
