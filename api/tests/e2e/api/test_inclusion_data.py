@@ -526,7 +526,7 @@ def test_list_services_filter_by_categorie_thematique(api_client):
 def test_can_filter_resources_by_thematiques(
     api_client, url, factory, thematiques, input, found
 ):
-    service = factory(thematiques=thematiques)
+    resource = factory(thematiques=thematiques)
     factory(thematiques=[schema.Thematique.MOBILITE.value])
 
     response = api_client.get(url, params={"thematiques": input})
@@ -535,7 +535,7 @@ def test_can_filter_resources_by_thematiques(
     resp_data = response.json()
     if found:
         assert_paginated_response_data(resp_data, total=1)
-        assert list_resources_data(resp_data)[0]["id"] in [service.id]
+        assert list_resources_data(resp_data)[0]["id"] in [resource.id]
     else:
         assert_paginated_response_data(resp_data, total=0)
 
@@ -548,19 +548,28 @@ def test_can_filter_resources_by_thematiques(
         ("/api/v0/services", factories.ServiceFactory),
     ],
 )
-def test_can_filter_resources_by_departement_code(api_client, url, factory):
-    service = factory(code_insee=PARIS["code_insee"])
+@pytest.mark.parametrize(
+    "query_param",
+    [
+        "code_departement",
+        pytest.param("departement", marks=pytest.mark.feature_deprecated),
+    ],
+)
+def test_can_filter_resources_by_departement_code(
+    api_client, url, factory, query_param
+):
+    resource = factory(code_insee=PARIS["code_insee"])
     factory(code_insee=LILLE["code_insee"])
     factory(code_insee=None)
 
-    response = api_client.get(url, params={"departement": "75"})
+    response = api_client.get(url, params={query_param: "75"})
 
     assert response.status_code == 200
     resp_data = response.json()
     assert_paginated_response_data(resp_data, total=1)
-    assert resp_data["items"][0]["id"] == service.id
+    assert resp_data["items"][0]["id"] == resource.id
 
-    response = api_client.get(url, params={"departement": "62"})
+    response = api_client.get(url, params={query_param: "62"})
     assert_paginated_response_data(response.json(), total=0)
 
 
@@ -572,18 +581,27 @@ def test_can_filter_resources_by_departement_code(api_client, url, factory):
         ("/api/v0/services", factories.ServiceFactory),
     ],
 )
-def test_can_filter_resources_by_departement_slug(api_client, url, factory):
-    service = factory(code_insee=PARIS["code_insee"])
+@pytest.mark.parametrize(
+    "query_param",
+    [
+        "slug_departement",
+        pytest.param("departement_slug", marks=pytest.mark.feature_deprecated),
+    ],
+)
+def test_can_filter_resources_by_departement_slug(
+    api_client, url, query_param, factory
+):
+    resource = factory(code_insee=PARIS["code_insee"])
     factory(code_insee=LILLE["code_insee"])
 
-    response = api_client.get(url, params={"departement_slug": "paris"})
+    response = api_client.get(url, params={query_param: "paris"})
 
     assert response.status_code == 200
     resp_data = response.json()
     assert_paginated_response_data(resp_data, total=1)
-    assert resp_data["items"][0]["id"] == service.id
+    assert resp_data["items"][0]["id"] == resource.id
 
-    response = api_client.get(url, params={"departement_slug": "pas-de-calais"})
+    response = api_client.get(url, params={query_param: "pas-de-calais"})
     assert_paginated_response_data(response.json(), total=0)
 
 
@@ -596,7 +614,7 @@ def test_can_filter_resources_by_departement_slug(api_client, url, factory):
     ],
 )
 def test_can_filter_resources_by_code_region(api_client, url, factory):
-    service = factory(code_insee=PARIS["code_insee"])
+    resource = factory(code_insee=PARIS["code_insee"])
     factory(code_insee=LILLE["code_insee"])
 
     response = api_client.get(
@@ -606,7 +624,7 @@ def test_can_filter_resources_by_code_region(api_client, url, factory):
     assert response.status_code == 200
     resp_data = response.json()
     assert_paginated_response_data(resp_data, total=1)
-    assert resp_data["items"][0]["id"] == service.id
+    assert resp_data["items"][0]["id"] == resource.id
 
     response = api_client.get(
         url, params={"code_region": RegionEnum.LA_REUNION.value.code}
@@ -623,7 +641,7 @@ def test_can_filter_resources_by_code_region(api_client, url, factory):
     ],
 )
 def test_can_filter_resources_by_slug_region(api_client, url, factory):
-    service = factory(code_insee=PARIS["code_insee"])
+    resource = factory(code_insee=PARIS["code_insee"])
     factory(code_insee=LILLE["code_insee"])
 
     response = api_client.get(
@@ -633,7 +651,7 @@ def test_can_filter_resources_by_slug_region(api_client, url, factory):
     assert response.status_code == 200
     resp_data = response.json()
     assert_paginated_response_data(resp_data, total=1)
-    assert resp_data["items"][0]["id"] == service.id
+    assert resp_data["items"][0]["id"] == resource.id
 
     response = api_client.get(
         url, params={"slug_region": RegionEnum.LA_REUNION.value.slug}
@@ -667,7 +685,7 @@ def test_can_filter_resources_by_slug_region(api_client, url, factory):
 def test_can_filter_resources_by_code_commune(
     api_client, url, factory, code_commune, input, found, query_param
 ):
-    service = factory(code_insee=code_commune)
+    resource = factory(code_insee=code_commune)
     factory(code_insee=LILLE["code_insee"])
 
     response = api_client.get(url, params={query_param: input})
@@ -676,7 +694,7 @@ def test_can_filter_resources_by_code_commune(
     resp_data = response.json()
     if found:
         assert_paginated_response_data(resp_data, total=1)
-        assert resp_data["items"][0]["id"] == service.id
+        assert resp_data["items"][0]["id"] == resource.id
     else:
         assert_paginated_response_data(resp_data, total=0)
 
