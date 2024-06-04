@@ -284,6 +284,7 @@ def test_list_structures_filter_by_categorie_thematique(
 
 
 @pytest.mark.with_token
+@pytest.mark.feature_deprecated
 def test_list_structures_filter_by_source_and_id(
     api_client,
 ):

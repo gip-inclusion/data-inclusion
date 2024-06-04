@@ -67,7 +67,7 @@ def list_structures_endpoint(
             """,
         ),
     ] = None,
-    id: Annotated[Optional[str], fastapi.Query()] = None,
+    id: Annotated[Optional[str], fastapi.Query(include_in_schema=False)] = None,
     typologie: Annotated[Optional[di_schema.Typologie], fastapi.Query()] = None,
     label_national: Annotated[
         Optional[di_schema.LabelNational], fastapi.Query()
