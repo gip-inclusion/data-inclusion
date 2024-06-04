@@ -8,12 +8,16 @@ from data_inclusion import schema as di_schema
 from data_inclusion.api import auth
 from data_inclusion.api.code_officiel_geo.constants import (
     CODE_COMMUNE_BY_CODE_ARRONDISSEMENT,
-    DepartementCOG,
-    DepartementSlug,
-    RegionCOG,
-    RegionSlug,
+    DepartementCodeEnum,
+    DepartementSlugEnum,
+    RegionCodeEnum,
+    RegionSlugEnum,
 )
 from data_inclusion.api.code_officiel_geo.models import Commune
+from data_inclusion.api.code_officiel_geo.utils import (
+    get_departement_by_code_or_slug,
+    get_region_by_code_or_slug,
+)
 from data_inclusion.api.config import settings
 from data_inclusion.api.core import db
 from data_inclusion.api.inclusion_data import schemas, services
@@ -33,12 +37,12 @@ CodeCommuneFilter = Annotated[
 ]
 
 CodeDepartementFilter = Annotated[
-    Optional[DepartementCOG],
+    Optional[DepartementCodeEnum],
     fastapi.Query(description="Code insee géographique d'un département."),
 ]
 
 CodeRegionFilter = Annotated[
-    Optional[RegionCOG],
+    Optional[RegionCodeEnum],
     fastapi.Query(description="Code insee géographique d'une région."),
 ]
 
@@ -87,9 +91,9 @@ def list_structures_endpoint(
         ),
     ] = None,
     departement: CodeDepartementFilter = None,
-    departement_slug: Annotated[Optional[DepartementSlug], fastapi.Query()] = None,
+    departement_slug: Annotated[Optional[DepartementSlugEnum], fastapi.Query()] = None,
     code_region: CodeRegionFilter = None,
-    slug_region: Annotated[Optional[RegionSlug], fastapi.Query()] = None,
+    slug_region: Annotated[Optional[RegionSlugEnum], fastapi.Query()] = None,
     code_commune: CodeCommuneFilter = None,
     db_session=fastapi.Depends(db.get_session),
 ):
@@ -99,8 +103,10 @@ def list_structures_endpoint(
     if sources is None and source is not None:
         sources = [source]
 
-    if code_region is None and slug_region is not None:
-        code_region = RegionCOG[slug_region.name]
+    region = get_region_by_code_or_slug(code=code_region, slug=slug_region)
+    departement = get_departement_by_code_or_slug(
+        code=departement, slug=departement_slug
+    )
 
     return services.list_structures(
         request,
@@ -110,8 +116,7 @@ def list_structures_endpoint(
         typologie=typologie,
         label_national=label_national,
         departement=departement,
-        departement_slug=departement_slug,
-        region_code=code_region,
+        region=region,
         commune_code=code_commune,
         thematiques=thematiques,
     )
@@ -184,9 +189,9 @@ def list_services_endpoint(
         ),
     ] = None,
     departement: CodeDepartementFilter = None,
-    departement_slug: Annotated[Optional[DepartementSlug], fastapi.Query()] = None,
+    departement_slug: Annotated[Optional[DepartementSlugEnum], fastapi.Query()] = None,
     code_region: CodeRegionFilter = None,
-    slug_region: Annotated[Optional[RegionSlug], fastapi.Query()] = None,
+    slug_region: Annotated[Optional[RegionSlugEnum], fastapi.Query()] = None,
     code_insee: Annotated[
         Optional[di_schema.CodeCommune],
         fastapi.Query(
@@ -234,17 +239,19 @@ def list_services_endpoint(
         ),
     ] = False,
 ):
+    if code_commune is None and code_insee is not None:
+        code_commune = code_insee
+
     if thematiques is None and thematique is not None:
         thematiques = [thematique]
 
     if sources is None and source is not None:
         sources = [source]
 
-    if code_region is None and slug_region is not None:
-        code_region = RegionCOG[slug_region.name]
-
-    if code_commune is None and code_insee is not None:
-        code_commune = code_insee
+    region = get_region_by_code_or_slug(code=code_region, slug=slug_region)
+    departement = get_departement_by_code_or_slug(
+        code=departement, slug=departement_slug
+    )
 
     return services.list_services(
         request,
@@ -252,8 +259,7 @@ def list_services_endpoint(
         sources=sources,
         thematiques=thematiques,
         departement=departement,
-        departement_slug=departement_slug,
-        region_code=code_region,
+        region=region,
         code_commune=code_commune,
         frais=frais,
         profils=profils,

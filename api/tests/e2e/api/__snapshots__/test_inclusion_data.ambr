@@ -116,7 +116,7 @@
               "schema": {
                 "allOf": [
                   {
-                    "$ref": "#/components/schemas/DepartementCOG"
+                    "$ref": "#/components/schemas/DepartementCodeEnum"
                   }
                 ],
                 "description": "Code insee géographique d'un département.",
@@ -131,7 +131,7 @@
               "schema": {
                 "allOf": [
                   {
-                    "$ref": "#/components/schemas/DepartementSlug"
+                    "$ref": "#/components/schemas/DepartementSlugEnum"
                   }
                 ],
                 "title": "Departement Slug"
@@ -144,7 +144,7 @@
               "schema": {
                 "allOf": [
                   {
-                    "$ref": "#/components/schemas/RegionCOG"
+                    "$ref": "#/components/schemas/RegionCodeEnum"
                   }
                 ],
                 "description": "Code insee géographique d'une région.",
@@ -159,7 +159,7 @@
               "schema": {
                 "allOf": [
                   {
-                    "$ref": "#/components/schemas/RegionSlug"
+                    "$ref": "#/components/schemas/RegionSlugEnum"
                   }
                 ],
                 "title": "Slug Region"
@@ -393,7 +393,7 @@
               "schema": {
                 "allOf": [
                   {
-                    "$ref": "#/components/schemas/DepartementCOG"
+                    "$ref": "#/components/schemas/DepartementCodeEnum"
                   }
                 ],
                 "description": "Code insee géographique d'un département.",
@@ -408,7 +408,7 @@
               "schema": {
                 "allOf": [
                   {
-                    "$ref": "#/components/schemas/DepartementSlug"
+                    "$ref": "#/components/schemas/DepartementSlugEnum"
                   }
                 ],
                 "title": "Departement Slug"
@@ -421,7 +421,7 @@
               "schema": {
                 "allOf": [
                   {
-                    "$ref": "#/components/schemas/RegionCOG"
+                    "$ref": "#/components/schemas/RegionCodeEnum"
                   }
                 ],
                 "description": "Code insee géographique d'une région.",
@@ -436,7 +436,7 @@
               "schema": {
                 "allOf": [
                   {
-                    "$ref": "#/components/schemas/RegionSlug"
+                    "$ref": "#/components/schemas/RegionSlugEnum"
                   }
                 ],
                 "title": "Slug Region"
@@ -1289,7 +1289,7 @@
           ],
           "title": "CustomizedPage[Structure]"
         },
-        "DepartementCOG": {
+        "DepartementCodeEnum": {
           "type": "string",
           "enum": [
             "01",
@@ -1394,9 +1394,9 @@
             "89",
             "78"
           ],
-          "title": "DepartementCOG"
+          "title": "DepartementCodeEnum"
         },
-        "DepartementSlug": {
+        "DepartementSlugEnum": {
           "type": "string",
           "enum": [
             "ain",
@@ -1501,7 +1501,7 @@
             "yonne",
             "yvelines"
           ],
-          "title": "DepartementSlug"
+          "title": "DepartementSlugEnum"
         },
         "DetailedService": {
           "properties": {
@@ -2590,7 +2590,7 @@
           ],
           "title": "Profil"
         },
-        "RegionCOG": {
+        "RegionCodeEnum": {
           "type": "string",
           "enum": [
             "84",
@@ -2612,9 +2612,9 @@
             "52",
             "93"
           ],
-          "title": "RegionCOG"
+          "title": "RegionCodeEnum"
         },
-        "RegionSlug": {
+        "RegionSlugEnum": {
           "type": "string",
           "enum": [
             "auvergne-rhone-alpes",
@@ -2636,7 +2636,7 @@
             "pays-de-la-loire",
             "provence-alpes-cote-d-azur"
           ],
-          "title": "RegionSlug"
+          "title": "RegionSlugEnum"
         },
         "Service": {
           "properties": {
