@@ -17,9 +17,8 @@ from fastapi_pagination.ext.sqlalchemy import paginate
 from data_inclusion import schema as di_schema
 from data_inclusion.api.code_officiel_geo.constants import (
     CODE_COMMUNE_BY_CODE_ARRONDISSEMENT,
-    DepartementCOG,
-    DepartementSlug,
-    RegionCOG,
+    Departement,
+    Region,
 )
 from data_inclusion.api.code_officiel_geo.models import Commune
 from data_inclusion.api.inclusion_data import models
@@ -184,9 +183,8 @@ def list_structures(
     id_: str | None = None,
     typologie: di_schema.Typologie | None = None,
     label_national: di_schema.LabelNational | None = None,
-    departement: DepartementCOG | None = None,
-    departement_slug: DepartementSlug | None = None,
-    region_code: RegionCOG | None = None,
+    departement: Departement | None = None,
+    region: Region | None = None,
     commune_code: di_schema.CodeCommune | None = None,
     thematiques: list[di_schema.Thematique] | None = None,
 ) -> list:
@@ -208,28 +206,16 @@ def list_structures(
     if departement is not None:
         query = query.filter(
             sqla.or_(
-                models.Structure.code_insee.startswith(departement.value),
-                models.Structure._di_geocodage_code_insee.startswith(departement.value),
+                models.Structure.code_insee.startswith(departement.code),
+                models.Structure._di_geocodage_code_insee.startswith(departement.code),
             )
         )
 
-    if departement_slug is not None:
-        query = query.filter(
-            sqla.or_(
-                models.Structure.code_insee.startswith(
-                    DepartementCOG[departement_slug.name].value
-                ),
-                models.Structure._di_geocodage_code_insee.startswith(
-                    DepartementCOG[departement_slug.name].value
-                ),
-            )
-        )
-
-    if region_code is not None:
+    if region is not None:
         query = query.join(Commune).options(
             orm.contains_eager(models.Structure.commune_)
         )
-        query = query.filter(Commune.region == region_code.value)
+        query = query.filter(Commune.region == region.code)
 
     if typologie is not None:
         query = query.filter_by(typologie=typologie.value)
@@ -323,9 +309,8 @@ def list_services(
     db_session: orm.Session,
     sources: list[str] | None = None,
     thematiques: list[di_schema.Thematique] | None = None,
-    departement: DepartementCOG | None = None,
-    departement_slug: DepartementSlug | None = None,
-    region_code: RegionCOG | None = None,
+    departement: Departement | None = None,
+    region: Region | None = None,
     code_commune: di_schema.CodeCommune | None = None,
     frais: list[di_schema.Frais] | None = None,
     profils: list[di_schema.Profil] | None = None,
@@ -343,26 +328,14 @@ def list_services(
     if departement is not None:
         query = query.filter(
             sqla.or_(
-                models.Service.code_insee.startswith(departement.value),
-                models.Service._di_geocodage_code_insee.startswith(departement.value),
+                models.Service.code_insee.startswith(departement.code),
+                models.Service._di_geocodage_code_insee.startswith(departement.code),
             )
         )
 
-    if departement_slug is not None:
-        query = query.filter(
-            sqla.or_(
-                models.Service.code_insee.startswith(
-                    DepartementCOG[departement_slug.name].value
-                ),
-                models.Service._di_geocodage_code_insee.startswith(
-                    DepartementCOG[departement_slug.name].value
-                ),
-            )
-        )
-
-    if region_code is not None:
+    if region is not None:
         query = query.join(Commune).options(orm.contains_eager(models.Service.commune_))
-        query = query.filter(Commune.region == region_code.value)
+        query = query.filter(Commune.region == region.code)
 
     if code_commune is not None:
         code_commune = CODE_COMMUNE_BY_CODE_ARRONDISSEMENT.get(

@@ -5,10 +5,7 @@ from unittest.mock import ANY
 import pytest
 
 from data_inclusion import schema
-from data_inclusion.api.code_officiel_geo.constants import (
-    RegionCOG,
-    RegionSlug,
-)
+from data_inclusion.api.code_officiel_geo.constants import RegionEnum
 from data_inclusion.api.utils import soliguide
 
 from ... import factories
@@ -551,7 +548,7 @@ def test_can_filter_resources_by_thematiques(
         ("/api/v0/services", factories.ServiceFactory),
     ],
 )
-def test_can_filter_resources_by_departement_cog(api_client, url, factory):
+def test_can_filter_resources_by_departement_code(api_client, url, factory):
     service = factory(code_insee=PARIS["code_insee"])
     factory(code_insee=LILLE["code_insee"])
     factory(code_insee=None)
@@ -603,7 +600,7 @@ def test_can_filter_resources_by_code_region(api_client, url, factory):
     factory(code_insee=LILLE["code_insee"])
 
     response = api_client.get(
-        url, params={"code_region": RegionCOG.ILE_DE_FRANCE.value}
+        url, params={"code_region": RegionEnum.ILE_DE_FRANCE.value.code}
     )
 
     assert response.status_code == 200
@@ -611,7 +608,9 @@ def test_can_filter_resources_by_code_region(api_client, url, factory):
     assert_paginated_response_data(resp_data, total=1)
     assert resp_data["items"][0]["id"] == service.id
 
-    response = api_client.get(url, params={"code_region": RegionCOG.LA_REUNION.value})
+    response = api_client.get(
+        url, params={"code_region": RegionEnum.LA_REUNION.value.code}
+    )
     assert_paginated_response_data(response.json(), total=0)
 
 
@@ -628,7 +627,7 @@ def test_can_filter_resources_by_slug_region(api_client, url, factory):
     factory(code_insee=LILLE["code_insee"])
 
     response = api_client.get(
-        url, params={"slug_region": RegionSlug.ILE_DE_FRANCE.value}
+        url, params={"slug_region": RegionEnum.ILE_DE_FRANCE.value.slug}
     )
 
     assert response.status_code == 200
@@ -636,7 +635,9 @@ def test_can_filter_resources_by_slug_region(api_client, url, factory):
     assert_paginated_response_data(resp_data, total=1)
     assert resp_data["items"][0]["id"] == service.id
 
-    response = api_client.get(url, params={"slug_region": RegionSlug.LA_REUNION.value})
+    response = api_client.get(
+        url, params={"slug_region": RegionEnum.LA_REUNION.value.slug}
+    )
     assert_paginated_response_data(response.json(), total=0)
 
 
