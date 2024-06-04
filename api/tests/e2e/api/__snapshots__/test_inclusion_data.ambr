@@ -54,15 +54,6 @@
               "description": "Une liste d'identifiants de source.\n                La liste des identifiants de source est disponible sur le endpoint\n                dédié. Les résultats seront limités aux sources spécifiées.\n            "
             },
             {
-              "name": "id",
-              "in": "query",
-              "required": false,
-              "schema": {
-                "type": "string",
-                "title": "Id"
-              }
-            },
-            {
               "name": "typologie",
               "in": "query",
               "required": false,
