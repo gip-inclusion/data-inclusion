@@ -90,8 +90,20 @@ def list_structures_endpoint(
                 Chaque résultat renvoyé a (au moins) une thématique dans cette liste."""
         ),
     ] = None,
-    departement: CodeDepartementFilter = None,
-    departement_slug: Annotated[Optional[DepartementSlugEnum], fastapi.Query()] = None,
+    departement: Annotated[
+        Optional[DepartementCodeEnum],
+        fastapi.Query(
+            deprecated=True, description="Déprécié en faveur de `code_departement`."
+        ),
+    ] = None,
+    code_departement: CodeDepartementFilter = None,
+    departement_slug: Annotated[
+        Optional[DepartementSlugEnum],
+        fastapi.Query(
+            deprecated=True, description="Déprécié en faveur de `slug_departement`."
+        ),
+    ] = None,
+    slug_departement: Annotated[Optional[DepartementSlugEnum], fastapi.Query()] = None,
     code_region: CodeRegionFilter = None,
     slug_region: Annotated[Optional[RegionSlugEnum], fastapi.Query()] = None,
     code_commune: CodeCommuneFilter = None,
@@ -104,8 +116,14 @@ def list_structures_endpoint(
         sources = [source]
 
     region = get_region_by_code_or_slug(code=code_region, slug=slug_region)
+
+    if code_departement is None and departement is not None:
+        code_departement = departement
+    if slug_departement is None and departement_slug is not None:
+        slug_departement = departement_slug
+
     departement = get_departement_by_code_or_slug(
-        code=departement, slug=departement_slug
+        code=code_departement, slug=slug_departement
     )
 
     return services.list_structures(
@@ -188,8 +206,20 @@ def list_services_endpoint(
                 Chaque résultat renvoyé a (au moins) une thématique dans cette liste."""
         ),
     ] = None,
-    departement: CodeDepartementFilter = None,
-    departement_slug: Annotated[Optional[DepartementSlugEnum], fastapi.Query()] = None,
+    departement: Annotated[
+        Optional[DepartementCodeEnum],
+        fastapi.Query(
+            deprecated=True, description="Déprécié en faveur de `code_departement`."
+        ),
+    ] = None,
+    code_departement: CodeDepartementFilter = None,
+    departement_slug: Annotated[
+        Optional[DepartementSlugEnum],
+        fastapi.Query(
+            deprecated=True, description="Déprécié en faveur de `slug_departement`."
+        ),
+    ] = None,
+    slug_departement: Annotated[Optional[DepartementSlugEnum], fastapi.Query()] = None,
     code_region: CodeRegionFilter = None,
     slug_region: Annotated[Optional[RegionSlugEnum], fastapi.Query()] = None,
     code_insee: Annotated[
@@ -248,9 +278,14 @@ def list_services_endpoint(
     if sources is None and source is not None:
         sources = [source]
 
+    if code_departement is None and departement is not None:
+        code_departement = departement
+    if slug_departement is None and departement_slug is not None:
+        slug_departement = departement_slug
+
     region = get_region_by_code_or_slug(code=code_region, slug=slug_region)
     departement = get_departement_by_code_or_slug(
-        code=departement, slug=departement_slug
+        code=code_departement, slug=slug_departement
     )
 
     return services.list_services(
