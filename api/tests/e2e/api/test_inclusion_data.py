@@ -283,24 +283,6 @@ def test_list_structures_filter_by_categorie_thematique(
     assert resp_data["items"][0]["id"] == structure.id
 
 
-@pytest.mark.with_token
-def test_list_structures_filter_by_source_and_id(
-    api_client,
-):
-    factories.StructureFactory(source="emplois-de-linclusion", id="foo")
-    structure_2 = factories.StructureFactory(source="dora", id="foo")
-    factories.StructureFactory(source="dora", id="bar")
-
-    url = "/api/v0/structures/"
-
-    response = api_client.get(url, params={"source": "dora", "id": "foo"})
-    resp_data = response.json()
-
-    resp_data = response.json()
-    assert_paginated_response_data(response.json(), total=1)
-    assert_structure_data(structure_2, resp_data["items"][0])
-
-
 def test_list_services_unauthenticated(api_client):
     url = "/api/v0/services/"
     response = api_client.get(url)

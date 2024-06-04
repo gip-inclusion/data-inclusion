@@ -181,7 +181,6 @@ def list_structures(
     request: fastapi.Request,
     db_session: orm.Session,
     sources: list[str] | None = None,
-    id_: str | None = None,
     typologie: di_schema.Typologie | None = None,
     label_national: di_schema.LabelNational | None = None,
     departement: DepartementCOG | None = None,
@@ -195,9 +194,6 @@ def list_structures(
 
     if sources is not None:
         query = filter_by_sources(query, sources)
-
-    if id_ is not None:
-        query = query.filter_by(id=id_)
 
     if commune_code is not None:
         commune_code = CODE_COMMUNE_BY_CODE_ARRONDISSEMENT.get(
