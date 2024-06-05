@@ -49,30 +49,28 @@ def test_list_structures_all(api_client):
     assert resp_data == {
         "items": [
             {
-                "_di_geocodage_code_insee": "55626",
-                "_di_geocodage_score": 0.33,
-                "accessibilite": "https://acceslibre.beta.gouv.fr/app/prince-point-monde/",
-                "adresse": "88, boulevard Raymond Bonnet",
+                "accessibilite": "https://acceslibre.beta.gouv.fr/app/nom-asseoir/",
+                "adresse": "49, avenue de Pichon",
                 "antenne": False,
                 "code_insee": "59350",
-                "code_postal": "80571",
-                "commune": "Sainte Bernadetteboeuf",
+                "code_postal": "46873",
+                "commune": "Sainte CharlotteBourg",
                 "complement_adresse": None,
-                "courriel": "fouquetzoe@example.com",
+                "courriel": "levyalexandre@example.org",
                 "date_maj": "2023-01-01",
                 "horaires_ouverture": 'Mo-Fr 10:00-20:00 "sur rendez-vous"; PH off',
-                "id": "prince-point-monde",
+                "id": "nom-asseoir",
                 "labels_autres": ["Nièvre médiation numérique"],
                 "labels_nationaux": [],
-                "latitude": -86.2307095,
-                "lien_source": "https://dora.fr/prince-point-monde",
-                "longitude": 114.580692,
-                "nom": "Vaillant",
+                "latitude": -20.074628,
+                "lien_source": "https://dora.fr/nom-asseoir",
+                "longitude": 99.899603,
+                "nom": "Perrin",
                 "presentation_detail": "Or personne jambe.",
-                "presentation_resume": "Voie battre.",
-                "rna": "W948924115",
-                "siret": "59382421200611",
-                "site_web": "http://berger.fr/",
+                "presentation_resume": "Image voie battre.",
+                "rna": "W242194892",
+                "siret": "76475938700658",
+                "site_web": "https://www.le.net/",
                 "source": "dora",
                 "telephone": "0102030405",
                 "thematiques": ["choisir-un-metier"],
@@ -130,8 +128,6 @@ def assert_structure_data(structure, data):
     assert sorted(structure.labels_nationaux) == sorted(data["labels_nationaux"])
     assert sorted(structure.labels_autres) == sorted(data["labels_autres"])
     assert sorted(structure.thematiques) == sorted(data["thematiques"])
-    assert structure._di_geocodage_code_insee == data["_di_geocodage_code_insee"]
-    assert structure._di_geocodage_score == data["_di_geocodage_score"]
 
 
 @pytest.mark.with_token
@@ -318,12 +314,10 @@ def test_list_services_all(api_client):
     assert resp_data == {
         "items": [
             {
-                "_di_geocodage_code_insee": "59350",
-                "_di_geocodage_score": 0.89,
                 "adresse": "20, rue Lambert",
-                "code_insee": "59350",
-                "code_postal": "22846",
-                "commune": "Guichard",
+                "code_insee": LILLE["code_insee"],
+                "code_postal": "25454",
+                "commune": "Sainte Jacquelineboeuf",
                 "complement_adresse": None,
                 "contact_nom_prenom": "Thibaut de Michaud",
                 "contact_public": False,
@@ -354,7 +348,7 @@ def test_list_services_all(api_client):
                 "profils": ["femmes"],
                 "recurrence": None,
                 "source": "dora",
-                "structure_id": "grace-plaindre",
+                "structure_id": "prince-point-monde",
                 "telephone": "0102030405",
                 "thematiques": ["choisir-un-metier"],
                 "types": ["formation"],
@@ -1255,7 +1249,6 @@ def test_search_services_with_code_commune_ordering(api_client):
     )
     factories.ServiceFactory(
         code_insee=None,
-        _di_geocodage_code_insee=None,
         modes_accueil=[schema.ModeAccueil.EN_PRESENTIEL.value],
     )
 
@@ -1275,13 +1268,11 @@ def test_search_services_with_code_commune_ordering(api_client):
 def test_search_services_with_code_commune_sample_distance(api_client):
     service_1 = factories.ServiceFactory(
         commune="Lille",
-        _di_geocodage_code_insee=None,
         **LILLE,
         modes_accueil=[schema.ModeAccueil.EN_PRESENTIEL.value],
     )
     factories.ServiceFactory(
         code_insee=None,
-        _di_geocodage_code_insee=None,
         modes_accueil=[schema.ModeAccueil.EN_PRESENTIEL.value],
     )
 
@@ -1300,13 +1291,11 @@ def test_search_services_with_code_commune_a_distance(api_client):
     service_1 = factories.ServiceFactory(
         commune="Dunkerque",
         code_insee=DUNKERQUE["code_insee"],
-        _di_geocodage_code_insee=None,
         modes_accueil=[schema.ModeAccueil.A_DISTANCE.value],
     )
     service_2 = factories.ServiceFactory(
         commune="Maubeuge",
         code_insee=MAUBEUGE["code_insee"],
-        _di_geocodage_code_insee=None,
         modes_accueil=[schema.ModeAccueil.A_DISTANCE.value],
     )
 

@@ -1,4 +1,4 @@
-from pydantic import BaseModel, ConfigDict, Field
+from pydantic import BaseModel, ConfigDict
 
 from data_inclusion import schema
 
@@ -17,14 +17,6 @@ class Service(schema.Service):
     formulaire_en_ligne: str | None = None
     lien_source: str | None = None
 
-    # TODO(vmttn): decide whether we should keep these extra fields
-    di_geocodage_code_insee: schema.CodeCommune | None = Field(
-        default=None, alias="_di_geocodage_code_insee"
-    )
-    di_geocodage_score: float | None = Field(
-        default=None, ge=0, le=1, alias="_di_geocodage_score"
-    )
-
 
 class Structure(schema.Structure):
     model_config = ConfigDict(from_attributes=True, populate_by_name=True)
@@ -33,14 +25,6 @@ class Structure(schema.Structure):
     site_web: str | None = None
     lien_source: str | None = None
     accessibilite: str | None = None
-
-    # TODO(vmttn): decide whether we should keep these extra fields
-    di_geocodage_code_insee: schema.CodeCommune | None = Field(
-        default=None, alias="_di_geocodage_code_insee"
-    )
-    di_geocodage_score: float | None = Field(
-        default=None, ge=0, le=1, alias="_di_geocodage_score"
-    )
 
 
 class DetailedService(Service):
