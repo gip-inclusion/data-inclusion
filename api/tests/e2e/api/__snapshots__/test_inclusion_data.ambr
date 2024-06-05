@@ -2070,33 +2070,6 @@
               ],
               "title": "Modes Orientation Accompagnateur Autres"
             },
-            "_di_geocodage_code_insee": {
-              "anyOf": [
-                {
-                  "type": "string",
-                  "maxLength": 5,
-                  "minLength": 5,
-                  "pattern": "^\\w{5}$"
-                },
-                {
-                  "type": "null"
-                }
-              ],
-              "title": " Di Geocodage Code Insee"
-            },
-            "_di_geocodage_score": {
-              "anyOf": [
-                {
-                  "type": "number",
-                  "maximum": 1.0,
-                  "minimum": 0.0
-                },
-                {
-                  "type": "null"
-                }
-              ],
-              "title": " Di Geocodage Score"
-            },
             "structure": {
               "$ref": "#/components/schemas/Structure"
             }
@@ -2404,33 +2377,6 @@
                 }
               ],
               "title": "Thematiques"
-            },
-            "_di_geocodage_code_insee": {
-              "anyOf": [
-                {
-                  "type": "string",
-                  "maxLength": 5,
-                  "minLength": 5,
-                  "pattern": "^\\w{5}$"
-                },
-                {
-                  "type": "null"
-                }
-              ],
-              "title": " Di Geocodage Code Insee"
-            },
-            "_di_geocodage_score": {
-              "anyOf": [
-                {
-                  "type": "number",
-                  "maximum": 1.0,
-                  "minimum": 0.0
-                },
-                {
-                  "type": "null"
-                }
-              ],
-              "title": " Di Geocodage Score"
             },
             "services": {
               "items": {
@@ -3204,33 +3150,6 @@
                 }
               ],
               "title": "Modes Orientation Accompagnateur Autres"
-            },
-            "_di_geocodage_code_insee": {
-              "anyOf": [
-                {
-                  "type": "string",
-                  "maxLength": 5,
-                  "minLength": 5,
-                  "pattern": "^\\w{5}$"
-                },
-                {
-                  "type": "null"
-                }
-              ],
-              "title": " Di Geocodage Code Insee"
-            },
-            "_di_geocodage_score": {
-              "anyOf": [
-                {
-                  "type": "number",
-                  "maximum": 1.0,
-                  "minimum": 0.0
-                },
-                {
-                  "type": "null"
-                }
-              ],
-              "title": " Di Geocodage Score"
             }
           },
           "type": "object",
@@ -3588,33 +3507,6 @@
                 }
               ],
               "title": "Thematiques"
-            },
-            "_di_geocodage_code_insee": {
-              "anyOf": [
-                {
-                  "type": "string",
-                  "maxLength": 5,
-                  "minLength": 5,
-                  "pattern": "^\\w{5}$"
-                },
-                {
-                  "type": "null"
-                }
-              ],
-              "title": " Di Geocodage Code Insee"
-            },
-            "_di_geocodage_score": {
-              "anyOf": [
-                {
-                  "type": "number",
-                  "maximum": 1.0,
-                  "minimum": 0.0
-                },
-                {
-                  "type": "null"
-                }
-              ],
-              "title": " Di Geocodage Score"
             }
           },
           "type": "object",

@@ -13,8 +13,6 @@ from data_inclusion.api.core.db import Base
 class Structure(Base):
     # internal metadata
     _di_surrogate_id: Mapped[str] = mapped_column(primary_key=True)
-    _di_geocodage_code_insee: Mapped[str | None]
-    _di_geocodage_score: Mapped[float | None]
 
     # structure data
     accessibilite: Mapped[str | None]
@@ -59,8 +57,6 @@ class Service(Base):
     _di_structure_surrogate_id: Mapped[str] = mapped_column(
         sqla.ForeignKey(Structure._di_surrogate_id)
     )
-    _di_geocodage_code_insee: Mapped[str | None]
-    _di_geocodage_score: Mapped[float | None]
     structure: Mapped[Structure] = relationship(back_populates="services")
 
     # service data
