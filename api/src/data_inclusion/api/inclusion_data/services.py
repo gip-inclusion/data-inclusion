@@ -200,12 +200,7 @@ def list_structures(
         query = query.filter(models.Structure.code_insee == commune_code)
 
     if departement is not None:
-        query = query.filter(
-            sqla.or_(
-                models.Structure.code_insee.startswith(departement.code),
-                models.Structure._di_geocodage_code_insee.startswith(departement.code),
-            )
-        )
+        query = query.filter(models.Structure.code_insee.startswith(departement.code))
 
     if region is not None:
         query = query.join(Commune).options(
@@ -322,12 +317,7 @@ def list_services(
     query = filter_restricted(query, request)
 
     if departement is not None:
-        query = query.filter(
-            sqla.or_(
-                models.Service.code_insee.startswith(departement.code),
-                models.Service._di_geocodage_code_insee.startswith(departement.code),
-            )
-        )
+        query = query.filter(models.Service.code_insee.startswith(departement.code))
 
     if region is not None:
         query = query.join(Commune).options(orm.contains_eager(models.Service.commune_))
@@ -338,12 +328,7 @@ def list_services(
             code_commune, code_commune
         )
 
-        query = query.filter(
-            sqla.or_(
-                models.Service.code_insee == code_commune,
-                models.Service._di_geocodage_code_insee == code_commune,
-            )
-        )
+        query = query.filter(models.Service.code_insee == code_commune)
 
     query = filter_services(
         query=query,
