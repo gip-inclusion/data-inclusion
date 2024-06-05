@@ -13,8 +13,6 @@ from data_inclusion.api.core.db import Base
 class Structure(Base):
     # internal metadata
     _di_surrogate_id: Mapped[str] = mapped_column(primary_key=True)
-    _di_geocodage_code_insee: Mapped[str | None]
-    _di_geocodage_score: Mapped[float | None]
 
     # structure data
     source: Mapped[str]
@@ -24,7 +22,7 @@ class Structure(Base):
     nom: Mapped[str]
     commune: Mapped[str | None]
     code_postal: Mapped[str | None]
-    code_insee: Mapped[str | None]
+    code_insee: Mapped[str | None] = mapped_column(sqla.ForeignKey(Commune.code))
     adresse: Mapped[str | None]
     complement_adresse: Mapped[str | None]
     longitude: Mapped[float | None]
@@ -45,6 +43,7 @@ class Structure(Base):
     thematiques: Mapped[list[str] | None]
 
     services: Mapped[list["Service"]] = relationship(back_populates="structure")
+    commune_: Mapped[Commune] = relationship(back_populates="structures")
 
     __table_args__ = (sqla.Index(None, "source"),)
 
@@ -58,8 +57,6 @@ class Service(Base):
     _di_structure_surrogate_id: Mapped[str] = mapped_column(
         sqla.ForeignKey(Structure._di_surrogate_id)
     )
-    _di_geocodage_code_insee: Mapped[str | None]
-    _di_geocodage_score: Mapped[float | None]
     structure: Mapped[Structure] = relationship(back_populates="services")
 
     # service data
@@ -125,3 +122,4 @@ class Service(Base):
 
 
 Commune.services = relationship(Service, back_populates="commune_")
+Commune.structures = relationship(Structure, back_populates="commune_")

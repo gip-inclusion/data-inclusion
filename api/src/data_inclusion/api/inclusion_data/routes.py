@@ -8,10 +8,16 @@ from data_inclusion import schema as di_schema
 from data_inclusion.api import auth
 from data_inclusion.api.code_officiel_geo.constants import (
     CODE_COMMUNE_BY_CODE_ARRONDISSEMENT,
-    DepartementCOG,
-    DepartementSlug,
+    DepartementCodeEnum,
+    DepartementSlugEnum,
+    RegionCodeEnum,
+    RegionSlugEnum,
 )
 from data_inclusion.api.code_officiel_geo.models import Commune
+from data_inclusion.api.code_officiel_geo.utils import (
+    get_departement_by_code_or_slug,
+    get_region_by_code_or_slug,
+)
 from data_inclusion.api.config import settings
 from data_inclusion.api.core import db
 from data_inclusion.api.inclusion_data import schemas, services
@@ -25,6 +31,21 @@ router = fastapi.APIRouter(tags=["Données"])
 T = TypeVar("T")
 Optional = T | SkipJsonSchema[None]
 
+CodeCommuneFilter = Annotated[
+    Optional[di_schema.CodeCommune],
+    fastapi.Query(description="Code insee géographique d'une commune."),
+]
+
+CodeDepartementFilter = Annotated[
+    Optional[DepartementCodeEnum],
+    fastapi.Query(description="Code insee géographique d'un département."),
+]
+
+CodeRegionFilter = Annotated[
+    Optional[RegionCodeEnum],
+    fastapi.Query(description="Code insee géographique d'une région."),
+]
+
 
 @router.get(
     "/structures",
@@ -34,29 +55,86 @@ Optional = T | SkipJsonSchema[None]
 )
 def list_structures_endpoint(
     request: fastapi.Request,
-    source: Annotated[Optional[str], fastapi.Query()] = None,
-    id: Annotated[Optional[str], fastapi.Query()] = None,
+    source: Annotated[
+        Optional[str],
+        fastapi.Query(
+            deprecated=True,
+            description="Déprécié en faveur de `sources`.",
+        ),
+    ] = None,
+    sources: Annotated[
+        Optional[list[str]],
+        fastapi.Query(
+            description="""Une liste d'identifiants de source.
+                La liste des identifiants de source est disponible sur le endpoint
+                dédié. Les résultats seront limités aux sources spécifiées.
+            """,
+        ),
+    ] = None,
     typologie: Annotated[Optional[di_schema.Typologie], fastapi.Query()] = None,
     label_national: Annotated[
         Optional[di_schema.LabelNational], fastapi.Query()
     ] = None,
-    thematique: Annotated[Optional[di_schema.Thematique], fastapi.Query()] = None,
-    departement: Annotated[Optional[DepartementCOG], fastapi.Query()] = None,
-    departement_slug: Annotated[Optional[DepartementSlug], fastapi.Query()] = None,
-    code_postal: Annotated[Optional[di_schema.CodePostal], fastapi.Query()] = None,
+    thematique: Annotated[
+        Optional[di_schema.Thematique],
+        fastapi.Query(
+            deprecated=True,
+            description="Déprécié en faveur de `thematiques`.",
+        ),
+    ] = None,
+    thematiques: Annotated[
+        Optional[list[di_schema.Thematique]],
+        fastapi.Query(
+            description="""Une liste de thématique.
+                Chaque résultat renvoyé a (au moins) une thématique dans cette liste."""
+        ),
+    ] = None,
+    departement: Annotated[
+        Optional[DepartementCodeEnum],
+        fastapi.Query(
+            deprecated=True, description="Déprécié en faveur de `code_departement`."
+        ),
+    ] = None,
+    code_departement: CodeDepartementFilter = None,
+    departement_slug: Annotated[
+        Optional[DepartementSlugEnum],
+        fastapi.Query(
+            deprecated=True, description="Déprécié en faveur de `slug_departement`."
+        ),
+    ] = None,
+    slug_departement: Annotated[Optional[DepartementSlugEnum], fastapi.Query()] = None,
+    code_region: CodeRegionFilter = None,
+    slug_region: Annotated[Optional[RegionSlugEnum], fastapi.Query()] = None,
+    code_commune: CodeCommuneFilter = None,
     db_session=fastapi.Depends(db.get_session),
 ):
+    if thematiques is None and thematique is not None:
+        thematiques = [thematique]
+
+    if sources is None and source is not None:
+        sources = [source]
+
+    region = get_region_by_code_or_slug(code=code_region, slug=slug_region)
+
+    if code_departement is None and departement is not None:
+        code_departement = departement
+    if slug_departement is None and departement_slug is not None:
+        slug_departement = departement_slug
+
+    departement = get_departement_by_code_or_slug(
+        code=code_departement, slug=slug_departement
+    )
+
     return services.list_structures(
         request,
         db_session,
-        source=source,
-        id_=id,
+        sources=sources,
         typologie=typologie,
         label_national=label_national,
         departement=departement,
-        departement_slug=departement_slug,
-        code_postal=code_postal,
-        thematique=thematique,
+        region=region,
+        commune_code=code_commune,
+        thematiques=thematiques,
     )
 
 
@@ -96,20 +174,131 @@ def list_sources_endpoint(
 def list_services_endpoint(
     request: fastapi.Request,
     db_session=fastapi.Depends(db.get_session),
-    source: Annotated[Optional[str], fastapi.Query()] = None,
-    thematique: Annotated[Optional[di_schema.Thematique], fastapi.Query()] = None,
-    departement: Annotated[Optional[DepartementCOG], fastapi.Query()] = None,
-    departement_slug: Annotated[Optional[DepartementSlug], fastapi.Query()] = None,
-    code_insee: Annotated[Optional[di_schema.CodeCommune], fastapi.Query()] = None,
+    source: Annotated[
+        Optional[str],
+        fastapi.Query(
+            deprecated=True,
+            description="Déprécié en faveur de `sources`.",
+        ),
+    ] = None,
+    sources: Annotated[
+        Optional[list[str]],
+        fastapi.Query(
+            description="""Une liste d'identifiants de source.
+                La liste des identifiants de source est disponible sur le endpoint
+                dédié. Les résultats seront limités aux sources spécifiées.
+            """,
+        ),
+    ] = None,
+    thematique: Annotated[
+        Optional[di_schema.Thematique],
+        fastapi.Query(
+            deprecated=True,
+            description="Déprécié en faveur de `thematiques`.",
+        ),
+    ] = None,
+    thematiques: Annotated[
+        Optional[list[di_schema.Thematique]],
+        fastapi.Query(
+            description="""Une liste de thématique.
+                Chaque résultat renvoyé a (au moins) une thématique dans cette liste."""
+        ),
+    ] = None,
+    departement: Annotated[
+        Optional[DepartementCodeEnum],
+        fastapi.Query(
+            deprecated=True, description="Déprécié en faveur de `code_departement`."
+        ),
+    ] = None,
+    code_departement: CodeDepartementFilter = None,
+    departement_slug: Annotated[
+        Optional[DepartementSlugEnum],
+        fastapi.Query(
+            deprecated=True, description="Déprécié en faveur de `slug_departement`."
+        ),
+    ] = None,
+    slug_departement: Annotated[Optional[DepartementSlugEnum], fastapi.Query()] = None,
+    code_region: CodeRegionFilter = None,
+    slug_region: Annotated[Optional[RegionSlugEnum], fastapi.Query()] = None,
+    code_insee: Annotated[
+        Optional[di_schema.CodeCommune],
+        fastapi.Query(
+            deprecated=True,
+            description="Déprécié en faveur de `code_commune`.",
+        ),
+    ] = None,
+    code_commune: CodeCommuneFilter = None,
+    frais: Annotated[
+        Optional[list[di_schema.Frais]],
+        fastapi.Query(
+            description="""Une liste de frais.
+                Chaque résultat renvoyé a (au moins) un frais dans cette liste."""
+        ),
+    ] = None,
+    profils: Annotated[
+        Optional[list[di_schema.Profil]],
+        fastapi.Query(
+            description="""Une liste de profils.
+                Chaque résultat renvoyé a (au moins) un profil dans cette liste.
+            """
+        ),
+    ] = None,
+    modes_accueil: Annotated[
+        Optional[list[di_schema.ModeAccueil]],
+        fastapi.Query(
+            description="""Une liste de modes d'accueil.
+                Chaque résultat renvoyé a (au moins) un mode d'accueil dans cette liste.
+            """
+        ),
+    ] = None,
+    types: Annotated[
+        Optional[list[di_schema.TypologieService]],
+        fastapi.Query(
+            description="""Une liste de typologies de service.
+                Chaque résultat renvoyé a (au moins) une typologie dans cette liste."""
+        ),
+    ] = None,
+    inclure_suspendus: Annotated[
+        Optional[bool],
+        fastapi.Query(
+            description="""Inclure les services ayant une date de suspension dépassée.
+                Ils sont exclus par défaut.
+            """
+        ),
+    ] = False,
 ):
+    if code_commune is None and code_insee is not None:
+        code_commune = code_insee
+
+    if thematiques is None and thematique is not None:
+        thematiques = [thematique]
+
+    if sources is None and source is not None:
+        sources = [source]
+
+    if code_departement is None and departement is not None:
+        code_departement = departement
+    if slug_departement is None and departement_slug is not None:
+        slug_departement = departement_slug
+
+    region = get_region_by_code_or_slug(code=code_region, slug=slug_region)
+    departement = get_departement_by_code_or_slug(
+        code=code_departement, slug=slug_departement
+    )
+
     return services.list_services(
         request,
         db_session,
-        source=source,
-        thematique=thematique,
+        sources=sources,
+        thematiques=thematiques,
         departement=departement,
-        departement_slug=departement_slug,
-        code_insee=code_insee,
+        region=region,
+        code_commune=code_commune,
+        frais=frais,
+        profils=profils,
+        modes_accueil=modes_accueil,
+        types=types,
+        include_outdated=inclure_suspendus,
     )
 
 
@@ -137,15 +326,6 @@ def retrieve_service_endpoint(
 def search_services_endpoint(
     request: fastapi.Request,
     db_session=fastapi.Depends(db.get_session),
-    source: Annotated[
-        Optional[str],
-        fastapi.Query(
-            description="""Un identifiant de source.
-                Déprécié en faveur de `sources`.
-            """,
-            deprecated=True,
-        ),
-    ] = None,
     sources: Annotated[
         Optional[list[str]],
         fastapi.Query(
@@ -155,7 +335,7 @@ def search_services_endpoint(
             """,
         ),
     ] = None,
-    code_insee: Annotated[
+    code_commune: Annotated[
         Optional[di_schema.CodeCommune],
         fastapi.Query(
             description="""Code insee de la commune considérée.
@@ -163,6 +343,13 @@ def search_services_endpoint(
                 cette commune. Les résultats sont triés par ordre de distance
                 croissante.
             """
+        ),
+    ] = None,
+    code_insee: Annotated[
+        Optional[di_schema.CodeCommune],
+        fastapi.Query(
+            deprecated=True,
+            description="Déprécié en faveur de `code_commune`.",
         ),
     ] = None,
     lat: Annotated[
@@ -197,6 +384,22 @@ def search_services_endpoint(
                 Chaque résultat renvoyé a (au moins) un frais dans cette liste."""
         ),
     ] = None,
+    modes_accueil: Annotated[
+        Optional[list[di_schema.ModeAccueil]],
+        fastapi.Query(
+            description="""Une liste de modes d'accueil.
+                Chaque résultat renvoyé a (au moins) un mode d'accueil dans cette liste.
+            """
+        ),
+    ] = None,
+    profils: Annotated[
+        Optional[list[di_schema.Profil]],
+        fastapi.Query(
+            description="""Une liste de profils.
+                Chaque résultat renvoyé a (au moins) un profil dans cette liste.
+            """
+        ),
+    ] = None,
     types: Annotated[
         Optional[list[di_schema.TypologieService]],
         fastapi.Query(
@@ -222,7 +425,7 @@ def search_services_endpoint(
     Les services peuvent être filtrés selon par thématiques, frais, typologies et
     code_insee de commune.
 
-    En particulier, lorsque le `code_insee` d'une commune est fourni :
+    En particulier, lorsqu'un `code_commune` est fourni :
 
     * les services sont filtrés par zone de diffusion lorsque celle-ci est définie.
     * de plus, les services en présentiel sont filtrés dans un rayon de 50km autour de
@@ -234,15 +437,20 @@ def search_services_endpoint(
     * les résultats sont triés par distance croissante.
     """
 
+    if code_commune is None and code_insee is not None:
+        code_commune = code_insee
+
     commune_instance = None
     search_point = None
-    if code_insee is not None:
-        code_insee = CODE_COMMUNE_BY_CODE_ARRONDISSEMENT.get(code_insee, code_insee)
-        commune_instance = db_session.get(Commune, code_insee)
+    if code_commune is not None:
+        code_commune = CODE_COMMUNE_BY_CODE_ARRONDISSEMENT.get(
+            code_commune, code_commune
+        )
+        commune_instance = db_session.get(Commune, code_commune)
         if commune_instance is None:
             raise fastapi.HTTPException(
                 status_code=fastapi.status.HTTP_422_UNPROCESSABLE_ENTITY,
-                detail="This `code_insee` does not exist.",
+                detail="This `code_commune` does not exist.",
             )
         if lat and lon:
             search_point = f"POINT({lon} {lat})"
@@ -252,9 +460,6 @@ def search_services_endpoint(
                 detail="The `lat` and `lon` must be simultaneously filled.",
             )
 
-    if sources is None and source is not None:
-        sources = [source]
-
     return services.search_services(
         request,
         db_session,
@@ -262,6 +467,8 @@ def search_services_endpoint(
         commune_instance=commune_instance,
         thematiques=thematiques,
         frais=frais,
+        modes_accueil=modes_accueil,
+        profils=profils,
         types=types,
         search_point=search_point,
         include_outdated=inclure_suspendus,

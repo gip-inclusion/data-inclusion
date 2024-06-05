@@ -17,13 +17,20 @@ from fastapi_pagination.ext.sqlalchemy import paginate
 from data_inclusion import schema as di_schema
 from data_inclusion.api.code_officiel_geo.constants import (
     CODE_COMMUNE_BY_CODE_ARRONDISSEMENT,
-    DepartementCOG,
-    DepartementSlug,
+    Departement,
+    Region,
 )
 from data_inclusion.api.code_officiel_geo.models import Commune
 from data_inclusion.api.inclusion_data import models
 
 logger = logging.getLogger(__name__)
+
+
+def filter_by_sources(
+    query: sqla.Select,
+    sources: list[str],
+):
+    return query.filter(models.Structure.source == sqla.any_(sqla.literal(sources)))
 
 
 @functools.cache
@@ -59,52 +66,147 @@ def get_sub_thematiques(thematiques: list[di_schema.Thematique]) -> list[str]:
     return list(all_thematiques)
 
 
-def list_structures(
+def filter_services_by_thematiques(
+    query: sqla.Select,
+    thematiques: list[di_schema.Thematique],
+):
+    return query.filter(
+        sqla.text("api__services.thematiques && :thematiques").bindparams(
+            thematiques=get_sub_thematiques(thematiques),
+        )
+    )
+
+
+def filter_structures_by_thematiques(
+    query: sqla.Select,
+    thematiques: list[di_schema.Thematique],
+):
+    return query.filter(
+        sqla.text("api__structures.thematiques && :thematiques").bindparams(
+            thematiques=get_sub_thematiques(thematiques),
+        )
+    )
+
+
+def filter_services_by_frais(
+    query: sqla.Select,
+    frais: list[di_schema.Frais],
+):
+    filter_stmt = """\
+    EXISTS(
+        SELECT
+        FROM unnest(api__services.frais) frais
+        WHERE frais = ANY(:frais)
+    )
+    """
+    return query.filter(
+        sqla.text(filter_stmt).bindparams(frais=[f.value for f in frais])
+    )
+
+
+def filter_services_by_modes_accueil(
+    query: sqla.Select,
+    modes_accueil: list[di_schema.ModeAccueil],
+):
+    filter_stmt = """\
+    EXISTS(
+        SELECT
+        FROM unnest(api__services.modes_accueil) modes_accueil
+        WHERE modes_accueil = ANY(:modes_accueil)
+    )
+    """
+    return query.filter(
+        sqla.text(filter_stmt).bindparams(
+            modes_accueil=[m.value for m in modes_accueil]
+        )
+    )
+
+
+def filter_services_by_profils(
+    query: sqla.Select,
+    profils: list[di_schema.Profil],
+):
+    filter_stmt = """\
+    EXISTS(
+        SELECT
+        FROM unnest(api__services.profils) profils
+        WHERE profils = ANY(:profils)
+    )
+    """
+    return query.filter(
+        sqla.text(filter_stmt).bindparams(profils=[p.value for p in profils])
+    )
+
+
+def filter_services_by_types(
+    query: sqla.Select,
+    types: list[di_schema.TypologieService],
+):
+    filter_stmt = """\
+    EXISTS(
+        SELECT
+        FROM unnest(api__services.types) types
+        WHERE types = ANY(:types)
+    )
+    """
+    return query.filter(
+        sqla.text(filter_stmt).bindparams(types=[t.value for t in types])
+    )
+
+
+def filter_outdated_services(
+    query: sqla.Select,
+):
+    return query.filter(
+        sqla.or_(
+            models.Service.date_suspension.is_(None),
+            models.Service.date_suspension >= date.today(),
+        )
+    )
+
+
+def filter_restricted(
+    query: sqla.Select,
     request: fastapi.Request,
-    db_session: orm.Session,
-    source: str | None = None,
-    id_: str | None = None,
-    typologie: di_schema.Typologie | None = None,
-    label_national: di_schema.LabelNational | None = None,
-    departement: DepartementCOG | None = None,
-    departement_slug: DepartementSlug | None = None,
-    code_postal: di_schema.CodePostal | None = None,
-    thematique: di_schema.Thematique | None = None,
-) -> list:
-    query = sqla.select(models.Structure)
-
-    if source is not None:
-        query = query.filter_by(source=source)
-
+) -> sqla.Select:
     if not request.user.is_authenticated or "dora" not in request.user.username:
         query = query.filter(models.Structure.source != "soliguide")
         query = query.filter(models.Structure.source != "data-inclusion")
 
-    if id_ is not None:
-        query = query.filter_by(id=id_)
+    return query
+
+
+def list_structures(
+    request: fastapi.Request,
+    db_session: orm.Session,
+    sources: list[str] | None = None,
+    typologie: di_schema.Typologie | None = None,
+    label_national: di_schema.LabelNational | None = None,
+    departement: Departement | None = None,
+    region: Region | None = None,
+    commune_code: di_schema.CodeCommune | None = None,
+    thematiques: list[di_schema.Thematique] | None = None,
+) -> list:
+    query = sqla.select(models.Structure)
+    query = filter_restricted(query, request)
+
+    if sources is not None:
+        query = filter_by_sources(query, sources)
+
+    if commune_code is not None:
+        commune_code = CODE_COMMUNE_BY_CODE_ARRONDISSEMENT.get(
+            commune_code, commune_code
+        )
+        query = query.filter(models.Structure.code_insee == commune_code)
 
     if departement is not None:
-        query = query.filter(
-            sqla.or_(
-                models.Structure.code_insee.startswith(departement.value),
-                models.Structure._di_geocodage_code_insee.startswith(departement.value),
-            )
-        )
+        query = query.filter(models.Structure.code_insee.startswith(departement.code))
 
-    if departement_slug is not None:
-        query = query.filter(
-            sqla.or_(
-                models.Structure.code_insee.startswith(
-                    DepartementCOG[departement_slug.name].value
-                ),
-                models.Structure._di_geocodage_code_insee.startswith(
-                    DepartementCOG[departement_slug.name].value
-                ),
-            )
+    if region is not None:
+        query = query.join(Commune).options(
+            orm.contains_eager(models.Structure.commune_)
         )
-
-    if code_postal is not None:
-        query = query.filter_by(code_postal=code_postal)
+        query = query.filter(Commune.region == region.code)
 
     if typologie is not None:
         query = query.filter_by(typologie=typologie.value)
@@ -114,17 +216,8 @@ def list_structures(
             models.Structure.labels_nationaux.contains([label_national.value])
         )
 
-    if thematique is not None:
-        filter_stmt = """\
-        EXISTS(
-            SELECT
-            FROM unnest(thematiques) thematique
-            WHERE thematique ~ ('^' || :thematique)
-        )
-        """
-        query = query.filter(
-            sqla.text(filter_stmt).bindparams(thematique=thematique.value)
-        )
+    if thematiques is not None:
+        query = filter_structures_by_thematiques(query, thematiques)
 
     query = query.order_by(
         models.Structure.source,
@@ -166,69 +259,87 @@ def list_sources(request: fastapi.Request) -> list[dict]:
     return sources
 
 
+def filter_services(
+    query: sqla.Select,
+    sources: list[str] | None = None,
+    thematiques: list[di_schema.Thematique] | None = None,
+    frais: list[di_schema.Frais] | None = None,
+    profils: list[di_schema.Profil] | None = None,
+    modes_accueil: list[di_schema.ModeAccueil] | None = None,
+    types: list[di_schema.TypologieService] | None = None,
+    include_outdated: bool | None = False,
+) -> sqla.Select:
+    """Common filters for services."""
+
+    if sources is not None:
+        query = filter_by_sources(query, sources)
+
+    if thematiques is not None:
+        query = filter_services_by_thematiques(query, thematiques)
+
+    if frais is not None:
+        query = filter_services_by_frais(query, frais)
+
+    if profils is not None:
+        query = filter_services_by_profils(query, profils)
+
+    if modes_accueil is not None:
+        query = filter_services_by_modes_accueil(query, modes_accueil)
+
+    if types is not None:
+        query = filter_services_by_types(query, types)
+
+    if not include_outdated:
+        query = filter_outdated_services(query)
+
+    return query
+
+
 def list_services(
     request: fastapi.Request,
     db_session: orm.Session,
-    source: str | None = None,
-    thematique: di_schema.Thematique | None = None,
-    departement: DepartementCOG | None = None,
-    departement_slug: DepartementSlug | None = None,
-    code_insee: di_schema.CodeCommune | None = None,
+    sources: list[str] | None = None,
+    thematiques: list[di_schema.Thematique] | None = None,
+    departement: Departement | None = None,
+    region: Region | None = None,
+    code_commune: di_schema.CodeCommune | None = None,
+    frais: list[di_schema.Frais] | None = None,
+    profils: list[di_schema.Profil] | None = None,
+    modes_accueil: list[di_schema.ModeAccueil] | None = None,
+    types: list[di_schema.TypologieService] | None = None,
+    include_outdated: bool | None = False,
 ):
     query = (
         sqla.select(models.Service)
-        .join(models.Service.structure)
+        .join(models.Structure)
         .options(orm.contains_eager(models.Service.structure))
     )
-
-    if source is not None:
-        query = query.filter(models.Structure.source == source)
-
-    if not request.user.is_authenticated or "dora" not in request.user.username:
-        query = query.filter(models.Structure.source != "soliguide")
-        query = query.filter(models.Structure.source != "data-inclusion")
+    query = filter_restricted(query, request)
 
     if departement is not None:
-        query = query.filter(
-            sqla.or_(
-                models.Service.code_insee.startswith(departement.value),
-                models.Service._di_geocodage_code_insee.startswith(departement.value),
-            )
+        query = query.filter(models.Service.code_insee.startswith(departement.code))
+
+    if region is not None:
+        query = query.join(Commune).options(orm.contains_eager(models.Service.commune_))
+        query = query.filter(Commune.region == region.code)
+
+    if code_commune is not None:
+        code_commune = CODE_COMMUNE_BY_CODE_ARRONDISSEMENT.get(
+            code_commune, code_commune
         )
 
-    if departement_slug is not None:
-        query = query.filter(
-            sqla.or_(
-                models.Service.code_insee.startswith(
-                    DepartementCOG[departement_slug.name].value
-                ),
-                models.Service._di_geocodage_code_insee.startswith(
-                    DepartementCOG[departement_slug.name].value
-                ),
-            )
-        )
+        query = query.filter(models.Service.code_insee == code_commune)
 
-    if code_insee is not None:
-        code_insee = CODE_COMMUNE_BY_CODE_ARRONDISSEMENT.get(code_insee, code_insee)
-
-        query = query.filter(
-            sqla.or_(
-                models.Service.code_insee == code_insee,
-                models.Service._di_geocodage_code_insee == code_insee,
-            )
-        )
-
-    if thematique is not None:
-        filter_stmt = """\
-        EXISTS(
-            SELECT
-            FROM unnest(api__services.thematiques) thematique
-            WHERE thematique ~ ('^' || :thematique)
-        )
-        """
-        query = query.filter(
-            sqla.text(filter_stmt).bindparams(thematique=thematique.value)
-        )
+    query = filter_services(
+        query=query,
+        sources=sources,
+        thematiques=thematiques,
+        frais=frais,
+        profils=profils,
+        modes_accueil=modes_accueil,
+        types=types,
+        include_outdated=include_outdated,
+    )
 
     query = query.order_by(
         models.Service.source,
@@ -245,22 +356,18 @@ def search_services(
     commune_instance: Commune | None = None,
     thematiques: list[di_schema.Thematique] | None = None,
     frais: list[di_schema.Frais] | None = None,
+    modes_accueil: list[di_schema.ModeAccueil] | None = None,
+    profils: list[di_schema.Profil] | None = None,
     types: list[di_schema.TypologieService] | None = None,
     search_point: str | None = None,
     include_outdated: bool | None = False,
 ):
     query = (
         sqla.select(models.Service)
-        .join(models.Service.structure)
+        .join(models.Structure)
         .options(orm.contains_eager(models.Service.structure))
     )
-
-    if sources is not None:
-        query = query.filter(models.Service.source == sqla.any_(sqla.literal(sources)))
-
-    if not request.user.is_authenticated or "dora" not in request.user.username:
-        query = query.filter(models.Structure.source != "soliguide")
-        query = query.filter(models.Structure.source != "data-inclusion")
+    query = filter_restricted(query, request)
 
     if commune_instance is not None:
         # filter by zone de diffusion
@@ -354,44 +461,16 @@ def search_services(
     else:
         query = query.add_columns(sqla.null().cast(sqla.Integer).label("distance"))
 
-    if thematiques is not None:
-        query = query.filter(
-            sqla.text("api__services.thematiques && :thematiques").bindparams(
-                thematiques=get_sub_thematiques(thematiques),
-            )
-        )
-
-    if frais is not None:
-        filter_stmt = """\
-        EXISTS(
-            SELECT
-            FROM unnest(api__services.frais) frais
-            WHERE frais = ANY(:frais)
-        )
-        """
-        query = query.filter(
-            sqla.text(filter_stmt).bindparams(frais=[f.value for f in frais])
-        )
-
-    if types is not None:
-        filter_stmt = """\
-        EXISTS(
-            SELECT
-            FROM unnest(api__services.types) types
-            WHERE types = ANY(:types)
-        )
-        """
-        query = query.filter(
-            sqla.text(filter_stmt).bindparams(types=[t.value for t in types])
-        )
-
-    if not include_outdated:
-        query = query.filter(
-            sqla.or_(
-                models.Service.date_suspension.is_(None),
-                models.Service.date_suspension >= date.today(),
-            )
-        )
+    query = filter_services(
+        query=query,
+        sources=sources,
+        thematiques=thematiques,
+        frais=frais,
+        profils=profils,
+        modes_accueil=modes_accueil,
+        types=types,
+        include_outdated=include_outdated,
+    )
 
     query = query.order_by(sqla.column("distance").nulls_last())
 

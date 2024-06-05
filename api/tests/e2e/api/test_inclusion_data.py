@@ -5,6 +5,7 @@ from unittest.mock import ANY
 import pytest
 
 from data_inclusion import schema
+from data_inclusion.api.code_officiel_geo.constants import RegionEnum
 from data_inclusion.api.utils import soliguide
 
 from ... import factories
@@ -15,6 +16,10 @@ LILLE = {"code_insee": "59350", "latitude": 50.633333, "longitude": 3.066667}
 MAUBEUGE = {"code_insee": "59392"}
 PARIS = {"code_insee": "75056", "latitude": 48.866667, "longitude": 2.333333}
 ROUBAIX = {"code_insee": "59512"}
+
+
+def list_resources_data(resp_data):
+    return [item.get("service", item) for item in resp_data["items"]]
 
 
 def test_openapi_spec(api_client, snapshot):
@@ -44,34 +49,32 @@ def test_list_structures_all(api_client):
     assert resp_data == {
         "items": [
             {
-                "_di_geocodage_code_insee": "55626",
-                "_di_geocodage_score": 0.33,
-                "id": "prince-point-monde",
-                "siret": "59382421200611",
-                "rna": "W948924115",
-                "nom": "Vaillant",
-                "commune": "Sainte Bernadetteboeuf",
-                "code_postal": "80571",
-                "code_insee": "84442",
-                "adresse": "977, rue Susan Lévy",
-                "complement_adresse": None,
-                "longitude": -172.461419,
-                "latitude": -64.9625245,
-                "typologie": "ACI",
-                "telephone": "0102030405",
-                "courriel": "ylacombe@example.net",
-                "site_web": "http://berger.fr/",
-                "presentation_resume": "Voie battre.",
-                "presentation_detail": "Or personne jambe.",
-                "source": "dora",
-                "date_maj": "2023-01-01",
+                "accessibilite": "https://acceslibre.beta.gouv.fr/app/nom-asseoir/",
+                "adresse": "49, avenue de Pichon",
                 "antenne": False,
-                "lien_source": "https://dora.fr/prince-point-monde",
+                "code_insee": "59350",
+                "code_postal": "46873",
+                "commune": "Sainte CharlotteBourg",
+                "complement_adresse": None,
+                "courriel": "levyalexandre@example.org",
+                "date_maj": "2023-01-01",
                 "horaires_ouverture": 'Mo-Fr 10:00-20:00 "sur rendez-vous"; PH off',
-                "accessibilite": "https://acceslibre.beta.gouv.fr/app/prince-point-monde/",
-                "labels_nationaux": [],
+                "id": "nom-asseoir",
                 "labels_autres": ["SudLabs", "Nièvre médiation numérique"],
+                "labels_nationaux": [],
+                "latitude": -20.074628,
+                "lien_source": "https://dora.fr/nom-asseoir",
+                "longitude": 99.899603,
+                "nom": "Perrin",
+                "presentation_detail": "Or personne jambe.",
+                "presentation_resume": "Image voie battre.",
+                "rna": "W242194892",
+                "siret": "76475938700658",
+                "site_web": "https://www.le.net/",
+                "source": "dora",
+                "telephone": "0102030405",
                 "thematiques": ["choisir-un-metier", "creation-activite"],
+                "typologie": "ACI",
             }
         ],
         "total": 1,
@@ -125,8 +128,6 @@ def assert_structure_data(structure, data):
     assert structure.labels_nationaux == data["labels_nationaux"]
     assert structure.labels_autres == data["labels_autres"]
     assert structure.thematiques == data["thematiques"]
-    assert structure._di_geocodage_code_insee == data["_di_geocodage_code_insee"]
-    assert structure._di_geocodage_score == data["_di_geocodage_score"]
 
 
 @pytest.mark.with_token
@@ -175,6 +176,7 @@ def test_list_structures_filter_by_label(
 
 
 @pytest.mark.with_token
+@pytest.mark.feature_deprecated
 def test_list_structures_filter_by_source(api_client):
     structure_1 = factories.StructureFactory(source="emplois-de-linclusion")
     factories.StructureFactory(source="dora")
@@ -216,62 +218,7 @@ def test_list_sources(api_client):
 
 
 @pytest.mark.with_token
-def test_list_structures_filter_by_departement_cog(api_client):
-    structure_1 = factories.StructureFactory(code_insee=PARIS["code_insee"])
-    factories.StructureFactory(code_insee=LILLE["code_insee"])
-
-    url = "/api/v0/structures/"
-    response = api_client.get(url, params={"departement": "75"})
-
-    resp_data = response.json()
-    assert_paginated_response_data(response.json(), total=1)
-    assert_structure_data(structure_1, resp_data["items"][0])
-
-    response = api_client.get(url, params={"departement": "62"})
-    assert_paginated_response_data(response.json(), total=0)
-
-
-@pytest.mark.with_token
-def test_list_structures_filter_by_departement_slug(
-    api_client,
-):
-    structure_1 = factories.StructureFactory(code_insee=PARIS["code_insee"])
-    factories.StructureFactory(code_insee=LILLE["code_insee"])
-
-    url = "/api/v0/structures/"
-    response = api_client.get(url, params={"departement_slug": "paris"})
-
-    resp_data = response.json()
-    assert_paginated_response_data(response.json(), total=1)
-    assert_structure_data(structure_1, resp_data["items"][0])
-
-    response = api_client.get(url, params={"departement_slug": "pas-de-calais"})
-    assert_paginated_response_data(response.json(), total=0)
-
-
-@pytest.mark.with_token
-def test_list_structures_filter_by_code_postal(
-    api_client,
-):
-    structure_1 = factories.StructureFactory(
-        code_postal="59100", code_insee=ROUBAIX["code_insee"], commune="roubaix"
-    )
-    factories.StructureFactory(
-        code_postal="59178", code_insee="59100", commune="bousignies"
-    )
-
-    url = "/api/v0/structures/"
-    response = api_client.get(url, params={"code_postal": "59100"})
-
-    resp_data = response.json()
-    assert_paginated_response_data(response.json(), total=1)
-    assert_structure_data(structure_1, resp_data["items"][0])
-
-    response = api_client.get(url, params={"code_postal": ROUBAIX["code_insee"]})
-    assert_paginated_response_data(response.json(), total=0)
-
-
-@pytest.mark.with_token
+@pytest.mark.feature_deprecated
 def test_list_structures_filter_by_thematique(
     api_client,
 ):
@@ -305,6 +252,7 @@ def test_list_structures_filter_by_thematique(
 
 
 @pytest.mark.with_token
+@pytest.mark.feature_deprecated
 def test_list_structures_filter_by_categorie_thematique(
     api_client,
 ):
@@ -328,24 +276,6 @@ def test_list_structures_filter_by_categorie_thematique(
     assert resp_data["items"][0]["id"] == structure.id
 
 
-@pytest.mark.with_token
-def test_list_structures_filter_by_source_and_id(
-    api_client,
-):
-    factories.StructureFactory(source="emplois-de-linclusion", id="foo")
-    structure_2 = factories.StructureFactory(source="dora", id="foo")
-    factories.StructureFactory(source="dora", id="bar")
-
-    url = "/api/v0/structures/"
-
-    response = api_client.get(url, params={"source": "dora", "id": "foo"})
-    resp_data = response.json()
-
-    resp_data = response.json()
-    assert_paginated_response_data(response.json(), total=1)
-    assert_structure_data(structure_2, resp_data["items"][0])
-
-
 def test_list_services_unauthenticated(api_client):
     url = "/api/v0/services/"
     response = api_client.get(url)
@@ -365,8 +295,6 @@ def test_list_services_all(api_client):
     assert resp_data == {
         "items": [
             {
-                "_di_geocodage_code_insee": LILLE["code_insee"],
-                "_di_geocodage_score": 0.5,
                 "adresse": "5, rue Guichard",
                 "code_insee": LILLE["code_insee"],
                 "code_postal": "25454",
@@ -400,7 +328,7 @@ def test_list_services_all(api_client):
                 "profils": ["femmes", "jeunes-16-26"],
                 "recurrence": None,
                 "source": "dora",
-                "structure_id": "libre-rouge-empire",
+                "structure_id": "prince-point-monde",
                 "telephone": "0102030405",
                 "thematiques": ["choisir-un-metier", "creation-activite"],
                 "types": ["formation", "numerique"],
@@ -414,76 +342,6 @@ def test_list_services_all(api_client):
         "size": ANY,
         "pages": 1,
     }
-
-
-@pytest.mark.with_token
-def test_list_structures_null_siret(
-    api_client,
-):
-    structure = factories.StructureFactory(siret=None)
-
-    url = "/api/v0/structures/"
-
-    response = api_client.get(url)
-
-    assert response.status_code == 200
-
-    resp_data = response.json()
-
-    assert resp_data["items"][0]["id"] == structure.id
-    assert resp_data["items"][0]["siret"] is None
-
-
-@pytest.mark.with_token
-def test_list_structures_null_code_insee(
-    api_client,
-):
-    structure = factories.StructureFactory(code_insee=None)
-
-    url = "/api/v0/structures/"
-
-    response = api_client.get(url)
-
-    assert response.status_code == 200
-
-    resp_data = response.json()
-
-    assert resp_data["items"][0]["id"] == structure.id
-    assert resp_data["items"][0]["code_insee"] is None
-
-
-@pytest.mark.with_token
-def test_list_structures_null_code_insee_filter_by_departement_cog(api_client):
-    factories.StructureFactory(code_insee=None)
-    structure = factories.StructureFactory(code_insee=LILLE["code_insee"])
-
-    url = "/api/v0/structures/"
-
-    response = api_client.get(url, params={"departement": "59"})
-
-    assert response.status_code == 200
-
-    resp_data = response.json()
-
-    assert len(resp_data["items"]) == 1
-    assert resp_data["items"][0]["id"] == structure.id
-
-
-@pytest.mark.with_token
-def test_list_structures_null_code_insee_filter_by_departement_slug(api_client):
-    factories.StructureFactory(code_insee=None)
-    structure = factories.StructureFactory(code_insee=LILLE["code_insee"])
-
-    url = "/api/v0/structures/"
-
-    response = api_client.get(url, params={"departement_slug": "nord"})
-
-    assert response.status_code == 200
-
-    resp_data = response.json()
-
-    assert len(resp_data["items"]) == 1
-    assert resp_data["items"][0]["id"] == structure.id
 
 
 @pytest.mark.with_token
@@ -508,9 +366,10 @@ def test_list_structures_order(
 
 
 @pytest.mark.with_token
+@pytest.mark.feature_deprecated
 def test_list_services_filter_by_source(api_client):
-    service_1 = factories.ServiceFactory(structure__source="emplois-de-linclusion")
-    factories.ServiceFactory(structure__source="dora")
+    service_1 = factories.ServiceFactory(source="emplois-de-linclusion")
+    factories.ServiceFactory(source="dora")
 
     url = "/api/v0/services/"
     response = api_client.get(url, params={"source": "emplois-de-linclusion"})
@@ -525,9 +384,10 @@ def test_list_services_filter_by_source(api_client):
 
 
 @pytest.mark.with_token
+@pytest.mark.feature_deprecated
 def test_list_services_filter_by_thematique(api_client):
     service_1 = factories.ServiceFactory(
-        structure__source="alpha",
+        source="alpha",
         id="1",
         thematiques=[
             schema.Thematique.MOBILITE.value,
@@ -535,7 +395,7 @@ def test_list_services_filter_by_thematique(api_client):
         ],
     )
     service_2 = factories.ServiceFactory(
-        structure__source="alpha",
+        source="alpha",
         id="2",
         thematiques=[
             schema.Thematique.TROUVER_UN_EMPLOI.value,
@@ -576,9 +436,10 @@ def test_list_services_filter_by_thematique(api_client):
 
 
 @pytest.mark.with_token
+@pytest.mark.feature_deprecated
 def test_list_services_filter_by_categorie_thematique(api_client):
     service = factories.ServiceFactory(
-        structure__source="alpha",
+        source="alpha",
         id="1",
         thematiques=[
             schema.Thematique.MOBILITE__ACHETER_UN_VEHICULE_MOTORISE.value,
@@ -599,42 +460,195 @@ def test_list_services_filter_by_categorie_thematique(api_client):
     assert resp_data["items"][0]["id"] == service.id
 
 
-@pytest.mark.with_token
-def test_list_services_filter_by_departement_cog(api_client):
-    service = factories.ServiceFactory(code_insee=PARIS["code_insee"])
-    factories.ServiceFactory(code_insee=LILLE["code_insee"])
-
-    url = "/api/v0/services/"
-    response = api_client.get(url, params={"departement": "75"})
-
-    assert response.status_code == 200
-    resp_data = response.json()
-    assert_paginated_response_data(resp_data, total=1)
-    assert resp_data["items"][0]["id"] == service.id
-
-    response = api_client.get(url, params={"departement": "62"})
-    assert_paginated_response_data(response.json(), total=0)
-
-
-@pytest.mark.with_token
-def test_list_services_filter_by_departement_slug(api_client):
-    service = factories.ServiceFactory(code_insee=PARIS["code_insee"])
-    factories.ServiceFactory(code_insee=LILLE["code_insee"])
-
-    url = "/api/v0/services/"
-    response = api_client.get(url, params={"departement_slug": "paris"})
-
-    assert response.status_code == 200
-    resp_data = response.json()
-    assert_paginated_response_data(resp_data, total=1)
-    assert resp_data["items"][0]["id"] == service.id
-
-    response = api_client.get(url, params={"departement_slug": "pas-de-calais"})
-    assert_paginated_response_data(response.json(), total=0)
-
-
 @pytest.mark.parametrize(
-    "code_insee, input, found",
+    "thematiques,input,found",
+    [
+        ([], [schema.Thematique.FAMILLE.value], False),
+        ([schema.Thematique.FAMILLE.value], [schema.Thematique.FAMILLE.value], True),
+        ([schema.Thematique.NUMERIQUE.value], [schema.Thematique.FAMILLE.value], False),
+        (
+            [schema.Thematique.NUMERIQUE.value, schema.Thematique.FAMILLE.value],
+            [schema.Thematique.FAMILLE.value],
+            True,
+        ),
+        (
+            [schema.Thematique.SANTE.value, schema.Thematique.NUMERIQUE.value],
+            [schema.Thematique.FAMILLE.value, schema.Thematique.NUMERIQUE.value],
+            True,
+        ),
+        (
+            [schema.Thematique.SANTE.value, schema.Thematique.NUMERIQUE.value],
+            [schema.Thematique.FAMILLE.value, schema.Thematique.NUMERIQUE.value],
+            True,
+        ),
+        (
+            [schema.Thematique.FAMILLE__GARDE_DENFANTS.value],
+            [schema.Thematique.FAMILLE.value],
+            True,
+        ),
+    ],
+)
+@pytest.mark.with_token
+@pytest.mark.parametrize(
+    ("url", "factory"),
+    [
+        ("/api/v0/services", factories.ServiceFactory),
+        ("/api/v0/search/services", factories.ServiceFactory),
+        ("/api/v0/structures", factories.StructureFactory),
+    ],
+)
+def test_can_filter_resources_by_thematiques(
+    api_client, url, factory, thematiques, input, found
+):
+    resource = factory(thematiques=thematiques)
+    factory(thematiques=[schema.Thematique.MOBILITE.value])
+
+    response = api_client.get(url, params={"thematiques": input})
+
+    assert response.status_code == 200
+    resp_data = response.json()
+    if found:
+        assert_paginated_response_data(resp_data, total=1)
+        assert list_resources_data(resp_data)[0]["id"] in [resource.id]
+    else:
+        assert_paginated_response_data(resp_data, total=0)
+
+
+@pytest.mark.with_token
+@pytest.mark.parametrize(
+    ("url", "factory"),
+    [
+        ("/api/v0/structures", factories.StructureFactory),
+        ("/api/v0/services", factories.ServiceFactory),
+    ],
+)
+@pytest.mark.parametrize(
+    "query_param",
+    [
+        "code_departement",
+        pytest.param("departement", marks=pytest.mark.feature_deprecated),
+    ],
+)
+def test_can_filter_resources_by_departement_code(
+    api_client, url, factory, query_param
+):
+    resource = factory(code_insee=PARIS["code_insee"])
+    factory(code_insee=LILLE["code_insee"])
+    factory(code_insee=None)
+
+    response = api_client.get(url, params={query_param: "75"})
+
+    assert response.status_code == 200
+    resp_data = response.json()
+    assert_paginated_response_data(resp_data, total=1)
+    assert resp_data["items"][0]["id"] == resource.id
+
+    response = api_client.get(url, params={query_param: "62"})
+    assert_paginated_response_data(response.json(), total=0)
+
+
+@pytest.mark.with_token
+@pytest.mark.parametrize(
+    ("url", "factory"),
+    [
+        ("/api/v0/structures", factories.StructureFactory),
+        ("/api/v0/services", factories.ServiceFactory),
+    ],
+)
+@pytest.mark.parametrize(
+    "query_param",
+    [
+        "slug_departement",
+        pytest.param("departement_slug", marks=pytest.mark.feature_deprecated),
+    ],
+)
+def test_can_filter_resources_by_departement_slug(
+    api_client, url, query_param, factory
+):
+    resource = factory(code_insee=PARIS["code_insee"])
+    factory(code_insee=LILLE["code_insee"])
+
+    response = api_client.get(url, params={query_param: "paris"})
+
+    assert response.status_code == 200
+    resp_data = response.json()
+    assert_paginated_response_data(resp_data, total=1)
+    assert resp_data["items"][0]["id"] == resource.id
+
+    response = api_client.get(url, params={query_param: "pas-de-calais"})
+    assert_paginated_response_data(response.json(), total=0)
+
+
+@pytest.mark.with_token
+@pytest.mark.parametrize(
+    ("url", "factory"),
+    [
+        ("/api/v0/structures", factories.StructureFactory),
+        ("/api/v0/services", factories.ServiceFactory),
+    ],
+)
+def test_can_filter_resources_by_code_region(api_client, url, factory):
+    resource = factory(code_insee=PARIS["code_insee"])
+    factory(code_insee=LILLE["code_insee"])
+
+    response = api_client.get(
+        url, params={"code_region": RegionEnum.ILE_DE_FRANCE.value.code}
+    )
+
+    assert response.status_code == 200
+    resp_data = response.json()
+    assert_paginated_response_data(resp_data, total=1)
+    assert resp_data["items"][0]["id"] == resource.id
+
+    response = api_client.get(
+        url, params={"code_region": RegionEnum.LA_REUNION.value.code}
+    )
+    assert_paginated_response_data(response.json(), total=0)
+
+
+@pytest.mark.with_token
+@pytest.mark.parametrize(
+    ("url", "factory"),
+    [
+        ("/api/v0/structures", factories.StructureFactory),
+        ("/api/v0/services", factories.ServiceFactory),
+    ],
+)
+def test_can_filter_resources_by_slug_region(api_client, url, factory):
+    resource = factory(code_insee=PARIS["code_insee"])
+    factory(code_insee=LILLE["code_insee"])
+
+    response = api_client.get(
+        url, params={"slug_region": RegionEnum.ILE_DE_FRANCE.value.slug}
+    )
+
+    assert response.status_code == 200
+    resp_data = response.json()
+    assert_paginated_response_data(resp_data, total=1)
+    assert resp_data["items"][0]["id"] == resource.id
+
+    response = api_client.get(
+        url, params={"slug_region": RegionEnum.LA_REUNION.value.slug}
+    )
+    assert_paginated_response_data(response.json(), total=0)
+
+
+@pytest.mark.with_token
+@pytest.mark.parametrize(
+    ("url", "factory", "query_param"),
+    [
+        ("/api/v0/structures", factories.StructureFactory, "code_commune"),
+        ("/api/v0/services", factories.ServiceFactory, "code_commune"),
+        pytest.param(
+            "/api/v0/services",
+            factories.ServiceFactory,
+            "code_insee",
+            marks=pytest.mark.feature_deprecated,
+        ),
+    ],
+)
+@pytest.mark.parametrize(
+    "code_commune, input, found",
     [
         (None, DUNKERQUE["code_insee"], False),
         (DUNKERQUE["code_insee"], DUNKERQUE["code_insee"], True),
@@ -642,21 +656,218 @@ def test_list_services_filter_by_departement_slug(api_client):
         (PARIS["code_insee"], "75101", True),
     ],
 )
-@pytest.mark.with_token
-def test_list_services_filter_by_code_insee(api_client, code_insee, input, found):
-    service = factories.ServiceFactory(code_insee=code_insee)
-    factories.ServiceFactory(code_insee=LILLE["code_insee"])
+def test_can_filter_resources_by_code_commune(
+    api_client, url, factory, code_commune, input, found, query_param
+):
+    resource = factory(code_insee=code_commune)
+    factory(code_insee=LILLE["code_insee"])
 
-    url = "/api/v0/services/"
-    response = api_client.get(url, params={"code_insee": input})
+    response = api_client.get(url, params={query_param: input})
 
     assert response.status_code == 200
     resp_data = response.json()
     if found:
         assert_paginated_response_data(resp_data, total=1)
-        assert resp_data["items"][0]["id"] == service.id
+        assert resp_data["items"][0]["id"] == resource.id
     else:
         assert_paginated_response_data(resp_data, total=0)
+
+
+@pytest.mark.with_token
+@pytest.mark.parametrize("url", ["/api/v0/services", "/api/v0/search/services"])
+def test_can_filter_services_by_profils(api_client, url):
+    service_1 = factories.ServiceFactory(profils=[schema.Profil.FEMMES.value])
+    service_2 = factories.ServiceFactory(profils=[schema.Profil.JEUNES_16_26.value])
+    factories.ServiceFactory(profils=[schema.Profil.ADULTES.value])
+    factories.ServiceFactory(profils=[])
+    factories.ServiceFactory(profils=None)
+
+    url = "/api/v0/services"
+    response = api_client.get(
+        url,
+        params={
+            "profils": [
+                schema.Profil.FEMMES.value,
+                schema.Profil.JEUNES_16_26.value,
+            ],
+        },
+    )
+
+    assert response.status_code == 200
+    resp_data = response.json()
+    assert_paginated_response_data(resp_data, total=2)
+    assert {d["id"] for d in list_resources_data(resp_data)} == {
+        service_1.id,
+        service_2.id,
+    }
+
+    response = api_client.get(
+        url,
+        params={
+            "profils": schema.Profil.BENEFICIAIRES_RSA.value,
+        },
+    )
+    assert_paginated_response_data(response.json(), total=0)
+
+
+@pytest.mark.with_token
+@pytest.mark.parametrize("url", ["/api/v0/services", "/api/v0/search/services"])
+def test_list_services_by_types(api_client, url):
+    service_1 = factories.ServiceFactory(types=[schema.TypologieService.ACCUEIL.value])
+    service_2 = factories.ServiceFactory(
+        types=[schema.TypologieService.ACCOMPAGNEMENT.value]
+    )
+    factories.ServiceFactory(types=[schema.TypologieService.AIDE_FINANCIERE.value])
+
+    response = api_client.get(
+        url,
+        params={
+            "types": [
+                schema.TypologieService.ACCUEIL.value,
+                schema.TypologieService.ACCOMPAGNEMENT.value,
+            ],
+        },
+    )
+
+    assert response.status_code == 200
+    resp_data = response.json()
+    assert_paginated_response_data(resp_data, total=2)
+    assert {d["id"] for d in list_resources_data(resp_data)} == {
+        service_1.id,
+        service_2.id,
+    }
+
+    response = api_client.get(
+        url,
+        params={
+            "types": schema.TypologieService.ATELIER.value,
+        },
+    )
+    assert_paginated_response_data(response.json(), total=0)
+
+
+@pytest.mark.with_token
+@pytest.mark.parametrize("url", ["/api/v0/services", "/api/v0/search/services"])
+def test_can_filter_services_by_frais(api_client, url):
+    service_1 = factories.ServiceFactory(frais=[schema.Frais.GRATUIT.value])
+    service_2 = factories.ServiceFactory(frais=[schema.Frais.ADHESION.value])
+    factories.ServiceFactory(frais=[schema.Frais.PASS_NUMERIQUE.value])
+
+    response = api_client.get(
+        url,
+        params={
+            "frais": [
+                schema.Frais.GRATUIT.value,
+                schema.Frais.ADHESION.value,
+            ],
+        },
+    )
+
+    assert response.status_code == 200
+    resp_data = response.json()
+    assert_paginated_response_data(resp_data, total=2)
+    assert {d["id"] for d in list_resources_data(resp_data)} == {
+        service_1.id,
+        service_2.id,
+    }
+
+    response = api_client.get(
+        url,
+        params={
+            "frais": schema.Frais.PAYANT.value,
+        },
+    )
+    assert_paginated_response_data(response.json(), total=0)
+
+
+@pytest.mark.with_token
+@pytest.mark.parametrize("url", ["/api/v0/services", "/api/v0/search/services"])
+def test_can_filter_services_with_an_outdated_suspension_date(api_client, url):
+    service_1 = factories.ServiceFactory(date_suspension=None)
+    service_2 = factories.ServiceFactory(date_suspension=date.today())
+    factories.ServiceFactory(date_suspension=date.today() - timedelta(days=1))
+
+    # exclude outdated services by default
+    response = api_client.get(url)
+
+    assert response.status_code == 200
+    resp_data = response.json()
+    assert_paginated_response_data(resp_data, total=2)
+    assert {d["id"] for d in list_resources_data(resp_data)} == {
+        service_1.id,
+        service_2.id,
+    }
+
+    # include outdated services with query parameter
+    response = api_client.get(url, params={"inclure_suspendus": True})
+
+    assert response.status_code == 200
+    resp_data = response.json()
+    assert_paginated_response_data(resp_data, total=3)
+
+
+@pytest.mark.with_token
+@pytest.mark.parametrize("url", ["/api/v0/services", "/api/v0/search/services"])
+def test_can_filter_services_by_modes_accueil(api_client, url):
+    service_1 = factories.ServiceFactory(
+        modes_accueil=[schema.ModeAccueil.EN_PRESENTIEL.value]
+    )
+    factories.ServiceFactory(modes_accueil=[schema.ModeAccueil.A_DISTANCE.value])
+    factories.ServiceFactory(modes_accueil=[])
+    factories.ServiceFactory(modes_accueil=None)
+
+    response = api_client.get(
+        url,
+        params={
+            "modes_accueil": [
+                schema.ModeAccueil.EN_PRESENTIEL.value,
+            ],
+        },
+    )
+
+    assert response.status_code == 200
+    resp_data = response.json()
+    assert_paginated_response_data(resp_data, total=1)
+
+    assert list_resources_data(resp_data)[0]["id"] == service_1.id
+
+
+@pytest.mark.with_token
+@pytest.mark.parametrize(
+    ("url", "factory"),
+    [
+        ("/api/v0/services", factories.ServiceFactory),
+        ("/api/v0/search/services", factories.ServiceFactory),
+        ("/api/v0/structures", factories.StructureFactory),
+    ],
+)
+def test_can_filter_resources_by_sources(api_client, url, factory):
+    service_1 = factory(source="dora")
+    service_2 = factory(source="emplois-de-linclusion")
+    factory(source="un-jeune-une-solution")
+
+    response = api_client.get(
+        url,
+        params={
+            "sources": ["dora", "emplois-de-linclusion"],
+        },
+    )
+
+    assert response.status_code == 200
+    resp_data = response.json()
+    assert_paginated_response_data(resp_data, total=2)
+    assert {d["id"] for d in list_resources_data(resp_data)} == {
+        service_1.id,
+        service_2.id,
+    }
+
+    response = api_client.get(
+        url,
+        params={
+            "sources": ["foobar"],
+        },
+    )
+    assert_paginated_response_data(response.json(), total=0)
 
 
 @pytest.mark.parametrize(
@@ -670,14 +881,23 @@ def test_list_services_filter_by_code_insee(api_client, code_insee, input, found
     ],
 )
 @pytest.mark.with_token
-def test_search_services_with_code_insee_foo(api_client, commune_data, input, found):
+@pytest.mark.parametrize(
+    "query_param",
+    [
+        "code_commune",
+        pytest.param("code_insee", marks=pytest.mark.feature_deprecated),
+    ],
+)
+def test_search_services_with_code_commune(
+    api_client, commune_data, input, found, query_param
+):
     service = factories.ServiceFactory(
         modes_accueil=[schema.ModeAccueil.EN_PRESENTIEL.value],
         **(commune_data if commune_data is not None else {}),
     )
 
     url = "/api/v0/search/services"
-    response = api_client.get(url, params={"code_insee": input})
+    response = api_client.get(url, params={query_param: input})
 
     assert response.status_code == 200
     resp_data = response.json()
@@ -689,7 +909,7 @@ def test_search_services_with_code_insee_foo(api_client, commune_data, input, fo
 
 
 @pytest.mark.with_token
-def test_search_services_with_code_insee_too_far(api_client):
+def test_search_services_with_code_commune_too_far(api_client):
     # Dunkerque to Hazebrouck: <50km
     # Hazebrouck to Lille: <50km
     # Dunkerque to Lille: >50km
@@ -714,7 +934,7 @@ def test_search_services_with_code_insee_too_far(api_client):
     response = api_client.get(
         url,
         params={
-            "code_insee": ROUBAIX["code_insee"],  # Roubaix (only close to Lille)
+            "code_commune": ROUBAIX["code_insee"],  # Roubaix (only close to Lille)
         },
     )
 
@@ -728,9 +948,9 @@ def test_search_services_with_code_insee_too_far(api_client):
     response = api_client.get(
         url,
         params={
-            "code_insee": ROUBAIX["code_insee"],  # Roubaix
+            "code_commune": ROUBAIX["code_insee"],  # Roubaix
             # Coordinates for Le Mans. We don't enforce lat/lon to be within
-            # the supplied 'code_insee' city limits.
+            # the supplied 'code_commune' city limits.
             "lat": 48.003954,
             "lon": 0.199134,
         },
@@ -744,7 +964,7 @@ def test_search_services_with_code_insee_too_far(api_client):
     response = api_client.get(
         url,
         params={
-            "code_insee": ROUBAIX["code_insee"],  # Roubaix
+            "code_commune": ROUBAIX["code_insee"],  # Roubaix
             # Coordinates for Hazebrouck, between Dunkirk & Lille
             "lat": 50.7262,
             "lon": 2.5387,
@@ -758,12 +978,12 @@ def test_search_services_with_code_insee_too_far(api_client):
     assert resp_data["items"][0]["service"]["id"] == service_2.id
     assert 0 < resp_data["items"][0]["distance"] < 50
 
-    # What about a request without code_insee but with lat/lon?
+    # What about a request without code_commune but with lat/lon?
     response = api_client.get(
         url,
         params={
             # Coordinates for Le Mans, should be ignored.
-            # the supplied 'code_insee' city limits.
+            # the supplied 'code_commune' city limits.
             "lat": 48.003954,
             "lon": 0.199134,
         },
@@ -777,7 +997,7 @@ def test_search_services_with_code_insee_too_far(api_client):
     response = api_client.get(
         url,
         params={
-            "code_insee": MAUBEUGE["code_insee"],
+            "code_commune": MAUBEUGE["code_insee"],
             "lat": 48.003954,
         },
     )
@@ -789,7 +1009,7 @@ def test_search_services_with_code_insee_too_far(api_client):
     response = api_client.get(
         url,
         params={
-            "code_insee": MAUBEUGE["code_insee"],
+            "code_commune": MAUBEUGE["code_insee"],
             "lon": 1.2563,
         },
     )
@@ -816,7 +1036,7 @@ def test_search_services_with_zone_diffusion_pays(api_client):
     response = api_client.get(
         url,
         params={
-            "code_insee": MAUBEUGE["code_insee"],  # Maubeuge
+            "code_commune": MAUBEUGE["code_insee"],  # Maubeuge
         },
     )
 
@@ -853,7 +1073,7 @@ def test_search_services_with_zone_diffusion_commune(api_client):
     response = api_client.get(
         url,
         params={
-            "code_insee": DUNKERQUE["code_insee"],  # Dunkerque
+            "code_commune": DUNKERQUE["code_insee"],  # Dunkerque
         },
     )
 
@@ -890,7 +1110,7 @@ def test_search_services_with_zone_diffusion_epci(api_client):
     response = api_client.get(
         url,
         params={
-            "code_insee": DUNKERQUE["code_insee"],  # Dunkerque
+            "code_commune": DUNKERQUE["code_insee"],  # Dunkerque
         },
     )
 
@@ -927,7 +1147,7 @@ def test_search_services_with_zone_diffusion_departement(api_client):
     response = api_client.get(
         url,
         params={
-            "code_insee": DUNKERQUE["code_insee"],  # Dunkerque
+            "code_commune": DUNKERQUE["code_insee"],  # Dunkerque
         },
     )
 
@@ -964,7 +1184,7 @@ def test_search_services_with_zone_diffusion_region(api_client):
     response = api_client.get(
         url,
         params={
-            "code_insee": DUNKERQUE["code_insee"],  # Dunkerque
+            "code_commune": DUNKERQUE["code_insee"],  # Dunkerque
         },
     )
 
@@ -975,7 +1195,7 @@ def test_search_services_with_zone_diffusion_region(api_client):
 
 
 @pytest.mark.with_token
-def test_search_services_with_bad_code_insee(api_client):
+def test_search_services_with_bad_code_commune(api_client):
     factories.ServiceFactory(
         commune="Lille",
         code_insee=LILLE["code_insee"],
@@ -988,7 +1208,7 @@ def test_search_services_with_bad_code_insee(api_client):
     response = api_client.get(
         url,
         params={
-            "code_insee": "59999",  # Does not exist
+            "code_commune": "59999",  # Does not exist
         },
     )
 
@@ -996,7 +1216,7 @@ def test_search_services_with_bad_code_insee(api_client):
 
 
 @pytest.mark.with_token
-def test_search_services_with_code_insee_ordering(api_client):
+def test_search_services_with_code_commune_ordering(api_client):
     service_1 = factories.ServiceFactory(
         commune="Hazebrouck",
         **HAZEBROUCK,
@@ -1009,12 +1229,11 @@ def test_search_services_with_code_insee_ordering(api_client):
     )
     factories.ServiceFactory(
         code_insee=None,
-        _di_geocodage_code_insee=None,
         modes_accueil=[schema.ModeAccueil.EN_PRESENTIEL.value],
     )
 
     url = "/api/v0/search/services"
-    response = api_client.get(url, params={"code_insee": ROUBAIX["code_insee"]})
+    response = api_client.get(url, params={"code_commune": ROUBAIX["code_insee"]})
 
     assert response.status_code == 200
     resp_data = response.json()
@@ -1026,21 +1245,19 @@ def test_search_services_with_code_insee_ordering(api_client):
 
 
 @pytest.mark.with_token
-def test_search_services_with_code_insee_sample_distance(api_client):
+def test_search_services_with_code_commune_sample_distance(api_client):
     service_1 = factories.ServiceFactory(
         commune="Lille",
-        _di_geocodage_code_insee=None,
         **LILLE,
         modes_accueil=[schema.ModeAccueil.EN_PRESENTIEL.value],
     )
     factories.ServiceFactory(
         code_insee=None,
-        _di_geocodage_code_insee=None,
         modes_accueil=[schema.ModeAccueil.EN_PRESENTIEL.value],
     )
 
     url = "/api/v0/search/services"
-    response = api_client.get(url, params={"code_insee": HAZEBROUCK["code_insee"]})
+    response = api_client.get(url, params={"code_commune": HAZEBROUCK["code_insee"]})
 
     assert response.status_code == 200
     resp_data = response.json()
@@ -1050,22 +1267,20 @@ def test_search_services_with_code_insee_sample_distance(api_client):
 
 
 @pytest.mark.with_token
-def test_search_services_with_code_insee_a_distance(api_client):
+def test_search_services_with_code_commune_a_distance(api_client):
     service_1 = factories.ServiceFactory(
         commune="Dunkerque",
         code_insee=DUNKERQUE["code_insee"],
-        _di_geocodage_code_insee=None,
         modes_accueil=[schema.ModeAccueil.A_DISTANCE.value],
     )
     service_2 = factories.ServiceFactory(
         commune="Maubeuge",
         code_insee=MAUBEUGE["code_insee"],
-        _di_geocodage_code_insee=None,
         modes_accueil=[schema.ModeAccueil.A_DISTANCE.value],
     )
 
     url = "/api/v0/search/services"
-    response = api_client.get(url, params={"code_insee": DUNKERQUE["code_insee"]})
+    response = api_client.get(url, params={"code_commune": DUNKERQUE["code_insee"]})
 
     assert response.status_code == 200
     resp_data = response.json()
@@ -1074,173 +1289,6 @@ def test_search_services_with_code_insee_a_distance(api_client):
     assert resp_data["items"][0]["distance"] is None
     assert resp_data["items"][1]["service"]["id"] == service_2.id
     assert resp_data["items"][1]["distance"] is None
-
-
-@pytest.mark.parametrize(
-    "thematiques,input,found",
-    [
-        ([], [schema.Thematique.FAMILLE.value], False),
-        ([schema.Thematique.FAMILLE.value], [schema.Thematique.FAMILLE.value], True),
-        ([schema.Thematique.NUMERIQUE.value], [schema.Thematique.FAMILLE.value], False),
-        (
-            [schema.Thematique.NUMERIQUE.value, schema.Thematique.FAMILLE.value],
-            [schema.Thematique.FAMILLE.value],
-            True,
-        ),
-        (
-            [schema.Thematique.SANTE.value, schema.Thematique.NUMERIQUE.value],
-            [schema.Thematique.FAMILLE.value, schema.Thematique.NUMERIQUE.value],
-            True,
-        ),
-        (
-            [schema.Thematique.SANTE.value, schema.Thematique.NUMERIQUE.value],
-            [schema.Thematique.FAMILLE.value, schema.Thematique.NUMERIQUE.value],
-            True,
-        ),
-        (
-            [schema.Thematique.FAMILLE__GARDE_DENFANTS.value],
-            [schema.Thematique.FAMILLE.value],
-            True,
-        ),
-    ],
-)
-@pytest.mark.with_token
-def test_search_services_with_thematique(api_client, thematiques, input, found):
-    service = factories.ServiceFactory(thematiques=thematiques)
-    factories.ServiceFactory(thematiques=[schema.Thematique.MOBILITE.value])
-
-    url = "/api/v0/search/services"
-    response = api_client.get(url, params={"thematiques": input})
-
-    assert response.status_code == 200
-    resp_data = response.json()
-    if found:
-        assert_paginated_response_data(resp_data, total=1)
-        assert resp_data["items"][0]["service"]["id"] in [service.id]
-    else:
-        assert_paginated_response_data(resp_data, total=0)
-
-
-@pytest.mark.with_token
-def test_search_services_with_frais(api_client):
-    service_1 = factories.ServiceFactory(frais=[schema.Frais.GRATUIT.value])
-    service_2 = factories.ServiceFactory(frais=[schema.Frais.ADHESION.value])
-    factories.ServiceFactory(frais=[schema.Frais.PASS_NUMERIQUE.value])
-
-    url = "/api/v0/search/services"
-    response = api_client.get(
-        url,
-        params={
-            "frais": [
-                schema.Frais.GRATUIT.value,
-                schema.Frais.ADHESION.value,
-            ],
-        },
-    )
-
-    assert response.status_code == 200
-    resp_data = response.json()
-    assert_paginated_response_data(resp_data, total=2)
-    assert resp_data["items"][0]["service"]["id"] in [service_1.id, service_2.id]
-    assert resp_data["items"][1]["service"]["id"] in [service_1.id, service_2.id]
-
-    response = api_client.get(
-        url,
-        params={
-            "frais": schema.Frais.PAYANT.value,
-        },
-    )
-    assert_paginated_response_data(response.json(), total=0)
-
-
-@pytest.mark.with_token
-def test_search_services_with_types(api_client):
-    service_1 = factories.ServiceFactory(types=[schema.TypologieService.ACCUEIL.value])
-    service_2 = factories.ServiceFactory(
-        types=[schema.TypologieService.ACCOMPAGNEMENT.value]
-    )
-    factories.ServiceFactory(types=[schema.TypologieService.AIDE_FINANCIERE.value])
-
-    url = "/api/v0/search/services"
-    response = api_client.get(
-        url,
-        params={
-            "types": [
-                schema.TypologieService.ACCUEIL.value,
-                schema.TypologieService.ACCOMPAGNEMENT.value,
-            ],
-        },
-    )
-
-    assert response.status_code == 200
-    resp_data = response.json()
-    assert_paginated_response_data(resp_data, total=2)
-    assert resp_data["items"][0]["service"]["id"] in [service_1.id, service_2.id]
-    assert resp_data["items"][1]["service"]["id"] in [service_1.id, service_2.id]
-
-    response = api_client.get(
-        url,
-        params={
-            "types": schema.TypologieService.ATELIER.value,
-        },
-    )
-    assert_paginated_response_data(response.json(), total=0)
-
-
-@pytest.mark.with_token
-def test_search_services_with_sources(api_client):
-    service_1 = factories.ServiceFactory(source="dora")
-    service_2 = factories.ServiceFactory(source="emplois-de-linclusion")
-    factories.ServiceFactory(source="un-jeune-une-solution")
-
-    url = "/api/v0/search/services"
-    response = api_client.get(
-        url,
-        params={
-            "sources": ["dora", "emplois-de-linclusion"],
-        },
-    )
-
-    assert response.status_code == 200
-    resp_data = response.json()
-    assert_paginated_response_data(resp_data, total=2)
-    assert resp_data["items"][0]["service"]["id"] in [service_1.id, service_2.id]
-    assert resp_data["items"][1]["service"]["id"] in [service_1.id, service_2.id]
-
-    response = api_client.get(
-        url,
-        params={
-            "sources": ["foobar"],
-        },
-    )
-    assert_paginated_response_data(response.json(), total=0)
-
-
-@pytest.mark.with_token
-def test_search_services_outdated(api_client):
-    service_1 = factories.ServiceFactory(date_suspension=None)
-    service_2 = factories.ServiceFactory(date_suspension=date.today())
-    factories.ServiceFactory(date_suspension=date.today() - timedelta(days=1))
-
-    url = "/api/v0/search/services"
-
-    # exclude outdated services by default
-    response = api_client.get(url)
-
-    assert response.status_code == 200
-    resp_data = response.json()
-    assert_paginated_response_data(resp_data, total=2)
-    assert {d["service"]["id"] for d in resp_data["items"]} == {
-        service_1.id,
-        service_2.id,
-    }
-
-    # include outdated services with query parameter
-    response = api_client.get(url, params={"inclure_suspendus": True})
-
-    assert response.status_code == 200
-    resp_data = response.json()
-    assert_paginated_response_data(resp_data, total=3)
 
 
 @pytest.mark.with_token

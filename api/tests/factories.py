@@ -31,10 +31,6 @@ class StructureFactory(factory.alchemy.SQLAlchemyModelFactory):
         sqlalchemy_session_persistence = "commit"
 
     _di_surrogate_id = factory.Faker("uuid4")
-    _di_geocodage_code_insee = factory.Faker("postcode")
-    _di_geocodage_score = factory.Faker(
-        "pyfloat", right_digits=2, positive=True, max_value=1
-    )
 
     id = factory.Faker("slug", locale="fr_FR")
     siret = factory.LazyFunction(lambda: fake.siret().replace(" ", ""))
@@ -42,7 +38,7 @@ class StructureFactory(factory.alchemy.SQLAlchemyModelFactory):
     nom = factory.Faker("company", locale="fr_FR")
     commune = factory.Faker("city", locale="fr_FR")
     code_postal = factory.Faker("postcode")
-    code_insee = factory.Faker("postcode")
+    code_insee = "59350"
     adresse = factory.Faker("street_address", locale="fr_FR")
     longitude = factory.Faker("longitude")
     latitude = factory.Faker("latitude")
@@ -86,15 +82,15 @@ class ServiceFactory(factory.alchemy.SQLAlchemyModelFactory):
         sqlalchemy_session_persistence = "commit"
 
     _di_surrogate_id = factory.Faker("uuid4")
-    _di_geocodage_code_insee = factory.SelfAttribute("code_insee")
-    _di_geocodage_score = factory.Faker(
-        "pyfloat", right_digits=2, positive=True, max_value=1
-    )
 
-    structure = factory.SubFactory(StructureFactory)
+    structure = factory.SubFactory(
+        StructureFactory,
+        source=factory.SelfAttribute("..source"),
+        code_insee=factory.SelfAttribute("..code_insee"),
+    )
     id = factory.Faker("slug", locale="fr_FR")
     structure_id = factory.SelfAttribute("structure.id")
-    source = factory.SelfAttribute("structure.source")
+    source = factory.Iterator(["dora", "emplois-de-linclusion"])
     nom = factory.Faker("company", locale="fr_FR")
     presentation_resume = factory.Faker("text", max_nb_chars=20, locale="fr_FR")
     presentation_detail = factory.Faker("text", max_nb_chars=20, locale="fr_FR")

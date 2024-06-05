@@ -5,7 +5,7 @@
     "openapi": "3.1.0",
     "info": {
       "title": "data·inclusion API",
-      "description": "### Token\n\nUn token est nécessaire pour accéder aux données.\n\nLes demandes de tokens s'effectuent via [ce formulaire](https://tally.so/r/mYjJ85). L'équipe data·inclusion prendra contact avec vous.\n\nLe token doit être renseigné dans chaque requête via un header:\n`Authorization: Bearer <VOTRE_TOKEN>`.\n\n### Schéma des données\n\nLes données utilisent le schéma data·inclusion. Ce schéma comprend deux modèles principaux :\n\n* les structures proposant des services\n* les services proposés par ces structures\n\nCes deux modèles utilisent des référentiels faisant également partie du schéma data·inclusion : les types de structures et de services, les thématiques, etc.\n\nPlus d'informations sur le\n[dépôt](https://github.com/gip-inclusion/data-inclusion-schema) versionnant le schéma,\nsur la [documentation officielle](https://www.data.inclusion.beta.gouv.fr/schemas-de-donnees-de-loffre/schema-des-structures-dinsertion)\nou sur la page [schema.gouv](https://schema.data.gouv.fr/gip-inclusion/data-inclusion-schema/) du schéma.\n\n### Sources des données\n\nLes données data·inclusion sont issues d'un ensemble de sources (emplois de l'inclusion, France Travail, etc.).\n\nLe endpoint `/sources` permet de lister les sources disponibles.\n\n### Nous contacter\n\n#### via notre [formulaire de contact](https://tally.so/r/w7N6Zz)\n\n#### par mail à [data.inclusion@beta.gouv.fr](mailto:data.inclusion@beta.gouv.fr)",
+      "description": "### Token\n\nUn token est nécessaire pour accéder aux données.\n\nLes demandes de tokens s'effectuent via [ce formulaire](https://tally.so/r/mYjJ85). L'équipe data·inclusion prendra contact avec vous.\n\nLe token doit être renseigné dans chaque requête via un header:\n`Authorization: Bearer <VOTRE_TOKEN>`.\n\n### Schéma des données\n\nLes données utilisent le schéma data·inclusion. Ce schéma comprend deux modèles principaux :\n\n* les structures proposant des services\n* les services proposés par ces structures\n\nCes deux modèles utilisent des référentiels faisant également partie du schéma data·inclusion : les types de structures et de services, les thématiques, etc.\n\nPlus d'informations sur le\n[dépôt](https://github.com/gip-inclusion/data-inclusion-schema) versionnant le schéma,\nsur la [documentation officielle](https://www.data.inclusion.beta.gouv.fr/schemas-de-donnees-de-loffre/schema-des-structures-dinsertion)\nou sur la page [schema.gouv](https://schema.data.gouv.fr/gip-inclusion/data-inclusion-schema/) du schéma.\n\n### Sources des données\n\nLes données data·inclusion sont issues d'un ensemble de sources (emplois de l'inclusion, France Travail, etc.).\n\nLe endpoint `/sources` permet de lister les sources disponibles.\n\n\n### Filtrer géographiquement les données\n\nLes données renvoyées par certains endpoints peuvent être filtrées géographiquement.\n\nLes codes communes, départements et régions utilisés sont issus du [code officiel géographique produit par l'INSEE](https://www.insee.fr/fr/information/2560452).\n\nL'[api de la base adresse nationale](https://adresse.data.gouv.fr/api-doc/adresse) peut être utilisée afin d'automatiser l'identification de codes insee associés à partir d'adresses ou de parties d'adresses (e.g. nom de commune, code postal).\n\n\n### Nous contacter\n\n#### via notre [formulaire de contact](https://tally.so/r/w7N6Zz)\n\n#### par mail à [data.inclusion@beta.gouv.fr](mailto:data.inclusion@beta.gouv.fr)",
       "contact": {
         "name": "data·inclusion",
         "url": "https://www.data.inclusion.beta.gouv.fr/",
@@ -33,17 +33,25 @@
               "required": false,
               "schema": {
                 "type": "string",
+                "description": "Déprécié en faveur de `sources`.",
                 "title": "Source"
-              }
+              },
+              "description": "Déprécié en faveur de `sources`.",
+              "deprecated": true
             },
             {
-              "name": "id",
+              "name": "sources",
               "in": "query",
               "required": false,
               "schema": {
-                "type": "string",
-                "title": "Id"
-              }
+                "type": "array",
+                "items": {
+                  "type": "string"
+                },
+                "description": "Une liste d'identifiants de source.\n                La liste des identifiants de source est disponible sur le endpoint\n                dédié. Les résultats seront limités aux sources spécifiées.\n            ",
+                "title": "Sources"
+              },
+              "description": "Une liste d'identifiants de source.\n                La liste des identifiants de source est disponible sur le endpoint\n                dédié. Les résultats seront limités aux sources spécifiées.\n            "
             },
             {
               "name": "typologie",
@@ -81,8 +89,25 @@
                     "$ref": "#/components/schemas/Thematique"
                   }
                 ],
+                "description": "Déprécié en faveur de `thematiques`.",
                 "title": "Thematique"
-              }
+              },
+              "description": "Déprécié en faveur de `thematiques`.",
+              "deprecated": true
+            },
+            {
+              "name": "thematiques",
+              "in": "query",
+              "required": false,
+              "schema": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/Thematique"
+                },
+                "description": "Une liste de thématique.\n                Chaque résultat renvoyé a (au moins) une thématique dans cette liste.",
+                "title": "Thematiques"
+              },
+              "description": "Une liste de thématique.\n                Chaque résultat renvoyé a (au moins) une thématique dans cette liste."
             },
             {
               "name": "departement",
@@ -91,11 +116,29 @@
               "schema": {
                 "allOf": [
                   {
-                    "$ref": "#/components/schemas/DepartementCOG"
+                    "$ref": "#/components/schemas/DepartementCodeEnum"
                   }
                 ],
+                "description": "Déprécié en faveur de `code_departement`.",
                 "title": "Departement"
-              }
+              },
+              "description": "Déprécié en faveur de `code_departement`.",
+              "deprecated": true
+            },
+            {
+              "name": "code_departement",
+              "in": "query",
+              "required": false,
+              "schema": {
+                "allOf": [
+                  {
+                    "$ref": "#/components/schemas/DepartementCodeEnum"
+                  }
+                ],
+                "description": "Code insee géographique d'un département.",
+                "title": "Code Departement"
+              },
+              "description": "Code insee géographique d'un département."
             },
             {
               "name": "departement_slug",
@@ -104,23 +147,69 @@
               "schema": {
                 "allOf": [
                   {
-                    "$ref": "#/components/schemas/DepartementSlug"
+                    "$ref": "#/components/schemas/DepartementSlugEnum"
                   }
                 ],
+                "description": "Déprécié en faveur de `slug_departement`.",
                 "title": "Departement Slug"
+              },
+              "description": "Déprécié en faveur de `slug_departement`.",
+              "deprecated": true
+            },
+            {
+              "name": "slug_departement",
+              "in": "query",
+              "required": false,
+              "schema": {
+                "allOf": [
+                  {
+                    "$ref": "#/components/schemas/DepartementSlugEnum"
+                  }
+                ],
+                "title": "Slug Departement"
               }
             },
             {
-              "name": "code_postal",
+              "name": "code_region",
+              "in": "query",
+              "required": false,
+              "schema": {
+                "allOf": [
+                  {
+                    "$ref": "#/components/schemas/RegionCodeEnum"
+                  }
+                ],
+                "description": "Code insee géographique d'une région.",
+                "title": "Code Region"
+              },
+              "description": "Code insee géographique d'une région."
+            },
+            {
+              "name": "slug_region",
+              "in": "query",
+              "required": false,
+              "schema": {
+                "allOf": [
+                  {
+                    "$ref": "#/components/schemas/RegionSlugEnum"
+                  }
+                ],
+                "title": "Slug Region"
+              }
+            },
+            {
+              "name": "code_commune",
               "in": "query",
               "required": false,
               "schema": {
                 "type": "string",
                 "minLength": 5,
                 "maxLength": 5,
-                "pattern": "^\\d{5}$",
-                "title": "Code Postal"
-              }
+                "pattern": "^\\w{5}$",
+                "description": "Code insee géographique d'une commune.",
+                "title": "Code Commune"
+              },
+              "description": "Code insee géographique d'une commune."
             },
             {
               "name": "page",
@@ -279,8 +368,25 @@
               "required": false,
               "schema": {
                 "type": "string",
+                "description": "Déprécié en faveur de `sources`.",
                 "title": "Source"
-              }
+              },
+              "description": "Déprécié en faveur de `sources`.",
+              "deprecated": true
+            },
+            {
+              "name": "sources",
+              "in": "query",
+              "required": false,
+              "schema": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                },
+                "description": "Une liste d'identifiants de source.\n                La liste des identifiants de source est disponible sur le endpoint\n                dédié. Les résultats seront limités aux sources spécifiées.\n            ",
+                "title": "Sources"
+              },
+              "description": "Une liste d'identifiants de source.\n                La liste des identifiants de source est disponible sur le endpoint\n                dédié. Les résultats seront limités aux sources spécifiées.\n            "
             },
             {
               "name": "thematique",
@@ -292,8 +398,25 @@
                     "$ref": "#/components/schemas/Thematique"
                   }
                 ],
+                "description": "Déprécié en faveur de `thematiques`.",
                 "title": "Thematique"
-              }
+              },
+              "description": "Déprécié en faveur de `thematiques`.",
+              "deprecated": true
+            },
+            {
+              "name": "thematiques",
+              "in": "query",
+              "required": false,
+              "schema": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/Thematique"
+                },
+                "description": "Une liste de thématique.\n                Chaque résultat renvoyé a (au moins) une thématique dans cette liste.",
+                "title": "Thematiques"
+              },
+              "description": "Une liste de thématique.\n                Chaque résultat renvoyé a (au moins) une thématique dans cette liste."
             },
             {
               "name": "departement",
@@ -302,11 +425,29 @@
               "schema": {
                 "allOf": [
                   {
-                    "$ref": "#/components/schemas/DepartementCOG"
+                    "$ref": "#/components/schemas/DepartementCodeEnum"
                   }
                 ],
+                "description": "Déprécié en faveur de `code_departement`.",
                 "title": "Departement"
-              }
+              },
+              "description": "Déprécié en faveur de `code_departement`.",
+              "deprecated": true
+            },
+            {
+              "name": "code_departement",
+              "in": "query",
+              "required": false,
+              "schema": {
+                "allOf": [
+                  {
+                    "$ref": "#/components/schemas/DepartementCodeEnum"
+                  }
+                ],
+                "description": "Code insee géographique d'un département.",
+                "title": "Code Departement"
+              },
+              "description": "Code insee géographique d'un département."
             },
             {
               "name": "departement_slug",
@@ -315,10 +456,54 @@
               "schema": {
                 "allOf": [
                   {
-                    "$ref": "#/components/schemas/DepartementSlug"
+                    "$ref": "#/components/schemas/DepartementSlugEnum"
                   }
                 ],
+                "description": "Déprécié en faveur de `slug_departement`.",
                 "title": "Departement Slug"
+              },
+              "description": "Déprécié en faveur de `slug_departement`.",
+              "deprecated": true
+            },
+            {
+              "name": "slug_departement",
+              "in": "query",
+              "required": false,
+              "schema": {
+                "allOf": [
+                  {
+                    "$ref": "#/components/schemas/DepartementSlugEnum"
+                  }
+                ],
+                "title": "Slug Departement"
+              }
+            },
+            {
+              "name": "code_region",
+              "in": "query",
+              "required": false,
+              "schema": {
+                "allOf": [
+                  {
+                    "$ref": "#/components/schemas/RegionCodeEnum"
+                  }
+                ],
+                "description": "Code insee géographique d'une région.",
+                "title": "Code Region"
+              },
+              "description": "Code insee géographique d'une région."
+            },
+            {
+              "name": "slug_region",
+              "in": "query",
+              "required": false,
+              "schema": {
+                "allOf": [
+                  {
+                    "$ref": "#/components/schemas/RegionSlugEnum"
+                  }
+                ],
+                "title": "Slug Region"
               }
             },
             {
@@ -330,8 +515,93 @@
                 "minLength": 5,
                 "maxLength": 5,
                 "pattern": "^\\w{5}$",
+                "description": "Déprécié en faveur de `code_commune`.",
                 "title": "Code Insee"
-              }
+              },
+              "description": "Déprécié en faveur de `code_commune`.",
+              "deprecated": true
+            },
+            {
+              "name": "code_commune",
+              "in": "query",
+              "required": false,
+              "schema": {
+                "type": "string",
+                "minLength": 5,
+                "maxLength": 5,
+                "pattern": "^\\w{5}$",
+                "description": "Code insee géographique d'une commune.",
+                "title": "Code Commune"
+              },
+              "description": "Code insee géographique d'une commune."
+            },
+            {
+              "name": "frais",
+              "in": "query",
+              "required": false,
+              "schema": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/Frais"
+                },
+                "description": "Une liste de frais.\n                Chaque résultat renvoyé a (au moins) un frais dans cette liste.",
+                "title": "Frais"
+              },
+              "description": "Une liste de frais.\n                Chaque résultat renvoyé a (au moins) un frais dans cette liste."
+            },
+            {
+              "name": "profils",
+              "in": "query",
+              "required": false,
+              "schema": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/Profil"
+                },
+                "description": "Une liste de profils.\n                Chaque résultat renvoyé a (au moins) un profil dans cette liste.\n            ",
+                "title": "Profils"
+              },
+              "description": "Une liste de profils.\n                Chaque résultat renvoyé a (au moins) un profil dans cette liste.\n            "
+            },
+            {
+              "name": "modes_accueil",
+              "in": "query",
+              "required": false,
+              "schema": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/ModeAccueil"
+                },
+                "description": "Une liste de modes d'accueil.\n                Chaque résultat renvoyé a (au moins) un mode d'accueil dans cette liste.\n            ",
+                "title": "Modes Accueil"
+              },
+              "description": "Une liste de modes d'accueil.\n                Chaque résultat renvoyé a (au moins) un mode d'accueil dans cette liste.\n            "
+            },
+            {
+              "name": "types",
+              "in": "query",
+              "required": false,
+              "schema": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/TypologieService"
+                },
+                "description": "Une liste de typologies de service.\n                Chaque résultat renvoyé a (au moins) une typologie dans cette liste.",
+                "title": "Types"
+              },
+              "description": "Une liste de typologies de service.\n                Chaque résultat renvoyé a (au moins) une typologie dans cette liste."
+            },
+            {
+              "name": "inclure_suspendus",
+              "in": "query",
+              "required": false,
+              "schema": {
+                "type": "boolean",
+                "description": "Inclure les services ayant une date de suspension dépassée.\n                Ils sont exclus par défaut.\n            ",
+                "default": false,
+                "title": "Inclure Suspendus"
+              },
+              "description": "Inclure les services ayant une date de suspension dépassée.\n                Ils sont exclus par défaut.\n            "
             },
             {
               "name": "page",
@@ -447,7 +717,7 @@
             "Données"
           ],
           "summary": "Rechercher des services",
-          "description": "## Rechercher des services\n\nLa recherche de services permet de trouver des services dans une commune et à\nproximité.\n\nLes services peuvent être filtrés selon par thématiques, frais, typologies et\ncode_insee de commune.\n\nEn particulier, lorsque le `code_insee` d'une commune est fourni :\n\n* les services sont filtrés par zone de diffusion lorsque celle-ci est définie.\n* de plus, les services en présentiel sont filtrés dans un rayon de 50km autour de\nla commune ou du point de recherche fourni.\n* le champ `distance` est :\n    * rempli pour les services (non exclusivement) en présentiel.\n    * laissé vide pour les services à distance et par défaut si le mode d'accueil\n    n'est pas définie.\n* les résultats sont triés par distance croissante.",
+          "description": "## Rechercher des services\n\nLa recherche de services permet de trouver des services dans une commune et à\nproximité.\n\nLes services peuvent être filtrés selon par thématiques, frais, typologies et\ncode_insee de commune.\n\nEn particulier, lorsqu'un `code_commune` est fourni :\n\n* les services sont filtrés par zone de diffusion lorsque celle-ci est définie.\n* de plus, les services en présentiel sont filtrés dans un rayon de 50km autour de\nla commune ou du point de recherche fourni.\n* le champ `distance` est :\n    * rempli pour les services (non exclusivement) en présentiel.\n    * laissé vide pour les services à distance et par défaut si le mode d'accueil\n    n'est pas définie.\n* les résultats sont triés par distance croissante.",
           "operationId": "search_services_endpoint_api_v0_search_services_get",
           "security": [
             {
@@ -455,18 +725,6 @@
             }
           ],
           "parameters": [
-            {
-              "name": "source",
-              "in": "query",
-              "required": false,
-              "schema": {
-                "type": "string",
-                "description": "Un identifiant de source.\n                Déprécié en faveur de `sources`.\n            ",
-                "title": "Source"
-              },
-              "description": "Un identifiant de source.\n                Déprécié en faveur de `sources`.\n            ",
-              "deprecated": true
-            },
             {
               "name": "sources",
               "in": "query",
@@ -482,7 +740,7 @@
               "description": "Une liste d'identifiants de source.\n                La liste des identifiants de source est disponible sur le endpoint\n                dédié. Les résultats seront limités aux sources spécifiées.\n            "
             },
             {
-              "name": "code_insee",
+              "name": "code_commune",
               "in": "query",
               "required": false,
               "schema": {
@@ -491,9 +749,24 @@
                 "maxLength": 5,
                 "pattern": "^\\w{5}$",
                 "description": "Code insee de la commune considérée.\n                Si fourni, les résultats inclus également les services proches de\n                cette commune. Les résultats sont triés par ordre de distance\n                croissante.\n            ",
-                "title": "Code Insee"
+                "title": "Code Commune"
               },
               "description": "Code insee de la commune considérée.\n                Si fourni, les résultats inclus également les services proches de\n                cette commune. Les résultats sont triés par ordre de distance\n                croissante.\n            "
+            },
+            {
+              "name": "code_insee",
+              "in": "query",
+              "required": false,
+              "schema": {
+                "type": "string",
+                "minLength": 5,
+                "maxLength": 5,
+                "pattern": "^\\w{5}$",
+                "description": "Déprécié en faveur de `code_commune`.",
+                "title": "Code Insee"
+              },
+              "description": "Déprécié en faveur de `code_commune`.",
+              "deprecated": true
             },
             {
               "name": "lat",
@@ -544,6 +817,34 @@
                 "title": "Frais"
               },
               "description": "Une liste de frais.\n                Chaque résultat renvoyé a (au moins) un frais dans cette liste."
+            },
+            {
+              "name": "modes_accueil",
+              "in": "query",
+              "required": false,
+              "schema": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/ModeAccueil"
+                },
+                "description": "Une liste de modes d'accueil.\n                Chaque résultat renvoyé a (au moins) un mode d'accueil dans cette liste.\n            ",
+                "title": "Modes Accueil"
+              },
+              "description": "Une liste de modes d'accueil.\n                Chaque résultat renvoyé a (au moins) un mode d'accueil dans cette liste.\n            "
+            },
+            {
+              "name": "profils",
+              "in": "query",
+              "required": false,
+              "schema": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/Profil"
+                },
+                "description": "Une liste de profils.\n                Chaque résultat renvoyé a (au moins) un profil dans cette liste.\n            ",
+                "title": "Profils"
+              },
+              "description": "Une liste de profils.\n                Chaque résultat renvoyé a (au moins) un profil dans cette liste.\n            "
             },
             {
               "name": "types",
@@ -1052,14 +1353,13 @@
           ],
           "title": "CustomizedPage[Structure]"
         },
-        "DepartementCOG": {
+        "DepartementCodeEnum": {
           "type": "string",
           "enum": [
             "01",
             "02",
             "03",
             "04",
-            "05",
             "06",
             "07",
             "08",
@@ -1067,48 +1367,63 @@
             "10",
             "11",
             "12",
+            "67",
             "13",
             "14",
             "15",
-            "16",
             "17",
+            "16",
             "18",
             "19",
+            "2A",
             "21",
             "22",
             "23",
+            "79",
             "24",
             "25",
             "26",
-            "27",
+            "91",
             "28",
+            "27",
             "29",
-            "2A",
-            "2B",
             "30",
-            "31",
             "32",
             "33",
+            "971",
+            "973",
+            "68",
+            "2B",
+            "31",
+            "43",
+            "52",
+            "70",
+            "74",
+            "87",
+            "05",
+            "65",
+            "92",
             "34",
             "35",
-            "36",
             "37",
+            "36",
             "38",
             "39",
+            "974",
             "40",
             "41",
-            "42",
-            "43",
             "44",
+            "42",
             "45",
-            "46",
             "47",
+            "46",
             "48",
             "49",
             "50",
             "51",
-            "52",
+            "972",
             "53",
+            "976",
             "54",
             "55",
             "56",
@@ -1117,56 +1432,41 @@
             "59",
             "60",
             "61",
+            "75",
             "62",
             "63",
             "64",
-            "65",
             "66",
-            "67",
-            "68",
             "69",
-            "70",
             "71",
             "72",
             "73",
-            "74",
-            "75",
-            "76",
             "77",
-            "78",
-            "79",
+            "76",
+            "93",
             "80",
-            "81",
             "82",
+            "81",
+            "90",
+            "95",
+            "94",
             "83",
             "84",
             "85",
             "86",
-            "87",
             "88",
             "89",
-            "90",
-            "91",
-            "92",
-            "93",
-            "94",
-            "95",
-            "971",
-            "972",
-            "973",
-            "974",
-            "976"
+            "78"
           ],
-          "title": "DepartementCOG"
+          "title": "DepartementCodeEnum"
         },
-        "DepartementSlug": {
+        "DepartementSlugEnum": {
           "type": "string",
           "enum": [
             "ain",
             "aisne",
             "allier",
             "alpes-de-haute-provence",
-            "hautes-alpes",
             "alpes-maritimes",
             "ardeche",
             "ardennes",
@@ -1174,48 +1474,63 @@
             "aube",
             "aude",
             "aveyron",
+            "bas-rhin",
             "bouches-du-rhone",
             "calvados",
             "cantal",
-            "charente",
             "charente-maritime",
+            "charente",
             "cher",
             "correze",
+            "corse-du-sud",
             "cote-d-or",
             "cotes-d-armor",
             "creuse",
+            "deux-sevres",
             "dordogne",
             "doubs",
             "drome",
-            "eure",
+            "essonne",
             "eure-et-loir",
+            "eure",
             "finistere",
-            "corse-du-sud",
-            "haute-corse",
             "gard",
-            "haute-garonne",
             "gers",
             "gironde",
+            "guadeloupe",
+            "guyane",
+            "haut-rhin",
+            "haute-corse",
+            "haute-garonne",
+            "haute-loire",
+            "haute-marne",
+            "haute-saone",
+            "haute-savoie",
+            "haute-vienne",
+            "hautes-alpes",
+            "hautes-pyrenees",
+            "hauts-de-seine",
             "herault",
             "ille-et-vilaine",
-            "indre",
             "indre-et-loire",
+            "indre",
             "isere",
             "jura",
+            "la-reunion",
             "landes",
             "loir-et-cher",
-            "loire",
-            "haute-loire",
             "loire-atlantique",
+            "loire",
             "loiret",
-            "lot",
             "lot-et-garonne",
+            "lot",
             "lozere",
             "maine-et-loire",
             "manche",
             "marne",
-            "haute-marne",
+            "martinique",
             "mayenne",
+            "mayotte",
             "meurthe-et-moselle",
             "meuse",
             "morbihan",
@@ -1224,47 +1539,33 @@
             "nord",
             "oise",
             "orne",
+            "paris",
             "pas-de-calais",
             "puy-de-dome",
             "pyrenees-atlantiques",
-            "hautes-pyrenees",
             "pyrenees-orientales",
-            "bas-rhin",
-            "haut-rhin",
             "rhone",
-            "haute-saone",
             "saone-et-loire",
             "sarthe",
             "savoie",
-            "haute-savoie",
-            "paris",
-            "seine-maritime",
             "seine-et-marne",
-            "yvelines",
-            "deux-sevres",
+            "seine-maritime",
+            "seine-saint-denis",
             "somme",
-            "tarn",
             "tarn-et-garonne",
+            "tarn",
+            "territoire-de-belfort",
+            "val-d-oise",
+            "val-de-marne",
             "var",
             "vaucluse",
             "vendee",
             "vienne",
-            "haute-vienne",
             "vosges",
             "yonne",
-            "territoire-de-belfort",
-            "essonne",
-            "hauts-de-seine",
-            "seine-saint-denis",
-            "val-de-marne",
-            "val-d-oise",
-            "guadeloupe",
-            "martinique",
-            "guyane",
-            "la-reunion",
-            "mayotte"
+            "yvelines"
           ],
-          "title": "DepartementSlug"
+          "title": "DepartementSlugEnum"
         },
         "DetailedService": {
           "properties": {
@@ -1742,33 +2043,6 @@
               ],
               "title": "Modes Orientation Accompagnateur Autres"
             },
-            "_di_geocodage_code_insee": {
-              "anyOf": [
-                {
-                  "type": "string",
-                  "maxLength": 5,
-                  "minLength": 5,
-                  "pattern": "^\\w{5}$"
-                },
-                {
-                  "type": "null"
-                }
-              ],
-              "title": " Di Geocodage Code Insee"
-            },
-            "_di_geocodage_score": {
-              "anyOf": [
-                {
-                  "type": "number",
-                  "maximum": 1.0,
-                  "minimum": 0.0
-                },
-                {
-                  "type": "null"
-                }
-              ],
-              "title": " Di Geocodage Score"
-            },
             "structure": {
               "$ref": "#/components/schemas/Structure"
             }
@@ -2074,33 +2348,6 @@
               ],
               "title": "Thematiques"
             },
-            "_di_geocodage_code_insee": {
-              "anyOf": [
-                {
-                  "type": "string",
-                  "maxLength": 5,
-                  "minLength": 5,
-                  "pattern": "^\\w{5}$"
-                },
-                {
-                  "type": "null"
-                }
-              ],
-              "title": " Di Geocodage Code Insee"
-            },
-            "_di_geocodage_score": {
-              "anyOf": [
-                {
-                  "type": "number",
-                  "maximum": 1.0,
-                  "minimum": 0.0
-                },
-                {
-                  "type": "null"
-                }
-              ],
-              "title": " Di Geocodage Score"
-            },
             "services": {
               "items": {
                 "$ref": "#/components/schemas/Service"
@@ -2316,6 +2563,54 @@
             "demandeurs-demploi"
           ],
           "title": "Profil"
+        },
+        "RegionCodeEnum": {
+          "type": "string",
+          "enum": [
+            "84",
+            "27",
+            "53",
+            "24",
+            "94",
+            "44",
+            "01",
+            "03",
+            "32",
+            "11",
+            "04",
+            "02",
+            "06",
+            "28",
+            "75",
+            "76",
+            "52",
+            "93"
+          ],
+          "title": "RegionCodeEnum"
+        },
+        "RegionSlugEnum": {
+          "type": "string",
+          "enum": [
+            "auvergne-rhone-alpes",
+            "bourgogne-franche-comte",
+            "bretagne",
+            "centre-val-de-loire",
+            "corse",
+            "grand-est",
+            "guadeloupe",
+            "guyane",
+            "hauts-de-france",
+            "ile-de-france",
+            "la-reunion",
+            "martinique",
+            "mayotte",
+            "normandie",
+            "nouvelle-aquitaine",
+            "occitanie",
+            "pays-de-la-loire",
+            "provence-alpes-cote-d-azur"
+          ],
+          "title": "RegionSlugEnum"
         },
         "Service": {
           "properties": {
@@ -2792,33 +3087,6 @@
                 }
               ],
               "title": "Modes Orientation Accompagnateur Autres"
-            },
-            "_di_geocodage_code_insee": {
-              "anyOf": [
-                {
-                  "type": "string",
-                  "maxLength": 5,
-                  "minLength": 5,
-                  "pattern": "^\\w{5}$"
-                },
-                {
-                  "type": "null"
-                }
-              ],
-              "title": " Di Geocodage Code Insee"
-            },
-            "_di_geocodage_score": {
-              "anyOf": [
-                {
-                  "type": "number",
-                  "maximum": 1.0,
-                  "minimum": 0.0
-                },
-                {
-                  "type": "null"
-                }
-              ],
-              "title": " Di Geocodage Score"
             }
           },
           "type": "object",
@@ -3173,33 +3441,6 @@
                 }
               ],
               "title": "Thematiques"
-            },
-            "_di_geocodage_code_insee": {
-              "anyOf": [
-                {
-                  "type": "string",
-                  "maxLength": 5,
-                  "minLength": 5,
-                  "pattern": "^\\w{5}$"
-                },
-                {
-                  "type": "null"
-                }
-              ],
-              "title": " Di Geocodage Code Insee"
-            },
-            "_di_geocodage_score": {
-              "anyOf": [
-                {
-                  "type": "number",
-                  "maximum": 1.0,
-                  "minimum": 0.0
-                },
-                {
-                  "type": "null"
-                }
-              ],
-              "title": " Di Geocodage Score"
             }
           },
           "type": "object",
