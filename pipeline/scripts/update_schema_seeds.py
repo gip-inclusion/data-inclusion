@@ -25,4 +25,5 @@ for tablename in [
     "typologies-de-structures",
 ]:
     df = pd.read_json(BASE_URL + tablename + ".json", dtype=False)
+    df = df[["value", "label", "description"]]  # enforce column order
     df.to_csv(OUTPUT_DIR / (tablename.replace("-", "_") + ".csv"), index=False)
