@@ -38,7 +38,7 @@ setup(
         "sqlalchemy",
         "tqdm",
         "uvicorn[standard]",
-        "data-inclusion-schema==0.14.0",
+        "data-inclusion-schema==0.15.0",
     ],
     extras_require={
         "test": [
