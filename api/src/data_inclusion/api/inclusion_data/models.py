@@ -89,6 +89,7 @@ class Service(Base):
     modes_orientation_beneficiaire_autres: Mapped[str | None]
     modes_orientation_beneficiaire: Mapped[list[str] | None]
     nom: Mapped[str]
+    page_web: Mapped[str | None]
     pre_requis: Mapped[list[str] | None]
     presentation_detail: Mapped[str | None]
     presentation_resume: Mapped[str | None]
