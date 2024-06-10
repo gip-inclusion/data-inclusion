@@ -86,6 +86,7 @@ class ServiceFactory(factory.alchemy.SQLAlchemyModelFactory):
         sqlalchemy_session_persistence = "commit"
 
     _di_surrogate_id = factory.Faker("uuid4")
+    _di_structure_surrogate_id = factory.SelfAttribute("structure._di_surrogate_id")
     _di_geocodage_code_insee = factory.SelfAttribute("code_insee")
     _di_geocodage_score = factory.Faker(
         "pyfloat", right_digits=2, positive=True, max_value=1
