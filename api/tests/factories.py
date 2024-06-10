@@ -123,6 +123,7 @@ class ServiceFactory(factory.alchemy.SQLAlchemyModelFactory):
         getter=lambda lst: list(map(lambda t: t.value, lst)),
     )
     frais_autres = factory.Faker("text", max_nb_chars=20, locale="fr_FR")
+    page_web = factory.Faker("url", locale="fr_FR")
     profils = factory.Iterator(
         pairwise(
             [
