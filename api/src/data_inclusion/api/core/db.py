@@ -3,6 +3,7 @@ from datetime import datetime
 from typing import Annotated
 
 import sqlalchemy as sqla
+import sqlalchemy.types as types
 from sqlalchemy import orm
 from sqlalchemy.dialects.postgresql import ARRAY, JSONB
 from sqlalchemy.orm import mapped_column
@@ -21,6 +22,16 @@ timestamp = Annotated[
 ]
 
 
+class SortedTextArray(types.TypeDecorator):
+    """Automatically sorts a list of strings when inserting into the database."""
+
+    impl = ARRAY(sqla.Text)
+    cache_ok = True
+
+    def process_bind_param(self, value, dialect):
+        return sorted(value) if value is not None else None
+
+
 class Base(orm.DeclarativeBase):
     metadata = sqla.MetaData(
         naming_convention={
@@ -32,7 +43,7 @@ class Base(orm.DeclarativeBase):
         }
     )
     type_annotation_map = {
-        list[str]: ARRAY(sqla.Text),
+        list[str]: SortedTextArray,
         dict: JSONB,
     }
 
