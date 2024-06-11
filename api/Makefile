@@ -1,5 +1,3 @@
-UV_VERSION := 0.1.33
-
 PIP_COMPILE := pipx run uv pip compile setup.py --quiet
 
 ifeq ($(filter upgrade,$(MAKECMDGOALS)),upgrade)
@@ -10,14 +8,11 @@ endif
 
 all: base dev test
 
-uv:
-	pip install uv==$(UV_VERSION)
-
-base: uv
+base:
 	$(PIP_COMPILE) --output-file=requirements/requirements.txt
 
-dev: uv
+dev:
 	$(PIP_COMPILE) --extra=dev --output-file=requirements/dev-requirements.txt
 
-test: uv
+test:
 	$(PIP_COMPILE) --extra=test --output-file=requirements/test-requirements.txt
