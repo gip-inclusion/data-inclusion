@@ -22,3 +22,6 @@ venv/
 *.drawio.bkp
 data/
 build/
+
+#pyenv
+*.python-version
