@@ -12,6 +12,7 @@ from . import (
     dora,
     emplois_de_linclusion,
     france_travail,
+    fredo,
     grist,
     mediation_numerique,
     mes_aides,
@@ -75,6 +76,18 @@ SOURCES_CONFIGS = {
             "etablissements": {
                 "filename": "etablissements.xlsx",
                 "url": Variable.get("FINESS_FILE_URL", None),
+            },
+        },
+    },
+    "fredo": {
+        "schedule": "@daily",
+        "snapshot": True,
+        "extractor": fredo.extract,
+        "streams": {
+            "structures": {
+                "filename": "structures.json",
+                "url": Variable.get("FREDO_API_URL", None),
+                "token": Variable.get("FREDO_API_TOKEN", None),
             },
         },
     },
