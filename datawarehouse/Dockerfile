@@ -11,6 +11,7 @@ RUN apt-get update \
     && apt-get install -y --no-install-recommends \
     postgresql-14-postgis-3 \
     postgresql-plpython3-14 \
+    postgresql-14-pgvector \
     python3-pip \
     python3-venv \
     && apt-get autoremove --purge -y \
