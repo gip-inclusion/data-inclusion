@@ -1,0 +1,36 @@
+services:
+  postgres:
+    container_name: xp_postgres
+    image: postgis/postgis:15-master
+    # Disable some safety switches for a faster postgres: https://www.postgresql.org/docs/current/non-durability.html
+    command: -c fsync=off -c full_page_writes=off -c synchronous_commit=off
+    environment:
+      # Required by the "_/postgres" image used by "postgis/postgis"
+      # https://registry.hub.docker.com/_/postgres/
+      - POSTGRES_PASSWORD=password
+      - POSTGRES_DB=${PGDATABASE:-xp}
+      # Avoid a log error when starting the xp_postgres container:
+      # > Role "root" does not exist.
+      # Without this variable, the default Unix account ('root')
+      # is used automatically when starting postgres.
+      # https://www.postgresql.org/docs/current/libpq-envars.html
+      - PGUSER=postgres
+      - PGPASSWORD=password
+    # The default memory setting (64M) is not enough anymore due to the size of the database we import
+    # https://stackoverflow.com/questions/56839975/docker-shm-size-dev-shm-resizing-shared-memory
+    shm_size: 1g
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    restart: unless-stopped
+    ports:
+      - "127.0.0.1:${POSTGRES_PORT_ON_DOCKER_HOST:-5432}:5432"
+
+  redis:
+    image: redislabs/redisearch:latest
+    container_name: xp_redis
+    restart: unless-stopped
+    ports:
+      - "127.0.0.1:6379:6379"
+
+volumes:
+  postgres_data:
