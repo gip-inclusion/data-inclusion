@@ -1,5 +1,4 @@
 from datetime import date
-from itertools import tee
 
 import factory
 import faker
@@ -9,12 +8,6 @@ from data_inclusion.api.inclusion_data import models
 from data_inclusion.api.request.models import Request
 
 fake = faker.Faker("fr_FR")
-
-
-def pairwise(iterable):
-    a, b = tee(iterable)
-    next(b, None)
-    return zip(a, b)
 
 
 class RequestFactory(factory.alchemy.SQLAlchemyModelFactory):
@@ -52,7 +45,7 @@ class StructureFactory(factory.alchemy.SQLAlchemyModelFactory):
             di_schema.Typologie.MUNI,
             di_schema.Typologie.PE,
         ],
-        getter=lambda t: t.value,
+        getter=lambda v: v.value,
     )
     telephone = "0102030405"
     courriel = factory.Faker("email", locale="fr_FR")
@@ -67,16 +60,14 @@ class StructureFactory(factory.alchemy.SQLAlchemyModelFactory):
         lambda o: f"https://acceslibre.beta.gouv.fr/app/{o.id}/"
     )
     labels_nationaux = []
-    labels_autres = ["SudLabs", "Nièvre médiation numérique"]
+    labels_autres = ["Nièvre médiation numérique"]
     thematiques = factory.Iterator(
-        pairwise(
-            [
-                di_schema.Thematique.CHOISIR_UN_METIER,
-                di_schema.Thematique.CREATION_ACTIVITE,
-                di_schema.Thematique.MOBILITE,
-            ]
-        ),
-        getter=lambda lst: list(map(lambda t: t.value, lst)),
+        [
+            di_schema.Thematique.CHOISIR_UN_METIER,
+            di_schema.Thematique.CREATION_ACTIVITE,
+            di_schema.Thematique.MOBILITE,
+        ],
+        getter=lambda v: [v.value],
     )
 
 
@@ -100,40 +91,36 @@ class ServiceFactory(factory.alchemy.SQLAlchemyModelFactory):
     presentation_resume = factory.Faker("text", max_nb_chars=20, locale="fr_FR")
     presentation_detail = factory.Faker("text", max_nb_chars=20, locale="fr_FR")
     types = factory.Iterator(
-        pairwise(
-            [
-                di_schema.TypologieService.FORMATION,
-                di_schema.TypologieService.NUMÉRIQUE,
-            ]
-        ),
-        getter=lambda lst: list(map(lambda t: t.value, lst)),
+        [
+            di_schema.TypologieService.FORMATION,
+            di_schema.TypologieService.NUMÉRIQUE,
+        ],
+        getter=lambda v: [v.value],
     )
     thematiques = factory.Iterator(
-        pairwise(
-            [
-                di_schema.Thematique.CHOISIR_UN_METIER,
-                di_schema.Thematique.CREATION_ACTIVITE,
-                di_schema.Thematique.MOBILITE,
-            ]
-        ),
-        getter=lambda lst: list(map(lambda t: t.value, lst)),
+        [
+            di_schema.Thematique.CHOISIR_UN_METIER,
+            di_schema.Thematique.CREATION_ACTIVITE,
+            di_schema.Thematique.MOBILITE,
+        ],
+        getter=lambda v: [v.value],
     )
     prise_rdv = factory.Faker("url", locale="fr_FR")
     frais = factory.Iterator(
-        pairwise(di_schema.Frais),
-        getter=lambda lst: list(map(lambda t: t.value, lst)),
+        [
+            di_schema.Frais.GRATUIT,
+        ],
+        getter=lambda v: [v.value],
     )
     frais_autres = factory.Faker("text", max_nb_chars=20, locale="fr_FR")
     page_web = factory.Faker("url", locale="fr_FR")
     profils = factory.Iterator(
-        pairwise(
-            [
-                di_schema.Profil.FEMMES,
-                di_schema.Profil.JEUNES_16_26,
-                di_schema.Profil.SENIORS_65,
-            ]
-        ),
-        getter=lambda lst: list(map(lambda t: t.value, lst)),
+        [
+            di_schema.Profil.FEMMES,
+            di_schema.Profil.JEUNES_16_26,
+            di_schema.Profil.SENIORS_65,
+        ],
+        getter=lambda v: [v.value],
     )
     pre_requis = []
     cumulable = False
@@ -157,26 +144,26 @@ class ServiceFactory(factory.alchemy.SQLAlchemyModelFactory):
     date_maj = factory.LazyFunction(lambda: date(2023, 1, 1))
     modes_accueil = factory.Iterator(
         [
-            [di_schema.ModeAccueil.A_DISTANCE.value],
-            [di_schema.ModeAccueil.EN_PRESENTIEL.value],
-            [
-                di_schema.ModeAccueil.A_DISTANCE.value,
-                di_schema.ModeAccueil.EN_PRESENTIEL.value,
-            ],
-        ]
+            di_schema.ModeAccueil.A_DISTANCE,
+            di_schema.ModeAccueil.EN_PRESENTIEL,
+            di_schema.ModeAccueil.EN_PRESENTIEL,
+        ],
+        getter=lambda v: [v.value],
     )
     modes_orientation_accompagnateur = factory.Iterator(
         [
-            [di_schema.ModeOrientationAccompagnateur.TELEPHONER.value],
-            [di_schema.ModeOrientationAccompagnateur.ENVOYER_UN_MAIL.value],
-        ]
+            di_schema.ModeOrientationAccompagnateur.TELEPHONER,
+            di_schema.ModeOrientationAccompagnateur.ENVOYER_UN_MAIL,
+        ],
+        getter=lambda v: [v.value],
     )
     modes_orientation_accompagnateur_autres = None
     modes_orientation_beneficiaire = factory.Iterator(
         [
-            [di_schema.ModeOrientationBeneficiaire.TELEPHONER.value],
-            [di_schema.ModeOrientationBeneficiaire.SE_PRESENTER.value],
-        ]
+            di_schema.ModeOrientationBeneficiaire.TELEPHONER,
+            di_schema.ModeOrientationBeneficiaire.SE_PRESENTER,
+        ],
+        getter=lambda v: [v.value],
     )
     modes_orientation_beneficiaire_autres = None
     zone_diffusion_type = None
