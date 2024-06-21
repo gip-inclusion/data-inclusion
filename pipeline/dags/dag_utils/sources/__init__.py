@@ -253,6 +253,21 @@ SOURCES_CONFIGS = {
             },
         },
     },
+    "action-logement": {
+        "schedule": "@daily",
+        "snapshot": True,
+        "reader": lambda path: utils.read_csv(path, sep=","),
+        "streams": {
+            "services": {
+                "filename": "services.csv",
+                "url": Variable.get("ACTION_LOGEMENT_SERVICES_URL", None),
+            },
+            "structures": {
+                "filename": "structures.csv",
+                "url": Variable.get("ACTION_LOGEMENT_STRUCTURES_URL", None),
+            },
+        },
+    },
 }
 
 

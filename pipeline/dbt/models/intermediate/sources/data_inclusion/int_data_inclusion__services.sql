@@ -53,7 +53,8 @@ final AS (
         zone_diffusion_nom                      AS "zone_diffusion_nom",
         zone_diffusion_type                     AS "zone_diffusion_type",
         pre_requis                              AS "pre_requis",
-        frais                                   AS "frais"
+        frais                                   AS "frais",
+        NULL                                    AS "page_web"
     FROM services
 )
 

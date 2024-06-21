@@ -70,8 +70,8 @@ def test_list_structures_all(api_client):
                 "horaires_ouverture": 'Mo-Fr 10:00-20:00 "sur rendez-vous"; PH off',
                 "accessibilite": "https://acceslibre.beta.gouv.fr/app/prince-point-monde/",
                 "labels_nationaux": [],
-                "labels_autres": ["SudLabs", "Nièvre médiation numérique"],
-                "thematiques": ["choisir-un-metier", "creation-activite"],
+                "labels_autres": ["Nièvre médiation numérique"],
+                "thematiques": ["choisir-un-metier"],
             }
         ],
         "total": 1,
@@ -122,9 +122,9 @@ def assert_structure_data(structure, data):
     assert structure.lien_source == data["lien_source"]
     assert structure.horaires_ouverture == data["horaires_ouverture"]
     assert structure.accessibilite == data["accessibilite"]
-    assert structure.labels_nationaux == data["labels_nationaux"]
-    assert structure.labels_autres == data["labels_autres"]
-    assert structure.thematiques == data["thematiques"]
+    assert sorted(structure.labels_nationaux) == sorted(data["labels_nationaux"])
+    assert sorted(structure.labels_autres) == sorted(data["labels_autres"])
+    assert sorted(structure.thematiques) == sorted(data["thematiques"])
     assert structure._di_geocodage_code_insee == data["_di_geocodage_code_insee"]
     assert structure._di_geocodage_score == data["_di_geocodage_score"]
 
@@ -365,45 +365,46 @@ def test_list_services_all(api_client):
     assert resp_data == {
         "items": [
             {
-                "_di_geocodage_code_insee": LILLE["code_insee"],
-                "_di_geocodage_score": 0.5,
-                "adresse": "5, rue Guichard",
-                "code_insee": LILLE["code_insee"],
-                "code_postal": "25454",
-                "commune": "Sainte Jacquelineboeuf",
+                "_di_geocodage_code_insee": "59350",
+                "_di_geocodage_score": 0.89,
+                "adresse": "20, rue Lambert",
+                "code_insee": "59350",
+                "code_postal": "22846",
+                "commune": "Guichard",
                 "complement_adresse": None,
-                "contact_nom_prenom": "Alphonse Baudry-Couturier",
+                "contact_nom_prenom": "Thibaut de Michaud",
                 "contact_public": False,
-                "courriel": "gbonnet@example.org",
+                "courriel": "michelgerard@example.net",
                 "cumulable": False,
                 "date_creation": "2022-01-01",
                 "date_maj": "2023-01-01",
                 "date_suspension": "2054-01-01",
                 "formulaire_en_ligne": None,
-                "frais_autres": "Camarade il.",
-                "frais": ["gratuit", "gratuit-sous-conditions"],
-                "id": "cacher-violent",
+                "frais_autres": "Point saint source.",
+                "frais": ["gratuit"],
+                "id": "rassurer-vaincre",
                 "justificatifs": [],
-                "latitude": -0.7355065,
-                "lien_source": "https://dora.fr/cacher-violent",
-                "longitude": -88.473296,
+                "latitude": 80.2434875,
+                "lien_source": "https://dora.fr/rassurer-vaincre",
+                "longitude": 128.091981,
                 "modes_accueil": ["a-distance"],
                 "modes_orientation_accompagnateur_autres": None,
                 "modes_orientation_accompagnateur": ["telephoner"],
                 "modes_orientation_beneficiaire_autres": None,
                 "modes_orientation_beneficiaire": ["telephoner"],
-                "nom": "Munoz",
+                "nom": "Barbe",
+                "page_web": "http://www.foucher.com/",
                 "pre_requis": [],
-                "presentation_detail": "Épaule élever un.",
-                "presentation_resume": "Puissant fine.",
-                "prise_rdv": "https://teixeira.fr/",
-                "profils": ["femmes", "jeunes-16-26"],
+                "presentation_detail": "Noir roi fin parmi.",
+                "presentation_resume": "Épaule élever un.",
+                "prise_rdv": "https://www.raymond.com/",
+                "profils": ["femmes"],
                 "recurrence": None,
                 "source": "dora",
-                "structure_id": "libre-rouge-empire",
+                "structure_id": "grace-plaindre",
                 "telephone": "0102030405",
-                "thematiques": ["choisir-un-metier", "creation-activite"],
-                "types": ["formation", "numerique"],
+                "thematiques": ["choisir-un-metier"],
+                "types": ["formation"],
                 "zone_diffusion_code": None,
                 "zone_diffusion_nom": None,
                 "zone_diffusion_type": None,

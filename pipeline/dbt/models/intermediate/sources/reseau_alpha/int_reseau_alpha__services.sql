@@ -28,6 +28,7 @@ final AS (
         formations.content__date_maj                              AS "date_maj",
         NULL                                                      AS "modes_orientation_accompagnateur_autres",
         NULL                                                      AS "modes_orientation_beneficiaire_autres",
+        NULL                                                      AS "page_web",
         CASE
             WHEN LENGTH(formations.content__contenu_et_objectifs__titre) <= 280
                 THEN formations.content__contenu_et_objectifs__titre

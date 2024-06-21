@@ -1,5 +1,10 @@
 [
     {
+        "slug": "action-logement",
+        "nom": "Action Logement",
+        "description": "Aides et solutions pour accompagner les salariés dans leur parcours logement. Contient les services proposés par les structures d’Action Logement sur tout le territoire."
+    },
+    {
         "slug": "agefiph",
         "nom": "AGEFIPH",
         "description": "Association chargée de soutenir le développement de l’emploi des personnes handicapées. Contient leur offre de service nationale."

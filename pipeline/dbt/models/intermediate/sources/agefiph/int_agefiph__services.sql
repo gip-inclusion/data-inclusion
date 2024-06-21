@@ -70,6 +70,7 @@ final AS (
         NULL                                                         AS "zone_diffusion_nom",
         'pays'                                                       AS "zone_diffusion_type",
         services.id                                                  AS "id",
+        NULL                                                         AS "page_web",
         'https://www.agefiph.fr' || services.attributes__path__alias AS "modes_orientation_accompagnateur_autres",
         'https://www.agefiph.fr' || services.attributes__path__alias AS "modes_orientation_beneficiaire_autres",
         CAST(NULL AS TEXT [])                                        AS "justificatifs",
