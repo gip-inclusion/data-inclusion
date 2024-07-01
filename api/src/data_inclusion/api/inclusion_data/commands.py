@@ -10,11 +10,10 @@ import sqlalchemy as sqla
 from furl import furl
 from tqdm import tqdm
 
-from data_inclusion import schema
 from data_inclusion.api.code_officiel_geo import constants
 from data_inclusion.api.config import settings
 from data_inclusion.api.core import db
-from data_inclusion.api.inclusion_data import models
+from data_inclusion.api.inclusion_data import models, schemas
 
 logger = logging.getLogger(__name__)
 
@@ -95,6 +94,9 @@ def validate_df(df: pd.DataFrame, model_schema) -> pd.DataFrame:
 
 
 def log_errors(errors_df: pd.DataFrame):
+    if errors_df.empty:
+        logger.info("no error")
+        return
     info_str = str(
         errors_df.groupby(["source", "errors.loc"])["_di_surrogate_id"]
         .count()
@@ -129,8 +131,8 @@ def load_inclusion_data():
         code_insee=services_df.code_insee.apply(clean_up_code_insee)
     )
 
-    structure_errors_df = validate_df(structures_df, model_schema=schema.Structure)
-    service_errors_df = validate_df(services_df, model_schema=schema.Service)
+    structure_errors_df = validate_df(structures_df, model_schema=schemas.Structure)
+    service_errors_df = validate_df(services_df, model_schema=schemas.Service)
 
     logger.info("Structure validation errors:")
     log_errors(structure_errors_df)
@@ -138,15 +140,17 @@ def load_inclusion_data():
     log_errors(service_errors_df)
 
     # exclude invalid data
-    structures_df = structures_df[
-        ~structures_df._di_surrogate_id.isin(structure_errors_df._di_surrogate_id)
-    ]
-    services_df = services_df[
-        ~services_df._di_surrogate_id.isin(service_errors_df._di_surrogate_id)
-        & ~services_df._di_structure_surrogate_id.isin(
-            structure_errors_df._di_surrogate_id
-        )
-    ]
+    if not structure_errors_df.empty:
+        structures_df = structures_df[
+            ~structures_df._di_surrogate_id.isin(structure_errors_df._di_surrogate_id)
+        ]
+    if not service_errors_df.empty:
+        services_df = services_df[
+            ~services_df._di_surrogate_id.isin(service_errors_df._di_surrogate_id)
+            & ~services_df._di_structure_surrogate_id.isin(
+                structure_errors_df._di_surrogate_id
+            )
+        ]
 
     structure_data_list = structures_df.to_dict(orient="records")
     service_data_list = services_df.to_dict(orient="records")
@@ -196,4 +200,5 @@ def validate_data(model_schema, data):
     try:
         model_schema(**data)
     except pydantic.ValidationError as exc:
+        print(exc.errors())
         return exc.errors()

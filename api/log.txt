@@ -1,0 +1,14 @@
+                                   _di_surrogate_id  ... thematiques
+0      agefiph-c7f4be8b-309e-4a6a-b562-c4f7f3bb3c5c  ...  [handicap]
+1                            france-travail-ARA0014  ...        None
+2                            france-travail-ARA0018  ...        None
+3                            france-travail-ARA0021  ...        None
+4                            france-travail-ARA0024  ...        None
+...                                             ...  ...         ...
+23301                                soliguide-9981  ...        None
+23302                                soliguide-9983  ...        None
+23303                                soliguide-9984  ...        None
+23304                                soliguide-9995  ...        None
+23305                                soliguide-9997  ...        None
+
+[23306 rows x 29 columns]
