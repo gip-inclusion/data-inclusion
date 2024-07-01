@@ -87,13 +87,15 @@ def scrap_structure_html(html_path: Path) -> dict:
             ),
             "telephone": soup.select_one(".telephone > a"),
             "site_web": soup.select_one(".contact-content").find(
-                string=lambda t: t.startswith("http://")
+                string=lambda t: t.startswith("http")
             ),
             "courriel": soup.select_one(".email > a:nth-child(1)"),
         }
 
         for content_name, node in NODE_BY_CONTENT_NAME.items():
-            data[f"content__{content_name}"] = utils.html_to_markdown(str(node))
+            data[f"content__{content_name}"] = (
+                utils.html_to_markdown(str(node)) if node is not None else None
+            )
 
         return data
 
