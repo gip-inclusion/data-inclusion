@@ -32,14 +32,11 @@ tox
 You can run dbt commands from your terminal.
 
 ```bash
-# install dbt
-pipx install --include-deps dbt-postgres==1.7.1
-
 # install extra dbt packages (e.g. dbt_utils)
 dbt deps
 
 # load seeds
-dbt seeds
+dbt seed
 
 # create user defined functions
 dbt run-operation create_udfs
