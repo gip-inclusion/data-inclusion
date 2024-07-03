@@ -36,9 +36,12 @@ After a few seconds, the services should be avaible as follow:
 | airflow UI      | [http://localhost:8080](http://localhost:8080)             | user: `airflow` pass: `airflow`         |
 | data.inclusion  | [http://localhost:8000](http://localhost:8000/api/v0/docs) | token must be generated                 |
 
-### `minio` client
 
-Optional, but it allows you to interact with the datalake from the commandline.
+### `minio` Client
+
+This is optional but allows you to interact with the datalake locally from the command line.
+
+Cf [DEPLOYMENT.md](DEPLOYMENT.md) if you also wich to interact with staging and prod bucket.
 
 See installation instructions [here](https://min.io/docs/minio/linux/reference/minio-mc.html).
 
