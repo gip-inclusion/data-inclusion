@@ -20,11 +20,14 @@ from . import utils
 logger = logging.getLogger(__name__)
 
 
-def unaccent(text: str) -> str:
+def normalize(text: str) -> str:
     # Decompose the unicode string into its base and combining characters
     nfkd_form = unicodedata.normalize("NFKD", text)
+
     # Filter out the combining characters (like accents)
-    return "".join([c for c in nfkd_form if not unicodedata.combining(c)])
+    normalized_text = "".join([c for c in nfkd_form if not unicodedata.combining(c)])
+    # replace ligature oe
+    return normalized_text.replace("œ", "oe")
 
 
 def get_location(city_code: str, commune: str, region: str) -> str:
@@ -33,8 +36,8 @@ def get_location(city_code: str, commune: str, region: str) -> str:
     The location string is formatted as "Xeme Arrondissement Paris" for Paris.
     For other cities, it is formatted like "Lille Nord".
     """
-    commune = unaccent(commune)
-    region = unaccent(region)
+    commune = normalize(commune)
+    region = normalize(region)
 
     if "Arrondissement" in commune:
         commune = commune.split()[0]
