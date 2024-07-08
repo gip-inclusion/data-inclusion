@@ -243,7 +243,15 @@ def extract(
 
         logger.info("Extracting structures details...")
         for search_result in search_results:
-            data.append(extract_structure(search_result["organizationId"]))
+            structure_data = extract_structure(search_result["organizationId"])
+
+            # in rare cases, the structure data is not available and the response data
+            # is nearly empty. Discard such results.
+            if "resultId" not in structure_data:
+                logger.warning("Structure unavailable")
+                continue
+
+            data.append(structure_data)
 
     return json.dumps(data).encode()
 
