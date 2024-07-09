@@ -95,6 +95,9 @@ def validate_df(df: pd.DataFrame, model_schema) -> pd.DataFrame:
 
 
 def log_errors(errors_df: pd.DataFrame):
+    if errors_df.empty:
+        logger.info("no error")
+        return
     info_str = str(
         errors_df.groupby(["source", "errors.loc"])["_di_surrogate_id"]
         .count()
@@ -138,15 +141,17 @@ def load_inclusion_data():
     log_errors(service_errors_df)
 
     # exclude invalid data
-    structures_df = structures_df[
-        ~structures_df._di_surrogate_id.isin(structure_errors_df._di_surrogate_id)
-    ]
-    services_df = services_df[
-        ~services_df._di_surrogate_id.isin(service_errors_df._di_surrogate_id)
-        & ~services_df._di_structure_surrogate_id.isin(
-            structure_errors_df._di_surrogate_id
-        )
-    ]
+    if not structure_errors_df.empty:
+        structures_df = structures_df[
+            ~structures_df._di_surrogate_id.isin(structure_errors_df._di_surrogate_id)
+        ]
+    if not service_errors_df.empty:
+        services_df = services_df[
+            ~services_df._di_surrogate_id.isin(service_errors_df._di_surrogate_id)
+            & ~services_df._di_structure_surrogate_id.isin(
+                structure_errors_df._di_surrogate_id
+            )
+        ]
 
     structure_data_list = structures_df.to_dict(orient="records")
     service_data_list = services_df.to_dict(orient="records")
