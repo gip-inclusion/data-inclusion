@@ -2367,7 +2367,6 @@
             "nqt",
             "point-conseil-budget",
             "point-justice",
-            "pole-emploi",
             "positive-planet",
             "proxite",
             "reseau-app",
@@ -2406,8 +2405,8 @@
             "completer-le-formulaire-dadhesion",
             "envoyer-un-mail",
             "envoyer-un-mail-avec-une-fiche-de-prescription",
-            "envoyer-un-mail-avec-des-documents-a-completer",
             "telephoner",
+            "prendre-rdv",
             "autre"
           ],
           "title": "ModeOrientationAccompagnateur"
@@ -2419,6 +2418,7 @@
             "envoyer-un-mail",
             "se-presenter",
             "telephoner",
+            "prendre-rdv",
             "autre"
           ],
           "title": "ModeOrientationBeneficiaire"
@@ -2432,12 +2432,14 @@
             "deficience-visuelle",
             "demandeurs-demploi",
             "familles-enfants",
+            "etudiants",
             "femmes",
             "handicaps-mentaux",
             "handicaps-psychiques",
             "jeunes",
             "jeunes-16-26",
             "locataires",
+            "personnes-de-nationalite-etrangere",
             "personnes-en-situation-de-handicap",
             "personnes-en-situation-illettrisme",
             "personnes-handicapees",
@@ -2445,8 +2447,11 @@
             "public-langues-etrangeres",
             "retraites",
             "salaries",
+            "sans-domicile-fixe",
             "seniors-65",
-            "surdite"
+            "sortants-de-detention",
+            "surdite",
+            "victimes"
           ],
           "title": "Profil"
         },
@@ -3402,6 +3407,7 @@
             "equipement-et-alimentation--acces-a-du-materiel-informatique",
             "equipement-et-alimentation--acces-a-un-telephone-et-un-abonnement",
             "equipement-et-alimentation--alimentation",
+            "equipement-et-alimentation--aide-menagere",
             "equipement-et-alimentation--electromenager",
             "equipement-et-alimentation--habillement",
             "famille",
@@ -3424,6 +3430,7 @@
             "handicap--accompagnement-par-une-structure-specialisee",
             "handicap--adaptation-au-poste-de-travail",
             "handicap--adapter-son-logement",
+            "handicap--aide-a-la-personne",
             "handicap--connaissance-des-droits-des-travailleurs",
             "handicap--faire-reconnaitre-un-handicap",
             "handicap--favoriser-le-retour-et-le-maintien-dans-lemploi",
@@ -3596,7 +3603,6 @@
             "OIL",
             "OPCS",
             "PAD",
-            "PE",
             "PENSION",
             "PI",
             "PIJ_BIJ",
