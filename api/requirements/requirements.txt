@@ -48,7 +48,7 @@ cryptography==42.0.5
     # via
     #   data-inclusion-api (setup.py)
     #   python-jose
-data-inclusion-schema==0.15.0
+data-inclusion-schema==0.16.0
     # via data-inclusion-api (setup.py)
 dnspython==2.6.1
     # via email-validator

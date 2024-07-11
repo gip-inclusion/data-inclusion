@@ -4,7 +4,7 @@ WITH source AS (
 
 final AS (
     SELECT
-        data ->> 'id'                                  AS "id",
+        data ->> 'id'                                  AS "structure_id",
         JSONB_ARRAY_ELEMENTS_TEXT(data -> 'quartiers') AS "value"
     FROM source
     WHERE data ->> 'quartiers' IS NOT NULL

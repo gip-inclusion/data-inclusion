@@ -39,7 +39,7 @@ class StructureFactory(factory.alchemy.SQLAlchemyModelFactory):
         [
             di_schema.Typologie.ACI,
             di_schema.Typologie.MUNI,
-            di_schema.Typologie.PE,
+            di_schema.Typologie.FT,
         ],
         getter=lambda v: v.value,
     )

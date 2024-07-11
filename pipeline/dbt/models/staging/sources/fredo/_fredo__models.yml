@@ -59,7 +59,7 @@ models:
 
   - name: stg_fredo__categories
     columns:
-      - name: id
+      - name: structure_id
         data_tests:
           - not_null
           - relationships:
@@ -72,7 +72,7 @@ models:
 
   - name: stg_fredo__frais
     columns:
-      - name: id
+      - name: structure_id
         data_tests:
           - not_null
           - relationships:
@@ -89,7 +89,7 @@ models:
 
   - name: stg_fredo__publics
     columns:
-      - name: id
+      - name: structure_id
         data_tests:
           - not_null
           - relationships:
@@ -102,7 +102,7 @@ models:
 
   - name: stg_fredo__quartiers
     columns:
-      - name: id
+      - name: structure_id
         data_tests:
           - not_null
           - relationships:
@@ -115,7 +115,7 @@ models:
 
   - name: stg_fredo__services
     columns:
-      - name: id
+      - name: structure_id
         data_tests:
           - not_null
           - relationships:
@@ -128,7 +128,7 @@ models:
 
   - name: stg_fredo__types
     columns:
-      - name: id
+      - name: structure_id
         data_tests:
           - not_null
           - relationships:
