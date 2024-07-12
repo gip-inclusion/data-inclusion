@@ -219,65 +219,6 @@ def test_list_sources(api_client):
 
 @pytest.mark.with_token
 @pytest.mark.feature_deprecated
-def test_list_structures_filter_by_thematique(
-    api_client,
-):
-    structure_1 = factories.StructureFactory(
-        thematiques=[
-            schema.Thematique.MOBILITE.value,
-            schema.Thematique.NUMERIQUE.value,
-        ]
-    )
-    factories.StructureFactory(
-        thematiques=[
-            schema.Thematique.TROUVER_UN_EMPLOI.value,
-            schema.Thematique.NUMERIQUE.value,
-        ]
-    )
-    factories.StructureFactory(thematiques=[])
-
-    url = "/api/v0/structures/"
-    response = api_client.get(
-        url, params={"thematique": schema.Thematique.MOBILITE.value}
-    )
-
-    resp_data = response.json()
-    assert_paginated_response_data(response.json(), total=1)
-    assert_structure_data(structure_1, resp_data["items"][0])
-
-    response = api_client.get(
-        url, params={"thematique": schema.Thematique.PREPARER_SA_CANDIDATURE.value}
-    )
-    assert_paginated_response_data(response.json(), total=0)
-
-
-@pytest.mark.with_token
-@pytest.mark.feature_deprecated
-def test_list_structures_filter_by_categorie_thematique(
-    api_client,
-):
-    structure = factories.StructureFactory(
-        thematiques=[
-            schema.Thematique.MOBILITE__ACHETER_UN_VEHICULE_MOTORISE.value,
-        ],
-    )
-    factories.StructureFactory(thematiques=[])
-
-    url = "/api/v0/structures/"
-
-    response = api_client.get(
-        url, params={"thematique": schema.Thematique.MOBILITE.value}
-    )
-
-    assert response.status_code == 200
-    resp_data = response.json()
-    assert len(resp_data["items"]) == 1
-    assert resp_data["items"][0]["source"] == structure.source
-    assert resp_data["items"][0]["id"] == structure.id
-
-
-@pytest.mark.with_token
-@pytest.mark.feature_deprecated
 def test_list_structures_filter_by_source_and_id(
     api_client,
 ):
@@ -314,10 +255,10 @@ def test_list_services_all(api_client):
     assert resp_data == {
         "items": [
             {
-                "adresse": "20, rue Lambert",
-                "code_insee": LILLE["code_insee"],
-                "code_postal": "25454",
-                "commune": "Sainte Jacquelineboeuf",
+                "adresse": "62, rue Eugène Rodrigues",
+                "code_insee": "59350",
+                "code_postal": "92950",
+                "commune": "Sainte Gabriel",
                 "complement_adresse": None,
                 "contact_nom_prenom": "Thibaut de Michaud",
                 "contact_public": False,
@@ -327,24 +268,24 @@ def test_list_services_all(api_client):
                 "date_maj": "2023-01-01",
                 "date_suspension": "2054-01-01",
                 "formulaire_en_ligne": None,
-                "frais_autres": "Point saint source.",
+                "frais_autres": "Camarade il.",
                 "frais": ["gratuit"],
-                "id": "rassurer-vaincre",
+                "id": "cacher-violent",
                 "justificatifs": [],
-                "latitude": 80.2434875,
-                "lien_source": "https://dora.fr/rassurer-vaincre",
-                "longitude": 128.091981,
+                "latitude": -77.857573,
+                "lien_source": "https://dora.fr/cacher-violent",
+                "longitude": -62.54684,
                 "modes_accueil": ["a-distance"],
                 "modes_orientation_accompagnateur_autres": None,
                 "modes_orientation_accompagnateur": ["telephoner"],
                 "modes_orientation_beneficiaire_autres": None,
                 "modes_orientation_beneficiaire": ["telephoner"],
-                "nom": "Barbe",
-                "page_web": "http://www.foucher.com/",
+                "nom": "Munoz",
+                "page_web": "http://aubert.net/",
                 "pre_requis": [],
-                "presentation_detail": "Noir roi fin parmi.",
-                "presentation_resume": "Épaule élever un.",
-                "prise_rdv": "https://www.raymond.com/",
+                "presentation_detail": "Épaule élever un.",
+                "presentation_resume": "Puissant fine.",
+                "prise_rdv": "https://teixeira.fr/",
                 "profils": ["femmes"],
                 "recurrence": None,
                 "source": "dora",

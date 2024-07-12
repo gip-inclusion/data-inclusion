@@ -76,13 +76,6 @@ def list_structures_endpoint(
     label_national: Annotated[
         Optional[di_schema.LabelNational], fastapi.Query()
     ] = None,
-    thematique: Annotated[
-        Optional[di_schema.Thematique],
-        fastapi.Query(
-            deprecated=True,
-            description="Déprécié en faveur de `thematiques`.",
-        ),
-    ] = None,
     thematiques: Annotated[
         Optional[list[di_schema.Thematique]],
         fastapi.Query(
@@ -109,9 +102,6 @@ def list_structures_endpoint(
     code_commune: CodeCommuneFilter = None,
     db_session=fastapi.Depends(db.get_session),
 ):
-    if thematiques is None and thematique is not None:
-        thematiques = [thematique]
-
     if sources is None and source is not None:
         sources = [source]
 
