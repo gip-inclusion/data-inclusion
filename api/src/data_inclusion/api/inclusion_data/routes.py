@@ -57,10 +57,7 @@ def list_structures_endpoint(
     request: fastapi.Request,
     source: Annotated[
         Optional[str],
-        fastapi.Query(
-            deprecated=True,
-            description="Déprécié en faveur de `sources`.",
-        ),
+        fastapi.Query(include_in_schema=False),
     ] = None,
     sources: Annotated[
         Optional[list[str]],
@@ -85,16 +82,12 @@ def list_structures_endpoint(
     ] = None,
     departement: Annotated[
         Optional[DepartementCodeEnum],
-        fastapi.Query(
-            deprecated=True, description="Déprécié en faveur de `code_departement`."
-        ),
+        fastapi.Query(include_in_schema=False),
     ] = None,
     code_departement: CodeDepartementFilter = None,
     departement_slug: Annotated[
         Optional[DepartementSlugEnum],
-        fastapi.Query(
-            deprecated=True, description="Déprécié en faveur de `slug_departement`."
-        ),
+        fastapi.Query(include_in_schema=False),
     ] = None,
     slug_departement: Annotated[Optional[DepartementSlugEnum], fastapi.Query()] = None,
     code_region: CodeRegionFilter = None,
@@ -168,10 +161,7 @@ def list_services_endpoint(
     db_session=fastapi.Depends(db.get_session),
     source: Annotated[
         Optional[str],
-        fastapi.Query(
-            deprecated=True,
-            description="Déprécié en faveur de `sources`.",
-        ),
+        fastapi.Query(include_in_schema=False),
     ] = None,
     sources: Annotated[
         Optional[list[str]],
@@ -184,10 +174,7 @@ def list_services_endpoint(
     ] = None,
     thematique: Annotated[
         Optional[di_schema.Thematique],
-        fastapi.Query(
-            deprecated=True,
-            description="Déprécié en faveur de `thematiques`.",
-        ),
+        fastapi.Query(include_in_schema=False),
     ] = None,
     thematiques: Annotated[
         Optional[list[di_schema.Thematique]],
@@ -198,26 +185,19 @@ def list_services_endpoint(
     ] = None,
     departement: Annotated[
         Optional[DepartementCodeEnum],
-        fastapi.Query(
-            deprecated=True, description="Déprécié en faveur de `code_departement`."
-        ),
+        fastapi.Query(include_in_schema=False),
     ] = None,
     code_departement: CodeDepartementFilter = None,
     departement_slug: Annotated[
         Optional[DepartementSlugEnum],
-        fastapi.Query(
-            deprecated=True, description="Déprécié en faveur de `slug_departement`."
-        ),
+        fastapi.Query(include_in_schema=False),
     ] = None,
     slug_departement: Annotated[Optional[DepartementSlugEnum], fastapi.Query()] = None,
     code_region: CodeRegionFilter = None,
     slug_region: Annotated[Optional[RegionSlugEnum], fastapi.Query()] = None,
     code_insee: Annotated[
         Optional[di_schema.CodeCommune],
-        fastapi.Query(
-            deprecated=True,
-            description="Déprécié en faveur de `code_commune`.",
-        ),
+        fastapi.Query(include_in_schema=False),
     ] = None,
     code_commune: CodeCommuneFilter = None,
     frais: Annotated[
@@ -339,10 +319,7 @@ def search_services_endpoint(
     ] = None,
     code_insee: Annotated[
         Optional[di_schema.CodeCommune],
-        fastapi.Query(
-            deprecated=True,
-            description="Déprécié en faveur de `code_commune`.",
-        ),
+        fastapi.Query(include_in_schema=False),
     ] = None,
     lat: Annotated[
         Optional[float],
