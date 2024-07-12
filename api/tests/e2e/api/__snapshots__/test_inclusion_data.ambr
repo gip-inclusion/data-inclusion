@@ -28,18 +28,6 @@
           ],
           "parameters": [
             {
-              "name": "source",
-              "in": "query",
-              "required": false,
-              "schema": {
-                "type": "string",
-                "description": "Déprécié en faveur de `sources`.",
-                "title": "Source"
-              },
-              "description": "Déprécié en faveur de `sources`.",
-              "deprecated": true
-            },
-            {
               "name": "sources",
               "in": "query",
               "required": false,
@@ -94,22 +82,6 @@
               "description": "Une liste de thématique.\n                Chaque résultat renvoyé a (au moins) une thématique dans cette liste."
             },
             {
-              "name": "departement",
-              "in": "query",
-              "required": false,
-              "schema": {
-                "allOf": [
-                  {
-                    "$ref": "#/components/schemas/DepartementCodeEnum"
-                  }
-                ],
-                "description": "Déprécié en faveur de `code_departement`.",
-                "title": "Departement"
-              },
-              "description": "Déprécié en faveur de `code_departement`.",
-              "deprecated": true
-            },
-            {
               "name": "code_departement",
               "in": "query",
               "required": false,
@@ -123,22 +95,6 @@
                 "title": "Code Departement"
               },
               "description": "Code insee géographique d'un département."
-            },
-            {
-              "name": "departement_slug",
-              "in": "query",
-              "required": false,
-              "schema": {
-                "allOf": [
-                  {
-                    "$ref": "#/components/schemas/DepartementSlugEnum"
-                  }
-                ],
-                "description": "Déprécié en faveur de `slug_departement`.",
-                "title": "Departement Slug"
-              },
-              "description": "Déprécié en faveur de `slug_departement`.",
-              "deprecated": true
             },
             {
               "name": "slug_departement",
@@ -347,18 +303,6 @@
           ],
           "parameters": [
             {
-              "name": "source",
-              "in": "query",
-              "required": false,
-              "schema": {
-                "type": "string",
-                "description": "Déprécié en faveur de `sources`.",
-                "title": "Source"
-              },
-              "description": "Déprécié en faveur de `sources`.",
-              "deprecated": true
-            },
-            {
               "name": "sources",
               "in": "query",
               "required": false,
@@ -371,22 +315,6 @@
                 "title": "Sources"
               },
               "description": "Une liste d'identifiants de source.\n                La liste des identifiants de source est disponible sur le endpoint\n                dédié. Les résultats seront limités aux sources spécifiées.\n            "
-            },
-            {
-              "name": "thematique",
-              "in": "query",
-              "required": false,
-              "schema": {
-                "allOf": [
-                  {
-                    "$ref": "#/components/schemas/Thematique"
-                  }
-                ],
-                "description": "Déprécié en faveur de `thematiques`.",
-                "title": "Thematique"
-              },
-              "description": "Déprécié en faveur de `thematiques`.",
-              "deprecated": true
             },
             {
               "name": "thematiques",
@@ -403,22 +331,6 @@
               "description": "Une liste de thématique.\n                Chaque résultat renvoyé a (au moins) une thématique dans cette liste."
             },
             {
-              "name": "departement",
-              "in": "query",
-              "required": false,
-              "schema": {
-                "allOf": [
-                  {
-                    "$ref": "#/components/schemas/DepartementCodeEnum"
-                  }
-                ],
-                "description": "Déprécié en faveur de `code_departement`.",
-                "title": "Departement"
-              },
-              "description": "Déprécié en faveur de `code_departement`.",
-              "deprecated": true
-            },
-            {
               "name": "code_departement",
               "in": "query",
               "required": false,
@@ -432,22 +344,6 @@
                 "title": "Code Departement"
               },
               "description": "Code insee géographique d'un département."
-            },
-            {
-              "name": "departement_slug",
-              "in": "query",
-              "required": false,
-              "schema": {
-                "allOf": [
-                  {
-                    "$ref": "#/components/schemas/DepartementSlugEnum"
-                  }
-                ],
-                "description": "Déprécié en faveur de `slug_departement`.",
-                "title": "Departement Slug"
-              },
-              "description": "Déprécié en faveur de `slug_departement`.",
-              "deprecated": true
             },
             {
               "name": "slug_departement",
@@ -489,21 +385,6 @@
                 ],
                 "title": "Slug Region"
               }
-            },
-            {
-              "name": "code_insee",
-              "in": "query",
-              "required": false,
-              "schema": {
-                "type": "string",
-                "minLength": 5,
-                "maxLength": 5,
-                "pattern": "^\\w{5}$",
-                "description": "Déprécié en faveur de `code_commune`.",
-                "title": "Code Insee"
-              },
-              "description": "Déprécié en faveur de `code_commune`.",
-              "deprecated": true
             },
             {
               "name": "code_commune",
@@ -736,21 +617,6 @@
                 "title": "Code Commune"
               },
               "description": "Code insee de la commune considérée.\n                Si fourni, les résultats inclus également les services proches de\n                cette commune. Les résultats sont triés par ordre de distance\n                croissante.\n            "
-            },
-            {
-              "name": "code_insee",
-              "in": "query",
-              "required": false,
-              "schema": {
-                "type": "string",
-                "minLength": 5,
-                "maxLength": 5,
-                "pattern": "^\\w{5}$",
-                "description": "Déprécié en faveur de `code_commune`.",
-                "title": "Code Insee"
-              },
-              "description": "Déprécié en faveur de `code_commune`.",
-              "deprecated": true
             },
             {
               "name": "lat",
