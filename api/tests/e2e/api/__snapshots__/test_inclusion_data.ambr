@@ -80,22 +80,6 @@
               }
             },
             {
-              "name": "thematique",
-              "in": "query",
-              "required": false,
-              "schema": {
-                "allOf": [
-                  {
-                    "$ref": "#/components/schemas/Thematique"
-                  }
-                ],
-                "description": "Déprécié en faveur de `thematiques`.",
-                "title": "Thematique"
-              },
-              "description": "Déprécié en faveur de `thematiques`.",
-              "deprecated": true
-            },
-            {
               "name": "thematiques",
               "in": "query",
               "required": false,
