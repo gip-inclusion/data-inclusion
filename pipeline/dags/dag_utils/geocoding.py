@@ -31,7 +31,7 @@ class BaseAdresseNationaleBackend(GeocodingBackend):
                     files={"data": ("data.csv", buf.getvalue(), "text/csv")},
                     data={
                         "columns": ["adresse", "code_postal", "commune"],
-                        "postcode": "code_postal",
+                        "citycode": "code_insee",
                     },
                     timeout=180,  # we upload 2MB of data, so we need a high timeout
                 )
@@ -51,6 +51,10 @@ class BaseAdresseNationaleBackend(GeocodingBackend):
                 sep="|",
             )
             results_df = results_df.replace({np.nan: None})
+            # In some cases (ex: address='20' and city='Paris'), the BAN API will return
+            # a municipality as a result with a very high score. This is be discarded
+            # as this will not be valuable information to localize a structure.
+            results_df = results_df[results_df.result_type != "municipality"]
 
         logger.info("Got result for address batch, dimensions=%s", results_df.shape)
         return results_df
@@ -61,11 +65,24 @@ class BaseAdresseNationaleBackend(GeocodingBackend):
         # since we also want to avoid upload timeouts.
         BATCH_SIZE = 20_000
 
-        # drop rows with missing input values
-        # if not done, the BAN api will fail the entire batch
-        df = df.dropna(subset=["adresse", "code_postal", "commune"], how="all")
+        # drop rows with missing adresses: no need to even try.
+        df = df.dropna(subset=["adresse"])
+        # also drop rows that have not at least one commune, code_insee or code_postal
+        # as the result can't make sense.
+        df = df.dropna(subset=["code_postal", "code_insee", "commune"], thresh=2)
         df = df.sort_values(by="_di_surrogate_id")
-        df = df.assign(adresse=df.adresse.str.replace("-", " "))
+        # Cleanup the values a bit to help the BAN's scoring.
+        # Looking for "Ville-Nouvelle" returns worse results than "Ville Nouvelle"
+        # In the same fashion, looking for "U.R.S.S." returns worse results than "URSS".
+        df = df.assign(
+            adresse=(
+                df.adresse.str.strip()
+                .replace("\r", " ")
+                .replace("-", " ")
+                .replace(".", "")
+            ),
+            commune=df.commune.str.strip(),
+        )
 
         logger.info(f"Only {len(df)} rows can be geocoded.")
 
