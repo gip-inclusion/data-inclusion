@@ -31,7 +31,14 @@ class BaseAdresseNationaleBackend(GeocodingBackend):
                     files={"data": ("data.csv", buf.getvalue(), "text/csv")},
                     data={
                         "columns": ["adresse", "code_postal", "commune"],
-                        "postcode": "code_postal",
+                        # Post-filter on the INSEE code and not the zipcode.
+                        # Explanations from the BAN API creators:
+                        # The postcode is problematic for cities with multiple zipcodes
+                        # if the supplied zipcode is wrong, or the one in the BAN is.
+                        # The INSEE code is more stable, unique and reliable.
+                        # Also this post-filter does not return "possible" results,
+                        # it blindly filters-out.
+                        "citycode": "code_insee",
                     },
                     timeout=180,  # we upload 2MB of data, so we need a high timeout
                 )
@@ -51,6 +58,10 @@ class BaseAdresseNationaleBackend(GeocodingBackend):
                 sep="|",
             )
             results_df = results_df.replace({np.nan: None})
+            # In some cases (ex: address='20' and city='Paris'), the BAN API will return
+            # a municipality as a result with a very high score. This is be discarded
+            # as this will not be valuable information to localize a structure.
+            results_df = results_df[results_df.result_type != "municipality"]
 
         logger.info("Got result for address batch, dimensions=%s", results_df.shape)
         return results_df
@@ -61,11 +72,22 @@ class BaseAdresseNationaleBackend(GeocodingBackend):
         # since we also want to avoid upload timeouts.
         BATCH_SIZE = 20_000
 
-        # drop rows with missing input values
-        # if not done, the BAN api will fail the entire batch
-        df = df.dropna(subset=["adresse", "code_postal", "commune"], how="all")
+        # drop rows that have not at least one commune, code_insee or code_postal
+        # as the result can't make sense.
+        # Note that we keep the rows without an address, as they can be used to
+        # at least resolve the city.
+        df = df.dropna(subset=["code_postal", "code_insee", "commune"], thresh=2)
         df = df.sort_values(by="_di_surrogate_id")
-        df = df.assign(adresse=df.adresse.str.replace("-", " "))
+        # Cleanup the values a bit to help the BAN's scoring. After experimentation,
+        # looking for "Ville-Nouvelle" returns worse results than "Ville Nouvelle",
+        # probably due to a tokenization in the BAN that favors spaces.
+        # In the same fashion, looking for "U.R.S.S." returns worse results than using
+        # "URSS" for "Avenue de l'U.R.S.S.". With the dots, it does not find the
+        # street at all ¯\_(ツ)_/¯
+        df = df.assign(
+            adresse=(df.adresse.str.strip().replace("-", " ").replace(".", "")),
+            commune=df.commune.str.strip(),
+        )
 
         logger.info(f"Only {len(df)} rows can be geocoded.")
 
@@ -83,6 +105,8 @@ class BaseAdresseNationaleBackend(GeocodingBackend):
                             len(df) > 0
                             and len(results_df.dropna(subset=["result_citycode"]))
                             / len(df)
+                            # arbitrary threshold, if less than this percentage of
+                            # the rows have been geocoded, retry.
                             < 0.3
                         ):
                             # the BAN api often fails to properly complete a

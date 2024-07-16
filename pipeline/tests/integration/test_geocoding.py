@@ -24,6 +24,7 @@ def sample_df() -> pd.DataFrame:
                 "_di_surrogate_id": "1",
                 "adresse": "17 rue Malus",
                 "code_postal": "59000",
+                "code_insee": "59350",
                 "commune": "Lille",
             },
             {
@@ -31,6 +32,7 @@ def sample_df() -> pd.DataFrame:
                 "_di_surrogate_id": "2",
                 "adresse": None,
                 "code_postal": None,
+                "code_insee": None,
                 "commune": None,
             },
         ]
@@ -46,6 +48,7 @@ def test_ban_geocode(
             "_di_surrogate_id": "1",
             "source": "dora",
             "adresse": "17 rue Malus",
+            "code_insee": "59350",
             "code_postal": "59000",
             "commune": "Lille",
             "latitude": "50.627078",

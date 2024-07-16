@@ -42,6 +42,7 @@ def _geocode():
                 _di_surrogate_id,
                 adresse,
                 code_postal,
+                code_insee,
                 commune
             FROM public_intermediate.int__union_adresses;
         """
