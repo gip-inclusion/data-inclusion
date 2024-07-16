@@ -82,34 +82,6 @@
               "description": "Une liste de thématique.\n                Chaque résultat renvoyé a (au moins) une thématique dans cette liste."
             },
             {
-              "name": "code_departement",
-              "in": "query",
-              "required": false,
-              "schema": {
-                "allOf": [
-                  {
-                    "$ref": "#/components/schemas/DepartementCodeEnum"
-                  }
-                ],
-                "description": "Code insee géographique d'un département.",
-                "title": "Code Departement"
-              },
-              "description": "Code insee géographique d'un département."
-            },
-            {
-              "name": "slug_departement",
-              "in": "query",
-              "required": false,
-              "schema": {
-                "allOf": [
-                  {
-                    "$ref": "#/components/schemas/DepartementSlugEnum"
-                  }
-                ],
-                "title": "Slug Departement"
-              }
-            },
-            {
               "name": "code_region",
               "in": "query",
               "required": false,
@@ -135,6 +107,34 @@
                   }
                 ],
                 "title": "Slug Region"
+              }
+            },
+            {
+              "name": "code_departement",
+              "in": "query",
+              "required": false,
+              "schema": {
+                "allOf": [
+                  {
+                    "$ref": "#/components/schemas/DepartementCodeEnum"
+                  }
+                ],
+                "description": "Code insee géographique d'un département.",
+                "title": "Code Departement"
+              },
+              "description": "Code insee géographique d'un département."
+            },
+            {
+              "name": "slug_departement",
+              "in": "query",
+              "required": false,
+              "schema": {
+                "allOf": [
+                  {
+                    "$ref": "#/components/schemas/DepartementSlugEnum"
+                  }
+                ],
+                "title": "Slug Departement"
               }
             },
             {
@@ -331,34 +331,6 @@
               "description": "Une liste de thématique.\n                Chaque résultat renvoyé a (au moins) une thématique dans cette liste."
             },
             {
-              "name": "code_departement",
-              "in": "query",
-              "required": false,
-              "schema": {
-                "allOf": [
-                  {
-                    "$ref": "#/components/schemas/DepartementCodeEnum"
-                  }
-                ],
-                "description": "Code insee géographique d'un département.",
-                "title": "Code Departement"
-              },
-              "description": "Code insee géographique d'un département."
-            },
-            {
-              "name": "slug_departement",
-              "in": "query",
-              "required": false,
-              "schema": {
-                "allOf": [
-                  {
-                    "$ref": "#/components/schemas/DepartementSlugEnum"
-                  }
-                ],
-                "title": "Slug Departement"
-              }
-            },
-            {
               "name": "code_region",
               "in": "query",
               "required": false,
@@ -384,6 +356,34 @@
                   }
                 ],
                 "title": "Slug Region"
+              }
+            },
+            {
+              "name": "code_departement",
+              "in": "query",
+              "required": false,
+              "schema": {
+                "allOf": [
+                  {
+                    "$ref": "#/components/schemas/DepartementCodeEnum"
+                  }
+                ],
+                "description": "Code insee géographique d'un département.",
+                "title": "Code Departement"
+              },
+              "description": "Code insee géographique d'un département."
+            },
+            {
+              "name": "slug_departement",
+              "in": "query",
+              "required": false,
+              "schema": {
+                "allOf": [
+                  {
+                    "$ref": "#/components/schemas/DepartementSlugEnum"
+                  }
+                ],
+                "title": "Slug Departement"
               }
             },
             {
