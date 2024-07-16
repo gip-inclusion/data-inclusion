@@ -80,6 +80,8 @@ def list_structures_endpoint(
                 Chaque résultat renvoyé a (au moins) une thématique dans cette liste."""
         ),
     ] = None,
+    code_region: CodeRegionFilter = None,
+    slug_region: Annotated[Optional[RegionSlugEnum], fastapi.Query()] = None,
     departement: Annotated[
         Optional[DepartementCodeEnum],
         fastapi.Query(include_in_schema=False),
@@ -90,8 +92,6 @@ def list_structures_endpoint(
         fastapi.Query(include_in_schema=False),
     ] = None,
     slug_departement: Annotated[Optional[DepartementSlugEnum], fastapi.Query()] = None,
-    code_region: CodeRegionFilter = None,
-    slug_region: Annotated[Optional[RegionSlugEnum], fastapi.Query()] = None,
     code_commune: CodeCommuneFilter = None,
     db_session=fastapi.Depends(db.get_session),
 ):
@@ -183,6 +183,8 @@ def list_services_endpoint(
                 Chaque résultat renvoyé a (au moins) une thématique dans cette liste."""
         ),
     ] = None,
+    code_region: CodeRegionFilter = None,
+    slug_region: Annotated[Optional[RegionSlugEnum], fastapi.Query()] = None,
     departement: Annotated[
         Optional[DepartementCodeEnum],
         fastapi.Query(include_in_schema=False),
@@ -193,8 +195,6 @@ def list_services_endpoint(
         fastapi.Query(include_in_schema=False),
     ] = None,
     slug_departement: Annotated[Optional[DepartementSlugEnum], fastapi.Query()] = None,
-    code_region: CodeRegionFilter = None,
-    slug_region: Annotated[Optional[RegionSlugEnum], fastapi.Query()] = None,
     code_insee: Annotated[
         Optional[di_schema.CodeCommune],
         fastapi.Query(include_in_schema=False),
