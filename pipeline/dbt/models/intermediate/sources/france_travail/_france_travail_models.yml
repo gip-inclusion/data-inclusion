@@ -28,7 +28,7 @@ models:
         tests:
           - not_null
           - relationships:
-              to: ref('int_france_travail__agences')
+              to: ref('int_france_travail__structures')
               field: id
       - name: adresse_id
         tests:
@@ -37,7 +37,7 @@ models:
               to: ref('int_france_travail__adresses')
               field: id
 
-  - name: int_france_travail__agences
+  - name: int_france_travail__structures
     tests:
       - check_structure:
           config:

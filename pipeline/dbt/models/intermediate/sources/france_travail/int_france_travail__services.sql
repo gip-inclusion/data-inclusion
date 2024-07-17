@@ -3,7 +3,7 @@ WITH services AS (
 ),
 
 agences AS (
-    SELECT * FROM {{ ref('int_france_travail__agences') }}
+    SELECT * FROM {{ ref('int_france_travail__structures') }}
 ),
 
 adresses AS (

@@ -1,5 +1,5 @@
 WITH structures AS (
-    {{ 
+    {{
         dbt_utils.union_relations(
             relations=[
                 ref('int_action_logement__structures'),
@@ -10,7 +10,7 @@ WITH structures AS (
                 ref('int_cd72__structures'),
                 ref('int_emplois_de_linclusion__structures'),
                 ref('int_finess__structures'),
-                ref('int_france_travail__agences'),
+                ref('int_france_travail__structures'),
                 ref('int_mediation_numerique__structures'),
                 ref('int_mes_aides__structures'),
                 ref('int_monenfant__structures'),
