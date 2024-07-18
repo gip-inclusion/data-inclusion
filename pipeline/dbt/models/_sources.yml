@@ -8,11 +8,17 @@ sources:
 
   - name: data_inclusion
     schema: data_inclusion
+    meta:
+      is_provider: true
     tables:
       - name: structures
         description: Entered by the data.inclusion team.
+        meta:
+          kind: structure
       - name: services
         description: Entered by the data.inclusion team.
+        meta:
+          kind: service
 
   - name: insee
     schema: insee
@@ -26,15 +32,27 @@ sources:
 
   - name: dora
     schema: dora
+    meta:
+      is_provider: true
     tables:
       - name: structures
+        meta:
+          kind: structure
       - name: services
+        meta:
+          kind: service
 
   - name: france_travail
     schema: france_travail
+    meta:
+      is_provider: true
     tables:
       - name: agences
+        meta:
+          kind: structure
       - name: services
+        meta:
+          kind: service
 
   - name: finess
     schema: finess
@@ -54,9 +72,15 @@ sources:
 
   - name: mes_aides
     schema: mes_aides
+    meta:
+      is_provider: true
     tables:
       - name: garages
+        meta:
+          kind: structure
       - name: aides
+        meta:
+          kind: service
 
   - name: annuaire_du_service_public
     schema: annuaire_du_service_public
@@ -65,29 +89,53 @@ sources:
 
   - name: cd35
     schema: cd35
+    meta:
+      is_provider: true
     tables:
       - name: organisations
+        meta:
+          kind: structure
 
   - name: cd72
     schema: cd72
+    meta:
+      is_provider: true
     tables:
       - name: structures
+        meta:
+          kind: structure
       - name: services
+        meta:
+          kind: service
 
   - name: emplois_de_linclusion
     schema: emplois_de_linclusion
+    meta:
+      is_provider: true
     tables:
       - name: siaes
+        meta:
+          kind: structure
       - name: organisations
+        meta:
+          kind: structure
 
   - name: mediation_numerique
     schema: mediation_numerique
+    meta:
+      is_provider: true
     tables:
       - name: structures
+        meta:
+          kind: structure
       - name: services
+        meta:
+          kind: service
 
   - name: odspep
     schema: odspep
+    meta:
+      is_provider: true
     tables:
       - name: DD009_ACTIONs_DEMARCHES
       - name: DD009_ADRESSE
@@ -110,27 +158,48 @@ sources:
       - name: DD009_REGION_RESSOURCE_2
       - name: DD009_REGION_SUGGESTION
       - name: DD009_RES_PARTENARIALE
+        meta:
+          kind: service
+          staging_name: res_partenariales
 
   - name: soliguide
     schema: soliguide
+    meta:
+      is_provider: true
     tables:
       - name: lieux
+        meta:
+          kind: structure
 
   - name: monenfant
     schema: monenfant
+    meta:
+      is_provider: true
     tables:
       - name: creches
+        meta:
+          kind: structure
 
   - name: agefiph
     schema: agefiph
+    meta:
+      is_provider: true
     tables:
       - name: services
+        meta:
+          kind: service
 
   - name: reseau_alpha
     schema: reseau_alpha
+    meta:
+      is_provider: true
     tables:
       - name: structures
+        meta:
+          kind: structure
       - name: formations
+        meta:
+          kind: service
 
   - name: brevo
     schema: brevo
@@ -144,6 +213,12 @@ sources:
 
   - name: action_logement
     schema: action_logement
+    meta:
+      is_provider: true
     tables:
       - name: structures
+        meta:
+          kind: structure
       - name: services
+        meta:
+          kind: service

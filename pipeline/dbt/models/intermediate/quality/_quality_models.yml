@@ -1,0 +1,91 @@
+version: 2
+
+models:
+  - name: int_quality__stats
+    data_tests:
+    - dbt_utils.unique_combination_of_columns:
+        combination_of_columns:
+        - source
+        - stream
+
+    columns:
+    - name: source
+      data_tests:
+      - not_null
+      - dbt_utils.not_constant
+      - accepted_values:
+          values:
+          - action_logement
+          - agefiph
+          - cd35
+          - cd72
+          - data_inclusion
+          - dora
+          - emplois_de_linclusion
+          - france_travail
+          - mediation_numerique
+          - mes_aides
+          - monenfant
+          - odspep
+          - reseau_alpha
+          - soliguide
+
+    - name: stream
+      data_tests:
+      - not_null
+      - dbt_utils.not_constant
+      - accepted_values:
+          values:
+          - agences
+          - aides
+          - creches
+          - DD009_RES_PARTENARIALE
+          - formations
+          - garages
+          - lieux
+          - organisations
+          - services
+          - siaes
+          - structures
+
+    - name: count_raw
+      data_tests:
+      - dbt_utils.accepted_range:
+          min_value: 0
+          inclusive: false
+
+    - name: count_stg
+      data_tests:
+      - dbt_utils.accepted_range:
+          min_value: 0
+          inclusive: false
+
+    - name: count_int
+      data_tests:
+      - dbt_utils.accepted_range:
+          min_value: 0
+          inclusive: false
+
+    - name: count_marts
+      data_tests:
+      - dbt_utils.accepted_range:
+          min_value: 0
+          inclusive: false
+
+    - name: count_api
+      data_tests:
+      - dbt_utils.accepted_range:
+          min_value: 0
+          inclusive: false
+
+    - name: count_contacts
+      data_tests:
+      - dbt_utils.accepted_range:
+          min_value: 0
+          inclusive: true
+
+    - name: count_addresses
+      data_tests:
+      - dbt_utils.accepted_range:
+          min_value: 0
+          inclusive: true
