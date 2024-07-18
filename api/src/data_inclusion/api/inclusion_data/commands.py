@@ -142,16 +142,16 @@ def load_inclusion_data():
     # and overwrite existing ones if the geocoder is confident enough
     geocoder_validity_threshold = 0.7
     structures_df = structures_df.assign(
-        code_insee=structures_df.code_insee.where(
+        code_insee=structures_df._di_geocodage_code_insee.where(
             structures_df._di_geocodage_score > geocoder_validity_threshold,
-            structures_df._di_geocodage_code_insee,
-        ).fillna(structures_df._di_geocodage_code_insee)
+            structures_df.code_insee,
+        )
     )
     services_df = services_df.assign(
-        code_insee=services_df.code_insee.where(
+        code_insee=services_df._di_geocodage_code_insee.where(
             services_df._di_geocodage_score > geocoder_validity_threshold,
-            services_df._di_geocodage_code_insee,
-        ).fillna(structures_df._di_geocodage_code_insee)
+            services_df.code_insee,
+        )
     )
     structures_df = structures_df.drop(
         columns=["_di_geocodage_code_insee", "_di_geocodage_score"]
