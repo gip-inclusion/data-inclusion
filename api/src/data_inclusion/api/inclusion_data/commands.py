@@ -126,10 +126,16 @@ def load_inclusion_data():
 
     # TODO: this must be fixed in the publication
     structures_df = structures_df.assign(
-        code_insee=structures_df.code_insee.apply(clean_up_code_insee)
+        code_insee=structures_df.code_insee.apply(clean_up_code_insee),
+        _di_geocodage_code_insee=structures_df._di_geocodage_code_insee.apply(
+            clean_up_code_insee
+        ),
     )
     services_df = services_df.assign(
-        code_insee=services_df.code_insee.apply(clean_up_code_insee)
+        code_insee=services_df.code_insee.apply(clean_up_code_insee),
+        _di_geocodage_code_insee=services_df._di_geocodage_code_insee.apply(
+            clean_up_code_insee
+        ),
     )
 
     # fill missing codes with geocoding results
