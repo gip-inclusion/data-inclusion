@@ -1,5 +1,5 @@
 WITH source AS (
-    {{ stg_source_header('cd72', 'services') }}
+    {{ stg_source_header('cd72', 'structures') }}
 ),
 
 final AS (
