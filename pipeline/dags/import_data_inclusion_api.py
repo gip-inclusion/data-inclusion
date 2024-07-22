@@ -49,7 +49,11 @@ def import_data_inclusion_api():
                     " --no-owner"
                     " --no-privileges"
                     " --table api__requests"
-                    f" --file {tmp_file.name}"
+                    # services & structures have foreign keys towards communes
+                    " --table api__communes"
+                    " --table api__services"
+                    " --table api__structures"
+                    f" --file {tmp_file.name}",
                 )
                 print(command)
                 subprocess.run(command, shell=True, check=True, capture_output=True)
