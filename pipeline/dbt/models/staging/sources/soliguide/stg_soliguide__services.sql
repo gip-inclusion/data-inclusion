@@ -19,6 +19,8 @@ final AS (
         CAST(services.data #>> '{modalities,inconditionnel}' AS BOOLEAN)      AS "modalities__inconditionnel",
         CAST(services.data #>> '{modalities,appointment,checked}' AS BOOLEAN) AS "modalities__appointment__checked",
         services.data #>> '{modalities,appointment,precisions}'               AS "modalities__appointment__precisions",
+        CAST(services.data #>> '{modalities,price,checked}' AS BOOLEAN)       AS "modalities__price__checked",
+        services.data #>> '{modalities,price,precisions}'                     AS "modalities__price__precisions",
         CAST(services.data #>> '{modalities,inscription,checked}' AS BOOLEAN) AS "modalities__inscription__checked",
         services.data #>> '{modalities,inscription,precisions}'               AS "modalities__inscription__precisions",
         CAST(services.data #>> '{modalities,orientation,checked}' AS BOOLEAN) AS "modalities__orientation__checked",

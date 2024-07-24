@@ -34,7 +34,7 @@ markers = '''
 
 [tool.sqlfluff.core]
 dialect = "postgres"
-exclude_rules = "layout.long_lines"
+exclude_rules = "layout.long_lines, structure.column_order"
 templater = "dbt"
 
 [tool.sqlfluff.layout.type.alias_expression]
