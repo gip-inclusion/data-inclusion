@@ -106,8 +106,6 @@ final AS (
         open_services._di_source_id                                   AS "source",
         NULL::TEXT []                                                 AS "types",
         NULL                                                          AS "prise_rdv",
-        NULL::TEXT []                                                 AS "frais",
-        NULL                                                          AS "frais_autres",
         NULL::TEXT []                                                 AS "profils",
         NULL::TEXT []                                                 AS "pre_requis",
         TRUE                                                          AS "cumulable",
@@ -119,6 +117,7 @@ final AS (
         NULL::BOOLEAN                                                 AS "contact_public",
         NULL                                                          AS "contact_nom_prenom",
         open_services.updated_at                                      AS "date_maj",
+        NULL                                                          AS "page_web",
         'commune'                                                     AS "zone_diffusion_type",
         NULL                                                          AS "zone_diffusion_code",  -- will be overridden after geocoding
         NULL                                                          AS "zone_diffusion_nom",  -- will be overridden after geocoding
@@ -140,6 +139,11 @@ final AS (
             WHEN LENGTH(open_services.description) <= 280 THEN NULL
             ELSE open_services.description
         END                                                           AS "presentation_detail",
+        CASE
+            WHEN open_services.modalities__price__checked = TRUE THEN ARRAY['payant']
+            ELSE ARRAY['gratuit']
+        END                                                           AS "frais",
+        open_services.modalities__price__precisions                   AS "frais_autres",
         CASE
             WHEN open_services.different_hours
                 THEN UDF_SOLIGUIDE__NEW_HOURS_TO_OSM_OPENING_HOURS(open_services.hours)
@@ -186,8 +190,7 @@ final AS (
                 CASE WHEN open_services.modalities__inscription__checked THEN '## Sur inscription :' || E'\n' || open_services.modalities__inscription__precisions END
             ],
             E'\n\n'
-        )                                                             AS "modes_orientation_beneficiaire_autres",
-        NULL AS "page_web"
+        )                                                             AS "modes_orientation_beneficiaire_autres"
     FROM open_services
     LEFT JOIN lieux ON open_services.lieu_id = lieux.id
     LEFT JOIN categories ON open_services.category = categories.code
