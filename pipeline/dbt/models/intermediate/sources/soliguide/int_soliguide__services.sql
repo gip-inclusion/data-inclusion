@@ -85,6 +85,11 @@ open_services AS (
         OR
         (close__date_debut IS NOT NULL OR close__date_fin IS NOT NULL)
         AND
+        /* Support for OVERLAPS clause with postgres engine is not broad with DBT.
+           It is getting better but we're not there yet.
+           https://github.com/sqlfluff/sqlfluff/issues/4664
+        */
+        -- noqa: disable=PRS
         (
             CURRENT_DATE AT TIME ZONE 'Europe/Paris',
             CURRENT_DATE AT TIME ZONE 'Europe/Paris'
@@ -93,7 +98,7 @@ open_services AS (
         (
             COALESCE(close__date_debut, CURRENT_DATE - INTERVAL '1 year'),
             COALESCE(close__date_fin, CURRENT_DATE + INTERVAL '1 year')
-        )
+        )  -- noqa: enable=PRS
 ),
 
 
