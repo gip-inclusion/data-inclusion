@@ -132,13 +132,12 @@ final AS (
         fredo_structures.id                                                                   AS "adresse_id",
         thematiques.thematiques                                                               AS "thematiques",
         NULL                                                                                  AS "prise_rdv",
-        NULL                                                                                  AS "page_web",
-        frais.frais                                                                           AS "frais",
+        site_web                                                                              AS "page_web",
         profils.profils                                                                       AS "profils",
         NULL                                                                                  AS "modes_orientation_accompagnateur_autres",
         NULL                                                                                  AS "modes_orientation_beneficiaire_autres",
         NULL                                                                                  AS "formulaire_en_ligne",
-        fredo_structures.lien_source                                                          AS "lien_source",
+        NULL                                                                                  AS "lien_source",
         fredo_structures.telephone                                                            AS "telephone",
         NULL                                                                                  AS "courriel",
         NULL                                                                                  AS "contact_nom_prenom",
@@ -156,10 +155,7 @@ final AS (
         CAST(NULL AS BOOLEAN)                                                                 AS "contact_public",
         CAST(NULL AS TEXT [])                                                                 AS "modes_accueil",
         LEFT(fredo_structures.presentation_resume, 280)                                       AS "presentation_resume",
-        CASE
-            WHEN CHAR_LENGTH(fredo_structures.presentation_resume) > 280
-                THEN fredo_structures.presentation_resume
-        END                                                                                   AS "presentation_detail",
+        fredo_structures.presentation_resume                                                  AS "presentation_detail",
         ARRAY[(
             SELECT di_types_by_fredo_services.di_type
             FROM di_types_by_fredo_services
@@ -170,6 +166,11 @@ final AS (
             FROM di_types_by_fredo_services
             WHERE fredo_services.value = di_types_by_fredo_services.service_fredo
         )                                                                                     AS "nom",
+        CASE
+            WHEN 'gratuit' IN  frais.frais AND 'payant' IN frais.frais 
+            THEN ARRAY['gratuit-sous-conditions']
+            ELSE frais.frais
+        END                                                                                   AS "frais",
         CASE
             WHEN frais.frais IS NULL THEN frais_autres.frais_autres
         END                                                                                   AS "frais_autres",

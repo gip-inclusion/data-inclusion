@@ -12,7 +12,7 @@ final AS (
         NULLIF(TRIM(data ->> 'frais'), '')                                         AS "frais",
         NULLIF(TRIM(data ->> 'horaires_ouverture'), '')                            AS "horaires_ouverture",
         TO_DATE(NULLIF(TRIM(data ->> 'last_update'), ''), 'YYYY-MM-DD HH24:MI:SS') AS "last_update",
-        NULLIF(TRIM(data ->> 'lien_source'), '')                                   AS "lien_source",
+        NULLIF(TRIM(data ->> 'lien_source'), '')                                   AS "site_web",
         NULLIF(TRIM(data ->> 'nom'), '')                                           AS "nom",
         NULLIF(TRIM(data ->> 'presentation_resume'), '')                           AS "presentation_resume",
         NULLIF(TRIM(data ->> 'siret'), '')                                         AS "siret",

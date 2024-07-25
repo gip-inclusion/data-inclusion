@@ -38,14 +38,11 @@ final AS (
         )                              AS "typologie",
         telephone                      AS "telephone",
         NULL                           AS "courriel",
-        NULL                           AS "site_web",
+        site_web                       AS "site_web",
         LEFT(presentation_resume, 280) AS "presentation_resume",
-        CASE
-            WHEN CHAR_LENGTH(presentation_resume) > 280
-                THEN presentation_resume
-        END                            AS "presentation_detail",
+        presentation_resume            AS "presentation_detail",
         CAST(NULL AS BOOLEAN)          AS "antenne",
-        lien_source                    AS "lien_source",
+        NULL                           AS "lien_source",
         horaires_ouverture             AS "horaires_ouverture",
         NULL                           AS "accessibilite",
         CAST(NULL AS TEXT [])          AS "labels_nationaux",
