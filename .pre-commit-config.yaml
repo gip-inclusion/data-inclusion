@@ -44,14 +44,14 @@ repos:
         types_or: [python]
 
   - repo: https://github.com/sqlfluff/sqlfluff
-    rev: 2.3.5
+    rev: 3.1.0
     hooks:
       - id: sqlfluff-fix
         name: pipeline|sqlfluff-fix
         files: ^pipeline
         types: [sql]
         additional_dependencies:
-          - sqlfluff-templater-dbt==2.3.5
-          - dbt-postgres==1.7.11
+          - sqlfluff-templater-dbt==3.1.0
+          - dbt-postgres==1.8.0
         args:
           - --config=./pipeline/pyproject.toml
