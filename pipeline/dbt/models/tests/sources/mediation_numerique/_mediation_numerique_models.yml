@@ -1,56 +1,65 @@
 version: 2
 
 models:
-  - name: int_france_travail__adresses
+  - name: tests_mediation_numerique__adresses
     tests:
+      - dbt_utils.unique_combination_of_columns:
+          combination_of_columns:
+            - source
+            - id
       - check_adresse:
           config:
             severity: warn
     columns:
       - name: id
         tests:
-          - unique
           - not_null
           - dbt_utils.not_empty_string
 
-  - name: int_france_travail__services
+  - name: tests_mediation_numerique__services
     tests:
+      - dbt_utils.unique_combination_of_columns:
+          combination_of_columns:
+            - source
+            - id
       - check_service:
           config:
             severity: warn
     columns:
       - name: id
         tests:
-          - unique
           - not_null
           - dbt_utils.not_empty_string
       - name: structure_id
         tests:
           - not_null
           - relationships:
-              to: ref('int_france_travail__structures')
+              to: ref('tests_mediation_numerique__structures')
               field: id
       - name: adresse_id
         tests:
           - not_null
           - relationships:
-              to: ref('int_france_travail__adresses')
+              to: ref('tests_mediation_numerique__adresses')
               field: id
 
-  - name: int_france_travail__structures
+  - name: tests_mediation_numerique__structures
     tests:
+      - dbt_utils.unique_combination_of_columns:
+          combination_of_columns:
+            - source
+            - id
       - check_structure:
           config:
             severity: warn
     columns:
       - name: id
         tests:
-          - unique
           - not_null
           - dbt_utils.not_empty_string
       - name: adresse_id
         tests:
           - not_null
           - relationships:
-              to: ref('int_france_travail__adresses')
+              to: ref('tests_mediation_numerique__adresses')
               field: id

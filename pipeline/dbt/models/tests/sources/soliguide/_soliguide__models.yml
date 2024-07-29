@@ -1,7 +1,7 @@
 version: 2
 
 models:
-  - name: int_soliguide__adresses
+  - name: tests_soliguide__adresses
     tests:
       - check_adresse:
           config:
@@ -13,7 +13,7 @@ models:
           - not_null
           - dbt_utils.not_empty_string
 
-  - name: int_soliguide__structures
+  - name: tests_soliguide__structures
     tests:
       - check_structure:
           config:
@@ -28,10 +28,10 @@ models:
         tests:
           - not_null
           - relationships:
-              to: ref('int_soliguide__adresses')
+              to: ref('tests_soliguide__adresses')
               field: id
 
-  - name: int_soliguide__services
+  - name: tests_soliguide__services
     tests:
       - check_service:
           config:
@@ -46,11 +46,11 @@ models:
         tests:
           - not_null
           - relationships:
-              to: ref('int_soliguide__structures')
+              to: ref('tests_soliguide__structures')
               field: id
       - name: adresse_id
         tests:
           - not_null
           - relationships:
-              to: ref('int_soliguide__adresses')
+              to: ref('tests_soliguide__adresses')
               field: id

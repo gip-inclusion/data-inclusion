@@ -3,6 +3,7 @@ from typing import Optional
 from airflow.models import Variable
 from airflow.operators import bash
 from airflow.utils.task_group import TaskGroup
+from airflow.utils.trigger_rule import TriggerRule
 
 from dag_utils.sources import SOURCES_CONFIGS
 from dag_utils.virtualenvs import DBT_PYTHON_BIN_PATH
@@ -13,6 +14,7 @@ def dbt_operator_factory(
     command: str,
     select: Optional[str] = None,
     exclude: Optional[str] = None,
+    trigger_rule: TriggerRule = TriggerRule.ALL_SUCCESS,
 ) -> bash.BashOperator:
     """A basic factory for bash operators operating dbt commands."""
 
@@ -26,6 +28,7 @@ def dbt_operator_factory(
         task_id=task_id,
         bash_command=f"{DBT_PYTHON_BIN_PATH.parent / 'dbt'} {dbt_args}",
         append_env=True,
+        trigger_rule=trigger_rule,
         env={
             "DBT_PROFILES_DIR": Variable.get("DBT_PROJECT_DIR"),
             "DBT_TARGET_PATH": Variable.get("DBT_TARGET_PATH", "target"),
@@ -50,6 +53,7 @@ def get_staging_tasks(schedule=None):
         dbt_source_id = source_id.replace("-", "_")
 
         stg_selector = f"path:models/staging/sources/**/stg_{dbt_source_id}__*.sql"
+        tests_selector = f"path:models/tests/sources/**/tests_{dbt_source_id}__*.sql"
         int_selector = f"path:models/intermediate/sources/**/int_{dbt_source_id}__*.sql"
 
         with TaskGroup(group_id=source_id) as source_task_group:
@@ -65,23 +69,23 @@ def get_staging_tasks(schedule=None):
                 select=stg_selector,
             )
 
+            dbt_build_tests = dbt_operator_factory(
+                task_id="dbt_build_tests",
+                command="build",
+                select=tests_selector,
+            )
+
             dbt_run_intermediate = dbt_operator_factory(
                 task_id="dbt_run_intermediate",
                 command="run",
                 select=int_selector,
             )
 
-            dbt_test_intermediate = dbt_operator_factory(
-                task_id="dbt_test_intermediate",
-                command="test",
-                select=int_selector,
-            )
-
             (
                 dbt_run_staging
                 >> dbt_test_staging
+                >> dbt_build_tests
                 >> dbt_run_intermediate
-                >> dbt_test_intermediate
             )
 
         task_list += [source_task_group]
@@ -106,6 +110,7 @@ def get_before_geocoding_tasks():
                 "path:models/intermediate/int__union_structures.sql",
             ]
         ),
+        trigger_rule=TriggerRule.ALL_DONE,
     )
 
 
