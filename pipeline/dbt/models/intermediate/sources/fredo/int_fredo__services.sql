@@ -167,7 +167,7 @@ final AS (
             WHERE fredo_services.value = di_types_by_fredo_services.service_fredo
         )                                                                                     AS "nom",
         CASE
-            WHEN 'gratuit' IN  frais.frais AND 'payant' IN frais.frais 
+            WHEN 'gratuit' = ANY(frais.frais) AND 'payant' = ANY(frais.frais)
             THEN ARRAY['gratuit-sous-conditions']
             ELSE frais.frais
         END                                                                                   AS "frais",
