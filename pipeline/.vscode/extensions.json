@@ -1,0 +1,6 @@
+{
+    "recommendations": [
+        "dorzey.vscode-sqlfluff",
+        "innoverio.vscode-dbt-power-user"
+    ]
+}
