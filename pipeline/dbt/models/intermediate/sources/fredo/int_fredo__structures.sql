@@ -2,21 +2,34 @@ WITH structures AS (
     SELECT * FROM {{ ref('stg_fredo__structures') }}
 ),
 
+fredo_categories AS (SELECT * FROM {{ ref('stg_fredo__categories') }}),
+
 fredo_types AS (SELECT * FROM {{ ref('stg_fredo__types') }}),
+
+map_thematiques AS (SELECT * FROM {{ ref('_map_fredo_thematiques') }}),
+
+thematiques AS (
+    SELECT
+        fredo_categories.structure_id,
+        ARRAY_AGG(DISTINCT map_thematiques.thematiques) AS thematiques
+    FROM fredo_categories
+    INNER JOIN map_thematiques ON fredo_categories.value = map_thematiques.category
+    GROUP BY fredo_categories.structure_id
+),
 
 di_typologie_by_fredo_type_structure AS (
     SELECT x.*
     FROM (
         VALUES
         -- Mapping: https://www.notion.so/dora-beta/8c8d883758df47649902ddba55ab2236?v=56c7542b590c42febc79db8d3ffe9f81&p=84e6e41b6a3b4f54bee46e11aa41ff47&pm=s
-        ('ASSO', 'Association'),
-        ('REG', 'Collectivité Territoriale de la Région'),
-        ('MUNI', 'Collectivité Territoriale de la Ville'),
-        ('CD', 'Collectivité Territoriale du Département'),
-        ('ETABL PRI', 'Entreprise'),
-        ('ETABL PRI', 'Etablissement privé'),
-        ('ETABL PUB', 'Etablissement Public'),
-        ('ETAT', 'Services de l''Etat')
+        ('ASSO', 'association'),
+        ('REG', 'collectivité territoriale de la région'),
+        ('MUNI', 'collectivité territoriale de la ville'),
+        ('CD', 'collectivité territoriale du département'),
+        ('ETABL_PRI', 'entreprise'),
+        ('ETABL_PRI', 'etablissement privé'),
+        ('ETABL_PUB', 'etablissement public'),
+        ('ETAT', 'services de l''etat')
     ) AS x (typologie, type_structure)
 ),
 
@@ -47,8 +60,9 @@ final AS (
         NULL                           AS "accessibilite",
         CAST(NULL AS TEXT [])          AS "labels_nationaux",
         CAST(NULL AS TEXT [])          AS "labels_autres",
-        CAST(NULL AS TEXT [])          AS "thematiques"
+        thematiques.thematiques        AS "thematiques"
     FROM structures
+    LEFT JOIN thematiques ON structures.id = thematiques.structure_id
 )
 
 SELECT * FROM final
