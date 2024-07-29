@@ -1,7 +1,7 @@
 repos:
   # api
   - repo: https://github.com/astral-sh/ruff-pre-commit
-    rev: v0.4.4
+    rev: v0.5.5
     hooks:
       - id: ruff-format
         name: api|ruff-format
@@ -19,7 +19,7 @@ repos:
 
   # deployment
   - repo: https://github.com/antonbabenko/pre-commit-terraform
-    rev: v1.89.1
+    rev: v1.92.0
     hooks:
       - id: terraform_fmt
         name: deployment|terraform-fmt
@@ -27,7 +27,7 @@ repos:
 
   # pipeline
   - repo: https://github.com/astral-sh/ruff-pre-commit
-    rev: v0.4.4
+    rev: v0.5.5
     hooks:
       - id: ruff-format
         name: pipeline|ruff-format
