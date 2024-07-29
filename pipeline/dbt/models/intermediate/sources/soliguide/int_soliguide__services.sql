@@ -145,7 +145,7 @@ final AS (
             ELSE open_services.description
         END                                                           AS "presentation_detail",
         CASE
-            WHEN open_services.modalities__price__checked = TRUE THEN ARRAY['payant']
+            WHEN open_services.modalities__price__checked THEN ARRAY['payant']
             ELSE ARRAY['gratuit']
         END                                                           AS "frais",
         open_services.modalities__price__precisions                   AS "frais_autres",
