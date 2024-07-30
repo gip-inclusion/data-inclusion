@@ -33,7 +33,7 @@ models:
       - name: horaires_ouverture
         tests:
           - dbt_utils.not_empty_string
-      - name: lien_source
+      - name: site_web
         tests:
           - dbt_utils.not_empty_string
       - name: nom
@@ -47,8 +47,6 @@ models:
         tests:
           - dbt_utils.not_empty_string
       - name: telephone
-        tests:
-          - dbt_utils.not_empty_string
       - name: latitude
       - name: longitude
       - name: categories

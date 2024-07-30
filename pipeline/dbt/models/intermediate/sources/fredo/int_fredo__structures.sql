@@ -35,32 +35,34 @@ di_typologie_by_fredo_type_structure AS (
 
 final AS (
     SELECT
-        id                             AS "id",
-        id                             AS "adresse_id",
-        _di_source_id                  AS "source",
-        siret                          AS "siret",
-        NULL                           AS "rna",
-        nom                            AS "nom",
-        last_update                    AS "date_maj",
+        structures.id                             AS "id",
+        structures.id                             AS "adresse_id",
+        structures._di_source_id                  AS "source",
+        structures.siret                          AS "siret",
+        NULL                                      AS "rna",
+        structures.nom                            AS "nom",
+        structures.last_update                    AS "date_maj",
         (
             SELECT di_typologie_by_fredo_type_structure.typologie
             FROM di_typologie_by_fredo_type_structure
             INNER JOIN fredo_types AS stg_type ON stg_type.structure_id = structures.id
             WHERE stg_type.value = di_typologie_by_fredo_type_structure.type_structure
             LIMIT 1
-        )                              AS "typologie",
-        telephone                      AS "telephone",
-        NULL                           AS "courriel",
-        site_web                       AS "site_web",
-        LEFT(presentation_resume, 280) AS "presentation_resume",
-        presentation_resume            AS "presentation_detail",
-        CAST(NULL AS BOOLEAN)          AS "antenne",
-        NULL                           AS "lien_source",
-        horaires_ouverture             AS "horaires_ouverture",
-        NULL                           AS "accessibilite",
-        CAST(NULL AS TEXT [])          AS "labels_nationaux",
-        CAST(NULL AS TEXT [])          AS "labels_autres",
-        thematiques.thematiques        AS "thematiques"
+        )                                         AS "typologie",
+        CASE
+            WHEN ARRAY_LENGTH(structures.telephone, 1) > 0 THEN structures.telephone[1]
+        END                                       AS "telephone",
+        structures.courriel                       AS "courriel",
+        structures.site_web                       AS "site_web",
+        LEFT(structures.presentation_resume, 280) AS "presentation_resume",
+        structures.presentation_resume            AS "presentation_detail",
+        CAST(NULL AS BOOLEAN)                     AS "antenne",
+        NULL                                      AS "lien_source",
+        structures.horaires_ouverture             AS "horaires_ouverture",
+        NULL                                      AS "accessibilite",
+        CAST(NULL AS TEXT [])                     AS "labels_nationaux",
+        CAST(NULL AS TEXT [])                     AS "labels_autres",
+        thematiques.thematiques                   AS "thematiques"
     FROM structures
     LEFT JOIN thematiques ON structures.id = thematiques.structure_id
 )

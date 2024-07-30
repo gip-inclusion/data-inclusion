@@ -7,6 +7,7 @@ final AS (
         _di_source_id                                                              AS "_di_source_id",
         data ->> 'id'                                                              AS "id",
         NULLIF(TRIM(data ->> 'adresse'), '')                                       AS "adresse",
+        NULLIF(TRIM(data ->> 'email'), '')                                         AS "courriel",
         NULLIF(TRIM(data ->> 'code_postal'), '')                                   AS "code_postal",
         NULLIF(TRIM(data ->> 'commune'), '')                                       AS "commune",
         NULLIF(TRIM(data ->> 'frais'), '')                                         AS "frais",
@@ -16,9 +17,13 @@ final AS (
         NULLIF(TRIM(data ->> 'nom'), '')                                           AS "nom",
         NULLIF(TRIM(data ->> 'presentation_resume'), '')                           AS "presentation_resume",
         NULLIF(TRIM(data ->> 'siret'), '')                                         AS "siret",
-        NULLIF(TRIM(data ->> 'telephone'), '')                                     AS "telephone",
         CAST(NULLIF(TRIM(data ->> 'latitude'), '') AS FLOAT)                       AS "latitude",
         CAST(NULLIF(TRIM(data ->> 'longitude'), '') AS FLOAT)                      AS "longitude",
+        CASE
+            WHEN data ->> 'telephone' IS NOT NULL
+                THEN CAST(ARRAY(SELECT * FROM JSONB_ARRAY_ELEMENTS_TEXT(data -> 'telephone')) AS TEXT [])
+            ELSE CAST(NULL AS TEXT [])
+        END                                                                        AS "telephone",
         CASE
             WHEN data ->> 'categories' IS NOT NULL
                 THEN CAST(ARRAY(SELECT * FROM JSONB_ARRAY_ELEMENTS_TEXT(data -> 'categories')) AS TEXT [])
