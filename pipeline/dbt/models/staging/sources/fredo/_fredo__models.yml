@@ -33,7 +33,7 @@ models:
       - name: horaires_ouverture
         data_tests:
           - dbt_utils.not_empty_string
-      - name: lien_source
+      - name: site_web
         data_tests:
           - dbt_utils.not_empty_string
       - name: nom
