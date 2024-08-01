@@ -7,7 +7,7 @@ final AS (
         FALSE                          AS "antenne",
         NULL::TEXT []                  AS "labels_autres",
         NULL::TEXT []                  AS "thematiques",
-        NULL                           AS "horaires_ouverture",
+        horaires_open_street_map       AS "horaires_ouverture",
         NULL                           AS "lien_source",
         NULL                           AS "presentation_detail",
         NULL                           AS "presentation_resume",

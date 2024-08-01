@@ -245,6 +245,7 @@ SOURCES_CONFIGS = {
                 # the "request token" is the client_id:client_secret string.
                 "token": Variable.get("FT_API_TOKEN", None),
                 "extractor": france_travail.extract,
+                "reader": france_travail.read,
             },
             "services": {
                 "filename": "services.json",
