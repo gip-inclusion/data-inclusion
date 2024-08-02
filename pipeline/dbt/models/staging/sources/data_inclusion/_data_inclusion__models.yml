@@ -4,12 +4,12 @@ models:
   - name: stg_data_inclusion__services
     columns:
       - name: id
-        tests:
+        data_tests:
           - unique
           - not_null
           - dbt_utils.not_empty_string
       - name: structure_id
-        tests:
+        data_tests:
           - not_null
           - relationships:
               to: ref('stg_data_inclusion__structures')
@@ -18,7 +18,7 @@ models:
   - name: stg_data_inclusion__structures
     columns:
       - name: id
-        tests:
+        data_tests:
           - unique
           - not_null
           - dbt_utils.not_empty_string

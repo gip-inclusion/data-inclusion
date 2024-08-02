@@ -4,29 +4,29 @@ models:
   - name: stg_agefiph__services_publics
     columns:
       - name: service_id
-        tests:
+        data_tests:
           - not_null
           - dbt_utils.not_empty_string
       - name: public_id
-        tests:
+        data_tests:
           - not_null
           - dbt_utils.not_empty_string
 
   - name: stg_agefiph__services_thematiques
     columns:
       - name: service_id
-        tests:
+        data_tests:
           - not_null
           - dbt_utils.not_empty_string
       - name: thematique_id
-        tests:
+        data_tests:
           - not_null
           - dbt_utils.not_empty_string
 
   - name: stg_agefiph__services
     columns:
       - name: id
-        tests:
+        data_tests:
           - unique
           - not_null
           - dbt_utils.not_empty_string

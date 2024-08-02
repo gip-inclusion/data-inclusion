@@ -2,54 +2,54 @@ version: 2
 
 models:
   - name: int_odspep__adresses
-    tests:
+    data_tests:
       - check_adresse:
           config:
             severity: warn
     columns:
       - name: id
-        tests:
+        data_tests:
           - unique
           - not_null
           - dbt_utils.not_empty_string
 
   - name: int_odspep__services
-    tests:
+    data_tests:
       - check_service:
           config:
             severity: warn
     columns:
       - name: id
-        tests:
+        data_tests:
           - unique
           - not_null
           - dbt_utils.not_empty_string
       - name: structure_id
-        tests:
+        data_tests:
           - not_null
           - relationships:
               to: ref('int_odspep__structures')
               field: id
       - name: adresse_id
-        tests:
+        data_tests:
           - not_null
           - relationships:
               to: ref('int_odspep__adresses')
               field: id
 
   - name: int_odspep__structures
-    tests:
+    data_tests:
       - check_structure:
           config:
             severity: warn
     columns:
       - name: id
-        tests:
+        data_tests:
           - unique
           - not_null
           - dbt_utils.not_empty_string
       - name: adresse_id
-        tests:
+        data_tests:
           - not_null
           - relationships:
               to: ref('int_odspep__adresses')
@@ -65,13 +65,13 @@ models:
     columns:
       - name: group_key
         description: key constructed by us to group ressources parteneriales by
-        tests:
+        data_tests:
           - not_null
       - name: group_size
         description: records count for the associated group key
-        tests:
+        data_tests:
           - not_null
       - name: group_number
         description: an identifier for the group to quickly visualize groups
-        tests:
+        data_tests:
           - not_null

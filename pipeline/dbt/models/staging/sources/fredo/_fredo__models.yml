@@ -4,50 +4,50 @@ models:
   - name: stg_fredo__structures
     columns:
       - name: id
-        tests:
+        data_tests:
           - unique
           - not_null
           - dbt_utils.not_empty_string
 
       - name: adresse
-        tests:
+        data_tests:
           - not_null:
               config:
                 severity: warn
           - dbt_utils.not_empty_string
       - name: code_postal
-        tests:
+        data_tests:
           - not_null:
               config:
                 severity: warn
           - dbt_utils.not_empty_string
       - name: commune
-        tests:
+        data_tests:
           - not_null:
               config:
                 severity: warn
           - dbt_utils.not_empty_string
       - name: frais
-        tests:
+        data_tests:
           - dbt_utils.not_empty_string
       - name: horaires_ouverture
-        tests:
+        data_tests:
           - dbt_utils.not_empty_string
       - name: lien_source
-        tests:
+        data_tests:
           - dbt_utils.not_empty_string
       - name: nom
-        tests:
+        data_tests:
           - not_null
           - dbt_utils.not_empty_string
       - name: presentation_resume
-        tests:
+        data_tests:
           - dbt_utils.not_empty_string
       - name: siret
-        tests:
+        data_tests:
           - dbt_utils.not_empty_string
       - name: telephone
-        tests:
+        data_tests:
           - dbt_utils.not_empty_string
       - name: latitude
       - name: longitude
@@ -60,26 +60,26 @@ models:
   - name: stg_fredo__categories
     columns:
       - name: id
-        tests:
+        data_tests:
           - not_null
           - relationships:
               to: ref('stg_fredo__structures')
               field: id
       - name: value
-        tests:
+        data_tests:
           - not_null
           - dbt_utils.not_empty_string
 
   - name: stg_fredo__frais
     columns:
       - name: id
-        tests:
+        data_tests:
           - not_null
           - relationships:
               to: ref('stg_fredo__structures')
               field: id
       - name: value
-        tests:
+        data_tests:
           - not_null
           - dbt_utils.not_empty_string
           - accepted_values:
@@ -90,51 +90,51 @@ models:
   - name: stg_fredo__publics
     columns:
       - name: id
-        tests:
+        data_tests:
           - not_null
           - relationships:
               to: ref('stg_fredo__structures')
               field: id
       - name: value
-        tests:
+        data_tests:
           - not_null
           - dbt_utils.not_empty_string
 
   - name: stg_fredo__quartiers
     columns:
       - name: id
-        tests:
+        data_tests:
           - not_null
           - relationships:
               to: ref('stg_fredo__structures')
               field: id
       - name: value
-        tests:
+        data_tests:
           - not_null
           - dbt_utils.not_empty_string
 
   - name: stg_fredo__services
     columns:
       - name: id
-        tests:
+        data_tests:
           - not_null
           - relationships:
               to: ref('stg_fredo__structures')
               field: id
       - name: value
-        tests:
+        data_tests:
           - not_null
           - dbt_utils.not_empty_string
 
   - name: stg_fredo__types
     columns:
       - name: id
-        tests:
+        data_tests:
           - not_null
           - relationships:
               to: ref('stg_fredo__structures')
               field: id
       - name: value
-        tests:
+        data_tests:
           - not_null
           - dbt_utils.not_empty_string
