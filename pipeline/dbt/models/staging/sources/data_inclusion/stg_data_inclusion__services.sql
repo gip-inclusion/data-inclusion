@@ -1,5 +1,5 @@
 WITH source AS (
-    {{ stg_source_header('data_inclusion_extra', 'services') }}
+    {{ stg_source_header('data_inclusion', 'services') }}
 ),
 
 final AS (
