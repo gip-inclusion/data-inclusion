@@ -2,54 +2,54 @@ version: 2
 
 models:
   - name: int_agefiph__adresses
-    tests:
+    data_tests:
       - check_adresse:
           config:
             severity: warn
     columns:
       - name: id
-        tests:
+        data_tests:
           - unique
           - not_null
           - dbt_utils.not_empty_string
 
   - name: int_agefiph__services
-    tests:
+    data_tests:
       - check_service:
           config:
             severity: warn
     columns:
       - name: id
-        tests:
+        data_tests:
           - unique
           - not_null
           - dbt_utils.not_empty_string
       - name: structure_id
-        tests:
+        data_tests:
           - not_null
           - relationships:
               to: ref('int_agefiph__structures')
               field: id
       - name: adresse_id
-        tests:
+        data_tests:
           - not_null
           - relationships:
               to: ref('int_agefiph__adresses')
               field: id
 
   - name: int_agefiph__structures
-    tests:
+    data_tests:
       - check_structure:
           config:
             severity: warn
     columns:
       - name: id
-        tests:
+        data_tests:
           - unique
           - not_null
           - dbt_utils.not_empty_string
       - name: adresse_id
-        tests:
+        data_tests:
           - not_null
           - relationships:
               to: ref('int_agefiph__adresses')

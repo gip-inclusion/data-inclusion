@@ -4,79 +4,79 @@ models:
   - name: stg_cd35__organisations
     columns:
       - name: adresse
-        tests:
+        data_tests:
           - dbt_utils.not_constant
           - dbt_utils.not_empty_string
       - name: code_insee
-        tests:
+        data_tests:
           - dbt_utils.not_constant
           - dbt_utils.not_empty_string
       - name: code_postal
-        tests:
+        data_tests:
           - dbt_utils.not_constant
           - dbt_utils.not_empty_string
       - name: commune
-        tests:
+        data_tests:
           - dbt_utils.not_constant
           - dbt_utils.not_empty_string
       - name: complement_adresse
-        tests:
+        data_tests:
           - dbt_utils.not_constant
           - dbt_utils.not_empty_string
       - name: courriel
-        tests:
+        data_tests:
           - dbt_utils.not_constant
           - dbt_utils.not_empty_string
       - name: date_creation
-        tests:
+        data_tests:
           - dbt_utils.not_constant
       - name: date_maj
-        tests:
+        data_tests:
           - dbt_utils.not_constant
       - name: horaires_ouvertures
-        tests:
+        data_tests:
           - dbt_utils.not_constant
           - dbt_utils.not_empty_string:
               config:
                 severity: warn
       - name: id
-        tests:
+        data_tests:
           - unique
           - not_null
           - dbt_utils.not_empty_string
       - name: latitude
-        tests:
+        data_tests:
           - dbt_utils.not_constant
       - name: lien_source
-        tests:
+        data_tests:
           - dbt_utils.not_constant
           - dbt_utils.not_empty_string
       - name: longitude
-        tests:
+        data_tests:
           - dbt_utils.not_constant
       - name: nom
-        tests:
+        data_tests:
           - not_null
           - dbt_utils.not_empty_string
       - name: presentation_detail
-        tests:
+        data_tests:
           - dbt_utils.not_constant
           - dbt_utils.not_empty_string
       - name: profils
-        tests:
+        data_tests:
           - dbt_utils.not_constant
       - name: sigle
-        tests:
+        data_tests:
           - dbt_utils.not_constant
           - dbt_utils.not_empty_string
       - name: site_web
-        tests:
+        data_tests:
           - dbt_utils.not_constant
           - dbt_utils.not_empty_string
       - name: telephone
-        tests:
+        data_tests:
           - dbt_utils.not_constant
           - dbt_utils.not_empty_string
       - name: thematiques
-        tests:
+        data_tests:
           - dbt_utils.not_constant

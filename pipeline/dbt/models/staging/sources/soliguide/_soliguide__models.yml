@@ -4,53 +4,53 @@ models:
   - name: stg_soliguide__categories
     columns:
       - name: code
-        tests:
+        data_tests:
           - not_null
           - unique
       - name: label
-        tests:
+        data_tests:
           - not_null
 
   - name: stg_soliguide__lieux
     columns:
       - name: lieu_id
-        tests:
+        data_tests:
           - not_null
           - unique
       - name: position__country
-        tests:
+        data_tests:
           - not_null
           - dbt_utils.not_empty_string
           - accepted_values:
               values: ['fr']
       - name: position__department
-        tests:
+        data_tests:
           - not_null
           - dbt_utils.not_empty_string
       - name: position__coordinates__x
-        tests:
+        data_tests:
           - not_null
       - name: position__coordinates__y
-        tests:
+        data_tests:
           - not_null
       - name: position__additional_information
-        tests:
+        data_tests:
           - dbt_utils.not_constant
           - dbt_utils.not_empty_string
       - name: position__city
-        tests:
+        data_tests:
           - not_null
           - dbt_utils.not_empty_string
       - name: position__address
-        tests:
+        data_tests:
           - dbt_utils.not_constant
           - dbt_utils.not_empty_string
       - name: position__postal_code
-        tests:
+        data_tests:
           - not_null
           - dbt_utils.not_empty_string
       - name: position__city_code
-        tests:
+        data_tests:
           - not_null
           - dbt_utils.not_empty_string
           - relationships:
@@ -62,17 +62,17 @@ models:
   - name: stg_soliguide__services
     columns:
       - name: id
-        tests:
+        data_tests:
           - not_null
           - unique
       - name: lieu_id
-        tests:
+        data_tests:
           - not_null
           - relationships:
               to: ref('stg_soliguide__lieux')
               field: lieu_id
       - name: category
-        tests:
+        data_tests:
           - not_null
           - dbt_utils.not_constant
           - relationships:
@@ -82,7 +82,7 @@ models:
   - name: stg_soliguide__phones
     columns:
       - name: lieu_id
-        tests:
+        data_tests:
           - not_null
           - relationships:
               to: ref('stg_soliguide__lieux')

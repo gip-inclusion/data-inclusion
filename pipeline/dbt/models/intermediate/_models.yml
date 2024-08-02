@@ -14,7 +14,7 @@ models:
 
       * model can contain faulty data
       * test failure are saved (see log output)
-    tests:
+    data_tests:
       - check_adresse: *union-common-check-args
 
   - name: int__union_services
@@ -23,7 +23,7 @@ models:
 
       * model can contain faulty data
       * test failure are saved (see log output)
-    tests:
+    data_tests:
       - check_service: *union-common-check-args
 
   - name: int__union_structures
@@ -32,7 +32,7 @@ models:
 
       * model can contain faulty data
       * test failure are saved (see log output)
-    tests:
+    data_tests:
       - check_structure: *union-common-check-args
 
   - name: int__plausible_personal_emails

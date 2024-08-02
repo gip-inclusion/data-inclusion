@@ -4,17 +4,17 @@ models:
   - name: stg_reseau_alpha__formations
     columns:
       - name: structure_id
-        tests:
+        data_tests:
           - not_null
           - dbt_utils.not_empty_string
       - name: id
-        tests:
+        data_tests:
           - not_null
           - dbt_utils.not_empty_string
 
   - name: stg_reseau_alpha__structures
     columns:
       - name: id
-        tests:
+        data_tests:
           - not_null
           - dbt_utils.not_empty_string

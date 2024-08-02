@@ -4,40 +4,40 @@ models:
   - name: stg_monenfant__creches
     columns:
       - name: id
-        tests:
+        data_tests:
           - unique
           - not_null
           - dbt_utils.not_empty_string
       - name: avip
-        tests:
+        data_tests:
           - not_null
           - accepted_values:
               values: [true, false]
       - name: longitude
-        tests:
+        data_tests:
           - not_null
       - name: latitude
-        tests:
+        data_tests:
           - not_null
       - name: result_id
-        tests:
+        data_tests:
           - unique
           - not_null
           - dbt_utils.not_empty_string
       - name: ville
-        tests:
+        data_tests:
           - dbt_utils.not_constant
           - dbt_utils.not_empty_string
       - name: telephone
-        tests:
+        data_tests:
           - dbt_utils.not_constant
           - dbt_utils.not_empty_string
       - name: nom
-        tests:
+        data_tests:
           - not_null
           - dbt_utils.not_empty_string
       - name: mail
-        tests:
+        data_tests:
           - not_null:
               config:
                 severity: warn
@@ -45,14 +45,14 @@ models:
               at_least: 0.1
           - dbt_utils.not_empty_string
       - name: derniere_modif_date
-        tests:
+        data_tests:
           - not_null
       - name: adresse
-        tests:
+        data_tests:
           - not_null
           - dbt_utils.not_empty_string
       - name: details__website
-        tests:
+        data_tests:
           - not_null:
               config:
                 severity: warn
@@ -60,7 +60,7 @@ models:
               at_least: 0.1
           - dbt_utils.not_empty_string
       - name: details__infos_pratiques__jour_horaire
-        tests:
+        data_tests:
           - not_null:
               config:
                   severity: warn
@@ -68,7 +68,7 @@ models:
               at_least: 0.1
           - dbt_utils.not_empty_string
       - name: details__presentation__structure_projet
-        tests:
+        data_tests:
           - not_null:
               config:
                 severity: warn
@@ -76,14 +76,14 @@ models:
               at_least: 0.5
           - dbt_utils.not_empty_string
       - name: details__modalite__condition_admision
-        tests:
+        data_tests:
           - not_null:
               config:
                 severity: warn
           - dbt_utils.not_constant
           - dbt_utils.not_empty_string
       - name: details__modalite__modalites_inscription
-        tests:
+        data_tests:
           - not_null:
               config:
                 severity: warn

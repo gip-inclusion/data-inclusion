@@ -5,55 +5,55 @@ models:
   - name: stg_odspep__adresses
     columns:
       - name: id_adr
-        tests:
+        data_tests:
           - not_null
           - unique
 
   - name: stg_odspep__contacts
     columns:
       - name: id_ctc
-        tests:
+        data_tests:
           - not_null
           - unique
   - name: stg_odspep__horaires
     columns:
       - name: id_hor
-        tests:
+        data_tests:
           - not_null
           - unique
   - name: stg_odspep__regions
     columns:
       - name: id_res
         comment: id_res are not unique in this table
-        tests:
+        data_tests:
           - not_null
   - name: stg_odspep__departements
     columns:
       - name: id_res
         comment: id_res are not unique in this table
-        tests:
+        data_tests:
           - not_null
   - name: stg_odspep__communes
     columns:
       - name: id_res
         comment: id_res are not unique in this table
-        tests:
+        data_tests:
           - not_null
   - name: stg_odspep__bassins
     columns:
       - name: id_res
         comment: id_res are not unique in this table
-        tests:
+        data_tests:
           - not_null
   - name: stg_odspep__dir_territoriale_ofii
     columns:
       - name: id_res
         comment: id_res are not unique in this table
-        tests:
+        data_tests:
           - not_null
   - name: stg_odspep__res_partenariales
     columns:
       - name: id_res
-        tests:
+        data_tests:
           - not_null
           - unique

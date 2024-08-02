@@ -4,7 +4,7 @@ models:
   - name: stg_france_travail__services
     columns:
       - name: id
-        tests:
+        data_tests:
           - unique
           - not_null
           - dbt_utils.not_empty_string
@@ -12,7 +12,7 @@ models:
   - name: stg_france_travail__agences
     columns:
       - name: id
-        tests:
+        data_tests:
           - unique
           - not_null
           - dbt_utils.not_empty_string
