@@ -1,12 +1,12 @@
 version: 2
 
 sources:
-  - name: data_inclusion
+  - name: internal
     schema: public
     tables:
       - name: extra__geocoded_results
 
-  - name: data_inclusion_extra
+  - name: data_inclusion
     schema: data_inclusion
     tables:
       - name: structures

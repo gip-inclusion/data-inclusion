@@ -1,4 +1,4 @@
-{% set source_model = source('data_inclusion', 'extra__geocoded_results') %}
+{% set source_model = source('internal', 'extra__geocoded_results') %}
 
 {% set table_exists = adapter.get_relation(database=source_model.database, schema=source_model.schema, identifier=source_model.name) is not none %}
 
