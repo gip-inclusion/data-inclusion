@@ -139,7 +139,7 @@ for source_id, source_config in sources.SOURCES_CONFIGS.items():
         dbt_snapshot_source = dbt_operator_factory(
             task_id="dbt_snapshot_source",
             command="snapshot",
-            select=model_name,
+            select=f"sources.{model_name}",
         )
 
         for stream_id in source_config["streams"]:
