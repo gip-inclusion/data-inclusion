@@ -80,7 +80,7 @@ WITH
 
         {{ source_name }}__{{ stream_name }}__stats AS (
             SELECT
-                '{{ run_started_at.strftime("%Y-%m-%d") }}'                                  AS date_day,
+                CAST('{{ run_started_at.strftime("%Y-%m-%d") }}' AS DATE)                    AS date_day,
                 '{{ source_name }}'                                                          AS source,
                 '{{ stream_name }}'                                                          AS stream,  -- noqa: references.keywords
                 (SELECT COUNT(*) FROM {{ source(source_name, stream_name) }})                AS count_raw,
