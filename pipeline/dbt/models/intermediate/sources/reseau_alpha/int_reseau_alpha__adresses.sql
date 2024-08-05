@@ -8,15 +8,15 @@ formations AS (
 
 structure_adresses AS (
     SELECT
-        _di_source_id         AS "source",
-        adresses__longitude   AS "longitude",
-        adresses__latitude    AS "latitude",
-        NULL                  AS "complement_adresse",
-        adresses__ville       AS "commune",
-        content__adresse      AS "adresse",
-        adresses__code_postal AS "code_postal",
-        NULL                  AS "code_insee",
-        'structure--' || id   AS "id"
+        _di_source_id               AS "source",
+        adresses__longitude         AS "longitude",
+        adresses__latitude          AS "latitude",
+        content__complement_adresse AS "complement_adresse",
+        adresses__ville             AS "commune",
+        content__adresse            AS "adresse",
+        adresses__code_postal       AS "code_postal",
+        NULL                        AS "code_insee",
+        'structure--' || id         AS "id"
     FROM structures
 ),
 
