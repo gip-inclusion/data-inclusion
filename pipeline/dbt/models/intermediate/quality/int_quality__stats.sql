@@ -81,16 +81,16 @@ WITH
             */
             -- noqa: disable=layout.spacing
             SELECT
-                '{{ run_started_at.strftime("%Y-%m-%d") }}'                                   AS date_day,
-                '{{ source_name }}'                                                           AS source,
-                '{{ stream_name }}'                                                           AS stream,  -- noqa: references.keywords
-                (SELECT COUNT(*) FROM {{ source(source_name, stream_name) }})                 AS count_raw,
-                (SELECT COUNT(*) FROM {{ ref('stg_' ~ source_name ~ '__' ~ staging_name) }})  AS count_stg,
-                (SELECT COUNT(*) FROM {{ ref('int_' ~ source_name ~ '__' ~ stream_kind) }})   AS count_int,
-                (SELECT COUNT(*) FROM {{ source_name }}__{{ stream_name }}__tmp_marts)        AS count_marts,
-                (SELECT COUNT(*) FROM {{ source_name }}__{{ stream_name }}__tmp_api)          AS count_api,
-                (SELECT COUNT(*) FROM {{ source_name }}__{{ stream_name }}__tmp_api_contacts) AS count_contacts,
-                (SELECT COUNT(*) FROM {{ source_name }}__{{ stream_name }}__tmp_api_adresse)  AS count_addresses
+                CAST('{{ run_started_at.strftime("%Y-%m-%d") }}' AS DATE)                    AS date_day,
+                '{{ source_name }}'                                                          AS source,
+                '{{ stream_name }}'                                                          AS stream,  -- noqa: references.keywords
+                (SELECT COUNT(*) FROM {{ source(source_name, stream_name) }})                AS count_raw,
+                (SELECT COUNT(*) FROM {{ ref('stg_' ~ source_name ~ '__' ~ staging_name) }}) AS count_stg,
+                (SELECT COUNT(*) FROM {{ ref('int_' ~ source_name ~ '__' ~ stream_kind) }})  AS count_int,
+                (SELECT COUNT(*) FROM {{ source_name }}__{{ stream_name }}__tmp_marts)       AS count_marts,
+                (SELECT COUNT(*) FROM {{ source_name }}__{{ stream_name }}__tmp_api)         AS count_api,
+                (SELECT COUNT(*) FROM {{ source_name }}__{{ stream_name }}__tmp_api_contacts)AS count_contacts,
+                (SELECT COUNT(*) FROM {{ source_name }}__{{ stream_name }}__tmp_api_adresse) AS count_addresses
         -- noqa: enable=layout.spacing
         ),
 
