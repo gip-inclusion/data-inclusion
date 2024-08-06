@@ -13,7 +13,9 @@ adresses AS (
 valid_structures AS (
     SELECT structures.*
     FROM structures
-    LEFT JOIN LATERAL
+    LEFT JOIN
+        LATERAL
+        -- noqa: disable=references.qualification
         LIST_STRUCTURE_ERRORS(
             accessibilite,
             antenne,
@@ -35,6 +37,7 @@ valid_structures AS (
             thematiques,
             typologie
         ) AS errors ON TRUE
+        -- noqa: enable=references.qualification
     WHERE errors.field IS NULL
 ),
 
@@ -49,7 +52,6 @@ final AS (
         adresses.code_postal                                                    AS "code_postal",
         adresses.code_insee                                                     AS "code_insee",
         adresses.result_score                                                   AS "_di_geocodage_score",
-        adresses.result_citycode                                                AS "_di_geocodage_code_insee",
         COALESCE(plausible_personal_emails._di_surrogate_id IS NOT NULL, FALSE) AS "_di_email_is_pii"
     FROM
         valid_structures

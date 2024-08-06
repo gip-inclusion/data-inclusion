@@ -19,13 +19,13 @@ services_with_zone_diffusion AS (
     SELECT
         {{ dbt_utils.star(from=ref('int__union_services'), relation_alias='services', except=["zone_diffusion_code", "zone_diffusion_nom"]) }},
         CASE
-            WHEN services.source = ANY(ARRAY['monenfant', 'soliguide']) THEN adresses.result_citycode
-            WHEN services.source = ANY(ARRAY['reseau-alpha', 'action-logement']) THEN LEFT(adresses.result_citycode, 2)
+            WHEN services.source = ANY(ARRAY['monenfant', 'soliguide']) THEN adresses.code_insee
+            WHEN services.source = ANY(ARRAY['reseau-alpha', 'action-logement']) THEN LEFT(adresses.code_insee, 2)
             ELSE services.zone_diffusion_code
         END AS "zone_diffusion_code",
         CASE
             WHEN services.source = ANY(ARRAY['monenfant', 'soliguide']) THEN adresses.commune
-            WHEN services.source = ANY(ARRAY['reseau-alpha', 'action-logement']) THEN (SELECT departements."LIBELLE" FROM departements WHERE departements."DEP" = LEFT(adresses.result_citycode, 2))
+            WHEN services.source = ANY(ARRAY['reseau-alpha', 'action-logement']) THEN (SELECT departements."LIBELLE" FROM departements WHERE departements."DEP" = LEFT(adresses.code_insee, 2))
             WHEN services.source = 'mediation-numerique' THEN (SELECT departements."LIBELLE" FROM departements WHERE departements."DEP" = services.zone_diffusion_code)
             ELSE services.zone_diffusion_nom
         END AS "zone_diffusion_nom"
@@ -43,7 +43,9 @@ services_with_valid_structure AS (
 valid_services AS (
     SELECT services_with_valid_structure.*
     FROM services_with_valid_structure
-    LEFT JOIN LATERAL
+    LEFT JOIN
+        LATERAL
+        -- noqa: disable=references.qualification
         LIST_SERVICE_ERRORS(
             contact_public,
             contact_nom_prenom,
@@ -79,6 +81,7 @@ valid_services AS (
             zone_diffusion_type,
             pre_requis
         ) AS errors ON TRUE
+        -- noqa: enable=references.qualification
     WHERE errors.field IS NULL
 ),
 
@@ -92,8 +95,7 @@ final AS (
         adresses.adresse            AS "adresse",
         adresses.code_postal        AS "code_postal",
         adresses.code_insee         AS "code_insee",
-        adresses.result_score       AS "_di_geocodage_score",
-        adresses.result_citycode    AS "_di_geocodage_code_insee"
+        adresses.result_score       AS "_di_geocodage_score"
     FROM
         valid_services
     LEFT JOIN adresses ON valid_services._di_adresse_surrogate_id = adresses._di_surrogate_id
