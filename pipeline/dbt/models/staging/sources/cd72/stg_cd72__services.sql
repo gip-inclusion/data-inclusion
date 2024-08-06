@@ -14,7 +14,7 @@ final AS (
         data ->> 'lieu'                                                                              AS "lieu",
         data ->> 'siret'                                                                             AS "siret",
         -- TODO: frais, change column type from bool to ref list on grist
-        data ->> 'adresse'                                                                           AS "adresse",
+        SPLIT_PART(data ->> 'adresse', E'\n', 1))                                                    AS "adresse",
         data ->> 'commune'                                                                           AS "commune",
         (SELECT ARRAY_AGG(TRIM(p)) FROM UNNEST(STRING_TO_ARRAY(data ->> 'profils', ',')) AS "p")     AS "profils",
         data ->> 'courriel'                                                                          AS "courriel",
