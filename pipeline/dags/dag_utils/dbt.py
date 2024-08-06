@@ -3,6 +3,7 @@ from typing import Optional
 from airflow.models import Variable
 from airflow.operators import bash
 from airflow.utils.task_group import TaskGroup
+from airflow.utils.trigger_rule import TriggerRule
 
 from dag_utils.sources import SOURCES_CONFIGS
 from dag_utils.virtualenvs import DBT_PYTHON_BIN_PATH
@@ -13,6 +14,7 @@ def dbt_operator_factory(
     command: str,
     select: Optional[str] = None,
     exclude: Optional[str] = None,
+    trigger_rule: TriggerRule = TriggerRule.ALL_SUCCESS,
 ) -> bash.BashOperator:
     """A basic factory for bash operators operating dbt commands."""
 
@@ -37,6 +39,7 @@ def dbt_operator_factory(
             "POSTGRES_DB": "{{ conn.pg.schema }}",
         },
         cwd=Variable.get("DBT_PROJECT_DIR"),
+        trigger_rule=trigger_rule,
     )
 
 
