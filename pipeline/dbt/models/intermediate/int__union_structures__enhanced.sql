@@ -13,27 +13,28 @@ adresses AS (
 valid_structures AS (
     SELECT structures.*
     FROM structures
-    LEFT JOIN LATERAL
+    LEFT JOIN
+        LATERAL
         LIST_STRUCTURE_ERRORS(
-            accessibilite,
-            antenne,
-            courriel,
-            date_maj,
-            horaires_ouverture,
-            id,
-            labels_autres,
-            labels_nationaux,
-            lien_source,
-            nom,
-            presentation_detail,
-            presentation_resume,
-            rna,
-            siret,
-            site_web,
-            source,
-            telephone,
-            thematiques,
-            typologie
+            structures.accessibilite,
+            structures.antenne,
+            structures.courriel,
+            structures.date_maj,
+            structures.horaires_ouverture,
+            structures.id,
+            structures.labels_autres,
+            structures.labels_nationaux,
+            structures.lien_source,
+            structures.nom,
+            structures.presentation_detail,
+            structures.presentation_resume,
+            structures.rna,
+            structures.siret,
+            structures.site_web,
+            structures.source,
+            structures.telephone,
+            structures.thematiques,
+            structures.typologie
         ) AS errors ON TRUE
     WHERE errors.field IS NULL
 ),
@@ -49,7 +50,6 @@ final AS (
         adresses.code_postal                                                    AS "code_postal",
         adresses.code_insee                                                     AS "code_insee",
         adresses.result_score                                                   AS "_di_geocodage_score",
-        adresses.result_citycode                                                AS "_di_geocodage_code_insee",
         COALESCE(plausible_personal_emails._di_surrogate_id IS NOT NULL, FALSE) AS "_di_email_is_pii"
     FROM
         valid_structures

@@ -19,13 +19,13 @@ services_with_zone_diffusion AS (
     SELECT
         {{ dbt_utils.star(from=ref('int__union_services'), relation_alias='services', except=["zone_diffusion_code", "zone_diffusion_nom"]) }},
         CASE
-            WHEN services.source = ANY(ARRAY['monenfant', 'soliguide']) THEN adresses.result_citycode
-            WHEN services.source = ANY(ARRAY['reseau-alpha', 'action-logement']) THEN LEFT(adresses.result_citycode, 2)
+            WHEN services.source = ANY(ARRAY['monenfant', 'soliguide']) THEN adresses.code_insee
+            WHEN services.source = ANY(ARRAY['reseau-alpha', 'action-logement']) THEN LEFT(adresses.code_insee, 2)
             ELSE services.zone_diffusion_code
         END AS "zone_diffusion_code",
         CASE
             WHEN services.source = ANY(ARRAY['monenfant', 'soliguide']) THEN adresses.commune
-            WHEN services.source = ANY(ARRAY['reseau-alpha', 'action-logement']) THEN (SELECT departements."LIBELLE" FROM departements WHERE departements."DEP" = LEFT(adresses.result_citycode, 2))
+            WHEN services.source = ANY(ARRAY['reseau-alpha', 'action-logement']) THEN (SELECT departements."LIBELLE" FROM departements WHERE departements."DEP" = LEFT(adresses.code_insee, 2))
             WHEN services.source = 'mediation-numerique' THEN (SELECT departements."LIBELLE" FROM departements WHERE departements."DEP" = services.zone_diffusion_code)
             ELSE services.zone_diffusion_nom
         END AS "zone_diffusion_nom"
@@ -43,41 +43,42 @@ services_with_valid_structure AS (
 valid_services AS (
     SELECT services_with_valid_structure.*
     FROM services_with_valid_structure
-    LEFT JOIN LATERAL
+    LEFT JOIN
+        LATERAL
         LIST_SERVICE_ERRORS(
-            contact_public,
-            contact_nom_prenom,
-            courriel,
-            cumulable,
-            date_creation,
-            date_maj,
-            date_suspension,
-            frais,
-            frais_autres,
-            id,
-            justificatifs,
-            lien_source,
-            modes_accueil,
-            modes_orientation_accompagnateur,
-            modes_orientation_accompagnateur_autres,
-            modes_orientation_beneficiaire,
-            modes_orientation_beneficiaire_autres,
-            nom,
-            page_web,
-            presentation_detail,
-            presentation_resume,
-            prise_rdv,
-            profils,
-            recurrence,
-            source,
-            structure_id,
-            telephone,
-            thematiques,
-            types,
-            zone_diffusion_code,
-            zone_diffusion_nom,
-            zone_diffusion_type,
-            pre_requis
+            services_with_valid_structure.contact_public,
+            services_with_valid_structure.contact_nom_prenom,
+            services_with_valid_structure.courriel,
+            services_with_valid_structure.cumulable,
+            services_with_valid_structure.date_creation,
+            services_with_valid_structure.date_maj,
+            services_with_valid_structure.date_suspension,
+            services_with_valid_structure.frais,
+            services_with_valid_structure.frais_autres,
+            services_with_valid_structure.id,
+            services_with_valid_structure.justificatifs,
+            services_with_valid_structure.lien_source,
+            services_with_valid_structure.modes_accueil,
+            services_with_valid_structure.modes_orientation_accompagnateur,
+            services_with_valid_structure.modes_orientation_accompagnateur_autres,
+            services_with_valid_structure.modes_orientation_beneficiaire,
+            services_with_valid_structure.modes_orientation_beneficiaire_autres,
+            services_with_valid_structure.nom,
+            services_with_valid_structure.page_web,
+            services_with_valid_structure.presentation_detail,
+            services_with_valid_structure.presentation_resume,
+            services_with_valid_structure.prise_rdv,
+            services_with_valid_structure.profils,
+            services_with_valid_structure.recurrence,
+            services_with_valid_structure.source,
+            services_with_valid_structure.structure_id,
+            services_with_valid_structure.telephone,
+            services_with_valid_structure.thematiques,
+            services_with_valid_structure.types,
+            services_with_valid_structure.zone_diffusion_code,
+            services_with_valid_structure.zone_diffusion_nom,
+            services_with_valid_structure.zone_diffusion_type,
+            services_with_valid_structure.pre_requis
         ) AS errors ON TRUE
     WHERE errors.field IS NULL
 ),
@@ -92,8 +93,7 @@ final AS (
         adresses.adresse            AS "adresse",
         adresses.code_postal        AS "code_postal",
         adresses.code_insee         AS "code_insee",
-        adresses.result_score       AS "_di_geocodage_score",
-        adresses.result_citycode    AS "_di_geocodage_code_insee"
+        adresses.result_score       AS "_di_geocodage_score"
     FROM
         valid_services
     LEFT JOIN adresses ON valid_services._di_adresse_surrogate_id = adresses._di_surrogate_id
