@@ -12,7 +12,6 @@ models:
           - unique
           - not_null
           - dbt_utils.not_empty_string
-
   - name: int_soliguide__structures
     data_tests:
       - check_structure:
@@ -54,3 +53,23 @@ models:
           - relationships:
               to: ref('int_soliguide__adresses')
               field: id
+
+unit_tests:
+- name: test_address_without_postal_code_and_city
+  model: int_soliguide__adresses
+  given:
+    - input: ref('stg_soliguide__lieux')
+      rows:
+        - {position__address: '22 rue Sainte-Marthe, 75010 Paris'}
+        - {position__address: '3 Rpe des Mobiles, 16300 Barbezieux-Saint-Hilaire'}
+        - {position__address: ',,, 49610 Mozé-sur-Louet'}
+        - {position__address: null}
+        - {position__address: '36 Rte de Toulon'}
+  expect:
+    rows:
+      - {adresse: '22 rue Sainte-Marthe'}
+      - {adresse: '3 Rpe des Mobiles'}
+      - {adresse: null}
+      - {adresse: null}
+      - {adresse: '36 Rte de Toulon'}
+
