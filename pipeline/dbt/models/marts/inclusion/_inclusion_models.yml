@@ -10,11 +10,6 @@ models:
         data_type: text
         constraints:
           - type: primary_key
-      - name: _di_geocodage_code_insee
-        data_type: text
-        constraints:
-          - type: check
-            expression: '(CHECK_CODE_INSEE(_di_geocodage_code_insee))'
       - name: _di_geocodage_score
         data_type: float
       - name: id
@@ -140,11 +135,6 @@ models:
           - type: not_null
           - type: foreign_key
             expression: "public_marts.marts_inclusion__structures (_di_surrogate_id)"
-      - name: _di_geocodage_code_insee
-        data_type: text
-        constraints:
-          - type: check
-            expression: '(CHECK_CODE_INSEE(_di_geocodage_code_insee))'
       - name: _di_geocodage_score
         data_type: float
       - name: id
