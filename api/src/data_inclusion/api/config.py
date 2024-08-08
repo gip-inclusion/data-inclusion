@@ -5,6 +5,7 @@ class Settings(BaseSettings):
     model_config = SettingsConfigDict(env_file=".env")
 
     DEBUG: bool = False
+    BASE_URL: str = "https://api.data.inclusion.beta.gouv.fr"
     DATABASE_URL: str
     SECRET_KEY: str
     CORS_ALLOWED_ORIGINS: list[str] = ["*"]
