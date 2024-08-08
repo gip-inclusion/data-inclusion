@@ -1,3 +1,20 @@
+### URL de base
+
+L'API est utilisable à partir de l'URL de base suivante:
+
+```
+{{ base_url }}
+```
+
+Par exemple, l'adresse complète (URL) correspondant à une recherche de services,
+sans paramètres additionnels, est:
+
+```
+{{ base_url }}/api/v0/search/services
+```
+
+
+
 ### Token
 
 Un token est nécessaire pour accéder aux données.

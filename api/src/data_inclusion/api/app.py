@@ -1,5 +1,6 @@
 from pathlib import Path
 
+import jinja2
 import sentry_sdk
 
 import fastapi
@@ -14,7 +15,7 @@ from data_inclusion.api.inclusion_data.routes import router as data_api_router
 from data_inclusion.api.inclusion_schema.routes import router as schema_api_router
 from data_inclusion.api.request.middleware import save_request_middleware
 
-description = (Path(__file__).parent / "api_description.md").read_text()
+API_DESCRIPTION_PATH = Path(__file__).parent / "api_description.md"
 
 
 def setup_cors_middleware(app: fastapi.FastAPI) -> None:
@@ -43,6 +44,11 @@ def create_app() -> fastapi.FastAPI:
         traces_sample_rate=1.0,
         enable_tracing=True,
         environment=settings.ENV,
+    )
+
+    jinja_env = jinja2.Environment()
+    description = jinja_env.from_string(API_DESCRIPTION_PATH.read_text()).render(
+        base_url=settings.BASE_URL,
     )
 
     app = fastapi.FastAPI(

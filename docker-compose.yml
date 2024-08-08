@@ -168,6 +168,7 @@ services:
       - ENV=${API_ENV:-dev}
       - DEBUG=${API_DEBUG:-False}
       - DATABASE_URL=postgresql://data-inclusion:data-inclusion@target-db:5432/data-inclusion
+      - BASE_URL=http://127.0.0.1:8000
       - SECRET_KEY=USE_IN_DEVELOPMENT_ONLY
       - DATALAKE_ENDPOINT_URL=http://minio:9000
       - DATALAKE_BUCKET_NAME=data-inclusion-lake
