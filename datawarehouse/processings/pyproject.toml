@@ -1,0 +1,46 @@
+[build-system]
+build-backend = "setuptools.build_meta"
+requires = ["setuptools", "wheel"]
+
+[project]
+name = "data-inclusion-processings"
+version = "0.1.0"
+dependencies = [
+    "numpy~=2.0",
+    "pandas~=2.2",
+    "requests~=2.31",
+    "tenacity",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pre-commit",
+    "ruff",
+]
+test = [
+    "pytest",
+]
+
+[tool.setuptools]
+package-dir = {"" = "src"}
+
+[tool.ruff.lint]
+# see prefixes in https://beta.ruff.rs/docs/rules/
+select = [
+    "F",  # pyflakes
+    "E",  # pycodestyle errors
+    "W",  # pycodestyle warnings
+    "I",  # isort
+    "UP",  # pyupgrade
+    "S",  # bandit
+]
+
+[tool.ruff.lint.isort]
+combine-as-imports = true
+known-first-party = ["data_inclusion"]
+
+[tool.pytest.ini_options]
+testpaths = "tests"
+markers = '''
+    ban_api: mark test as requiring the base base adresse nationale api
+'''
