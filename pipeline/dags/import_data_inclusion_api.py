@@ -93,20 +93,14 @@ with airflow.DAG(
         task_id="generate_source_stats",
         command="build",
         select="path:models/intermediate/quality",
+        trigger_rule=TriggerRule.ALL_DONE,
     )
 
     snapshot_source_stats = dbt_operator_factory(
         task_id="snapshot_source_stats",
         command="snapshot",
         select="quality",
-        # Let's snapshot the stats, regardless of the result of their data tests.
-        # The data stats tests may "fail" (for instance if some source data is
-        # 100% missing) and we will be notified, but the snapshot will still be
-        # generated and recorded.
-        # Don't snapshot though if the initial API import failed, which
-        # would result in `build_source_stats` to be skipped.
-        # In that case there is nothing to be snapshotted.
-        trigger_rule=TriggerRule.NONE_SKIPPED,
+        trigger_rule=TriggerRule.ALL_DONE,
     )
 
     (
