@@ -69,3 +69,109 @@ models:
 
       * geocoded addresses
       * email with pii flag
+
+  - name: int__geocodages
+    description: |
+      Geocoding results for all sources.
+
+      This model is incremental, it will only geocode new or changed addresses.
+      It stores raw geocoding results, without filtering.
+
+      Geocoding is done by calling the BAN api in PL/Python.
+    columns:
+      - name: geocoded_at
+        data_tests:
+          - not_null
+      - name: adresse_id
+        data_tests:
+          - unique
+          - not_null
+          - relationships:
+              to: ref('int__union_adresses')
+              field: _di_surrogate_id
+      - name: input_adresse
+      - name: input_code_insee
+      - name: input_code_postal
+      - name: input_commune
+      - name: commune
+        data_tests:
+          - dbt_utils.not_empty_string
+      - name: adresse
+        data_tests:
+          - dbt_utils.not_empty_string
+      - name: code_postal
+        data_tests:
+          - dbt_utils.not_empty_string
+      - name: code_insee
+        data_tests:
+          - dbt_utils.not_empty_string
+      - name: latitude
+      - name: longitude
+      - name: score
+        data_tests:
+          - not_null:
+              config:
+                severity: warn
+      - name: type
+        data_tests:
+          - not_null:
+              config:
+                severity: warn
+          - accepted_values:
+              values:
+                - housenumber
+                - street
+                - locality
+                - municipality
+
+unit_tests:
+  - name: test_geocodages_full_refresh_mode
+    model: int__geocodages
+    overrides:
+      macros:
+        is_incremental: false
+    given:
+      - input: ref('int__union_adresses')
+        rows:
+          - {_di_surrogate_id: foo, adresse: 17 rue Malus, commune: Lille, code_postal: 59000, code_insee: 59350}
+    expect:
+      rows:
+        - {adresse_id: foo}
+
+  - name: test_geocodages_incremental_mode
+    # - row `unchanged` was previously geocoded and has not changed. It must not be re-geocoded.
+    # - row `failed` was previously geocoded but failed. It must be re-geocoded.
+    # - rows `changed-<INPUT>` were previously geocoded, but INPUT have changed. They must be re-geocoded.
+    # - row `new` was not previously geocoded. It must be geocoded.
+    model: int__geocodages
+    description: |
+      Test that geocoding is incremental
+    overrides:
+      macros:
+        is_incremental: true
+    given:
+      - input: ref('int__union_adresses')
+        rows:
+          - {_di_surrogate_id: unchanged, adresse: 17 rue Malus, code_postal: 59000, code_insee: 59350, commune: Lille}
+          - {_di_surrogate_id: failed, adresse: 17 rue Malus, code_postal: 59000, code_insee: 59350, commune: Lille}
+          - {_di_surrogate_id: changed-adresse, adresse: changed, code_postal: 59000, code_insee: 59350, commune: Lille}
+          - {_di_surrogate_id: changed-code-postal, adresse: 17 rue Malus, code_postal: changed, code_insee: 59350, commune: Lille}
+          - {_di_surrogate_id: changed-code-insee, adresse: 17 rue Malus, code_postal: 59000, code_insee: changed, commune: Lille}
+          - {_di_surrogate_id: changed-commune, adresse: 17 rue Malus, code_postal: 59000, code_insee: 59350, commune: changed}
+          - {_di_surrogate_id: new, adresse: 17 rue Malus, code_postal: 59000, code_insee: 59350, commune: Lille}
+      - input: this
+        rows:
+          - {adresse_id: unchanged, input_adresse: 17 rue Malus, input_code_postal: 59000, input_code_insee: 59350, input_commune: Lille, score: 1}
+          - {adresse_id: failed, input_adresse: 17 rue Malus, input_code_postal: 59000, input_code_insee: 59350, input_commune: Lille, score: null}
+          - {adresse_id: changed-adresse, input_adresse: 17 rue Malus, input_code_postal: 59000, input_code_insee: 59350, input_commune: Lille, score: 1}
+          - {adresse_id: changed-code-postal, input_adresse: 17 rue Malus, input_code_postal: 59000, input_code_insee: 59350, input_commune: Lille, score: 1}
+          - {adresse_id: changed-code-insee, input_adresse: 17 rue Malus, input_code_postal: 59000, input_code_insee: 59350, input_commune: Lille, score: 1}
+          - {adresse_id: changed-commune, input_adresse: 17 rue Malus, input_code_postal: 59000, input_code_insee: 59350, input_commune: Lille, score: 1}
+    expect:
+      rows:
+        - {adresse_id: failed}
+        - {adresse_id: changed-adresse}
+        - {adresse_id: changed-code-postal}
+        - {adresse_id: changed-code-insee}
+        - {adresse_id: changed-commune}
+        - {adresse_id: new}
