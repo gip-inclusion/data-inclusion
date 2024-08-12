@@ -105,6 +105,21 @@ resource "scaleway_object_bucket_policy" "main" {
         },
         {
           Effect = "Allow",
+          Sid    = "Grant list & read in sources/* to airflow",
+          Principal = {
+            SCW = ["application_id:${var.airflow_application_id}"]
+          },
+          Action = [
+            "s3:ListBucket",
+            "s3:GetObject"
+          ],
+          Resource = [
+            "${scaleway_object_bucket.main.name}",
+            "${scaleway_object_bucket.main.name}/sources/*",
+          ]
+        },
+        {
+          Effect = "Allow",
           Sid    = "Grant list & read in data/marts/* to the api",
           Principal = {
             SCW = ["application_id:${var.api_scw_application_id}"]
