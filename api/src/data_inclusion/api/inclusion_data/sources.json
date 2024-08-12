@@ -15,11 +15,6 @@
         "description": "Contient les structures et services inclusifs du département de l’Ille-et-Vilaine."
     },
     {
-        "slug": "cd72",
-        "nom": "Conseil départemental de la Sarthe",
-        "description": "Contient les structures inclusives du département de la Sarthe."
-    },
-    {
         "slug": "data-inclusion",
         "nom": "Expérimentation data·inclusion en Essonne",
         "description": "Expérimentation data·inclusion en Essonne."
@@ -47,7 +42,7 @@
     {
         "slug": "mes-aides",
         "nom": "Mes Aides France Travail",
-        "description": "Service numérique public développé par France Travail. Contient leurs structures et services inclusifs sur la thématique Mobillité."
+        "description": "Service numérique public développé par France Travail. Contient leurs structures et services inclusifs sur la thématique Mobilité."
     },
     {
         "slug": "monenfant",

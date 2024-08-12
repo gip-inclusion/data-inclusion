@@ -18,7 +18,6 @@ models:
           - action_logement
           - agefiph
           - cd35
-          - cd72
           - data_inclusion
           - dora
           - emplois_de_linclusion

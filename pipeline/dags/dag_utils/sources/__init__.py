@@ -13,7 +13,6 @@ from . import (
     emplois_de_linclusion,
     france_travail,
     fredo,
-    grist,
     mediation_numerique,
     mes_aides,
     reseau_alpha,
@@ -214,24 +213,6 @@ SOURCES_CONFIGS = {
             "structures": {
                 "filename": "structures.csv",
                 "url": Variable.get("DI_EXTRA_STRUCTURES_FILE_URL", None),
-            },
-        },
-    },
-    "cd72": {
-        "schedule": "@once",
-        "snapshot": False,
-        "extractor": grist.extract,
-        "reader": lambda path: utils.read_csv(path, sep=","),
-        "streams": {
-            "structures": {
-                "filename": "structures.csv",
-                "url": Variable.get("CD72_STRUCTURES_FILE_URL", None),
-                "token": Variable.get("GRIST_API_TOKEN", None),
-            },
-            "services": {
-                "filename": "services.csv",
-                "url": Variable.get("CD72_SERVICES_FILE_URL", None),
-                "token": Variable.get("GRIST_API_TOKEN", None),
             },
         },
     },

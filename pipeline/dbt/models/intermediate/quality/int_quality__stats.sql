@@ -8,10 +8,6 @@
 -- depends_on: {{ ref('int_agefiph__services') }}
 -- depends_on: {{ ref('stg_cd35__organisations') }}
 -- depends_on: {{ ref('int_cd35__structures') }}
--- depends_on: {{ ref('stg_cd72__services') }}
--- depends_on: {{ ref('stg_cd72__structures') }}
--- depends_on: {{ ref('int_cd72__services') }}
--- depends_on: {{ ref('int_cd72__structures') }}
 -- depends_on: {{ ref('stg_data_inclusion__services') }}
 -- depends_on: {{ ref('stg_data_inclusion__structures') }}
 -- depends_on: {{ ref('int_data_inclusion__services') }}
@@ -79,17 +75,23 @@ WITH
         ),
 
         {{ source_name }}__{{ stream_name }}__stats AS (
+            /*
+            Manually handle the layout as the sqlfluff DBT templater can't handle spacing
+            when the column expression contains macros
+            */
+            -- noqa: disable=layout.spacing
             SELECT
-                '{{ run_started_at.strftime("%Y-%m-%d") }}'                                  AS date_day,
-                '{{ source_name }}'                                                          AS source,
-                '{{ stream_name }}'                                                          AS stream,  -- noqa: references.keywords
-                (SELECT COUNT(*) FROM {{ source(source_name, stream_name) }})                AS count_raw,
-                (SELECT COUNT(*) FROM {{ ref('stg_' ~ source_name ~ '__' ~ staging_name) }}) AS count_stg,
-                (SELECT COUNT(*) FROM {{ ref('int_' ~ source_name ~ '__' ~ stream_kind) }})  AS count_int,
-                (SELECT COUNT(*) FROM {{ source_name }}__{{ stream_name }}__tmp_marts)       AS count_marts,
-                (SELECT COUNT(*) FROM {{ source_name }}__{{ stream_name }}__tmp_api)         AS count_api,
-                (SELECT COUNT(*) FROM {{ source_name }}__{{ stream_name }}__tmp_api_contacts)AS count_contacts,
-                (SELECT COUNT(*) FROM {{ source_name }}__{{ stream_name }}__tmp_api_adresse) AS count_addresses
+                '{{ run_started_at.strftime("%Y-%m-%d") }}'                                   AS date_day,
+                '{{ source_name }}'                                                           AS source,
+                '{{ stream_name }}'                                                           AS stream,  -- noqa: references.keywords
+                (SELECT COUNT(*) FROM {{ source(source_name, stream_name) }})                 AS count_raw,
+                (SELECT COUNT(*) FROM {{ ref('stg_' ~ source_name ~ '__' ~ staging_name) }})  AS count_stg,
+                (SELECT COUNT(*) FROM {{ ref('int_' ~ source_name ~ '__' ~ stream_kind) }})   AS count_int,
+                (SELECT COUNT(*) FROM {{ source_name }}__{{ stream_name }}__tmp_marts)        AS count_marts,
+                (SELECT COUNT(*) FROM {{ source_name }}__{{ stream_name }}__tmp_api)          AS count_api,
+                (SELECT COUNT(*) FROM {{ source_name }}__{{ stream_name }}__tmp_api_contacts) AS count_contacts,
+                (SELECT COUNT(*) FROM {{ source_name }}__{{ stream_name }}__tmp_api_adresse)  AS count_addresses
+        -- noqa: enable=layout.spacing
         ),
 
     {% endif %}

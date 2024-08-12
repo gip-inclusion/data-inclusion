@@ -122,13 +122,6 @@ variable "environment" {
   type        = string
 }
 
-variable "grist_api_token" {
-  description = "Used in extraction tasks orchestrated by airflow"
-  type        = string
-  sensitive   = true
-  default     = ""
-}
-
 variable "mes_aides_airtable_key" {
   description = "Used in extraction tasks orchestrated by airflow"
   type        = string

@@ -7,7 +7,6 @@ WITH structures AS (
                 ref('int_data_inclusion__structures'),
                 ref('int_dora__structures'),
                 ref('int_cd35__structures'),
-                ref('int_cd72__structures'),
                 ref('int_emplois_de_linclusion__structures'),
                 ref('int_finess__structures'),
                 ref('int_france_travail__structures'),

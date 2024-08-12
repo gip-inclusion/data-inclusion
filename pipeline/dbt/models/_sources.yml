@@ -96,18 +96,6 @@ sources:
         meta:
           kind: structure
 
-  - name: cd72
-    schema: cd72
-    meta:
-      is_provider: true
-    tables:
-      - name: structures
-        meta:
-          kind: structure
-      - name: services
-        meta:
-          kind: service
-
   - name: emplois_de_linclusion
     schema: emplois_de_linclusion
     meta:
