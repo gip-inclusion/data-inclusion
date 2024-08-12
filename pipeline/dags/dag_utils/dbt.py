@@ -127,4 +127,5 @@ def get_after_geocoding_tasks():
                 "marts",
             ]
         ),
+        exclude="path:modes/intermediate/quality",
     )
