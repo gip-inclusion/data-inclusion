@@ -1,7 +1,7 @@
 {% macro unnest_jsonb_list_to_table(resource_type, nested_column) %}
 
 WITH {{ resource_type }}s AS (
-    SELECT * FROM {{ ref('int__union_{}s__enhanced'.format(resource_type) ) }}
+    SELECT * FROM {{ ref('marts_inclusion__{}s'.format(resource_type) ) }}
 ),
 
 final AS (
