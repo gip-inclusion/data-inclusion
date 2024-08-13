@@ -289,6 +289,7 @@ def test_list_services_all(api_client):
                 "prise_rdv": "https://teixeira.fr/",
                 "profils": ["femmes"],
                 "recurrence": None,
+                "score_qualite": 0.5,
                 "source": "dora",
                 "structure_id": "prince-point-monde",
                 "telephone": "0102030405",

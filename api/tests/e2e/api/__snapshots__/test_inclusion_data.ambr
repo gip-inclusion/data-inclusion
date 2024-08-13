@@ -1876,6 +1876,13 @@
               ],
               "title": "Modes Orientation Accompagnateur Autres"
             },
+            "score_qualite": {
+              "type": "number",
+              "maximum": 1.0,
+              "minimum": 0.0,
+              "title": "Score Qualite",
+              "description": "Score de qualité du service, défini et calculé par data·inclusion.\n"
+            },
             "structure": {
               "$ref": "#/components/schemas/Structure"
             }
@@ -1886,6 +1893,7 @@
             "structure_id",
             "source",
             "nom",
+            "score_qualite",
             "structure"
           ],
           "title": "DetailedService"
@@ -2961,6 +2969,13 @@
                 }
               ],
               "title": "Modes Orientation Accompagnateur Autres"
+            },
+            "score_qualite": {
+              "type": "number",
+              "maximum": 1.0,
+              "minimum": 0.0,
+              "title": "Score Qualite",
+              "description": "Score de qualité du service, défini et calculé par data·inclusion.\n"
             }
           },
           "type": "object",
@@ -2968,7 +2983,8 @@
             "id",
             "structure_id",
             "source",
-            "nom"
+            "nom",
+            "score_qualite"
           ],
           "title": "Service"
         },
