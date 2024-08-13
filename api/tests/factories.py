@@ -164,3 +164,5 @@ class ServiceFactory(factory.alchemy.SQLAlchemyModelFactory):
     zone_diffusion_type = None
     zone_diffusion_code = None
     zone_diffusion_nom = None
+
+    score_qualite = 0.5

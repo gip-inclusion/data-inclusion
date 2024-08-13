@@ -1,4 +1,7 @@
-from pydantic import BaseModel, ConfigDict
+from textwrap import dedent
+from typing import Annotated
+
+from pydantic import BaseModel, ConfigDict, Field
 
 from data_inclusion import schema
 
@@ -16,6 +19,17 @@ class Service(schema.Service):
     prise_rdv: str | None = None
     formulaire_en_ligne: str | None = None
     lien_source: str | None = None
+
+    score_qualite: Annotated[
+        float,
+        Field(
+            ge=0,
+            le=1,
+            description=dedent("""\
+                Score de qualité du service, défini et calculé par data·inclusion.
+                """),
+        ),
+    ]
 
 
 class Structure(schema.Structure):
