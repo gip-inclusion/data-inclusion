@@ -22,6 +22,7 @@ setup(
         "GeoAlchemy2",
         "gunicorn",
         "httpx",
+        "jinja2",
         "minio",
         "numpy",
         "pandas",
