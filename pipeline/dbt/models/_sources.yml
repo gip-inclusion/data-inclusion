@@ -210,3 +210,12 @@ sources:
       - name: services
         meta:
           kind: service
+
+  - name: decoupage_administratif
+    schema: decoupage_administratif
+    tables:
+      - name: communes
+      - name: departements
+      - name: epcis
+      - name: regions
+
