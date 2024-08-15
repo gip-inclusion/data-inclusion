@@ -17,6 +17,19 @@ models:
     data_tests:
       - check_adresse: *union-common-check-args
 
+  - name: int__union__contacts
+    description: |
+      Gathers contacts from all sources
+    columns:
+      - name: contact_uid
+        data_tests:
+          - unique
+          - not_null
+      - name: courriel
+        data_tests:
+          - not_null
+          - dbt_utils.not_empty_string
+
   - name: int__union_services
     description: |
       Gathers services from all sources

@@ -20,10 +20,10 @@ def _sync_new_contacts_to_brevo():
     from dag_utils import constants, pg
     from dag_utils.sources import brevo
 
-    dora_contacts = pg.hook().get_records(
+    potential_contacts = pg.hook().get_records(
         sql=(
             "SELECT courriel, ARRAY_AGG(contact_uid) as contact_uids "
-            "FROM public_intermediate.int_dora__contacts "
+            "FROM public_intermediate.int__union__contacts "
             "GROUP BY courriel"
         )
     )
@@ -44,7 +44,7 @@ def _sync_new_contacts_to_brevo():
     # If the email is not new but linked to a new contact UID, update the associated
     # list accordingly.
     new_contacts_map = defaultdict(list)
-    for email, contact_uids in dora_contacts:
+    for email, contact_uids in potential_contacts:
         for contact_uid in contact_uids:
             if contact_uid not in brevo_contacts_uid_set:
                 if email in brevo_contacts_map:
