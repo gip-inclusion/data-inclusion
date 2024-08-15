@@ -13,6 +13,17 @@ models:
           - not_null
           - dbt_utils.not_empty_string
 
+  - name: int_mes_aides__contacts
+    columns:
+      - name: contact_uid
+        data_tests:
+          - unique
+          - not_null
+      - name: courriel
+        data_tests:
+          - not_null
+          - dbt_utils.not_empty_string
+
   - name: int_mes_aides__structures
     data_tests:
       - check_structure:
