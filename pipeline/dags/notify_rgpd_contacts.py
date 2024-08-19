@@ -86,6 +86,12 @@ def _send_rgpd_notice():
     )
 
 
+def _wait_for_brevo():
+    import time
+
+    time.sleep(60)
+
+
 with airflow.DAG(
     dag_id="notify_rgpd_contacts",
     description="Sends RGPD notifications to DI users",
@@ -103,10 +109,20 @@ with airflow.DAG(
         python_callable=_sync_new_contacts_to_brevo,
     )
 
+    # It seems that after syncing the contact lists, Brevo needs some time
+    # to actually understand that the new mailing list is full. Has it been
+    # turned to async behind the scenes recently ? Probable. We could also
+    # poll until the list returns the expected number of contacts, but...
+    brevo_delay = python.ExternalPythonOperator(
+        task_id="brevo_delay",
+        python=str(PYTHON_BIN_PATH),
+        python_callable=_wait_for_brevo,
+    )
+
     send_rgpd_notice = python.ExternalPythonOperator(
         task_id="send_rgpd_notice",
         python=str(PYTHON_BIN_PATH),
         python_callable=_send_rgpd_notice,
     )
 
-    (start >> sync_new_contacts_to_brevo >> send_rgpd_notice >> end)
+    (start >> sync_new_contacts_to_brevo >> brevo_delay >> send_rgpd_notice >> end)
