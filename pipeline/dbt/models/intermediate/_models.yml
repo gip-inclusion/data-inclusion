@@ -118,3 +118,31 @@ models:
                 - street
                 - locality
                 - municipality
+
+  - name: int__erreurs
+    data_tests:
+      - dbt_utils.expression_is_true:
+          expression: "service_id IS NOT NULL OR structure_id IS NOT NULL"
+    columns:
+      - name: service_id
+        data_tests:
+          - relationships:
+              to: ref('int__union_services')
+              field: _di_surrogate_id
+      - name: structure_id
+        data_tests:
+          - relationships:
+              to: ref('int__union_structures')
+              field: _di_surrogate_id
+      - name: type
+        data_tests:
+          - not_null
+          - dbt_utils.not_empty_string
+      - name: loc
+        data_tests:
+          - not_null
+      - name: msg
+        data_tests:
+          - not_null
+          - dbt_utils.not_empty_string
+      - name: input

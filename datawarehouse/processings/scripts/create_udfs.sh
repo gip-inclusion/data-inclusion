@@ -42,3 +42,39 @@ return (
 
 $$ LANGUAGE plpython3u;
 EOSQL
+
+
+psql  --dbname="$POSTGRES_DB" <<- 'EOSQL'
+DROP FUNCTION IF EXISTS validate;
+DROP TYPE IF EXISTS pydantic_error;
+DROP TYPE IF EXISTS resource_type;
+
+CREATE TYPE resource_type AS ENUM ('structure', 'service');
+
+CREATE TYPE pydantic_error AS (
+    type  TEXT,
+    loc   TEXT[],
+    msg   TEXT,
+    input TEXT
+);
+
+CREATE OR REPLACE FUNCTION validate(resource_type resource_type, data JSONB)
+RETURNS SETOF pydantic_error AS $$
+
+import json
+
+import pydantic
+
+from data_inclusion import schema
+
+model = schema.Structure if resource_type == "structure" else schema.Service
+
+try:
+    model.model_validate_json(data)
+except pydantic.ValidationError as e:
+    return e.errors()
+
+return []
+
+$$ LANGUAGE plpython3u;
+EOSQL
