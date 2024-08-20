@@ -124,41 +124,16 @@ def load_inclusion_data():
     structures_df = structures_df.replace({np.nan: None})
     services_df = services_df.replace({np.nan: None})
 
-    # TODO: this must be fixed in the publication
+    # TODO(vperron) : To remove when we handle the city districts
     structures_df = structures_df.assign(
         code_insee=structures_df.code_insee.apply(clean_up_code_insee),
-        _di_geocodage_code_insee=structures_df._di_geocodage_code_insee.apply(
-            clean_up_code_insee
-        ),
     )
     services_df = services_df.assign(
         code_insee=services_df.code_insee.apply(clean_up_code_insee),
-        _di_geocodage_code_insee=services_df._di_geocodage_code_insee.apply(
-            clean_up_code_insee
-        ),
     )
 
-    # fill missing codes with geocoding results
-    # and overwrite existing ones if the geocoder is confident enough
-    geocoder_validity_threshold = 0.7
-    structures_df = structures_df.assign(
-        code_insee=structures_df._di_geocodage_code_insee.where(
-            structures_df._di_geocodage_score > geocoder_validity_threshold,
-            structures_df.code_insee,
-        )
-    )
-    services_df = services_df.assign(
-        code_insee=services_df._di_geocodage_code_insee.where(
-            services_df._di_geocodage_score > geocoder_validity_threshold,
-            services_df.code_insee,
-        )
-    )
-    structures_df = structures_df.drop(
-        columns=["_di_geocodage_code_insee", "_di_geocodage_score"]
-    )
-    services_df = services_df.drop(
-        columns=["_di_geocodage_code_insee", "_di_geocodage_score"]
-    )
+    structures_df = structures_df.drop(columns=["_di_geocodage_score"])
+    services_df = services_df.drop(columns=["_di_geocodage_score"])
 
     structure_errors_df = validate_df(structures_df, model_schema=schema.Structure)
     service_errors_df = validate_df(services_df, model_schema=schema.Service)
