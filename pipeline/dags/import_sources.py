@@ -121,6 +121,8 @@ def load_from_s3_to_data_warehouse(source_id, stream_id, run_id, logical_date):
 
 
 for source_id, source_config in sources.SOURCES_CONFIGS.items():
+    if "streams" not in source_config:
+        continue
     model_name = source_id.replace("-", "_")
     dag_id = f"import_{model_name}"
 

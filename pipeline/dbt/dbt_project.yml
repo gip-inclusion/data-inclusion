@@ -24,7 +24,7 @@ models:
       +materialized: view
 
     intermediate:
-      +schema: intermediate
+      +schema: "{{ 'intermediate_tmp' if var('build_intermediate_tmp', false) else 'intermediate' }}"
       +materialized: table
 
     marts:
