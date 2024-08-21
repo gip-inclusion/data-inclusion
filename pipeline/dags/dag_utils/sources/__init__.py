@@ -250,6 +250,8 @@ SOURCES_CONFIGS = {
             },
         },
     },
+    "odspep": {},
+    "monenfant": {},
 }
 
 
