@@ -120,7 +120,6 @@ def get_after_geocoding_tasks():
         select=" ".join(
             [
                 "path:models/intermediate/extra",
-                "path:models/intermediate/int__deprecated_sirets.sql",
                 "path:models/intermediate/int__plausible_personal_emails.sql",
                 "path:models/intermediate/int__union_adresses__enhanced.sql+",
                 "path:models/intermediate/int__union_services__enhanced.sql+",
@@ -128,5 +127,9 @@ def get_after_geocoding_tasks():
                 "marts",
             ]
         ),
-        exclude="path:modes/intermediate/quality",
+        exclude=" ".join(
+            [
+                "path:models/intermediate/quality/int_quality__stats.sql+",
+            ]
+        ),
     )
