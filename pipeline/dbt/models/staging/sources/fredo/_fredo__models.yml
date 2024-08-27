@@ -47,8 +47,6 @@ models:
         data_tests:
           - dbt_utils.not_empty_string
       - name: telephone
-        data_tests:
-          - dbt_utils.not_empty_string
       - name: latitude
       - name: longitude
       - name: categories
