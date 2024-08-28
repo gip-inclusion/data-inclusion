@@ -10,6 +10,7 @@ WITH structures AS (
                 ref('int_emplois_de_linclusion__structures'),
                 ref('int_finess__structures'),
                 ref('int_france_travail__structures'),
+                ref('int_fredo__structures'),
                 ref('int_mediation_numerique__structures'),
                 ref('int_mes_aides__structures'),
                 ref('int_monenfant__structures'),

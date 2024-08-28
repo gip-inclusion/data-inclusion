@@ -151,7 +151,7 @@ def test_list_structures_filter_by_label(
     api_client,
 ):
     factories.StructureFactory(
-        labels_nationaux=[schema.LabelNational.POLE_EMPLOI.value]
+        labels_nationaux=[schema.LabelNational.FRANCE_TRAVAIL.value]
     )
     structure_2 = factories.StructureFactory(
         labels_nationaux=[

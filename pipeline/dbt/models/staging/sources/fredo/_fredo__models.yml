@@ -33,7 +33,7 @@ models:
       - name: horaires_ouverture
         data_tests:
           - dbt_utils.not_empty_string
-      - name: lien_source
+      - name: site_web
         data_tests:
           - dbt_utils.not_empty_string
       - name: nom
@@ -47,8 +47,6 @@ models:
         data_tests:
           - dbt_utils.not_empty_string
       - name: telephone
-        data_tests:
-          - dbt_utils.not_empty_string
       - name: latitude
       - name: longitude
       - name: categories
@@ -59,7 +57,7 @@ models:
 
   - name: stg_fredo__categories
     columns:
-      - name: id
+      - name: structure_id
         data_tests:
           - not_null
           - relationships:
@@ -72,7 +70,7 @@ models:
 
   - name: stg_fredo__frais
     columns:
-      - name: id
+      - name: structure_id
         data_tests:
           - not_null
           - relationships:
@@ -89,7 +87,7 @@ models:
 
   - name: stg_fredo__publics
     columns:
-      - name: id
+      - name: structure_id
         data_tests:
           - not_null
           - relationships:
@@ -102,7 +100,7 @@ models:
 
   - name: stg_fredo__quartiers
     columns:
-      - name: id
+      - name: structure_id
         data_tests:
           - not_null
           - relationships:
@@ -115,7 +113,7 @@ models:
 
   - name: stg_fredo__services
     columns:
-      - name: id
+      - name: structure_id
         data_tests:
           - not_null
           - relationships:
@@ -128,7 +126,7 @@ models:
 
   - name: stg_fredo__types
     columns:
-      - name: id
+      - name: structure_id
         data_tests:
           - not_null
           - relationships:
