@@ -4,6 +4,7 @@ models:
   - name: int_brevo__contacts
     columns:
       - name: id
+        description: L'ID interne Brevo de ce "contact". Largement inutilisé mais sert de clé primaire.
         data_tests:
           - unique
           - not_null
@@ -14,7 +15,16 @@ models:
           - dbt_utils.not_constant
           - dbt_utils.not_empty_string
       - name: est_interdit
+        description: |
+          Signifie que cet e-mail est considéré par Brevo comme:
+          - un "hard bounce" (n'existe pas)
+          - a fait l'objet d'une demande de désincription explicite.
+          - a classé le mail en spam
+          - a été classé "bloqué" par un administrateur Brevo
         data_tests:
           - not_null
           - accepted_values:
               values: [true, false]
+
+      - name: date_di_rgpd_opposition
+        description: Date d'opposition au RGPD telle qu'entrée par notre DPO dans Brevo lorsque signalé.
