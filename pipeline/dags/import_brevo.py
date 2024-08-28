@@ -76,10 +76,24 @@ with airflow.DAG(
         op_kwargs={"stream_id": STREAM_ID, "source_id": SOURCE_ID},
     )
 
-    dbt_build_brevo = dbt_operator_factory(
+    dbt_build_brevo_tmp = dbt_operator_factory(
         task_id="dbt_build_brevo",
         command="build",
         select="path:models/staging/brevo path:models/intermediate/brevo",
+        dbt_vars={"build_intermediate_tmp": True},
     )
 
-    (start >> extract_rgpd_contacts >> load_rgpd_contacts >> dbt_build_brevo >> end)
+    dbt_run_brevo = dbt_operator_factory(
+        task_id="dbt_run_brevo",
+        command="run",
+        select="path:models/staging/brevo path:models/intermediate/brevo",
+    )
+
+    (
+        start
+        >> extract_rgpd_contacts
+        >> load_rgpd_contacts
+        >> dbt_build_brevo_tmp
+        >> dbt_run_brevo
+        >> end
+    )
