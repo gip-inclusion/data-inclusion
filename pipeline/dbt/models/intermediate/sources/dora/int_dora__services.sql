@@ -15,7 +15,9 @@ di_profil_by_dora_profil AS (
 ),
 
 blocked_contacts AS (
-    SELECT DISTINCT UNNEST(contact_uids) AS id FROM {{ ref('int_brevo__contacts') }} WHERE est_interdit = TRUE OR date_di_rgpd_opposition IS NOT NULL
+    SELECT DISTINCT UNNEST(contact_uids) AS id
+    FROM {{ ref('int_brevo__contacts') }}
+    WHERE est_interdit = TRUE OR date_di_rgpd_opposition IS NOT NULL
 ),
 
 blocked_contact_uids AS (
@@ -23,6 +25,7 @@ blocked_contact_uids AS (
         SPLIT_PART(id, ':', 3) AS id,
         SPLIT_PART(id, ':', 2) AS kind
     FROM blocked_contacts
+    WHERE SPLIT_PART(id, ':', 1) = 'dora'
 ),
 
 blocked_services_uids AS (
