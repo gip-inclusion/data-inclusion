@@ -1,0 +1,69 @@
+version: 2
+
+models:
+  - name: stg_decoupage_administratif__regions
+    columns:
+      - name: code
+        data_tests:
+          - dbt_utils.not_constant
+          - dbt_utils.not_empty_string
+      - name: nom
+        data_tests:
+          - dbt_utils.not_constant
+          - dbt_utils.not_empty_string
+
+  - name: stg_decoupage_administratif__departements
+    columns:
+      - name: code
+        data_tests:
+          - dbt_utils.not_constant
+          - dbt_utils.not_empty_string
+      - name: nom
+        data_tests:
+          - dbt_utils.not_constant
+          - dbt_utils.not_empty_string
+      - name: region
+        data_tests:
+          - not_null
+          - dbt_utils.not_constant
+          - dbt_utils.not_empty_string
+
+  - name: stg_decoupage_administratif__communes
+    columns:
+      - name: code
+        data_tests:
+          - unique
+          - not_null
+      - name: nom
+        data_tests:
+          - not_null
+          - dbt_utils.not_constant
+          - dbt_utils.not_empty_string
+      - name: departement
+        data_tests:
+          - not_null
+          - dbt_utils.not_constant
+          - dbt_utils.not_empty_string
+          - relationships:
+              to: ref('stg_decoupage_administratif__departements')
+              field: code
+      - name: region
+        data_tests:
+          - not_null
+          - dbt_utils.not_constant
+          - dbt_utils.not_empty_string
+          - relationships:
+              to: ref('stg_decoupage_administratif__regions')
+              field: code
+      - name: siren_epci
+        data_tests:
+          # NOTE(vperron): the test is against a source, since the EPCIs are
+          # very rarely used yet and it does not seem worth it to create a
+          # staging view for them yet.
+          - relationships:
+              to: source('decoupage_administratif', 'epcis')
+              field: code
+      - name: centre
+        data_tests:
+          - not_null
+          - dbt_utils.not_constant

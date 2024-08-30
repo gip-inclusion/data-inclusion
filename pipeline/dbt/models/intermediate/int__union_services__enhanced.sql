@@ -11,7 +11,7 @@ adresses AS (
 ),
 
 departements AS (
-    SELECT * FROM {{ source('insee', 'departements') }}
+    SELECT * FROM {{ source('decoupage_administratif', 'departements') }}
 ),
 
 -- TODO: Refactoring needed to be able to do geocoding per source and then use the result in the mapping
@@ -25,8 +25,8 @@ services_with_zone_diffusion AS (
         END AS "zone_diffusion_code",
         CASE
             WHEN services.source = ANY(ARRAY['monenfant', 'soliguide']) THEN adresses.commune
-            WHEN services.source = ANY(ARRAY['reseau-alpha', 'action-logement']) THEN (SELECT departements."LIBELLE" FROM departements WHERE departements."DEP" = LEFT(adresses.code_insee, 2))
-            WHEN services.source = 'mediation-numerique' THEN (SELECT departements."LIBELLE" FROM departements WHERE departements."DEP" = services.zone_diffusion_code)
+            WHEN services.source = ANY(ARRAY['reseau-alpha', 'action-logement']) THEN (SELECT departements."nom" FROM departements WHERE departements."code" = LEFT(adresses.code_insee, 2))
+            WHEN services.source = 'mediation-numerique' THEN (SELECT departements."nom" FROM departements WHERE departements."code" = services.zone_diffusion_code)
             ELSE services.zone_diffusion_nom
         END AS "zone_diffusion_nom"
     FROM

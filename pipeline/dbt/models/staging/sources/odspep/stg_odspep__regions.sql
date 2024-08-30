@@ -10,7 +10,7 @@
     ) is not none)
 -%}
 
--- depends_on: {{ ref('stg_code_officiel_geographique__regions') }}
+-- depends_on: {{ source('decoupage_administratif', 'regions') }}
 
 {% if tables_exist %}
 
@@ -23,7 +23,7 @@
     ),
 
     regions AS (
-        SELECT * FROM {{ ref('stg_code_officiel_geographique__regions') }}
+        SELECT * FROM {{ source('decoupage_administratif', 'regions') }}
     ),
 
     final AS (
@@ -32,8 +32,8 @@
             source."ID_REG"          AS "id_reg",
             source."ID_RES"          AS "id_res",
             source."CODE_REGION_REG" AS "code_region_reg",
-            'Région'                AS "zone_diffusion_type",
-            regions.libelle          AS "libelle"
+            'Région'                 AS "zone_diffusion_type",
+            regions.nom              AS "libelle"
 
         FROM source
         LEFT JOIN regions ON source."CODE_REGION_REG" = regions.code

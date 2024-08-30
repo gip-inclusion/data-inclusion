@@ -54,7 +54,7 @@ models:
           - not_null
           - dbt_utils.not_empty_string
           - relationships:
-              to: ref('stg_code_officiel_geographique__communes')
+              to: ref('stg_decoupage_administratif__communes')
               field: code
               config:
                 severity: warn
