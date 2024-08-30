@@ -2,7 +2,7 @@
 
 {% set table_exists = adapter.get_relation(database=source_model.database, schema=source_model.schema, identifier=source_model.name) is not none %}
 
--- depends_on: {{ ref('stg_code_officiel_geographique__departements') }}
+-- depends_on: {{ source('decoupage_administratif', 'departements') }}
 
 {% if table_exists %}
 
@@ -11,7 +11,7 @@
     ),
 
     departements AS (
-        SELECT * FROM {{ ref('stg_code_officiel_geographique__departements') }}
+        SELECT * FROM {{ source('decoupage_administratif', 'departements') }}
     ),
 
     final AS (
@@ -20,7 +20,7 @@
             source."ID_DPT"               AS "id_dpt",
             source."ID_RES"               AS "id_res",
             source."CODE_DEPARTEMENT_DPT" AS "code_departement_dpt",
-            departements.libelle          AS "libelle"
+            departements.nom              AS "libelle"
         FROM source
         LEFT JOIN departements ON source."CODE_DEPARTEMENT_DPT" = departements.code
     )

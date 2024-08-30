@@ -23,12 +23,9 @@ sources:
   - name: insee
     schema: insee
     tables:
-      - name: regions
-      - name: departements
-      - name: communes
+      - name: etat_civil_prenoms
       - name: sirene_etablissement_historique
       - name: sirene_etablissement_succession
-      - name: etat_civil_prenoms
 
   - name: dora
     schema: dora
@@ -215,6 +212,7 @@ sources:
     schema: decoupage_administratif
     tables:
       - name: communes
+      - name: districts
       - name: departements
       - name: epcis
       - name: regions
