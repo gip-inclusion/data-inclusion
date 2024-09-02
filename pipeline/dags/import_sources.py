@@ -4,18 +4,9 @@ import airflow
 from airflow.operators import empty, python
 from airflow.utils.task_group import TaskGroup
 
-from dag_utils import date, sources
+from dag_utils import date, notifications, sources
 from dag_utils.dbt import dbt_operator_factory
-from dag_utils.notifications import format_failure, notify_webhook
 from dag_utils.virtualenvs import PYTHON_BIN_PATH
-
-default_args = {
-    "on_failure_callback": lambda context: notify_webhook(
-        context,
-        conn_id="mattermost",
-        format_fn=format_failure,
-    )
-}
 
 
 def extract_from_source_to_datalake_bucket(source_id, stream_id, run_id, logical_date):
@@ -129,7 +120,7 @@ for source_id, source_config in sources.SOURCES_CONFIGS.items():
     with airflow.DAG(
         dag_id=dag_id,
         start_date=pendulum.datetime(2022, 1, 1, tz=date.TIME_ZONE),
-        default_args=default_args,
+        default_args=notifications.notify_failure_args(),
         schedule=source_config["schedule"],
         catchup=False,
         tags=["source"],

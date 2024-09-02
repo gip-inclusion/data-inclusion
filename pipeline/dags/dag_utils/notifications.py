@@ -40,3 +40,12 @@ def notify_webhook(context: Context, conn_id: str, format_fn):
     except exceptions.AirflowNotFoundException:
         logger.warning("Webhook notifier disabled.")
         return
+
+
+# FIXME(vmttn) : This could be a DAG factory instead
+def notify_failure_args():
+    return {
+        "on_failure_callback": lambda context: notify_webhook(
+            context, "mattermost", format_failure
+        )
+    }

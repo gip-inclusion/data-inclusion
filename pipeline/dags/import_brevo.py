@@ -5,13 +5,11 @@ import pendulum
 import airflow
 from airflow.operators import empty, python
 
-from dag_utils import date
+from dag_utils import date, notifications
 from dag_utils.dbt import dbt_operator_factory
 from dag_utils.virtualenvs import PYTHON_BIN_PATH
 
 logger = logging.getLogger(__name__)
-
-default_args = {}
 
 SOURCE_ID = "brevo"
 STREAM_ID = "contacts"
@@ -54,7 +52,7 @@ def _load_rgpd_contacts(run_id: str, stream_id: str, source_id: str, logical_dat
 with airflow.DAG(
     dag_id="import_brevo",
     start_date=pendulum.datetime(2023, 1, 1, tz=date.TIME_ZONE),
-    default_args=default_args,
+    default_args=notifications.notify_failure_args(),
     schedule="@daily",
     catchup=False,
     concurrency=1,
