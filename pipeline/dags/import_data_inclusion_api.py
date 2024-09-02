@@ -5,11 +5,9 @@ from airflow.decorators import task
 from airflow.operators import empty
 from airflow.utils.trigger_rule import TriggerRule
 
-from dag_utils import date
+from dag_utils import date, notifications
 from dag_utils.dbt import dbt_operator_factory
 from dag_utils.virtualenvs import PYTHON_BIN_PATH
-
-default_args = {}
 
 
 @task.external_python(python=str(PYTHON_BIN_PATH))
@@ -82,7 +80,7 @@ HOURLY_AT_FIFTEEN = "15 * * * *"
 with airflow.DAG(
     dag_id="import_data_inclusion_api",
     start_date=pendulum.datetime(2022, 1, 1, tz=date.TIME_ZONE),
-    default_args=default_args,
+    default_args=notifications.notify_failure_args(),
     schedule=HOURLY_AT_FIFTEEN,
     catchup=False,
 ) as dag:

@@ -3,24 +3,17 @@ import pendulum
 import airflow
 from airflow.operators import empty
 
-from dag_utils import date, marts
+from dag_utils import date, marts, notifications
 from dag_utils.dbt import (
     get_after_geocoding_tasks,
     get_before_geocoding_tasks,
     get_staging_tasks,
 )
-from dag_utils.notifications import format_failure, notify_webhook
-
-default_args = {
-    "on_failure_callback": lambda context: notify_webhook(
-        context, "mattermost", format_failure
-    )
-}
 
 with airflow.DAG(
     dag_id="compute_hourly",
     start_date=pendulum.datetime(2022, 1, 1, tz=date.TIME_ZONE),
-    default_args=default_args,
+    default_args=notifications.notify_failure_args(),
     schedule="@hourly",
     catchup=False,
     concurrency=4,

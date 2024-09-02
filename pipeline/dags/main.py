@@ -10,14 +10,8 @@ from dag_utils.dbt import (
     get_before_geocoding_tasks,
     get_staging_tasks,
 )
-from dag_utils.notifications import format_failure, notify_webhook
+from dag_utils.notifications import notify_failure_args
 from dag_utils.virtualenvs import PYTHON_BIN_PATH
-
-default_args = {
-    "on_failure_callback": lambda context: notify_webhook(
-        context, "mattermost", format_failure
-    )
-}
 
 
 def _geocode():
@@ -81,7 +75,7 @@ def _geocode():
 with airflow.DAG(
     dag_id="main",
     start_date=pendulum.datetime(2022, 1, 1, tz=date.TIME_ZONE),
-    default_args=default_args,
+    default_args=notify_failure_args(),
     schedule="0 4 * * *",
     catchup=False,
     concurrency=4,

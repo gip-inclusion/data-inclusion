@@ -2,18 +2,8 @@ import pendulum
 
 from airflow.decorators import dag, task
 
-from dag_utils import date
-from dag_utils.notifications import format_failure, notify_webhook
+from dag_utils import date, notifications
 from dag_utils.virtualenvs import PYTHON_BIN_PATH
-
-# TODO(vmttn): create a source dag factory
-default_args = {
-    "on_failure_callback": lambda context: notify_webhook(
-        context,
-        conn_id="mattermost",
-        format_fn=format_failure,
-    )
-}
 
 
 @task.external_python(
@@ -140,7 +130,7 @@ EXTRACT_TASK_CONCURRENCY = 2
 
 @dag(
     start_date=pendulum.datetime(2022, 1, 1, tz=date.TIME_ZONE),
-    default_args=default_args,
+    default_args=notifications.notify_failure_args(),
     schedule="@monthly",
     catchup=False,
     tags=["source"],
