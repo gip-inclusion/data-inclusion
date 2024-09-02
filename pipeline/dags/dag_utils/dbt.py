@@ -104,6 +104,14 @@ def get_before_geocoding_tasks():
         command="build",
         select=" ".join(
             [
+                # NOTE(vperron, 2024-09-02) : The contacts union is build here,
+                # out of coherence but I don't really like that now the "brevo"
+                # machinery depends on 3 DAGs to run correctly: import_brevo,
+                # main and notify_rgpd_contacts. Maybe it should be concentrated
+                # into a single DAG. Another way to see it is that it depended on
+                # main since the beginning as it required intermediate data to be
+                # present ?
+                "path:models/intermediate/int__union_contacts.sql",
                 "path:models/intermediate/int__union_adresses.sql",
                 "path:models/intermediate/int__union_services.sql",
                 "path:models/intermediate/int__union_structures.sql",
