@@ -63,5 +63,10 @@
         "slug": "soliguide",
         "nom": "Soliguide",
         "description": "Service numérique de recensement de l’offre d’insertion développé par l’association Solinum. Contient leurs structures et services sur des thématiques variées d’urgence sociale."
+    },
+    {
+        "slug": "fredo",
+        "nom": "Fredo",
+        "description": "Fredo est un outil diagnostique terrain pour les travailleurs sociaux. Il permet de mettre en relation les bénéficiaires diagnostiqués et les structures d'accompagnements grâce à une personne ressource"
     }
 ]

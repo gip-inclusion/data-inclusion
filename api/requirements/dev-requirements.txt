@@ -57,7 +57,7 @@ cryptography==42.0.5
     # via
     #   data-inclusion-api (setup.py)
     #   python-jose
-data-inclusion-schema==0.16.0
+data-inclusion-schema==0.17.0
     # via data-inclusion-api (setup.py)
 distlib==0.3.8
     # via virtualenv
@@ -116,7 +116,9 @@ idna==3.7
 inflate64==1.0.0
     # via py7zr
 jinja2==3.1.3
-    # via fastapi-debug-toolbar
+    # via
+    #   data-inclusion-api (setup.py)
+    #   fastapi-debug-toolbar
 mako==1.3.3
     # via alembic
 markupsafe==2.1.5
