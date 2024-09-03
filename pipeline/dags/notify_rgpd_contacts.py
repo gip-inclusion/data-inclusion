@@ -23,7 +23,7 @@ def _sync_new_contacts_to_brevo():
     potential_contacts = pg.hook().get_records(
         sql=(
             "SELECT courriel, ARRAY_AGG(contact_uid) as contact_uids "
-            "FROM public_intermediate.int__union__contacts "
+            "FROM public_intermediate.int__union_contacts "
             "GROUP BY courriel"
         )
     )
