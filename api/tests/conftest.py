@@ -26,6 +26,8 @@ DIR = Path(__file__).parent
 
 @pytest.fixture(scope="session")
 def app():
+    settings.BASE_URL = "http://testserver"
+    settings.ENV = "test"
     yield create_app()
 
 
