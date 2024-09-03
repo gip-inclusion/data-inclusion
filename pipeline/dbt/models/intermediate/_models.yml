@@ -17,7 +17,7 @@ models:
     data_tests:
       - check_adresse: *union-common-check-args
 
-  - name: int__union__contacts
+  - name: int__union_contacts
     description: |
       Gathers contacts from all sources
     columns:
