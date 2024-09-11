@@ -52,12 +52,7 @@
               "in": "query",
               "required": false,
               "schema": {
-                "allOf": [
-                  {
-                    "$ref": "#/components/schemas/Typologie"
-                  }
-                ],
-                "title": "Typologie"
+                "$ref": "#/components/schemas/Typologie"
               }
             },
             {
@@ -65,12 +60,7 @@
               "in": "query",
               "required": false,
               "schema": {
-                "allOf": [
-                  {
-                    "$ref": "#/components/schemas/LabelNational"
-                  }
-                ],
-                "title": "Label National"
+                "$ref": "#/components/schemas/LabelNational"
               }
             },
             {
@@ -92,13 +82,8 @@
               "in": "query",
               "required": false,
               "schema": {
-                "allOf": [
-                  {
-                    "$ref": "#/components/schemas/RegionCodeEnum"
-                  }
-                ],
-                "description": "Code insee géographique d'une région.",
-                "title": "Code Region"
+                "$ref": "#/components/schemas/RegionCodeEnum",
+                "description": "Code insee géographique d'une région."
               },
               "description": "Code insee géographique d'une région."
             },
@@ -107,12 +92,7 @@
               "in": "query",
               "required": false,
               "schema": {
-                "allOf": [
-                  {
-                    "$ref": "#/components/schemas/RegionSlugEnum"
-                  }
-                ],
-                "title": "Slug Region"
+                "$ref": "#/components/schemas/RegionSlugEnum"
               }
             },
             {
@@ -120,13 +100,8 @@
               "in": "query",
               "required": false,
               "schema": {
-                "allOf": [
-                  {
-                    "$ref": "#/components/schemas/DepartementCodeEnum"
-                  }
-                ],
-                "description": "Code insee géographique d'un département.",
-                "title": "Code Departement"
+                "$ref": "#/components/schemas/DepartementCodeEnum",
+                "description": "Code insee géographique d'un département."
               },
               "description": "Code insee géographique d'un département."
             },
@@ -135,12 +110,7 @@
               "in": "query",
               "required": false,
               "schema": {
-                "allOf": [
-                  {
-                    "$ref": "#/components/schemas/DepartementSlugEnum"
-                  }
-                ],
-                "title": "Slug Departement"
+                "$ref": "#/components/schemas/DepartementSlugEnum"
               }
             },
             {
@@ -341,13 +311,8 @@
               "in": "query",
               "required": false,
               "schema": {
-                "allOf": [
-                  {
-                    "$ref": "#/components/schemas/RegionCodeEnum"
-                  }
-                ],
-                "description": "Code insee géographique d'une région.",
-                "title": "Code Region"
+                "$ref": "#/components/schemas/RegionCodeEnum",
+                "description": "Code insee géographique d'une région."
               },
               "description": "Code insee géographique d'une région."
             },
@@ -356,12 +321,7 @@
               "in": "query",
               "required": false,
               "schema": {
-                "allOf": [
-                  {
-                    "$ref": "#/components/schemas/RegionSlugEnum"
-                  }
-                ],
-                "title": "Slug Region"
+                "$ref": "#/components/schemas/RegionSlugEnum"
               }
             },
             {
@@ -369,13 +329,8 @@
               "in": "query",
               "required": false,
               "schema": {
-                "allOf": [
-                  {
-                    "$ref": "#/components/schemas/DepartementCodeEnum"
-                  }
-                ],
-                "description": "Code insee géographique d'un département.",
-                "title": "Code Departement"
+                "$ref": "#/components/schemas/DepartementCodeEnum",
+                "description": "Code insee géographique d'un département."
               },
               "description": "Code insee géographique d'un département."
             },
@@ -384,12 +339,7 @@
               "in": "query",
               "required": false,
               "schema": {
-                "allOf": [
-                  {
-                    "$ref": "#/components/schemas/DepartementSlugEnum"
-                  }
-                ],
-                "title": "Slug Departement"
+                "$ref": "#/components/schemas/DepartementSlugEnum"
               }
             },
             {
