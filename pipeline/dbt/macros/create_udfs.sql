@@ -12,6 +12,7 @@ Another way would be to use the `on-run-start` hook, but it does not play nicely
 CREATE SCHEMA IF NOT EXISTS processings;
 
 {{ udf__geocode() }}
+{{ udf__score() }}
 
 {{ create_udf_soliguide__new_hours_to_osm_opening_hours() }}
 {{ create_udf__common_checks() }}

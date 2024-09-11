@@ -229,6 +229,12 @@ models:
         data_type: text
       - name: zone_diffusion_nom
         data_type: text
+      - name: score_qualite
+        data_type: float
+        constraints:
+          - type: not_null
+          - type: check
+            expression: 'score_qualite BETWEEN 0 AND 1'
 
   - name: marts_inclusion__services_frais
     config:
