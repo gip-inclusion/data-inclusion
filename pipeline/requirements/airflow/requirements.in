@@ -1,1 +1,2 @@
 apache-airflow[amazon,postgres,sentry,ssh]==2.9.3
+astronomer-cosmos==1.*

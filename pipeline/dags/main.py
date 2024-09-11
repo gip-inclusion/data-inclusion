@@ -1,112 +1,52 @@
+import cosmos
+import cosmos.airflow
+import cosmos.constants
+import cosmos.profiles
 import pendulum
 
-import airflow
-from airflow.operators import empty, python
+from airflow.models import Variable
+from airflow.operators import empty
 
-from dag_utils import date, marts
-from dag_utils.dbt import (
-    dbt_operator_factory,
-    get_after_geocoding_tasks,
-    get_before_geocoding_tasks,
-    get_staging_tasks,
-)
+from dag_utils import date
 from dag_utils.notifications import notify_failure_args
-from dag_utils.virtualenvs import PYTHON_BIN_PATH
+from dag_utils.virtualenvs import DBT_PYTHON_BIN_PATH
 
-
-def _geocode():
-    import logging
-
-    import sqlalchemy as sqla
-
-    from airflow.models import Variable
-    from airflow.providers.postgres.hooks.postgres import PostgresHook
-
-    from dag_utils import geocoding
-    from dag_utils.sources import utils
-
-    logger = logging.getLogger(__name__)
-
-    pg_hook = PostgresHook(postgres_conn_id="pg")
-
-    # 1. Retrieve input data
-    input_df = pg_hook.get_pandas_df(
-        sql="""
-            SELECT
-                _di_surrogate_id,
-                adresse,
-                code_postal,
-                code_insee,
-                commune
-            FROM public_intermediate.int__union_adresses;
-        """
-    )
-
-    utils.log_df_info(input_df, logger=logger)
-
-    geocoding_backend = geocoding.BaseAdresseNationaleBackend(
-        base_url=Variable.get("BAN_API_URL")
-    )
-
-    # 2. Geocode
-    output_df = geocoding_backend.geocode(input_df)
-
-    utils.log_df_info(output_df, logger=logger)
-
-    # 3. Write result back
-    engine = pg_hook.get_sqlalchemy_engine()
-
-    with engine.connect() as conn:
-        with conn.begin():
-            output_df.to_sql(
-                "extra__geocoded_results",
-                schema="public",
-                con=conn,
-                if_exists="replace",
-                index=False,
-                dtype={
-                    "latitude": sqla.Float,
-                    "longitude": sqla.Float,
-                    "result_score": sqla.Float,
-                },
-            )
-
-
-with airflow.DAG(
+dag = cosmos.DbtDag(
     dag_id="main",
     start_date=pendulum.datetime(2022, 1, 1, tz=date.TIME_ZONE),
     default_args=notify_failure_args(),
     schedule="0 4 * * *",
     catchup=False,
-    concurrency=4,
-) as dag:
-    start = empty.EmptyOperator(task_id="start")
-    end = empty.EmptyOperator(task_id="end")
-
-    dbt_seed = dbt_operator_factory(
-        task_id="dbt_seed",
-        command="seed",
-    )
-
-    dbt_create_udfs = dbt_operator_factory(
-        task_id="dbt_create_udfs",
-        command="run-operation create_udfs",
-    )
-
-    python_geocode = python.ExternalPythonOperator(
-        task_id="python_geocode",
-        python=str(PYTHON_BIN_PATH),
-        python_callable=_geocode,
-    )
-
-    (
-        start
-        >> dbt_seed
-        >> dbt_create_udfs
-        >> get_staging_tasks()
-        >> get_before_geocoding_tasks()
-        >> python_geocode
-        >> get_after_geocoding_tasks()
-        >> marts.export_di_dataset_to_s3()
-        >> end
-    )
+    project_config=cosmos.ProjectConfig(
+        dbt_project_path=Variable.get("DBT_PROJECT_DIR"),
+    ),
+    profile_config=cosmos.ProfileConfig(
+        profile_name="data_inclusion",
+        target_name="dev",
+        profile_mapping=cosmos.profiles.PostgresUserPasswordProfileMapping(
+            conn_id="pg",
+            profile_args={"schema": "public"},
+        ),
+    ),
+    execution_config=cosmos.ExecutionConfig(
+        dbt_executable_path=str(DBT_PYTHON_BIN_PATH.parent / "dbt")
+    ),
+    render_config=cosmos.RenderConfig(
+        select=[
+            "source:*",
+            "path:models/staging/sources/**/*.sql",
+            "path:models/intermediate/sources/**/*.sql",
+            "path:models/intermediate/*.sql",
+            "path:models/marts/**/*.sql",
+        ],
+        # show the source as start nodes in the graph
+        node_converters={
+            cosmos.constants.DbtResourceType("source"): lambda dag,
+            task_group,
+            node,
+            **kwargs: empty.EmptyOperator(
+                dag=dag, task_group=task_group, task_id=f"source_{node.name}"
+            ),
+        },
+    ),
+)

@@ -2,6 +2,8 @@
 #    uv pip compile --constraint airflow/constraints.txt dev/requirements.in --output-file=dev/requirements.txt
 2captcha-python==1.2.8
     # via -r dev/../tasks/python/requirements.in
+aenum==3.1.15
+    # via astronomer-cosmos
 aiohttp==3.9.5
     # via
     #   -c airflow/constraints.txt
@@ -36,6 +38,7 @@ apache-airflow==2.9.3
     #   apache-airflow-providers-smtp
     #   apache-airflow-providers-sqlite
     #   apache-airflow-providers-ssh
+    #   astronomer-cosmos
 apache-airflow-providers-amazon==8.25.0
     # via
     #   -c airflow/constraints.txt
@@ -52,7 +55,7 @@ apache-airflow-providers-common-sql==1.14.2
     #   apache-airflow-providers-amazon
     #   apache-airflow-providers-postgres
     #   apache-airflow-providers-sqlite
-apache-airflow-providers-fab==1.2.1
+apache-airflow-providers-fab==1.2.2
     # via
     #   -c airflow/constraints.txt
     #   apache-airflow
@@ -105,11 +108,16 @@ asn1crypto==1.5.1
     # via
     #   -c airflow/constraints.txt
     #   scramp
+astronomer-cosmos==1.5.1
+    # via
+    #   -r dev/../airflow/requirements.in
+    #   -r dev/../tasks/python/requirements.in
 attrs==23.2.0
     # via
     #   -c airflow/constraints.txt
     #   aiohttp
     #   apache-airflow
+    #   astronomer-cosmos
     #   jsonschema
     #   referencing
 babel==2.15.0
@@ -388,6 +396,7 @@ idna==3.7
 importlib-metadata==6.11.0
     # via
     #   -c airflow/constraints.txt
+    #   apache-airflow
     #   opentelemetry-api
 importlib-resources==6.4.0
     # via
@@ -414,6 +423,7 @@ jinja2==3.1.4
     # via
     #   -c airflow/constraints.txt
     #   apache-airflow
+    #   astronomer-cosmos
     #   flask
     #   flask-babel
     #   python-nvd3
@@ -516,6 +526,8 @@ more-itertools==10.3.0
     # via
     #   -c airflow/constraints.txt
     #   apache-airflow-providers-common-sql
+msgpack==1.0.8
+    # via astronomer-cosmos
 multidict==6.0.5
     # via
     #   -c airflow/constraints.txt
@@ -588,6 +600,7 @@ packaging==24.1
     #   -c airflow/constraints.txt
     #   apache-airflow
     #   apispec
+    #   astronomer-cosmos
     #   connexion
     #   geoalchemy2
     #   geopandas
@@ -676,6 +689,7 @@ pycparser==2.22
 pydantic==2.8.2
     # via
     #   -c airflow/constraints.txt
+    #   astronomer-cosmos
     #   pyairtable
 pydantic-core==2.20.1
     # via
@@ -974,6 +988,7 @@ uv==0.2.22
 virtualenv==20.26.3
     # via
     #   -c airflow/constraints.txt
+    #   astronomer-cosmos
     #   pre-commit
     #   tox
 watchtower==3.2.0
