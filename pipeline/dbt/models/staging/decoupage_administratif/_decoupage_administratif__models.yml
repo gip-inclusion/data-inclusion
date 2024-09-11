@@ -32,6 +32,19 @@ models:
           - dbt_utils.not_constant
           - dbt_utils.not_empty_string
 
+  - name: stg_decoupage_administratif__epcis
+    columns:
+      - name: code
+        data_tests:
+          - not_null
+          - dbt_utils.not_constant
+          - dbt_utils.not_empty_string
+      - name: nom
+        data_tests:
+          - not_null
+          - dbt_utils.not_constant
+          - dbt_utils.not_empty_string
+
   - name: stg_decoupage_administratif__communes
     columns:
       - name: code
