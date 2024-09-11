@@ -153,6 +153,37 @@ models:
                 - locality
                 - municipality
 
+  - name: int__criteres_qualite
+    description: |
+      Quality criteria scorings for services from all sources.
+      Each row holds a single criterion score for a service.
+      For a given service, there is as many rows as defined criteria.
+      A null score means the criterion is not applicable to the service.
+      Scoring is done by data-inclusion-schema scoring api in PL/Python.
+    columns:
+      - name: service_id
+        data_tests:
+          - not_null
+          - relationships:
+              to: ref('int__union_services')
+              field: _di_surrogate_id
+      - name: nom_critere
+        description: Name of the criterion.
+        data_tests:
+          - not_null
+          - dbt_utils.not_empty_string
+      - name: score_critere
+        description: |
+          Score for the given criterion and the given service, between 0 and 1.
+      - name: score_ligne
+        data_tests:
+          - not_null
+          - dbt_utils.not_constant
+          - dbt_utils.accepted_range:
+              min_value: 0
+              max_value: 1
+
+
 unit_tests:
   - name: test_geocodages_full_refresh_mode
     model: int__geocodages
