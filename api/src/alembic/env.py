@@ -3,9 +3,9 @@ from logging.config import fileConfig
 from alembic import context
 from sqlalchemy import engine_from_config, pool
 
-from data_inclusion.api.code_officiel_geo import models as _  # noqa: F401 F811
 from data_inclusion.api.config import settings
 from data_inclusion.api.core import db
+from data_inclusion.api.decoupage_administratif import models as _  # noqa: F401 F811
 from data_inclusion.api.inclusion_data import models as _  # noqa: F401 F811
 from data_inclusion.api.request import models as _  # noqa: F401 F811
 

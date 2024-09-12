@@ -10,9 +10,9 @@ from alembic.config import Config
 from fastapi.testclient import TestClient
 
 from data_inclusion.api.app import create_app
-from data_inclusion.api.code_officiel_geo import models
 from data_inclusion.api.config import settings
 from data_inclusion.api.core import db
+from data_inclusion.api.decoupage_administratif.models import Commune
 
 from . import factories
 
@@ -121,7 +121,7 @@ def communes(db_connection):
     df = df.to_wkt()
     commune_data_list = df.to_dict(orient="records")
 
-    db_connection.execute(sqla.insert(models.Commune).values(commune_data_list))
+    db_connection.execute(sqla.insert(Commune).values(commune_data_list))
     db_connection.commit()
 
 

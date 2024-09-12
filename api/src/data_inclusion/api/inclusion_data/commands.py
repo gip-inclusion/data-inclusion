@@ -11,7 +11,6 @@ from furl import furl
 from tqdm import tqdm
 
 from data_inclusion import schema
-from data_inclusion.api.code_officiel_geo import constants
 from data_inclusion.api.config import settings
 from data_inclusion.api.core import db
 from data_inclusion.api.inclusion_data import models
@@ -124,14 +123,6 @@ def load_inclusion_data():
     structures_df = structures_df.replace({np.nan: None})
     services_df = services_df.replace({np.nan: None})
 
-    # TODO(vperron) : To remove when we handle the city districts
-    structures_df = structures_df.assign(
-        code_insee=structures_df.code_insee.apply(clean_up_code_insee),
-    )
-    services_df = services_df.assign(
-        code_insee=services_df.code_insee.apply(clean_up_code_insee),
-    )
-
     structures_df = structures_df.drop(columns=["_di_geocodage_score"])
     services_df = services_df.drop(columns=["_di_geocodage_score"])
 
@@ -194,10 +185,6 @@ def load_inclusion_data():
     ) as connection:
         connection.execute(sqla.text("VACUUM ANALYZE api__structures"))
         connection.execute(sqla.text("VACUUM ANALYZE api__services"))
-
-
-def clean_up_code_insee(v) -> str | None:
-    return constants.CODE_COMMUNE_BY_CODE_ARRONDISSEMENT.get(v, v)
 
 
 def validate_data(model_schema, data):

@@ -3,8 +3,8 @@ from datetime import date
 import sqlalchemy as sqla
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
-from data_inclusion.api.code_officiel_geo.models import Commune
 from data_inclusion.api.core.db import Base
+from data_inclusion.api.decoupage_administratif.models import Commune
 
 # all fields are nullable or have a default value. These models will only be used to
 # query valid data coming from the data pipeline.
