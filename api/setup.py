@@ -27,7 +27,6 @@ setup(
         "numpy",
         "pandas",
         "psycopg2",
-        "py7zr",
         "pyarrow",
         "pydantic[email]>=2.5.0",
         "pydantic-settings",

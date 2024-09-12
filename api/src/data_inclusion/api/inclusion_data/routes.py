@@ -6,20 +6,19 @@ import fastapi
 
 from data_inclusion import schema as di_schema
 from data_inclusion.api import auth
-from data_inclusion.api.code_officiel_geo.constants import (
-    CODE_COMMUNE_BY_CODE_ARRONDISSEMENT,
+from data_inclusion.api.config import settings
+from data_inclusion.api.core import db
+from data_inclusion.api.decoupage_administratif.constants import (
     DepartementCodeEnum,
     DepartementSlugEnum,
     RegionCodeEnum,
     RegionSlugEnum,
 )
-from data_inclusion.api.code_officiel_geo.models import Commune
-from data_inclusion.api.code_officiel_geo.utils import (
+from data_inclusion.api.decoupage_administratif.models import Commune
+from data_inclusion.api.decoupage_administratif.utils import (
     get_departement_by_code_or_slug,
     get_region_by_code_or_slug,
 )
-from data_inclusion.api.config import settings
-from data_inclusion.api.core import db
 from data_inclusion.api.inclusion_data import schemas, services
 from data_inclusion.api.utils import pagination, soliguide
 
@@ -412,9 +411,6 @@ def search_services_endpoint(
     commune_instance = None
     search_point = None
     if code_commune is not None:
-        code_commune = CODE_COMMUNE_BY_CODE_ARRONDISSEMENT.get(
-            code_commune, code_commune
-        )
         commune_instance = db_session.get(Commune, code_commune)
         if commune_instance is None:
             raise fastapi.HTTPException(

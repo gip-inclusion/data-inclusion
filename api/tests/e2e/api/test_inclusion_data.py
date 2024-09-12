@@ -5,7 +5,7 @@ from unittest.mock import ANY
 import pytest
 
 from data_inclusion import schema
-from data_inclusion.api.code_officiel_geo.constants import RegionEnum
+from data_inclusion.api.decoupage_administratif.constants import RegionEnum
 from data_inclusion.api.utils import soliguide
 
 from ... import factories
@@ -15,6 +15,7 @@ HAZEBROUCK = {"code_insee": "59295", "latitude": 50.7262, "longitude": 2.5387}
 LILLE = {"code_insee": "59350", "latitude": 50.633333, "longitude": 3.066667}
 MAUBEUGE = {"code_insee": "59392"}
 PARIS = {"code_insee": "75056", "latitude": 48.866667, "longitude": 2.333333}
+PARIS_11 = {"code_insee": "75111", "latitude": 48.86010, "longitude": 2.38160}
 ROUBAIX = {"code_insee": "59512"}
 
 
@@ -614,7 +615,8 @@ def test_can_filter_resources_by_slug_region(api_client, url, factory):
         (None, DUNKERQUE["code_insee"], False),
         (DUNKERQUE["code_insee"], DUNKERQUE["code_insee"], True),
         (DUNKERQUE["code_insee"], "62041", False),
-        (PARIS["code_insee"], "75101", True),
+        (PARIS["code_insee"], "75056", True),
+        (PARIS_11["code_insee"], "75111", True),
     ],
 )
 def test_can_filter_resources_by_code_commune(
@@ -837,8 +839,8 @@ def test_can_filter_resources_by_sources(api_client, url, factory):
         (None, DUNKERQUE["code_insee"], False),
         (DUNKERQUE, DUNKERQUE["code_insee"], True),
         (DUNKERQUE, MAUBEUGE["code_insee"], False),
-        (PARIS, "75101", True),
-        pytest.param(PARIS, PARIS["code_insee"], True, marks=pytest.mark.xfail),
+        (PARIS, "75056", True),
+        (PARIS_11, "75111", True),
     ],
 )
 @pytest.mark.with_token
@@ -1224,7 +1226,7 @@ def test_search_services_with_code_commune_sample_distance(api_client):
     resp_data = response.json()
     assert_paginated_response_data(resp_data, total=1)
     assert resp_data["items"][0]["service"]["id"] == service_1.id
-    assert resp_data["items"][0]["distance"] == 35
+    assert resp_data["items"][0]["distance"] == 39
 
 
 @pytest.mark.with_token

@@ -15,12 +15,11 @@ import fastapi
 from fastapi_pagination.ext.sqlalchemy import paginate
 
 from data_inclusion import schema as di_schema
-from data_inclusion.api.code_officiel_geo.constants import (
-    CODE_COMMUNE_BY_CODE_ARRONDISSEMENT,
+from data_inclusion.api.decoupage_administratif.constants import (
     Departement,
     Region,
 )
-from data_inclusion.api.code_officiel_geo.models import Commune
+from data_inclusion.api.decoupage_administratif.models import Commune
 from data_inclusion.api.inclusion_data import models
 
 logger = logging.getLogger(__name__)
@@ -198,9 +197,6 @@ def list_structures(
         query = query.filter_by(id=id_)
 
     if commune_code is not None:
-        commune_code = CODE_COMMUNE_BY_CODE_ARRONDISSEMENT.get(
-            commune_code, commune_code
-        )
         query = query.filter(models.Structure.code_insee == commune_code)
 
     if departement is not None:
@@ -328,10 +324,6 @@ def list_services(
         query = query.filter(Commune.region == region.code)
 
     if code_commune is not None:
-        code_commune = CODE_COMMUNE_BY_CODE_ARRONDISSEMENT.get(
-            code_commune, code_commune
-        )
-
         query = query.filter(models.Service.code_insee == code_commune)
 
     query = filter_services(
@@ -415,16 +407,7 @@ def search_services(
         if search_point is not None:
             dest_geometry = search_point
         else:
-            dest_geometry = (
-                sqla.select(
-                    sqla.cast(
-                        geoalchemy2.functions.ST_Simplify(Commune.geom, 0.01),
-                        geoalchemy2.Geography(geometry_type="GEOMETRY", srid=4326),
-                    )
-                )
-                .filter(Commune.code == commune_instance.code)
-                .scalar_subquery()
-            )
+            dest_geometry = commune_instance.centre
 
         query = query.filter(
             sqla.or_(
@@ -432,7 +415,7 @@ def search_services(
                 geoalchemy2.functions.ST_DWithin(
                     src_geometry,
                     dest_geometry,
-                    50_000,  # meters or 50km
+                    50_000,  # meters
                 ),
                 # or `a-distance`
                 models.Service.modes_accueil.contains(
@@ -454,8 +437,8 @@ def search_services(
                                 src_geometry,
                                 dest_geometry,
                             )
-                            / 1000
-                        ).cast(sqla.Integer),  # conversion to kms
+                            / 1000  # conversion to kms
+                        ).cast(sqla.Integer),
                     ),
                     else_=sqla.null().cast(sqla.Integer),
                 )
