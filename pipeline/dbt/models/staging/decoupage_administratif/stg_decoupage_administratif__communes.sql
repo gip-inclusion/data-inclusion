@@ -1,39 +1,40 @@
-WITH communes AS (
+WITH source_communes AS (
     {{ stg_source_header('decoupage_administratif', 'communes') }}
 ),
 
-districts AS (
-    {{ stg_source_header('decoupage_administratif', 'districts') }}
+source_arrondissements AS (
+    {{ stg_source_header('decoupage_administratif', 'arrondissements') }}
 ),
 
-clean_communes AS (
+communes AS (
     SELECT
-        communes.code                       AS "code",
-        communes.nom                        AS "nom",
-        communes."codeRegion"               AS "region",
-        communes."codeDepartement"          AS "departement",
-        communes."codeEpci"                 AS "siren_epci",
-        ST_GEOMFROMGEOJSON(communes.centre) AS "centre",
-        communes."codesPostaux"             AS "codes_postaux"
-    FROM communes
+        source_communes.code                       AS "code",
+        source_communes.nom                        AS "nom",
+        source_communes."codeRegion"               AS "code_region",
+        source_communes."codeDepartement"          AS "code_departement",
+        source_communes."codeEpci"                 AS "code_epci",
+        ST_GEOMFROMGEOJSON(source_communes.centre) AS "centre",
+        source_communes."codesPostaux"             AS "codes_postaux"
+    FROM source_communes
 ),
 
-clean_districts AS (
+arrondissements AS (
     SELECT
-        districts.code                       AS "code",
-        districts.nom                        AS "nom",
-        districts."codeRegion"               AS "region",
-        districts."codeDepartement"          AS "departement",
-        NULL                                 AS "siren_epci",
-        ST_GEOMFROMGEOJSON(districts.centre) AS "centre",
-        districts."codesPostaux"             AS "codes_postaux"
-    FROM districts
+        source_arrondissements.code                       AS "code",
+        source_arrondissements.nom                        AS "nom",
+        source_arrondissements."codeRegion"               AS "code_region",
+        source_arrondissements."codeDepartement"          AS "code_departement",
+        NULL                                              AS "code_epci",
+        ST_GEOMFROMGEOJSON(source_arrondissements.centre) AS "centre",
+        source_arrondissements."codesPostaux"             AS "codes_postaux"
+    FROM source_arrondissements
 ),
 
 final AS (
-    SELECT * FROM clean_communes
+    SELECT * FROM communes
     UNION ALL
-    SELECT * FROM clean_districts
+    SELECT * FROM arrondissements
+    ORDER BY code
 )
 
 SELECT * FROM final

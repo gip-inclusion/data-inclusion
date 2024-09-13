@@ -1,9 +1,13 @@
-WITH regions AS (
+WITH source AS (
     {{ stg_source_header('decoupage_administratif', 'regions') }}
 ),
 
 final AS (
-    SELECT * FROM regions ORDER BY nom
+    SELECT
+        code AS "code",
+        nom  AS "nom"
+    FROM source
+    ORDER BY code
 )
 
 SELECT * FROM final

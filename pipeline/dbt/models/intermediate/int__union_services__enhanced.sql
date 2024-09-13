@@ -11,7 +11,7 @@ adresses AS (
 ),
 
 departements AS (
-    SELECT * FROM {{ source('decoupage_administratif', 'departements') }}
+    SELECT * FROM {{ ref('stg_decoupage_administratif__departements') }}
 ),
 
 -- TODO: Refactoring needed to be able to do geocoding per source and then use the result in the mapping
