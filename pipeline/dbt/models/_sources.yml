@@ -211,9 +211,8 @@ sources:
   - name: decoupage_administratif
     schema: decoupage_administratif
     tables:
-      - name: communes
-      - name: districts
+      - name: regions
       - name: departements
       - name: epcis
-      - name: regions
-
+      - name: communes
+      - name: arrondissements

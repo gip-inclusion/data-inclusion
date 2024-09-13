@@ -2,7 +2,7 @@
 
 {% set table_exists = adapter.get_relation(database=source_model.database, schema=source_model.schema, identifier=source_model.name) is not none %}
 
--- depends_on: {{ source('decoupage_administratif', 'departements') }}
+-- depends_on: {{ ref('stg_decoupage_administratif__departements') }}
 
 {% if table_exists %}
 
@@ -11,7 +11,7 @@
     ),
 
     departements AS (
-        SELECT * FROM {{ source('decoupage_administratif', 'departements') }}
+        SELECT * FROM {{ ref('stg_decoupage_administratif__departements') }}
     ),
 
     final AS (
