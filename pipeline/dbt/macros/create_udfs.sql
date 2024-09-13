@@ -23,4 +23,4 @@ CREATE SCHEMA IF NOT EXISTS processings;
 
 {% do run_query(sql) %}
 
-{% endmacro %}s
+{% endmacro %}
