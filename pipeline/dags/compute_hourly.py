@@ -5,8 +5,7 @@ from airflow.operators import empty
 
 from dag_utils import date, marts, notifications
 from dag_utils.dbt import (
-    get_after_geocoding_tasks,
-    get_before_geocoding_tasks,
+    get_intermediate_tasks,
     get_staging_tasks,
 )
 
@@ -24,8 +23,7 @@ with airflow.DAG(
     (
         start
         >> get_staging_tasks(schedule="@hourly")
-        >> get_before_geocoding_tasks()
-        >> get_after_geocoding_tasks()
+        >> get_intermediate_tasks()
         >> marts.export_di_dataset_to_s3()
         >> end
     )

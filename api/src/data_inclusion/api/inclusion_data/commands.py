@@ -123,9 +123,6 @@ def load_inclusion_data():
     structures_df = structures_df.replace({np.nan: None})
     services_df = services_df.replace({np.nan: None})
 
-    structures_df = structures_df.drop(columns=["_di_geocodage_score"])
-    services_df = services_df.drop(columns=["_di_geocodage_score"])
-
     structure_errors_df = validate_df(structures_df, model_schema=schema.Structure)
     service_errors_df = validate_df(services_df, model_schema=schema.Service)
 

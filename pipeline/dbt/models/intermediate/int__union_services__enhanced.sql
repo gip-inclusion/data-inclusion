@@ -92,8 +92,7 @@ final AS (
         adresses.commune            AS "commune",
         adresses.adresse            AS "adresse",
         adresses.code_postal        AS "code_postal",
-        adresses.code_insee         AS "code_insee",
-        adresses.result_score       AS "_di_geocodage_score"
+        adresses.code_insee         AS "code_insee"
     FROM
         valid_services
     LEFT JOIN adresses ON valid_services._di_adresse_surrogate_id = adresses._di_surrogate_id

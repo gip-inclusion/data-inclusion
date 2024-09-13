@@ -49,7 +49,6 @@ final AS (
         adresses.adresse                                                        AS "adresse",
         adresses.code_postal                                                    AS "code_postal",
         adresses.code_insee                                                     AS "code_insee",
-        adresses.result_score                                                   AS "_di_geocodage_score",
         COALESCE(plausible_personal_emails._di_surrogate_id IS NOT NULL, FALSE) AS "_di_email_is_pii"
     FROM
         valid_structures

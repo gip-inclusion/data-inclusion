@@ -98,9 +98,9 @@ def get_staging_tasks(schedule=None):
     return task_list
 
 
-def get_before_geocoding_tasks():
+def get_intermediate_tasks():
     return dbt_operator_factory(
-        task_id="dbt_build_before_geocoding",
+        task_id="dbt_build_intermediate",
         command="build",
         select=" ".join(
             [
@@ -111,22 +111,11 @@ def get_before_geocoding_tasks():
                 # into a single DAG. Another way to see it is that it depended on
                 # main since the beginning as it required intermediate data to be
                 # present ?
+                "path:models/intermediate/int__geocodages.sql",
                 "path:models/intermediate/int__union_contacts.sql",
                 "path:models/intermediate/int__union_adresses.sql",
                 "path:models/intermediate/int__union_services.sql",
                 "path:models/intermediate/int__union_structures.sql",
-            ]
-        ),
-        trigger_rule=TriggerRule.ALL_DONE,
-    )
-
-
-def get_after_geocoding_tasks():
-    return dbt_operator_factory(
-        task_id="dbt_build_after_geocoding",
-        command="build",
-        select=" ".join(
-            [
                 "path:models/intermediate/extra",
                 "path:models/intermediate/int__plausible_personal_emails.sql",
                 "path:models/intermediate/int__union_adresses__enhanced.sql+",
@@ -140,4 +129,5 @@ def get_after_geocoding_tasks():
                 "path:models/intermediate/quality/int_quality__stats.sql+",
             ]
         ),
+        trigger_rule=TriggerRule.ALL_DONE,
     )

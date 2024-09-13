@@ -10,8 +10,6 @@ models:
         data_type: text
         constraints:
           - type: primary_key
-      - name: _di_geocodage_score
-        data_type: float
       - name: id
         data_type: text
         constraints:
@@ -135,8 +133,6 @@ models:
           - type: not_null
           - type: foreign_key
             expression: "public_marts.marts_inclusion__structures (_di_surrogate_id)"
-      - name: _di_geocodage_score
-        data_type: float
       - name: id
         data_type: text
         constraints:
