@@ -52,7 +52,9 @@ final AS (
         CASE
             WHEN ARRAY_LENGTH(structures.telephone, 1) > 0 THEN structures.telephone[1]
         END                                       AS "telephone",
-        structures.courriel                       AS "courriel",
+        CASE
+            WHEN ARRAY_LENGTH(structures.courriel, 1) > 0 THEN structures.courriel[1]
+        END                                       AS "courriel",
         structures.site_web                       AS "site_web",
         LEFT(structures.presentation_resume, 280) AS "presentation_resume",
         structures.presentation_resume            AS "presentation_detail",
