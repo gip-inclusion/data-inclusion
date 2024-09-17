@@ -1,7 +1,7 @@
 version: 2
 
 models:
-  - name: int_mes_aides__adresses
+  - name: int_mes_aides__garages__adresses
     data_tests:
       - check_adresse:
           config:
@@ -13,7 +13,7 @@ models:
           - not_null
           - dbt_utils.not_empty_string
 
-  - name: int_mes_aides__structures
+  - name: int_mes_aides__garages__structures
     data_tests:
       - check_structure:
           config:
@@ -28,10 +28,10 @@ models:
         data_tests:
           - not_null
           - relationships:
-              to: ref('int_mes_aides__adresses')
+              to: ref('int_mes_aides__garages__adresses')
               field: id
 
-  - name: int_mes_aides__services
+  - name: int_mes_aides__garages__services
     data_tests:
       - check_service:
           config:
@@ -46,21 +46,11 @@ models:
         data_tests:
           - not_null
           - relationships:
-              to: ref('int_mes_aides__structures')
+              to: ref('int_mes_aides__garages__structures')
               field: id
       - name: adresse_id
         data_tests:
           - not_null
           - relationships:
-              to: ref('int_mes_aides__adresses')
+              to: ref('int_mes_aides__garages__adresses')
               field: id
-  - name: int_mes_aides__contacts
-    columns:
-      - name: contact_uid
-        data_tests:
-          - unique
-          - not_null
-      - name: courriel
-        data_tests:
-          - not_null
-          - dbt_utils.not_empty_string

@@ -29,7 +29,7 @@
 -- depends_on: {{ ref('stg_mediation_numerique__structures') }}
 -- depends_on: {{ ref('int_mediation_numerique__services') }}
 -- depends_on: {{ ref('int_mediation_numerique__structures') }}
--- depends_on: {{ ref('stg_mes_aides__aides') }}
+-- depends_on: {{ ref('stg_mes_aides__permis_velo') }}
 -- depends_on: {{ ref('stg_mes_aides__garages') }}
 -- depends_on: {{ ref('int_mes_aides__services') }}
 -- depends_on: {{ ref('int_mes_aides__structures') }}
