@@ -138,7 +138,6 @@ final AS (
         NULL                                                                                  AS "modes_orientation_beneficiaire_autres",
         NULL                                                                                  AS "formulaire_en_ligne",
         NULL                                                                                  AS "lien_source",
-        fredo_structures.courriel                                                             AS "courriel",
         NULL                                                                                  AS "contact_nom_prenom",
         'departement'                                                                         AS "zone_diffusion_type",
         '974'                                                                                 AS "zone_diffusion_code",
@@ -158,6 +157,9 @@ final AS (
         CASE
             WHEN ARRAY_LENGTH(fredo_structures.telephone, 1) > 0 THEN fredo_structures.telephone[1]
         END                                                                                   AS "telephone",
+        CASE
+            WHEN ARRAY_LENGTH(fredo_structures.courriel, 1) > 0 THEN fredo_structures.courriel[1]
+        END                                                                                   AS "courriel",
         ARRAY[(
             SELECT di_types_by_fredo_services.di_type
             FROM di_types_by_fredo_services
