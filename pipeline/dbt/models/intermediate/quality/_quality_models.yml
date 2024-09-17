@@ -22,6 +22,7 @@ models:
           - dora
           - emplois_de_linclusion
           - france_travail
+          - fredo
           - mediation_numerique
           - mes_aides
           - monenfant
