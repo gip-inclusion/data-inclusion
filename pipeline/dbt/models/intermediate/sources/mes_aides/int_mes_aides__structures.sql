@@ -1,32 +1,57 @@
-WITH garages AS (
-    SELECT * FROM {{ ref('stg_mes_aides__garages') }}
+WITH structures_garage AS (
+    SELECT * FROM {{ ref('int_mes_aides__structures_garage') }}
+),
+
+structures_permis_velo AS (
+    SELECT * FROM {{ ref('int_mes_aides__structures_permis_velo') }}
 ),
 
 final AS (
     SELECT
-        id                AS "id",
-        id                AS "adresse_id",
-        siret             AS "siret",
-        NULL::BOOLEAN     AS "antenne",
-        NULL              AS "rna",
-        nom               AS "nom",
-        telephone         AS "telephone",
-        email             AS "courriel",
-        url               AS "site_web",
-        _di_source_id     AS "source",
-        NULL              AS "lien_source",
-        NULL              AS "horaires_ouverture",
-        NULL              AS "accessibilite",
-        NULL::TEXT []     AS "labels_nationaux",
-        NULL::TEXT []     AS "labels_autres",
-        NULL              AS "typologie",
-        NULL              AS "presentation_resume",
-        NULL              AS "presentation_detail",
-        modifie_le::DATE  AS "date_maj",
-        ARRAY['mobilite'] AS "thematiques"
-    FROM garages
-    WHERE
-        en_ligne
+        id,
+        adresse_id,
+        siret,
+        antenne,
+        rna,
+        nom,
+        telephone,
+        courriel,
+        site_web,
+        "source",
+        lien_source,
+        horaires_ouverture,
+        accessibilite,
+        labels_nationaux,
+        labels_autres,
+        typologie,
+        presentation_resume,
+        presentation_detail,
+        date_maj,
+        thematiques
+    FROM structures_garage
+    UNION ALL
+    SELECT
+        id,
+        adresse_id,
+        siret,
+        antenne,
+        rna,
+        nom,
+        telephone,
+        courriel,
+        site_web,
+        "source",
+        lien_source,
+        horaires_ouverture,
+        accessibilite,
+        labels_nationaux,
+        labels_autres,
+        typologie,
+        presentation_resume,
+        presentation_detail,
+        date_maj,
+        thematiques
+    FROM structures_permis_velo
 )
 
 SELECT * FROM final

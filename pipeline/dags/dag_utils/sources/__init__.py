@@ -54,6 +54,11 @@ SOURCES_CONFIGS = {
                 "url": Variable.get("MES_AIDES_AIDES_URL", None),
                 "token": Variable.get("MES_AIDES_AIRTABLE_KEY", None),
             },
+            "permis_velo": {
+                "filename": "aides.json",
+                "url": Variable.get("MES_AIDES_PERMIS_VELO_URL", None),
+                "token": Variable.get("MES_AIDES_AIRTABLE_KEY", None),
+            },
         },
     },
     "siao": {

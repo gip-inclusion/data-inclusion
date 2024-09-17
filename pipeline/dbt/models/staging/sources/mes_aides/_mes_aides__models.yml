@@ -3,3 +3,4 @@ version: 2
 models:
   - name: stg_mes_aides__aides
   - name: stg_mes_aides__garages
+  - name: stg_mes_aides__permis_velo
