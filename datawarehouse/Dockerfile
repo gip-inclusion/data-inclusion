@@ -17,10 +17,13 @@ RUN apt-get update \
     && apt-get clean -y \
     && rm -rf /var/lib/apt/lists/*
 
+RUN python3.11 -m venv ${VIRTUAL_ENV}
+RUN pip install --no-cache-dir --upgrade pip setuptools wheel
+
 COPY ./docker-entrypoint-initdb.d /docker-entrypoint-initdb.d
 
-RUN python3.11 -m venv ${VIRTUAL_ENV}
+COPY processings/requirements processings/requirements
+RUN pip install --no-cache-dir -r processings/requirements/requirements.txt
 
-COPY requirements requirements
-RUN pip install --no-cache-dir --upgrade pip setuptools wheel
-RUN pip install --no-cache-dir -r requirements/requirements.txt
+COPY processings processings
+RUN pip install --no-cache-dir -e processings
