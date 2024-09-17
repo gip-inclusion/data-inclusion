@@ -193,8 +193,12 @@ sources:
 
   - name: fredo
     schema: fredo
+    meta:
+      is_provider: true
     tables:
       - name: structures
+        meta:
+          kind: structure
 
   - name: action_logement
     schema: action_logement

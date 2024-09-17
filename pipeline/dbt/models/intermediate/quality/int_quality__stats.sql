@@ -23,6 +23,8 @@
 -- depends_on: {{ ref('stg_france_travail__services') }}
 -- depends_on: {{ ref('int_france_travail__services') }}
 -- depends_on: {{ ref('int_france_travail__structures') }}
+-- depends_on: {{ ref('stg_fredo__structures') }}
+-- depends_on: {{ ref('int_fredo__structures') }}
 -- depends_on: {{ ref('stg_mediation_numerique__services') }}
 -- depends_on: {{ ref('stg_mediation_numerique__structures') }}
 -- depends_on: {{ ref('int_mediation_numerique__services') }}
