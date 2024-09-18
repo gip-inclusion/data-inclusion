@@ -12,9 +12,9 @@ zone_code AS (
     SELECT
         permis_velo.id,
         communes.code,
-        communes.siren_epci,
-        communes.departement,
-        communes.region
+        communes.code_epci,
+        communes.code_departement,
+        communes.code_region
     FROM permis_velo
     LEFT JOIN communes ON permis_velo.code_postal = ANY(communes.codes_postaux) AND permis_velo.ville_nom = communes.nom
 ),
@@ -158,9 +158,9 @@ final AS (
         transformed_types.transformed_types                   AS "types",
         CASE
             WHEN zone_diffusion.zone_di = 'commune' THEN zone_code.code
-            WHEN zone_diffusion.zone_di = 'epci' THEN zone_code.siren_epci
-            WHEN zone_diffusion.zone_di = 'region' THEN zone_code.region
-            WHEN zone_diffusion.zone_di = 'departement' THEN zone_code.departement
+            WHEN zone_diffusion.zone_di = 'epci' THEN zone_code.code_epci
+            WHEN zone_diffusion.zone_di = 'region' THEN zone_code.code_region
+            WHEN zone_diffusion.zone_di = 'departement' THEN zone_code.code_departement
             WHEN zone_diffusion.zone_di = 'pays' THEN NULL
         END                                                   AS "zone_diffusion_code",
         CASE
