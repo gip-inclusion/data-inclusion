@@ -151,7 +151,13 @@ final AS (
         CAST(NULL AS DATE)                                                                    AS "date_creation",
         CAST(NULL AS DATE)                                                                    AS "date_suspension",
         CAST(NULL AS BOOLEAN)                                                                 AS "contact_public",
-        CAST(NULL AS TEXT [])                                                                 AS "modes_accueil",
+        CASE
+            WHEN
+                fredo_structures.adresse IS NOT NULL
+                AND fredo_structures.code_postal IS NOT NULL
+                AND fredo_structures.commune IS NOT NULL THEN ARRAY['en-presentiel']
+            ELSE ARRAY['a-distance']
+        END                                                                                   AS "modes_accueil",
         LEFT(fredo_structures.presentation_resume, 280)                                       AS "presentation_resume",
         fredo_structures.presentation_resume                                                  AS "presentation_detail",
         CASE
