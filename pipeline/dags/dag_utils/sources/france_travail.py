@@ -10,7 +10,7 @@ def extract(url, token, id=None):
     client_id, client_secret = token.split(":")
 
     token = requests.post(
-        url="https://entreprise.pole-emploi.fr/connexion/oauth2/access_token",
+        url="https://entreprise.francetravail.fr/connexion/oauth2/access_token",
         params={
             "realm": "/partenaire",
         },
