@@ -53,28 +53,18 @@ models:
               to: ref('stg_decoupage_administratif__regions')
               field: code
               where: "zone_diffusion_type = 'region'"
-            # TODO(vmttn): prevent false codes from being propagated downstream
-            # and set back severity to error
-              config:
-                severity: warn
           - relationships:
               to: ref('stg_decoupage_administratif__departements')
               field: code
               where: "zone_diffusion_type = 'departement'"
-              config:
-                severity: warn
           - relationships:
               to: ref('stg_decoupage_administratif__epcis')
               field: code
               where: "zone_diffusion_type = 'epci'"
-              config:
-                severity: warn
           - relationships:
               to: ref('stg_decoupage_administratif__communes')
               field: code
               where: "zone_diffusion_type = 'commune'"
-              config:
-                severity: warn
 
   - name: int__union_structures__enhanced
 
