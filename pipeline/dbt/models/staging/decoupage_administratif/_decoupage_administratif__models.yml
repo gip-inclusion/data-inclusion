@@ -5,6 +5,7 @@ models:
     columns:
       - name: code
         data_tests:
+          - unique
           - not_null
           - dbt_utils.not_constant
           - dbt_utils.not_empty_string
@@ -18,6 +19,7 @@ models:
     columns:
       - name: code
         data_tests:
+          - unique
           - not_null
           - dbt_utils.not_constant
           - dbt_utils.not_empty_string
@@ -36,6 +38,7 @@ models:
     columns:
       - name: code
         data_tests:
+          - unique
           - not_null
           - dbt_utils.not_constant
           - dbt_utils.not_empty_string
@@ -51,6 +54,8 @@ models:
         data_tests:
           - unique
           - not_null
+          - dbt_utils.not_constant
+          - dbt_utils.not_empty_string
       - name: nom
         data_tests:
           - not_null
@@ -74,11 +79,8 @@ models:
               field: code
       - name: code_epci
         data_tests:
-          # NOTE(vperron): the test is against a source, since the EPCIs are
-          # very rarely used yet and it does not seem worth it to create a
-          # staging view for them yet.
           - relationships:
-              to: source('decoupage_administratif', 'epcis')
+              to: ref('stg_decoupage_administratif__epcis')
               field: code
       - name: centre
         data_tests:

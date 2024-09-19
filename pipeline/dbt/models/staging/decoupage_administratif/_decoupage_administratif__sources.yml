@@ -1,0 +1,11 @@
+version: 2
+
+sources:
+  - name: decoupage_administratif
+    schema: decoupage_administratif
+    tables:
+      - name: regions
+      - name: departements
+      - name: epcis
+      - name: communes
+      - name: arrondissements
