@@ -40,6 +40,16 @@ models:
 
   - name: int__union_adresses__enhanced
 
+  - name: int__union_contacts__enhanced
+    columns:
+      - name: id
+      - name: source
+      - name: contact_nom_prenom
+      - name: courriel
+      - name: telephone
+      - name: rgpd_notice_was_objected_to
+      - name: rgpd_notice_has_hardbounced
+
   - name: int__union_services__enhanced
     columns:
       - name: zone_diffusion_code
@@ -193,3 +203,29 @@ unit_tests:
         - {adresse_id: changed-code-insee}
         - {adresse_id: changed-commune}
         - {adresse_id: new}
+
+  - name: test_contacts_enhanced_hardbounce_and_objected_to
+    model: int__union_contacts__enhanced
+    given:
+      - input: ref('int__union_contacts')
+        rows:
+          - {"source": "dora", "id": "foo", "courriel": "truc@toto.at", "contact_nom_prenom": "Jean Valjean", "telephone": "0123456789"}
+          - {"source": "mednum", "id": "bar", "courriel": "truc@toto.at", "contact_nom_prenom": "Jean Valjean", "telephone": "0123456789"}
+          - {"source": "lezemplois", "id": "baz", "courriel": "truc@toto.at", "contact_nom_prenom": "Jean Valjean", "telephone": "0123456789"}
+          - {"source": "autre", "id": "solo", "courriel": "solo@autre.net", "contact_nom_prenom": "Autre Personne", "telephone": "06666666"}
+      - input: ref('int_brevo__contacts')
+        format: sql
+        rows:
+          select ARRAY['dora:services:foo'] as contact_uids, TRUE as est_interdit, '2021-01-01' as date_di_rgpd_opposition
+          UNION ALL
+          select ARRAY['mednum:services:bar'] as contact_uids, FALSE as est_interdit, '2021-01-01' as date_di_rgpd_opposition
+          UNION ALL
+          select ARRAY['lezemplois:services:baz'] as contact_uids, FALSE as est_interdit, NULL as date_di_rgpd_opposition
+          UNION ALL
+          select ARRAY['sans:services:rapport'] as contact_uids, TRUE as est_interdit, NULL as date_di_rgpd_opposition
+    expect:
+      rows:
+        - {source: dora, id: foo, courriel: NULL, contact_nom_prenom: NULL, telephone: NULL}  # objected to, hardbounce
+        - {source: mednum, id: bar, courriel: NULL, contact_nom_prenom: NULL, telephone: NULL}  # objected to, no hardbounce
+        - {source: lezemplois, id: baz, courriel: truc@toto.at, contact_nom_prenom: Jean Valjean, telephone: '0123456789'} # not objected to, no hardbounce
+        - {source: autre, id: solo, courriel: solo@autre.net, contact_nom_prenom: Autre Personne, telephone: '06666666'} # hardbounce : only email is hidden
