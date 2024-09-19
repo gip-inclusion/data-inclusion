@@ -54,3 +54,13 @@ models:
           - relationships:
               to: ref('int_mes_aides__adresses')
               field: id
+  - name: int_mes_aides__contacts
+    columns:
+      - name: contact_uid
+        data_tests:
+          - unique
+          - not_null
+      - name: courriel
+        data_tests:
+          - not_null
+          - dbt_utils.not_empty_string

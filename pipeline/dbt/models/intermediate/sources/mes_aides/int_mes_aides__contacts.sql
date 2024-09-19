@@ -8,10 +8,10 @@ WITH structure_contacts AS (
 
 service_contacts AS (
     SELECT
-        email                    AS "courriel",
+        contact_email            AS "courriel",
         'mes-aides:aides:' || id AS contact_uid
-    FROM {{ ref('stg_mes_aides__aides') }}
-    WHERE email IS NOT NULL
+    FROM {{ ref('stg_mes_aides__permis_velo') }}
+    WHERE contact_email IS NOT NULL
 ),
 
 final AS (

@@ -8,6 +8,10 @@ communes AS (
     SELECT * FROM {{ ref('stg_decoupage_administratif__communes') }}
 ),
 
+departements AS (
+    SELECT * FROM {{ ref('stg_decoupage_administratif__departements') }}
+),
+
 zone_code AS (
     SELECT
         permis_velo.id,
@@ -16,7 +20,7 @@ zone_code AS (
         communes.code_departement,
         communes.code_region
     FROM permis_velo
-    LEFT JOIN communes ON permis_velo.code_postal = ANY(communes.codes_postaux) AND permis_velo.ville_nom = communes.nom
+    LEFT JOIN communes ON permis_velo.liaisons_code_postal = ANY(communes.codes_postaux) AND permis_velo.liaisons_ville_nom = communes.nom
 ),
 
 types_mapping AS (
@@ -46,7 +50,7 @@ zone_diffusion AS (
         zone_de_diffusion_mapping.zone_di,
         permis_velo.id
     FROM permis_velo
-    INNER JOIN zone_de_diffusion_mapping ON permis_velo.zone_diffusion_type = zone_de_diffusion_mapping.zone_mes_aides
+    INNER JOIN zone_de_diffusion_mapping ON permis_velo.zone_geographique = zone_de_diffusion_mapping.zone_mes_aides
 ),
 
 modes_orientation_mapping AS (
@@ -113,74 +117,78 @@ transformed_types AS (
 
 final AS (
     SELECT
-        permis_velo.id                                        AS "adresse_id",
-        TRUE                                                  AS "contact_public",
-        TRUE                                                  AS "cumulable",
-        permis_velo.date_creation                             AS "date_creation",
-        permis_velo.date_maj                                  AS "date_maj",
-        CAST(NULL AS DATE)                                    AS "date_suspension",
-        NULL                                                  AS "formulaire_en_ligne",
-        permis_velo.frais_autres                              AS "frais_autres",
-        permis_velo.id                                        AS "id",
-        CAST(NULL AS TEXT [])                                 AS "justificatifs",
-        permis_velo.lien_source                               AS "lien_source",
+        permis_velo.id                      AS "adresse_id",
+        TRUE                                AS "contact_public",
+        TRUE                                AS "cumulable",
+        permis_velo.creee_le                AS "date_creation",
+        permis_velo.modifiee_le             AS "date_maj",
+        CAST(NULL AS DATE)                  AS "date_suspension",
+        NULL                                AS "formulaire_en_ligne",
+        permis_velo.nature                  AS "frais_autres",
+        permis_velo.id                      AS "id",
+        CAST(NULL AS TEXT [])               AS "justificatifs",
+        permis_velo.url_mes_aides           AS "lien_source",
         CASE
-            WHEN permis_velo.mode_acceuil = TRUE THEN ARRAY['a-distance']
+            WHEN permis_velo.en_ligne = TRUE THEN ARRAY['a-distance']
             ELSE ARRAY['en-presentiel']
-        END                                                   AS "modes_accueil",
+        END                                 AS "modes_accueil",
         (
             SELECT modes_orientation_mapping.modes_orientation_accompagnateur
             FROM modes_orientation_mapping
             WHERE permis_velo.methode = modes_orientation_mapping.demarche
-        )                                                     AS "modes_orientation_accompagnateur",
-        NULL                                                  AS "modes_orientation_accompagnateur_autres",
+        )                                   AS "modes_orientation_accompagnateur",
+        NULL                                AS "modes_orientation_accompagnateur_autres",
         (
             SELECT modes_orientation_mapping.modes_orientation_beneficiaire
             FROM modes_orientation_mapping
             WHERE permis_velo.methode = modes_orientation_mapping.demarche
-        )                                                     AS "modes_orientation_beneficiaire",
-        permis_velo.mode_orientation_beneficiare_autre        AS "modes_orientation_beneficiaire_autres",
-        permis_velo.nom                                       AS "nom",
-        NULL                                                  AS "presentation_resume",
-        permis_velo.presentation_detail                       AS "presentation_detail",
-        NULL                                                  AS "prise_rdv",
-        CAST(NULL AS TEXT [])                                 AS "profils",
-        NULL                                                  AS "recurrence",
-        permis_velo._di_source_id                             AS "source",
-        COALESCE(permis_velo.siret_structure, permis_velo.id) AS "structure_id",
+        )                                   AS "modes_orientation_beneficiaire",
+        permis_velo.demarche                AS "modes_orientation_beneficiaire_autres",
+        permis_velo.nom                     AS "nom",
+        CASE
+            WHEN LENGTH(permis_velo.modalite_versement) > 297 THEN SUBSTRING(permis_velo.modalite_versement FROM 1 FOR 294) || '...'
+            ELSE permis_velo.modalite_versement
+        END                                 AS "presentation_resume",
+        permis_velo.modalite_versement      AS "presentation_detail",
+        NULL                                AS "prise_rdv",
+        CAST(NULL AS TEXT [])               AS "profils",
+        NULL                                AS "recurrence",
+        permis_velo._di_source_id           AS "source",
+        permis_velo.id                      AS "structure_id",
         (
             SELECT mapping_thematiques.correspondance_di
             FROM mapping_thematiques
             WHERE
-                permis_velo.besoins_mes_aides = mapping_thematiques.besoins
-                AND permis_velo.thematique_mes_aides = mapping_thematiques.thematiques
-        )                                                     AS "thematiques",
-        transformed_types.transformed_types                   AS "types",
+                permis_velo.liaisons_besoins_mes_aides = mapping_thematiques.besoins
+                AND permis_velo.slug_thematique_mes_aides = mapping_thematiques.thematiques
+        )                                   AS "thematiques",
+        transformed_types.transformed_types AS "types",
         CASE
             WHEN zone_diffusion.zone_di = 'commune' THEN zone_code.code
             WHEN zone_diffusion.zone_di = 'epci' THEN zone_code.code_epci
             WHEN zone_diffusion.zone_di = 'region' THEN zone_code.code_region
             WHEN zone_diffusion.zone_di = 'departement' THEN zone_code.code_departement
             WHEN zone_diffusion.zone_di = 'pays' THEN NULL
-        END                                                   AS "zone_diffusion_code",
+        END                                 AS "zone_diffusion_code",
         CASE
-            WHEN zone_diffusion.zone_di = 'commune' THEN permis_velo.ville_nom
-            WHEN zone_diffusion.zone_di = 'epci' THEN permis_velo.ville_nom
-            WHEN zone_diffusion.zone_di = 'region' THEN permis_velo.region
-            WHEN zone_diffusion.zone_di = 'departement' THEN permis_velo.departement
+            WHEN zone_diffusion.zone_di = 'commune' THEN permis_velo.liaisons_ville_nom
+            WHEN zone_diffusion.zone_di = 'epci' THEN permis_velo.liaisons_ville_nom
+            WHEN zone_diffusion.zone_di = 'region' THEN permis_velo.liaisons_region
+            WHEN zone_diffusion.zone_di = 'departement' THEN departements.nom
             WHEN zone_diffusion.zone_di = 'pays' THEN NULL
-        END                                                   AS "zone_diffusion_nom",
-        zone_diffusion.zone_di                                AS "zone_diffusion_type",
-        CAST(NULL AS TEXT [])                                 AS "pre_requis",
-        NULL                                                  AS "contact_nom_prenom",
-        permis_velo.courriel                                  AS "courriel",
-        permis_velo.telephone                                 AS "telephone",
-        CAST(NULL AS TEXT [])                                 AS "frais",
-        permis_velo.page_web                                  AS "page_web"
+        END                                 AS "zone_diffusion_nom",
+        zone_diffusion.zone_di              AS "zone_diffusion_type",
+        CAST(NULL AS TEXT [])               AS "pre_requis",
+        NULL                                AS "contact_nom_prenom",
+        permis_velo.contact_email           AS "courriel",
+        permis_velo.contact_telephone       AS "telephone",
+        CAST(NULL AS TEXT [])               AS "frais",
+        permis_velo.site                    AS "page_web"
     FROM permis_velo
     LEFT JOIN transformed_types ON permis_velo.id = transformed_types.id
     LEFT JOIN zone_diffusion ON permis_velo.id = zone_diffusion.id
     LEFT JOIN zone_code ON permis_velo.id = zone_code.id
+    LEFT JOIN departements ON permis_velo.num_departement = departements.code
 )
 
 SELECT * FROM final
