@@ -48,13 +48,10 @@ def dbt_operator_factory(
     )
 
 
-def get_staging_tasks(schedule=None):
+def get_staging_tasks():
     task_list = []
 
-    for source_id, src_meta in sorted(SOURCES_CONFIGS.items()):
-        if schedule and "schedule" in src_meta and src_meta["schedule"] != schedule:
-            continue
-
+    for source_id in sorted(SOURCES_CONFIGS):
         dbt_source_id = source_id.replace("-", "_")
 
         stg_selector = f"path:models/staging/sources/**/stg_{dbt_source_id}__*.sql"

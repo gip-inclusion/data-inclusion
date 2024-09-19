@@ -15,7 +15,7 @@ with airflow.DAG(
     dag_id="main",
     start_date=pendulum.datetime(2022, 1, 1, tz=date.TIME_ZONE),
     default_args=notify_failure_args(),
-    schedule="0 4 * * *",
+    schedule="@hourly",
     catchup=False,
     concurrency=4,
 ) as dag:
