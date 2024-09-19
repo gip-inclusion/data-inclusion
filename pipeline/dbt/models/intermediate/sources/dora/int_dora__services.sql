@@ -14,24 +14,6 @@ di_profil_by_dora_profil AS (
     ) AS x (dora_profil, di_profil)
 ),
 
-blocked_contacts AS (
-    SELECT DISTINCT UNNEST(contact_uids) AS id
-    FROM {{ ref('int_brevo__contacts') }}
-    WHERE est_interdit = TRUE OR date_di_rgpd_opposition IS NOT NULL
-),
-
-blocked_contact_uids AS (
-    SELECT
-        SPLIT_PART(id, ':', 3) AS id,
-        SPLIT_PART(id, ':', 2) AS kind
-    FROM blocked_contacts
-    WHERE SPLIT_PART(id, ':', 1) = 'dora'
-),
-
-blocked_services_uids AS (
-    SELECT id FROM blocked_contact_uids WHERE kind = 'services'
-),
-
 final AS (
     SELECT
         services.id                                      AS "adresse_id",
@@ -74,21 +56,11 @@ final AS (
         services.zone_diffusion_type                     AS "zone_diffusion_type",
         services.pre_requis                              AS "pre_requis",
         NULL                                             AS "page_web",
-        CASE
-            WHEN blocked_services_uids.id IS NULL
-                THEN services.contact_nom_prenom
-        END                                              AS "contact_nom_prenom",
-        CASE
-            WHEN blocked_services_uids.id IS NULL
-                THEN services.courriel
-        END                                              AS "courriel",
-        CASE
-            WHEN blocked_services_uids.id IS NULL
-                THEN services.telephone
-        END                                              AS "telephone",
+        services.contact_nom_prenom                      AS "contact_nom_prenom",
+        services.courriel                                AS "courriel",
+        services.telephone                               AS "telephone",
         ARRAY[services.frais]                            AS "frais"
     FROM services
-    LEFT JOIN blocked_services_uids ON services.id = blocked_services_uids.id
 )
 
 SELECT * FROM final
