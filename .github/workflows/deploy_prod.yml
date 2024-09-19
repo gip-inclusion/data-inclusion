@@ -1,0 +1,16 @@
+name: deploy_prod
+
+on:
+  push:
+    branches: [release]
+
+jobs:
+  build:
+    uses: ./.github/workflows/_build_images.yml
+
+  deploy_prod:
+    needs: build
+    uses: ./.github/workflows/_terraform_deploy.yml
+    secrets: inherit
+    with:
+      environment: prod

@@ -1,0 +1,62 @@
+name: Build docker images
+
+on:
+  workflow_call:
+    inputs:
+      environment:
+        type: string
+        description: 'Github environment to use'
+        required: true
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    environment: ${{ inputs.environment }}
+
+    env:
+      ENV: ${{ vars.ENVIRONMENT }}
+      AWS_ACCESS_KEY_ID: ${{ vars.AWS_ACCESS_KEY_ID }}
+      AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+      TF_VARS_BASE64: ${{ secrets.TF_VARS_BASE64 }}
+      TF_VAR_stack_version: ${{ github.sha }}
+
+    defaults:
+      run:
+        working-directory: deployment
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: "1.9.7"
+
+      - name: mask tf variables
+        run: |
+          echo "${TF_VARS_BASE64}" \
+            | base64 --decode \
+            | jq 'to_entries | map(.value // empty) | .[]' \
+            | xargs -I{} echo '::add-mask::{}'
+
+      - name: tf init
+        run: |
+          terraform init \
+            -backend-config "bucket=data-inclusion-tf-states" \
+            -backend-config "key=${ENV}"
+
+      - name: tf validate
+        run: |
+          terraform validate
+
+      - name: tf plan
+        run: |
+          trap "rm -f terraform.tfvars.json" EXIT
+          echo "${TF_VARS_BASE64}" | base64 --decode > terraform.tfvars.json
+          terraform plan -input=false
+
+      - name: tf apply
+        run: |
+          trap "rm -f terraform.tfvars.json" EXIT
+          echo "${TF_VARS_BASE64}" | base64 --decode > terraform.tfvars.json
+          terraform apply -input=false -auto-approve
