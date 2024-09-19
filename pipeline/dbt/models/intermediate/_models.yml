@@ -10,7 +10,6 @@ models:
             - _di_surrogate_id
           config:
             severity: warn
-            store_failures: true
 
   - name: int__union_contacts
     columns:
@@ -30,7 +29,6 @@ models:
             - _di_surrogate_id
           config:
             severity: warn
-            store_failures: true
 
   - name: int__union_structures
     data_tests:
@@ -39,7 +37,6 @@ models:
             - _di_surrogate_id
           config:
             severity: warn
-            store_failures: true
 
   - name: int__union_adresses__enhanced
 

@@ -41,6 +41,9 @@ models:
         +contract:
           enforced: false
 
+tests:
+  +store_failures: true
+
 seeds:
   data_inclusion:
     schema:
