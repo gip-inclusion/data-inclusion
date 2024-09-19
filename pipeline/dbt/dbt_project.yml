@@ -21,7 +21,12 @@ models:
 
     staging:
       +schema: staging
-      +materialized: view
+
+      sources:
+        +materialized: view
+
+      decoupage_administratif:
+        +materialized: table
 
     intermediate:
       +schema: "{{ 'intermediate_tmp' if var('build_intermediate_tmp', false) else 'intermediate' }}"
