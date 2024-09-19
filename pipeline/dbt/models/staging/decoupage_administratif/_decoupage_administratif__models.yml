@@ -2,6 +2,10 @@ version: 2
 
 models:
   - name: stg_decoupage_administratif__regions
+    config:
+      indexes:
+        - columns: [code]
+          unique: true
     columns:
       - name: code
         data_tests:
@@ -16,6 +20,11 @@ models:
           - dbt_utils.not_empty_string
 
   - name: stg_decoupage_administratif__departements
+    config:
+      indexes:
+        - columns: [code]
+          unique: true
+        - columns: [code_region]
     columns:
       - name: code
         data_tests:
@@ -35,6 +44,10 @@ models:
           - dbt_utils.not_empty_string
 
   - name: stg_decoupage_administratif__epcis
+    config:
+      indexes:
+        - columns: [code]
+          unique: true
     columns:
       - name: code
         data_tests:
@@ -49,6 +62,13 @@ models:
           - dbt_utils.not_empty_string
 
   - name: stg_decoupage_administratif__communes
+    config:
+      indexes:
+        - columns: [code]
+          unique: true
+        - columns: [code_departement]
+        - columns: [code_region]
+        - columns: [code_epci]
     columns:
       - name: code
         data_tests:
