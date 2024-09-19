@@ -1,25 +1,18 @@
 version: 2
 
-x-union-common-check-args: &union-common-check-args
-  include:
-    - _di_surrogate_id
-  config:
-    severity: warn
-    store_failures: true
-
 models:
-  - name: int__union_adresses
-    description: |
-      Gathers addresses from all sources
+  - name: int__plausible_personal_emails
 
-      * model can contain faulty data
-      * test failure are saved (see log output)
+  - name: int__union_adresses
     data_tests:
-      - check_adresse: *union-common-check-args
+      - check_adresse:
+          include:
+            - _di_surrogate_id
+          config:
+            severity: warn
+            store_failures: true
 
   - name: int__union_contacts
-    description: |
-      Gathers contacts from all sources
     columns:
       - name: contact_uid
         data_tests:
@@ -31,38 +24,26 @@ models:
           - dbt_utils.not_empty_string
 
   - name: int__union_services
-    description: |
-      Gathers services from all sources
-
-      * model can contain faulty data
-      * test failure are saved (see log output)
     data_tests:
-      - check_service: *union-common-check-args
+      - check_service:
+          include:
+            - _di_surrogate_id
+          config:
+            severity: warn
+            store_failures: true
 
   - name: int__union_structures
-    description: |
-      Gathers structures from all sources
-
-      * model can contain faulty data
-      * test failure are saved (see log output)
     data_tests:
-      - check_structure: *union-common-check-args
-
-  - name: int__plausible_personal_emails
+      - check_structure:
+          include:
+            - _di_surrogate_id
+          config:
+            severity: warn
+            store_failures: true
 
   - name: int__union_adresses__enhanced
-    description: |
-      All valid adresses, with geocoding
 
   - name: int__union_services__enhanced
-    description: |
-      All valid services, with extra data:
-
-      * geocoded addresses
-      * zone_diffusion_* filled with geocoded data (monenfant, soliguide)
-
-      A service belonging to a structure data failing validation is considered invalid.
-
     columns:
       - name: zone_diffusion_code
         data_tests:
@@ -99,19 +80,11 @@ models:
                 severity: warn
 
   - name: int__union_structures__enhanced
-    description: |
-      All valid structures, with extra data:
-
-      * geocoded addresses
-      * email with pii flag
 
   - name: int__geocodages
     description: |
-      Geocoding results for all sources.
-
       This model is incremental, it will only geocode new or changed addresses.
       It stores raw geocoding results, without filtering.
-
       Geocoding is done by calling the BAN api in PL/Python.
     columns:
       - name: geocoded_at
