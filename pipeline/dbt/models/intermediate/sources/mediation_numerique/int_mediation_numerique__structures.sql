@@ -17,7 +17,10 @@ final AS (
         accessibilite                                                                                                AS "accessibilite",
         labels_nationaux                                                                                             AS "labels_nationaux",
         thematiques                                                                                                  AS "thematiques",
-        typologie                                                                                                    AS "typologie",
+        CASE
+            WHEN typologie = 'PE' THEN 'FT'
+            ELSE typologie
+        END                                                                                                          AS typologie,
         presentation_resume                                                                                          AS "presentation_resume",
         {{ truncate_text("presentation_detail") }} AS "presentation_detail",
         CAST(date_maj AS DATE)                                                                                       AS "date_maj",

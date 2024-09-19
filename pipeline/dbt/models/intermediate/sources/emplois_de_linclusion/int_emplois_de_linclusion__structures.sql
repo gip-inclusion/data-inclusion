@@ -21,7 +21,10 @@ final AS (
         labels_nationaux                AS "labels_nationaux",
         labels_autres                   AS "labels_autres",
         thematiques                     AS "thematiques",
-        typologie                       AS "typologie",
+        CASE
+            WHEN typologie = 'PE' THEN 'FT'
+            ELSE typologie
+        END                             AS typologie,
         date_maj                        AS "date_maj",
         NULLIF(siret, '')               AS "siret",
         NULLIF(nom, '')                 AS "nom",
