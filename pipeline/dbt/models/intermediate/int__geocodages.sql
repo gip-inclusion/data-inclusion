@@ -2,6 +2,19 @@
     config(
         materialized="incremental",
         unique_key="adresse_id",
+        post_hook=[
+            "
+            -- adresses can be deleted by the provider, or by us.
+            -- in both cases, deleting the corresponding geocodages is required
+            -- to ensure that the relationship between adresses and geocodages stands
+            WITH deleted_adresses AS (
+                SELECT geocodages.adresse_id
+                FROM {{ this }} AS geocodages
+                LEFT JOIN {{ ref('int__union_adresses') }} AS adresses ON geocodages.adresse_id = adresses._di_surrogate_id
+                WHERE adresses._di_surrogate_id IS NULL
+            )
+            DELETE FROM {{ this }} WHERE {{ this }}.adresse_id IN (SELECT adresse_id FROM deleted_adresses)"
+        ]
     )
 }}
 
