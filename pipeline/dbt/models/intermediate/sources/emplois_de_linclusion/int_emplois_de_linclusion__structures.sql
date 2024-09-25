@@ -21,6 +21,7 @@ final AS (
         labels_nationaux                AS "labels_nationaux",
         labels_autres                   AS "labels_autres",
         thematiques                     AS "thematiques",
+        -- FIXME(vperron) : Remove this when there is no 'PE' in the sources anymore
         CASE
             WHEN typologie = 'PE' THEN 'FT'
             ELSE typologie
