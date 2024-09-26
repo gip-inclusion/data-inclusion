@@ -154,18 +154,26 @@ final AS (
                 THEN UDF_SOLIGUIDE__NEW_HOURS_TO_OSM_OPENING_HOURS(open_services.hours)
             ELSE UDF_SOLIGUIDE__NEW_HOURS_TO_OSM_OPENING_HOURS(lieux.newhours)
         END                                                           AS "recurrence",
-        ARRAY(
-            SELECT DISTINCT m
-            FROM
-                UNNEST(
-                    ARRAY_REMOVE(
-                        CASE WHEN open_services.modalities__inconditionnel THEN ARRAY['telephoner'] END
-                        || CASE WHEN open_services.modalities__appointment__checked THEN ARRAY['telephoner', 'envoyer-un-mail'] END
-                        || CASE WHEN open_services.modalities__inscription__checked THEN ARRAY['telephoner', 'envoyer-un-mail'] END
-                        || CASE WHEN open_services.modalities__orientation__checked THEN ARRAY['telephoner', 'envoyer-un-mail', 'envoyer-un-mail-avec-une-fiche-de-prescription'] END,
-                        NULL
-                    )
-                ) AS m
+        ARRAY_REMOVE(
+            ARRAY[
+                CASE
+                    WHEN
+                        open_services.modalities__inconditionnel
+                        OR open_services.modalities__appointment__checked
+                        OR open_services.modalities__inscription__checked
+                        OR open_services.modalities__orientation__checked
+                        THEN 'telephoner'
+                END,
+                CASE
+                    WHEN
+                        open_services.modalities__appointment__checked
+                        OR open_services.modalities__inscription__checked
+                        OR open_services.modalities__orientation__checked
+                        THEN 'envoyer-un-mail'
+                END,
+                CASE WHEN open_services.modalities__orientation__checked THEN 'envoyer-un-mail-avec-une-fiche-de-prescription' END
+            ],
+            NULL
         )                                                             AS "modes_orientation_accompagnateur",
         ARRAY_TO_STRING(
             ARRAY[
@@ -175,18 +183,14 @@ final AS (
             ],
             E'\n\n'
         )                                                             AS "modes_orientation_accompagnateur_autres",
-        ARRAY(
-            SELECT DISTINCT m
-            FROM
-                UNNEST(
-                    ARRAY_REMOVE(
-                        CASE WHEN open_services.modalities__inconditionnel THEN ARRAY['se-presenter'] END
-                        || CASE WHEN open_services.modalities__appointment__checked THEN ARRAY['telephoner', 'envoyer-un-mail'] END
-                        || CASE WHEN open_services.modalities__inscription__checked THEN ARRAY['se-presenter', 'telephoner'] END
-                        || CASE WHEN open_services.modalities__orientation__checked THEN ARRAY['autre'] END,
-                        NULL
-                    )
-                ) AS m
+        ARRAY_REMOVE(
+            ARRAY[
+                CASE WHEN (open_services.modalities__inconditionnel OR open_services.modalities__inscription__checked) AND lieux.position__address IS NOT NULL THEN 'se-presenter' END,
+                CASE WHEN open_services.modalities__appointment__checked OR open_services.modalities__inscription__checked THEN 'telephoner' END,
+                CASE WHEN open_services.modalities__appointment__checked THEN 'envoyer-un-mail' END,
+                CASE WHEN open_services.modalities__orientation__checked THEN 'autre' END
+            ],
+            NULL
         )                                                             AS "modes_orientation_beneficiaire",
         ARRAY_TO_STRING(
             ARRAY[
