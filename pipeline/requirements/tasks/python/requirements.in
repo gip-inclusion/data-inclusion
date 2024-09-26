@@ -5,6 +5,8 @@ sentry-sdk
 
 2captcha-python
 beautifulsoup4
+dedupe
+dedupe-variable-datetime
 furl
 GeoAlchemy2
 geopandas
