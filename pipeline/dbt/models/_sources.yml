@@ -1,11 +1,6 @@
 version: 2
 
 sources:
-  - name: internal
-    schema: public
-    tables:
-      - name: extra__geocoded_results
-
   - name: data_inclusion
     schema: data_inclusion
     meta:
@@ -26,18 +21,6 @@ sources:
       - name: etat_civil_prenoms
       - name: sirene_etablissement_historique
       - name: sirene_etablissement_succession
-
-  - name: dora
-    schema: dora
-    meta:
-      is_provider: true
-    tables:
-      - name: structures
-        meta:
-          kind: structure
-      - name: services
-        meta:
-          kind: service
 
   - name: france_travail
     schema: france_travail
