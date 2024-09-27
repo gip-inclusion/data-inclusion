@@ -135,10 +135,6 @@ models:
           - relationships:
               to: ref('stg_dora__structures')
               field: id
-              # Some services are associated to draft structures which are not published
-              # by dora on its api. Therefore some services are missing their structure.
-              config:
-                severity: warn
       - name: telephone
         data_tests:
           - dbt_utils.not_constant
@@ -281,11 +277,6 @@ models:
         data_tests:
           - dbt_utils.not_constant
           - dbt_utils.not_empty_string
-      - name: thematiques
-        data_tests:
-          # dora's thematiques are defined at the service level
-          - dbt_utils.expression_is_true:
-              expression: "IS NULL"
       - name: typologie
         data_tests:
           - dbt_utils.not_constant
