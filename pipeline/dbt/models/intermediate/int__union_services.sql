@@ -67,7 +67,7 @@ contacts_hardbounced AS (
         id,
         source
     FROM service_contacts
-    WHERE est_interdit = TRUE
+    WHERE est_interdit
 ),
 
 services_with_contacts AS (
@@ -83,17 +83,17 @@ services_with_contacts AS (
         CASE
             WHEN contacts_opposes.id IS NULL
                 THEN services.contact_nom_prenom
-        END                                 AS "contact_nom_prenom",
+        END                                 AS contact_nom_prenom,
         CASE
             WHEN contacts_opposes.id IS NULL OR contacts_hardbounced.id IS NULL
                 THEN services.courriel
-        END                                 AS "courriel",
+        END                                 AS courriel,
         CASE
             WHEN contacts_opposes.id IS NULL
                 THEN services.telephone
-        END                                 AS "telephone",
-        contacts_opposes.id IS NOT NULL     AS "contact_opposes",
-        contacts_hardbounced.id IS NOT NULL AS "contact_hardbounced"
+        END                                 AS telephone,
+        contacts_opposes.id IS NOT NULL     AS contact_opposes,
+        contacts_hardbounced.id IS NOT NULL AS contact_hardbounced
     FROM services
     -- Enable USING instead of ON for the JOIN condition to avoid duplicate columns
     -- noqa: disable=structure.using
@@ -105,9 +105,9 @@ services_with_contacts AS (
 final AS (
     SELECT
         services.*,
-        services.source || '-' || services.id           AS "_di_surrogate_id",
-        services.source || '-' || services.structure_id AS "_di_structure_surrogate_id",
-        services.source || '-' || services.adresse_id   AS "_di_adresse_surrogate_id"
+        services.source || '-' || services.id           AS _di_surrogate_id,
+        services.source || '-' || services.structure_id AS _di_structure_surrogate_id,
+        services.source || '-' || services.adresse_id   AS _di_adresse_surrogate_id
     FROM services_with_contacts AS services
 )
 
