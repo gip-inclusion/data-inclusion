@@ -35,7 +35,7 @@ Ces deux modèles utilisent des référentiels faisant également partie du sch�
 
 Plus d'informations sur le
 [dépôt](https://github.com/gip-inclusion/data-inclusion-schema) versionnant le schéma,
-sur la [documentation officielle](https://www.data.inclusion.beta.gouv.fr/schemas-de-donnees-de-loffre/schema-des-structures-dinsertion)
+sur la [documentation officielle](https://data.inclusion.gouv.fr/schemas-de-donnees-de-loffre/schema-des-structures-dinsertion)
 ou sur la page [schema.gouv](https://schema.data.gouv.fr/gip-inclusion/data-inclusion-schema/) du schéma.
 
 ### Sources des données
@@ -49,13 +49,13 @@ Le endpoint `/sources` permet de lister les sources disponibles.
 
 Les données renvoyées par certains endpoints peuvent être filtrées géographiquement.
 
-Les codes communes, départements et régions utilisés sont issus du [code officiel géographique produit par l'INSEE](https://www.insee.fr/fr/information/2560452).
+Les codes communes, départements et régions utilisés sont issus de l'API [découpage administratif](https://geo.api.gouv.fr/decoupage-administratif).
 
-L'[api de la base adresse nationale](https://adresse.data.gouv.fr/api-doc/adresse) peut être utilisée afin d'automatiser l'identification de codes insee associés à partir d'adresses ou de parties d'adresses (e.g. nom de commune, code postal).
+L'[api de la base adresse nationale](https://adresse.data.gouv.fr/api-doc/adresse) est utilisée afin d'automatiser l'identification de codes insee associés à partir d'adresses ou de parties d'adresses (e.g. nom de commune, code postal).
 
 
 ### Nous contacter
 
 #### via notre [formulaire de contact](https://tally.so/r/w7N6Zz)
 
-#### par mail à [data.inclusion@beta.gouv.fr](mailto:data.inclusion@beta.gouv.fr)
+#### par mail à [data-inclusion@inclusion.gouv.fr](mailto:data-inclusion@inclusion.gouv.fr)

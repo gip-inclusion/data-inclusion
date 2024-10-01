@@ -54,7 +54,7 @@ graph TD;
 |      |                                                          |
 |------|----------------------------------------------------------|
 | dev  | ❌                                                        |
-| prod | [lien 🔗](https://metabase.data.inclusion.beta.gouv.fr/) |
+| prod | [lien 🔗](https://metabase.data.inclusion.gouv.fr/) |
 
 ### open data
 
@@ -65,6 +65,6 @@ graph TD;
 |      |                                                                                                    |
 |------|----------------------------------------------------------------------------------------------------|
 | dev  | http://localhost:8000/api/v0/docs                                                                               |
-| prod | [lien 🔗](https://api.data.inclusion.beta.gouv.fr/api/v0/docs) |
+| prod | [lien 🔗](https://api.data.inclusion.gouv.fr/api/v0/docs) |
 
 ## [Contribuer](CONTRIBUTING.md)

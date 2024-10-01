@@ -57,8 +57,8 @@ def create_app() -> fastapi.FastAPI:
         docs_url="/api/v0/docs",
         contact={
             "name": "data·inclusion",
-            "email": "data.inclusion@beta.gouv.fr",
-            "url": "https://www.data.inclusion.beta.gouv.fr/",
+            "email": "data-inclusion@inclusion.gouv.fr",
+            "url": "https://data.inclusion.gouv.fr/",
         },
         debug=settings.DEBUG,
         swagger_ui_parameters={
