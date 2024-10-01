@@ -44,7 +44,7 @@ Replace `<ENVIRONMENT>` with the identifier for the target environment : `prod`,
 | IAM policy | `data-inclusion-<ENVIRONMENT>-api` | Assigned to the IAM app of the same name. Allow it to read from object storage. | `ObjectStorageReadOnly` in the target project |
 | API key | - | Creds for `data-inclusion-<ENVIRONMENT>-api` | Set `DATALAKE_SECRET_KEY` and `DATALAKE_ACCESS_KEY` in the scalingo app `data-inclusion-api-<ENVIRONMENT>` |
 | SSH key | - | Used by GH action to connect to the server and deploy docker services | Generated with `ssh-keygen -t ed25519 -C <ENVIRONMENT> -f /tmp/<ENVIRONMENT> -N ''`. The public key must be uploaded to SCW. |
-| External domain | `<ENVIRONMENT>.data.inclusion.beta.gouv.fr` | Used to generate subdomains pointing to the server | The `data.inclusion.beta.gouv.fr` domain is registered on AlwaysData |
+| External domain | `<ENVIRONMENT>.data.inclusion.gouv.fr` | Used to generate subdomains pointing to the server | The `data.inclusion.gouv.fr` domain is registered on Gandi |
 
 
 💡 IAM applications must be created manually, because it would require the `data-inclusion-<ENVIRONMENT>-github` application to have full access to IAM management at the organization level.
