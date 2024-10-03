@@ -24,7 +24,7 @@ final AS (
             ELSE ARRAY[data #>> '{fields,Critères d''éligibilité}']
         END                                                                                  AS "criteres_eligibilite",
         data #>> '{fields,Département Nom}'                                                  AS "departement_nom",
-        data #>> '{fields,Email}'                                                            AS "email",
+        TRIM(data #>> '{fields,Email}')                                                      AS "email",
         CAST(data #>> '{fields,En Ligne}' AS BOOLEAN)                                        AS "en_ligne",
         data #>> '{fields,ID}'                                                               AS "id",
         -- some rows are formatted as `LAT, LAT`... use first value

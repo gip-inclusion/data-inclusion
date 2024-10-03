@@ -11,10 +11,15 @@ final AS (
         data #>> '{fields,N° Départements}'                                    AS "num_departement",
         data #>> '{fields,Liaisons Régions}'                                   AS "liaisons_region",
         data #>> '{fields,Nom}'                                                AS "nom",
-        data #>> '{fields,Liaisons Besoins}'                                   AS "liaisons_besoins_mes_aides",
+        data #>> '{fields,Description}'                                        AS "description",
+        data #>> '{fields,Bon à savoir}'                                       AS "bon_a_savoir",
+        STRING_TO_ARRAY(data #>> '{fields,Liaisons Besoins}', ', ')            AS "liaisons_besoins_mes_aides",
         data #>> '{fields,Slug Thématiques}'                                   AS "slug_thematique_mes_aides",
         data #>> '{fields,Zone géographique}'                                  AS "zone_geographique",
-        data #>> '{fields,Nature}'                                             AS "nature",
+        (
+            SELECT ARRAY_AGG(element)
+            FROM JSONB_ARRAY_ELEMENTS_TEXT(data -> 'fields' -> 'Nature') as element
+        )                                                                      AS "nature",
         data #>> '{fields,Démarches}'                                          AS "demarche",
         data #>> '{fields,"Modalité et versement"}'                            AS "modalite_versement",
         data #>> '{fields,"Méthode"}'                                          AS "methode",
@@ -30,7 +35,8 @@ final AS (
         data #>> '{fields,Contact Tel}'                                        AS "contact_telephone",
         data #>> '{fields,Autres Conditions}'                                  AS "autres_conditions",
         data #>> '{fields,Url Mes Aides}'                                      AS "url_mes_aides",
-        STRING_TO_ARRAY(data #>> '{fields,Type}', ',')                         AS "types"
+        data #>> '{fields,Formulaire Url}'                                     AS "formulaire_url",
+        STRING_TO_ARRAY(data #>> '{fields,Type}', ', ')                        AS "types"
     FROM source
 )
 

@@ -1,7 +1,7 @@
 version: 2
 
 models:
-  - name: int_mes_aides_permis_velo__adresses
+  - name: int_mes_aides__permis_velo__adresses
     data_tests:
       - check_adresse:
           config:
@@ -14,7 +14,7 @@ models:
           - dbt_utils.not_empty_string
 
 
-  - name: int_mes_aides_permis_velo__structures
+  - name: int_mes_aides__permis_velo__structures
     data_tests:
       - check_structure:
           config:
@@ -29,10 +29,10 @@ models:
         data_tests:
           - not_null
           - relationships:
-              to: ref('int_mes_aides_permis_velo__adresses')
+              to: ref('int_mes_aides__permis_velo__adresses')
               field: id
 
-  - name: int_mes_aides_permis_velo__services
+  - name: int_mes_aides__permis_velo__services
     data_tests:
       - check_service:
           config:
@@ -47,11 +47,11 @@ models:
         data_tests:
           - not_null
           - relationships:
-              to: ref('int_mes_aides_permis_velo__structures')
+              to: ref('int_mes_aides__permis_velo__structures')
               field: id
       - name: adresse_id
         data_tests:
           - not_null
           - relationships:
-              to: ref('int_mes_aides_permis_velo__adresses')
+              to: ref('int_mes_aides__permis_velo__adresses')
               field: id
