@@ -35,7 +35,8 @@ final AS (
         data #>> '{fields,Partenaire Nom}'                                                   AS "partenaire_nom",
         data #>> '{fields,Région Nom}'                                                       AS "region_nom",
         ARRAY(SELECT * FROM JSONB_ARRAY_ELEMENTS_TEXT(data #> '{fields,Services}'))          AS "services",
-        data #>> '{fields,SIRET}'                                                            AS "siret",
+        -- FIXME(hlecuyer) : Remove this when mes_aides has fixed the issue
+        REPLACE(data #>> '{fields,SIRET}', ' ', '')                                          AS "siret",
         data #>> '{fields,Téléphone}'                                                        AS "telephone",
         data #>> '{fields,Type}'                                                             AS "type",
         ARRAY(SELECT * FROM JSONB_ARRAY_ELEMENTS_TEXT(data #> '{fields,Types de véhicule}')) AS "types_de_vehicule",
