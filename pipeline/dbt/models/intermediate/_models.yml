@@ -193,3 +193,36 @@ unit_tests:
         - {adresse_id: changed-code-insee}
         - {adresse_id: changed-commune}
         - {adresse_id: new}
+
+  - name: test_charges_null_is_really_null
+    model: int_dora__services
+    description: "Check if the NULL value in the stg file stays null and is not converted to {NULL}"
+    overrides:
+      macros:
+        dbt_utils.union_relations: |
+          select
+            blocked_services_uids.foo as id,
+            'foo' as frais
+        dbt_utils.star: 'id, frais'
+    given:
+      # Those are only needed to fool DBT's parser, which first enforces that
+      # all the models referenced in the union are mocked in the test.
+      - input: ref('stg_dora__services')
+        format: sql
+        rows: select '1b965a82-26fe-4982-a26a-5aab3d7919c6' as id, TRUE as contact_public, TRUE as cumulable, '2024-07-16' as date_creation, 
+              '2024-09-13' as date_maj, NULL as date_suspension, null as formulaire_en_ligne, null as frais_autres, 
+              'LETTRE DE MOTIVATION' as justificatifs, 'https://dora.inclusion.beta.gouv.fr/services/ass-tremplin-inserti-permis-de-conduire-c-imsn' as lien_source, 
+              'en-presentiel' as modes_accueil, 'autre' as modes_orientation_accompagnateur, null as modes_orientation_accompagnateur_autres, 
+              ARRAY['modes_orientation_beneficiaire:foo'] as modes_orientation_beneficiaire, null as modes_orientation_beneficiaire_autres, 'Marquage vélo' as nom,
+              'Carte de réduction TER' as presentation_resume, null as presentation_detail, null as prise_rdv, ARRAY['profils:foo'] as profils, null as recurrence,
+              'dora' as _di_source_id, '08887e14-cd85-4ec8-85cb-bb7b88d32985' as structure_id, ARRAY['thematiques:foo'] as thematiques, ARRAY['types:foo'] as types,
+              '55' as zone_diffusion_code, 'Meuse' as zone_diffusion_nom, 'departement' as zone_diffusion_type, ARRAY['pre_requis:foo'] as pre_requis,
+              null as contact_nom_prenom, null as courriel, null as telephone, ARRAY[1] as frais
+      - input: ref('int_brevo__contacts')
+        format: sql
+        rows:
+          select ARRAY['services:bar'] as contact_uids, TRUE as est_interdit, '2021-01-01' as date_di_rgpd_opposition
+
+    expect:
+      rows:
+        - {frais: foo}
