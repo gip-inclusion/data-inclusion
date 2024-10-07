@@ -118,7 +118,10 @@ final AS (
         permis_velo.formulaire_url                                                                                                              AS "formulaire_en_ligne",
         ARRAY_TO_STRING(permis_velo.nature, '; ')                                                                                               AS "frais_autres",
         permis_velo.id                                                                                                                          AS "id",
-        CAST(NULL AS TEXT [])                                                                                                                   AS "justificatifs",
+        CASE
+            WHEN permis_velo.autres_justificatifs IS NOT NULL THEN ARRAY[permis_velo.autres_justificatifs]
+            ELSE CAST(NULL AS TEXT [])
+        END                                                                                                                                     AS "justificatifs",
         permis_velo.url_mes_aides                                                                                                               AS "lien_source",
         CASE
             WHEN permis_velo.en_ligne = TRUE THEN ARRAY['a-distance']
@@ -184,6 +187,7 @@ final AS (
     LEFT JOIN departements ON permis_velo.num_departement = departements.code
     LEFT JOIN regions ON permis_velo.liaisons_region = regions.nom
     LEFT JOIN thematiques ON permis_velo.id = thematiques.service_id
+    WHERE permis_velo.slug_organisme_structure NOT IN ('action-logement', 'france-travail')
 )
 
 SELECT * FROM final

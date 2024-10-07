@@ -31,7 +31,10 @@ final AS (
         permis_velo.url_mes_aides             AS "lien_source",
         NULL                                  AS "horaires_ouverture",
         NULL                                  AS "accessibilite",
-        CAST(NULL AS TEXT [])                 AS "labels_nationaux",
+        CASE
+            WHEN permis_velo.typologie_structure LIKE '%Mission locale%' THEN ARRAY['mission-locale']
+            ELSE CAST(NULL AS TEXT [])
+        END                                   AS "labels_nationaux",
         CAST(NULL AS TEXT [])                 AS "labels_autres",
         NULL                                  AS "typologie",
         NULL                                  AS "presentation_resume",
@@ -40,6 +43,8 @@ final AS (
         thematiques.thematiques               AS "thematiques"
     FROM permis_velo
     LEFT JOIN thematiques ON permis_velo.id = thematiques.service_id
+    WHERE permis_velo.slug_organisme_structure NOT IN ('action-logement', 'france-travail')
+
 )
 
 SELECT * FROM final
