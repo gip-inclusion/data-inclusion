@@ -135,6 +135,7 @@ services:
       - POSTGRES_PASSWORD=${DATAWAREHOUSE_DI_PASSWORD}
     volumes:
       - datawarehouse-data:/var/lib/postgresql/data
+      - datawarehouse-migration:/var/lib/postgresql/migration
 
   reverse-proxy:
     image: traefik:v2.10
@@ -161,6 +162,7 @@ services:
 volumes:
   airflow-logs:
   datawarehouse-data:
+  datawarehouse-migration:
   letsencrypt-data:
 
 networks:
