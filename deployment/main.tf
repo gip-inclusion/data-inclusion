@@ -272,7 +272,7 @@ resource "null_resource" "up" {
       "docker container prune --force --filter 'until=48h'",
       "cd ${local.work_dir}",
       # Run only datawarehouse to prepare migration
-      "docker compose --progress=plain up --pull=always --force-recreate --remove-orphans --wait --wait-timeout 1200 --quiet-pull --detach datawarehouse",
+      "docker compose --progress=plain up --pull=always --force-recreate --remove-orphans --wait --wait-timeout 1200 --quiet-pull --detach",
       # FIXME: ideally this file should be removed
       # "rm -f ${local.work_dir}/.env",
     ]

@@ -152,7 +152,6 @@ services:
       - POSTGRES_PASSWORD=data-inclusion
     volumes:
       - pg-data:/var/lib/postgresql/data
-      - pg-migrate:/var/lib/postgresql/migrate
 
   api:
     image: data-inclusion/api
@@ -176,7 +175,6 @@ services:
 
 volumes:
   pg-data:
-  pg-migrate:
   minio-data:
 
 networks:
