@@ -117,7 +117,7 @@ jobs:
 
       - uses: hashicorp/setup-terraform@v3
         with:
-          terraform_version: "1.8.1"
+          terraform_version: "1.9.7"
 
       - name: mask tf variables
         run: |
