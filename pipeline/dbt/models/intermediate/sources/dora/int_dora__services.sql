@@ -62,7 +62,12 @@ final AS (
         services.recurrence                              AS "recurrence",
         services._di_source_id                           AS "source",
         services.structure_id                            AS "structure_id",
-        services.thematiques                             AS "thematiques",
+        /* Dora made some changes to the thematics which add '--autre' in some cases.
+        We do not need them, thus they are removed from the table in order to pass the checks */
+        ARRAY(
+            SELECT REPLACE(unnested, '--autre', '')
+            FROM UNNEST(services.thematiques) AS unnested
+        )                                                AS "thematiques",
         services.types                                   AS "types",
         services.zone_diffusion_code                     AS "zone_diffusion_code",
         services.zone_diffusion_nom                      AS "zone_diffusion_nom",
