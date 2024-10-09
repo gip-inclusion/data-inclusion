@@ -58,6 +58,9 @@ sources:
       - name: garages
         meta:
           kind: structure
+      - name: permis_velo
+        meta:
+          kind: structure
       - name: aides
         meta:
           kind: service
