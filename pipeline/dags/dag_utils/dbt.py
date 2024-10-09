@@ -109,6 +109,7 @@ def get_intermediate_tasks():
                 # main since the beginning as it required intermediate data to be
                 # present ?
                 "path:models/intermediate/int__geocodages.sql",
+                "path:models/intermediate/int__criteres_qualite.sql",
                 "path:models/intermediate/int__union_contacts.sql",
                 "path:models/intermediate/int__union_adresses.sql",
                 "path:models/intermediate/int__union_services.sql",
