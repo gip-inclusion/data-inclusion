@@ -42,7 +42,7 @@ zones_diffusion AS (
         CASE
             WHEN NOT (services.source = ANY(ARRAY['monenfant', 'action-logement', 'soliguide', 'reseau-alpha', 'mediation-numerique']))
                 THEN services.zone_diffusion_code
-            WHEN services.zone_diffusion_type = 'communes' AND adresses.code_insee IS NOT NULL
+            WHEN services.zone_diffusion_type = 'commune' AND adresses.code_insee IS NOT NULL
                 THEN adresses.code_insee
             WHEN services.zone_diffusion_type = 'departement' AND adresses.code_departement IS NOT NULL
                 THEN adresses.code_departement
@@ -51,7 +51,7 @@ zones_diffusion AS (
         CASE
             WHEN NOT (services.source = ANY(ARRAY['monenfant', 'action-logement', 'soliguide', 'reseau-alpha', 'mediation-numerique']))
                 THEN services.zone_diffusion_nom
-            WHEN services.zone_diffusion_type = 'communes' AND adresses.commune IS NOT NULL
+            WHEN services.zone_diffusion_type = 'commune' AND adresses.commune IS NOT NULL
                 THEN adresses.commune
             WHEN services.zone_diffusion_type = 'departement' AND departements.nom IS NOT NULL
                 THEN departements.nom
