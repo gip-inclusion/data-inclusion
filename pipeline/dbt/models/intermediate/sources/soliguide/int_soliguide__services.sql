@@ -112,6 +112,7 @@ final AS (
         NULL::TEXT []                                                 AS "types",
         NULL                                                          AS "prise_rdv",
         NULL::TEXT []                                                 AS "profils",
+        NULL                                                          AS "profils_autres",
         NULL::TEXT []                                                 AS "pre_requis",
         TRUE                                                          AS "cumulable",
         NULL::TEXT []                                                 AS "justificatifs",

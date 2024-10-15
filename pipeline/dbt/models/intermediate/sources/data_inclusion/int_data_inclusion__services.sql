@@ -43,6 +43,7 @@ final AS (
             FROM di_profil_by_dora_profil
             WHERE di_profil_by_dora_profil.dora_profil = ANY(services.profils)
         )::TEXT []                              AS "profils",
+        ARRAY_TO_STRING(services.profils, ', ') AS "profils_autres",
         recurrence                              AS "recurrence",
         _di_source_id                           AS "source",
         structure_id                            AS "structure_id",

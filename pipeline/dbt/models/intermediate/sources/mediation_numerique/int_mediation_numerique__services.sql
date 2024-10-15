@@ -28,6 +28,7 @@ final AS (
         services.prise_rdv                                                                             AS "prise_rdv",
         services.frais                                                                                 AS "frais",
         services.profils                                                                               AS "profils",
+        ARRAY_TO_STRING(services.profils, ', ')                                                        AS "profils_autres",
         services.structure_id                                                                          AS "structure_id",
         services.thematiques                                                                           AS "thematiques",
         services._di_source_id                                                                         AS "source",

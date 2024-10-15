@@ -105,6 +105,7 @@ final AS (
         ARRAY[
             'personnes-en-situation-de-handicap'
         ]                                                            AS "profils",
+        'personnes-en-situation-de-handicap'                         AS "profils_autres",
         ARRAY(
             SELECT di_type_by_agefiph_type.type_
             FROM di_type_by_agefiph_type

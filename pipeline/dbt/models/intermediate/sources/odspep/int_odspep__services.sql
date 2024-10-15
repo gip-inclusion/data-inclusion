@@ -47,6 +47,7 @@ final AS (
         zone_diffusion_libelle                          AS "zone_diffusion_nom",
         id_res                                          AS "structure_id",
         NULL::TEXT []                                   AS "profils",
+        NULL                                            AS "profils_autres",
         ARRAY(
             SELECT di_thematique_by_odspep_type_res_part.thematique
             FROM di_thematique_by_odspep_type_res_part

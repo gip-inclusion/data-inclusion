@@ -61,6 +61,7 @@ final AS (
         NULL                                                                                      AS "presentation_detail",
         NULL                                                                                      AS "prise_rdv",
         CAST(NULL AS TEXT [])                                                                     AS "profils",
+        NULL                                                                                      AS "profils_autres",
         NULL                                                                                      AS "recurrence",
         garages._di_source_id                                                                     AS "source",
         garages.id                                                                                AS "structure_id",

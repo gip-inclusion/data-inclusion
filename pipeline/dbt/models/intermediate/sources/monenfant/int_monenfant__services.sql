@@ -24,6 +24,7 @@ final AS (
         NULL                                                                              AS "prise_rdv",
         NULL                                                                              AS "frais_autres",
         NULL::TEXT []                                                                     AS "profils",
+        NULL                                                                              AS "profils_autres",
         id                                                                                AS "structure_id",
         _di_source_id                                                                     AS "source",
         TRUE                                                                              AS "cumulable",

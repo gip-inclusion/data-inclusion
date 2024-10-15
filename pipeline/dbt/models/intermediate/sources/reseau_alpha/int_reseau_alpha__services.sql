@@ -86,6 +86,7 @@ final AS (
             NULL
         )                                                         AS "modes_orientation_beneficiaire",
         ARRAY['public-langues-etrangeres']                        AS "profils",
+        'public-langues-etrangeres'                               AS "profils_autres",
         ARRAY['formation']                                        AS "types",
         CAST(NULL AS TEXT [])                                     AS "frais"
     FROM formations

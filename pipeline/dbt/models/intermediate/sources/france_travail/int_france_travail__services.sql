@@ -44,6 +44,7 @@ final AS (
         services.presentation_resume                     AS "presentation_resume",
         services.prise_rdv                               AS "prise_rdv",
         services.profils                                 AS "profils",
+        ARRAY_TO_STRING(services.profils, ', ')          AS "profils_autres",
         services.pre_requis                              AS "pre_requis",
         services.recurrence                              AS "recurrence",
         services.thematiques                             AS "thematiques",

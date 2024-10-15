@@ -109,6 +109,7 @@ valid_services AS (
             services.presentation_resume,
             services.prise_rdv,
             services.profils,
+            services.profils_autres,
             services.recurrence,
             services.source,
             services.structure_id,
