@@ -21,7 +21,7 @@ overriden_adresses AS (
         COALESCE(geocodages.latitude, adresses.latitude)       AS "latitude",
         COALESCE(geocodages.commune, adresses.commune)         AS "commune",
         COALESCE(geocodages.code_postal, adresses.code_postal) AS "code_postal",
-        COALESCE(geocodages.code_insee, adresses.code_insee)   AS "code_insee",
+        COALESCE(geocodages.code_commune, adresses.code_insee) AS "code_insee",
         geocodages.score                                       AS "score_geocodage"
     FROM adresses
     LEFT JOIN geocodages

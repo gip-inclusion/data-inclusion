@@ -99,6 +99,11 @@ models:
               field: code
       - name: code_epci
         data_tests:
+          - not_null:
+              config:
+                error_if: "!=98"
+          - dbt_utils.not_constant
+          - dbt_utils.not_empty_string
           - relationships:
               to: ref('stg_decoupage_administratif__epcis')
               field: code
@@ -106,3 +111,54 @@ models:
         data_tests:
           - not_null
           - dbt_utils.not_constant
+      - name: codes_postaux
+
+  - name: stg_decoupage_administratif__arrondissements
+    config:
+      indexes:
+        - columns: [code]
+          unique: true
+        - columns: [code_departement]
+        - columns: [code_region]
+        - columns: [code_commune]
+    columns:
+      - name: code
+        data_tests:
+          - unique
+          - not_null
+          - dbt_utils.not_constant
+          - dbt_utils.not_empty_string
+      - name: nom
+        data_tests:
+          - not_null
+          - dbt_utils.not_constant
+          - dbt_utils.not_empty_string
+      - name: code_region
+        data_tests:
+          - not_null
+          - dbt_utils.not_constant
+          - dbt_utils.not_empty_string
+          - relationships:
+              to: ref('stg_decoupage_administratif__regions')
+              field: code
+      - name: code_departement
+        data_tests:
+          - not_null
+          - dbt_utils.not_constant
+          - dbt_utils.not_empty_string
+          - relationships:
+              to: ref('stg_decoupage_administratif__departements')
+              field: code
+      - name: code_commune
+        data_tests:
+          - not_null
+          - dbt_utils.not_constant
+          - dbt_utils.not_empty_string
+          - relationships:
+              to: ref('stg_decoupage_administratif__communes')
+              field: code
+      - name: centre
+        data_tests:
+          - not_null
+          - dbt_utils.not_constant
+      - name: codes_postaux

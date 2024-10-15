@@ -33,7 +33,18 @@ final AS (
         geocodings.result_city                                AS "commune",
         geocodings.result_name                                AS "adresse",
         geocodings.result_postcode                            AS "code_postal",
-        geocodings.result_citycode                            AS "code_insee",
+        -- ban api returns district codes for Paris, Lyon and Marseille
+        -- replace them with actual city codes
+        CASE
+            WHEN LEFT(geocodings.result_citycode, 3) = '751' THEN '75056'  -- Paris
+            WHEN LEFT(geocodings.result_citycode, 3) = '693' THEN '69123'  -- Lyon
+            WHEN LEFT(geocodings.result_citycode, 3) = '132' THEN '13055'  -- Marseille
+            ELSE geocodings.result_citycode
+        END                                                   AS "code_commune",
+        CASE
+            WHEN LEFT(geocodings.result_citycode, 3) = ANY(ARRAY['751', '693', '132'])
+                THEN geocodings.result_citycode
+        END                                                   AS "code_arrondissement",
         geocodings.result_score                               AS "score",
         geocodings.result_type                                AS "type",
         geocodings.longitude                                  AS "longitude",

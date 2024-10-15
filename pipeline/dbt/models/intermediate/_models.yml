@@ -49,6 +49,10 @@ models:
                 severity: warn
           - dbt_utils.not_empty_string
           - dbt_utils.not_constant
+          - dbt_utils.expression_is_true:
+              expression: "!~ '^(751|693|132)'"
+              config:
+                severity: warn
           - relationships:
               to: ref('stg_decoupage_administratif__regions')
               field: code
@@ -107,9 +111,18 @@ models:
       - name: code_postal
         data_tests:
           - dbt_utils.not_empty_string
-      - name: code_insee
+      - name: code_commune
         data_tests:
           - dbt_utils.not_empty_string
+          - relationships:
+              to: ref('stg_decoupage_administratif__communes')
+              field: code
+      - name: code_arrondissement
+        data_tests:
+          - dbt_utils.not_empty_string
+          - relationships:
+              to: ref('stg_decoupage_administratif__arrondissements')
+              field: code
       - name: latitude
       - name: longitude
       - name: score
