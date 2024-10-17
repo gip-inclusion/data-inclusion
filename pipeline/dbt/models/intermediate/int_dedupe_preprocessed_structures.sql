@@ -11,7 +11,7 @@ WITH structures AS (
         code_insee,
         siret,
         SUBSTRING(siret, 0, 10)                                  AS siren,
-        REPLACE(telephone, ' ', '')                              AS telephone,
+        REPLACE(REPLACE(telephone, ' ', ''), '.', '')            AS telephone,
         courriel
     FROM api__structures
     WHERE NOT antenne
