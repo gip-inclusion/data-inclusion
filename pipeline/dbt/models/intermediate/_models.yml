@@ -193,3 +193,105 @@ unit_tests:
         - {adresse_id: changed-code-insee}
         - {adresse_id: changed-commune}
         - {adresse_id: new}
+
+  - name: test_services_with_blacklisted_contact
+    model: int__union_services
+    overrides:
+      macros:
+        # This is the actual input service data
+        dbt_utils.union_relations: |
+          select
+            'dora' as source,
+            'foo' as id,
+            'foo' as structure_id,
+            'foo' as adresse_id,
+            'truc@toto.at' as courriel,
+            'Jean Valjean' as contact_nom_prenom,
+            '0123456789' as telephone
+          UNION ALL
+          select
+            'mednum' as source,
+            'bar' as id,
+            'bar' as structure_id,
+            'bar' as adresse_id,
+            'truc@toto.at' as courriel,
+            'Jean Valjean' as contact_nom_prenom,
+            '0123456789' as telephone
+          UNION ALL
+          select
+            'lezemplois' as source,
+            'baz' as id,
+            'baz' as structure_id,
+            'baz' as adresse_id,
+            'truc@toto.at' as courriel,
+            'Jean Valjean' as contact_nom_prenom,
+            '0123456789' as telephone
+          UNION ALL
+          select
+            'autre' as source,
+            'solo' as id,
+            'solo' as structure_id,
+            'solo' as adresse_id,
+            'solo@autre.net' as courriel,
+            'Autre Personne' as contact_nom_prenom,
+            '06666666' as telephone
+        dbt_utils.star: 'id, source, adresse_id, structure_id'
+    given:
+      # Those are only needed to fool DBT's parser, which first enforces that
+      # all the models referenced in the union are mocked in the test.
+      - input: ref('int_action_logement__services')
+        format: sql
+        rows: SELECT NULL LIMIT 0
+      - input: ref('int_agefiph__services')
+        format: sql
+        rows: SELECT NULL LIMIT 0
+      - input: ref('int_data_inclusion__services')
+        format: sql
+        rows: SELECT NULL LIMIT 0
+      - input: ref('int_dora__services')
+        format: sql
+        rows: SELECT NULL LIMIT 0
+      - input: ref('int_france_travail__services')
+        format: sql
+        rows: SELECT NULL LIMIT 0
+      - input: ref('int_fredo__services')
+        format: sql
+        rows: SELECT NULL LIMIT 0
+      - input: ref('int_mediation_numerique__services')
+        format: sql
+        rows: SELECT NULL LIMIT 0
+      - input: ref('int_mes_aides__services')
+        format: sql
+        rows: SELECT NULL LIMIT 0
+      - input: ref('int_monenfant__services')
+        format: sql
+        rows: SELECT NULL LIMIT 0
+      - input: ref('int_odspep__services')
+        format: sql
+        rows: SELECT NULL LIMIT 0
+      - input: ref('int_reseau_alpha__services')
+        format: sql
+        rows: SELECT NULL LIMIT 0
+      - input: ref('int_soliguide__services')
+        format: sql
+        rows: SELECT NULL LIMIT 0
+      - input: ref('int_dora__services')
+        rows: SELECT NULL LIMIT 0
+        format: sql
+      - input: ref('int_brevo__contacts')
+        format: sql
+        rows:
+          select ARRAY['dora:services:foo'] as contact_uids, TRUE as est_interdit, '2021-01-01' as date_di_rgpd_opposition
+          UNION ALL
+          select ARRAY['mednum:services:bar'] as contact_uids, FALSE as est_interdit, '2021-01-01' as date_di_rgpd_opposition
+          UNION ALL
+          select ARRAY['lezemplois:services:baz'] as contact_uids, FALSE as est_interdit, NULL as date_di_rgpd_opposition
+          UNION ALL
+          select ARRAY['sans:services:rapport'] as contact_uids, TRUE as est_interdit, NULL as date_di_rgpd_opposition
+
+    expect:
+      rows:
+        - {source: dora, id: foo, adresse_id: foo, structure_id: foo, courriel: NULL, contact_nom_prenom: NULL, telephone: NULL}
+        - {source: mednum, id: bar, adresse_id: bar, structure_id: bar, courriel: truc@toto.at, contact_nom_prenom: NULL, telephone: NULL}
+        - {source: lezemplois, id: baz, adresse_id: baz, structure_id: baz, courriel: truc@toto.at, contact_nom_prenom: Jean Valjean, telephone: '0123456789'}
+        - {source: autre, id: solo, adresse_id: solo, structure_id: solo, courriel: solo@autre.net, contact_nom_prenom: Autre Personne, telephone: '06666666'}
