@@ -12,6 +12,8 @@ services AS (
     -- public : "Personne handicapée"
     -- https://www.agefiph.fr/jsonapi/taxonomy_term/public_cible/0d0b63b6-4043-4b2d-a3f6-d7c85f335070
     WHERE sp.public_id = '0d0b63b6-4043-4b2d-a3f6-d7c85f335070'
+    -- services are managed by CAP Emploi, their information is in DORA, linked to different structures
+    AND s.id NOT IN ('8c6e19c3-db7e-40b4-a3de-36d49b9efc75', '3d026af1-f5d7-4b25-9876-2d6506984eb1')
 ),
 
 services_thematiques AS (
