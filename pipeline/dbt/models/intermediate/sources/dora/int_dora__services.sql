@@ -93,7 +93,7 @@ final AS (
         END                                              AS "telephone",
         CASE
             WHEN services.frais IS NULL THEN NULL
-            ELSE ARRAY(SELECT services.frais WHERE services.frais IS NOT NULL)
+            ELSE ARRAY[services.frais]
         END                                              AS "frais"
 
 
