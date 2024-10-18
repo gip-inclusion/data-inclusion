@@ -193,3 +193,20 @@ unit_tests:
         - {adresse_id: changed-code-insee}
         - {adresse_id: changed-commune}
         - {adresse_id: new}
+
+  - name: test_charges_null_is_really_null
+    model: int_dora__services
+    description: "Check if the NULL value in the stg file stays null and is not converted to {NULL}"
+    given:
+      - input: ref('stg_dora__services')
+        format: sql
+        fixture: stg_dora__services__input
+      - input: ref('int_brevo__contacts')
+        format: sql
+        rows:
+          select ARRAY['services:bar'] as contact_uids, TRUE as est_interdit, '2021-01-01' as date_di_rgpd_opposition
+
+    expect:
+      rows:
+      format: sql
+      fixture: int_dora__services__expected

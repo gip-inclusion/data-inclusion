@@ -48,7 +48,12 @@ final AS (
         services.modes_accueil                           AS "modes_accueil",
         services.modes_orientation_accompagnateur        AS "modes_orientation_accompagnateur",
         services.modes_orientation_accompagnateur_autres AS "modes_orientation_accompagnateur_autres",
-        services.modes_orientation_beneficiaire          AS "modes_orientation_beneficiaire",
+        /* The 'professionnel' condition is not included in the associated seed. Therefore, after discussing it,
+        we decided to convert it into a null value to still take it in account in our tables and avoid a global schema change */
+        CASE
+            WHEN 'professionnel' = ANY(services.modes_orientation_beneficiaire) THEN NULL
+            ELSE services.modes_orientation_beneficiaire
+        END                                              AS "modes_orientation_beneficiaire",
         services.modes_orientation_beneficiaire_autres   AS "modes_orientation_beneficiaire_autres",
         services.nom                                     AS "nom",
         services.presentation_resume                     AS "presentation_resume",
@@ -86,7 +91,12 @@ final AS (
             WHEN blocked_services_uids.id IS NULL
                 THEN services.telephone
         END                                              AS "telephone",
-        ARRAY[services.frais]                            AS "frais"
+        CASE
+            WHEN services.frais IS NULL THEN NULL
+            ELSE ARRAY[services.frais]
+        END                                              AS "frais"
+
+
     FROM services
     LEFT JOIN blocked_services_uids ON services.id = blocked_services_uids.id
 )
