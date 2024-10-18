@@ -40,6 +40,16 @@ models:
 
   - name: int__union_adresses__enhanced
 
+  - name: int__union_contacts__enhanced
+    columns:
+      - name: id
+      - name: source
+      - name: contact_nom_prenom
+      - name: courriel
+      - name: telephone
+      - name: rgpd_notice_was_objected_to
+      - name: rgpd_notice_has_hardbounced
+
   - name: int__union_services__enhanced
     columns:
       - name: zone_diffusion_code
