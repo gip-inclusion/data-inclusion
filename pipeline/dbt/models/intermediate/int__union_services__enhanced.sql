@@ -10,6 +10,10 @@ departements AS (
     SELECT * FROM {{ ref('stg_decoupage_administratif__departements') }}
 ),
 
+contacts AS (
+    SELECT * FROM {{ ref('int__union_contacts__enhanced') }}
+),
+
 adresses AS (
     SELECT * FROM {{ ref('int__union_adresses__enhanced') }}
 ),
@@ -64,25 +68,36 @@ zones_diffusion AS (
         ON adresses.code_departement = departements.code
 ),
 
-services_with_zone_diffusion AS (
+services_with_zdf_and_contact AS (
     SELECT
         {{
             dbt_utils.star(
                 from=ref('int__union_services'),
                 relation_alias='services',
-                except=["zone_diffusion_code", "zone_diffusion_nom"]
+                except=[
+                    "zone_diffusion_code",
+                    "zone_diffusion_nom",
+                    "contact_nom_prenom",
+                    "courriel",
+                    "telephone",
+                ]
             )
         }},
         zones_diffusion.zone_diffusion_code AS "zone_diffusion_code",
-        zones_diffusion.zone_diffusion_nom  AS "zone_diffusion_nom"
+        zones_diffusion.zone_diffusion_nom  AS "zone_diffusion_nom",
+        contacts.contact_nom_prenom         AS "contact_nom_prenom",
+        contacts.courriel                   AS "courriel",
+        contacts.telephone                  AS "telephone"
     FROM services_with_valid_structure AS services
     LEFT JOIN zones_diffusion
         ON services._di_surrogate_id = zones_diffusion._di_surrogate_id
+    LEFT JOIN contacts
+        ON services._di_surrogate_id = contacts._di_surrogate_id
 ),
 
 valid_services AS (
     SELECT services.*
-    FROM services_with_zone_diffusion AS services
+    FROM services_with_zdf_and_contact AS services
     LEFT JOIN
         LATERAL
         LIST_SERVICE_ERRORS(
