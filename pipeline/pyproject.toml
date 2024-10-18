@@ -34,7 +34,16 @@ markers = '''
 
 [tool.sqlfluff.core]
 dialect = "postgres"
-exclude_rules = "layout.long_lines, structure.column_order"
+exclude_rules = [
+    "layout.long_lines",
+    "structure.column_order",
+    # TODO: cleanup and enable the `references.quoting` rule.
+    # It was re-enabled by default for postgresql in sqlfluff 3.2.0.
+    # There is many violations currently in our project. In addition,
+    # removing double quoting raises `aliasing.self_alias.column`
+    # violations that were concealed by the double quoting.
+    "references.quoting",
+]
 templater = "dbt"
 
 [tool.sqlfluff.layout.type.alias_expression]
@@ -62,7 +71,7 @@ extended_capitalisation_policy = "upper"
 # Null & Boolean Literals
 capitalisation_policy = "upper"
 
-[tools.sqlfluff.rules.convention.casting_style]
+[tool.sqlfluff.rules.convention.casting_style]
 # SQL type casting
 preferred_type_casting_style = "shorthand"
 
