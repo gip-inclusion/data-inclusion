@@ -115,6 +115,7 @@ def get_intermediate_tasks():
                 "path:models/intermediate/int__union_structures.sql",
                 "path:models/intermediate/extra",
                 "path:models/intermediate/int__plausible_personal_emails.sql",
+                "path:models/intermediate/int__union_contacts__enhanced.sql+",
                 "path:models/intermediate/int__union_adresses__enhanced.sql+",
                 "path:models/intermediate/int__union_services__enhanced.sql+",
                 "path:models/intermediate/int__union_structures__enhanced.sql+",

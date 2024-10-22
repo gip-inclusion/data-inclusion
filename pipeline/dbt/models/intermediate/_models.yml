@@ -42,6 +42,7 @@ models:
 
   - name: int__union_contacts__enhanced
     columns:
+      - name: _di_surrogate_id
       - name: id
       - name: source
       - name: contact_nom_prenom
