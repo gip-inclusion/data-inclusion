@@ -4,29 +4,29 @@ annotated-types==0.7.0
     # via pydantic
 certifi==2024.8.30
     # via requests
-charset-normalizer==3.3.2
+charset-normalizer==3.4.0
     # via requests
 data-inclusion-schema==0.18.0
     # via data-inclusion-processings (pyproject.toml)
-dnspython==2.6.1
+dnspython==2.7.0
     # via email-validator
 email-validator==2.2.0
     # via pydantic
-idna==3.8
+idna==3.10
     # via
     #   email-validator
     #   requests
-numpy==2.1.1
+numpy==2.1.2
     # via
     #   data-inclusion-processings (pyproject.toml)
     #   pandas
-pandas==2.2.2
+pandas==2.2.3
     # via data-inclusion-processings (pyproject.toml)
 pendulum==3.0.0
     # via data-inclusion-schema
-pydantic==2.9.1
+pydantic==2.9.2
     # via data-inclusion-schema
-pydantic-core==2.23.3
+pydantic-core==2.23.4
     # via pydantic
 python-dateutil==2.9.0.post0
     # via
@@ -47,9 +47,9 @@ typing-extensions==4.12.2
     # via
     #   pydantic
     #   pydantic-core
-tzdata==2024.1
+tzdata==2024.2
     # via
     #   pandas
     #   pendulum
-urllib3==2.2.2
+urllib3==2.2.3
     # via requests
