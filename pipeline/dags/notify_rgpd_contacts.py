@@ -12,53 +12,29 @@ logger = logging.getLogger(__name__)
 
 
 def _sync_new_contacts_to_brevo():
-    from collections import defaultdict
-
     from airflow.models import Variable
 
     from dag_utils import constants, pg
     from dag_utils.sources import brevo
 
-    potential_contacts = pg.hook().get_records(
+    contacts = pg.hook().get_records(
         sql=(
-            "SELECT courriel, ARRAY_AGG(contact_uid) as contact_uids "
-            "FROM public_intermediate.int__union_contacts "
-            "GROUP BY courriel"
+            """
+            SELECT
+                json_build_object('email', our_contacts.courriel),
+                brevo_contacts.has_hardbounced
+            FROM public_intermediate.int__union_contacts AS our_contacts
+            LEFT JOIN public_intermediate.int_brevo__contacts AS brevo_contacts
+            ON our_contacts.courriel = brevo_contacts.courriel
+            GROUP BY our_contacts.courriel, brevo_contacts.has_hardbounced
+            ORDER BY our_contacts.courriel
+            """
         )
     )
 
-    brevo_contacts = pg.hook().get_records(
-        sql=(
-            "SELECT courriel, contact_uids "
-            "FROM public_intermediate.int_brevo__contacts"
-        )
-    )
-
-    brevo_contacts_uid_set = {
-        uid for _, contact_uids in brevo_contacts for uid in contact_uids
-    }
-    brevo_contacts_map = {email: contact_uids for email, contact_uids in brevo_contacts}
-
-    # We only consider a contact as "new" if BOTH its contact uid AND its email are new.
-    # If the email is not new but linked to a new contact UID, update the associated
-    # list accordingly.
-    new_contacts_map = defaultdict(list)
-    for email, contact_uids in potential_contacts:
-        for contact_uid in contact_uids:
-            if contact_uid not in brevo_contacts_uid_set:
-                if email in brevo_contacts_map:
-                    brevo_contacts_map[email].append(contact_uid)
-                else:
-                    new_contacts_map[email].append(contact_uid)
-
-    new_contacts = [
-        {"email": email, "attributes": {"contact_uids": ",".join(contact_uids)}}
-        for email, contact_uids in new_contacts_map.items()
-    ]
-    all_contacts = new_contacts + [
-        {"email": email, "attributes": {"contact_uids": ",".join(contact_uids)}}
-        for email, contact_uids in brevo_contacts_map.items()
-    ]
+    # new contacts : all those for which we don't even know if they bounced or not
+    new_contacts = [c[0] for c in contacts if c[1] is None]
+    all_contacts = [c[0] for c in contacts]
 
     brevo_client = brevo.BrevoClient(token=Variable.get("BREVO_API_KEY"))
 
