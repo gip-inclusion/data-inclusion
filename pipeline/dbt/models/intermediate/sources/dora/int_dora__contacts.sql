@@ -4,8 +4,7 @@ WITH structure_contacts AS (
         _di_source_id            AS "source",
         courriel                 AS "courriel",
         telephone                AS "telephone",
-        NULL                     AS "contact_nom_prenom",
-        'dora:structures:' || id AS "contact_uid"
+        NULL                     AS "contact_nom_prenom"
     FROM {{ ref('stg_dora__structures') }}
     WHERE courriel IS NOT NULL
 ),
@@ -16,8 +15,7 @@ service_contacts AS (
         _di_source_id          AS "source",
         courriel               AS "courriel",
         telephone              AS "telephone",
-        contact_nom_prenom     AS "contact_nom_prenom",
-        'dora:services:' || id AS "contact_uid"
+        contact_nom_prenom     AS "contact_nom_prenom"
     FROM {{ ref('stg_dora__services') }}
     WHERE courriel IS NOT NULL
 ),

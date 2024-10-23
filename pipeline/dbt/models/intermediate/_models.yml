@@ -11,10 +11,6 @@ models:
 
   - name: int__union_contacts
     columns:
-      - name: contact_uid
-        data_tests:
-          - unique
-          - not_null
       - name: courriel
         data_tests:
           - not_null
@@ -260,23 +256,22 @@ unit_tests:
     given:
       - input: ref('int__union_contacts')
         rows:
-          - {"source": "dora", "id": "foo", "courriel": "truc@toto.at", "contact_nom_prenom": "Jean Valjean", "telephone": "0123456789"}
-          - {"source": "mednum", "id": "bar", "courriel": "truc@toto.at", "contact_nom_prenom": "Jean Valjean", "telephone": "0123456789"}
-          - {"source": "lezemplois", "id": "baz", "courriel": "truc@toto.at", "contact_nom_prenom": "Jean Valjean", "telephone": "0123456789"}
+          - {"source": "dora", "id": "foo", "courriel": "truc1@toto.at", "contact_nom_prenom": "Jean Valjean", "telephone": "0123456789"}
+          - {"source": "other", "id": "foo", "courriel": "truc1@toto.at", "contact_nom_prenom": "Jean Other", "telephone": "9876543210"}
+          - {"source": "mednum", "id": "bar", "courriel": "truc2@toto.at", "contact_nom_prenom": "Jean Valjean", "telephone": "0123456789"}
+          - {"source": "lezemplois", "id": "baz", "courriel": "truc3@toto.at", "contact_nom_prenom": "Jean Valjean", "telephone": "0123456789"}
           - {"source": "autre", "id": "solo", "courriel": "solo@autre.net", "contact_nom_prenom": "Autre Personne", "telephone": "06666666"}
       - input: ref('int_brevo__contacts')
-        format: sql
         rows:
-          select ARRAY['dora:services:foo'] as contact_uids, TRUE as est_interdit, '2021-01-01' as date_di_rgpd_opposition
-          UNION ALL
-          select ARRAY['mednum:services:bar'] as contact_uids, FALSE as est_interdit, '2021-01-01' as date_di_rgpd_opposition
-          UNION ALL
-          select ARRAY['lezemplois:services:baz'] as contact_uids, FALSE as est_interdit, NULL as date_di_rgpd_opposition
-          UNION ALL
-          select ARRAY['sans:services:rapport'] as contact_uids, TRUE as est_interdit, NULL as date_di_rgpd_opposition
+          # note: values can't be NULL. has_hardbounced is set to true/false by brevo, and was_objected to is set to true/false by us.
+          - {"courriel": "truc1@toto.at", "has_hardbounced": true, "was_objected_to": true}
+          - {"courriel": "truc2@toto.at", "has_hardbounced": false, "was_objected_to": true}
+          - {"courriel": "truc3@toto.at", "has_hardbounced": false, "was_objected_to": false}
+          - {"courriel": "solo@autre.net", "has_hardbounced": true, "was_objected_to": false}
     expect:
       rows:
         - {source: dora, id: foo, courriel: NULL, contact_nom_prenom: NULL, telephone: NULL}  # objected to, hardbounce
+        - {source: other, id: foo, courriel: NULL, contact_nom_prenom: NULL, telephone: NULL}  # objected to, hardbounce
         - {source: mednum, id: bar, courriel: NULL, contact_nom_prenom: NULL, telephone: NULL}  # objected to, no hardbounce
-        - {source: lezemplois, id: baz, courriel: truc@toto.at, contact_nom_prenom: Jean Valjean, telephone: '0123456789'} # not objected to, no hardbounce
-        - {source: autre, id: solo, courriel: solo@autre.net, contact_nom_prenom: Autre Personne, telephone: '06666666'} # hardbounce : only email is hidden
+        - {source: lezemplois, id: baz, courriel: truc3@toto.at, contact_nom_prenom: Jean Valjean, telephone: '0123456789'} # not objected to, no hardbounce
+        - {source: autre, id: solo, courriel: NULL, contact_nom_prenom: Autre Personne, telephone: '06666666'} # hardbounce : only email is hidden

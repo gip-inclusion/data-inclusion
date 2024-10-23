@@ -2,18 +2,12 @@ WITH contacts AS (
     SELECT * FROM {{ ref('int__union_contacts') }}
 ),
 
-brevo_contacts AS (
-    SELECT * FROM {{ ref('int_brevo__contacts') }}
-),
-
 rgpd_notices AS (
-    SELECT DISTINCT
-        SPLIT_PART(contact_uid, ':', 1)     AS "source",
-        SPLIT_PART(contact_uid, ':', 3)     AS "id",
-        date_di_rgpd_opposition IS NOT NULL AS "was_objected_to",
-        est_interdit                        AS "has_hardbounced"
-    FROM brevo_contacts,
-        UNNEST(contact_uids) AS contact_uid
+    SELECT
+        courriel,
+        has_hardbounced,
+        was_objected_to
+    FROM {{ ref('int_brevo__contacts') }}
 ),
 
 final AS (
@@ -23,19 +17,19 @@ final AS (
         contacts.source              AS "source",
         CASE
             WHEN
-                rgpd_notices.id IS NULL
+                rgpd_notices.courriel IS NULL
                 OR NOT rgpd_notices.was_objected_to
                 THEN contacts.contact_nom_prenom
         END                          AS "contact_nom_prenom",
         CASE
             WHEN
-                rgpd_notices.id IS NULL
+                rgpd_notices.courriel IS NULL
                 OR (NOT rgpd_notices.was_objected_to AND NOT rgpd_notices.has_hardbounced)
                 THEN contacts.courriel
         END                          AS "courriel",
         CASE
             WHEN
-                rgpd_notices.id IS NULL
+                rgpd_notices.courriel IS NULL
                 OR NOT rgpd_notices.was_objected_to
                 THEN contacts.telephone
         END                          AS "telephone",
@@ -44,8 +38,7 @@ final AS (
     FROM contacts
     LEFT JOIN rgpd_notices
         ON
-            contacts.source = rgpd_notices.source
-            AND contacts.id = rgpd_notices.id
+            contacts.courriel = rgpd_notices.courriel
 )
 
 SELECT * FROM final

@@ -7,7 +7,8 @@ data⋅inclusion.
 En l'absence de réponse de leur part, comme vu dans les CGAUs de data⋅inclusion, nous publierons le courriel en
 question dans le jeu de données disponible dans l'API.
 
-A date (fin 2023), nous ne proposons l'affichage que des courriels renseignés dans les structures et services DORA.
+L'intérêt secondaire pour data⋅inclusion de ces notification est de permettre une validation poussée des e-mails de contact
+ainsi notifiés; nous savons donc pour chaque courriel, s'il est digne de confiance ou non.
 
 ## Déroulement technique
 
@@ -15,49 +16,26 @@ A date (fin 2023), nous ne proposons l'affichage que des courriels renseignés d
 Chaque jour le DAG `import_brevo` récupère la liste à jour des personnes contactées lors des notifications RGPD.
 Pour ce faire il réalise un extract + load (datalake puis datawarehouse) des données depuis l'API Brevo.
 
-A noter que les contacts enregistrés dans Brevo sont identifiés par:
+A noter que les contacts enregistrés dans Brevo contiennent a minima:
 - leur email (qui est la clé unique de renseignement d'un contact Brevo)
-- un ensemble d'attributs, dont:
-  * la date d'opposition RGPD (remplie par Osiris)
-  * la liste des structures dont l'adresse email est membre
+- le fait que cet email ait donné lieu à un envoi ou non, avec ou sans 'hardbounce'
+- un ensemble d'attributs, dont la date d'opposition RGPD (remplie par Osiris)
 
 ### Traitements de données
-Chaque jour le DAG `main` se chargera de créer les tables (staging & intermediate) liées d'un côté
-aux courriels venant des nos sources (structures et services Dora uniquement pour l'instant) et
-par ailleurs aux données de contact Brevo.
+Chaque jour le DAG `main` se chargera de créer la table `int__union_contacts__enhanced` qui relie courriels venant
+de nos sources de données, et courriels connus de Brevo (avec succès de l'envoi ou non, date d'opposition...)
 
 ### Notification
-Chaque mois, le DAG `notify_rgpd_contacts` tire une liste de contacts depuis les sources qui nous
-intéressent (aujourd'hui, Dora uniquement) et en tire une liste de "nouveaux contacts".
+Chaque mois, le DAG `notify_rgpd_contacts` tire une liste de courriels connus depuis nos sources.
 
-Pour cela, il compare les `contact_uid` (combinaison de source, stream et UID) d'un contact enregistrés
-dans Brevo et ceux provenant de Dora;
-- si le `contact_uid` n'existe pas dans Brevo, ET que l'email n'existe pas non plus, c'est un nouveau contact.
-- si le `contact_uid` n'existe pas dans Brevo, mais que l'email est connu, on va mettre à jour ce contact.
+Ceux n'ayant jamais fait l'objet d'une notification seront déposés dans une liste qui servira à l'envoi
+de la prochaine notification; tous les contacts sont par ailleurs ajoutés à la liste de "tous les contacts
+connus", qui est celle importée régulièrement par `import_brevo`.
 
-A noter que la mise à jour d'un contact va écraser les `contact_uids` par exemple, mais ne touchera pas à la
-date d'opposition RGPD.
+Puis nous déclenchons l'envoi d'une nouvelle campagne de notification RGPD pour le mois courant, envoyée
+à la liste des "nouveaux emails" connus.
 
-Dans tous les cas, si on a déjà connu ce `contact_uid` dans Brevo, quelle que soit l'adresse mail
-associée, nous ne recontacterons pas.
-
-Ainsi, une fois la liste des "nouveaux contacts" établie, le DAG se charge de:
-
-1. Enregistrer dans Brevo la liste de tous les contacts ayant été contactés
-2. Remettre à zéro et remplir dans Brevo la liste des "contacts à contacter ce mois-ci" 
-3. Déclencher une nouvelle campagne de notification dans Brevo et l'envoyer
-
-L'avantage d'utiliser des campagnes indépendantes mensuelles est que ces dernières permettent l'utilisation
-des dashboards analytiques poussées de Brevo.
-
-## Reste à faire
-
-### Intégration dans l'API
-Il faut intégrer les emails des sources Dora (et Emplois !) dans l'API.
-
-Cela va concerner:
-
-- toutes les adresses connues (notification envoyée à ce jour ou non)
-- non "opposés" via le DPO dans Brevo
-- non "unsubscribed"
-- ipour le confort des utilisateurs, non hardbouncés bar Brevo : le mail est forcément invalide.
+Par le passé nous maintenions une liste des structures et services ayant été liés à un email, grâce à un attribut
+spécial sous forme de liste, attaché à chaque contact et envoyé à Brevo. Nous avons remarqué au bout d'un an,
+que aucune source ne modifiait ses courriels; nous avonc donc cessé de maintenir ce système complexe, mais il en
+reste des traces dans certains contacts Brevo. Ils ne sont plus mis à jour.

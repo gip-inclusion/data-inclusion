@@ -18,8 +18,7 @@ final AS (
         source              AS "source",
         courriel            AS "courriel",
         telephone           AS "telephone",
-        contact_nom_prenom  AS "contact_nom_prenom",
-        contact_uid         AS "contact_uid"
+        contact_nom_prenom  AS "contact_nom_prenom"
     FROM contacts_union
 )
 
