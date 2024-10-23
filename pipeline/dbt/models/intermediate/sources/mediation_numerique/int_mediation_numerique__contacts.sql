@@ -4,9 +4,7 @@ WITH final AS (
         _di_source_id                           AS "source",
         courriel                                AS "courriel",
         telephone                               AS "telephone",
-        NULL                                    AS "contact_nom_prenom",
-        -- services in mediation numerique have no contact information
-        'mediation-numerique:structures:' || id AS "contact_uid"
+        NULL                                    AS "contact_nom_prenom"
     FROM {{ ref('stg_mediation_numerique__structures') }}
     WHERE courriel IS NOT NULL
 )

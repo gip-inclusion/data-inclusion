@@ -14,7 +14,7 @@ models:
           - not_null
           - dbt_utils.not_constant
           - dbt_utils.not_empty_string
-      - name: est_interdit
+      - name: has_hardbounced
         description: |
           Signifie que cet e-mail est considéré par Brevo comme:
           - un "hard bounce" (n'existe pas)
@@ -22,9 +22,12 @@ models:
           - a classé le mail en spam
           - a été classé "bloqué" par un administrateur Brevo
         data_tests:
-          - not_null
           - accepted_values:
               values: [true, false]
 
-      - name: date_di_rgpd_opposition
-        description: Date d'opposition au RGPD telle qu'entrée par notre DPO dans Brevo lorsque signalé.
+      - name: was_objected_to
+        description: |
+          Permet de savoir si le contact a fait l'objet d'une demande de retrait RGPD.
+        data_tests:
+          - accepted_values:
+              values: [true, false]

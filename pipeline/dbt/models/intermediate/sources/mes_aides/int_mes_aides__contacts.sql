@@ -1,15 +1,21 @@
 WITH structure_contacts AS (
     SELECT
-        email                      AS "courriel",
-        'mes-aides:garages:' || id AS contact_uid
+        id            AS "id",
+        _di_source_id AS "source",
+        email         AS "courriel",
+        telephone     AS "telephone",
+        NULL          AS "contact_nom_prenom"
     FROM {{ ref('stg_mes_aides__garages') }}
     WHERE email IS NOT NULL
 ),
 
 service_contacts AS (
     SELECT
-        contact_email            AS "courriel",
-        'mes-aides:aides:' || id AS contact_uid
+        id            AS "id",
+        _di_source_id AS "source",
+        contact_email AS "courriel",
+        NULL          AS "telephone",
+        NULL          AS "contact_nom_prenom"
     FROM {{ ref('stg_mes_aides__permis_velo') }}
     WHERE contact_email IS NOT NULL
 ),
