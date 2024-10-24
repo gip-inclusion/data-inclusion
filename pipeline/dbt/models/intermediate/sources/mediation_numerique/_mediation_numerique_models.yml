@@ -18,10 +18,6 @@ models:
 
   - name: int_mediation_numerique__contacts
     columns:
-      - name: contact_uid
-        data_tests:
-          - unique
-          - not_null
       - name: courriel
         data_tests:
           - not_null

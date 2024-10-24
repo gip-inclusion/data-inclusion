@@ -6,9 +6,8 @@ final AS (
     SELECT
         id                                 AS "id",
         email                              AS "courriel",
-        email_blacklisted                  AS "est_interdit",
-        date_di_rgpd_opposition            AS "date_di_rgpd_opposition",
-        STRING_TO_ARRAY(contact_uids, ',') AS "contact_uids"
+        email_blacklisted                  AS "has_hardbounced",
+        date_di_rgpd_opposition IS NOT NULL           AS "was_objected_to"
     FROM contacts
 )
 
