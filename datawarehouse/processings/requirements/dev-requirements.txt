@@ -57,8 +57,6 @@ ruff==0.7.0
     # via data-inclusion-processings (pyproject.toml)
 six==1.16.0
     # via python-dateutil
-tenacity==9.0.0
-    # via data-inclusion-processings (pyproject.toml)
 time-machine==2.16.0
     # via pendulum
 typing-extensions==4.12.2

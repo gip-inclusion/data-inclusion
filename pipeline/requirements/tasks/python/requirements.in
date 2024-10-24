@@ -19,7 +19,6 @@ pyogrio
 requests==2.*
 sib-api-v3-sdk
 SQLAlchemy
-tenacity
 trafilatura
 urllib3
 xlsxwriter

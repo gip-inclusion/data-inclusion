@@ -9,7 +9,6 @@ dependencies = [
     "numpy~=2.0",
     "pandas~=2.2",
     "requests~=2.31",
-    "tenacity",
     "data-inclusion-schema",
 ]
 

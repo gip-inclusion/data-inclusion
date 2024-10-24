@@ -839,7 +839,6 @@ tabulate==0.9.0
 tenacity==8.5.0
     # via
     #   -c airflow/constraints.txt
-    #   -r tasks/python/requirements.in
     #   apache-airflow
     #   pyathena
 termcolor==2.4.0
