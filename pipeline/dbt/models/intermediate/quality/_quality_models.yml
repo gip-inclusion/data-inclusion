@@ -37,13 +37,13 @@ models:
       - accepted_values:
           values:
           - agences
-          - aides
           - creches
           - DD009_RES_PARTENARIALE
           - formations
           - garages
           - lieux
           - organisations
+          - permis_velo
           - services
           - siaes
           - structures
