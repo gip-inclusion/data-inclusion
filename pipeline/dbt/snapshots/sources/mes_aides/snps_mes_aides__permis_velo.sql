@@ -1,8 +1,8 @@
-{% set source_model = source('mes_aides', 'aides') %}
+{% set source_model = source('mes_aides', 'permis_velo') %}
 
 {% set table_exists = adapter.get_relation(database=source_model.database, schema=source_model.schema, identifier=source_model.name) is not none %}
 
-{% snapshot snps_mes_aides__aides %}
+{% snapshot snps_mes_aides__permis_velo %}
 
 {{
     config(
