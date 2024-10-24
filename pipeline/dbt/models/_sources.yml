@@ -61,9 +61,6 @@ sources:
       - name: permis_velo
         meta:
           kind: structure
-      - name: aides
-        meta:
-          kind: service
 
   - name: annuaire_du_service_public
     schema: annuaire_du_service_public
