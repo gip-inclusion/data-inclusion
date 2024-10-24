@@ -10,7 +10,11 @@ from dag_utils.dbt import dbt_operator_factory
 from dag_utils.virtualenvs import PYTHON_BIN_PATH
 
 
-@task.external_python(python=str(PYTHON_BIN_PATH))
+@task.external_python(
+    python=str(PYTHON_BIN_PATH),
+    retries=3,
+    retry_delay=pendulum.duration(seconds=10),
+)
 def import_data_inclusion_api():
     import subprocess
     import tempfile
