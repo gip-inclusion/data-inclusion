@@ -188,7 +188,7 @@ final AS (
         NULL                                                       AS "recurrence",
         permis_velo._di_source_id                                  AS "source",
         permis_velo.id                                             AS "structure_id",
-        thematiques.thematiques                                    AS "thematiques",
+        COALESCE(thematiques.thematiques, (ARRAY[])::TEXT [])      AS "thematiques",
         transformed_types.transformed_types                        AS "types",
         CASE
             WHEN zone_diffusion.zone_di = 'commune' THEN zone_code.code
