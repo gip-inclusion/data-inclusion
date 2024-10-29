@@ -15,13 +15,6 @@ sources:
         meta:
           kind: service
 
-  - name: insee
-    schema: insee
-    tables:
-      - name: etat_civil_prenoms
-      - name: sirene_etablissement_historique
-      - name: sirene_etablissement_succession
-
   - name: france_travail
     schema: france_travail
     meta:

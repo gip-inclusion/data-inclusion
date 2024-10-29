@@ -1,8 +1,6 @@
 version: 2
 
 models:
-  - name: int__plausible_personal_emails
-
   - name: int__union_adresses
     data_tests:
       - check_adresse:
@@ -183,8 +181,29 @@ models:
               min_value: 0
               max_value: 1
 
+  - name: int__courriels_personnels
+    columns:
+      - name: courriel
+        data_tests:
+          - not_null
+          - dbt_utils.not_empty_string
 
 unit_tests:
+  - name: test_courriels_personnels
+    model: int__courriels_personnels
+    given:
+      - input: ref('int__union_contacts')
+        rows:
+          - {courriel: jean.valjean@wanadoo.fr}
+          - {courriel: contact@arpejeha.com}
+          - {courriel: savoirspoursensortirparis@orange.fr}
+      - input: ref('stg_insee__prenoms')
+        rows:
+          - {prenom: jean}
+    expect:
+      rows:
+        - {courriel: jean.valjean@wanadoo.fr}
+
   - name: test_geocodages_full_refresh_mode
     model: int__geocodages
     overrides:

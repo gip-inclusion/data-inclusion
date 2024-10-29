@@ -2,10 +2,10 @@ import logging
 
 import pendulum
 
-import airflow
-from airflow.operators import empty, python
+from airflow.decorators import dag, task
+from airflow.operators import empty
 
-from dag_utils import date
+from dag_utils import date, dbt
 from dag_utils.virtualenvs import PYTHON_BIN_PATH
 
 logger = logging.getLogger(__name__)
@@ -13,7 +13,11 @@ logger = logging.getLogger(__name__)
 default_args = {}
 
 
-def _import_dataset():
+@task.external_python(
+    python=str(PYTHON_BIN_PATH),
+    retries=2,
+)
+def extract_and_load():
     import pandas as pd
 
     from airflow.models import Variable
@@ -22,31 +26,35 @@ def _import_dataset():
 
     df = pd.read_csv(Variable.get("INSEE_FIRSTNAME_FILE_URL"), sep=";")
 
+    schema = "insee"
+    pg.create_schema(schema)
+
     with pg.connect_begin() as conn:
         df.to_sql(
-            schema="insee",
+            schema=schema,
             name="etat_civil_prenoms",
-            # FIXME(vperron): the schema should be "insee" instead of "public"
             con=conn,
             if_exists="replace",
             index=False,
         )
 
 
-with airflow.DAG(
-    dag_id="import_insee_firstnames",
+@dag(
     start_date=pendulum.datetime(2022, 1, 1, tz=date.TIME_ZONE),
-    default_args=default_args,
-    schedule="@once",
+    schedule="@yearly",
     catchup=False,
-) as dag:
+)
+def import_insee_prenoms():
     start = empty.EmptyOperator(task_id="start")
     end = empty.EmptyOperator(task_id="end")
 
-    import_dataset = python.ExternalPythonOperator(
-        task_id="import",
-        python=str(PYTHON_BIN_PATH),
-        python_callable=_import_dataset,
+    dbt_build_staging = dbt.dbt_operator_factory(
+        task_id="dbt_build_staging",
+        command="build",
+        select="path:models/staging/insee",
     )
 
-    start >> import_dataset >> end
+    start >> extract_and_load() >> dbt_build_staging >> end
+
+
+import_insee_prenoms()
