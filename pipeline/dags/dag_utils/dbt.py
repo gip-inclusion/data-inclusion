@@ -108,14 +108,13 @@ def get_intermediate_tasks():
                 # into a single DAG. Another way to see it is that it depended on
                 # main since the beginning as it required intermediate data to be
                 # present ?
-                "path:models/intermediate/int__geocodages.sql",
+                "path:models/intermediate/int__courriels_personnels.sql",
                 "path:models/intermediate/int__criteres_qualite.sql",
+                "path:models/intermediate/int__geocodages.sql",
                 "path:models/intermediate/int__union_contacts.sql",
                 "path:models/intermediate/int__union_adresses.sql",
                 "path:models/intermediate/int__union_services.sql",
                 "path:models/intermediate/int__union_structures.sql",
-                "path:models/intermediate/extra",
-                "path:models/intermediate/int__plausible_personal_emails.sql",
                 "path:models/intermediate/int__union_contacts__enhanced.sql+",
                 "path:models/intermediate/int__union_adresses__enhanced.sql+",
                 "path:models/intermediate/int__union_services__enhanced.sql+",

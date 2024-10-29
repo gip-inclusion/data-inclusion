@@ -1,0 +1,9 @@
+version: 2
+
+sources:
+  - name: insee
+    schema: insee
+    tables:
+      - name: etat_civil_prenoms
+      - name: sirene_etablissement_historique
+      - name: sirene_etablissement_succession

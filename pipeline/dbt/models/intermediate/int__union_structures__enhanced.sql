@@ -2,10 +2,6 @@ WITH structures AS (
     SELECT * FROM {{ ref('int__union_structures') }}
 ),
 
-plausible_personal_emails AS (
-    SELECT * FROM {{ ref('int__plausible_personal_emails') }}
-),
-
 adresses AS (
     SELECT * FROM {{ ref('int__union_adresses__enhanced') }}
 ),
@@ -42,17 +38,15 @@ valid_structures AS (
 final AS (
     SELECT
         valid_structures.*,
-        adresses.longitude                                                      AS "longitude",
-        adresses.latitude                                                       AS "latitude",
-        adresses.complement_adresse                                             AS "complement_adresse",
-        adresses.commune                                                        AS "commune",
-        adresses.adresse                                                        AS "adresse",
-        adresses.code_postal                                                    AS "code_postal",
-        adresses.code_insee                                                     AS "code_insee",
-        COALESCE(plausible_personal_emails._di_surrogate_id IS NOT NULL, FALSE) AS "_di_email_is_pii"
+        adresses.longitude          AS "longitude",
+        adresses.latitude           AS "latitude",
+        adresses.complement_adresse AS "complement_adresse",
+        adresses.commune            AS "commune",
+        adresses.adresse            AS "adresse",
+        adresses.code_postal        AS "code_postal",
+        adresses.code_insee         AS "code_insee"
     FROM
         valid_structures
-    LEFT JOIN plausible_personal_emails ON valid_structures._di_surrogate_id = plausible_personal_emails._di_surrogate_id
     LEFT JOIN adresses ON valid_structures._di_adresse_surrogate_id = adresses._di_surrogate_id
 )
 

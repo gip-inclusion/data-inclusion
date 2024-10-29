@@ -2,8 +2,11 @@ WITH structures AS (
     SELECT * FROM {{ ref('int__union_structures__enhanced') }}
 ),
 
+courriels_personnels AS (
+    SELECT * FROM {{ ref('int__courriels_personnels') }}
+),
+
 final AS (
-    -- obfuscate email if it contains PII
     SELECT
         {{
             dbt_utils.star(
@@ -11,15 +14,16 @@ final AS (
                 from=ref('int__union_structures__enhanced'),
                 except=['courriel', 'telephone'])
         }},
+        -- obfuscate email (& telephone) if it is potentially personal
+        NULLIF(structures.courriel, courriels_personnels.courriel) AS "courriel",
         CASE
-            WHEN structures._di_email_is_pii THEN {{ obfuscate('structures.courriel') }}
-            ELSE structures.courriel
-        END AS "courriel",
-        CASE
-            WHEN structures._di_email_is_pii THEN {{ obfuscate('structures.telephone') }}
-            ELSE structures.telephone
-        END AS "telephone"
+            WHEN structures.courriel != courriels_personnels.courriel
+                THEN structures.telephone
+        END                                                        AS "telephone"
     FROM structures
+    LEFT JOIN courriels_personnels
+        ON structures.courriel = courriels_personnels.courriel
+    -- exclude specific sources from open data
     WHERE structures.source NOT IN ('soliguide', 'siao', 'finess', 'agefiph', 'data-inclusion')
 )
 
