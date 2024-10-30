@@ -1,6 +1,7 @@
 import json
 import time
 from copy import deepcopy
+from math import ceil
 from pathlib import Path
 from typing import Optional
 
@@ -9,7 +10,7 @@ from . import utils
 
 class APIClient(utils.BaseApiClient):
     # Documentation on the soliguide API is available here:
-    # https://apisolidarite.soliguide.fr/Documentation-technique-de-l-API-Solidarit-ecaf8198f0e9400d93140b8043c9f2ce
+    # https://apisolidarite.soliguide.fr/solinum/Technical-Documentation-of-the-Solidarity-API-59cb0fe101274d74b9a7c3729cf473b2
 
     def __init__(self, base_url: str, token: str):
         super().__init__(base_url)
@@ -39,6 +40,7 @@ class APIClient(utils.BaseApiClient):
 
         places_data = []
         page_number = 1
+        total_number_of_pages = None
 
         while True:
             data = deepcopy(default_data)
@@ -52,7 +54,12 @@ class APIClient(utils.BaseApiClient):
             places_data += response_data["places"]
             page_number += 1
 
-            if len(places_data) >= response_data["nbResults"]:
+            if total_number_of_pages is None:
+                total_number_of_pages = ceil(
+                    response_data["nbResults"] / data["options"]["limit"]
+                )
+
+            if page_number > total_number_of_pages:
                 break
             elif len(response_data["places"]) == 0:
                 break
