@@ -34,15 +34,11 @@ click==8.1.7
     #   data-inclusion-api (setup.py)
     #   uvicorn
 cryptography==43.0.1
-    # via
-    #   data-inclusion-api (setup.py)
-    #   python-jose
+    # via data-inclusion-api (setup.py)
 data-inclusion-schema==0.17.0
     # via data-inclusion-api (setup.py)
 dnspython==2.6.1
     # via email-validator
-ecdsa==0.19.0
-    # via python-jose
 email-validator==2.2.0
     # via pydantic
 faker==28.4.1
@@ -113,10 +109,6 @@ psycopg2==2.9.9
     # via data-inclusion-api (setup.py)
 pyarrow==17.0.0
     # via data-inclusion-api (setup.py)
-pyasn1==0.6.1
-    # via
-    #   python-jose
-    #   rsa
 pycparser==2.22
     # via cffi
 pycryptodome==3.20.0
@@ -132,6 +124,8 @@ pydantic-core==2.23.3
     # via pydantic
 pydantic-settings==2.5.2
     # via data-inclusion-api (setup.py)
+pyjwt==2.9.0
+    # via data-inclusion-api (setup.py)
 pyogrio==0.9.0
     # via geopandas
 pyproj==3.6.1
@@ -145,8 +139,6 @@ python-dotenv==1.0.1
     #   data-inclusion-api (setup.py)
     #   pydantic-settings
     #   uvicorn
-python-jose==3.3.0
-    # via data-inclusion-api (setup.py)
 pytz==2024.2
     # via
     #   data-inclusion-api (setup.py)
@@ -155,15 +147,12 @@ pyyaml==6.0.2
     # via uvicorn
 requests==2.32.3
     # via data-inclusion-api (setup.py)
-rsa==4.9
-    # via python-jose
 sentry-sdk==2.14.0
     # via data-inclusion-api (setup.py)
 shapely==2.0.6
     # via geopandas
 six==1.16.0
     # via
-    #   ecdsa
     #   furl
     #   orderedmultidict
     #   python-dateutil
