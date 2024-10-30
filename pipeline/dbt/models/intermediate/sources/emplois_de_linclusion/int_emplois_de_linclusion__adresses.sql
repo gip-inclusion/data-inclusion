@@ -1,15 +1,5 @@
-WITH siaes AS (
-    SELECT * FROM {{ ref('stg_emplois_de_linclusion__siaes') }}
-),
-
-organisations AS (
+WITH structures AS (
     SELECT * FROM {{ ref('stg_emplois_de_linclusion__organisations') }}
-),
-
-structures AS (
-    SELECT * FROM siaes
-    UNION
-    SELECT * FROM organisations
 ),
 
 final AS (

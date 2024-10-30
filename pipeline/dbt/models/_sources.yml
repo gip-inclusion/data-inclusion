@@ -81,9 +81,6 @@ sources:
     meta:
       is_provider: true
     tables:
-      - name: siaes
-        meta:
-          kind: structure
       - name: organisations
         meta:
           kind: structure

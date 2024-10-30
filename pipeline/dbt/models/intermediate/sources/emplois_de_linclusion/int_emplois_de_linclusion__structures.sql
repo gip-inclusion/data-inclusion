@@ -1,15 +1,5 @@
-WITH siaes AS (
-    SELECT * FROM {{ ref('stg_emplois_de_linclusion__siaes') }}
-),
-
-organisations AS (
+WITH structures AS (
     SELECT * FROM {{ ref('stg_emplois_de_linclusion__organisations') }}
-),
-
-structures AS (
-    SELECT * FROM siaes
-    UNION
-    SELECT * FROM organisations
 ),
 
 final AS (
@@ -21,7 +11,7 @@ final AS (
         labels_nationaux                AS "labels_nationaux",
         labels_autres                   AS "labels_autres",
         thematiques                     AS "thematiques",
-        -- FIXME(vperron) : Remove this when there is no 'PE' in the sources anymore
+        -- SOURCEFIX(2024-10-30) : Remove this when there is no 'PE' in the sources anymore
         CASE
             WHEN typologie = 'PE' THEN 'FT'
             ELSE typologie

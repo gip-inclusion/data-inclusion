@@ -17,8 +17,8 @@ class EmploisClient(utils.BaseApiClient):
         self.session.mount("https://", adapter)
         self.session.headers.update({"Authorization": f"Token {token}"})
 
-    def _list_structures(self, kind: str) -> list:
-        next_url = f"{self.base_url}?type={kind}&page_size=1000"
+    def list_organisations(self) -> list:
+        next_url = f"{self.base_url}?type=orga&page_size=1000"
         structures_data = []
 
         while True:
@@ -32,14 +32,7 @@ class EmploisClient(utils.BaseApiClient):
 
         return structures_data
 
-    def list_siaes(self) -> list:
-        return self._list_structures("siae")
 
-    def list_organisations(self) -> list:
-        return self._list_structures("orga")
-
-
-def extract(id: str, url: str, token: str, **kwargs) -> bytes:
+def extract_organisations(url: str, token: str, **kwargs) -> bytes:
     client = EmploisClient(base_url=url, token=token)
-    data = getattr(client, f"list_{id}")()
-    return json.dumps(data).encode()
+    return json.dumps(client.list_organisations()).encode()
