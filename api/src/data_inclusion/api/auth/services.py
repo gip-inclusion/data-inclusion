@@ -1,5 +1,4 @@
-import jose
-from jose import jwt
+import jwt
 
 from data_inclusion.api.config import settings
 
@@ -11,7 +10,7 @@ def create_access_token(
     admin: bool | None = False,
 ) -> str:
     encoded_jwt = jwt.encode(
-        claims={
+        payload={
             "sub": str(subject),
             "admin": admin,
         },
@@ -23,10 +22,8 @@ def create_access_token(
 
 def verify_token(token: str) -> dict | None:
     try:
-        payload = jwt.decode(
-            token=token, key=settings.SECRET_KEY, algorithms=[ALGORITHM]
-        )
-    except jose.JWTError:
+        payload = jwt.decode(jwt=token, key=settings.SECRET_KEY, algorithms=[ALGORITHM])
+    except jwt.InvalidTokenError:
         return None
 
     return payload

@@ -31,7 +31,7 @@ setup(
         "pydantic[email]>=2.5.0",
         "pydantic-settings",
         "python-dotenv",
-        "python-jose[cryptography]",
+        "PyJWT",
         "pytz",
         "requests",
         "sentry-sdk[fastapi]",
