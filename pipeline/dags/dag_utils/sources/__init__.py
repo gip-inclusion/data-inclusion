@@ -104,17 +104,12 @@ SOURCES_CONFIGS = {
     "emplois-de-linclusion": {
         "schedule": "@daily",
         "snapshot": True,
-        "extractor": emplois_de_linclusion.extract,
         "streams": {
-            "siaes": {
-                "filename": "siaes.json",
-                "url": Variable.get("EMPLOIS_API_URL", None),
-                "token": Variable.get("EMPLOIS_API_TOKEN", None),
-            },
             "organisations": {
                 "filename": "organisations.json",
                 "url": Variable.get("EMPLOIS_API_URL", None),
                 "token": Variable.get("EMPLOIS_API_TOKEN", None),
+                "extractor": emplois_de_linclusion.extract_organisations,
             },
         },
     },
