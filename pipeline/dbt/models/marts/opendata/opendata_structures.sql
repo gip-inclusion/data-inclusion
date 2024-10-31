@@ -24,7 +24,7 @@ final AS (
     LEFT JOIN courriels_personnels
         ON structures.courriel = courriels_personnels.courriel
     -- exclude specific sources from open data
-    WHERE structures.source NOT IN ('soliguide', 'siao', 'finess', 'agefiph', 'data-inclusion')
+    WHERE structures.source NOT IN ('soliguide', 'finess', 'agefiph')
 )
 
 SELECT * FROM final

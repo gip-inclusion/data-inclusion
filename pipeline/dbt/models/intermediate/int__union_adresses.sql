@@ -4,7 +4,6 @@ WITH adresses AS (
             relations=[
                 ref('int_action_logement__adresses'),
                 ref('int_agefiph__adresses'),
-                ref('int_data_inclusion__adresses'),
                 ref('int_dora__adresses'),
                 ref('int_cd35__adresses'),
                 ref('int_emplois_de_linclusion__adresses'),
@@ -16,7 +15,6 @@ WITH adresses AS (
                 ref('int_monenfant__adresses'),
                 ref('int_odspep__adresses'),
                 ref('int_reseau_alpha__adresses'),
-                ref('int_siao__adresses'),
                 ref('int_soliguide__adresses'),
             ],
             source_column_name=None

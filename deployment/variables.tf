@@ -196,12 +196,6 @@ variable "airflow_conn_mattermost" {
   default     = ""
 }
 
-variable "siao_file_url" {
-  description = "Public URL to the siao export on our s3 bucket"
-  type        = string
-  default     = ""
-}
-
 variable "twocaptcha_api_key" {
   description = "Used in extraction tasks orchestrated by airflow"
   type        = string

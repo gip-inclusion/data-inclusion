@@ -1,20 +1,6 @@
 version: 2
 
 sources:
-  - name: data_inclusion
-    schema: data_inclusion
-    meta:
-      is_provider: true
-    tables:
-      - name: structures
-        description: Entered by the data.inclusion team.
-        meta:
-          kind: structure
-      - name: services
-        description: Entered by the data.inclusion team.
-        meta:
-          kind: service
-
   - name: france_travail
     schema: france_travail
     meta:
@@ -29,11 +15,6 @@ sources:
 
   - name: finess
     schema: finess
-    tables:
-      - name: etablissements
-
-  - name: siao
-    schema: siao
     tables:
       - name: etablissements
 
