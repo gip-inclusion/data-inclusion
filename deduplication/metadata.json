@@ -1,0 +1,5 @@
+{
+    "threshold": 0.75,
+    "recall": 1,
+    "input_data": "https://console.scaleway.com/object-storage/buckets/fr-par/data-inclusion-datalake-prod-grand-titmouse/files/data/marts/2024-11-19/scheduled__2024-11-19T12%3A00%3A00%2B00%3A00/structures.parquet"
+}
