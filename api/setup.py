@@ -14,7 +14,6 @@ setup(
         "certifi",
         "click",
         "cryptography",
-        "faker",
         "fastapi",
         "fastapi-pagination",
         "furl",

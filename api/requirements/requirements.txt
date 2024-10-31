@@ -41,8 +41,6 @@ dnspython==2.7.0
     # via email-validator
 email-validator==2.2.0
     # via pydantic
-faker==30.8.1
-    # via data-inclusion-api (setup.py)
 fastapi==0.115.4
     # via
     #   data-inclusion-api (setup.py)
@@ -130,9 +128,7 @@ pyogrio==0.10.0
 pyproj==3.7.0
     # via geopandas
 python-dateutil==2.9.0.post0
-    # via
-    #   faker
-    #   pandas
+    # via pandas
 python-dotenv==1.0.1
     # via
     #   data-inclusion-api (setup.py)
@@ -171,7 +167,6 @@ tqdm==4.66.6
 typing-extensions==4.12.2
     # via
     #   alembic
-    #   faker
     #   fastapi
     #   fastapi-pagination
     #   minio
