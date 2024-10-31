@@ -4,7 +4,6 @@ WITH services AS (
             relations=[
                 ref('int_action_logement__services'),
                 ref('int_agefiph__services'),
-                ref('int_data_inclusion__services'),
                 ref('int_dora__services'),
                 ref('int_france_travail__services'),
                 ref('int_fredo__services'),

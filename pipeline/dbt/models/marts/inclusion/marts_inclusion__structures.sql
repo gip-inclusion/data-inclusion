@@ -16,7 +16,7 @@ final AS (
             )
         }}
     FROM structures
-    WHERE structures.source NOT IN ('siao', 'finess')
+    WHERE structures.source != 'finess'
 )
 
 SELECT * FROM final

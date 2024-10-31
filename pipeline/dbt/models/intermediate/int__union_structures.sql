@@ -4,7 +4,6 @@ WITH structures AS (
             relations=[
                 ref('int_action_logement__structures'),
                 ref('int_agefiph__structures'),
-                ref('int_data_inclusion__structures'),
                 ref('int_dora__structures'),
                 ref('int_cd35__structures'),
                 ref('int_emplois_de_linclusion__structures'),
@@ -16,7 +15,6 @@ WITH structures AS (
                 ref('int_monenfant__structures'),
                 ref('int_odspep__structures'),
                 ref('int_reseau_alpha__structures'),
-                ref('int_siao__structures'),
                 ref('int_soliguide__structures'),
             ],
             column_override={

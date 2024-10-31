@@ -24,7 +24,7 @@ final AS (
     LEFT JOIN courriels_personnels
         ON services.courriel = courriels_personnels.courriel
     -- exclude specific sources from open data
-    WHERE services.source NOT IN ('soliguide', 'agefiph', 'data-inclusion')
+    WHERE services.source NOT IN ('soliguide', 'agefiph')
 )
 
 SELECT * FROM final

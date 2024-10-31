@@ -189,7 +189,7 @@ def test_list_structures_filter_by_source(api_client):
     assert_paginated_response_data(response.json(), total=1)
     assert_structure_data(structure_1, resp_data["items"][0])
 
-    response = api_client.get(url, params={"source": "siao"})
+    response = api_client.get(url, params={"source": "soliguide"})
     assert_paginated_response_data(response.json(), total=0)
 
 

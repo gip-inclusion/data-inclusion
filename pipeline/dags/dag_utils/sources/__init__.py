@@ -56,17 +56,6 @@ SOURCES_CONFIGS = {
             },
         },
     },
-    "siao": {
-        "schedule": "@once",
-        "snapshot": False,
-        "reader": utils.read_excel,
-        "streams": {
-            "etablissements": {
-                "filename": "etablissements.xlsx",
-                "url": Variable.get("SIAO_FILE_URL", None),
-            },
-        },
-    },
     "finess": {
         "schedule": "@daily",
         "snapshot": True,
@@ -194,21 +183,6 @@ SOURCES_CONFIGS = {
                 "filename": "services.json",
                 "url": Variable.get("AGEFIPH_SERVICES_API_URL", None),
             }
-        },
-    },
-    "data-inclusion": {
-        "schedule": "@once",
-        "snapshot": False,
-        "reader": lambda path: utils.read_csv(path, sep=","),
-        "streams": {
-            "services": {
-                "filename": "services.csv",
-                "url": Variable.get("DI_EXTRA_SERVICES_FILE_URL", None),
-            },
-            "structures": {
-                "filename": "structures.csv",
-                "url": Variable.get("DI_EXTRA_STRUCTURES_FILE_URL", None),
-            },
         },
     },
     "france-travail": {
