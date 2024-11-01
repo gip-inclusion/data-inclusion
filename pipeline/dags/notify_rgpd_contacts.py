@@ -79,9 +79,9 @@ def _send_rgpd_notice():
         template_id=2,
         to_list_id=constants.BREVO_CURRENT_CONTACTS_LIST_ID,
         tag="di-rgpd-notice",
-        from_email="bonjour@data.inclusion.beta.gouv.fr",
+        from_email="bonjour@data.inclusion.gouv.fr",
         from_name="L'équipe data inclusion",
-        reply_to="ne-pas-repondre@data.inclusion.beta.gouv.fr",
+        reply_to="ne-pas-repondre@data.inclusion.gouv.fr",
     )
 
 
