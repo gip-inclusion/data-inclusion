@@ -54,10 +54,6 @@ CodeRegionFilter = Annotated[
 )
 def list_structures_endpoint(
     request: fastapi.Request,
-    source: Annotated[
-        Optional[str],
-        fastapi.Query(include_in_schema=False),
-    ] = None,
     sources: Annotated[
         Optional[list[str]],
         fastapi.Query(
@@ -94,9 +90,6 @@ def list_structures_endpoint(
     code_commune: CodeCommuneFilter = None,
     db_session=fastapi.Depends(db.get_session),
 ):
-    if sources is None and source is not None:
-        sources = [source]
-
     region = get_region_by_code_or_slug(code=code_region, slug=slug_region)
 
     if code_departement is None and departement is not None:

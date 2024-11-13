@@ -50,7 +50,7 @@ def test_list_structures_all(api_client):
     assert resp_data == {
         "items": [
             {
-                "accessibilite": "https://acceslibre.beta.gouv.fr/app/kitchen-amount/",
+                "accessibilite": "https://acceslibre.beta.gouv.fr/app/nom-asseoir/",
                 "adresse": "49, avenue de Pichon",
                 "antenne": False,
                 "code_insee": "59350",
@@ -60,11 +60,11 @@ def test_list_structures_all(api_client):
                 "courriel": "levyalexandre@example.org",
                 "date_maj": "2023-01-01",
                 "horaires_ouverture": 'Mo-Fr 10:00-20:00 "sur rendez-vous"; PH off',
-                "id": "kitchen-amount",
+                "id": "nom-asseoir",
                 "labels_autres": ["Nièvre médiation numérique"],
                 "labels_nationaux": [],
                 "latitude": -20.074628,
-                "lien_source": "https://dora.fr/kitchen-amount",
+                "lien_source": "https://dora.fr/nom-asseoir",
                 "longitude": 99.899603,
                 "nom": "Perrin",
                 "presentation_detail": "Or personne jambe.",
@@ -177,23 +177,6 @@ def test_list_structures_filter_by_label(
 
 
 @pytest.mark.with_token
-@pytest.mark.feature_deprecated
-def test_list_structures_filter_by_source(api_client):
-    structure_1 = factories.StructureFactory(source="emplois-de-linclusion")
-    factories.StructureFactory(source="dora")
-
-    url = "/api/v0/structures/"
-    response = api_client.get(url, params={"source": "emplois-de-linclusion"})
-
-    resp_data = response.json()
-    assert_paginated_response_data(response.json(), total=1)
-    assert_structure_data(structure_1, resp_data["items"][0])
-
-    response = api_client.get(url, params={"source": "soliguide"})
-    assert_paginated_response_data(response.json(), total=0)
-
-
-@pytest.mark.with_token
 def test_list_sources(api_client):
     url = "/api/v0/sources/"
     response = api_client.get(url)
@@ -216,25 +199,6 @@ def test_list_sources(api_client):
             "data-inclusion",
         ]
     )
-
-
-@pytest.mark.with_token
-@pytest.mark.feature_deprecated
-def test_list_structures_filter_by_source_and_id(
-    api_client,
-):
-    factories.StructureFactory(source="emplois-de-linclusion", id="foo")
-    structure_2 = factories.StructureFactory(source="dora", id="foo")
-    factories.StructureFactory(source="dora", id="bar")
-
-    url = "/api/v0/structures/"
-
-    response = api_client.get(url, params={"source": "dora", "id": "foo"})
-    resp_data = response.json()
-
-    resp_data = response.json()
-    assert_paginated_response_data(response.json(), total=1)
-    assert_structure_data(structure_2, resp_data["items"][0])
 
 
 def test_list_services_unauthenticated(api_client):
@@ -271,10 +235,10 @@ def test_list_services_all(api_client):
                 "formulaire_en_ligne": None,
                 "frais_autres": "Camarade il.",
                 "frais": ["gratuit"],
-                "id": "be-water-scene-wind",
+                "id": "cacher-violent",
                 "justificatifs": [],
                 "latitude": -77.857573,
-                "lien_source": "https://dora.fr/be-water-scene-wind",
+                "lien_source": "https://dora.fr/cacher-violent",
                 "longitude": -62.54684,
                 "modes_accueil": ["a-distance"],
                 "modes_orientation_accompagnateur_autres": None,
@@ -291,7 +255,7 @@ def test_list_services_all(api_client):
                 "recurrence": None,
                 "score_qualite": 0.5,
                 "source": "dora",
-                "structure_id": "much-mention",
+                "structure_id": "prince-point-monde",
                 "telephone": "0102030405",
                 "thematiques": ["choisir-un-metier"],
                 "types": ["formation"],
