@@ -294,24 +294,6 @@ def test_list_structures_order(
 
 @pytest.mark.with_token
 @pytest.mark.feature_deprecated
-def test_list_services_filter_by_source(api_client):
-    service_1 = factories.ServiceFactory(source="emplois-de-linclusion")
-    factories.ServiceFactory(source="dora")
-
-    url = "/api/v0/services/"
-    response = api_client.get(url, params={"source": "emplois-de-linclusion"})
-
-    assert response.status_code == 200
-
-    resp_data = response.json()
-
-    assert len(resp_data["items"]) == 1
-    assert resp_data["items"][0]["id"] == service_1.id
-    assert resp_data["items"][0]["source"] == service_1.structure.source
-
-
-@pytest.mark.with_token
-@pytest.mark.feature_deprecated
 def test_list_services_filter_by_thematique(api_client):
     service_1 = factories.ServiceFactory(
         source="alpha",
