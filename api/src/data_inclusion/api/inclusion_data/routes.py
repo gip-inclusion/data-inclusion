@@ -151,10 +151,6 @@ def list_sources_endpoint(
 def list_services_endpoint(
     request: fastapi.Request,
     db_session=fastapi.Depends(db.get_session),
-    source: Annotated[
-        Optional[str],
-        fastapi.Query(include_in_schema=False),
-    ] = None,
     sources: Annotated[
         Optional[list[str]],
         fastapi.Query(
@@ -236,9 +232,6 @@ def list_services_endpoint(
 
     if thematiques is None and thematique is not None:
         thematiques = [thematique]
-
-    if sources is None and source is not None:
-        sources = [source]
 
     if code_departement is None and departement is not None:
         code_departement = departement
