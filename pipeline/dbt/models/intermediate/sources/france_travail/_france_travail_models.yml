@@ -36,6 +36,13 @@ models:
           - relationships:
               to: ref('int_france_travail__adresses')
               field: id
+      - name: nom
+        data_tests:
+          - not_null
+          - dbt_utils.not_accepted_values:
+              values: ['Bilan/Accompagnement mobilité']
+              config:
+                where: "zone_diffusion_code LIKE '69%'"
 
   - name: int_france_travail__structures
     data_tests:
