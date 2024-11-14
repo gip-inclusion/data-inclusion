@@ -19,6 +19,16 @@ structures_with_commune AS (
     LEFT JOIN adresses ON agences.id = adresses.id
 ),
 
+-- Some services do not exist anymore, therefore we were asked to remove them
+excluded_ids AS (
+    SELECT structures.id || '-' || services.id AS id
+    FROM services
+    CROSS JOIN structures_with_commune AS structures
+    WHERE
+        services.nom = 'Bilan/Accompagnement mobilité'
+        AND structures.code_insee LIKE '69%'
+),
+
 final AS (
     SELECT
         services._di_source_id                           AS "source",
@@ -54,10 +64,12 @@ final AS (
         structures.code_insee                            AS "zone_diffusion_code",
         structures.commune                               AS "zone_diffusion_nom",
         NULL                                             AS "page_web",
-        CAST(NULL AS DATE)                               AS "date_suspension",
+        NULL::DATE                                       AS "date_suspension",
         structures.id || '-' || services.id              AS "id"
     FROM services
     CROSS JOIN structures_with_commune AS structures
+    WHERE
+        structures.id || '-' || services.id NOT IN (SELECT excluded_ids.id FROM excluded_ids)
 )
 
 SELECT * FROM final

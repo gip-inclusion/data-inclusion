@@ -22,7 +22,9 @@ models:
       - name: id
         data_tests:
           - unique
-          - not_null
+          - not_null:
+              config:
+                where: "nom NOT IN ('Bilan/Accompagnement mobilité') AND zone_diffusion_code NOT LIKE '69%'"
           - dbt_utils.not_empty_string
       - name: structure_id
         data_tests:
