@@ -58,6 +58,8 @@ final AS (
         structures.id || '-' || services.id              AS "id"
     FROM services
     CROSS JOIN structures_with_commune AS structures
+    -- Service ID 9 (Bilan/Accompagnement mobilité) is not available in Lyon anymore
+    WHERE NOT (services.id = '9' AND structures.code_insee LIKE '69%')
 )
 
 SELECT * FROM final
