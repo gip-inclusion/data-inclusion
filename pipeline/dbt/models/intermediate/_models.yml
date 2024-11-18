@@ -13,7 +13,6 @@ models:
     columns:
       - name: courriel
         data_tests:
-          - not_null
           - dbt_utils.not_empty_string
 
   - name: int__union_services

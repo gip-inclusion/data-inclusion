@@ -26,6 +26,7 @@ def _sync_new_contacts_to_brevo():
             FROM public_intermediate.int__union_contacts AS our_contacts
             LEFT JOIN public_intermediate.int_brevo__contacts AS brevo_contacts
             ON our_contacts.courriel = brevo_contacts.courriel
+            WHERE source = ANY (ARRAY['dora', 'mediation_numerique', 'mes-aides'])
             GROUP BY our_contacts.courriel, brevo_contacts.has_hardbounced
             ORDER BY our_contacts.courriel
             """

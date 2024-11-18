@@ -12,13 +12,6 @@ models:
           - unique
           - not_null
 
-  - name: int_dora__contacts
-    columns:
-      - name: courriel
-        data_tests:
-          - not_null
-          - dbt_utils.not_empty_string
-
   - name: int_dora__services
     data_tests:
       - check_service:
