@@ -46,8 +46,9 @@ final AS (
         zone_diffusion_type                             AS "zone_diffusion_type",
         zone_diffusion_libelle                          AS "zone_diffusion_nom",
         id_res                                          AS "structure_id",
-        NULL::TEXT []                                   AS "profils",
-        ARRAY(
+        CAST(NULL AS TEXT [])                           AS "profils",
+        NULL                                            AS "profils_precisions",
+        CAST(ARRAY(
             SELECT di_thematique_by_odspep_type_res_part.thematique
             FROM di_thematique_by_odspep_type_res_part
             WHERE ressources_partenariales.type_res_part = di_thematique_by_odspep_type_res_part.type_res_part

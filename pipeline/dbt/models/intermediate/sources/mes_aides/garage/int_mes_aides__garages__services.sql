@@ -57,13 +57,14 @@ final AS (
             '%s de %s à tarif solidaire pour les personnes en difficulté, et selon leur situation',
             COALESCE(service_types_by_garage.service_type, 'Réparation, vente et location'),
             LOWER(COALESCE(NULLIF(ARRAY_TO_STRING(garages.types_de_vehicule, ', '), ''), 'véhicule'))
-        )                                                                                   AS "presentation_resume",
-        NULL                                                                                AS "presentation_detail",
-        NULL                                                                                AS "prise_rdv",
-        NULL::TEXT []                                                                       AS "profils",
-        NULL                                                                                AS "recurrence",
-        garages._di_source_id                                                               AS "source",
-        garages.id                                                                          AS "structure_id",
+        )                                                                                           AS "presentation_resume",
+        NULL                                                                                        AS "presentation_detail",
+        NULL                                                                                        AS "prise_rdv",
+        CAST(NULL AS TEXT [])                                                                       AS "profils",
+        garages.criteres_eligibilite_raw                                                            AS "profils_precisions",
+        NULL                                                                                        AS "recurrence",
+        garages._di_source_id                                                                       AS "source",
+        garages.id                                                                                  AS "structure_id",
         ARRAY_REMOVE(
             ARRAY[
                 CASE service_types_by_garage.service_type

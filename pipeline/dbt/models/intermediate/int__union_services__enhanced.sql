@@ -124,6 +124,7 @@ valid_services AS (
             services.presentation_resume,
             services.prise_rdv,
             services.profils,
+            services.profils_precisions,
             services.recurrence,
             services.source,
             services.structure_id,

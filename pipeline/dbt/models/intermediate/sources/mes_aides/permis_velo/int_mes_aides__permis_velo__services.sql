@@ -184,7 +184,8 @@ final AS (
         || COALESCE(E'\n\n' || permis_velo.bon_a_savoir, '')
         || COALESCE(E'\n\n' || permis_velo.modalite_versement, '') AS "presentation_detail",
         NULL                                                       AS "prise_rdv",
-        NULL::TEXT []                                              AS "profils",
+        CAST(NULL AS TEXT [])                                      AS "profils",
+        permis_velo.autres_conditions                              AS "profils_precisions",
         NULL                                                       AS "recurrence",
         permis_velo._di_source_id                                  AS "source",
         permis_velo.id                                             AS "structure_id",

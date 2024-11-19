@@ -41,11 +41,12 @@ final AS (
         services.presentation_resume                     AS "presentation_resume",
         services.presentation_detail                     AS "presentation_detail",
         services.prise_rdv                               AS "prise_rdv",
-        ARRAY(
+        CAST(ARRAY(
             SELECT di_profil_by_dora_profil.di_profil
             FROM di_profil_by_dora_profil
             WHERE di_profil_by_dora_profil.dora_profil = ANY(services.profils)
-        )::TEXT []                                       AS "profils",
+        ) AS TEXT [])                                    AS "profils",
+        ARRAY_TO_STRING(services.profils, ', ')          AS "profils_precisions",
         services.recurrence                              AS "recurrence",
         services._di_source_id                           AS "source",
         services.structure_id                            AS "structure_id",
