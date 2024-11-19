@@ -14,6 +14,16 @@ phones AS (
     SELECT * FROM {{ ref('stg_soliguide__phones') }}
 ),
 
+publics AS (
+    SELECT * FROM {{ ref('stg_soliguide__lieux__publics__administrative') }}
+    UNION ALL
+    SELECT * FROM {{ ref('stg_soliguide__lieux__publics__gender') }}
+    UNION ALL
+    SELECT * FROM {{ ref('stg_soliguide__lieux__publics__familiale') }}
+    UNION ALL
+    SELECT * FROM {{ ref('stg_soliguide__lieux__publics__other') }}
+),
+
 thematiques AS (
     SELECT * FROM {{ ref('thematiques') }}
 ),
@@ -60,6 +70,42 @@ di_thematique_by_soliguide_category_code AS (
         ('wellness', ARRAY['remobilisation--bien-etre']),
         ('wifi', ARRAY['numerique--acceder-a-une-connexion-internet'])
     ) AS x (category, thematique)
+),
+
+profils AS (
+    SELECT
+        publics.lieu_id,
+        ARRAY_TO_STRING(ARRAY_AGG(DISTINCT di_mapping.traduction), ',') AS traduction,
+        ARRAY_REMOVE(ARRAY_AGG(DISTINCT di_mapping.profils), NULL)      AS profils
+    FROM
+        publics
+    LEFT JOIN (
+        VALUES
+        -- administrative status
+        ('regular', 'en situation régulière', NULL),
+        ('asylum', 'demandeur asile', 'personnes-de-nationalite-etrangere'),
+        ('undocumented', 'sans-papiers', 'personnes-de-nationalite-etrangere'),
+        -- family status
+        ('isolated', 'isolé', NULL),
+        ('family', 'famille', 'familles-enfants'),
+        ('couple', 'couple', 'familles-enfants'),
+        ('pregnent', 'enceinte', 'familles-enfants'),
+        -- gender status
+        ('men', 'homme', NULL),
+        ('women', 'femme', 'femmes'),
+        -- other status
+        ('violence', 'victime de violence', 'victimes'),
+        ('addiction', 'personne en situation d''addiction', 'personnes-en-situation-durgence'),
+        ('handicap', 'personne en situation d''handicap', 'personnes-en-situation-de-handicap'),
+        ('lgbt', 'personne LGBT+', NULL),
+        ('hiv', 'vih personne séropositive', NULL),
+        ('prostitution', 'personne en situation de prostitution', NULL),
+        ('prison', 'personne sortant de prison', 'sortants-de-detention'),
+        ('student', 'étudiant', 'etudiants'),
+        ('ukraine', 'ukraine', 'personnes-de-nationalite-etrangere')
+    ) AS di_mapping (category, traduction, profils) ON publics.value = di_mapping.category
+    GROUP BY
+        publics.lieu_id
 ),
 
 filtered_phones AS (
@@ -111,8 +157,12 @@ final AS (
         open_services._di_source_id                                   AS "source",
         NULL::TEXT []                                                 AS "types",
         NULL                                                          AS "prise_rdv",
-        NULL::TEXT []                                                 AS "profils",
-        NULL::TEXT []                                                 AS "pre_requis",
+        CASE
+            WHEN lieux.publics__accueil IN (0, 1) THEN ARRAY_APPEND(profils.profils, 'tout-publics')
+            ELSE profils.profils
+        END                                                           AS "profils",
+        profils.traduction                                            AS "profils_precisions",
+        CAST(NULL AS TEXT [])                                         AS "pre_requis",
         TRUE                                                          AS "cumulable",
         NULL::TEXT []                                                 AS "justificatifs",
         NULL::DATE                                                    AS "date_creation",
@@ -204,7 +254,8 @@ final AS (
     LEFT JOIN lieux ON open_services.lieu_id = lieux.id
     LEFT JOIN categories ON open_services.category = categories.code
     LEFT JOIN filtered_phones ON open_services.lieu_id = filtered_phones.lieu_id
-    ORDER BY 1
+    LEFT JOIN profils AS profils ON lieux.id = profils.lieu_id
+    ORDER BY open_services.id
 )
 
 SELECT * FROM final
