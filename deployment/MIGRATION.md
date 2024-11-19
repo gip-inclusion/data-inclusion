@@ -5,7 +5,7 @@ Here is the corrected and formatted version of your migration process:
 
 1. **Connect via SSH to the instance** 
 ```bash
-   ssh root@163.172.186.56
+   ssh root@<INSTANCE_IP>
 ```
 2. **Install PostgreSQL 17**  
     ```bash

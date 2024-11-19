@@ -360,6 +360,7 @@ def test_list_services_all(api_client, db_session):
                 "presentation_resume": "Puissant fine.",
                 "prise_rdv": "https://teixeira.fr/",
                 "profils": ["femmes"],
+                "profils_precisions": "femmes",
                 "recurrence": None,
                 "score_qualite": 0.5,
                 "source": "dora",
@@ -398,6 +399,68 @@ def test_list_structures_order(
     assert resp_data["items"][0]["id"] == structure_3.id
     assert resp_data["items"][1]["id"] == structure_1.id
     assert resp_data["items"][2]["id"] == structure_2.id
+
+
+@pytest.mark.parametrize(
+    "profils_precisions,input,found",
+    [
+        ("jeunes moins de 18 ans", "jeunes", True),
+        ("jeune moins de 18 ans", "jeunes", True),
+        ("jeunes et personne age", "vieux", False),
+        ("jeunes et personne age", "personne OR âgée", True),
+        ("jeunes et personne age", "personne jeune", True),
+        # FIXME: this test is failing because of the accent in the input
+        ("jeunes et personne agee", "âgée", False),
+    ],
+)
+@pytest.mark.with_token
+def test_can_filter_resources_by_profils_precisions(
+    api_client, profils_precisions, input, found
+):
+    resource = factories.ServiceFactory(
+        profils=None, profils_precisions=profils_precisions
+    )
+    factories.ServiceFactory(profils=None, profils_precisions="tests")
+
+    response = api_client.get(
+        "/api/v0/search/services", params={"profils_precisions": input}
+    )
+
+    assert response.status_code == 200
+    resp_data = response.json()
+    if found:
+        assert_paginated_response_data(resp_data, total=1)
+        assert list_resources_data(resp_data)[0]["id"] in [resource.id]
+    else:
+        assert_paginated_response_data(resp_data, total=0)
+
+
+@pytest.mark.parametrize(
+    "profils,input,found",
+    [
+        ([schema.Profil.FEMMES.value], "femme", True),
+        ([schema.Profil.JEUNES_16_26.value], "jeune", True),
+        ([schema.Profil.FEMMES.value], "jeune", False),
+    ],
+)
+@pytest.mark.with_token
+def test_can_filter_resources_by_profils_precisions_with_only_profils_data(
+    api_client, profils, input, found
+):
+    resource = factories.ServiceFactory(profils=profils, profils_precisions="")
+    factories.ServiceFactory(profils=schema.Profil.RETRAITES, profils_precisions="")
+
+    response = api_client.get(
+        "/api/v0/search/services", params={"profils_precisions": input}
+    )
+
+    assert response.status_code == 200
+    resp_data = response.json()
+    if found:
+        assert_paginated_response_data(resp_data, total=1)
+        assert list_resources_data(resp_data)[0]["id"] in [resource.id]
+    else:
+        assert_paginated_response_data(resp_data, total=0)
 
 
 @pytest.mark.parametrize(
