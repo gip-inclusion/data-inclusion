@@ -119,7 +119,8 @@ thematiques AS (
 profils AS (
     SELECT
         fredo_publics.structure_id,
-        ARRAY_AGG(di_profils_by_fredo_public.profil) AS profils
+        ARRAY_AGG(di_profils_by_fredo_public.profil) AS profils,
+        STRING_AGG(fredo_publics.value, ', ')        AS profils_precisions
     FROM fredo_publics
     INNER JOIN di_profils_by_fredo_public ON fredo_publics.value = di_profils_by_fredo_public.public
     GROUP BY fredo_publics.structure_id
@@ -134,6 +135,7 @@ final AS (
         NULL                                                                                  AS "prise_rdv",
         fredo_structures.site_web                                                             AS "page_web",
         profils.profils                                                                       AS "profils",
+        profils.profils_precisions                                                            AS "profils_precisions",
         NULL                                                                                  AS "modes_orientation_accompagnateur_autres",
         NULL                                                                                  AS "modes_orientation_beneficiaire_autres",
         NULL                                                                                  AS "formulaire_en_ligne",
