@@ -38,13 +38,13 @@ di_thematique_by_soliguide_category_code AS (
         ('addiction', ARRAY['sante--faire-face-a-une-situation-daddiction']),
         ('administrative_assistance', ARRAY['acces-aux-droits-et-citoyennete--connaitre-ses-droits', 'acces-aux-droits-et-citoyennete--accompagnement-dans-les-demarches-administratives']),
         ('babysitting', ARRAY['famille--garde-denfants']),
-        ('budget_advice', ARRAY(SELECT value FROM thematiques WHERE value ~ '^gestion-financiere--')),
+        ('budget_advice', ARRAY(SELECT thematiques.value FROM thematiques WHERE thematiques.value ~ '^gestion-financiere--')),
         ('carpooling', ARRAY['mobilite--comprendre-et-utiliser-les-transports-en-commun']),
         ('chauffeur_driven_transport', ARRAY['mobilite--comprendre-et-utiliser-les-transports-en-commun']),
         ('clothing', ARRAY['equipement-et-alimentation--habillement']),
         ('computers_at_your_disposal', ARRAY['numerique--acceder-a-du-materiel']),
         ('day_hosting', ARRAY['remobilisation--lien-social']),
-        ('digital_tools_training', ARRAY(SELECT value FROM thematiques WHERE value ~ '^numerique--')),
+        ('digital_tools_training', ARRAY(SELECT thematiques.value FROM thematiques WHERE thematiques.value ~ '^numerique--')),
         ('emergency_accommodation', ARRAY['logement-hebergement--mal-loges-sans-logis']),
         ('family_area', ARRAY['famille--soutien-a-la-parentalite']),
         ('food_distribution', ARRAY['equipement-et-alimentation--alimentation']),
@@ -118,7 +118,9 @@ filtered_phones AS (
 relevant_services AS (
     SELECT *
     FROM services
-    WHERE category IN (SELECT category FROM di_thematique_by_soliguide_category_code)
+    WHERE category IN (
+        SELECT c.category FROM di_thematique_by_soliguide_category_code AS c
+    )
 ),
 
 -- remove temporarily suspended services from downstream data
@@ -155,7 +157,7 @@ final AS (
         open_services.id                                              AS "id",
         lieux.lieu_id                                                 AS "adresse_id",
         open_services._di_source_id                                   AS "source",
-        NULL::TEXT []                                                 AS "types",
+        CAST(NULL AS TEXT [])                                         AS "types",
         NULL                                                          AS "prise_rdv",
         CASE
             WHEN lieux.publics__accueil IN (0, 1) THEN ARRAY_APPEND(profils.profils, 'tout-publics')
@@ -164,12 +166,12 @@ final AS (
         profils.traduction                                            AS "profils_precisions",
         CAST(NULL AS TEXT [])                                         AS "pre_requis",
         TRUE                                                          AS "cumulable",
-        NULL::TEXT []                                                 AS "justificatifs",
-        NULL::DATE                                                    AS "date_creation",
-        NULL::DATE                                                    AS "date_suspension",
+        CAST(NULL AS TEXT [])                                         AS "justificatifs",
+        CAST(NULL AS DATE)                                            AS "date_creation",
+        CAST(NULL AS DATE)                                            AS "date_suspension",
         filtered_phones.phone_number                                  AS "telephone",
         lieux.entity_mail                                             AS "courriel",
-        NULL::BOOLEAN                                                 AS "contact_public",
+        CAST(NULL AS BOOLEAN)                                         AS "contact_public",
         NULL                                                          AS "contact_nom_prenom",
         open_services.updated_at                                      AS "date_maj",
         NULL                                                          AS "page_web",
@@ -178,11 +180,11 @@ final AS (
         NULL                                                          AS "zone_diffusion_nom",  -- will be overridden after geocoding
         NULL                                                          AS "formulaire_en_ligne",
         open_services.lieu_id                                         AS "structure_id",
-        (
+        CAST((
             SELECT di_thematique_by_soliguide_category_code.thematique
             FROM di_thematique_by_soliguide_category_code
             WHERE open_services.category = di_thematique_by_soliguide_category_code.category
-        )::TEXT []                                                    AS "thematiques",
+        ) AS TEXT [])                                                 AS "thematiques",
         ARRAY['en-presentiel']                                        AS "modes_accueil",
         categories.label || COALESCE(' : ' || open_services.name, '') AS "nom",
         'https://soliguide.fr/fr/fiche/' || lieux.seo_url             AS "lien_source",
