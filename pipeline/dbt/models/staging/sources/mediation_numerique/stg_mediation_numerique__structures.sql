@@ -9,10 +9,9 @@ final AS (
         CAST((data ->> 'longitude') AS FLOAT)                                                                    AS "longitude",
         CAST((data ->> 'latitude') AS FLOAT)                                                                     AS "latitude",
         CAST((data ->> 'date_maj') AS TIMESTAMP WITH TIME ZONE)                                                  AS "date_maj",
-        -- SOURCEFIX(2024-10-14)
-        ARRAY_REMOVE(CAST(ARRAY(
+        CAST(ARRAY(
             SELECT * FROM JSONB_ARRAY_ELEMENTS_TEXT(NULLIF(data -> 'labels_nationaux', 'null'))
-        ) AS TEXT []), 'sud-labs')                                                                               AS "labels_nationaux",
+        ) AS TEXT [])                                                                                            AS "labels_nationaux",
         CAST(ARRAY(SELECT * FROM JSONB_ARRAY_ELEMENTS_TEXT(NULLIF(data -> 'labels_autres', 'null'))) AS TEXT []) AS "labels_autres",
         data ->> 'id'                                                                                            AS "id",
         data ->> 'nom'                                                                                           AS "nom",

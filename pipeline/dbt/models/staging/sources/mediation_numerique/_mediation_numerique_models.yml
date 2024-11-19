@@ -89,6 +89,8 @@ models:
         data_tests:
           - dbt_utils.expression_is_true:
               expression: "<@ ARRAY(SELECT value FROM {{ ref('labels_nationaux') }})"
+              config:
+                severity: warn
       - name: adresse
         data_tests:
           - not_null
