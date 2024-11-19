@@ -14,31 +14,31 @@ service_types_by_garage AS (
 
 final AS (
     SELECT
-        garages.id                                                                          AS "adresse_id",
-        TRUE                                                                                AS "contact_public",
-        TRUE                                                                                AS "cumulable",
-        garages.cree_le                                                                     AS "date_creation",
-        garages.modifie_le                                                                  AS "date_maj",
-        NULL::DATE                                                                          AS "date_suspension",
-        NULL                                                                                AS "formulaire_en_ligne",
-        '{{ check_structure_str }}'                            AS "frais_autres",
-        (UUID(MD5(garages.id || COALESCE(service_types_by_garage.service_type, ''))))::TEXT AS "id",
-        NULL::TEXT []                                                                       AS "justificatifs",
-        'https://mes-aides.francetravail.fr/transport-et-mobilite/garages-solidaires'       AS "lien_source",
-        ARRAY['en-presentiel']                                                              AS "modes_accueil",
+        garages.id                                                                                  AS "adresse_id",
+        TRUE                                                                                        AS "contact_public",
+        TRUE                                                                                        AS "cumulable",
+        garages.cree_le                                                                             AS "date_creation",
+        garages.modifie_le                                                                          AS "date_maj",
+        CAST(NULL AS DATE)                                                                          AS "date_suspension",
+        NULL                                                                                        AS "formulaire_en_ligne",
+        '{{ check_structure_str }}'                                    AS "frais_autres",
+        CAST((UUID(MD5(garages.id || COALESCE(service_types_by_garage.service_type, '')))) AS TEXT) AS "id",
+        CAST(NULL AS TEXT [])                                                                       AS "justificatifs",
+        'https://mes-aides.francetravail.fr/transport-et-mobilite/garages-solidaires'               AS "lien_source",
+        ARRAY['en-presentiel']                                                                      AS "modes_accueil",
         ARRAY_REMOVE(
             ARRAY[
                 CASE WHEN garages.telephone IS NOT NULL THEN 'telephoner' END,
                 CASE WHEN garages.email IS NOT NULL THEN 'envoyer-un-mail' END
             ],
             NULL
-        )                                                                                   AS "modes_orientation_accompagnateur",
+        )                                                                                           AS "modes_orientation_accompagnateur",
         CASE
             WHEN
                 garages.telephone IS NULL
                 AND garages.email IS NULL
                 THEN '{{ check_structure_str }}'
-        END                                                                                 AS "modes_orientation_accompagnateur_autres",
+        END                                                                                         AS "modes_orientation_accompagnateur_autres",
         ARRAY_REMOVE(
             ARRAY[
                 'se-presenter',
@@ -46,24 +46,25 @@ final AS (
                 CASE WHEN garages.email IS NOT NULL THEN 'envoyer-un-mail' END
             ],
             NULL
-        )                                                                                   AS "modes_orientation_beneficiaire",
-        NULL                                                                                AS "modes_orientation_beneficiaire_autres",
+        )                                                                                           AS "modes_orientation_beneficiaire",
+        NULL                                                                                        AS "modes_orientation_beneficiaire_autres",
         FORMAT(
             '%s de %s',
             COALESCE(service_types_by_garage.service_type, 'Réparation, vente et location'),
             LOWER(COALESCE(NULLIF(ARRAY_TO_STRING(garages.types_de_vehicule, ', '), ''), 'véhicule'))
-        )                                                                                   AS "nom",
+        )                                                                                           AS "nom",
         FORMAT(
             '%s de %s à tarif solidaire pour les personnes en difficulté, et selon leur situation',
             COALESCE(service_types_by_garage.service_type, 'Réparation, vente et location'),
             LOWER(COALESCE(NULLIF(ARRAY_TO_STRING(garages.types_de_vehicule, ', '), ''), 'véhicule'))
-        )                                                                                   AS "presentation_resume",
-        NULL                                                                                AS "presentation_detail",
-        NULL                                                                                AS "prise_rdv",
-        NULL::TEXT []                                                                       AS "profils",
-        NULL                                                                                AS "recurrence",
-        garages._di_source_id                                                               AS "source",
-        garages.id                                                                          AS "structure_id",
+        )                                                                                           AS "presentation_resume",
+        NULL                                                                                        AS "presentation_detail",
+        NULL                                                                                        AS "prise_rdv",
+        CAST(NULL AS TEXT [])                                                                       AS "profils",
+        LEFT(garages.criteres_eligibilite_raw, 500)                                                 AS "profils_precisions",
+        NULL                                                                                        AS "recurrence",
+        garages._di_source_id                                                                       AS "source",
+        garages.id                                                                                  AS "structure_id",
         ARRAY_REMOVE(
             ARRAY[
                 CASE service_types_by_garage.service_type
@@ -80,20 +81,20 @@ final AS (
                 END
             ],
             NULL
-        )                                                                                   AS "thematiques",
-        ARRAY['aide-materielle', 'aide-financiere']                                         AS "types",
+        )                                                                                           AS "thematiques",
+        ARRAY['aide-materielle', 'aide-financiere']                                                 AS "types",
         CASE LEFT(garages.code_insee, 2)
             WHEN '97' THEN LEFT(garages.code_insee, 3)
             ELSE LEFT(garages.code_insee, 2)
-        END                                                                                 AS "zone_diffusion_code",
-        NULL                                                                                AS "zone_diffusion_nom",
-        'departement'                                                                       AS "zone_diffusion_type",
-        garages.criteres_eligibilite                                                        AS "pre_requis",
-        NULL                                                                                AS "contact_nom_prenom",
-        garages.email                                                                       AS "courriel",
-        garages.telephone                                                                   AS "telephone",
-        NULL::TEXT []                                                                       AS "frais",
-        NULL                                                                                AS "page_web"
+        END                                                                                         AS "zone_diffusion_code",
+        NULL                                                                                        AS "zone_diffusion_nom",
+        'departement'                                                                               AS "zone_diffusion_type",
+        garages.criteres_eligibilite                                                                AS "pre_requis",
+        NULL                                                                                        AS "contact_nom_prenom",
+        garages.email                                                                               AS "courriel",
+        garages.telephone                                                                           AS "telephone",
+        CAST(NULL AS TEXT [])                                                                       AS "frais",
+        NULL                                                                                        AS "page_web"
     FROM garages
     LEFT JOIN service_types_by_garage ON garages.id = service_types_by_garage.id
     WHERE

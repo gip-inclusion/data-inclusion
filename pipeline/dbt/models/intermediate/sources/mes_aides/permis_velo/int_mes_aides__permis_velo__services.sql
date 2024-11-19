@@ -150,13 +150,13 @@ final AS (
         TRUE                                                       AS "cumulable",
         permis_velo.creee_le                                       AS "date_creation",
         permis_velo.modifiee_le                                    AS "date_maj",
-        NULL::DATE                                                 AS "date_suspension",
+        CAST(NULL AS DATE)                                         AS "date_suspension",
         permis_velo.formulaire_url                                 AS "formulaire_en_ligne",
         mes_aides_natures.frais_autres                             AS "frais_autres",
         permis_velo.id                                             AS "id",
         CASE
             WHEN permis_velo.autres_justificatifs IS NOT NULL THEN ARRAY[permis_velo.autres_justificatifs]
-            ELSE NULL::TEXT []
+            ELSE CAST(NULL AS TEXT [])
         END                                                        AS "justificatifs",
         permis_velo.url_mes_aides                                  AS "lien_source",
         CASE
@@ -184,7 +184,8 @@ final AS (
         || COALESCE(E'\n\n' || permis_velo.bon_a_savoir, '')
         || COALESCE(E'\n\n' || permis_velo.modalite_versement, '') AS "presentation_detail",
         NULL                                                       AS "prise_rdv",
-        NULL::TEXT []                                              AS "profils",
+        CAST(NULL AS TEXT [])                                      AS "profils",
+        LEFT(permis_velo.autres_conditions, 500)                   AS "profils_precisions",
         NULL                                                       AS "recurrence",
         permis_velo._di_source_id                                  AS "source",
         permis_velo.id                                             AS "structure_id",
@@ -206,7 +207,7 @@ final AS (
         END                                                        AS "zone_diffusion_nom",
         zone_diffusion.zone_di                                     AS "zone_diffusion_type",
         CASE
-            WHEN permis_velo.autres_conditions IS NULL THEN NULL::TEXT []
+            WHEN permis_velo.autres_conditions IS NULL THEN CAST(NULL AS TEXT [])
             ELSE ARRAY[permis_velo.autres_conditions]
         END                                                        AS "pre_requis",
         NULL                                                       AS "contact_nom_prenom",

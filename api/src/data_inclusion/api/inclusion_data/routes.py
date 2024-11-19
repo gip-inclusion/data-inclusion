@@ -210,6 +210,14 @@ def list_services_endpoint(
             """
         ),
     ] = None,
+    recherche_public: Annotated[
+        Optional[str],
+        fastapi.Query(
+            description="""Une recherche en texte intégral parmi toutes
+              les valeurs "publics" que nous collectons chez nos producteurs de données.
+            """
+        ),
+    ] = None,
     modes_accueil: Annotated[
         Optional[list[di_schema.ModeAccueil]],
         fastapi.Query(
@@ -257,6 +265,7 @@ def list_services_endpoint(
         code_commune=code_commune,
         frais=frais,
         profils=profils,
+        recherche_public=recherche_public,
         modes_accueil=modes_accueil,
         types=types,
         score_qualite_minimum=score_qualite_minimum,
@@ -386,6 +395,14 @@ def search_services_endpoint(
             """
         ),
     ] = None,
+    recherche_public: Annotated[
+        Optional[str],
+        fastapi.Query(
+            description="""Une recherche en texte intégral parmi toutes
+              les valeurs "publics" que nous collectons chez nos producteurs de données.
+            """
+        ),
+    ] = None,
     types: Annotated[
         Optional[list[di_schema.TypologieService]],
         fastapi.Query(
@@ -460,6 +477,7 @@ def search_services_endpoint(
         frais=frais,
         modes_accueil=modes_accueil,
         profils=profils,
+        profils_search=recherche_public,
         types=types,
         search_point=search_point,
         score_qualite_minimum=score_qualite_minimum,

@@ -167,6 +167,8 @@ models:
         data_type: text
       - name: profils
         data_type: text[]
+      - name: profils_precisions
+        data_type: text
       - name: pre_requis
         data_type: text[]
       - name: cumulable

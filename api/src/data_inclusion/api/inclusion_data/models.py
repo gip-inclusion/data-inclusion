@@ -1,6 +1,8 @@
 from datetime import date
 
 import sqlalchemy as sqla
+from sqlalchemy import Computed
+from sqlalchemy.dialects.postgresql import TSVECTOR
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from data_inclusion.api.core.db import Base
@@ -92,6 +94,20 @@ class Service(Base):
     presentation_resume: Mapped[str | None]
     prise_rdv: Mapped[str | None]
     profils: Mapped[list[str] | None]
+    profils_precisions: Mapped[str | None]
+    # generate_profils_precisions is a function that generates
+    # a TSVECTOR from profils_precisions and profils
+    # cf: 20250107_172223_c947102bb23f_add_profils_autres_field_in_service.py
+    searchable_index_profils_precisions: Mapped[str | None] = mapped_column(
+        TSVECTOR,
+        Computed(
+            "generate_profils_precisions(profils_precisions, profils)", persisted=True
+        ),
+    )
+    searchable_index_profils: Mapped[str | None] = mapped_column(
+        TSVECTOR,
+        Computed("generate_profils(profils)", persisted=True),
+    )
     recurrence: Mapped[str | None]
     source: Mapped[str]
     structure_id: Mapped[str]

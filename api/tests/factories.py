@@ -108,6 +108,7 @@ class ServiceFactory(factory.alchemy.SQLAlchemyModelFactory):
         ],
         getter=lambda v: [v.value],
     )
+    profils_precisions = factory.Faker("text", max_nb_chars=20, locale="fr_FR")
     pre_requis = []
     cumulable = False
     justificatifs = []

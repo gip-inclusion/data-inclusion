@@ -36,7 +36,7 @@ click==8.1.7
     #   uvicorn
 cryptography==43.0.3
     # via data-inclusion-api (setup.py)
-data-inclusion-schema==0.17.0
+data-inclusion-schema==0.20.0
     # via data-inclusion-api (setup.py)
 dnspython==2.7.0
     # via email-validator
@@ -117,6 +117,8 @@ pandas==2.2.3
     # via
     #   data-inclusion-api (setup.py)
     #   geopandas
+pendulum==3.0.0
+    # via data-inclusion-schema
 pluggy==1.5.0
     # via pytest
 psycopg2==2.9.10
@@ -163,6 +165,8 @@ python-dateutil==2.9.0.post0
     # via
     #   faker
     #   pandas
+    #   pendulum
+    #   time-machine
 python-dotenv==1.0.1
     # via
     #   data-inclusion-api (setup.py)
@@ -201,6 +205,8 @@ starlette==0.41.2
     # via fastapi
 syrupy==4.7.2
     # via data-inclusion-api (setup.py)
+time-machine==2.16.0
+    # via pendulum
 tqdm==4.66.6
     # via data-inclusion-api (setup.py)
 typing-extensions==4.12.2
@@ -214,7 +220,9 @@ typing-extensions==4.12.2
     #   pydantic-core
     #   sqlalchemy
 tzdata==2024.2
-    # via pandas
+    # via
+    #   pandas
+    #   pendulum
 urllib3==2.2.3
     # via
     #   minio
