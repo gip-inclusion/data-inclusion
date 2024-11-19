@@ -8,7 +8,7 @@ final AS (
         data #>> '{fields,Adresse}'                                                                        AS "adresse",
         data #>> '{fields,Code INSEE}'                                                                     AS "code_insee",
         data #>> '{fields,Code Postal}'                                                                    AS "code_postal",
-        (data #>> '{fields,Créé le}')::DATE                                                                AS "cree_le",
+        CAST((data #>> '{fields,Créé le}') AS DATE)                                                        AS "cree_le",
         CASE
             WHEN data #>> '{fields,Critères d''éligibilité}' IS NULL THEN NULL
             -- if bullet points list, split to array
@@ -23,14 +23,15 @@ final AS (
             -- else use the whole field
             ELSE ARRAY[data #>> '{fields,Critères d''éligibilité}']
         END                                                                                                AS "criteres_eligibilite",
+        data #>> '{fields,Critères d''éligibilité}'                                                        AS "criteres_eligibilite_raw",
         data #>> '{fields,Département Nom}'                                                                AS "departement_nom",
         TRIM(data #>> '{fields,Email}')                                                                    AS "email",
-        (data #>> '{fields,En Ligne}')::BOOLEAN                                                            AS "en_ligne",
+        CAST((data #>> '{fields,En Ligne}') AS BOOLEAN)                                                    AS "en_ligne",
         data #>> '{fields,ID}'                                                                             AS "id",
         -- some rows are formatted as `LAT, LAT`... use first value
-        (SPLIT_PART(data #>> '{fields,Latitude}', ',', 1))::FLOAT                                          AS "latitude",
-        (SPLIT_PART(data #>> '{fields,Longitude}', ',', 1))::FLOAT                                         AS "longitude",
-        (data #>> '{fields,Modifié le}')::DATE                                                             AS "modifie_le",
+        CAST((SPLIT_PART(data #>> '{fields,Latitude}', ',', 1)) AS FLOAT)                                  AS "latitude",
+        CAST((SPLIT_PART(data #>> '{fields,Longitude}', ',', 1)) AS FLOAT)                                 AS "longitude",
+        CAST((data #>> '{fields,Modifié le}') AS DATE)                                                     AS "modifie_le",
         data #>> '{fields,Nom}'                                                                            AS "nom",
         data #>> '{fields,Partenaire Nom}'                                                                 AS "partenaire_nom",
         data #>> '{fields,Région Nom}'                                                                     AS "region_nom",

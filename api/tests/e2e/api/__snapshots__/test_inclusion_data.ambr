@@ -385,6 +385,17 @@
               "description": "Une liste de profils.\n                Chaque résultat renvoyé a (au moins) un profil dans cette liste.\n            "
             },
             {
+              "name": "recherche_public",
+              "in": "query",
+              "required": false,
+              "schema": {
+                "type": "string",
+                "description": "Une recherche en texte intégral parmi toutes\n              les valeurs \"publics\" que nous collectons chez nos producteurs de données.\n            ",
+                "title": "Recherche Public"
+              },
+              "description": "Une recherche en texte intégral parmi toutes\n              les valeurs \"publics\" que nous collectons chez nos producteurs de données.\n            "
+            },
+            {
               "name": "modes_accueil",
               "in": "query",
               "required": false,
@@ -662,6 +673,17 @@
                 "title": "Profils"
               },
               "description": "Une liste de profils.\n                Chaque résultat renvoyé a (au moins) un profil dans cette liste.\n            "
+            },
+            {
+              "name": "recherche_public",
+              "in": "query",
+              "required": false,
+              "schema": {
+                "type": "string",
+                "description": "Une recherche en texte intégral parmi toutes\n              les valeurs \"publics\" que nous collectons chez nos producteurs de données.\n            ",
+                "title": "Recherche Public"
+              },
+              "description": "Une recherche en texte intégral parmi toutes\n              les valeurs \"publics\" que nous collectons chez nos producteurs de données.\n            "
             },
             {
               "name": "types",
@@ -1517,6 +1539,17 @@
                 }
               ],
               "title": "Profils"
+            },
+            "profils_precisions": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Profils Precisions"
             },
             "pre_requis": {
               "anyOf": [
@@ -2437,7 +2470,9 @@
             "seniors-65",
             "sortants-de-detention",
             "surdite",
-            "victimes"
+            "victimes",
+            "tous-publics",
+            "personnes-en-situation-durgence"
           ],
           "title": "Profil"
         },
@@ -2611,6 +2646,17 @@
                 }
               ],
               "title": "Profils"
+            },
+            "profils_precisions": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Profils Precisions"
             },
             "pre_requis": {
               "anyOf": [

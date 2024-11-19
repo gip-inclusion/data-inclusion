@@ -14,6 +14,16 @@ phones AS (
     SELECT * FROM {{ ref('stg_soliguide__phones') }}
 ),
 
+publics AS (
+    SELECT * FROM {{ ref('stg_soliguide__lieux__publics__administrative') }}
+    UNION ALL
+    SELECT * FROM {{ ref('stg_soliguide__lieux__publics__gender') }}
+    UNION ALL
+    SELECT * FROM {{ ref('stg_soliguide__lieux__publics__familiale') }}
+    UNION ALL
+    SELECT * FROM {{ ref('stg_soliguide__lieux__publics__other') }}
+),
+
 thematiques AS (
     SELECT * FROM {{ ref('thematiques') }}
 ),
@@ -28,13 +38,13 @@ di_thematique_by_soliguide_category_code AS (
         ('addiction', ARRAY['sante--faire-face-a-une-situation-daddiction']),
         ('administrative_assistance', ARRAY['acces-aux-droits-et-citoyennete--connaitre-ses-droits', 'acces-aux-droits-et-citoyennete--accompagnement-dans-les-demarches-administratives']),
         ('babysitting', ARRAY['famille--garde-denfants']),
-        ('budget_advice', ARRAY(SELECT value FROM thematiques WHERE value ~ '^gestion-financiere--')),
+        ('budget_advice', ARRAY(SELECT thematiques.value FROM thematiques WHERE thematiques.value ~ '^gestion-financiere--')),
         ('carpooling', ARRAY['mobilite--comprendre-et-utiliser-les-transports-en-commun']),
         ('chauffeur_driven_transport', ARRAY['mobilite--comprendre-et-utiliser-les-transports-en-commun']),
         ('clothing', ARRAY['equipement-et-alimentation--habillement']),
         ('computers_at_your_disposal', ARRAY['numerique--acceder-a-du-materiel']),
         ('day_hosting', ARRAY['remobilisation--lien-social']),
-        ('digital_tools_training', ARRAY(SELECT value FROM thematiques WHERE value ~ '^numerique--')),
+        ('digital_tools_training', ARRAY(SELECT thematiques.value FROM thematiques WHERE thematiques.value ~ '^numerique--')),
         ('emergency_accommodation', ARRAY['logement-hebergement--mal-loges-sans-logis']),
         ('family_area', ARRAY['famille--soutien-a-la-parentalite']),
         ('food_distribution', ARRAY['equipement-et-alimentation--alimentation']),
@@ -62,6 +72,43 @@ di_thematique_by_soliguide_category_code AS (
     ) AS x (category, thematique)
 ),
 
+profils AS (
+    SELECT
+        publics.lieu_id,
+        ARRAY_TO_STRING(ARRAY_AGG(DISTINCT di_mapping.traduction), ', ') AS traduction,
+        ARRAY_REMOVE(ARRAY_AGG(DISTINCT di_mapping.profils), NULL)       AS profils
+    FROM
+        publics
+    LEFT JOIN (
+        VALUES
+        -- administrative status
+        ('regular', 'en situation régulière', NULL),
+        ('asylum', 'demandeur asile', 'personnes-de-nationalite-etrangere'),
+        ('refugee', 'personne avec un status de refugiée', 'personnes-de-nationalite-etrangere'),
+        ('undocumented', 'sans-papiers', 'personnes-de-nationalite-etrangere'),
+        -- family status
+        ('isolated', 'isolé', NULL),
+        ('family', 'famille', 'familles-enfants'),
+        ('couple', 'couple', 'familles-enfants'),
+        ('pregnant', 'enceinte', 'familles-enfants'),
+        -- gender status
+        ('men', 'homme', NULL),
+        ('women', 'femme', 'femmes'),
+        -- other status
+        ('violence', 'victime de violence', 'victimes'),
+        ('addiction', 'personne en situation d''addiction', 'personnes-en-situation-durgence'),
+        ('handicap', 'personne en situation d''handicap', 'personnes-en-situation-de-handicap'),
+        ('lgbt', 'personne LGBT+', NULL),
+        ('hiv', 'vih personne séropositive', NULL),
+        ('prostitution', 'personne en situation de prostitution', NULL),
+        ('prison', 'personne sortant de prison', 'sortants-de-detention'),
+        ('student', 'étudiant', 'etudiants'),
+        ('ukraine', 'ukraine', 'personnes-de-nationalite-etrangere')
+    ) AS di_mapping (category, traduction, profils) ON publics.value = di_mapping.category
+    GROUP BY
+        publics.lieu_id
+),
+
 filtered_phones AS (
     -- FIXME: di schema only allows a single phone number, but soliguide can have more
     SELECT DISTINCT ON (lieu_id) *
@@ -72,7 +119,9 @@ filtered_phones AS (
 relevant_services AS (
     SELECT *
     FROM services
-    WHERE category IN (SELECT category FROM di_thematique_by_soliguide_category_code)
+    WHERE category IN (
+        SELECT c.category FROM di_thematique_by_soliguide_category_code AS c
+    )
 ),
 
 -- remove temporarily suspended services from downstream data
@@ -109,17 +158,21 @@ final AS (
         open_services.id                                              AS "id",
         lieux.lieu_id                                                 AS "adresse_id",
         open_services._di_source_id                                   AS "source",
-        NULL::TEXT []                                                 AS "types",
+        CAST(NULL AS TEXT [])                                         AS "types",
         NULL                                                          AS "prise_rdv",
-        NULL::TEXT []                                                 AS "profils",
-        NULL::TEXT []                                                 AS "pre_requis",
+        CASE
+            WHEN lieux.publics__accueil IN (0, 1) THEN ARRAY_APPEND(profils.profils, 'tout-publics')
+            ELSE profils.profils
+        END                                                           AS "profils",
+        profils.traduction                                            AS "profils_precisions",
+        CAST(NULL AS TEXT [])                                         AS "pre_requis",
         TRUE                                                          AS "cumulable",
-        NULL::TEXT []                                                 AS "justificatifs",
-        NULL::DATE                                                    AS "date_creation",
-        NULL::DATE                                                    AS "date_suspension",
+        CAST(NULL AS TEXT [])                                         AS "justificatifs",
+        CAST(NULL AS DATE)                                            AS "date_creation",
+        CAST(NULL AS DATE)                                            AS "date_suspension",
         filtered_phones.phone_number                                  AS "telephone",
         lieux.entity_mail                                             AS "courriel",
-        NULL::BOOLEAN                                                 AS "contact_public",
+        CAST(NULL AS BOOLEAN)                                         AS "contact_public",
         NULL                                                          AS "contact_nom_prenom",
         open_services.updated_at                                      AS "date_maj",
         NULL                                                          AS "page_web",
@@ -128,11 +181,11 @@ final AS (
         NULL                                                          AS "zone_diffusion_nom",  -- will be overridden after geocoding
         NULL                                                          AS "formulaire_en_ligne",
         open_services.lieu_id                                         AS "structure_id",
-        (
+        CAST((
             SELECT di_thematique_by_soliguide_category_code.thematique
             FROM di_thematique_by_soliguide_category_code
             WHERE open_services.category = di_thematique_by_soliguide_category_code.category
-        )::TEXT []                                                    AS "thematiques",
+        ) AS TEXT [])                                                 AS "thematiques",
         ARRAY['en-presentiel']                                        AS "modes_accueil",
         categories.label || COALESCE(' : ' || open_services.name, '') AS "nom",
         'https://soliguide.fr/fr/fiche/' || lieux.seo_url             AS "lien_source",
@@ -204,7 +257,8 @@ final AS (
     LEFT JOIN lieux ON open_services.lieu_id = lieux.id
     LEFT JOIN categories ON open_services.category = categories.code
     LEFT JOIN filtered_phones ON open_services.lieu_id = filtered_phones.lieu_id
-    ORDER BY 1
+    LEFT JOIN profils AS profils ON lieux.id = profils.lieu_id
+    ORDER BY open_services.id
 )
 
 SELECT * FROM final

@@ -44,7 +44,7 @@ colorama==0.4.6
     # via tox
 cryptography==43.0.3
     # via data-inclusion-api (setup.py)
-data-inclusion-schema==0.17.0
+data-inclusion-schema==0.20.0
     # via data-inclusion-api (setup.py)
 distlib==0.3.9
     # via virtualenv
@@ -128,6 +128,8 @@ pandas==2.2.3
     # via
     #   data-inclusion-api (setup.py)
     #   geopandas
+pendulum==3.0.0
+    # via data-inclusion-schema
 platformdirs==4.3.6
     # via
     #   tox
@@ -172,7 +174,10 @@ pyproj==3.7.0
 pyproject-api==1.8.0
     # via tox
 python-dateutil==2.9.0.post0
-    # via pandas
+    # via
+    #   pandas
+    #   pendulum
+    #   time-machine
 python-dotenv==1.0.1
     # via
     #   data-inclusion-api (setup.py)
@@ -212,6 +217,8 @@ sqlparse==0.5.1
     # via fastapi-debug-toolbar
 starlette==0.41.2
     # via fastapi
+time-machine==2.16.0
+    # via pendulum
 tox==4.23.2
     # via data-inclusion-api (setup.py)
 tqdm==4.66.6
@@ -226,7 +233,9 @@ typing-extensions==4.12.2
     #   pydantic-core
     #   sqlalchemy
 tzdata==2024.2
-    # via pandas
+    # via
+    #   pandas
+    #   pendulum
 urllib3==2.2.3
     # via
     #   minio

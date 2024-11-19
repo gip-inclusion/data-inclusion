@@ -94,7 +94,10 @@ frais_autres AS (
         fredo_frais.structure_id,
         STRING_AGG(fredo_frais.value, ', ') AS frais_autres
     FROM fredo_frais
-    WHERE fredo_frais.value NOT IN (SELECT frais_fredo FROM di_frais_by_fredo_frais)
+    WHERE
+        fredo_frais.value NOT IN (
+            SELECT di_frais_by_fredo_frais.frais_fredo FROM di_frais_by_fredo_frais
+        )
     GROUP BY fredo_frais.structure_id
 ),
 
@@ -119,7 +122,8 @@ thematiques AS (
 profils AS (
     SELECT
         fredo_publics.structure_id,
-        ARRAY_AGG(di_profils_by_fredo_public.profil) AS profils
+        ARRAY_AGG(di_profils_by_fredo_public.profil) AS profils,
+        STRING_AGG(fredo_publics.value, ', ')        AS profils_precisions
     FROM fredo_publics
     INNER JOIN di_profils_by_fredo_public ON fredo_publics.value = di_profils_by_fredo_public.public
     GROUP BY fredo_publics.structure_id
@@ -134,6 +138,7 @@ final AS (
         NULL                                                                                  AS "prise_rdv",
         fredo_structures.site_web                                                             AS "page_web",
         profils.profils                                                                       AS "profils",
+        LEFT(profils.profils_precisions, 500)                                                 AS "profils_precisions",
         NULL                                                                                  AS "modes_orientation_accompagnateur_autres",
         NULL                                                                                  AS "modes_orientation_beneficiaire_autres",
         NULL                                                                                  AS "formulaire_en_ligne",

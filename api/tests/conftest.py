@@ -89,6 +89,7 @@ def db_init():
     # Create postgis extension in test database
     with test_engine.connect() as conn:
         conn.execute(sqla.text("CREATE EXTENSION postgis;"))
+        conn.execute(sqla.text("CREATE EXTENSION unaccent;"))
         conn.commit()
 
     # Migrate the database
