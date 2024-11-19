@@ -30,8 +30,8 @@ final AS (
         TRUE                                                                              AS "cumulable",
         NULL                                                                              AS "formulaire_en_ligne",
         details__infos_pratiques__jour_horaire                                            AS "recurrence",
-        NULL::DATE                                                                        AS "date_creation",
-        NULL::DATE                                                                        AS "date_suspension",
+        CAST(NULL AS DATE)                                                                AS "date_creation",
+        CAST(NULL AS DATE)                                                                AS "date_suspension",
         telephone                                                                         AS "telephone",
         mail                                                                              AS "courriel",
         FALSE                                                                             AS "contact_public",
@@ -40,12 +40,12 @@ final AS (
         'commune'                                                                         AS "zone_diffusion_type",
         NULL                                                                              AS "zone_diffusion_code",
         NULL                                                                              AS "zone_diffusion_nom",
-        NULL::TEXT []                                                                     AS "modes_orientation_accompagnateur", -- will be overridden after geocoding
+        CAST(NULL AS TEXT [])                                                             AS "modes_orientation_accompagnateur", -- will be overridden after geocoding
         NULL                                                                              AS "modes_orientation_accompagnateur_autres", -- will be overridden after geocoding
-        NULL::TEXT []                                                                     AS "modes_orientation_beneficiaire",
+        CAST(NULL AS TEXT [])                                                             AS "modes_orientation_beneficiaire",
         NULL                                                                              AS "modes_orientation_beneficiaire_autres",
-        NULL::TEXT []                                                                     AS "pre_requis",
-        NULL::TEXT []                                                                     AS "justificatifs",
+        CAST(NULL AS TEXT [])                                                             AS "pre_requis",
+        CAST(NULL AS TEXT [])                                                             AS "justificatifs",
         CASE WHEN avip THEN 'Crèche À Vocation d''Insertion Professionnelle' ELSE nom END AS "nom",
         ARRAY['payant']                                                                   AS "frais",
         ARRAY['famille--garde-denfants']                                                  AS "thematiques",
