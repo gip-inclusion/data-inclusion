@@ -2,15 +2,6 @@
 
 data·inclusion aggrège les données de l'insertion sociale et professionnelle.
 
-Cette branche `special/deploy-main-to-staging` est utilisée en tant que fix temporaire
-pour déployer `main` en staging; il suffit de:
-* la rebase sur `main`
-* s'assurer qu'elle a bien le label `deploy-to-staging`
-* lancer un déploiement.
-
-Ceci est un contournement le temps que nous améliorions le système de déploiement de
-manière plus générique.
-
 ## Présentation
 
 Les sources de données traitées comprennent notamment:
