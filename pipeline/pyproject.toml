@@ -73,7 +73,7 @@ capitalisation_policy = "upper"
 
 [tool.sqlfluff.rules.convention.casting_style]
 # SQL type casting
-preferred_type_casting_style = "shorthand"
+preferred_type_casting_style = "cast"
 
 [tool.sqlfluff.templater.dbt]
 project_dir = "./pipeline/dbt"

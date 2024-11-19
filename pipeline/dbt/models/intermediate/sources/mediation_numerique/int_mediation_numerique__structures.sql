@@ -22,9 +22,9 @@ final AS (
         -- SOURCEFIX(2024-11-18) : The source probably won't be fix for a while. Mednum can't maintain the source
         -- correctly for now. We will keep the source as it is for now.
         CAST(ARRAY(
-                SELECT labels_nationaux_seed.value as labels FROM labels_nationaux_seed
-                INTERSECT
-                SELECT UNNEST(structures.labels_nationaux) as labels
+            SELECT labels_nationaux_seed.value AS labels FROM labels_nationaux_seed
+            INTERSECT
+            SELECT UNNEST(structures.labels_nationaux) AS labels
         ) AS TEXT [])                                                                                                AS "labels_nationaux",
         thematiques                                                                                                  AS "thematiques",
         -- FIXME(vperron) : Remove this when there is no 'PE' in the sources anymore
@@ -40,5 +40,6 @@ final AS (
         CAST(NULL AS BOOLEAN)                                                                                        AS "antenne"
     FROM structures
 )
+
 
 SELECT * FROM final
