@@ -305,6 +305,7 @@ def test_list_services_all(api_client, db_session):
         presentation_resume="Puissant fine.",
         prise_rdv="https://teixeira.fr/",
         profils=["femmes"],
+        profils_precisions="Femme en situation d'insertion",
         recurrence=None,
         score_qualite=0.5,
         source="dora",
@@ -360,7 +361,7 @@ def test_list_services_all(api_client, db_session):
                 "presentation_resume": "Puissant fine.",
                 "prise_rdv": "https://teixeira.fr/",
                 "profils": ["femmes"],
-                "profils_precisions": "femmes",
+                "profils_precisions": "Femme en situation d'insertion",
                 "recurrence": None,
                 "score_qualite": 0.5,
                 "source": "dora",
@@ -375,7 +376,7 @@ def test_list_services_all(api_client, db_session):
         ],
         "total": 1,
         "page": 1,
-        "size": ANY,
+        "size": 500,
         "pages": 1,
     }
 
