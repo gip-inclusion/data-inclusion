@@ -7,8 +7,12 @@ final AS (
         id            AS "id",
         commune       AS "commune",
         NULL          AS "code_insee",
-        longitude     AS "longitude",
-        latitude      AS "latitude",
+        CASE
+            WHEN adresse IS NOT NULL THEN latitude
+        END           AS "latitude",
+        CASE
+            WHEN adresse IS NOT NULL THEN longitude
+        END           AS "longitude",
         _di_source_id AS "source",
         code_postal   AS "code_postal",
         adresse       AS "adresse",
