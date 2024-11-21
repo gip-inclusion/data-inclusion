@@ -63,7 +63,6 @@ def list_structures_endpoint(
             """,
         ),
     ] = None,
-    id: Annotated[Optional[str], fastapi.Query(include_in_schema=False)] = None,
     typologie: Annotated[Optional[di_schema.Typologie], fastapi.Query()] = None,
     label_national: Annotated[
         Optional[di_schema.LabelNational], fastapi.Query()
@@ -77,25 +76,12 @@ def list_structures_endpoint(
     ] = None,
     code_region: CodeRegionFilter = None,
     slug_region: Annotated[Optional[RegionSlugEnum], fastapi.Query()] = None,
-    departement: Annotated[
-        Optional[DepartementCodeEnum],
-        fastapi.Query(include_in_schema=False),
-    ] = None,
     code_departement: CodeDepartementFilter = None,
-    departement_slug: Annotated[
-        Optional[DepartementSlugEnum],
-        fastapi.Query(include_in_schema=False),
-    ] = None,
     slug_departement: Annotated[Optional[DepartementSlugEnum], fastapi.Query()] = None,
     code_commune: CodeCommuneFilter = None,
     db_session=fastapi.Depends(db.get_session),
 ):
     region = get_region_by_code_or_slug(code=code_region, slug=slug_region)
-
-    if code_departement is None and departement is not None:
-        code_departement = departement
-    if slug_departement is None and departement_slug is not None:
-        slug_departement = departement_slug
 
     departement = get_departement_by_code_or_slug(
         code=code_departement, slug=slug_departement
@@ -105,7 +91,6 @@ def list_structures_endpoint(
         request,
         db_session,
         sources=sources,
-        id_=id,
         typologie=typologie,
         label_national=label_national,
         departement=departement,
@@ -160,10 +145,6 @@ def list_services_endpoint(
             """,
         ),
     ] = None,
-    thematique: Annotated[
-        Optional[di_schema.Thematique],
-        fastapi.Query(include_in_schema=False),
-    ] = None,
     thematiques: Annotated[
         Optional[list[di_schema.Thematique]],
         fastapi.Query(
@@ -173,20 +154,8 @@ def list_services_endpoint(
     ] = None,
     code_region: CodeRegionFilter = None,
     slug_region: Annotated[Optional[RegionSlugEnum], fastapi.Query()] = None,
-    departement: Annotated[
-        Optional[DepartementCodeEnum],
-        fastapi.Query(include_in_schema=False),
-    ] = None,
     code_departement: CodeDepartementFilter = None,
-    departement_slug: Annotated[
-        Optional[DepartementSlugEnum],
-        fastapi.Query(include_in_schema=False),
-    ] = None,
     slug_departement: Annotated[Optional[DepartementSlugEnum], fastapi.Query()] = None,
-    code_insee: Annotated[
-        Optional[di_schema.CodeCommune],
-        fastapi.Query(include_in_schema=False),
-    ] = None,
     code_commune: CodeCommuneFilter = None,
     frais: Annotated[
         Optional[list[di_schema.Frais]],
@@ -227,17 +196,6 @@ def list_services_endpoint(
         ),
     ] = False,
 ):
-    if code_commune is None and code_insee is not None:
-        code_commune = code_insee
-
-    if thematiques is None and thematique is not None:
-        thematiques = [thematique]
-
-    if code_departement is None and departement is not None:
-        code_departement = departement
-    if slug_departement is None and departement_slug is not None:
-        slug_departement = departement_slug
-
     region = get_region_by_code_or_slug(code=code_region, slug=slug_region)
     departement = get_departement_by_code_or_slug(
         code=code_departement, slug=slug_departement

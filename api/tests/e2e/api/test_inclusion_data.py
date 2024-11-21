@@ -292,83 +292,6 @@ def test_list_structures_order(
     assert resp_data["items"][2]["id"] == structure_2.id
 
 
-@pytest.mark.with_token
-@pytest.mark.feature_deprecated
-def test_list_services_filter_by_thematique(api_client):
-    service_1 = factories.ServiceFactory(
-        source="alpha",
-        id="1",
-        thematiques=[
-            schema.Thematique.MOBILITE.value,
-            schema.Thematique.NUMERIQUE.value,
-        ],
-    )
-    service_2 = factories.ServiceFactory(
-        source="alpha",
-        id="2",
-        thematiques=[
-            schema.Thematique.TROUVER_UN_EMPLOI.value,
-            schema.Thematique.NUMERIQUE.value,
-        ],
-    )
-    factories.ServiceFactory(thematiques=[])
-
-    url = "/api/v0/services/"
-
-    response = api_client.get(
-        url, params={"thematique": schema.Thematique.MOBILITE.value}
-    )
-
-    assert response.status_code == 200
-    resp_data = response.json()
-    assert len(resp_data["items"]) == 1
-    assert resp_data["items"][0]["id"] == service_1.id
-    assert resp_data["items"][0]["source"] == service_1.structure.source
-
-    response = api_client.get(
-        url, params={"thematique": schema.Thematique.NUMERIQUE.value}
-    )
-
-    assert response.status_code == 200
-    resp_data = response.json()
-    assert len(resp_data["items"]) == 2
-    assert resp_data["items"][0]["id"] == service_1.id
-    assert resp_data["items"][0]["source"] == service_1.structure.source
-    assert resp_data["items"][1]["id"] == service_2.id
-    assert resp_data["items"][1]["source"] == service_2.structure.source
-
-    response = api_client.get(
-        url, params={"thematique": schema.Thematique.PREPARER_SA_CANDIDATURE.value}
-    )
-    assert response.status_code == 200
-    assert_paginated_response_data(response.json(), total=0)
-
-
-@pytest.mark.with_token
-@pytest.mark.feature_deprecated
-def test_list_services_filter_by_categorie_thematique(api_client):
-    service = factories.ServiceFactory(
-        source="alpha",
-        id="1",
-        thematiques=[
-            schema.Thematique.MOBILITE__ACHETER_UN_VEHICULE_MOTORISE.value,
-        ],
-    )
-    factories.ServiceFactory(thematiques=[])
-
-    url = "/api/v0/services/"
-
-    response = api_client.get(
-        url, params={"thematique": schema.Thematique.MOBILITE.value}
-    )
-
-    assert response.status_code == 200
-    resp_data = response.json()
-    assert len(resp_data["items"]) == 1
-    assert resp_data["items"][0]["source"] == service.structure.source
-    assert resp_data["items"][0]["id"] == service.id
-
-
 @pytest.mark.parametrize(
     "thematiques,input,found",
     [
@@ -431,28 +354,19 @@ def test_can_filter_resources_by_thematiques(
         ("/api/v0/services", factories.ServiceFactory),
     ],
 )
-@pytest.mark.parametrize(
-    "query_param",
-    [
-        "code_departement",
-        pytest.param("departement", marks=pytest.mark.feature_deprecated),
-    ],
-)
-def test_can_filter_resources_by_departement_code(
-    api_client, url, factory, query_param
-):
+def test_can_filter_resources_by_code_departement(api_client, url, factory):
     resource = factory(code_insee=PARIS["code_insee"])
     factory(code_insee=LILLE["code_insee"])
     factory(code_insee=None)
 
-    response = api_client.get(url, params={query_param: "75"})
+    response = api_client.get(url, params={"code_departement": "75"})
 
     assert response.status_code == 200
     resp_data = response.json()
     assert_paginated_response_data(resp_data, total=1)
     assert resp_data["items"][0]["id"] == resource.id
 
-    response = api_client.get(url, params={query_param: "62"})
+    response = api_client.get(url, params={"code_departement": "62"})
     assert_paginated_response_data(response.json(), total=0)
 
 
@@ -464,27 +378,18 @@ def test_can_filter_resources_by_departement_code(
         ("/api/v0/services", factories.ServiceFactory),
     ],
 )
-@pytest.mark.parametrize(
-    "query_param",
-    [
-        "slug_departement",
-        pytest.param("departement_slug", marks=pytest.mark.feature_deprecated),
-    ],
-)
-def test_can_filter_resources_by_departement_slug(
-    api_client, url, query_param, factory
-):
+def test_can_filter_resources_by_slug_departement(api_client, url, factory):
     resource = factory(code_insee=PARIS["code_insee"])
     factory(code_insee=LILLE["code_insee"])
 
-    response = api_client.get(url, params={query_param: "paris"})
+    response = api_client.get(url, params={"slug_departement": "paris"})
 
     assert response.status_code == 200
     resp_data = response.json()
     assert_paginated_response_data(resp_data, total=1)
     assert resp_data["items"][0]["id"] == resource.id
 
-    response = api_client.get(url, params={query_param: "pas-de-calais"})
+    response = api_client.get(url, params={"slug_departement": "pas-de-calais"})
     assert_paginated_response_data(response.json(), total=0)
 
 
@@ -548,12 +453,6 @@ def test_can_filter_resources_by_slug_region(api_client, url, factory):
     [
         ("/api/v0/structures", factories.StructureFactory, "code_commune"),
         ("/api/v0/services", factories.ServiceFactory, "code_commune"),
-        pytest.param(
-            "/api/v0/services",
-            factories.ServiceFactory,
-            "code_insee",
-            marks=pytest.mark.feature_deprecated,
-        ),
     ],
 )
 @pytest.mark.parametrize(
@@ -791,23 +690,14 @@ def test_can_filter_resources_by_sources(api_client, url, factory):
     ],
 )
 @pytest.mark.with_token
-@pytest.mark.parametrize(
-    "query_param",
-    [
-        "code_commune",
-        pytest.param("code_insee", marks=pytest.mark.feature_deprecated),
-    ],
-)
-def test_search_services_with_code_commune(
-    api_client, commune_data, input, found, query_param
-):
+def test_search_services_with_code_commune(api_client, commune_data, input, found):
     service = factories.ServiceFactory(
         modes_accueil=[schema.ModeAccueil.EN_PRESENTIEL.value],
         **(commune_data if commune_data is not None else {}),
     )
 
     url = "/api/v0/search/services"
-    response = api_client.get(url, params={query_param: input})
+    response = api_client.get(url, params={"code_commune": input})
 
     assert response.status_code == 200
     resp_data = response.json()
