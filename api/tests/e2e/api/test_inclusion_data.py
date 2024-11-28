@@ -6,6 +6,7 @@ import pytest
 
 from data_inclusion import schema
 from data_inclusion.api.decoupage_administratif.constants import RegionEnum
+from data_inclusion.api.inclusion_data import models
 from data_inclusion.api.utils import soliguide
 
 from ... import factories
@@ -39,8 +40,38 @@ def test_list_structures_unauthenticated(api_client):
 
 
 @pytest.mark.with_token
-def test_list_structures_all(api_client):
-    factories.StructureFactory()
+def test_list_structures_all(api_client, db_session):
+    structure = models.Structure(
+        _di_surrogate_id="04cfed4d-d3f7-4f9f-ad97-64bb6bbd7c96",
+        accessibilite="https://acceslibre.beta.gouv.fr/app/kitchen-amount/",
+        adresse="49, avenue de Pichon",
+        antenne=False,
+        code_insee="59350",
+        code_postal="46873",
+        commune="Sainte CharlotteBourg",
+        complement_adresse=None,
+        courriel="levyalexandre@example.org",
+        date_maj="2023-01-01",
+        horaires_ouverture='Mo-Fr 10:00-20:00 "sur rendez-vous"; PH off',
+        id="lot-kitchen-amount",
+        labels_autres=["Nièvre médiation numérique"],
+        labels_nationaux=[],
+        latitude=-20.074628,
+        lien_source="https://dora.fr/kitchen-amount",
+        longitude=99.899603,
+        nom="Perrin",
+        presentation_detail="Or personne jambe.",
+        presentation_resume="Image voie battre.",
+        rna="W242194892",
+        siret="76475938700658",
+        site_web="https://www.le.net/",
+        source="dora",
+        telephone="0102030405",
+        thematiques=["choisir-un-metier"],
+        typologie="ACI",
+    )
+    db_session.add(structure)
+    db_session.commit()
 
     url = "/api/v0/structures/"
 
@@ -60,7 +91,7 @@ def test_list_structures_all(api_client):
                 "courriel": "levyalexandre@example.org",
                 "date_maj": "2023-01-01",
                 "horaires_ouverture": 'Mo-Fr 10:00-20:00 "sur rendez-vous"; PH off',
-                "id": "kitchen-amount",
+                "id": "lot-kitchen-amount",
                 "labels_autres": ["Nièvre médiation numérique"],
                 "labels_nationaux": [],
                 "latitude": -20.074628,
@@ -209,8 +240,85 @@ def test_list_services_unauthenticated(api_client):
 
 
 @pytest.mark.with_token
-def test_list_services_all(api_client):
-    factories.ServiceFactory()
+def test_list_services_all(api_client, db_session):
+    structure = models.Structure(
+        _di_surrogate_id="04cfed4d-d3f7-4f9f-ad97-64bb6bbd7c96",
+        accessibilite="https://acceslibre.beta.gouv.fr/app/kitchen-amount/",
+        adresse="49, avenue de Pichon",
+        antenne=False,
+        code_insee="59350",
+        code_postal="46873",
+        commune="Sainte CharlotteBourg",
+        complement_adresse=None,
+        courriel="levyalexandre@example.org",
+        date_maj="2023-01-01",
+        horaires_ouverture='Mo-Fr 10:00-20:00 "sur rendez-vous"; PH off',
+        id="lot-kitchen-amount",
+        labels_autres=["Nièvre médiation numérique"],
+        labels_nationaux=[],
+        latitude=-20.074628,
+        lien_source="https://dora.fr/kitchen-amount",
+        longitude=99.899603,
+        nom="Perrin",
+        presentation_detail="Or personne jambe.",
+        presentation_resume="Image voie battre.",
+        rna="W242194892",
+        siret="76475938700658",
+        site_web="https://www.le.net/",
+        source="dora",
+        telephone="0102030405",
+        thematiques=["choisir-un-metier"],
+        typologie="ACI",
+    )
+    service = models.Service(
+        _di_surrogate_id="eafdc798-18a6-446d-acda-7bc14ba83a39",
+        _di_structure_surrogate_id="04cfed4d-d3f7-4f9f-ad97-64bb6bbd7c96",
+        adresse="62, rue Eugène Rodrigues",
+        code_insee="59350",
+        code_postal="92950",
+        commune="Sainte Gabriel",
+        complement_adresse=None,
+        contact_nom_prenom="Thibaut de Michaud",
+        contact_public=False,
+        courriel="michelgerard@example.net",
+        cumulable=False,
+        date_creation="2022-01-01",
+        date_maj="2023-01-01",
+        date_suspension="2054-01-01",
+        formulaire_en_ligne=None,
+        frais_autres="Camarade il.",
+        frais=["gratuit"],
+        id="be-water-scene-wind",
+        justificatifs=[],
+        latitude=-77.857573,
+        lien_source="https://dora.fr/be-water-scene-wind",
+        longitude=-62.54684,
+        modes_accueil=["a-distance"],
+        modes_orientation_accompagnateur_autres=None,
+        modes_orientation_accompagnateur=["telephoner"],
+        modes_orientation_beneficiaire_autres=None,
+        modes_orientation_beneficiaire=["telephoner"],
+        nom="Munoz",
+        page_web="http://aubert.net/",
+        pre_requis=[],
+        presentation_detail="Épaule élever un.",
+        presentation_resume="Puissant fine.",
+        prise_rdv="https://teixeira.fr/",
+        profils=["femmes"],
+        recurrence=None,
+        score_qualite=0.5,
+        source="dora",
+        structure_id="much-mention",
+        telephone="0102030405",
+        thematiques=["choisir-un-metier"],
+        types=["formation"],
+        zone_diffusion_code=None,
+        zone_diffusion_nom=None,
+        zone_diffusion_type=None,
+    )
+    db_session.add(structure)
+    db_session.add(service)
+    db_session.commit()
 
     url = "/api/v0/services/"
 
