@@ -5,13 +5,13 @@ WITH source AS (
 lieux AS (
     SELECT
         _di_source_id                                                 AS "_di_source_id",
-        (data ->> 'updatedAt')::DATE                                  AS "updated_at",
-        (data #>> '{position,location,coordinates,0}')::FLOAT         AS "position__coordinates__x",
-        (data #>> '{position,location,coordinates,1}')::FLOAT         AS "position__coordinates__y",
-        (data #>> '{modalities,inconditionnel}')::BOOLEAN             AS "modalities__inconditionnel",
-        (data #>> '{modalities,appointment,checked}')::BOOLEAN        AS "modalities__appointment__checked",
-        (data #>> '{modalities,inscription,checked}')::BOOLEAN        AS "modalities__inscription__checked",
-        (data #>> '{modalities,orientation,checked}')::BOOLEAN        AS "modalities__orientation__checked",
+        CAST(data ->> 'updatedAt' AS DATE)                            AS "updated_at",
+        CAST(data #>> '{position,location,coordinates,0}' AS FLOAT)   AS "position__coordinates__x",
+        CAST(data #>> '{position,location,coordinates,1}' AS FLOAT)   AS "position__coordinates__y",
+        CAST(data #>> '{modalities,inconditionnel}' AS BOOLEAN)       AS "modalities__inconditionnel",
+        CAST(data #>> '{modalities,appointment,checked}' AS BOOLEAN)  AS "modalities__appointment__checked",
+        CAST(data #>> '{modalities,inscription,checked}' AS BOOLEAN)  AS "modalities__inscription__checked",
+        CAST(data #>> '{modalities,orientation,checked}' AS BOOLEAN)  AS "modalities__orientation__checked",
         data ->> 'lieu_id'                                            AS "id",
         data ->> 'lieu_id'                                            AS "lieu_id",
         -- TODO: entity.phones
@@ -30,14 +30,15 @@ lieux AS (
         data -> 'newhours'                                            AS "newhours",
         data #>> '{modalities,appointment,precisions}'                AS "modalities__appointment__precisions",
         data #>> '{modalities,inscription,precisions}'                AS "modalities__inscription__precisions",
-        data #>> '{modalities,orientation,precisions}'                AS "modalities__orientation__precisions"
+        data #>> '{modalities,orientation,precisions}'                AS "modalities__orientation__precisions",
+        data -> 'sources'                                             AS "sources"
     FROM source
 ),
 
 final AS (
     SELECT *
     FROM lieux
-    WHERE position__country = 'fr'
+    WHERE position__country = 'fr' AND NOT sources @> '[{"name": "dora"}]'
 )
 
 SELECT * FROM final
