@@ -20,7 +20,11 @@ services AS (
         CAST(inline_service.data #>> '{modalities,appointment,checked}' AS BOOLEAN) AS "modalities__appointment__checked",
         inline_service.data #>> '{modalities,appointment,precisions}'               AS "modalities__appointment__precisions",
         CAST(inline_service.data #>> '{modalities,price,checked}' AS BOOLEAN)       AS "modalities__price__checked",
-        inline_service.data #>> '{modalities,price,precisions}'                     AS "modalities__price__precisions",
+        CASE
+            WHEN inline_service.data #>> '{modalities,price,precisions}' IS NULL THEN source.data #>> '{modalities,price,precisions}'
+            WHEN source.data #>> '{modalities,price,precisions}' IS NULL THEN NULL
+            ELSE CONCAT(inline_service.data #>> '{modalities,price,precisions}', ' ', source.data #>> '{modalities,price,precisions}')
+        END                                                                         AS "modalities__price__precisions",
         CAST(inline_service.data #>> '{modalities,inscription,checked}' AS BOOLEAN) AS "modalities__inscription__checked",
         inline_service.data #>> '{modalities,inscription,precisions}'               AS "modalities__inscription__precisions",
         CAST(inline_service.data #>> '{modalities,orientation,checked}' AS BOOLEAN) AS "modalities__orientation__checked",
