@@ -61,7 +61,7 @@ After running the main dag:
 source .venv/bin/activate
 
 # Launch command to import the Admin Express database
-python src/data_inclusion/api/cli.py import_admin_express
+python src/data_inclusion/api/cli.py import_communes
 
 # Launch command to import data
 python src/data_inclusion/api/cli.py load_inclusion_data

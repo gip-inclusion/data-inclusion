@@ -19,9 +19,9 @@ final AS (
         services.id                                      AS "adresse_id",
         services.contact_public                          AS "contact_public",
         services.cumulable                               AS "cumulable",
-        services.date_creation::DATE                     AS "date_creation",
-        services.date_maj::DATE                          AS "date_maj",
-        services.date_suspension::DATE                   AS "date_suspension",
+        CAST(services.date_creation AS DATE)             AS "date_creation",
+        CAST(services.date_maj AS DATE)                  AS "date_maj",
+        CAST(services.date_suspension AS DATE)           AS "date_suspension",
         services.formulaire_en_ligne                     AS "formulaire_en_ligne",
         services.frais_autres                            AS "frais_autres",
         services.id                                      AS "id",
@@ -41,11 +41,12 @@ final AS (
         services.presentation_resume                     AS "presentation_resume",
         services.presentation_detail                     AS "presentation_detail",
         services.prise_rdv                               AS "prise_rdv",
-        ARRAY(
+        CAST(ARRAY(
             SELECT di_profil_by_dora_profil.di_profil
             FROM di_profil_by_dora_profil
             WHERE di_profil_by_dora_profil.dora_profil = ANY(services.profils)
-        )::TEXT []                                       AS "profils",
+        ) AS TEXT [])                                    AS "profils",
+        ARRAY_TO_STRING(services.profils, ', ')          AS "profils_precisions",
         services.recurrence                              AS "recurrence",
         services._di_source_id                           AS "source",
         services.structure_id                            AS "structure_id",
