@@ -1,3 +1,5 @@
+from typing import TypeVar
+
 import fastapi
 from fastapi_pagination import Page
 from fastapi_pagination.customization import (
@@ -8,8 +10,10 @@ from fastapi_pagination.customization import (
 
 from data_inclusion.api.config import settings
 
+T = TypeVar("T")
+
 BigPage = CustomizedPage[
-    Page,
+    Page[T],
     UseName("CustomizedPage"),
     UseParamsFields(
         size=fastapi.Query(

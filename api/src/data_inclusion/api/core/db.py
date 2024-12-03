@@ -1,3 +1,4 @@
+import re
 import uuid
 from datetime import datetime
 from typing import Annotated
@@ -44,6 +45,7 @@ class Base(orm.DeclarativeBase):
     )
     type_annotation_map = {
         list[str]: SortedTextArray,
+        list[dict]: JSONB,
         dict: JSONB,
     }
 
@@ -52,7 +54,8 @@ class Base(orm.DeclarativeBase):
 
     @orm.declared_attr.directive
     def __tablename__(cls) -> str:
-        return f"api__{cls.__name__}s".lower()
+        snake_case_name = re.sub(r"(?<!^)(?=[A-Z])", "_", cls.__name__).lower()
+        return f"api__{snake_case_name}s"
 
 
 def get_session(request: fastapi.Request):

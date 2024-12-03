@@ -202,14 +202,14 @@ def list_structures(
     if departement is not None:
         query = query.filter(models.Structure.code_insee.startswith(departement.code))
 
+    if typologie is not None:
+        query = query.filter_by(typologie=typologie.value)
+
     if region is not None:
         query = query.join(Commune).options(
             orm.contains_eager(models.Structure.commune_)
         )
         query = query.filter(Commune.region == region.code)
-
-    if typologie is not None:
-        query = query.filter_by(typologie=typologie.value)
 
     if label_national is not None:
         query = query.filter(

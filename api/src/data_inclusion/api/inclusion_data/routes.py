@@ -6,6 +6,13 @@ import fastapi
 
 from data_inclusion import schema as di_schema
 from data_inclusion.api import auth
+from data_inclusion.api.analytics.services import (
+    save_consult_service_event,
+    save_consult_structure_event,
+    save_list_services_event,
+    save_list_structures_event,
+    save_search_services_event,
+)
 from data_inclusion.api.config import settings
 from data_inclusion.api.core import db
 from data_inclusion.api.decoupage_administratif.constants import (
@@ -54,6 +61,7 @@ CodeRegionFilter = Annotated[
 )
 def list_structures_endpoint(
     request: fastapi.Request,
+    background_tasks: fastapi.BackgroundTasks,
     sources: Annotated[
         Optional[list[str]],
         fastapi.Query(
@@ -63,6 +71,7 @@ def list_structures_endpoint(
             """,
         ),
     ] = None,
+    id: Annotated[Optional[str], fastapi.Query(include_in_schema=False)] = None,
     typologie: Annotated[Optional[di_schema.Typologie], fastapi.Query()] = None,
     label_national: Annotated[
         Optional[di_schema.LabelNational], fastapi.Query()
@@ -87,10 +96,11 @@ def list_structures_endpoint(
         code=code_departement, slug=slug_departement
     )
 
-    return services.list_structures(
+    structures_list = services.list_structures(
         request,
         db_session,
         sources=sources,
+        id_=id,
         typologie=typologie,
         label_national=label_national,
         departement=departement,
@@ -98,6 +108,22 @@ def list_structures_endpoint(
         commune_code=code_commune,
         thematiques=thematiques,
     )
+
+    background_tasks.add_task(
+        save_list_structures_event,
+        request=request,
+        db_session=db_session,
+        sources=sources,
+        structure_id=id,
+        typologie=typologie,
+        label_national=label_national,
+        departement=departement,
+        region=region,
+        code_commune=code_commune,
+        thematiques=thematiques,
+    )
+
+    return structures_list
 
 
 @router.get(
@@ -109,10 +135,23 @@ def list_structures_endpoint(
 def retrieve_structure_endpoint(
     source: Annotated[str, fastapi.Path()],
     id: Annotated[str, fastapi.Path()],
+    request: fastapi.Request,
+    background_tasks: fastapi.BackgroundTasks,
     db_session=fastapi.Depends(db.get_session),
     _=fastapi.Depends(soliguide.notify_soliguide_dependency),
 ):
-    return services.retrieve_structure(db_session=db_session, source=source, id_=id)
+    structure = services.retrieve_structure(
+        db_session=db_session,
+        source=source,
+        id_=id,
+    )
+    background_tasks.add_task(
+        save_consult_structure_event,
+        request=request,
+        structure=structure,
+        db_session=db_session,
+    )
+    return structure
 
 
 @router.get(
@@ -135,6 +174,7 @@ def list_sources_endpoint(
 )
 def list_services_endpoint(
     request: fastapi.Request,
+    background_tasks: fastapi.BackgroundTasks,
     db_session=fastapi.Depends(db.get_session),
     sources: Annotated[
         Optional[list[str]],
@@ -201,7 +241,7 @@ def list_services_endpoint(
         code=code_departement, slug=slug_departement
     )
 
-    return services.list_services(
+    services_listed = services.list_services(
         request,
         db_session,
         sources=sources,
@@ -215,6 +255,22 @@ def list_services_endpoint(
         types=types,
         include_outdated=inclure_suspendus,
     )
+    background_tasks.add_task(
+        save_list_services_event,
+        request=request,
+        db_session=db_session,
+        sources=sources,
+        thematiques=thematiques,
+        departement=departement,
+        region=region,
+        code_commune=code_commune,
+        frais=frais,
+        profils=profils,
+        modes_accueil=modes_accueil,
+        types=types,
+        inclure_suspendus=inclure_suspendus,
+    )
+    return services_listed
 
 
 @router.get(
@@ -224,12 +280,22 @@ def list_services_endpoint(
     dependencies=[auth.authenticated_dependency] if settings.TOKEN_ENABLED else [],
 )
 def retrieve_service_endpoint(
+    request: fastapi.Request,
     source: Annotated[str, fastapi.Path()],
     id: Annotated[str, fastapi.Path()],
+    background_tasks: fastapi.BackgroundTasks,
     db_session=fastapi.Depends(db.get_session),
     _=fastapi.Depends(soliguide.notify_soliguide_dependency),
 ):
-    return services.retrieve_service(db_session=db_session, source=source, id_=id)
+    service = services.retrieve_service(db_session=db_session, source=source, id_=id)
+
+    background_tasks.add_task(
+        save_consult_service_event,
+        request=request,
+        service=service,
+        db_session=db_session,
+    )
+    return service
 
 
 @router.get(
@@ -240,6 +306,7 @@ def retrieve_service_endpoint(
 )
 def search_services_endpoint(
     request: fastapi.Request,
+    background_tasks: fastapi.BackgroundTasks,
     db_session=fastapi.Depends(db.get_session),
     sources: Annotated[
         Optional[list[str]],
@@ -369,7 +436,7 @@ def search_services_endpoint(
                 detail="The `lat` and `lon` must be simultaneously filled.",
             )
 
-    return services.search_services(
+    results = services.search_services(
         request,
         db_session,
         sources=sources,
@@ -382,3 +449,22 @@ def search_services_endpoint(
         search_point=search_point,
         include_outdated=inclure_suspendus,
     )
+
+    background_tasks.add_task(
+        save_search_services_event,
+        request=request,
+        db_session=db_session,
+        results=results,
+        sources=sources,
+        code_commune=code_commune,
+        lat=lat,
+        lon=lon,
+        thematiques=thematiques,
+        frais=frais,
+        modes_accueil=modes_accueil,
+        profils=profils,
+        types=types,
+        inclure_suspendus=inclure_suspendus,
+    )
+
+    return results
