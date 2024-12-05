@@ -2,6 +2,8 @@
 #    uv pip compile --constraint airflow/constraints.txt tasks/python/requirements.in --output-file=tasks/python/requirements.txt
 2captcha-python==1.5.0
     # via -r tasks/python/requirements.in
+affinegap==1.12
+    # via dedupe
 aiohappyeyeballs==2.4.0
     # via
     #   -c airflow/constraints.txt
@@ -26,7 +28,7 @@ anyio==4.4.0
     # via
     #   -c airflow/constraints.txt
     #   httpx
-apache-airflow==2.10.1
+apache-airflow==2.10.3
     # via
     #   apache-airflow-providers-amazon
     #   apache-airflow-providers-common-compat
@@ -151,11 +153,17 @@ botocore==1.35.7
     #   pyathena
     #   redshift-connector
     #   s3transfer
+btrees==6.1
+    # via
+    #   dedupe
+    #   zope-index
 cachelib==0.9.0
     # via
     #   -c airflow/constraints.txt
     #   flask-caching
     #   flask-session
+categorical-distance==1.9
+    # via dedupe
 certifi==2024.8.30
     # via
     #   -c airflow/constraints.txt
@@ -171,6 +179,7 @@ cffi==1.17.0
     # via
     #   -c airflow/constraints.txt
     #   cryptography
+    #   persistent
     #   pynacl
 charset-normalizer==3.3.2
     # via
@@ -204,7 +213,7 @@ connexion==2.14.2
     # via
     #   -c airflow/constraints.txt
     #   apache-airflow
-courlan==1.3.1
+courlan==1.3.2
     # via trafilatura
 cron-descriptor==1.4.5
     # via
@@ -221,6 +230,16 @@ cryptography==42.0.8
     #   paramiko
 dateparser==1.2.0
     # via htmldate
+datetime-distance==0.1.3
+    # via dedupe-variable-datetime
+dedupe==3.0.3
+    # via
+    #   -r tasks/python/requirements.in
+    #   dedupe-variable-datetime
+dedupe-levenshtein-search==1.4.5
+    # via dedupe
+dedupe-variable-datetime==2.0.0
+    # via -r tasks/python/requirements.in
 deprecated==1.2.14
     # via
     #   -c airflow/constraints.txt
@@ -242,6 +261,8 @@ docutils==0.16
     # via
     #   -c airflow/constraints.txt
     #   python-daemon
+doublemetaphone==1.1
+    # via dedupe
 email-validator==2.2.0
     # via
     #   -c airflow/constraints.txt
@@ -316,7 +337,11 @@ fsspec==2024.6.1
     #   universal-pathlib
 furl==2.1.3
     # via -r tasks/python/requirements.in
-geoalchemy2==0.15.2
+future==1.0.0
+    # via
+    #   -c airflow/constraints.txt
+    #   datetime-distance
+geoalchemy2==0.16.0
     # via -r tasks/python/requirements.in
 geopandas==1.0.1
     # via -r tasks/python/requirements.in
@@ -347,7 +372,11 @@ h11==0.14.0
     # via
     #   -c airflow/constraints.txt
     #   httpcore
-htmldate==1.9.0
+haversine==2.9.0
+    # via dedupe
+highered==0.2.1
+    # via dedupe
+htmldate==1.9.1
     # via trafilatura
 httpcore==1.0.5
     # via
@@ -401,6 +430,8 @@ jmespath==0.10.0
     #   apache-airflow-providers-fab
     #   boto3
     #   botocore
+joblib==1.4.2
+    # via scikit-learn
 jsonpath-ng==1.6.1
     # via
     #   -c airflow/constraints.txt
@@ -443,7 +474,7 @@ lxml==5.3.0
     #   lxml-html-clean
     #   redshift-connector
     #   trafilatura
-lxml-html-clean==0.2.2
+lxml-html-clean==0.4.1
     # via lxml
 mako==1.3.5
     # via
@@ -501,11 +532,19 @@ multidict==6.0.5
 numpy==1.26.4
     # via
     #   -c airflow/constraints.txt
+    #   categorical-distance
+    #   dedupe
     #   geopandas
+    #   highered
     #   pandas
     #   pyarrow
+    #   pyhacrf-datamade
+    #   pylbfgs
     #   pyogrio
+    #   scikit-learn
+    #   scipy
     #   shapely
+    #   simplecosine
 openpyxl==3.1.5
     # via
     #   -c airflow/constraints.txt
@@ -589,7 +628,13 @@ pendulum==3.0.0
     # via
     #   -c airflow/constraints.txt
     #   apache-airflow
-playwright==1.46.0
+persistent==6.1
+    # via
+    #   btrees
+    #   zope-index
+phonenumbers==8.13.51
+    # via -r tasks/python/requirements.in
+playwright==1.47.0
     # via -r tasks/python/requirements.in
 pluggy==1.5.0
     # via
@@ -612,13 +657,13 @@ psutil==6.0.0
     # via
     #   -c airflow/constraints.txt
     #   apache-airflow
-psycopg2==2.9.9
+psycopg2==2.9.10
     # via -r tasks/python/requirements.in
 psycopg2-binary==2.9.9
     # via
     #   -c airflow/constraints.txt
     #   apache-airflow-providers-postgres
-pyairtable==2.3.3
+pyairtable==3.0.0
     # via -r tasks/python/requirements.in
 pyarrow==17.0.0
     # via
@@ -640,28 +685,32 @@ pydantic-core==2.20.1
     # via
     #   -c airflow/constraints.txt
     #   pydantic
-pyee==11.1.0
+pyee==12.0.0
     # via playwright
 pygments==2.18.0
     # via
     #   -c airflow/constraints.txt
     #   apache-airflow
     #   rich
+pyhacrf-datamade==0.2.8
+    # via highered
 pyjwt==2.9.0
     # via
     #   -c airflow/constraints.txt
     #   apache-airflow
     #   flask-appbuilder
     #   flask-jwt-extended
+pylbfgs==0.2.0.16
+    # via pyhacrf-datamade
 pynacl==1.5.0
     # via
     #   -c airflow/constraints.txt
     #   paramiko
-pyogrio==0.9.0
+pyogrio==0.10.0
     # via
     #   -r tasks/python/requirements.in
     #   geopandas
-pyproj==3.6.1
+pyproj==3.7.0
     # via geopandas
 python-daemon==3.0.1
     # via
@@ -674,6 +723,7 @@ python-dateutil==2.9.0.post0
     #   botocore
     #   croniter
     #   dateparser
+    #   datetime-distance
     #   flask-appbuilder
     #   htmldate
     #   pandas
@@ -757,6 +807,10 @@ s3transfer==0.10.2
     # via
     #   -c airflow/constraints.txt
     #   boto3
+scikit-learn==1.5.2
+    # via dedupe
+scipy==1.14.1
+    # via scikit-learn
 scramp==1.4.5
     # via
     #   -c airflow/constraints.txt
@@ -774,12 +828,18 @@ setuptools==74.0.0
     #   -c airflow/constraints.txt
     #   python-daemon
     #   redshift-connector
+    #   zope-deferredimport
+    #   zope-index
+    #   zope-interface
+    #   zope-proxy
 shapely==2.0.6
     # via
     #   -c airflow/constraints.txt
     #   geopandas
 sib-api-v3-sdk==7.6.0
     # via -r tasks/python/requirements.in
+simplecosine==1.2
+    # via dedupe
 six==1.16.0
     # via
     #   -c airflow/constraints.txt
@@ -849,6 +909,8 @@ text-unidecode==1.3
     # via
     #   -c airflow/constraints.txt
     #   python-slugify
+threadpoolctl==3.5.0
+    # via scikit-learn
 time-machine==2.15.0
     # via
     #   -c airflow/constraints.txt
@@ -881,10 +943,8 @@ uc-micro-py==1.0.3
     # via
     #   -c airflow/constraints.txt
     #   linkify-it-py
-unicodecsv==0.14.1
-    # via
-    #   -c airflow/constraints.txt
-    #   apache-airflow
+unidecode==1.3.8
+    # via -r tasks/python/requirements.in
 universal-pathlib==0.2.3
     # via
     #   -c airflow/constraints.txt
@@ -937,3 +997,16 @@ zipp==3.20.1
     # via
     #   -c airflow/constraints.txt
     #   importlib-metadata
+zope-deferredimport==5.0
+    # via persistent
+zope-index==7.0
+    # via dedupe
+zope-interface==7.0.3
+    # via
+    #   -c airflow/constraints.txt
+    #   btrees
+    #   persistent
+    #   zope-index
+    #   zope-proxy
+zope-proxy==6.1
+    # via zope-deferredimport

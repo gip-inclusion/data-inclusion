@@ -5,12 +5,15 @@ sentry-sdk
 
 2captcha-python
 beautifulsoup4
+dedupe
+dedupe-variable-datetime
 furl
 GeoAlchemy2
 geopandas
 httpx
 openpyxl
 pandas==2.*
+phonenumbers
 playwright
 psycopg2==2.*
 pyairtable
@@ -20,6 +23,7 @@ requests==2.*
 sib-api-v3-sdk
 SQLAlchemy
 trafilatura
+unidecode
 urllib3
 xlsxwriter
 
