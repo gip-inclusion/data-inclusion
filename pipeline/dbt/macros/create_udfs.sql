@@ -11,6 +11,7 @@ Another way would be to use the `on-run-start` hook, but it does not play nicely
 
 CREATE SCHEMA IF NOT EXISTS processings;
 
+{{ udf__deduplicate() }}
 {{ udf__geocode() }}
 {{ udf__score() }}
 
