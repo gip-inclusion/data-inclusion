@@ -1,6 +1,7 @@
 import uuid
 from datetime import datetime
 from typing import Annotated
+import re
 
 import sqlalchemy as sqla
 import sqlalchemy.types as types
@@ -52,8 +53,8 @@ class Base(orm.DeclarativeBase):
 
     @orm.declared_attr.directive
     def __tablename__(cls) -> str:
-        return f"api__{cls.__name__}s".lower()
-
+        snake_case_name =  re.sub(r'(?<!^)(?=[A-Z])', '_', cls.__name__).lower()
+        return f"api__{snake_case_name}s"
 
 def get_session(request: fastapi.Request):
     yield request.state.db_session
