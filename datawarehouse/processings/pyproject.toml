@@ -6,10 +6,15 @@ requires = ["setuptools", "wheel"]
 name = "data-inclusion-processings"
 version = "0.1.0"
 dependencies = [
+    "dedupe",
+    "dedupe-variable-datetime",
     "numpy~=2.0",
     "pandas~=2.2",
+    "phonenumbers",
     "requests~=2.31",
+    "unidecode",
     "data-inclusion-schema",
+
 ]
 
 [project.optional-dependencies]

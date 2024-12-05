@@ -32,12 +32,19 @@ with airflow.DAG(
         command="run-operation create_udfs",
     )
 
+    snapshot_deduplicate_stats = dbt_operator_factory(
+        task_id="snapshot_deduplicate_stats",
+        command="snapshot",
+        select="deduplicate",
+    )
+
     (
         start
         >> dbt_seed
         >> dbt_create_udfs
         >> get_staging_tasks()
         >> get_intermediate_tasks()
+        >> snapshot_deduplicate_stats
         >> marts.export_di_dataset_to_s3()
         >> end
     )
