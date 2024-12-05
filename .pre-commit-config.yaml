@@ -33,7 +33,7 @@ repos:
         name: pipeline|ruff-format
         args: [--config=pipeline/pyproject.toml]
         files: ^pipeline
-        types_or: [python,json]
+        types_or: [python]
       - id: ruff
         name: pipeline|ruff-check
         args:

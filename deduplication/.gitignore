@@ -1,0 +1,13 @@
+# Jupyter
+.ipynb_checkpoints
+
+# data
+*.csv
+*.json
+*.zip
+*.bz2
+*.xlsx
+*.parquet
+
+!labels.json
+!metadata.json
