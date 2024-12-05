@@ -13,6 +13,8 @@ RUN apt-get update \
     postgresql-plpython3-17 \
     python3-pip \
     python3-venv \
+    python3-dev \
+    build-essential \
     && apt-get autoremove --purge -y \
     && apt-get clean -y \
     && rm -rf /var/lib/apt/lists/*
