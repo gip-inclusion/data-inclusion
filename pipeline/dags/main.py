@@ -3,7 +3,7 @@ import pendulum
 import airflow
 from airflow.operators import empty
 
-from dag_utils import date, marts
+from dag_utils import date, dedupe, marts
 from dag_utils.dbt import (
     dbt_operator_factory,
     get_intermediate_tasks,
@@ -38,6 +38,8 @@ with airflow.DAG(
         >> dbt_create_udfs
         >> get_staging_tasks()
         >> get_intermediate_tasks()
+        >> dedupe.preprocess_structures()
+        >> dedupe.deduplicate_structures()
         >> marts.export_di_dataset_to_s3()
         >> end
     )
