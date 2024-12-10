@@ -176,6 +176,35 @@ models:
               min_value: 0
               max_value: 1
 
+  - name: int__doublons_structures
+    description: |
+      Holds the clusters of duplicates for every structure.
+      A given structure can only be part of a maximum of one cluster of duplicates.
+    columns:
+      - name: id
+        data_tests:
+          - not_null
+      - name: structure_id
+        data_tests:
+          - not_null
+          - relationships:
+              to: ref('int__union_structures')
+              field: _di_surrogate_id
+      - name: score
+        data_tests:
+          - not_null
+          - dbt_utils.not_constant
+          - dbt_utils.accepted_range:
+              min_value: 0.7
+              max_value: 1
+      - name: size
+        description: The size of the cluster. Added for convenience.
+        data_tests:
+          - not_null
+          - dbt_utils.not_constant
+          - dbt_utils.accepted_range:
+              min_value: 2
+
   - name: int__courriels_personnels
     columns:
       - name: courriel
