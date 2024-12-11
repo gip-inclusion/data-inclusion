@@ -209,3 +209,10 @@ variable "fredo_api_token" {
   sensitive   = true
   default     = ""
 }
+
+variable "imilo_api_secret" {
+  description = "Used in extraction tasks orchestrated by airflow"
+  type        = string
+  sensitive   = true
+  default     = ""
+}

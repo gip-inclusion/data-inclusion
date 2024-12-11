@@ -248,6 +248,7 @@ resource "null_resource" "up" {
     AIRFLOW_VAR_EMPLOIS_API_TOKEN='${var.emplois_api_token}'
     AIRFLOW_VAR_ENVIRONMENT='${var.environment}'
     AIRFLOW_VAR_FREDO_API_TOKEN='${var.fredo_api_token}'
+    AIRFLOW_VAR_IMILO_API_SECRET='${var.imilo_api_secret}'
     AIRFLOW_VAR_FT_API_TOKEN='${var.ft_api_token}'
     AIRFLOW_VAR_MES_AIDES_AIRTABLE_KEY='${var.mes_aides_airtable_key}'
     AIRFLOW_VAR_SOLIGUIDE_API_TOKEN='${var.soliguide_api_token}'

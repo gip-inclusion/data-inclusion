@@ -1,0 +1,49 @@
+version: 2
+
+models:
+  - name: int_imilo__adresses
+    data_tests:
+      - check_adresse:
+          config:
+            severity: warn
+    columns:
+      - name: id
+        data_tests:
+          - unique
+          - not_null
+
+  - name: int_imilo__services
+    data_tests:
+      - check_service:
+          config:
+            severity: warn
+    columns:
+      - name: id
+        data_tests:
+          - unique
+          - not_null
+          - dbt_utils.not_empty_string
+      - name: structure_id
+        data_tests:
+          - not_null
+          - relationships:
+              to: ref('int_imilo__structures')
+              field: id
+
+  - name: int_imilo__structures
+    data_tests:
+      - check_structure:
+          config:
+            severity: warn
+    columns:
+      - name: id
+        data_tests:
+          - unique
+          - not_null
+          - dbt_utils.not_empty_string
+      - name: adresse_id
+        data_tests:
+          - not_null
+          - relationships:
+              to: ref('int_imilo__adresses')
+              field: id

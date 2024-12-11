@@ -13,6 +13,7 @@ from . import (
     emplois_de_linclusion,
     france_travail,
     fredo,
+    imilo,
     mediation_numerique,
     mes_aides,
     reseau_alpha,
@@ -221,6 +222,28 @@ SOURCES_CONFIGS = {
     },
     "odspep": {},
     "monenfant": {},
+    "imilo": {
+        "schedule": "@daily",
+        "snapshot": True,
+        "extractor": imilo.extract,
+        "streams": {
+            "offres": {
+                "filename": "offres.json",
+                "url": Variable.get("IMILO_API_URL", None),
+                "token": Variable.get("IMILO_API_SECRET", None),
+            },
+            "structures": {
+                "filename": "structures.json",
+                "url": Variable.get("IMILO_API_URL", None),
+                "token": Variable.get("IMILO_API_SECRET", None),
+            },
+            "structures_offres": {
+                "filename": "structures_offres.json",
+                "url": Variable.get("IMILO_API_URL", None),
+                "token": Variable.get("IMILO_API_SECRET", None),
+            },
+        },
+    },
 }
 
 
