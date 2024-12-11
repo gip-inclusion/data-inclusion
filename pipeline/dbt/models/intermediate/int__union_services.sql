@@ -7,6 +7,7 @@ WITH services AS (
                 ref('int_dora__services'),
                 ref('int_france_travail__services'),
                 ref('int_fredo__services'),
+                ref('int_mission_locale__services'),
                 ref('int_mediation_numerique__services'),
                 ref('int_mes_aides__services'),
                 ref('int_monenfant__services'),

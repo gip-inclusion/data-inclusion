@@ -10,6 +10,7 @@ WITH adresses AS (
                 ref('int_finess__adresses'),
                 ref('int_france_travail__adresses'),
                 ref('int_fredo__adresses'),
+                ref('int_mission_locale__adresses'),
                 ref('int_mediation_numerique__adresses'),
                 ref('int_mes_aides__adresses'),
                 ref('int_monenfant__adresses'),

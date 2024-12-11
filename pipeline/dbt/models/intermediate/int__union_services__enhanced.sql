@@ -44,7 +44,7 @@ zones_diffusion AS (
         services._di_surrogate_id    AS "_di_surrogate_id",
         services.zone_diffusion_type AS "zone_diffusion_type",
         CASE
-            WHEN NOT (services.source = ANY(ARRAY['monenfant', 'action-logement', 'soliguide', 'reseau-alpha', 'mediation-numerique']))
+            WHEN NOT (services.source = ANY(ARRAY['monenfant', 'action-logement', 'soliguide', 'reseau-alpha', 'mediation-numerique', 'mission-locale']))
                 THEN services.zone_diffusion_code
             WHEN services.zone_diffusion_type = 'commune' AND adresses.code_insee IS NOT NULL
                 THEN adresses.code_insee
@@ -53,7 +53,7 @@ zones_diffusion AS (
             ELSE services.zone_diffusion_code
         END                          AS "zone_diffusion_code",
         CASE
-            WHEN NOT (services.source = ANY(ARRAY['monenfant', 'action-logement', 'soliguide', 'reseau-alpha', 'mediation-numerique']))
+            WHEN NOT (services.source = ANY(ARRAY['monenfant', 'action-logement', 'soliguide', 'reseau-alpha', 'mediation-numerique', 'mission-locale']))
                 THEN services.zone_diffusion_nom
             WHEN services.zone_diffusion_type = 'commune' AND adresses.commune IS NOT NULL
                 THEN adresses.commune

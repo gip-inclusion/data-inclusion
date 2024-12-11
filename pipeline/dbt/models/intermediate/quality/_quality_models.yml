@@ -23,6 +23,7 @@ models:
           - emplois_de_linclusion
           - france_travail
           - fredo
+          - mission_locale
           - mediation_numerique
           - mes_aides
           - monenfant

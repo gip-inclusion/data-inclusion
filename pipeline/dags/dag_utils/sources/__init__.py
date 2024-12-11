@@ -15,6 +15,7 @@ from . import (
     fredo,
     mediation_numerique,
     mes_aides,
+    mission_locale,
     reseau_alpha,
     soliguide,
     un_jeune_une_solution,
@@ -221,6 +222,28 @@ SOURCES_CONFIGS = {
     },
     "odspep": {},
     "monenfant": {},
+    "mission-locale": {
+        "schedule": "@daily",
+        "snapshot": True,
+        "extractor": mission_locale.extract,
+        "streams": {
+            "offres": {
+                "filename": "offres.json",
+                "url": Variable.get("MISSION_LOCALE_API_URL", None),
+                "token": Variable.get("MISSION_LOCALE_API_SECRET", None),
+            },
+            "structures": {
+                "filename": "structures.json",
+                "url": Variable.get("MISSION_LOCALE_API_URL", None),
+                "token": Variable.get("MISSION_LOCALE_API_SECRET", None),
+            },
+            "structures_offres": {
+                "filename": "structures_offres.json",
+                "url": Variable.get("MISSION_LOCALE_API_URL", None),
+                "token": Variable.get("MISSION_LOCALE_API_SECRET", None),
+            },
+        },
+    },
 }
 
 
