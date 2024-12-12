@@ -408,10 +408,10 @@ def test_list_structures_order(
         ("jeunes moins de 18 ans", "jeunes", True),
         ("jeune moins de 18 ans", "jeunes", True),
         ("jeunes et personne age", "vieux", False),
-        ("jeunes et personne age", "personne OR âgée", True),
+        ("jeunes et personne age", "personne OR vieux", True),
         ("jeunes et personne age", "personne jeune", True),
-        # FIXME: this test is failing because of the accent in the input
-        ("jeunes et personne agee", "âgée", False),
+        ("jeunes et personne age", "personne AND jeune", True),
+        ("jeunes et personne agee", "âgée", True),
     ],
 )
 @pytest.mark.with_token
@@ -424,7 +424,7 @@ def test_can_filter_resources_by_profils_precisions(
     factories.ServiceFactory(profils=None, profils_precisions="tests")
 
     response = api_client.get(
-        "/api/v0/search/services", params={"profils_precisions": input}
+        "/api/v0/search/services", params={"profils_search": input}
     )
 
     assert response.status_code == 200
@@ -442,6 +442,11 @@ def test_can_filter_resources_by_profils_precisions(
         ([schema.Profil.FEMMES.value], "femme", True),
         ([schema.Profil.JEUNES_16_26.value], "jeune", True),
         ([schema.Profil.FEMMES.value], "jeune", False),
+        (
+            [schema.Profil.DEFICIENCE_VISUELLE.value],
+            "deficience jeune difficulte",
+            True,
+        ),
     ],
 )
 @pytest.mark.with_token
@@ -452,7 +457,7 @@ def test_can_filter_resources_by_profils_precisions_with_only_profils_data(
     factories.ServiceFactory(profils=schema.Profil.RETRAITES, profils_precisions="")
 
     response = api_client.get(
-        "/api/v0/search/services", params={"profils_precisions": input}
+        "/api/v0/search/services", params={"profils_search": input}
     )
 
     assert response.status_code == 200

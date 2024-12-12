@@ -61,8 +61,48 @@ def upgrade() -> None:
         ["searchable_index_profils_precisions"],
         postgresql_using="gin",
     )
+    op.execute("""
+        CREATE OR REPLACE FUNCTION generate_profils_searchable(
+            profils TEXT[]
+        )
+        RETURNS TSVECTOR AS $$
+        BEGIN
+            RETURN to_tsvector(
+               'french',
+                ARRAY_TO_STRING(profils, ' ')::text
+            );
+        END;
+        $$ LANGUAGE plpgsql IMMUTABLE;
+    """)
+    op.add_column(
+        "api__services",
+        sa.Column(
+            "searchable_index_profils",
+            TSVECTOR(),
+            sa.Computed(
+                "generate_profils_searchable(profils)",
+                persisted=True,
+            ),
+        ),
+    )
+    op.create_index(
+        "ix_api__services_searchable_index_profils",
+        "api__services",
+        ["searchable_index_profils"],
+        postgresql_using="gin",
+    )
+    # Create a new dictionary to customize our search without accents
+    op.execute("""
+        CREATE EXTENSION IF NOT EXISTS unaccent;
+        CREATE TEXT SEARCH CONFIGURATION french_di ( COPY = french );
+        ALTER TEXT SEARCH CONFIGURATION french_di
+            ALTER MAPPING FOR hword, hword_part, word
+        WITH unaccent, french_stem;
+    """)
 
 
 def downgrade() -> None:
     op.drop_column("api__services", "searchable_index_profils_precisions")
     op.drop_column("api__services", "profils_precisions")
+    op.drop_column("api__services", "searchable_index_profils")
+    op.execute("DROP TEXT SEARCH CONFIGURATION french_di")

@@ -75,8 +75,8 @@ di_thematique_by_soliguide_category_code AS (
 profils AS (
     SELECT
         publics.lieu_id,
-        ARRAY_TO_STRING(ARRAY_AGG(DISTINCT di_mapping.traduction), ',') AS traduction,
-        ARRAY_REMOVE(ARRAY_AGG(DISTINCT di_mapping.profils), NULL)      AS profils
+        ARRAY_TO_STRING(ARRAY_AGG(DISTINCT di_mapping.traduction), ', ') AS traduction,
+        ARRAY_REMOVE(ARRAY_AGG(DISTINCT di_mapping.profils), NULL)       AS profils
     FROM
         publics
     LEFT JOIN (
@@ -84,12 +84,13 @@ profils AS (
         -- administrative status
         ('regular', 'en situation régulière', NULL),
         ('asylum', 'demandeur asile', 'personnes-de-nationalite-etrangere'),
+        ('refugee', 'personne avec un status de refugiée', 'personnes-de-nationalite-etrangere'),
         ('undocumented', 'sans-papiers', 'personnes-de-nationalite-etrangere'),
         -- family status
         ('isolated', 'isolé', NULL),
         ('family', 'famille', 'familles-enfants'),
         ('couple', 'couple', 'familles-enfants'),
-        ('pregnent', 'enceinte', 'familles-enfants'),
+        ('pregnant', 'enceinte', 'familles-enfants'),
         -- gender status
         ('men', 'homme', NULL),
         ('women', 'femme', 'femmes'),

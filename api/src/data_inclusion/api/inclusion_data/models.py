@@ -104,6 +104,10 @@ class Service(Base):
             "generate_profils_precisions(profils_precisions, profils)", persisted=True
         ),
     )
+    searchable_index_profils: Mapped[str | None] = mapped_column(
+        TSVECTOR,
+        Computed("generate_profils(profils)", persisted=True),
+    )
     recurrence: Mapped[str | None]
     source: Mapped[str]
     structure_id: Mapped[str]

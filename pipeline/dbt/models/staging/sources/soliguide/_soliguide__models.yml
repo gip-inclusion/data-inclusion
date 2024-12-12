@@ -135,7 +135,7 @@ models:
           - not_null
           - dbt_utils.not_empty_string
           - accepted_values:
-              values: ['regular', 'asylum', 'refugee', 'undocumented']
+              values: ["regular", "asylum", "refugee", "undocumented"]
   - name: stg_soliguide__lieux__publics__other
     columns:
       - name: lieu_id

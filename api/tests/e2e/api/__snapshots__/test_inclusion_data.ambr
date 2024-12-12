@@ -653,13 +653,13 @@
               "description": "Une liste de profils.\n                Chaque résultat renvoyé a (au moins) un profil dans cette liste.\n            "
             },
             {
-              "name": "profils_precisions",
+              "name": "profils_search",
               "in": "query",
               "required": false,
               "schema": {
                 "type": "string",
                 "description": "Une recherche elargie sur les profils.\n               Chaque résultat renvoyé correspond a la recherche fulltext sur\n               ce champs.\n            ",
-                "title": "Profils Precisions"
+                "title": "Profils Search"
               },
               "description": "Une recherche elargie sur les profils.\n               Chaque résultat renvoyé correspond a la recherche fulltext sur\n               ce champs.\n            "
             },
