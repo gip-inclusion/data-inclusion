@@ -665,6 +665,27 @@ def test_list_services_by_types(api_client, url):
 
 @pytest.mark.with_token
 @pytest.mark.parametrize("url", ["/api/v0/services", "/api/v0/search/services"])
+def test_list_services_by_score_qualite(api_client, url):
+    service_1 = factories.ServiceFactory(score_qualite=0.5)
+    service_2 = factories.ServiceFactory(score_qualite=0.7)
+    factories.ServiceFactory(score_qualite=0.2)
+
+    response = api_client.get(
+        url,
+        params={"score_qualite_minimum": service_1.score_qualite},
+    )
+
+    assert response.status_code == 200
+    resp_data = response.json()
+    assert_paginated_response_data(resp_data, total=2)
+    assert {d["id"] for d in list_resources_data(resp_data)} == {
+        service_1.id,
+        service_2.id,
+    }
+
+
+@pytest.mark.with_token
+@pytest.mark.parametrize("url", ["/api/v0/services", "/api/v0/search/services"])
 def test_can_filter_services_by_frais(api_client, url):
     service_1 = factories.ServiceFactory(frais=[schema.Frais.GRATUIT.value])
     service_2 = factories.ServiceFactory(frais=[schema.Frais.ADHESION.value])

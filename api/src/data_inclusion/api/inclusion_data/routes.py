@@ -225,6 +225,14 @@ def list_services_endpoint(
                 Chaque résultat renvoyé a (au moins) une typologie dans cette liste."""
         ),
     ] = None,
+    score_qualite_minimum: Annotated[
+        Optional[float],
+        fastapi.Query(
+            description="""[BETA] Score de qualité minimum.
+                Les résultats renvoyés ont un score de qualité supérieur ou égal à ce
+                score."""
+        ),
+    ] = None,
     inclure_suspendus: Annotated[
         Optional[bool],
         fastapi.Query(
@@ -251,6 +259,7 @@ def list_services_endpoint(
         profils=profils,
         modes_accueil=modes_accueil,
         types=types,
+        score_qualite_minimum=score_qualite_minimum,
         include_outdated=inclure_suspendus,
     )
     background_tasks.add_task(
@@ -384,6 +393,14 @@ def search_services_endpoint(
                 Chaque résultat renvoyé a (au moins) une typologie dans cette liste."""
         ),
     ] = None,
+    score_qualite_minimum: Annotated[
+        Optional[float],
+        fastapi.Query(
+            description="""Score de qualité minimum.
+                Les résultats renvoyés ont un score de qualité supérieur ou égal à ce
+                score."""
+        ),
+    ] = None,
     inclure_suspendus: Annotated[
         Optional[bool],
         fastapi.Query(
@@ -445,6 +462,7 @@ def search_services_endpoint(
         profils=profils,
         types=types,
         search_point=search_point,
+        score_qualite_minimum=score_qualite_minimum,
         include_outdated=inclure_suspendus,
     )
 
