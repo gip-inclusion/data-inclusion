@@ -153,6 +153,13 @@ def filter_services_by_types(
     )
 
 
+def filter_services_by_score_qualite(
+    query: sqla.Select,
+    score_qualite_minimum: float,
+):
+    return query.filter(models.Service.score_qualite >= score_qualite_minimum)
+
+
 def filter_outdated_services(
     query: sqla.Select,
 ):
@@ -265,6 +272,7 @@ def filter_services(
     profils: list[di_schema.Profil] | None = None,
     modes_accueil: list[di_schema.ModeAccueil] | None = None,
     types: list[di_schema.TypologieService] | None = None,
+    score_qualite_minimum: float | None = None,
     include_outdated: bool | None = False,
 ) -> sqla.Select:
     """Common filters for services."""
@@ -287,6 +295,9 @@ def filter_services(
     if types is not None:
         query = filter_services_by_types(query, types)
 
+    if score_qualite_minimum is not None:
+        query = filter_services_by_score_qualite(query, score_qualite_minimum)
+
     if not include_outdated:
         query = filter_outdated_services(query)
 
@@ -305,6 +316,7 @@ def list_services(
     profils: list[di_schema.Profil] | None = None,
     modes_accueil: list[di_schema.ModeAccueil] | None = None,
     types: list[di_schema.TypologieService] | None = None,
+    score_qualite_minimum: float | None = None,
     include_outdated: bool | None = False,
 ):
     query = (
@@ -332,6 +344,7 @@ def list_services(
         profils=profils,
         modes_accueil=modes_accueil,
         types=types,
+        score_qualite_minimum=score_qualite_minimum,
         include_outdated=include_outdated,
     )
 
@@ -354,6 +367,7 @@ def search_services(
     profils: list[di_schema.Profil] | None = None,
     types: list[di_schema.TypologieService] | None = None,
     search_point: str | None = None,
+    score_qualite_minimum: float | None = None,
     include_outdated: bool | None = False,
 ):
     query = (
@@ -454,6 +468,7 @@ def search_services(
         profils=profils,
         modes_accueil=modes_accueil,
         types=types,
+        score_qualite_minimum=score_qualite_minimum,
         include_outdated=include_outdated,
     )
 
