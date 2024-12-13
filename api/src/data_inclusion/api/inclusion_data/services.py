@@ -253,9 +253,7 @@ def read_sources():
 def list_sources(request: fastapi.Request) -> list[dict]:
     sources = read_sources()
     if not request.user.is_authenticated or "dora" not in request.user.username:
-        sources = [
-            d for d in sources if d["slug"] not in ["data-inclusion", "soliguide"]
-        ]
+        sources = [d for d in sources if d["slug"] not in ["soliguide"]]
     return sources
 
 
