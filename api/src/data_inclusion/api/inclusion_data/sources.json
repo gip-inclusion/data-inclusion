@@ -15,11 +15,6 @@
         "description": "Contient les structures et services inclusifs du département de l’Ille-et-Vilaine."
     },
     {
-        "slug": "data-inclusion",
-        "nom": "Expérimentation data·inclusion en Essonne",
-        "description": "Expérimentation data·inclusion en Essonne."
-    },
-    {
         "slug": "dora",
         "nom": "DORA",
         "description": "Service public numérique de recensement de l’offre d’insertion développé par la Plateforme de l’inclusion. Contient leurs structures et services inclusifs sur de nombreuses thématiques."
