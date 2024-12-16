@@ -163,8 +163,14 @@ def upgrade() -> None:
             public.api__requests
         WHERE
             status_code = 200
-            AND (query_params ->> 'lat') NOT LIKE '%,%'
-            AND (query_params ->> 'lon') NOT LIKE '%,%'
+            AND (
+                (query_params ->> 'lat') IS NULL
+                OR (query_params ->> 'lat') NOT LIKE '%,%'
+            )
+            AND (
+                (query_params ->> 'lon') IS NULL
+                OR (query_params ->> 'lon') NOT LIKE '%,%'
+            )
             AND endpoint_name = 'search_services_endpoint'
     """)
 
