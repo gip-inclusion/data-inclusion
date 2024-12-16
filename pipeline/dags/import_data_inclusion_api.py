@@ -53,6 +53,7 @@ def import_data_inclusion_api():
                     " --no-owner"
                     " --no-privileges"
                     " --table api__requests"
+                    " --table api__*_events"
                     # services & structures have foreign keys towards communes
                     " --table api__communes"
                     " --table api__services"
