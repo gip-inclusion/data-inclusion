@@ -1,5 +1,4 @@
 import logging
-import textwrap
 
 from airflow import exceptions
 from airflow.providers.http.hooks.http import HttpHook
@@ -10,42 +9,40 @@ from dag_utils import date
 logger = logging.getLogger(__file__)
 
 
-def format_failure(context: Context) -> str:
-    dag = context["dag"]
-    task_name = context["task"].task_id
-    task_instance = context["task_instance"]
-    logical_date_ds = date.local_day_datetime_str(context["logical_date"])
-    start_date_ds = date.local_day_datetime_str(task_instance.start_date)
-
-    # AIRFLOW__WEBSERVER__BASE_URL should be set to the public url to be able
-    # to access logs
-
-    return textwrap.dedent(
-        f"""\
-        | Status    | DAG          | Task        | Logs                          | Logical date      | Start date      |
-        | --------- | ------------ | ----------- | ----------------------------- | ----------------- | --------------- |
-        | Failed 🔴 | {dag.dag_id} | {task_name} | [📜]({task_instance.log_url}) | {logical_date_ds} | {start_date_ds} |
-        """  # noqa: E501
-    )
-
-
-def notify_webhook(context: Context, conn_id: str, format_fn):
+def notify_webhook(context: Context, conn_id: str):
     """Format context and notify the webhook identify by the given connection id"""
 
-    # if AIRFLOW_CONN_<conn_id> not set, do nothing
+    dag = context["dag"]
+    task = context["task"]
+    task_instance = context["task_instance"]
 
+    # if AIRFLOW_CONN_<conn_id> not set, do nothing
     try:
-        http_hook = HttpHook(http_conn_id=conn_id)
-        http_hook.run(json={"text": format_fn(context)})
+        http_hook = HttpHook(method="POST", http_conn_id=conn_id)
+        http_hook.run(
+            json={
+                "context": {
+                    "dag": {"dag_id": dag.dag_id},
+                    "task": {"task_id": task.task_id},
+                    "task_instance": {
+                        "state": task_instance.state,
+                        "log_url": task_instance.log_url,
+                        "start_date": date.local_day_datetime_str(
+                            task_instance.start_date
+                        ),
+                    },
+                    "logical_date": date.local_day_datetime_str(
+                        context["logical_date"]
+                    ),
+                }
+            }
+        )
     except exceptions.AirflowNotFoundException:
         logger.warning("Webhook notifier disabled.")
-        return
 
 
 # FIXME(vmttn) : This could be a DAG factory instead
 def notify_failure_args():
     return {
-        "on_failure_callback": lambda context: notify_webhook(
-            context, "mattermost", format_failure
-        )
+        "on_failure_callback": lambda context: notify_webhook(context, "mattermost")
     }
