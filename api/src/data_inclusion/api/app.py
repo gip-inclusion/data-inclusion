@@ -13,7 +13,6 @@ from data_inclusion.api.config import settings
 from data_inclusion.api.core import db
 from data_inclusion.api.inclusion_data.routes import router as data_api_router
 from data_inclusion.api.inclusion_schema.routes import router as schema_api_router
-from data_inclusion.api.request.middleware import save_request_middleware
 
 API_DESCRIPTION_PATH = Path(__file__).parent / "api_description.md"
 
@@ -74,7 +73,6 @@ def create_app() -> fastapi.FastAPI:
         setup_debug_toolbar_middleware(app)
 
     app.middleware("http")(db.db_session_middleware)
-    app.middleware("http")(save_request_middleware)
 
     app.include_router(v0_api_router)
     app.include_router(
