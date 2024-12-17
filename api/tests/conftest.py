@@ -144,6 +144,7 @@ def db_session(db_connection):
 
     factories.StructureFactory._meta.sqlalchemy_session = session
     factories.ServiceFactory._meta.sqlalchemy_session = session
+    factories.RequestFactory._meta.sqlalchemy_session = session
 
     yield session
 
@@ -156,5 +157,6 @@ def predictable_sequences():
     import factory.random
 
     factory.random.reseed_random(0)
+    factories.RequestFactory.reset_sequence()
     factories.ServiceFactory.reset_sequence()
     factories.StructureFactory.reset_sequence()
