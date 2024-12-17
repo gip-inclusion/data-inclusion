@@ -8,6 +8,7 @@ from data_inclusion.api.config import settings
 from data_inclusion.api.core import db
 from data_inclusion.api.decoupage_administratif import models as _  # noqa: F401 F811
 from data_inclusion.api.inclusion_data import models as _  # noqa: F401 F811
+from data_inclusion.api.request import models as _  # noqa: F401 F811
 
 # this is the Alembic Config object, which provides
 # access to the values within the .ini file in use.
