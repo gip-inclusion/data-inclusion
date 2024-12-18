@@ -1,7 +1,7 @@
 """add profils_precisions field in service
 
 Revision ID: c947102bb23f
-Revises: 68fe052dc63c
+Revises: 89e1ece4f56e
 Create Date: 2024-10-28 17:22:23.374004
 
 """
@@ -12,7 +12,7 @@ from sqlalchemy.dialects.postgresql import TSVECTOR
 
 # revision identifiers, used by Alembic.
 revision = "c947102bb23f"
-down_revision = "68fe052dc63c"
+down_revision = "89e1ece4f56e"
 branch_labels = None
 depends_on = None
 
