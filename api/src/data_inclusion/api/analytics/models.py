@@ -41,7 +41,6 @@ class ListStructuresEvent(db.Base):
     created_at: Mapped[db.timestamp]
     user: Mapped[str]
     sources: Mapped[list[str] | None]
-    structure_id: Mapped[str | None]
     typologie: Mapped[str | None]
     label_national: Mapped[str | None]
     code_departement: Mapped[str | None]
