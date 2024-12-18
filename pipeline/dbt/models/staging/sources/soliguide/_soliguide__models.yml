@@ -27,6 +27,11 @@ models:
         data_tests:
           - not_null
           - dbt_utils.not_empty_string
+      - name: publics__accueil
+        data_tests:
+          - not_null
+          - accepted_values:
+              values: [0, 1, 2]
       - name: position__coordinates__x
         data_tests:
           - not_null
@@ -87,3 +92,70 @@ models:
           - relationships:
               to: ref('stg_soliguide__lieux')
               field: lieu_id
+
+
+  - name: stg_soliguide__lieux__publics__familiale
+    columns:
+      - name: lieu_id
+        data_tests:
+          - not_null
+          - relationships:
+              to: ref('stg_soliguide__lieux')
+              field: id
+      - name: value
+        data_tests:
+          - not_null
+          - dbt_utils.not_empty_string
+          - accepted_values:
+              values: ['isolated', 'family', 'pregnant', 'couple']
+  - name: stg_soliguide__lieux__publics__gender
+    columns:
+      - name: lieu_id
+        data_tests:
+          - not_null
+          - relationships:
+              to: ref('stg_soliguide__lieux')
+              field: id
+      - name: value
+        data_tests:
+          - not_null
+          - dbt_utils.not_empty_string
+          - accepted_values:
+              values: ['men', 'women']
+  - name: stg_soliguide__lieux__publics__administrative
+    columns:
+      - name: lieu_id
+        data_tests:
+          - not_null
+          - relationships:
+              to: ref('stg_soliguide__lieux')
+              field: id
+      - name: value
+        data_tests:
+          - not_null
+          - dbt_utils.not_empty_string
+          - accepted_values:
+              values: ["regular", "asylum", "refugee", "undocumented"]
+  - name: stg_soliguide__lieux__publics__other
+    columns:
+      - name: lieu_id
+        data_tests:
+          - not_null
+          - relationships:
+              to: ref('stg_soliguide__lieux')
+              field: id
+      - name: value
+        data_tests:
+          - not_null
+          - dbt_utils.not_empty_string
+          - accepted_values:
+              values:
+                - 'violence'
+                - 'addiction'
+                - 'handicap'
+                - 'lgbt'
+                - 'hiv'
+                - 'prostitution'
+                - 'prison'
+                - 'student'
+                - 'ukraine'

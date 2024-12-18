@@ -7,7 +7,7 @@ from pathlib import Path
 
 import geoalchemy2
 import sqlalchemy as sqla
-from sqlalchemy import orm
+from sqlalchemy import func, or_, orm
 
 import fastapi
 
@@ -137,6 +137,24 @@ def filter_services_by_profils(
     )
 
 
+def filter_services_by_profils_search(
+    query: sqla.Select,
+    profils_search: str,
+):
+    profils_only = profils_search.split(" ")
+    profils_only = [p.strip() for p in profils_only]
+    return query.filter(
+        or_(
+            models.Service.searchable_index_profils.bool_op("@@")(
+                func.to_tsquery("french_di", " | ".join(profils_only))
+            ),
+            models.Service.searchable_index_profils_precisions.bool_op("@@")(
+                func.websearch_to_tsquery("french_di", profils_search)
+            ),
+        )
+    )
+
+
 def filter_services_by_types(
     query: sqla.Select,
     types: list[di_schema.TypologieService],
@@ -263,6 +281,7 @@ def filter_services(
     thematiques: list[di_schema.Thematique] | None = None,
     frais: list[di_schema.Frais] | None = None,
     profils: list[di_schema.Profil] | None = None,
+    profils_search: str | None = None,
     modes_accueil: list[di_schema.ModeAccueil] | None = None,
     types: list[di_schema.TypologieService] | None = None,
     include_outdated: bool | None = False,
@@ -289,6 +308,9 @@ def filter_services(
 
     if not include_outdated:
         query = filter_outdated_services(query)
+
+    if profils_search is not None:
+        query = filter_services_by_profils_search(query, profils_search)
 
     return query
 
@@ -352,6 +374,7 @@ def search_services(
     frais: list[di_schema.Frais] | None = None,
     modes_accueil: list[di_schema.ModeAccueil] | None = None,
     profils: list[di_schema.Profil] | None = None,
+    profils_search: str | None = None,
     types: list[di_schema.TypologieService] | None = None,
     search_point: str | None = None,
     include_outdated: bool | None = False,
@@ -452,6 +475,7 @@ def search_services(
         thematiques=thematiques,
         frais=frais,
         profils=profils,
+        profils_search=profils_search,
         modes_accueil=modes_accueil,
         types=types,
         include_outdated=include_outdated,

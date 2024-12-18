@@ -377,6 +377,15 @@ def search_services_endpoint(
             """
         ),
     ] = None,
+    profils_search: Annotated[
+        Optional[str],
+        fastapi.Query(
+            description="""Une recherche elargie sur les profils.
+               Chaque résultat renvoyé correspond a la recherche fulltext sur
+               ce champs.
+            """
+        ),
+    ] = None,
     types: Annotated[
         Optional[list[di_schema.TypologieService]],
         fastapi.Query(
@@ -443,6 +452,7 @@ def search_services_endpoint(
         frais=frais,
         modes_accueil=modes_accueil,
         profils=profils,
+        profils_search=profils_search,
         types=types,
         search_point=search_point,
         include_outdated=inclure_suspendus,

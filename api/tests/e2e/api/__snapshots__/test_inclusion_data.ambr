@@ -653,6 +653,17 @@
               "description": "Une liste de profils.\n                Chaque résultat renvoyé a (au moins) un profil dans cette liste.\n            "
             },
             {
+              "name": "profils_search",
+              "in": "query",
+              "required": false,
+              "schema": {
+                "type": "string",
+                "description": "Une recherche elargie sur les profils.\n               Chaque résultat renvoyé correspond a la recherche fulltext sur\n               ce champs.\n            ",
+                "title": "Profils Search"
+              },
+              "description": "Une recherche elargie sur les profils.\n               Chaque résultat renvoyé correspond a la recherche fulltext sur\n               ce champs.\n            "
+            },
+            {
               "name": "types",
               "in": "query",
               "required": false,
@@ -1495,6 +1506,17 @@
                 }
               ],
               "title": "Profils"
+            },
+            "profils_precisions": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Profils Precisions"
             },
             "pre_requis": {
               "anyOf": [
@@ -2415,7 +2437,9 @@
             "seniors-65",
             "sortants-de-detention",
             "surdite",
-            "victimes"
+            "victimes",
+            "tous-publics",
+            "personnes-en-situation-durgence"
           ],
           "title": "Profil"
         },
@@ -2589,6 +2613,17 @@
                 }
               ],
               "title": "Profils"
+            },
+            "profils_precisions": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Profils Precisions"
             },
             "pre_requis": {
               "anyOf": [
