@@ -1,0 +1,111 @@
+version: 2
+
+models:
+  - name: stg_imilo__offres
+    columns:
+      - name: id
+        data_tests:
+          - unique
+          - not_null
+          - dbt_utils.not_empty_string
+      - name: structure_id
+        data_tests:
+          - not_null
+          - relationships:
+              to: ref('stg_imilo__structures')
+              field: id
+      - name: nom
+        data_tests:
+          - not_null
+          - dbt_utils.not_empty_string
+      - name: date_maj
+        data_tests:
+          - not_null
+          - dbt_utils.accepted_range:
+              min_value: "now() - interval '2 years'"
+              config:
+                severity: warn
+      - name: date_creation
+        data_tests:
+          - not_null:
+              config:
+                severity: warn
+          - dbt_utils.not_constant
+      - name: thematiques
+        data_tests:
+          - dbt_utils.not_empty_string
+      - name: presentation_resume
+        data_tests:
+          - dbt_utils.not_empty_string
+      - name: modes_accueil
+        data_tests:
+          - dbt_utils.not_empty_string
+      - name: profils
+        data_tests:
+          - dbt_utils.not_empty_string
+
+  - name: stg_imilo__structures
+    columns:
+      - name: id
+        data_tests:
+          - unique
+          - not_null
+          - dbt_utils.not_empty_string
+      - name: courriel
+        data_tests:
+          - dbt_utils.not_empty_string
+      - name: antenne
+        data_tests:
+          - not_null
+          - accepted_values:
+              values: [true, false]
+      - name: commune
+        data_tests:
+          - dbt_utils.not_empty_string
+      - name: horaires_ouverture
+        data_tests:
+          - dbt_utils.not_empty_string
+      - name: site_web
+        data_tests:
+          - dbt_utils.not_empty_string
+      - name: telephone
+        data_tests:
+          - dbt_utils.not_empty_string
+      - name: typologie
+        data_tests:
+          - dbt_utils.not_empty_string
+      - name: code_insee
+        data_tests:
+          - dbt_utils.not_empty_string
+      - name: code_postal
+        data_tests:
+          - dbt_utils.not_empty_string
+      - name: nom
+        data_tests:
+          - not_null:
+              config:
+                severity: warn
+          - dbt_utils.not_constant
+          - dbt_utils.not_empty_string
+      - name: labels_nationaux
+        data_tests:
+          - dbt_utils.not_empty_string
+      - name: adresse
+        data_tests:
+          - dbt_utils.not_empty_string
+      - name: presentation_resume
+        data_tests:
+          - dbt_utils.not_empty_string
+      - name: presentation_detail
+        data_tests:
+          - dbt_utils.not_empty_string
+      - name: complement_adresse
+        data_tests:
+          - dbt_utils.not_empty_string
+      - name: date_maj
+        data_tests:
+          - not_null
+          - dbt_utils.accepted_range:
+              min_value: "now() - interval '2 years'"
+              config:
+                severity: warn
