@@ -5,17 +5,8 @@ import faker
 
 from data_inclusion import schema as di_schema
 from data_inclusion.api.inclusion_data import models
-from data_inclusion.api.request.models import Request
 
 fake = faker.Faker("fr_FR")
-
-
-class RequestFactory(factory.alchemy.SQLAlchemyModelFactory):
-    class Meta:
-        model = Request
-        sqlalchemy_session_persistence = "commit"
-
-    status_code = 200
 
 
 class StructureFactory(factory.alchemy.SQLAlchemyModelFactory):
