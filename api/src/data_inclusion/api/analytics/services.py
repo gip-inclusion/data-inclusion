@@ -92,7 +92,6 @@ def save_list_structures_event(
     request: fastapi.Request,
     db_session: orm.Session,
     sources: list[str] | None = None,
-    structure_id: str | None = None,
     typologie: di_schema.Typologie | None = None,
     label_national: di_schema.LabelNational | None = None,
     departement: Departement | None = None,
@@ -107,7 +106,6 @@ def save_list_structures_event(
     event = ListStructuresEvent(
         user=user.username,
         sources=sources,
-        structure_id=structure_id,
         typologie=typologie,
         label_national=label_national,
         code_departement=departement.code if departement else None,

@@ -135,7 +135,6 @@ def test_list_structures_event_saved(api_client, db_session):
     assert event.code_region == query_param["code_region"]
     assert event.code_commune == query_param["code_commune"]
     assert event.typologie == query_param["typologie"]
-    assert event.structure_id == query_param["id"]
     assert event.label_national == query_param["label_national"]
 
 
