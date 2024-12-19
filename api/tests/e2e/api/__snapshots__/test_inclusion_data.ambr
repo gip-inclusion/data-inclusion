@@ -418,10 +418,10 @@
               "required": false,
               "schema": {
                 "type": "number",
-                "description": "Score de qualité minimum.\n                Les résultats renvoyés ont un score de qualité supérieur ou égal à ce\n                score.",
+                "description": "[BETA] Score de qualité minimum.\n                Les résultats renvoyés ont un score de qualité supérieur ou égal à ce\n                score.",
                 "title": "Score Qualite Minimum"
               },
-              "description": "Score de qualité minimum.\n                Les résultats renvoyés ont un score de qualité supérieur ou égal à ce\n                score."
+              "description": "[BETA] Score de qualité minimum.\n                Les résultats renvoyés ont un score de qualité supérieur ou égal à ce\n                score."
             },
             {
               "name": "inclure_suspendus",
