@@ -116,7 +116,7 @@ def deduplicate(data: list[DeduplicateInput]) -> pd.DataFrame:
     ]
 
     # dedupe does not handle empty values, only None
-    df = df.mask(df.eq(""), other=None)
+    df = df.replace("", None)
 
     logger.info(f"reading training data from {MODEL_URL=}")
     _download_file(MODEL_URL, "/tmp/model.bin")
