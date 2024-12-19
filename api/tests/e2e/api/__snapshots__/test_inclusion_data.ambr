@@ -413,6 +413,17 @@
               "description": "Une liste de typologies de service.\n                Chaque résultat renvoyé a (au moins) une typologie dans cette liste."
             },
             {
+              "name": "score_qualite_minimum",
+              "in": "query",
+              "required": false,
+              "schema": {
+                "type": "number",
+                "description": "Score de qualité minimum.\n                Les résultats renvoyés ont un score de qualité supérieur ou égal à ce\n                score.",
+                "title": "Score Qualite Minimum"
+              },
+              "description": "Score de qualité minimum.\n                Les résultats renvoyés ont un score de qualité supérieur ou égal à ce\n                score."
+            },
+            {
               "name": "inclure_suspendus",
               "in": "query",
               "required": false,
@@ -665,6 +676,17 @@
                 "title": "Types"
               },
               "description": "Une liste de typologies de service.\n                Chaque résultat renvoyé a (au moins) une typologie dans cette liste."
+            },
+            {
+              "name": "score_qualite_minimum",
+              "in": "query",
+              "required": false,
+              "schema": {
+                "type": "number",
+                "description": "Score de qualité minimum.\n                Les résultats renvoyés ont un score de qualité supérieur ou égal à ce\n                score.",
+                "title": "Score Qualite Minimum"
+              },
+              "description": "Score de qualité minimum.\n                Les résultats renvoyés ont un score de qualité supérieur ou égal à ce\n                score."
             },
             {
               "name": "inclure_suspendus",
