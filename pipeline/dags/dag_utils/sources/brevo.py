@@ -58,7 +58,9 @@ def _get_client():
 
         def import_to_list(self, list_id, contacts):
             import_params = sib_api_v3_sdk.RequestContactImport()
-            import_params.json_body = contacts
+            # Ensure we have no invalid emails in the list, it would
+            # make the whole import fail
+            import_params.json_body = [c for c in contacts if c["email"]]
             import_params.list_ids = [list_id]
             return self.contacts_api.import_contacts(
                 request_contact_import=import_params
