@@ -245,6 +245,7 @@ resource "null_resource" "up" {
     AIRFLOW_VAR_DORA_API_TOKEN='${var.dora_api_token}'
     AIRFLOW_VAR_DORA_API_URL='${var.dora_api_url}'
     AIRFLOW_VAR_EMPLOIS_API_TOKEN='${var.emplois_api_token}'
+    AIRFLOW_VAR_ENVIRONMENT='${var.environment}'
     AIRFLOW_VAR_FREDO_API_TOKEN='${var.fredo_api_token}'
     AIRFLOW_VAR_FT_API_TOKEN='${var.ft_api_token}'
     AIRFLOW_VAR_MES_AIDES_AIRTABLE_KEY='${var.mes_aides_airtable_key}'

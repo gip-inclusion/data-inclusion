@@ -17,6 +17,7 @@ def dbt_operator_factory(
     select: Optional[str] = None,
     exclude: Optional[str] = None,
     trigger_rule: TriggerRule = TriggerRule.ALL_SUCCESS,
+    exclude_unit_tests: bool = False,
 ) -> bash.BashOperator:
     """A basic factory for bash operators operating dbt commands."""
 
@@ -28,6 +29,8 @@ def dbt_operator_factory(
     if dbt_vars is not None:
         dbt_vars = json.dumps(dbt_vars)
         dbt_args += f" --vars '{dbt_vars}'"
+    if exclude_unit_tests:
+        dbt_args += " --exclude-resource-type unit_test"
 
     return bash.BashOperator(
         task_id=task_id,
@@ -96,6 +99,7 @@ def get_staging_tasks():
 
 
 def get_intermediate_tasks():
+    exclude_unit_tests = True if Variable.get("ENVIRONMENT", None) == "prod" else False
     return dbt_operator_factory(
         task_id="dbt_build_intermediate",
         command="build",
@@ -128,4 +132,5 @@ def get_intermediate_tasks():
             ]
         ),
         trigger_rule=TriggerRule.ALL_DONE,
+        exclude_unit_tests=exclude_unit_tests,
     )
