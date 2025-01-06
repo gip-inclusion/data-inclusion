@@ -1,7 +1,7 @@
 """remove request
 
 Revision ID: bc02c1c6f60e
-Revises: 89e1ece4f56e
+Revises: df6029fc3a1f
 Create Date: 2024-12-17 10:34:25.120009
 
 """
@@ -12,7 +12,7 @@ from sqlalchemy.dialects import postgresql
 
 # revision identifiers, used by Alembic.
 revision = "bc02c1c6f60e"
-down_revision = "89e1ece4f56e"
+down_revision = "df6029fc3a1f"
 branch_labels = None
 depends_on = None
 
