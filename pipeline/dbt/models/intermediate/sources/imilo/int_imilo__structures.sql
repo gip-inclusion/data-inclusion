@@ -6,10 +6,10 @@ final AS (
     SELECT
         _di_source_id           AS "source",
         id                      AS "id",
-        NULL                    AS "siret",
+        siret                   AS "siret",
         NULL                    AS "rna",
         courriel                AS "courriel",
-        antenne                 AS "antenne",
+        CAST(NULL AS BOOLEAN)   AS "antenne",
         horaires_ouverture      AS "horaires_ouverture",
         site_web                AS "site_web",
         NULL                    AS "lien_source",

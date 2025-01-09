@@ -55,10 +55,9 @@ models:
         data_tests:
           - dbt_utils.not_empty_string
       - name: antenne
+      - name: siret
         data_tests:
-          - not_null
-          - accepted_values:
-              values: [true, false]
+          - dbt_utils.not_empty_string
       - name: commune
         data_tests:
           - dbt_utils.not_empty_string

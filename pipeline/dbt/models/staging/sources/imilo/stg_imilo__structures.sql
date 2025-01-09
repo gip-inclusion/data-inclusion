@@ -7,8 +7,8 @@ final AS (
         _di_source_id                                                             AS "_di_source_id",
         CAST(data -> 'structures' ->> 'id_structure' AS TEXT)                     AS "id",
         NULLIF(TRIM(data -> 'structures' ->> 'email'), '')                        AS "courriel",
-        CAST((data -> 'structures' ->> 'antenne') AS BOOLEAN)                     AS "antenne",
         NULLIF(TRIM(data -> 'structures' ->> 'commune'), '')                      AS "commune",
+        NULLIF(TRIM(data -> 'structures' ->> 'siret'), '')                        AS "siret",
         NULLIF(TRIM(data -> 'structures' ->> 'horaires'), '')                     AS "horaires_ouverture",
         NULLIF(TRIM(data -> 'structures' ->> 'site_web'), '')                     AS "site_web",
         NULLIF(TRIM(data -> 'structures' ->> 'telephone'), '')                    AS "telephone",
@@ -21,7 +21,7 @@ final AS (
         NULLIF(TRIM(data -> 'structures' ->> 'presentation_resumee'), '')         AS "presentation_resume",
         NULLIF(TRIM(data -> 'structures' ->> 'presentation_detaillee'), '')       AS "presentation_detail",
         NULLIF(TRIM(data -> 'structures' ->> 'complement_adresse_structure'), '') AS "complement_adresse",
-        CAST(_di_logical_date AS TIMESTAMP WITH TIME ZONE)                        AS "date_maj"
+        CAST((data -> 'structures' ->> 'date_maj') AS TIMESTAMP WITH TIME ZONE)   AS "date_maj"
     FROM source
 )
 
