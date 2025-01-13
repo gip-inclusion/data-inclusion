@@ -145,11 +145,11 @@ models:
           - dbt_utils.not_constant
           - dbt_utils.accepted_range:
               min_value: 0
-              min_value: 100
+              max_value: 100
       - name: percent_2
         data_tests:
           - not_null
           - dbt_utils.not_constant
           - dbt_utils.accepted_range:
               min_value: 0
-              min_value: 100
+              max_value: 100
