@@ -3,7 +3,7 @@
 {{
     config(
       target_schema='snapshots',
-      unique_key="source",
+      unique_key="source_1||'--'||source_2",
       strategy='timestamp',
       updated_at='date_day',
       invalidate_hard_deletes=True,
