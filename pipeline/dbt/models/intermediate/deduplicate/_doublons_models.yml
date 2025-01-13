@@ -127,9 +127,29 @@ models:
           - relationships:
               to: ref('int__union_structures')
               field: source
-      - name: nb_clusters
+      - name: nb_1
         data_tests:
           - not_null
           - dbt_utils.not_constant
           - dbt_utils.accepted_range:
               min_value: 1
+      - name: nb_2
+        data_tests:
+          - not_null
+          - dbt_utils.not_constant
+          - dbt_utils.accepted_range:
+              min_value: 1
+      - name: percent_1
+        data_tests:
+          - not_null
+          - dbt_utils.not_constant
+          - dbt_utils.accepted_range:
+              min_value: 0
+              min_value: 100
+      - name: percent_2
+        data_tests:
+          - not_null
+          - dbt_utils.not_constant
+          - dbt_utils.accepted_range:
+              min_value: 0
+              min_value: 100
