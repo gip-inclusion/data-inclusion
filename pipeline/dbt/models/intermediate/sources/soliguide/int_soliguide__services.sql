@@ -161,7 +161,7 @@ final AS (
         CAST(NULL AS TEXT [])                                         AS "types",
         NULL                                                          AS "prise_rdv",
         CASE
-            WHEN lieux.publics__accueil IN (0, 1) THEN ARRAY_APPEND(profils.profils, 'tout-publics')
+            WHEN lieux.publics__accueil IN (0, 1) THEN ARRAY_APPEND(profils.profils, 'tous-publics')
             ELSE profils.profils
         END                                                           AS "profils",
         profils.traduction                                            AS "profils_precisions",
