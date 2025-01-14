@@ -37,7 +37,7 @@ services AS (
         source.data -> 'sources'                                                                                          AS "sources"
     FROM
         source,
-        LATERAL (SELECT services.* FROM JSONB_PATH_QUERY(source.data, '$.services_all[*]')) AS services (data)
+        LATERAL JSONB_PATH_QUERY(source.data, '$.services_all[*]') AS services (data)
 ),
 
 final AS (
