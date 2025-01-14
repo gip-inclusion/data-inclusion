@@ -230,14 +230,17 @@ SOURCES_CONFIGS = {
             "offres": {
                 "filename": "offres.json",
                 "url": Variable.get("IMILO_API_URL", None),
+                "token": Variable.get("IMILO_API_SECRET", None),
             },
             "structures": {
                 "filename": "structures.json",
                 "url": Variable.get("IMILO_API_URL", None),
+                "token": Variable.get("IMILO_API_SECRET", None),
             },
             "structures_offres": {
                 "filename": "structures_offres.json",
                 "url": Variable.get("IMILO_API_URL", None),
+                "token": Variable.get("IMILO_API_SECRET", None),
             },
         },
     },

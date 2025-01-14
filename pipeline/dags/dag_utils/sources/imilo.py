@@ -2,8 +2,6 @@ import json
 
 import requests
 
-from airflow.models import Variable
-
 
 class ImiloClient:
     def __init__(self, base_url: str, secret: str) -> None:
@@ -12,6 +10,7 @@ class ImiloClient:
         self.session.headers.update({"Content-Type": "application/json"})
         self.secret = secret
 
+    # The token lasts 1h
     def _get_token(self):
         response = self.session.post(
             url=f"{self.base_url}/get_token",
@@ -23,7 +22,7 @@ class ImiloClient:
         )
         response.raise_for_status()
         self.session.headers.update(
-            {"Authorization": f"Bearer {response.json()["access_token"]}"}
+            {"Authorization": f"Bearer {response.json()['access_token']}"}
         )
 
     def _get_endpoint(
@@ -48,12 +47,7 @@ class ImiloClient:
         return self._get_endpoint("/get_structures_offres")
 
 
-client = ImiloClient(
-    base_url=Variable.get("IMILO_API_URL"),
-    secret=Variable.get("IMILO_API_SECRET"),
-)
-
-
 def extract(id: str, url: str, token: str, **kwargs) -> bytes:
+    client = ImiloClient(base_url=url, secret=token)
     data = getattr(client, f"list_{id}")()
     return json.dumps(data).encode()
