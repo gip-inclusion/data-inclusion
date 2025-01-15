@@ -5,7 +5,7 @@ import pendulum
 import airflow
 from airflow.operators import empty, python
 
-from dag_utils import notifications
+from dag_utils import sentry
 from dag_utils.virtualenvs import PYTHON_BIN_PATH
 
 logger = logging.getLogger(__name__)
@@ -72,7 +72,7 @@ with airflow.DAG(
     dag_id="notify_rgpd_contacts",
     description="Sends RGPD notifications to DI users",
     start_date=pendulum.datetime(2023, 11, 1),
-    default_args=notifications.notify_failure_args(),
+    default_args=sentry.notify_failure_args(),
     schedule="@monthly",
     catchup=False,
 ) as dag:

@@ -229,6 +229,7 @@ resource "null_resource" "up" {
     AIRFLOW_WWW_USER_PASSWORD='${var.airflow_admin_password}'
     AIRFLOW__CORE__FERNET_KEY='${var.airflow__core__fernet_key}'
     AIRFLOW__SENTRY__SENTRY_DSN='${var.airflow__sentry__sentry_dsn}'
+    AIRFLOW__SENTRY__RELEASE='${var.stack_version}'
     AIRFLOW__WEBSERVER__BASE_URL='https://${local.airflow_hostname}'
 
     # Airflow connections

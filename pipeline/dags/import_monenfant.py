@@ -2,7 +2,7 @@ import pendulum
 
 from airflow.decorators import dag, task
 
-from dag_utils import date, notifications
+from dag_utils import date, sentry
 from dag_utils.virtualenvs import PYTHON_BIN_PATH
 
 
@@ -130,7 +130,7 @@ EXTRACT_TASK_CONCURRENCY = 2
 
 @dag(
     start_date=pendulum.datetime(2022, 1, 1, tz=date.TIME_ZONE),
-    default_args=notifications.notify_failure_args(),
+    default_args=sentry.notify_failure_args(),
     schedule="@monthly",
     catchup=False,
     tags=["source"],

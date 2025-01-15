@@ -5,12 +5,10 @@ import pendulum
 import airflow
 from airflow.operators import empty, python
 
-from dag_utils import date
+from dag_utils import date, sentry
 from dag_utils.virtualenvs import PYTHON_BIN_PATH
 
 logger = logging.getLogger(__name__)
-
-default_args = {}
 
 
 def _import_dataset(
@@ -58,7 +56,7 @@ def _import_dataset(
 with airflow.DAG(
     dag_id="import_odspep",
     start_date=pendulum.datetime(2022, 1, 1, tz=date.TIME_ZONE),
-    default_args=default_args,
+    default_args=sentry.notify_failure_args(),
     schedule="@once",
     catchup=False,
     tags=["source"],
