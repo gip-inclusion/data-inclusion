@@ -9,7 +9,7 @@ from dag_utils.dbt import (
     get_intermediate_tasks,
     get_staging_tasks,
 )
-from dag_utils.notifications import notify_failure_args
+from dag_utils.sentry import notify_failure_args
 
 with airflow.DAG(
     dag_id="main",

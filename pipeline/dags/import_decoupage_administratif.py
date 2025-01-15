@@ -3,7 +3,7 @@ import pendulum
 from airflow.decorators import dag, task
 from airflow.operators import empty
 
-from dag_utils import date, dbt, notifications
+from dag_utils import date, dbt, sentry
 from dag_utils.virtualenvs import PYTHON_BIN_PATH
 
 
@@ -89,7 +89,7 @@ def extract_and_load():
 
 @dag(
     start_date=pendulum.datetime(2022, 1, 1, tz=date.TIME_ZONE),
-    default_args=notifications.notify_failure_args(),
+    default_args=sentry.notify_failure_args(),
     schedule="@monthly",
     catchup=False,
 )
