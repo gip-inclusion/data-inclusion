@@ -4,15 +4,25 @@ WITH creches AS (
 
 final AS (
     SELECT
-        id                                             AS "id",
-        ville                                          AS "commune",
-        NULL                                           AS "code_insee",
-        longitude                                      AS "longitude",
-        latitude                                       AS "latitude",
-        _di_source_id                                  AS "source",
-        SUBSTRING(adresse FROM '\d{5}')                AS "code_postal",
-        SUBSTRING(adresse FROM '^(.*?) (- .* )?\d{5}') AS "adresse",
-        SUBSTRING(adresse FROM '- (.*) \d{5}')         AS "complement_adresse"
+        structure_id             AS "id",
+        coordonnees__commune     AS "commune",
+        NULL                     AS "code_insee",
+        CAST(NULL AS FLOAT)      AS "longitude",
+        CAST(NULL AS FLOAT)      AS "latitude",
+        _di_source_id            AS "source",
+        coordonnees__code_postal AS "code_postal",
+        ARRAY_TO_STRING(
+            ARRAY_REMOVE(
+                ARRAY[
+                    coordonnees__numero_voie,
+                    coordonnees__type_voie,
+                    coordonnees__nom_voie
+                ],
+                NULL
+            ),
+            ' '
+        )                        AS "adresse",
+        NULL                     AS "complement_adresse"
     FROM creches
 )
 
