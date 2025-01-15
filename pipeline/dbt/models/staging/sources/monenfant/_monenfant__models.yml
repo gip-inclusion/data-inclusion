@@ -3,89 +3,133 @@ version: 2
 models:
   - name: stg_monenfant__creches
     columns:
-      - name: id
+      - name: structure_id
         data_tests:
           - unique
           - not_null
           - dbt_utils.not_empty_string
-      - name: avip
+
+      - name: structure_name
+        data_tests:
+          - not_null
+          - dbt_utils.not_empty_string
+
+      - name: modified_date
+        data_tests:
+          - not_null
+          - dbt_utils.not_constant
+
+      - name: coordonnees__numero_voie
+        data_tests:
+          - dbt_utils.not_empty_string
+          - dbt_utils.not_null_proportion:
+              at_least: 0.5
+
+      - name: coordonnees__type_voie
+        data_tests:
+          - dbt_utils.not_empty_string
+          - dbt_utils.not_null_proportion:
+              at_least: 0.5
+
+      - name: coordonnees__nom_voie
+        data_tests:
+          - dbt_utils.not_empty_string
+          - dbt_utils.not_null_proportion:
+              at_least: 0.5
+
+      - name: coordonnees__code_postal
+        data_tests:
+          - dbt_utils.not_empty_string
+          - dbt_utils.not_null_proportion:
+              at_least: 0.5
+
+      - name: coordonnees__commune
+        data_tests:
+          - dbt_utils.not_empty_string
+          - dbt_utils.not_null_proportion:
+              at_least: 0.5
+
+      - name: coordonnees__telephone
+        data_tests:
+          - dbt_utils.not_empty_string
+          - dbt_utils.not_null_proportion:
+              at_least: 0.5
+
+      - name: coordonnees__adresse_mail
+        data_tests:
+          - dbt_utils.not_empty_string
+          - dbt_utils.not_null_proportion:
+              at_least: 0.5
+
+      - name: coordonnees__site_internet
+        data_tests:
+          - dbt_utils.not_empty_string
+          - dbt_utils.not_null_proportion:
+              at_least: 0.1
+
+      - name: description__modalites_tarifaires
+        data_tests:
+          - dbt_utils.not_empty_string
+          - dbt_utils.not_null_proportion:
+              at_least: 0.5
+
+      - name: description__projet
+        data_tests:
+          - dbt_utils.not_empty_string
+          - dbt_utils.not_null_proportion:
+              at_least: 0.5
+
+      - name: description__gestionnaire
+        data_tests:
+          - dbt_utils.not_empty_string
+          - dbt_utils.not_null_proportion:
+              at_least: 0.5
+
+      - name: description__equipe
+        data_tests:
+          - dbt_utils.not_empty_string
+          - dbt_utils.not_null_proportion:
+              at_least: 0.5
+
+      - name: description__conditions_admission
+        data_tests:
+          - dbt_utils.not_empty_string
+          - dbt_utils.not_null_proportion:
+              at_least: 0.5
+
+      - name: description__modalites_inscription
+        data_tests:
+          - dbt_utils.not_empty_string
+          - dbt_utils.not_null_proportion:
+              at_least: 0.5
+
+      - name: service_commun__avip
         data_tests:
           - not_null
           - accepted_values:
               values: [true, false]
-      - name: longitude
+
+  - name: stg_monenfant__creches__communes_desservies
+    description: >
+      Creches can be available to residents of several communes.
+      If this is the case, communes are stored here and take precedence over the commune field
+      in the main table. Otherwise, the main table's commune field is used.
+    columns:
+      - name: structure_id
         data_tests:
           - not_null
-      - name: latitude
-        data_tests:
-          - not_null
-      - name: result_id
-        data_tests:
-          - unique
-          - not_null
-          - dbt_utils.not_empty_string
-      - name: ville
-        data_tests:
-          - dbt_utils.not_constant
-          - dbt_utils.not_empty_string
-      - name: telephone
-        data_tests:
-          - dbt_utils.not_constant
-          - dbt_utils.not_empty_string
-      - name: nom
+          - relationships:
+              to: ref('stg_monenfant__creches')
+              field: structure_id
+
+      - name: service_commun__communes_desservies__commune
         data_tests:
           - not_null
           - dbt_utils.not_empty_string
-      - name: mail
-        data_tests:
-          - not_null:
-              config:
-                severity: warn
-          - dbt_utils.not_null_proportion:
-              at_least: 0.1
-          - dbt_utils.not_empty_string
-      - name: derniere_modif_date
-        data_tests:
-          - not_null
-      - name: adresse
+
+      - name: service_commun__communes_desservies__code_postal
         data_tests:
           - not_null
           - dbt_utils.not_empty_string
-      - name: details__website
-        data_tests:
-          - not_null:
-              config:
-                severity: warn
-          - dbt_utils.not_null_proportion:
-              at_least: 0.1
-          - dbt_utils.not_empty_string
-      - name: details__infos_pratiques__jour_horaire
-        data_tests:
-          - not_null:
-              config:
-                  severity: warn
-          - dbt_utils.not_null_proportion:
-              at_least: 0.1
-          - dbt_utils.not_empty_string
-      - name: details__presentation__structure_projet
-        data_tests:
-          - not_null:
-              config:
-                severity: warn
-          - dbt_utils.not_null_proportion:
-              at_least: 0.5
-          - dbt_utils.not_empty_string
-      - name: details__modalite__condition_admision
-        data_tests:
-          - not_null:
-              config:
-                severity: warn
-          - dbt_utils.not_constant
-          - dbt_utils.not_empty_string
-      - name: details__modalite__modalites_inscription
-        data_tests:
-          - not_null:
-              config:
-                severity: warn
-          - dbt_utils.not_constant
-          - dbt_utils.not_empty_string
+          - dbt_utils.expression_is_true:
+              expression: "~ '^\\d{5}$'"

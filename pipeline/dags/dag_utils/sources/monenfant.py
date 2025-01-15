@@ -4,7 +4,6 @@ import json
 import logging
 import os
 import unicodedata
-from datetime import datetime
 from pathlib import Path
 
 import httpx
@@ -127,10 +126,9 @@ def search_at_location(
 
     # 1. fill search form
     page.goto("/que-recherchez-vous")
-    page.get_by_placeholder("Je cherche").click()
-    page.get_by_role("button", name="Un mode d'accueil").click()
+    page.get_by_placeholder("Précisez votre recherche").click()
     page.get_by_label("Une crèche").check()
-    page.get_by_placeholder("Où ?").press_sequentially(location)
+    page.get_by_placeholder("Indiquez une adresse").press_sequentially(location)
     page.locator(".input-geoloc").locator(".spaced-items").first.click()
 
     if (
@@ -183,33 +181,15 @@ def search_at_location(
     return search_results
 
 
-VIEW_STRUCTURE_URL = (
-    "https://monenfant.fr"
-    "/web/guest/que-recherchez-vous"
-    "?p_p_id=fr_monenfant_fichestructure_portlet_FicheStructurePortlet"
-    "&p_p_lifecycle=2"
-    "&p_p_state=normal"
-    "&p_p_mode=view"
-    "&p_p_resource_id=fiche-structure"
-    "&p_p_cacheability=cacheLevelPage"
-    "&_fr_monenfant_fichestructure_portlet_FicheStructurePortlet_cmd=get_structure_details"
-)
-
-
 def extract_structure(structure_id: str) -> dict:
-    data = {
-        "_fr_monenfant_fichestructure_portlet_FicheStructurePortlet_id": structure_id,
-        (
-            "_fr_monenfant_fichestructure_portlet_FicheStructurePortlet_"
-            "dureeRecherche"
-        ): "345",
-        (
-            "_fr_monenfant_fichestructure_portlet_FicheStructurePortlet_"
-            "dateDebutRecherche"
-        ): datetime.now().strftime("%d/%m/%Y"),
-    }
+    response = httpx.get("https://monenfant.fr/o/isu-service/isu/getAngularToken")
+    response.raise_for_status()
+    access_token = response.json()["access_token"]
 
-    response = httpx.post(VIEW_STRUCTURE_URL, data=data)
+    response = httpx.get(
+        f"https://monenfant.fr/api/monenfantmodedegardefront/v1/modedegarde/details/{structure_id}",
+        headers={"Authorization": f"Bearer {access_token}"},
+    )
     response.raise_for_status()
     return response.json()
 
@@ -244,17 +224,9 @@ def extract(
             radius=radius,
         )
 
-        logger.info("Extracting structures details...")
-        for search_result in search_results:
-            structure_data = extract_structure(search_result["organizationId"])
+    logger.info("Extracting structures details...")
 
-            # in rare cases, the structure data is not available and the response data
-            # is nearly empty. Discard such results.
-            if "resultId" not in structure_data:
-                logger.warning("Structure unavailable")
-                continue
-
-            data.append(structure_data)
+    data = [extract_structure(search_result["id"]) for search_result in search_results]
 
     return json.dumps(data).encode()
 
@@ -270,24 +242,9 @@ def read(path: Path):
         data = json.load(file)
 
     for creche_data in data:
-        creche_data["details"]["presentation"]["structureProjet"] = (
-            utils.html_to_markdown(
-                creche_data["details"]["presentation"]["structureProjet"]
-            )
-        )
-        creche_data["details"]["modalite"]["conditionAdmision"] = (
-            utils.html_to_markdown(
-                creche_data["details"]["modalite"]["conditionAdmision"]
-            )
-        )
-        creche_data["details"]["modalite"]["modalitesInscription"] = (
-            utils.html_to_markdown(
-                creche_data["details"]["modalite"]["modalitesInscription"]
-            )
-        )
-        creche_data["details"]["infosPratiques"]["handicap"] = utils.html_to_markdown(
-            creche_data["details"]["infosPratiques"]["handicap"]
-        )
+        creche_data["description"] = {
+            k: utils.html_to_markdown(v) for k, v in creche_data["description"].items()
+        }
 
     df = pd.DataFrame.from_records(data)
     return utils.df_clear_nan(df)

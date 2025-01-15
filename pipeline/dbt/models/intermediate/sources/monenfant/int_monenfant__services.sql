@@ -19,53 +19,54 @@ WITH creches AS (
 
 final AS (
     SELECT
-        id                                                                                AS "id",
-        id                                                                                AS "adresse_id",
-        NULL                                                                              AS "prise_rdv",
-        NULL                                                                              AS "frais_autres",
-        ARRAY['familles-enfants']                                                         AS "profils",
-        NULL                                                                              AS "profils_precisions",
-        id                                                                                AS "structure_id",
-        _di_source_id                                                                     AS "source",
-        TRUE                                                                              AS "cumulable",
-        NULL                                                                              AS "formulaire_en_ligne",
-        details__infos_pratiques__jour_horaire                                            AS "recurrence",
-        CAST(NULL AS DATE)                                                                AS "date_creation",
-        CAST(NULL AS DATE)                                                                AS "date_suspension",
-        telephone                                                                         AS "telephone",
-        mail                                                                              AS "courriel",
-        FALSE                                                                             AS "contact_public",
-        NULL                                                                              AS "contact_nom_prenom",
-        derniere_modif_date                                                               AS "date_maj",
-        'commune'                                                                         AS "zone_diffusion_type",
-        NULL                                                                              AS "zone_diffusion_code",
-        NULL                                                                              AS "zone_diffusion_nom",
-        CAST(NULL AS TEXT [])                                                             AS "modes_orientation_accompagnateur", -- will be overridden after geocoding
-        NULL                                                                              AS "modes_orientation_accompagnateur_autres", -- will be overridden after geocoding
-        CAST(NULL AS TEXT [])                                                             AS "modes_orientation_beneficiaire",
-        NULL                                                                              AS "modes_orientation_beneficiaire_autres",
-        CAST(NULL AS TEXT [])                                                             AS "pre_requis",
-        CAST(NULL AS TEXT [])                                                             AS "justificatifs",
-        CASE WHEN avip THEN 'Crèche À Vocation d''Insertion Professionnelle' ELSE nom END AS "nom",
-        ARRAY['payant']                                                                   AS "frais",
-        ARRAY['famille--garde-denfants']                                                  AS "thematiques",
-        'https://monenfant.fr/que-recherchez-vous/' || result_id                          AS "lien_source",
-        ARRAY['accueil']                                                                  AS "types",
-        ARRAY['en-presentiel']                                                            AS "modes_accueil",
+        structure_id                                                                                                AS "id",
+        structure_id                                                                                                AS "adresse_id",
+        NULL                                                                                                        AS "prise_rdv",
+        description__modalites_tarifaires                                                                           AS "frais_autres",
+        ARRAY['familles-enfants']                                                                                   AS "profils",
+        NULL                                                                                                        AS "profils_precisions",
+        structure_id                                                                                                AS "structure_id",
+        _di_source_id                                                                                               AS "source",
+        TRUE                                                                                                        AS "cumulable",
+        NULL                                                                                                        AS "formulaire_en_ligne",
+        service_commun__calendrier__jours_horaires_text                                                             AS "recurrence",
+        CAST(NULL AS DATE)                                                                                          AS "date_creation",
+        CAST(NULL AS DATE)                                                                                          AS "date_suspension",
+        coordonnees__telephone                                                                                      AS "telephone",
+        coordonnees__adresse_mail                                                                                   AS "courriel",
+        FALSE                                                                                                       AS "contact_public",
+        NULL                                                                                                        AS "contact_nom_prenom",
+        modified_date                                                                                               AS "date_maj",
+        'commune'                                                                                                   AS "zone_diffusion_type",
+        NULL                                                                                                        AS "zone_diffusion_code",
+        NULL                                                                                                        AS "zone_diffusion_nom",
+        CAST(NULL AS TEXT [])                                                                                       AS "modes_orientation_accompagnateur", -- will be overridden after geocoding
+        NULL                                                                                                        AS "modes_orientation_accompagnateur_autres", -- will be overridden after geocoding
+        CAST(NULL AS TEXT [])                                                                                       AS "modes_orientation_beneficiaire",
+        NULL                                                                                                        AS "modes_orientation_beneficiaire_autres",
+        CAST(NULL AS TEXT [])                                                                                       AS "pre_requis",
+        CAST(NULL AS TEXT [])                                                                                       AS "justificatifs",
+        CASE WHEN service_commun__avip THEN 'Crèche À Vocation d’Insertion Professionnelle' ELSE structure_name END AS "nom",
+        ARRAY['payant']                                                                                             AS "frais",
+        ARRAY['famille--garde-denfants']                                                                            AS "thematiques",
+        'https://monenfant.fr/que-recherchez-vous/mode-d-accueil/' || structure_id                                  AS "lien_source",
+        ARRAY['accueil']                                                                                            AS "types",
+        ARRAY['en-presentiel']                                                                                      AS "modes_accueil",
         CASE
-            WHEN avip THEN {{ presentation_resume_avip }}
-            ELSE {{ truncate_text("details__presentation__structure_projet") }}
-        END                                                                               AS "presentation_resume",
+            WHEN service_commun__avip THEN {{ presentation_resume_avip }}
+            WHEN LENGTH(description__projet) <= 280 THEN description__projet
+            ELSE LEFT(description__projet, 279) || '…'
+        END                                                                                                         AS "presentation_resume",
         ARRAY_TO_STRING(
             ARRAY[
-                CASE WHEN avip THEN {{ presentation_detail_avip }} END,
-                CASE WHEN details__presentation__structure_projet IS NOT NULL THEN '## La structure :' || E'\n\n' || details__presentation__structure_projet END,
-                CASE WHEN details__modalite__condition_admision IS NOT NULL THEN '## Les conditions d''admission :' || E'\n\n' || details__modalite__condition_admision END,
-                CASE WHEN details__modalite__modalites_inscription IS NOT NULL THEN '## Les modalités d''inscription :' || E'\n\n' || details__modalite__modalites_inscription END
+                CASE WHEN service_commun__avip THEN {{ presentation_detail_avip }} END,
+                CASE WHEN description__projet IS NOT NULL THEN '## La structure :' || E'\n\n' || description__projet END,
+                CASE WHEN description__conditions_admission IS NOT NULL THEN '## Les conditions d’admission :' || E'\n\n' || description__conditions_admission END,
+                CASE WHEN description__modalites_inscription IS NOT NULL THEN '## Les modalités d’inscription :' || E'\n\n' || description__modalites_inscription END
             ],
             E'\n\n'
-        )                                                                                 AS "presentation_detail",
-        NULL                                                                              AS "page_web"
+        )                                                                                                           AS "presentation_detail",
+        coordonnees__site_internet                                                                                  AS "page_web"
     FROM creches
 )
 
