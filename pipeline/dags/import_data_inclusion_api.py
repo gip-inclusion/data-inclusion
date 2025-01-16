@@ -52,15 +52,14 @@ def import_data_inclusion_api():
                     " --if-exists"
                     " --no-owner"
                     " --no-privileges"
-                    " --table api__requests"
                     " --table api__*_events"
                     # services & structures have foreign keys towards communes
                     " --table api__communes"
                     " --table api__services"
                     " --table api__structures"
-                    f" --file {tmp_file.name}",
+                    f" --file {tmp_file.name}"
                 )
-                print(command)
+                print(command.replace(pg_api_conn.password, "***"))
                 subprocess.run(command, shell=True, check=True, capture_output=True)
 
                 command = (
@@ -72,7 +71,7 @@ def import_data_inclusion_api():
                     " --no-privileges"
                     f" {tmp_file.name}"
                 )
-                print(command)
+                print(command.replace(pg_dwh_conn.password, "***"))
                 subprocess.run(command, shell=True, check=True, capture_output=True)
             except subprocess.CalledProcessError as exc:
                 print(exc.stdout)
