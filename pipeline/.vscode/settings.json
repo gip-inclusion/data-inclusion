@@ -1,18 +1,6 @@
 {
-    "[python]": {
-        "editor.defaultFormatter": "charliermarsh.ruff"
-    },
-    "python.autoComplete.extraPaths": [
-        "./dags"
-    ],
-    "python.defaultInterpreterPath": ".venv/bin/python",
-    "python.analysis.extraPaths": [
-        "./dags"
-    ],
-    "python.analysis.typeCheckingMode": "basic",
-    "python.testing.pytestEnabled": true,
-    "python.testing.unittestEnabled": false,
-    "files.trimTrailingWhitespace": true,
+    "python.autoComplete.extraPaths": ["./dags"],
+    "python.analysis.extraPaths": ["./dags"],
     "sqlfluff.linter.run": "onSave",
     "sqlfluff.experimental.format.executeInTerminal": true
 }

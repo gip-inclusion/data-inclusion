@@ -1,15 +1,4 @@
 {
-    "[python]": {
-        "editor.defaultFormatter": "charliermarsh.ruff"
-    },
-    "python.autoComplete.extraPaths": [
-        "./src"
-    ],
-    "python.defaultInterpreterPath": ".venv/bin/python",
-    "python.analysis.extraPaths": [
-        "./src"
-    ],
-    "python.analysis.typeCheckingMode": "basic",
-    "python.testing.pytestEnabled": true,
-    "python.testing.unittestEnabled": false,
+    "python.autoComplete.extraPaths": ["./src"],
+    "python.analysis.extraPaths": ["./src"]
 }
