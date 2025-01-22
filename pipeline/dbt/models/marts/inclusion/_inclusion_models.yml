@@ -74,6 +74,8 @@ models:
         data_type: text[]
       - name: thematiques
         data_type: text[]
+      - name: cluster_id
+        data_type: text
 
   - name: marts_inclusion__structures_labels_nationaux
     config:

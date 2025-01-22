@@ -161,7 +161,7 @@
               "content": {
                 "application/json": {
                   "schema": {
-                    "$ref": "#/components/schemas/CustomizedPage_Structure_"
+                    "$ref": "#/components/schemas/CustomizedPage_ListedStructure_"
                   }
                 }
               }
@@ -1002,6 +1002,73 @@
     },
     "components": {
       "schemas": {
+        "CustomizedPage_ListedStructure_": {
+          "properties": {
+            "items": {
+              "items": {
+                "$ref": "#/components/schemas/ListedStructure"
+              },
+              "type": "array",
+              "title": "Items"
+            },
+            "total": {
+              "anyOf": [
+                {
+                  "type": "integer",
+                  "minimum": 0.0
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Total"
+            },
+            "page": {
+              "anyOf": [
+                {
+                  "type": "integer",
+                  "minimum": 1.0
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Page"
+            },
+            "size": {
+              "anyOf": [
+                {
+                  "type": "integer",
+                  "minimum": 1.0
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Size"
+            },
+            "pages": {
+              "anyOf": [
+                {
+                  "type": "integer",
+                  "minimum": 0.0
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Pages"
+            }
+          },
+          "type": "object",
+          "required": [
+            "items",
+            "total",
+            "page",
+            "size"
+          ],
+          "title": "CustomizedPage[ListedStructure]"
+        },
         "CustomizedPage_ServiceSearchResult_": {
           "properties": {
             "items": {
@@ -1135,73 +1202,6 @@
             "size"
           ],
           "title": "CustomizedPage[Service]"
-        },
-        "CustomizedPage_Structure_": {
-          "properties": {
-            "items": {
-              "items": {
-                "$ref": "#/components/schemas/Structure"
-              },
-              "type": "array",
-              "title": "Items"
-            },
-            "total": {
-              "anyOf": [
-                {
-                  "type": "integer",
-                  "minimum": 0.0
-                },
-                {
-                  "type": "null"
-                }
-              ],
-              "title": "Total"
-            },
-            "page": {
-              "anyOf": [
-                {
-                  "type": "integer",
-                  "minimum": 1.0
-                },
-                {
-                  "type": "null"
-                }
-              ],
-              "title": "Page"
-            },
-            "size": {
-              "anyOf": [
-                {
-                  "type": "integer",
-                  "minimum": 1.0
-                },
-                {
-                  "type": "null"
-                }
-              ],
-              "title": "Size"
-            },
-            "pages": {
-              "anyOf": [
-                {
-                  "type": "integer",
-                  "minimum": 0.0
-                },
-                {
-                  "type": "null"
-                }
-              ],
-              "title": "Pages"
-            }
-          },
-          "type": "object",
-          "required": [
-            "items",
-            "total",
-            "page",
-            "size"
-          ],
-          "title": "CustomizedPage[Structure]"
         },
         "DepartementCodeEnum": {
           "type": "string",
@@ -1939,7 +1939,7 @@
               "description": "Score de qualité du service, défini et calculé par data·inclusion.\n"
             },
             "structure": {
-              "$ref": "#/components/schemas/Structure"
+              "$ref": "#/components/schemas/data_inclusion__api__inclusion_data__schemas__Structure"
             }
           },
           "type": "object",
@@ -2247,6 +2247,26 @@
               ],
               "title": "Thematiques"
             },
+            "doublons_groupe_id": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Doublons Groupe Id",
+              "description": "ID du groupe de doublons"
+            },
+            "doublons": {
+              "items": {
+                "$ref": "#/components/schemas/data_inclusion__schema__structures__Structure"
+              },
+              "type": "array",
+              "title": "Doublons",
+              "description": "Doublons connus de la structure"
+            },
             "services": {
               "items": {
                 "$ref": "#/components/schemas/Service"
@@ -2261,6 +2281,8 @@
             "nom",
             "source",
             "date_maj",
+            "doublons_groupe_id",
+            "doublons",
             "services"
           ],
           "title": "DetailedStructure"
@@ -2409,6 +2431,342 @@
             "wimoov"
           ],
           "title": "LabelNational"
+        },
+        "ListedStructure": {
+          "properties": {
+            "id": {
+              "type": "string",
+              "title": "Id"
+            },
+            "siret": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "maxLength": 14,
+                  "minLength": 14,
+                  "pattern": "^\\d{14}$"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Siret"
+            },
+            "rna": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "maxLength": 10,
+                  "minLength": 10,
+                  "pattern": "^W\\d{9}$"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Rna"
+            },
+            "nom": {
+              "type": "string",
+              "title": "Nom"
+            },
+            "commune": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Commune"
+            },
+            "code_postal": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "maxLength": 5,
+                  "minLength": 5,
+                  "pattern": "^\\d{5}$"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Code Postal"
+            },
+            "code_insee": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "maxLength": 5,
+                  "minLength": 5,
+                  "pattern": "^\\w{5}$"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Code Insee"
+            },
+            "adresse": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Adresse"
+            },
+            "complement_adresse": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Complement Adresse"
+            },
+            "longitude": {
+              "anyOf": [
+                {
+                  "type": "number"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Longitude"
+            },
+            "latitude": {
+              "anyOf": [
+                {
+                  "type": "number"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Latitude"
+            },
+            "typologie": {
+              "anyOf": [
+                {
+                  "$ref": "#/components/schemas/Typologie"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "telephone": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Telephone"
+            },
+            "courriel": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "format": "email"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Courriel"
+            },
+            "site_web": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Site Web"
+            },
+            "presentation_resume": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "maxLength": 280
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Presentation Resume"
+            },
+            "presentation_detail": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Presentation Detail"
+            },
+            "source": {
+              "type": "string",
+              "title": "Source"
+            },
+            "date_maj": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "format": "date"
+                },
+                {
+                  "type": "string",
+                  "format": "date-time"
+                }
+              ],
+              "title": "Date Maj"
+            },
+            "antenne": {
+              "anyOf": [
+                {
+                  "type": "boolean"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Antenne"
+            },
+            "lien_source": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Lien Source"
+            },
+            "horaires_ouverture": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Horaires Ouverture"
+            },
+            "accessibilite": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Accessibilite"
+            },
+            "labels_nationaux": {
+              "anyOf": [
+                {
+                  "items": {
+                    "$ref": "#/components/schemas/LabelNational"
+                  },
+                  "type": "array",
+                  "uniqueItems": true
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Labels Nationaux"
+            },
+            "labels_autres": {
+              "anyOf": [
+                {
+                  "items": {
+                    "type": "string"
+                  },
+                  "type": "array",
+                  "uniqueItems": true
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Labels Autres"
+            },
+            "thematiques": {
+              "anyOf": [
+                {
+                  "items": {
+                    "$ref": "#/components/schemas/Thematique"
+                  },
+                  "type": "array",
+                  "uniqueItems": true
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Thematiques"
+            },
+            "doublons_groupe_id": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Doublons Groupe Id",
+              "description": "ID du groupe de doublons"
+            },
+            "doublons": {
+              "items": {
+                "prefixItems": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "string"
+                  }
+                ],
+                "type": "array",
+                "maxItems": 2,
+                "minItems": 2
+              },
+              "type": "array",
+              "title": "Doublons",
+              "description": "Identifiants (source, id) des doublons connus de la structure"
+            }
+          },
+          "type": "object",
+          "required": [
+            "id",
+            "nom",
+            "source",
+            "date_maj",
+            "doublons_groupe_id",
+            "doublons"
+          ],
+          "title": "ListedStructure"
         },
         "ModeAccueil": {
           "type": "string",
@@ -3109,310 +3467,6 @@
           ],
           "title": "Source"
         },
-        "Structure": {
-          "properties": {
-            "id": {
-              "type": "string",
-              "title": "Id"
-            },
-            "siret": {
-              "anyOf": [
-                {
-                  "type": "string",
-                  "maxLength": 14,
-                  "minLength": 14,
-                  "pattern": "^\\d{14}$"
-                },
-                {
-                  "type": "null"
-                }
-              ],
-              "title": "Siret"
-            },
-            "rna": {
-              "anyOf": [
-                {
-                  "type": "string",
-                  "maxLength": 10,
-                  "minLength": 10,
-                  "pattern": "^W\\d{9}$"
-                },
-                {
-                  "type": "null"
-                }
-              ],
-              "title": "Rna"
-            },
-            "nom": {
-              "type": "string",
-              "title": "Nom"
-            },
-            "commune": {
-              "anyOf": [
-                {
-                  "type": "string"
-                },
-                {
-                  "type": "null"
-                }
-              ],
-              "title": "Commune"
-            },
-            "code_postal": {
-              "anyOf": [
-                {
-                  "type": "string",
-                  "maxLength": 5,
-                  "minLength": 5,
-                  "pattern": "^\\d{5}$"
-                },
-                {
-                  "type": "null"
-                }
-              ],
-              "title": "Code Postal"
-            },
-            "code_insee": {
-              "anyOf": [
-                {
-                  "type": "string",
-                  "maxLength": 5,
-                  "minLength": 5,
-                  "pattern": "^\\w{5}$"
-                },
-                {
-                  "type": "null"
-                }
-              ],
-              "title": "Code Insee"
-            },
-            "adresse": {
-              "anyOf": [
-                {
-                  "type": "string"
-                },
-                {
-                  "type": "null"
-                }
-              ],
-              "title": "Adresse"
-            },
-            "complement_adresse": {
-              "anyOf": [
-                {
-                  "type": "string"
-                },
-                {
-                  "type": "null"
-                }
-              ],
-              "title": "Complement Adresse"
-            },
-            "longitude": {
-              "anyOf": [
-                {
-                  "type": "number"
-                },
-                {
-                  "type": "null"
-                }
-              ],
-              "title": "Longitude"
-            },
-            "latitude": {
-              "anyOf": [
-                {
-                  "type": "number"
-                },
-                {
-                  "type": "null"
-                }
-              ],
-              "title": "Latitude"
-            },
-            "typologie": {
-              "anyOf": [
-                {
-                  "$ref": "#/components/schemas/Typologie"
-                },
-                {
-                  "type": "null"
-                }
-              ]
-            },
-            "telephone": {
-              "anyOf": [
-                {
-                  "type": "string"
-                },
-                {
-                  "type": "null"
-                }
-              ],
-              "title": "Telephone"
-            },
-            "courriel": {
-              "anyOf": [
-                {
-                  "type": "string",
-                  "format": "email"
-                },
-                {
-                  "type": "null"
-                }
-              ],
-              "title": "Courriel"
-            },
-            "site_web": {
-              "anyOf": [
-                {
-                  "type": "string"
-                },
-                {
-                  "type": "null"
-                }
-              ],
-              "title": "Site Web"
-            },
-            "presentation_resume": {
-              "anyOf": [
-                {
-                  "type": "string",
-                  "maxLength": 280
-                },
-                {
-                  "type": "null"
-                }
-              ],
-              "title": "Presentation Resume"
-            },
-            "presentation_detail": {
-              "anyOf": [
-                {
-                  "type": "string"
-                },
-                {
-                  "type": "null"
-                }
-              ],
-              "title": "Presentation Detail"
-            },
-            "source": {
-              "type": "string",
-              "title": "Source"
-            },
-            "date_maj": {
-              "anyOf": [
-                {
-                  "type": "string",
-                  "format": "date"
-                },
-                {
-                  "type": "string",
-                  "format": "date-time"
-                }
-              ],
-              "title": "Date Maj"
-            },
-            "antenne": {
-              "anyOf": [
-                {
-                  "type": "boolean"
-                },
-                {
-                  "type": "null"
-                }
-              ],
-              "title": "Antenne"
-            },
-            "lien_source": {
-              "anyOf": [
-                {
-                  "type": "string"
-                },
-                {
-                  "type": "null"
-                }
-              ],
-              "title": "Lien Source"
-            },
-            "horaires_ouverture": {
-              "anyOf": [
-                {
-                  "type": "string"
-                },
-                {
-                  "type": "null"
-                }
-              ],
-              "title": "Horaires Ouverture"
-            },
-            "accessibilite": {
-              "anyOf": [
-                {
-                  "type": "string"
-                },
-                {
-                  "type": "null"
-                }
-              ],
-              "title": "Accessibilite"
-            },
-            "labels_nationaux": {
-              "anyOf": [
-                {
-                  "items": {
-                    "$ref": "#/components/schemas/LabelNational"
-                  },
-                  "type": "array",
-                  "uniqueItems": true
-                },
-                {
-                  "type": "null"
-                }
-              ],
-              "title": "Labels Nationaux"
-            },
-            "labels_autres": {
-              "anyOf": [
-                {
-                  "items": {
-                    "type": "string"
-                  },
-                  "type": "array",
-                  "uniqueItems": true
-                },
-                {
-                  "type": "null"
-                }
-              ],
-              "title": "Labels Autres"
-            },
-            "thematiques": {
-              "anyOf": [
-                {
-                  "items": {
-                    "$ref": "#/components/schemas/Thematique"
-                  },
-                  "type": "array",
-                  "uniqueItems": true
-                },
-                {
-                  "type": "null"
-                }
-              ],
-              "title": "Thematiques"
-            }
-          },
-          "type": "object",
-          "required": [
-            "id",
-            "nom",
-            "source",
-            "date_maj"
-          ],
-          "title": "Structure"
-        },
         "Thematique": {
           "type": "string",
           "enum": [
@@ -3725,6 +3779,636 @@
             "pays"
           ],
           "title": "ZoneDiffusionType"
+        },
+        "data_inclusion__api__inclusion_data__schemas__Structure": {
+          "properties": {
+            "id": {
+              "type": "string",
+              "title": "Id"
+            },
+            "siret": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "maxLength": 14,
+                  "minLength": 14,
+                  "pattern": "^\\d{14}$"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Siret"
+            },
+            "rna": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "maxLength": 10,
+                  "minLength": 10,
+                  "pattern": "^W\\d{9}$"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Rna"
+            },
+            "nom": {
+              "type": "string",
+              "title": "Nom"
+            },
+            "commune": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Commune"
+            },
+            "code_postal": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "maxLength": 5,
+                  "minLength": 5,
+                  "pattern": "^\\d{5}$"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Code Postal"
+            },
+            "code_insee": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "maxLength": 5,
+                  "minLength": 5,
+                  "pattern": "^\\w{5}$"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Code Insee"
+            },
+            "adresse": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Adresse"
+            },
+            "complement_adresse": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Complement Adresse"
+            },
+            "longitude": {
+              "anyOf": [
+                {
+                  "type": "number"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Longitude"
+            },
+            "latitude": {
+              "anyOf": [
+                {
+                  "type": "number"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Latitude"
+            },
+            "typologie": {
+              "anyOf": [
+                {
+                  "$ref": "#/components/schemas/Typologie"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "telephone": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Telephone"
+            },
+            "courriel": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "format": "email"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Courriel"
+            },
+            "site_web": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Site Web"
+            },
+            "presentation_resume": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "maxLength": 280
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Presentation Resume"
+            },
+            "presentation_detail": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Presentation Detail"
+            },
+            "source": {
+              "type": "string",
+              "title": "Source"
+            },
+            "date_maj": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "format": "date"
+                },
+                {
+                  "type": "string",
+                  "format": "date-time"
+                }
+              ],
+              "title": "Date Maj"
+            },
+            "antenne": {
+              "anyOf": [
+                {
+                  "type": "boolean"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Antenne"
+            },
+            "lien_source": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Lien Source"
+            },
+            "horaires_ouverture": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Horaires Ouverture"
+            },
+            "accessibilite": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Accessibilite"
+            },
+            "labels_nationaux": {
+              "anyOf": [
+                {
+                  "items": {
+                    "$ref": "#/components/schemas/LabelNational"
+                  },
+                  "type": "array",
+                  "uniqueItems": true
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Labels Nationaux"
+            },
+            "labels_autres": {
+              "anyOf": [
+                {
+                  "items": {
+                    "type": "string"
+                  },
+                  "type": "array",
+                  "uniqueItems": true
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Labels Autres"
+            },
+            "thematiques": {
+              "anyOf": [
+                {
+                  "items": {
+                    "$ref": "#/components/schemas/Thematique"
+                  },
+                  "type": "array",
+                  "uniqueItems": true
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Thematiques"
+            },
+            "doublons_groupe_id": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Doublons Groupe Id",
+              "description": "ID du groupe de doublons"
+            }
+          },
+          "type": "object",
+          "required": [
+            "id",
+            "nom",
+            "source",
+            "date_maj",
+            "doublons_groupe_id"
+          ],
+          "title": "Structure"
+        },
+        "data_inclusion__schema__structures__Structure": {
+          "properties": {
+            "id": {
+              "type": "string",
+              "title": "Id"
+            },
+            "siret": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "maxLength": 14,
+                  "minLength": 14,
+                  "pattern": "^\\d{14}$"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Siret"
+            },
+            "rna": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "maxLength": 10,
+                  "minLength": 10,
+                  "pattern": "^W\\d{9}$"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Rna"
+            },
+            "nom": {
+              "type": "string",
+              "title": "Nom"
+            },
+            "commune": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Commune"
+            },
+            "code_postal": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "maxLength": 5,
+                  "minLength": 5,
+                  "pattern": "^\\d{5}$"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Code Postal"
+            },
+            "code_insee": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "maxLength": 5,
+                  "minLength": 5,
+                  "pattern": "^\\w{5}$"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Code Insee"
+            },
+            "adresse": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Adresse"
+            },
+            "complement_adresse": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Complement Adresse"
+            },
+            "longitude": {
+              "anyOf": [
+                {
+                  "type": "number"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Longitude"
+            },
+            "latitude": {
+              "anyOf": [
+                {
+                  "type": "number"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Latitude"
+            },
+            "typologie": {
+              "anyOf": [
+                {
+                  "$ref": "#/components/schemas/Typologie"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "telephone": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Telephone"
+            },
+            "courriel": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "format": "email"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Courriel"
+            },
+            "site_web": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "maxLength": 2083,
+                  "minLength": 1,
+                  "format": "uri"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Site Web"
+            },
+            "presentation_resume": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "maxLength": 280
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Presentation Resume"
+            },
+            "presentation_detail": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Presentation Detail"
+            },
+            "source": {
+              "type": "string",
+              "title": "Source"
+            },
+            "date_maj": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "format": "date"
+                },
+                {
+                  "type": "string",
+                  "format": "date-time"
+                }
+              ],
+              "title": "Date Maj"
+            },
+            "antenne": {
+              "anyOf": [
+                {
+                  "type": "boolean"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Antenne"
+            },
+            "lien_source": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "maxLength": 2083,
+                  "minLength": 1,
+                  "format": "uri"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Lien Source"
+            },
+            "horaires_ouverture": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Horaires Ouverture"
+            },
+            "accessibilite": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "maxLength": 2083,
+                  "minLength": 1,
+                  "format": "uri"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Accessibilite"
+            },
+            "labels_nationaux": {
+              "anyOf": [
+                {
+                  "items": {
+                    "$ref": "#/components/schemas/LabelNational"
+                  },
+                  "type": "array",
+                  "uniqueItems": true
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Labels Nationaux"
+            },
+            "labels_autres": {
+              "anyOf": [
+                {
+                  "items": {
+                    "type": "string"
+                  },
+                  "type": "array",
+                  "uniqueItems": true
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Labels Autres"
+            },
+            "thematiques": {
+              "anyOf": [
+                {
+                  "items": {
+                    "$ref": "#/components/schemas/Thematique"
+                  },
+                  "type": "array",
+                  "uniqueItems": true
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Thematiques"
+            }
+          },
+          "type": "object",
+          "required": [
+            "id",
+            "nom",
+            "source",
+            "date_maj"
+          ],
+          "title": "Structure"
         }
       },
       "securitySchemes": {
