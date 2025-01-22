@@ -40,6 +40,11 @@ class Structure(schema.Structure):
     lien_source: str | None = None
     accessibilite: str | None = None
 
+    cluster_id: Annotated[
+        str | None,
+        Field(description="ID du groupe de doublons", alias="doublons_groupe_id"),
+    ]
+
 
 class DetailedService(Service):
     structure: Structure
@@ -51,4 +56,22 @@ class ServiceSearchResult(BaseModel):
 
 
 class DetailedStructure(Structure):
+    doublons: Annotated[
+        list[schema.Structure],
+        Field(description="Doublons connus de la structure"),
+    ]
     services: list[Service]
+
+
+class SourceIdDict(BaseModel):
+    source: str
+    id: str
+
+
+class ListedStructure(Structure):
+    doublons: Annotated[
+        list[SourceIdDict],
+        Field(
+            description="Identifiants (source, id) des doublons connus de la structure",
+        ),
+    ]
