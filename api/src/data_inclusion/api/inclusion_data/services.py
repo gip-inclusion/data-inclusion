@@ -212,7 +212,9 @@ def list_structures(
     commune_code: di_schema.CodeCommune | None = None,
     thematiques: list[di_schema.Thematique] | None = None,
 ) -> list:
-    query = sqla.select(models.Structure)
+    query = sqla.select(models.Structure).options(
+        orm.joinedload(models.Structure.doublons)
+    )
     query = filter_restricted(query, request)
 
     if sources is not None:

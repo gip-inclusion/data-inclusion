@@ -55,7 +55,7 @@ CodeRegionFilter = Annotated[
 
 @router.get(
     "/structures",
-    response_model=pagination.BigPage[schemas.Structure],
+    response_model=pagination.BigPage[schemas.ListedStructure],
     summary="Lister les structures consolidées",
     dependencies=[auth.authenticated_dependency] if settings.TOKEN_ENABLED else [],
 )

@@ -84,12 +84,14 @@ def test_list_structures_all(api_client, db_session):
                 "accessibilite": "https://acceslibre.beta.gouv.fr/app/kitchen-amount/",
                 "adresse": "49, avenue de Pichon",
                 "antenne": False,
+                "doublons_groupe_id": None,
                 "code_insee": "59350",
                 "code_postal": "46873",
                 "commune": "Sainte CharlotteBourg",
                 "complement_adresse": None,
                 "courriel": "levyalexandre@example.org",
                 "date_maj": "2023-01-01",
+                "doublons": [],
                 "horaires_ouverture": 'Mo-Fr 10:00-20:00 "sur rendez-vous"; PH off',
                 "id": "lot-kitchen-amount",
                 "labels_autres": ["Nièvre médiation numérique"],
@@ -1395,3 +1397,71 @@ def test_retrieve_service_and_notify_soliguide(
 
     assert response.status_code == status_code
     assert fake_soliguide_client.retrieved_ids == retrieved_ids
+
+
+@pytest.mark.parametrize(
+    (
+        "cluster_a",
+        "cluster_b",
+        "expected_doublons_1",
+        "expected_doublons_2",
+    ),
+    [
+        (
+            None,
+            None,
+            [],
+            [],
+        ),
+        (
+            "42",
+            None,
+            [],
+            [],
+        ),
+        (
+            "cluster_a",
+            "cluster_b",
+            [],
+            [],
+        ),
+        (
+            "cluster_a",
+            "cluster_a",
+            [["src_2", "second"]],
+            [["src_1", "first"]],
+        ),
+    ],
+)
+@pytest.mark.with_token
+def test_list_structures_with_doublons(
+    api_client,
+    cluster_a,
+    cluster_b,
+    expected_doublons_1,
+    expected_doublons_2,
+):
+    factories.StructureFactory(
+        source="src_1",
+        id="first",
+        cluster_id=cluster_a,
+    )
+    factories.StructureFactory(
+        source="src_2",
+        id="second",
+        cluster_id=cluster_b,
+    )
+
+    url = "/api/v0/structures/"
+    response = api_client.get(url)
+
+    resp_data = response.json()
+
+    assert resp_data["items"][0]["id"] == "first"
+    assert resp_data["items"][1]["id"] == "second"
+
+    assert resp_data["items"][0]["doublons_groupe_id"] == cluster_a
+    assert resp_data["items"][1]["doublons_groupe_id"] == cluster_b
+
+    assert resp_data["items"][0]["doublons"] == expected_doublons_1
+    assert resp_data["items"][1]["doublons"] == expected_doublons_2
