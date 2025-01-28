@@ -144,8 +144,12 @@ def load_inclusion_data():
             )
         ]
 
-    structure_data_list = structures_df.to_dict(orient="records")
-    service_data_list = services_df.to_dict(orient="records")
+    structure_data_list = structures_df.sort_values(
+        by="_di_surrogate_id", ascending=True
+    ).to_dict(orient="records")
+    service_data_list = services_df.sort_values(
+        by="_di_surrogate_id", ascending=True
+    ).to_dict(orient="records")
 
     # TODO(vmttn): load in a temporary table, truncate and then insert
     with db.SessionLocal() as session:

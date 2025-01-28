@@ -25,13 +25,6 @@ from data_inclusion.api.inclusion_data import models
 logger = logging.getLogger(__name__)
 
 
-def filter_by_sources(
-    query: sqla.Select,
-    sources: list[str],
-):
-    return query.filter(models.Structure.source == sqla.any_(sqla.literal(sources)))
-
-
 @functools.cache
 def get_thematiques_by_group():
     thematiques = defaultdict(list)
@@ -195,7 +188,6 @@ def filter_restricted(
 ) -> sqla.Select:
     if not request.user.is_authenticated or "dora" not in request.user.username:
         query = query.filter(models.Structure.source != "soliguide")
-        query = query.filter(models.Structure.source != "data-inclusion")
 
     return query
 
@@ -218,7 +210,9 @@ def list_structures(
     query = filter_restricted(query, request)
 
     if sources is not None:
-        query = filter_by_sources(query, sources)
+        query = query.filter(
+            models.Structure.source == sqla.any_(sqla.literal(sources))
+        )
 
     if id_ is not None:
         query = query.filter_by(id=id_)
@@ -245,11 +239,6 @@ def list_structures(
 
     if thematiques is not None:
         query = filter_structures_by_thematiques(query, thematiques)
-
-    query = query.order_by(
-        models.Structure.source,
-        models.Structure.id,
-    )
 
     return paginate(db_session, query)
 
@@ -299,7 +288,7 @@ def filter_services(
     """Common filters for services."""
 
     if sources is not None:
-        query = filter_by_sources(query, sources)
+        query = query.filter(models.Service.source == sqla.any_(sqla.literal(sources)))
 
     if thematiques is not None:
         query = filter_services_by_thematiques(query, thematiques)
@@ -372,11 +361,6 @@ def list_services(
         types=types,
         score_qualite_minimum=score_qualite_minimum,
         include_outdated=include_outdated,
-    )
-
-    query = query.order_by(
-        models.Service.source,
-        models.Service.id,
     )
 
     return paginate(db_session, query, unique=False)

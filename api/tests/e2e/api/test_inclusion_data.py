@@ -383,27 +383,6 @@ def test_list_services_all(api_client, db_session):
     }
 
 
-@pytest.mark.with_token
-def test_list_structures_order(
-    api_client,
-):
-    structure_1 = factories.StructureFactory(source="alpha", id="2")
-    structure_2 = factories.StructureFactory(source="beta", id="1")
-    structure_3 = factories.StructureFactory(source="alpha", id="1")
-
-    url = "/api/v0/structures/"
-
-    response = api_client.get(url)
-
-    assert response.status_code == 200
-
-    resp_data = response.json()
-
-    assert resp_data["items"][0]["id"] == structure_3.id
-    assert resp_data["items"][1]["id"] == structure_1.id
-    assert resp_data["items"][2]["id"] == structure_2.id
-
-
 @pytest.mark.parametrize(
     "profils_precisions,input,found",
     [
