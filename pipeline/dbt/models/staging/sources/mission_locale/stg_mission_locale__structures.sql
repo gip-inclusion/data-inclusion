@@ -1,5 +1,5 @@
 WITH source AS (
-    {{ stg_source_header('imilo', 'structures') }}
+    {{ stg_source_header('mission_locale', 'structures') }}
 ),
 
 final AS (

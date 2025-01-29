@@ -20,10 +20,10 @@
 -- depends_on: {{ ref('int_france_travail__structures') }}
 -- depends_on: {{ ref('stg_fredo__structures') }}
 -- depends_on: {{ ref('int_fredo__structures') }}
--- depends_on: {{ ref('stg_imilo__offres') }}
--- depends_on: {{ ref('stg_imilo__structures') }}
--- depends_on: {{ ref('int_imilo__services') }}
--- depends_on: {{ ref('int_imilo__structures') }}
+-- depends_on: {{ ref('stg_mission_locale__offres') }}
+-- depends_on: {{ ref('stg_mission_locale__structures') }}
+-- depends_on: {{ ref('int_mission_locale__services') }}
+-- depends_on: {{ ref('int_mission_locale__structures') }}
 -- depends_on: {{ ref('stg_mediation_numerique__services') }}
 -- depends_on: {{ ref('stg_mediation_numerique__structures') }}
 -- depends_on: {{ ref('int_mediation_numerique__services') }}
@@ -58,11 +58,13 @@ WITH
         {% set stream_kind = source_node.meta.kind ~ "s" %}
 
         {{ source_name }}__{{ stream_name }}__tmp_marts AS (
-            SELECT * FROM {{ ref('marts_inclusion__' ~ stream_kind) }} WHERE source = '{{ source_slug }}'
+            SELECT * FROM {{ ref('marts_inclusion__' ~ stream_kind) }}
+            WHERE source = '{{ source_slug }}'
         ),
 
         {{ source_name }}__{{ stream_name }}__tmp_api AS (
-            SELECT * FROM public.api__{{ stream_kind }} WHERE source = '{{ source_slug }}'
+            SELECT * FROM public.api__{{ stream_kind }}
+            WHERE source = '{{ source_slug }}'
         ),
 
         {{ source_name }}__{{ stream_name }}__tmp_api_contacts AS (

@@ -1,5 +1,5 @@
 WITH structures AS (
-    SELECT * FROM {{ ref('stg_imilo__structures') }}
+    SELECT * FROM {{ ref('stg_mission_locale__structures') }}
 ),
 
 final AS (

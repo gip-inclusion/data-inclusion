@@ -1,17 +1,17 @@
 WITH offres AS (
-    SELECT * FROM {{ ref('stg_imilo__offres') }}
+    SELECT * FROM {{ ref('stg_mission_locale__offres') }}
 ),
 
 structures_offres AS (
-    SELECT * FROM {{ ref('stg_imilo__structures_offres') }}
+    SELECT * FROM {{ ref('stg_mission_locale__structures_offres') }}
 ),
 
 structures AS (
-    SELECT * FROM {{ ref('stg_imilo__structures') }}
+    SELECT * FROM {{ ref('stg_mission_locale__structures') }}
 ),
 
 offres__liste_des_profils AS (
-    SELECT * FROM {{ ref('stg_imilo__offres__liste_des_profils') }}
+    SELECT * FROM {{ ref('stg_mission_locale__offres__liste_des_profils') }}
 ),
 
 mapping_profils AS (
@@ -20,7 +20,7 @@ mapping_profils AS (
         VALUES
         ('jeunes de 16 à 25 ans', 'jeunes-16-26'),
         ('rqth moins de 30 ans', 'personnes-handicapees')
-    ) AS x (profil_imilo, profil_di)
+    ) AS x (profil_mission_locale, profil_di)
 ),
 
 final AS (
@@ -52,7 +52,7 @@ final AS (
         ARRAY(
             SELECT mapping_profils.profil_di
             FROM offres__liste_des_profils
-            INNER JOIN mapping_profils ON offres__liste_des_profils.value = mapping_profils.profil_imilo
+            INNER JOIN mapping_profils ON offres__liste_des_profils.value = mapping_profils.profil_mission_locale
             WHERE offres.id_offre = offres__liste_des_profils.id_offre
         )                                                                                                    AS "profils",
         NULL                                                                                                 AS "profils_precisions",

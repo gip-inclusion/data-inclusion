@@ -30,6 +30,11 @@
         "description": "Contient l’offre de service nationale de France Travail."
     },
     {
+        "slug": "mission-locale",
+        "nom": "Mission Locale",
+        "description": "La Mission Locale accompagne les jeunes de 16 à 25 ans dans leurs démarches d’insertion sociale et professionnelle en développant une approche globale et de proximité."
+    },
+    {
         "slug": "mediation-numerique",
         "nom": "Cartographie Nationale des lieux de médiation numérique",
         "description": "Contient les lieux d’inclusion numériques recensés par l’ANCT et les hubs régionaux."

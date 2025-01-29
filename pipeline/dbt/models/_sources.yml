@@ -166,8 +166,8 @@ sources:
         meta:
           kind: service
         
-  - name: imilo
-    schema: imilo
+  - name: mission_locale
+    schema: mission_locale
     meta:
       is_provider: true
     tables:

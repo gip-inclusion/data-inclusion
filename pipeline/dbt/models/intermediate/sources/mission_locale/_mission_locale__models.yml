@@ -1,7 +1,7 @@
 version: 2
 
 models:
-  - name: int_imilo__adresses
+  - name: int_mission_locale__adresses
     data_tests:
       - check_adresse:
           config:
@@ -12,7 +12,7 @@ models:
           - unique
           - not_null
 
-  - name: int_imilo__services
+  - name: int_mission_locale__services
     data_tests:
       - check_service:
           config:
@@ -27,10 +27,10 @@ models:
         data_tests:
           - not_null
           - relationships:
-              to: ref('int_imilo__structures')
+              to: ref('int_mission_locale__structures')
               field: id
 
-  - name: int_imilo__structures
+  - name: int_mission_locale__structures
     data_tests:
       - check_structure:
           config:
@@ -45,5 +45,5 @@ models:
         data_tests:
           - not_null
           - relationships:
-              to: ref('int_imilo__adresses')
+              to: ref('int_mission_locale__adresses')
               field: id

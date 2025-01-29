@@ -210,7 +210,7 @@ variable "fredo_api_token" {
   default     = ""
 }
 
-variable "imilo_api_secret" {
+variable "mission_locale_api_secret" {
   description = "Used in extraction tasks orchestrated by airflow"
   type        = string
   sensitive   = true

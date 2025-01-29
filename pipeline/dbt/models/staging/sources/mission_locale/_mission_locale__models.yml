@@ -1,7 +1,7 @@
 version: 2
 
 models:
-  - name: stg_imilo__offres
+  - name: stg_mission_locale__offres
     columns:
       - name: id_offre
         data_tests:
@@ -55,22 +55,22 @@ models:
               to: ref('zones_de_diffusion_types')
               field: value
 
-  - name: stg_imilo__structures_offres
+  - name: stg_mission_locale__structures_offres
     columns:
       - name: offre_id
         data_tests:
           - not_null
           - relationships:
-              to: ref('stg_imilo__offres')
+              to: ref('stg_mission_locale__offres')
               field: id_offre
       - name: missionlocale_id
         data_tests:
           - not_null
           - relationships:
-              to: ref('stg_imilo__structures')
+              to: ref('stg_mission_locale__structures')
               field: id_structure
 
-  - name: stg_imilo__structures
+  - name: stg_mission_locale__structures
     columns:
       - name: id_structure
         data_tests:
@@ -129,13 +129,13 @@ models:
         data_tests:
           - not_null
 
-  - name: stg_imilo__offres__liste_des_profils
+  - name: stg_mission_locale__offres__liste_des_profils
     columns:
       - name: id_offre
         data_tests:
           - not_null
           - relationships:
-              to: ref('stg_imilo__offres')
+              to: ref('stg_mission_locale__offres')
               field: id_offre
       - name: value
         data_tests:
