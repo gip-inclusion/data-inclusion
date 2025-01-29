@@ -19,7 +19,7 @@ final AS (
         nom_structure           AS "nom",
         ARRAY[labels_nationaux] AS "labels_nationaux",
         CAST(NULL AS TEXT [])   AS "labels_autres",
-        NULL                    AS "presentation_resume",
+        presentation            AS "presentation_resume",
         presentation            AS "presentation_detail",
         id_structure            AS "adresse_id",
         CAST(NULL AS TEXT [])   AS "thematiques",
