@@ -85,6 +85,8 @@ final AS (
             ],
             NULL
         )                                                         AS "modes_orientation_beneficiaire",
+        -- TODO (hlecuyer): do the mapping
+        ARRAY['professionnels']                                           AS "mobilisable_par",
         ARRAY['public-langues-etrangeres']                        AS "profils",
         NULL                                                      AS "profils_precisions",
         ARRAY['formation']                                        AS "types",

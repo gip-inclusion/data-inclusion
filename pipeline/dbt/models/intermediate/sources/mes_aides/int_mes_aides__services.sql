@@ -10,6 +10,7 @@
             "modes_accueil": "TEXT[]",
             "modes_orientation_accompagnateur": "TEXT[]",
             "modes_orientation_beneficiaire": "TEXT[]",
+            "mobilisable_par": "TEXT[]",
             "pre_requis": "TEXT[]",
             "profils": "TEXT[]",
             "thematiques": "TEXT[]",

@@ -189,7 +189,8 @@ final AS (
             WHEN frais.frais IS NULL THEN frais_autres.frais_autres
         END                                                                                   AS "frais_autres",
         ARRAY['envoyer-un-mail', 'telephoner']                                                AS "modes_orientation_accompagnateur",
-        COALESCE(mode_orient_benef.mode_orient_benef, ARRAY['envoyer-un-mail', 'telephoner']) AS "modes_orientation_beneficiaire"
+        COALESCE(mode_orient_benef.mode_orient_benef, ARRAY['envoyer-un-mail', 'telephoner']) AS "modes_orientation_beneficiaire",
+        ARRAY['usagers', 'professionnels']                                                    AS "mobilisable_par"
     FROM fredo_services
     LEFT JOIN fredo_structures ON fredo_services.structure_id = fredo_structures.id
     LEFT JOIN thematiques ON fredo_structures.id = thematiques.structure_id

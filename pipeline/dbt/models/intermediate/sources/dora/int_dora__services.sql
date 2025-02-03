@@ -37,6 +37,22 @@ final AS (
             ELSE services.modes_orientation_beneficiaire
         END                                                AS "modes_orientation_beneficiaire",
         services.modes_orientation_beneficiaire_autres     AS "modes_orientation_beneficiaire_autres",
+        ARRAY(
+            SELECT unnest_value
+            FROM unnest(array[
+                CASE
+                    WHEN (services.modes_orientation_beneficiaire IS NOT NULL AND array_length(services.modes_orientation_beneficiaire, 1) > 0) OR
+                         (services.modes_orientation_beneficiaire_autres IS NOT NULL AND services.modes_orientation_beneficiaire_autres != '') THEN 'usagers'
+                    ELSE NULL
+                END,
+                CASE
+                    WHEN (services.modes_orientation_accompagnateur IS NOT NULL AND array_length(services.modes_orientation_accompagnateur, 1) > 0) OR
+                         (services.modes_orientation_accompagnateur_autres IS NOT NULL AND services.modes_orientation_accompagnateur_autres != '') THEN 'professionnels'
+                    ELSE NULL
+                END
+            ]) AS unnest_value
+            WHERE unnest_value IS NOT NULL
+        )                                                  AS "mobilisable_par",
         services.nom                                       AS "nom",
         services.presentation_resume                       AS "presentation_resume",
         services.presentation_detail                       AS "presentation_detail",

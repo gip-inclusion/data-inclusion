@@ -61,6 +61,8 @@ final AS (
             NULL
         )                                                                                              AS "modes_orientation_accompagnateur",
         ARRAY_REMOVE(ARRAY[CASE WHEN structures.telephone IS NOT NULL THEN 'telephoner' END], NULL)    AS "modes_orientation_beneficiaire",
+        -- TODO (hlecuyer): do the mapping
+        ARRAY['professionnels']                                                                        AS "mobilisable_par",
         CAST(NULL AS TEXT)                                                                             AS "frais_autres",
         CASE WHEN CARDINALITY(services.types) > 0 THEN services.types ELSE ARRAY['accompagnement'] END AS "types",
         ARRAY['en-presentiel']                                                                         AS "modes_accueil",

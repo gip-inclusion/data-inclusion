@@ -42,6 +42,7 @@ final AS (
         NULL                                            AS "modes_orientation_accompagnateur_autres",
         CAST(NULL AS TEXT [])                           AS "modes_orientation_beneficiaire",
         NULL                                            AS "modes_orientation_beneficiaire_autres",
+        ARRAY['professionnels']                                           AS "mobilisable_par",
         zone_diffusion_code                             AS "zone_diffusion_code",
         zone_diffusion_type                             AS "zone_diffusion_type",
         zone_diffusion_libelle                          AS "zone_diffusion_nom",

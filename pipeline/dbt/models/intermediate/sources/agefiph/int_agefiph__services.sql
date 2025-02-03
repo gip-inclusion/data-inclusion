@@ -104,6 +104,7 @@ final AS (
         ARRAY['a-distance']                                          AS "modes_accueil",
         ARRAY['autre']                                               AS "modes_orientation_accompagnateur",
         ARRAY['autre']                                               AS "modes_orientation_beneficiaire",
+        ARRAY['usagers', 'professionnels']                           AS "mobilisable_par",
         ARRAY[
             'personnes-en-situation-de-handicap'
         ]                                                            AS "profils",

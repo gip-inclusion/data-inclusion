@@ -48,6 +48,8 @@ final AS (
             NULL
         )                                                                                           AS "modes_orientation_beneficiaire",
         NULL                                                                                        AS "modes_orientation_beneficiaire_autres",
+        -- TODO (hlecuyer): do the mapping
+        ARRAY['usagers']                                           AS "mobilisable_par",
         FORMAT(
             '%s de %s',
             COALESCE(service_types_by_garage.service_type, 'Réparation, vente et location'),

@@ -26,6 +26,8 @@ final AS (
         services.modes_orientation_accompagnateur_autres AS "modes_orientation_accompagnateur_autres",
         services.modes_orientation_beneficiaire          AS "modes_orientation_beneficiaire",
         services.modes_orientation_beneficiaire_autres   AS "modes_orientation_beneficiaire_autres",
+        -- TODO (hlecuyer): do the mapping
+        ARRAY['professionnels']                                           AS "mobilisable_par",
         services.nom                                     AS "nom",
         services.page_web                                AS "page_web",
         services.presentation_detail                     AS "presentation_detail",

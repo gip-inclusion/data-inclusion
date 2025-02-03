@@ -18,6 +18,7 @@ CREATE OR REPLACE FUNCTION LIST_SERVICE_ERRORS(
         modes_orientation_accompagnateur_autres TEXT,
         modes_orientation_beneficiaire TEXT[],
         modes_orientation_beneficiaire_autres TEXT,
+        mobilisable_par TEXT[],
         nom TEXT,
         page_web TEXT,
         presentation_detail TEXT,
@@ -54,6 +55,7 @@ BEGIN
             ("modes_accueil", "modes_accueil IS NULL OR modes_accueil <@ ARRAY(SELECT m.value FROM " ~ ref('modes_accueil') ~ "AS m)"),
             ("modes_orientation_accompagnateur", "modes_orientation_accompagnateur IS NULL OR modes_orientation_accompagnateur <@ ARRAY(SELECT m.value FROM " ~ ref('modes_orientation_accompagnateur') ~ "AS m)"),
             ("modes_orientation_beneficiaire", "modes_orientation_beneficiaire IS NULL OR modes_orientation_beneficiaire <@ ARRAY(SELECT m.value FROM " ~ ref('modes_orientation_beneficiaire') ~ "AS m)"),
+            ("mobilisable_par", "mobilisable_par IS NULL OR mobilisable_par <@ ARRAY(SELECT m.value FROM " ~ ref('mobilisable_par') ~ "AS m)"),
             ("zone_diffusion_code", "zone_diffusion_code IS NULL OR zone_diffusion_code ~ '^(\d{9}|\w{5}|\w{2,3}|\d{2})$'"),
             ("zone_diffusion_type", "zone_diffusion_type IS NULL OR zone_diffusion_type IN (SELECT t.value FROM " ~ ref('zones_de_diffusion_types') ~ "AS t)"),
         ]
@@ -107,6 +109,7 @@ WITH final AS (
             modes_orientation_accompagnateur_autres,
             modes_orientation_beneficiaire,
             modes_orientation_beneficiaire_autres,
+            mobilisable_par,
             nom,
             page_web,
             presentation_detail,
