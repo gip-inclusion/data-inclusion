@@ -17,7 +17,7 @@ final AS (
         NULL                                                      AS "prise_rdv",
         formations.content__lieux_et_horaires_formation__horaires AS "recurrence",
         formations._di_source_id                                  AS "source",
-        formations.structure_id                                   AS "structure_id",
+        structures.id                                             AS "structure_id",
         formations.content__contact_inscription__telephone        AS "telephone",
         NULL                                                      AS "zone_diffusion_code",
         NULL                                                      AS "zone_diffusion_nom",  -- FIXME
@@ -86,8 +86,9 @@ final AS (
             NULL
         )                                                         AS "modes_orientation_beneficiaire",
         -- TODO (hlecuyer): do the mapping
-        ARRAY['professionnels']                                           AS "mobilisable_par",
+        ARRAY['professionnels']                                   AS "mobilisable_par",
         ARRAY['public-langues-etrangeres']                        AS "profils",
+
         NULL                                                      AS "profils_precisions",
         ARRAY['formation']                                        AS "types",
         CAST(NULL AS TEXT [])                                     AS "frais"

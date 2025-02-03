@@ -38,13 +38,21 @@ di_thematique_by_soliguide_category_code AS (
         ('addiction', ARRAY['sante--faire-face-a-une-situation-daddiction']),
         ('administrative_assistance', ARRAY['acces-aux-droits-et-citoyennete--connaitre-ses-droits', 'acces-aux-droits-et-citoyennete--accompagnement-dans-les-demarches-administratives']),
         ('babysitting', ARRAY['famille--garde-denfants']),
-        ('budget_advice', ARRAY(SELECT thematiques.value FROM thematiques WHERE thematiques.value ~ '^gestion-financiere--')),
+        ('budget_advice', ARRAY(
+            SELECT thematiques.value
+            FROM thematiques
+            WHERE thematiques.value ~ '^gestion-financiere--'
+        )),
         ('carpooling', ARRAY['mobilite--comprendre-et-utiliser-les-transports-en-commun']),
         ('chauffeur_driven_transport', ARRAY['mobilite--comprendre-et-utiliser-les-transports-en-commun']),
         ('clothing', ARRAY['equipement-et-alimentation--habillement']),
         ('computers_at_your_disposal', ARRAY['numerique--acceder-a-du-materiel']),
         ('day_hosting', ARRAY['remobilisation--lien-social']),
-        ('digital_tools_training', ARRAY(SELECT thematiques.value FROM thematiques WHERE thematiques.value ~ '^numerique--')),
+        ('digital_tools_training', ARRAY(
+            SELECT thematiques.value
+            FROM thematiques
+            WHERE thematiques.value ~ '^numerique--'
+        )),
         ('emergency_accommodation', ARRAY['logement-hebergement--mal-loges-sans-logis']),
         ('family_area', ARRAY['famille--soutien-a-la-parentalite']),
         ('food_distribution', ARRAY['equipement-et-alimentation--alimentation']),
@@ -254,7 +262,7 @@ final AS (
             E'\n\n'
         )                                                             AS "modes_orientation_beneficiaire_autres",
         -- TODO (hlecuyer): do the mapping
-        ARRAY['professionnels']                                           AS "mobilisable_par"
+        ARRAY['professionnels']                                       AS "mobilisable_par"
     FROM open_services
     LEFT JOIN lieux ON open_services.lieu_id = lieux.id
     LEFT JOIN categories ON open_services.category = categories.code

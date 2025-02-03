@@ -44,7 +44,7 @@ final AS (
         NULL                                                                                                        AS "modes_orientation_accompagnateur_autres", -- will be overridden after geocoding
         CAST(NULL AS TEXT [])                                                                                       AS "modes_orientation_beneficiaire",
         NULL                                                                                                        AS "modes_orientation_beneficiaire_autres",
-        ARRAY['professionnels']                                           AS "mobilisable_par",
+        ARRAY['professionnels']                                                                                     AS "mobilisable_par",
         CAST(NULL AS TEXT [])                                                                                       AS "pre_requis",
         CAST(NULL AS TEXT [])                                                                                       AS "justificatifs",
         CASE WHEN service_commun__avip THEN 'Crèche À Vocation d’Insertion Professionnelle' ELSE structure_name END AS "nom",
