@@ -35,7 +35,7 @@ click==8.1.8
     #   uvicorn
 cryptography==44.0.0
     # via data-inclusion-api (setup.py)
-data-inclusion-schema==0.20.0
+data-inclusion-schema==0.21.0a2
     # via data-inclusion-api (setup.py)
 dnspython==2.7.0
     # via email-validator

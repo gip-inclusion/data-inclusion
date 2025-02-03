@@ -13,8 +13,7 @@ dependencies = [
     "phonenumbers",
     "requests~=2.31",
     "unidecode",
-    "data-inclusion-schema",
-
+    "data-inclusion-schema==0.21.0a2",
 ]
 
 [project.optional-dependencies]
