@@ -6,6 +6,20 @@ structures AS (
     SELECT * FROM {{ ref('stg_reseau_alpha__structures') }}
 ),
 
+mode_orientation AS (
+    SELECT
+        formations.id,
+        ARRAY_REMOVE(
+            ARRAY[
+                CASE WHEN formations.content__contact_inscription__telephone IS NOT NULL THEN 'telephoner' END,
+                CASE WHEN formations.content__contact_inscription__courriel IS NOT NULL THEN 'envoyer-un-mail' END
+            ],
+            NULL
+        )                                                                                                                         AS "modes_orientation_accompagnateur",
+        ARRAY_REMOVE(ARRAY[CASE WHEN formations.content__contact_inscription__telephone IS NOT NULL THEN 'telephoner' END], NULL) AS "modes_orientation_beneficiaire"
+    FROM formations
+),
+
 final AS (
     SELECT
         TRUE                                                      AS "contact_public",
@@ -71,22 +85,23 @@ final AS (
             NULL
         )                                                         AS "thematiques",
         ARRAY['en-presentiel']                                    AS "modes_accueil",
-        ARRAY_REMOVE(
-            ARRAY[
-                CASE WHEN formations.content__contact_inscription__courriel IS NOT NULL THEN 'envoyer-un-mail' END,
-                CASE WHEN formations.content__contact_inscription__telephone IS NOT NULL THEN 'telephoner' END
-            ],
-            NULL
-        )                                                         AS "modes_orientation_accompagnateur",
-        ARRAY_REMOVE(
-            ARRAY[
-                CASE WHEN formations.content__contact_inscription__courriel IS NOT NULL THEN 'envoyer-un-mail' END,
-                CASE WHEN formations.content__contact_inscription__telephone IS NOT NULL THEN 'telephoner' END
-            ],
-            NULL
-        )                                                         AS "modes_orientation_beneficiaire",
-        -- TODO (hlecuyer): do the mapping
-        ARRAY['professionnels']                                   AS "mobilisable_par",
+        mode_orientation.modes_orientation_accompagnateur         AS "modes_orientation_accompagnateur",
+        mode_orientation.modes_orientation_beneficiaire           AS "modes_orientation_beneficiaire",
+        ARRAY(
+            SELECT unnest_value
+            FROM
+                UNNEST(ARRAY[
+                    CASE
+                        WHEN
+                            mode_orientation.modes_orientation_beneficiaire IS NOT NULL AND ARRAY_LENGTH(mode_orientation.modes_orientation_beneficiaire, 1) > 0 THEN 'usagers'
+                    END,
+                    CASE
+                        WHEN
+                            mode_orientation.modes_orientation_accompagnateur IS NOT NULL AND ARRAY_LENGTH(mode_orientation.modes_orientation_accompagnateur, 1) > 0 THEN 'professionnels'
+                    END
+                ]) AS unnest_value
+            WHERE unnest_value IS NOT NULL
+        )                                                         AS "mobilisable_par",
         ARRAY['public-langues-etrangeres']                        AS "profils",
 
         NULL                                                      AS "profils_precisions",
@@ -94,6 +109,7 @@ final AS (
         CAST(NULL AS TEXT [])                                     AS "frais"
     FROM formations
     LEFT JOIN structures ON formations.structure_id = structures.id
+    LEFT JOIN mode_orientation ON formations.id = mode_orientation.id
 )
 
 SELECT * FROM final

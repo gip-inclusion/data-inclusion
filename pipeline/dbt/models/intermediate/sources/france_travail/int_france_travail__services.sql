@@ -39,8 +39,23 @@ final AS (
         services.modes_orientation_accompagnateur_autres AS "modes_orientation_accompagnateur_autres",
         services.modes_orientation_beneficiaire          AS "modes_orientation_beneficiaire",
         services.modes_orientation_beneficiaire_autres   AS "modes_orientation_beneficiaire_autres",
-        -- TODO (hlecuyer): do the mapping
-        ARRAY['professionnels']                          AS "mobilisable_par",
+        ARRAY(
+            SELECT unnest_value
+            FROM
+                UNNEST(ARRAY[
+                    CASE
+                        WHEN
+                            (services.modes_orientation_beneficiaire IS NOT NULL AND ARRAY_LENGTH(services.modes_orientation_beneficiaire, 1) > 0)
+                            OR (services.modes_orientation_beneficiaire_autres IS NOT NULL AND services.modes_orientation_beneficiaire_autres != '') THEN 'usagers'
+                    END,
+                    CASE
+                        WHEN
+                            (services.modes_orientation_accompagnateur IS NOT NULL AND ARRAY_LENGTH(services.modes_orientation_accompagnateur, 1) > 0)
+                            OR (services.modes_orientation_accompagnateur_autres IS NOT NULL AND services.modes_orientation_accompagnateur_autres != '') THEN 'professionnels'
+                    END
+                ]) AS unnest_value
+            WHERE unnest_value IS NOT NULL
+        )                                                AS "mobilisable_par",
         services.nom                                     AS "nom",
         services.presentation_detail                     AS "presentation_detail",
         services.presentation_resume                     AS "presentation_resume",

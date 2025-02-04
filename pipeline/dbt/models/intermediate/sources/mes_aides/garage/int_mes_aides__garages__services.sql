@@ -12,6 +12,33 @@ service_types_by_garage AS (
         UNNEST(garages.services) AS service_type
 ),
 
+mode_orientation AS (
+    SELECT
+        garages.id,
+        ARRAY_REMOVE(
+            ARRAY[
+                CASE WHEN garages.telephone IS NOT NULL THEN 'telephoner' END,
+                CASE WHEN garages.email IS NOT NULL THEN 'envoyer-un-mail' END
+            ],
+            NULL
+        )   AS "modes_orientation_accompagnateur",
+        CASE
+            WHEN
+                garages.telephone IS NULL
+                AND garages.email IS NULL
+                THEN '{{ check_structure_str }}'
+        END AS "modes_orientation_accompagnateur_autres",
+        ARRAY_REMOVE(
+            ARRAY[
+                'se-presenter',
+                CASE WHEN garages.telephone IS NOT NULL THEN 'telephoner' END,
+                CASE WHEN garages.email IS NOT NULL THEN 'envoyer-un-mail' END
+            ],
+            NULL
+        )   AS "modes_orientation_beneficiaire"
+    FROM garages
+),
+
 final AS (
     SELECT
         garages.id                                                                                  AS "adresse_id",
@@ -26,30 +53,26 @@ final AS (
         CAST(NULL AS TEXT [])                                                                       AS "justificatifs",
         'https://mes-aides.francetravail.fr/transport-et-mobilite/garages-solidaires'               AS "lien_source",
         ARRAY['en-presentiel']                                                                      AS "modes_accueil",
-        ARRAY_REMOVE(
-            ARRAY[
-                CASE WHEN garages.telephone IS NOT NULL THEN 'telephoner' END,
-                CASE WHEN garages.email IS NOT NULL THEN 'envoyer-un-mail' END
-            ],
-            NULL
-        )                                                                                           AS "modes_orientation_accompagnateur",
-        CASE
-            WHEN
-                garages.telephone IS NULL
-                AND garages.email IS NULL
-                THEN '{{ check_structure_str }}'
-        END                                                                                         AS "modes_orientation_accompagnateur_autres",
-        ARRAY_REMOVE(
-            ARRAY[
-                'se-presenter',
-                CASE WHEN garages.telephone IS NOT NULL THEN 'telephoner' END,
-                CASE WHEN garages.email IS NOT NULL THEN 'envoyer-un-mail' END
-            ],
-            NULL
-        )                                                                                           AS "modes_orientation_beneficiaire",
+        mode_orientation.modes_orientation_accompagnateur                                           AS "modes_orientation_accompagnateur",
+        mode_orientation.modes_orientation_accompagnateur_autres                                    AS "modes_orientation_accompagnateur_autres",
+        mode_orientation.modes_orientation_beneficiaire                                             AS "modes_orientation_beneficiaire",
         NULL                                                                                        AS "modes_orientation_beneficiaire_autres",
-        -- TODO (hlecuyer): do the mapping
-        ARRAY['usagers']                                                                            AS "mobilisable_par",
+        ARRAY(
+            SELECT unnest_value
+            FROM
+                UNNEST(ARRAY[
+                    CASE
+                        WHEN
+                            mode_orientation.modes_orientation_beneficiaire IS NOT NULL AND ARRAY_LENGTH(mode_orientation.modes_orientation_beneficiaire, 1) > 0 THEN 'usagers'
+                    END,
+                    CASE
+                        WHEN
+                            (mode_orientation.modes_orientation_accompagnateur IS NOT NULL AND ARRAY_LENGTH(mode_orientation.modes_orientation_accompagnateur, 1) > 0)
+                            OR (mode_orientation.modes_orientation_accompagnateur_autres IS NOT NULL AND mode_orientation.modes_orientation_accompagnateur_autres != '') THEN 'professionnels'
+                    END
+                ]) AS unnest_value
+            WHERE unnest_value IS NOT NULL
+        )                                                                                           AS "mobilisable_par",
         FORMAT(
             '%s de %s',
             COALESCE(service_types_by_garage.service_type, 'Réparation, vente et location'),
@@ -99,6 +122,7 @@ final AS (
         NULL                                                                                        AS "page_web"
     FROM garages
     LEFT JOIN service_types_by_garage ON garages.id = service_types_by_garage.id
+    LEFT JOIN mode_orientation ON garages.id = mode_orientation.id
     WHERE
         garages.en_ligne
 )

@@ -143,6 +143,24 @@ mes_aides_natures AS (
     GROUP BY permis_velo.id
 ),
 
+mode_orientation AS (
+    SELECT
+        permis_velo.id       AS "id",
+        COALESCE(modes_orientation_transformed.modes_orientation_accompagnateur, CASE
+            WHEN permis_velo.contact_telephone IS NOT NULL THEN ARRAY['telephoner']
+            WHEN permis_velo.contact_email IS NOT NULL THEN ARRAY['envoyer-un-mail']
+            WHEN permis_velo.formulaire_url IS NOT NULL THEN ARRAY['completer-le-formulaire-dadhesion']
+        END)                 AS "modes_orientation_accompagnateur",
+        COALESCE(modes_orientation_transformed.modes_orientation_beneficiaire, CASE
+            WHEN permis_velo.contact_telephone IS NOT NULL THEN ARRAY['telephoner']
+            WHEN permis_velo.contact_email IS NOT NULL THEN ARRAY['envoyer-un-mail']
+            WHEN permis_velo.formulaire_url IS NOT NULL THEN ARRAY['completer-le-formulaire-dadhesion']
+        END)                 AS "modes_orientation_beneficiaire",
+        permis_velo.demarche AS "modes_orientation_beneficiaire_autres"
+    FROM permis_velo
+    LEFT JOIN modes_orientation_transformed ON permis_velo.id = modes_orientation_transformed.service_id
+),
+
 final AS (
     SELECT
         permis_velo.id                                             AS "adresse_id",
@@ -163,20 +181,26 @@ final AS (
             WHEN permis_velo.en_ligne = TRUE THEN ARRAY['a-distance']
             ELSE ARRAY['en-presentiel']
         END                                                        AS "modes_accueil",
-        COALESCE(modes_orientation_transformed.modes_orientation_accompagnateur, CASE
-            WHEN permis_velo.contact_telephone IS NOT NULL THEN ARRAY['telephoner']
-            WHEN permis_velo.contact_email IS NOT NULL THEN ARRAY['envoyer-un-mail']
-            WHEN permis_velo.formulaire_url IS NOT NULL THEN ARRAY['completer-le-formulaire-dadhesion']
-        END)                                                       AS "modes_orientation_accompagnateur",
+        mode_orientation.modes_orientation_accompagnateur          AS "modes_orientation_accompagnateur",
         NULL                                                       AS "modes_orientation_accompagnateur_autres",
-        COALESCE(modes_orientation_transformed.modes_orientation_beneficiaire, CASE
-            WHEN permis_velo.contact_telephone IS NOT NULL THEN ARRAY['telephoner']
-            WHEN permis_velo.contact_email IS NOT NULL THEN ARRAY['envoyer-un-mail']
-            WHEN permis_velo.formulaire_url IS NOT NULL THEN ARRAY['completer-le-formulaire-dadhesion']
-        END)                                                       AS "modes_orientation_beneficiaire",
-        permis_velo.demarche                                       AS "modes_orientation_beneficiaire_autres",
-        -- TODO (hlecuyer): do the mapping
-        ARRAY['usagers']                                           AS "mobilisable_par",
+        mode_orientation.modes_orientation_beneficiaire            AS "modes_orientation_beneficiaire",
+        mode_orientation.modes_orientation_beneficiaire_autres     AS "modes_orientation_beneficiaire_autres",
+        ARRAY(
+            SELECT unnest_value
+            FROM
+                UNNEST(ARRAY[
+                    CASE
+                        WHEN
+                            (mode_orientation.modes_orientation_beneficiaire IS NOT NULL AND ARRAY_LENGTH(mode_orientation.modes_orientation_beneficiaire, 1) > 0)
+                            OR (mode_orientation.modes_orientation_beneficiaire_autres IS NOT NULL AND mode_orientation.modes_orientation_beneficiaire_autres != '') THEN 'usagers'
+                    END,
+                    CASE
+                        WHEN
+                            mode_orientation.modes_orientation_accompagnateur IS NOT NULL AND ARRAY_LENGTH(mode_orientation.modes_orientation_accompagnateur, 1) > 0 THEN 'professionnels'
+                    END
+                ]) AS unnest_value
+            WHERE unnest_value IS NOT NULL
+        )                                                          AS "mobilisable_par",
         permis_velo.nom                                            AS "nom",
         CASE
             WHEN LENGTH(permis_velo.description) > 280 THEN SUBSTRING(permis_velo.description FROM 1 FOR 277) || '...'
@@ -226,6 +250,7 @@ final AS (
     LEFT JOIN thematiques ON permis_velo.id = thematiques.service_id
     LEFT JOIN mes_aides_natures ON permis_velo.id = mes_aides_natures.service_id
     LEFT JOIN modes_orientation_transformed ON permis_velo.id = modes_orientation_transformed.service_id
+    LEFT JOIN mode_orientation ON permis_velo.id = mode_orientation.id
     WHERE permis_velo.slug_organisme NOT IN ('action-logement', 'france-travail')
 )
 

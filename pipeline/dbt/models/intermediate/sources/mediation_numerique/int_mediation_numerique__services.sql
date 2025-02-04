@@ -20,6 +20,21 @@ di_thematiques AS (
     SELECT * FROM {{ ref('thematiques') }}
 ),
 
+mode_orientation AS (
+    SELECT
+        services.id                                                                                 AS "id",
+        ARRAY_REMOVE(
+            ARRAY[
+                CASE WHEN structures.telephone IS NOT NULL THEN 'telephoner' END,
+                CASE WHEN structures.courriel IS NOT NULL THEN 'envoyer-un-mail' END
+            ],
+            NULL
+        )                                                                                           AS "modes_orientation_accompagnateur",
+        ARRAY_REMOVE(ARRAY[CASE WHEN structures.telephone IS NOT NULL THEN 'telephoner' END], NULL) AS "modes_orientation_beneficiaire"
+    FROM services
+    LEFT JOIN structures ON services.structure_id = structures.id
+),
+
 final AS (
     SELECT
         services.id                                                                                    AS "id",
@@ -53,16 +68,23 @@ final AS (
             WHEN structures.code_insee LIKE '97%' THEN LEFT(structures.code_insee, 3)
             ELSE LEFT(structures.code_insee, 2)
         END                                                                                            AS "zone_diffusion_code",
-        ARRAY_REMOVE(
-            ARRAY[
-                CASE WHEN structures.telephone IS NOT NULL THEN 'telephoner' END,
-                CASE WHEN structures.courriel IS NOT NULL THEN 'envoyer-un-mail' END
-            ],
-            NULL
-        )                                                                                              AS "modes_orientation_accompagnateur",
-        ARRAY_REMOVE(ARRAY[CASE WHEN structures.telephone IS NOT NULL THEN 'telephoner' END], NULL)    AS "modes_orientation_beneficiaire",
-        -- TODO (hlecuyer): do the mapping
-        ARRAY['professionnels']                                                                        AS "mobilisable_par",
+        mode_orientation.modes_orientation_accompagnateur                                              AS "modes_orientation_accompagnateur",
+        mode_orientation.modes_orientation_beneficiaire                                                AS "modes_orientation_beneficiaire",
+        ARRAY(
+            SELECT unnest_value
+            FROM
+                UNNEST(ARRAY[
+                    CASE
+                        WHEN
+                            mode_orientation.modes_orientation_beneficiaire IS NOT NULL AND ARRAY_LENGTH(mode_orientation.modes_orientation_beneficiaire, 1) > 0 THEN 'usagers'
+                    END,
+                    CASE
+                        WHEN
+                            mode_orientation.modes_orientation_accompagnateur IS NOT NULL AND ARRAY_LENGTH(mode_orientation.modes_orientation_accompagnateur, 1) > 0 THEN 'professionnels'
+                    END
+                ]) AS unnest_value
+            WHERE unnest_value IS NOT NULL
+        )                                                                                              AS "mobilisable_par",
         CAST(NULL AS TEXT)                                                                             AS "frais_autres",
         CASE WHEN CARDINALITY(services.types) > 0 THEN services.types ELSE ARRAY['accompagnement'] END AS "types",
         ARRAY['en-presentiel']                                                                         AS "modes_accueil",
@@ -71,6 +93,7 @@ final AS (
         NULL                                                                                           AS "page_web"
     FROM services
     LEFT JOIN structures ON services.structure_id = structures.id
+    LEFT JOIN mode_orientation ON services.id = mode_orientation.id
 )
 
 SELECT * FROM final
