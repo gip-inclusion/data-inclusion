@@ -87,6 +87,7 @@ class Service(Base):
     modes_orientation_accompagnateur: Mapped[list[str] | None]
     modes_orientation_beneficiaire_autres: Mapped[str | None]
     modes_orientation_beneficiaire: Mapped[list[str] | None]
+    mobilisable_par: Mapped[list[str]]
     nom: Mapped[str]
     page_web: Mapped[str | None]
     pre_requis: Mapped[list[str] | None]
