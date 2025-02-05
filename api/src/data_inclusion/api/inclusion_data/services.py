@@ -203,10 +203,9 @@ def list_structures(
     region: Region | None = None,
     commune_code: di_schema.CodeCommune | None = None,
     thematiques: list[di_schema.Thematique] | None = None,
+    deduplicate: bool = False,
 ) -> list:
-    query = sqla.select(models.Structure).options(
-        orm.joinedload(models.Structure.doublons)
-    )
+    query = sqla.select(models.Structure)
     query = filter_restricted(query, request)
 
     if sources is not None:
@@ -239,6 +238,52 @@ def list_structures(
 
     if thematiques is not None:
         query = filter_structures_by_thematiques(query, thematiques)
+
+    if deduplicate:
+        max_scores = (
+            sqla.select(
+                models.Structure.cluster_id,
+                func.max(models.Structure.score_qualite).label("max_score"),
+            )
+            .where(models.Structure.cluster_id.is_not(None))
+            .group_by(models.Structure.cluster_id)
+            .subquery()
+        )
+        latest_updates = (
+            sqla.select(
+                models.Structure.cluster_id,
+                models.Structure.score_qualite,
+                func.max(models.Structure.date_maj).label("latest_date"),
+            )
+            .where(models.Structure.cluster_id.is_not(None))
+            .group_by(models.Structure.cluster_id, models.Structure.score_qualite)
+            .subquery()
+        )
+        query = (
+            query.filter(
+                sqla.or_(
+                    models.Structure.cluster_id.is_(None),
+                    sqla.and_(
+                        models.Structure.cluster_id == max_scores.c.cluster_id,
+                        models.Structure.score_qualite == max_scores.c.max_score,
+                        models.Structure.date_maj == latest_updates.c.latest_date,
+                    ),
+                )
+            )
+            .join(
+                max_scores,
+                models.Structure.cluster_id == max_scores.c.cluster_id,
+                isouter=True,
+            )
+            .join(
+                latest_updates,
+                sqla.and_(
+                    models.Structure.cluster_id == latest_updates.c.cluster_id,
+                    models.Structure.score_qualite == latest_updates.c.score_qualite,
+                ),
+                isouter=True,
+            )
+        )
 
     return paginate(db_session, query)
 

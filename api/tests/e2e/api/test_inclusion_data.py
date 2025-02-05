@@ -52,6 +52,7 @@ def test_list_structures_all(api_client, db_session):
         complement_adresse=None,
         courriel="levyalexandre@example.org",
         date_maj="2023-01-01",
+        doublons=[],
         horaires_ouverture='Mo-Fr 10:00-20:00 "sur rendez-vous"; PH off',
         id="lot-kitchen-amount",
         labels_autres=["Nièvre médiation numérique"],
@@ -63,6 +64,7 @@ def test_list_structures_all(api_client, db_session):
         presentation_detail="Or personne jambe.",
         presentation_resume="Image voie battre.",
         rna="W242194892",
+        score_qualite=0.7,
         siret="76475938700658",
         site_web="https://www.le.net/",
         source="dora",
@@ -103,6 +105,7 @@ def test_list_structures_all(api_client, db_session):
                 "presentation_detail": "Or personne jambe.",
                 "presentation_resume": "Image voie battre.",
                 "rna": "W242194892",
+                "score_qualite": 0.7,
                 "siret": "76475938700658",
                 "site_web": "https://www.le.net/",
                 "source": "dora",
@@ -265,6 +268,7 @@ def test_list_services_all(api_client, db_session):
         presentation_detail="Or personne jambe.",
         presentation_resume="Image voie battre.",
         rna="W242194892",
+        score_qualite=0.3,
         siret="76475938700658",
         site_web="https://www.le.net/",
         source="dora",
@@ -1384,54 +1388,67 @@ def test_retrieve_service_and_notify_soliguide(
 
 @pytest.mark.parametrize(
     (
-        "cluster_a",
-        "cluster_b",
-        "expected_doublons_1",
-        "expected_doublons_2",
+        "exclure_doublons",
+        "total_results",
     ),
     [
-        (None, None, [], []),
-        ("42", None, [], []),
-        ("cluster_a", "cluster_b", [], []),
         (
-            "cluster_a",
-            "cluster_a",
-            [{"source": "src_2", "id": "second"}],
-            [{"source": "src_1", "id": "first"}],
+            False,
+            3,
         ),
+        (True, 1),
     ],
 )
 @pytest.mark.with_token
-def test_list_structures_with_doublons(
-    api_client,
-    cluster_a,
-    cluster_b,
-    expected_doublons_1,
-    expected_doublons_2,
-):
-    service_1 = factories.StructureFactory(
+def test_list_structures_deduplicate_flag(api_client, exclure_doublons, total_results):
+    factories.StructureFactory(
         source="src_1",
         id="first",
-        cluster_id=cluster_a,
+        cluster_id="cluster_id",
+        score_qualite=0.5,
     )
     factories.StructureFactory(
         source="src_2",
         id="second",
-        cluster_id=cluster_b,
+        cluster_id="cluster_id",
+        score_qualite=0.9,
+    )
+    factories.StructureFactory(
+        source="src_2",
+        id="third",
+        cluster_id="cluster_id",
+        score_qualite=0.3,
     )
 
-    url = "/api/v0/structures/"
+    url = f"/api/v0/structures?{exclure_doublons=}"
     response = api_client.get(url)
 
-    assert_paginated_response_data(response.json(), total=2)
-    resp_data = response.json()
+    assert_paginated_response_data(response.json(), total=total_results)
 
-    service_1_data, service_2_data = sorted(
-        resp_data["items"], key=lambda x: x["id"] != service_1.id
+
+@pytest.mark.with_token
+def test_list_structures_deduplicate_flag_equal(api_client):
+    # all these structiures have no services so we assume they have a score of 0
+    factories.StructureFactory(
+        date_maj="2020-01-01",
+        source="src_1",
+        id="first",
+        cluster_id="same_doublons_groupe",
+    )
+    factories.StructureFactory(
+        date_maj="2024-01-01",  # the latest update
+        source="src_2",
+        id="second",
+        cluster_id="same_doublons_groupe",
+    )
+    factories.StructureFactory(
+        date_maj="2008-01-01",
+        source="src_3",
+        id="third",
+        cluster_id="same_doublons_groupe",
     )
 
-    assert service_1_data["doublons_groupe_id"] == cluster_a
-    assert service_2_data["doublons_groupe_id"] == cluster_b
+    url = "/api/v0/structures?exclure_doublons=True"
+    response = api_client.get(url)
 
-    assert service_1_data["doublons"] == expected_doublons_1
-    assert service_2_data["doublons"] == expected_doublons_2
+    assert_paginated_response_data(response.json(), total=1)

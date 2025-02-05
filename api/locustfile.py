@@ -17,12 +17,16 @@ class APIUser(locust.HttpUser):
             self.client.headers["Authorization"] = f"Bearer {LOCUST_API_TOKEN}"
 
     def _list_paginated_endpoint(self, url: furl.furl):
+        args = "&".join(f"{key}={value}" for key, value in url.args.items())
         next_url = url.add(query_params={"page": 1})
 
         while True:
+            name = f"{next_url.path}/?page=[{(next_url.args['page'] // 10) * 10:3d}]"
+            if args:
+                name += f"&{args}"
             match self.client.get(
                 str(next_url),
-                name=f"{next_url.path}/?page=[{(next_url.args['page'] // 10) * 10:3d}]",
+                name=name,
             ).json():
                 case {"items": []}:
                     break
@@ -33,6 +37,13 @@ class APIUser(locust.HttpUser):
     @locust.tag("list_structures")
     def list_structures(self):
         self._list_paginated_endpoint(furl.furl("/api/v0/structures"))
+
+    @locust.task
+    @locust.tag("list_structures_deduplicate")
+    def list_structures_deduplicate(self):
+        self._list_paginated_endpoint(
+            furl.furl("/api/v0/structures?exclure_doublons=True")
+        )
 
     @locust.task
     @locust.tag("list_services")
