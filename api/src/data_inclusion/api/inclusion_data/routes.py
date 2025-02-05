@@ -88,6 +88,15 @@ def list_structures_endpoint(
     code_departement: CodeDepartementFilter = None,
     slug_departement: Annotated[Optional[DepartementSlugEnum], fastapi.Query()] = None,
     code_commune: CodeCommuneFilter = None,
+    exclure_doublons: Annotated[
+        Optional[bool],
+        fastapi.Query(
+            description=(
+                "[BETA] Mode qui ne retourne parmi les structures en doublon, que "
+                "celles ayant les services les plus qualitatifs (voir documentation)."
+            )
+        ),
+    ] = False,
     db_session=fastapi.Depends(db.get_session),
 ):
     region = get_region_by_code_or_slug(code=code_region, slug=slug_region)
@@ -106,6 +115,7 @@ def list_structures_endpoint(
         region=region,
         commune_code=code_commune,
         thematiques=thematiques,
+        deduplicate=exclure_doublons,
     )
 
     background_tasks.add_task(

@@ -63,6 +63,7 @@ def test_list_structures_all(api_client, db_session):
         presentation_detail="Or personne jambe.",
         presentation_resume="Image voie battre.",
         rna="W242194892",
+        score_qualite=0.7,
         siret="76475938700658",
         site_web="https://www.le.net/",
         source="dora",
@@ -103,6 +104,7 @@ def test_list_structures_all(api_client, db_session):
                 "presentation_detail": "Or personne jambe.",
                 "presentation_resume": "Image voie battre.",
                 "rna": "W242194892",
+                "score_qualite": 0.7,
                 "siret": "76475938700658",
                 "site_web": "https://www.le.net/",
                 "source": "dora",
@@ -265,6 +267,7 @@ def test_list_services_all(api_client, db_session):
         presentation_detail="Or personne jambe.",
         presentation_resume="Image voie battre.",
         rna="W242194892",
+        score_qualite=0.3,
         siret="76475938700658",
         site_web="https://www.le.net/",
         source="dora",
@@ -1435,3 +1438,85 @@ def test_list_structures_with_doublons(
 
     assert service_1_data["doublons"] == expected_doublons_1
     assert service_2_data["doublons"] == expected_doublons_2
+
+
+@pytest.mark.parametrize(
+    (
+        "exclure_doublons",
+        "total_results",
+    ),
+    [
+        (
+            False,
+            3,
+        ),
+        (True, 1),
+    ],
+)
+@pytest.mark.with_token
+def test_list_structures_deduplicate_flag(api_client, exclure_doublons, total_results):
+    factories.StructureFactory(
+        source="src_1",
+        id="first",
+        cluster_id="cluster_id",
+        score_qualite=0.5,
+    )
+    factories.StructureFactory(
+        source="src_2",
+        id="second",
+        cluster_id="cluster_id",
+        score_qualite=0.9,
+    )
+    factories.StructureFactory(
+        source="src_2",
+        id="third",
+        cluster_id="cluster_id",
+        score_qualite=0.3,
+    )
+
+    url = f"/api/v0/structures?{exclure_doublons=}"
+    response = api_client.get(url)
+
+    resp_data = response.json()
+    assert_paginated_response_data(response.json(), total=total_results)
+    # only check that case, order is not guaranteed otherwise
+    if exclure_doublons:
+        assert resp_data["items"][0]["id"] == "second"
+        assert resp_data["items"][0]["doublons"] == [
+            {"source": "src_1", "id": "first"},
+            {"source": "src_2", "id": "third"},
+        ]
+
+
+@pytest.mark.with_token
+def test_list_structures_deduplicate_flag_equal(api_client):
+    # all these structiures have no services so we assume they have a score of 0
+    factories.StructureFactory(
+        date_maj="2020-01-01",
+        source="src_1",
+        id="first",
+        cluster_id="same_doublons_groupe",
+    )
+    factories.StructureFactory(
+        date_maj="2024-01-01",  # the latest update
+        source="src_2",
+        id="second",
+        cluster_id="same_doublons_groupe",
+    )
+    factories.StructureFactory(
+        date_maj="2008-01-01",
+        source="src_3",
+        id="third",
+        cluster_id="same_doublons_groupe",
+    )
+
+    url = "/api/v0/structures?exclure_doublons=True"
+    response = api_client.get(url)
+
+    resp_data = response.json()
+    assert len(resp_data["items"]) == 1
+    assert resp_data["items"][0]["id"] == "second"
+    assert resp_data["items"][0]["doublons"] == [
+        {"source": "src_1", "id": "first"},
+        {"source": "src_3", "id": "third"},
+    ]

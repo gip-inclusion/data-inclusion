@@ -144,6 +144,16 @@ def load_inclusion_data():
             )
         ]
 
+    service_scores = (
+        services_df.groupby("_di_structure_surrogate_id")["score_qualite"]
+        .mean()
+        .round(2)
+    )
+
+    structures_df["score_qualite"] = (
+        structures_df["_di_surrogate_id"].map(service_scores).fillna(0.0)
+    )
+
     structure_data_list = structures_df.sort_values(
         by="_di_surrogate_id", ascending=True
     ).to_dict(orient="records")

@@ -44,6 +44,8 @@ class Structure(Base):
     thematiques: Mapped[list[str] | None]
     typologie: Mapped[str | None]
 
+    score_qualite: Mapped[float]
+
     cluster_id: Mapped[str | None]
 
     doublons: Mapped[list["Structure"]] = relationship(
