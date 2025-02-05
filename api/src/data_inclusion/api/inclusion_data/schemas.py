@@ -44,6 +44,18 @@ class Structure(schema.Structure):
         str | None,
         Field(description="ID du groupe de doublons", alias="doublons_groupe_id"),
     ]
+    score_qualite: Annotated[
+        float,
+        Field(
+            ge=0,
+            le=1,
+            description=dedent("""\
+                [BETA] Score de qualité de la structure. Défini comme la moyenne
+                des scores de qualité des services associés à la structure, ou 0
+                si aucun service n'est associé.
+                """),
+        ),
+    ]
 
 
 class DetailedService(Service):

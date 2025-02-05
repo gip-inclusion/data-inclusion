@@ -128,6 +128,18 @@
               "description": "Code insee géographique d'une commune."
             },
             {
+              "name": "exclure_doublons",
+              "in": "query",
+              "required": false,
+              "schema": {
+                "type": "boolean",
+                "description": "[BETA] Mode qui ne retourne parmi les structures en doublon, que celles ayant les services les plus qualitatifs (voir documentation).",
+                "default": false,
+                "title": "Exclure Doublons"
+              },
+              "description": "[BETA] Mode qui ne retourne parmi les structures en doublon, que celles ayant les services les plus qualitatifs (voir documentation)."
+            },
+            {
               "name": "page",
               "in": "query",
               "required": false,
@@ -2259,6 +2271,13 @@
               "title": "Doublons Groupe Id",
               "description": "ID du groupe de doublons"
             },
+            "score_qualite": {
+              "type": "number",
+              "maximum": 1.0,
+              "minimum": 0.0,
+              "title": "Score Qualite",
+              "description": "[BETA] Score de qualité de la structure. Défini comme la moyenne\ndes scores de qualité des services associés à la structure, ou 0\nsi aucun service n'est associé.\n"
+            },
             "doublons": {
               "items": {
                 "$ref": "#/components/schemas/data_inclusion__schema__structures__Structure"
@@ -2282,6 +2301,7 @@
             "source",
             "date_maj",
             "doublons_groupe_id",
+            "score_qualite",
             "doublons",
             "services"
           ],
@@ -2738,6 +2758,13 @@
               "title": "Doublons Groupe Id",
               "description": "ID du groupe de doublons"
             },
+            "score_qualite": {
+              "type": "number",
+              "maximum": 1.0,
+              "minimum": 0.0,
+              "title": "Score Qualite",
+              "description": "[BETA] Score de qualité de la structure. Défini comme la moyenne\ndes scores de qualité des services associés à la structure, ou 0\nsi aucun service n'est associé.\n"
+            },
             "doublons": {
               "items": {
                 "$ref": "#/components/schemas/SourceIdDict"
@@ -2754,6 +2781,7 @@
             "source",
             "date_maj",
             "doublons_groupe_id",
+            "score_qualite",
             "doublons"
           ],
           "title": "ListedStructure"
@@ -4093,6 +4121,13 @@
               ],
               "title": "Doublons Groupe Id",
               "description": "ID du groupe de doublons"
+            },
+            "score_qualite": {
+              "type": "number",
+              "maximum": 1.0,
+              "minimum": 0.0,
+              "title": "Score Qualite",
+              "description": "[BETA] Score de qualité de la structure. Défini comme la moyenne\ndes scores de qualité des services associés à la structure, ou 0\nsi aucun service n'est associé.\n"
             }
           },
           "type": "object",
@@ -4101,7 +4136,8 @@
             "nom",
             "source",
             "date_maj",
-            "doublons_groupe_id"
+            "doublons_groupe_id",
+            "score_qualite"
           ],
           "title": "Structure"
         },
