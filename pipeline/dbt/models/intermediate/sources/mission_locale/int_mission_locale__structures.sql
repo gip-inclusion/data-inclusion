@@ -19,8 +19,14 @@ final AS (
         nom_structure           AS "nom",
         ARRAY[labels_nationaux] AS "labels_nationaux",
         CAST(NULL AS TEXT [])   AS "labels_autres",
-        presentation            AS "presentation_resume",
-        presentation            AS "presentation_detail",
+        CASE
+            WHEN LENGTH(presentation) <= 280 THEN presentation
+            ELSE LEFT(presentation, 279) || '…'
+        END                     AS "presentation_resume",
+        CASE
+            WHEN LENGTH(presentation) <= 280 THEN presentation
+            ELSE LEFT(presentation, 279) || '…'
+        END                     AS "presentation_detail",
         id_structure            AS "adresse_id",
         CAST(NULL AS TEXT [])   AS "thematiques",
         CAST(date_maj AS DATE)  AS "date_maj"
