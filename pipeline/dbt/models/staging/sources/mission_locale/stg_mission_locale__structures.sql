@@ -10,7 +10,7 @@ final AS (
         NULLIF(TRIM(data -> 'structures' ->> 'commune'), '')                      AS "commune",
         NULLIF(TRIM(data -> 'structures' ->> 'siret'), '')                        AS "siret",
         NULLIF(TRIM(data -> 'structures' ->> 'horaires'), '')                     AS "horaires",
-        NULLIF(TRIM(data -> 'structures' ->> 'site_web'), '')                     AS "site_web",
+        'https://' || REGEXP_REPLACE(NULLIF(TRIM(data -> 'structures' ->> 'site_web'), ''), 'https?://', '')                     AS "site_web",
         NULLIF(TRIM(data -> 'structures' ->> 'telephone'), '')                    AS "telephone",
         NULLIF(TRIM(data -> 'structures' ->> 'typologie'), '')                    AS "typologie",
         NULLIF(TRIM(data -> 'structures' ->> 'code_insee'), '')                   AS "code_insee",

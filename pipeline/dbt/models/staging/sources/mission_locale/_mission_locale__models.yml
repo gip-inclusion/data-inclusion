@@ -54,6 +54,11 @@ models:
           - relationships:
               to: ref('zones_de_diffusion_types')
               field: value
+      - name: type_offre
+        data_tests:
+          - relationships:
+              to: ref('typologies_de_services')
+              field: value
 
   - name: stg_mission_locale__structures_offres
     columns:
