@@ -38,7 +38,10 @@ di_thematique_by_agefiph_thematique AS (
         ('03228d62-2a59-49d8-8443-b25cb2e684b9', 'accompagnement-social-et-professionnel-personnalise--definition-du-projet-professionnel'),
         ('f9ab3e06-af51-463a-aaf7-7b04a28e047f', 'se-former--trouver-sa-formation'),
         ('aeab1d68-4e89-4e2a-a612-d8645e3999d8', 'creation-activite--definir-son-projet-de-creation-dentreprise'),
-        ('f4551558-8315-4708-8357-5ecc89751bc6', 'handicap--faire-reconnaitre-un-handicap')
+        ('f4551558-8315-4708-8357-5ecc89751bc6', 'handicap--faire-reconnaitre-un-handicap'),
+        ('5d8c88d8-db03-4f27-b517-d7016896b01a', 'handicap--favoriser-le-retour-et-le-maintien-dans-lemploi'),
+        ('4b8b0473-52c2-4a21-956d-d7d68a7053b5', 'handicap--connaissance-des-droits-des-travailleurs'),
+        ('ddf0fa87-2ee0-481c-a258-96985b7826c3', 'handicap--favoriser-le-retour-et-le-maintien-dans-lemploi')
     ) AS x (agefiph_thematique_id, thematique)
 ),
 
