@@ -35,7 +35,7 @@ Ces deux modèles utilisent des référentiels faisant également partie du sch�
 
 Plus d'informations sur le
 [dépôt](https://github.com/gip-inclusion/data-inclusion-schema) versionnant le schéma,
-sur la [documentation officielle](https://data.inclusion.gouv.fr/schemas-de-donnees-de-loffre/schema-des-structures-dinsertion)
+sur la [documentation officielle](https://data.inclusion.gouv.fr/outils-et-documentation/schema-de-donnees/)
 ou sur la page [schema.gouv](https://schema.data.gouv.fr/gip-inclusion/data-inclusion-schema/) du schéma.
 
 ### Sources des données
@@ -56,6 +56,6 @@ L'[api de la base adresse nationale](https://adresse.data.gouv.fr/api-doc/adress
 
 ### Nous contacter
 
-#### via notre [formulaire de contact](https://tally.so/r/w7N6Zz)
+#### via notre [formulaire de contact](https://data.inclusion.gouv.fr/nous-contacter/)
 
 #### par mail à [data-inclusion@inclusion.gouv.fr](mailto:data-inclusion@inclusion.gouv.fr)
