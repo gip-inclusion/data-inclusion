@@ -1,0 +1,18 @@
+WITH source AS (
+    {{ stg_source_header('carif_oref', 'formations') }}
+),
+
+final AS (
+    SELECT
+        NULLIF(TRIM(actions.data ->> '@numero'), '')                           AS "numero_action",
+        code.data ->> '$'                                                      AS "code_public_vise",
+        code.data ->> '@ref'                                                   AS "version_formacode"
+    FROM
+        source,
+        JSONB_PATH_QUERY(source.data, '$.action[*]') AS actions (data),
+        JSONB_PATH_QUERY(actions.data, '$.code\-public\-vise[*]') AS code (data)
+    WHERE
+        code.data IS NOT NULL
+)
+
+SELECT * FROM final
