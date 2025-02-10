@@ -24,15 +24,26 @@ Our `source` layer is essentially tables containing the raw data in jsonb `data`
 
 Therefore our tests start at the `staging` layer.
 
-✅ `staging`: use `data_tests` extensively. Assumptions on data made in downstream models should be tested.
+`staging`:
 
-✅ `intermediate`: use `data_tests` for primary keys and foreign keys. Use the generic tests `check_structure`, `check_service` and `check_address`.
+* ✅ use `data_tests` extensively
+* ✅ assumptions on data used in downstream models should be tested
+* ❌ avoid testing columns that are not used in downstream models
 
-✅ `marts`: use `contracts` + generic tests `check_structure`, `check_service` and `check_address`.
+`intermediate`:
+
+* ✅ use `data_tests` for primary keys and foreign keys
+* ✅ use the generic tests `check_structure`, `check_service` and `check_address`
+* ✅ use `dbt_utils.equal_rowcount` between `staging` and `intermediate` when applicable simply
+
+`marts`:
+
+* ✅ use `contracts`
+* ✅ use generic tests `check_structure`, `check_service` and `check_address`
 
 #### which type of `data_tests` should I use ?
 
-* to stay manageable, our tests should be more or less uniform across the codebase.
+To stay manageable, our tests should be more or less uniform across the codebase.
 
 ✅ always use native `unique` and `not_null` for primary keys.
 
@@ -44,7 +55,17 @@ Therefore our tests start at the `staging` layer.
 
 ❌ avoid `accepted_values` for categorical columns of less than great data, or downgrade the test severity to `warn`. Otherwise the test could fail too regularly.
 
-✅ For simple cases, use predefined generic data tests over custom data tests (in `tests/`). Usually requires less code and is easier to read, *unless* you want to test complex logic.
+✅ when `not_null` fails, use `dbt_utils.not_null_proportion` to check that a column is usably filled. It tells use how the data can be used downstream and how confident we can be using it. Keep a large margin between the threshold and the actual proportion. For simplicity, use the `0.1`/`0.5`/`0.9` thresholds:
+
+* `0.1`: barely filled, not enough to be used, but if the data is providing crucial information, it's there.
+* `0.5`: usually filled, good enough to be used as input in a mapping, but might need some additional data.
+* `0.9`: almost required.
+
+❌ avoid setting a high or custom threshold for `dbt_utils.not_null_proportion`. A high threshold with a small margin is likely to fail in the future.
+
+✅ use `dbt_utils.equal_rowcount` to compare layers and check that data is not unintentionally filtered out. If unequal row counts are expected (because the data is intentionally filtered), either use a `where:` in the test config OR drop the test entirely if that's too much.
+
+✅ for simple cases, use predefined generic data tests over custom data tests (in `tests/`). Usually requires less code and is easier to read, *unless* you want to test complex logic.
 
 ## references
 

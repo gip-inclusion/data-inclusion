@@ -1,0 +1,64 @@
+version: 2
+
+models:
+  - name: int_carif_oref__adresses
+    data_tests:
+      - check_adresse:
+          config:
+            severity: warn
+    columns:
+      - name: id
+        data_tests:
+          - unique
+          - not_null
+          - dbt_utils.not_empty_string
+
+  - name: int_carif_oref__structures
+    data_tests:
+      - check_structure:
+          config:
+            severity: warn
+      - dbt_utils.equal_rowcount:
+          compare_model: ref('stg_carif_oref__organismes_formateurs')
+    columns:
+      - name: id
+        data_tests:
+          - unique
+          - not_null
+          - dbt_utils.not_empty_string
+      - name: adresse_id
+        data_tests:
+          - not_null:
+              config:
+                severity: warn
+          - relationships:
+              to: ref('int_carif_oref__adresses')
+              field: id
+
+  - name: int_carif_oref__services
+    data_tests:
+      - check_service:
+          config:
+            severity: warn
+      - dbt_utils.equal_rowcount:
+          compare_model: ref('stg_carif_oref__actions')
+    columns:
+      - name: id
+        data_tests:
+          - unique
+          - not_null
+          - dbt_utils.not_empty_string
+      - name: structure_id
+        data_tests:
+          - not_null
+          - relationships:
+              to: ref('int_carif_oref__structures')
+              field: id
+      - name: adresse_id
+        data_tests:
+          - not_null:
+              config:
+                severity: warn
+          - relationships:
+              to: ref('int_carif_oref__adresses')
+              field: id

@@ -241,6 +241,7 @@ resource "null_resource" "up" {
 
     # Airflow variables
     AIRFLOW_VAR_BREVO_API_KEY='${var.brevo_api_key}'
+    AIRFLOW_VAR_CARIF_OREF_URL='${var.carif_oref_url}'
     AIRFLOW_VAR_DATAGOUV_API_KEY='${var.datagouv_api_key}'
     AIRFLOW_VAR_DORA_API_TOKEN='${var.dora_api_token}'
     AIRFLOW_VAR_DORA_API_URL='${var.dora_api_url}'

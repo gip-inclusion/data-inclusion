@@ -1,0 +1,11 @@
+version: 2
+
+sources:
+  - name: carif_oref
+    schema: carif_oref
+    meta:
+      is_provider: true
+    tables:
+      - name: formations
+        meta:
+          kind: services

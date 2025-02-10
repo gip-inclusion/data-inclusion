@@ -112,6 +112,16 @@ models:
           - not_null
           - dbt_utils.not_constant
       - name: codes_postaux
+      - name: nom_region
+        data_tests:
+          - not_null
+          - dbt_utils.not_constant
+          - dbt_utils.not_empty_string
+      - name: nom_departement
+        data_tests:
+          - not_null
+          - dbt_utils.not_constant
+          - dbt_utils.not_empty_string
 
   - name: stg_decoupage_administratif__arrondissements
     config:
