@@ -23,10 +23,7 @@ final AS (
             WHEN LENGTH(presentation) <= 280 THEN presentation
             ELSE LEFT(presentation, 279) || '…'
         END                     AS "presentation_resume",
-        CASE
-            WHEN LENGTH(presentation) <= 280 THEN presentation
-            ELSE LEFT(presentation, 279) || '…'
-        END                     AS "presentation_detail",
+        presentation            AS "presentation_detail",
         id_structure            AS "adresse_id",
         CAST(NULL AS TEXT [])   AS "thematiques",
         CAST(date_maj AS DATE)  AS "date_maj"
