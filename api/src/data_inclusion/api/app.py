@@ -83,6 +83,11 @@ def create_app() -> fastapi.FastAPI:
 
     fastapi_pagination.add_pagination(app)
 
+    @app.get("/robots.txt", include_in_schema=False)
+    def get_robots_txt():
+        content = "User-agent: *\nAllow: /api/v0/docs\nDisallow: /\n"
+        return fastapi.Response(content=content, media_type="text/plain")
+
     return app
 
 
