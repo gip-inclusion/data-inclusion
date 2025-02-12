@@ -34,3 +34,8 @@ def test_create_token(api_client):
         "sub": "foo@bar.com",
         "admin": False,
     }
+
+
+def test_robots(api_client):
+    response = api_client.get("/robots.txt")
+    assert response.content == b"User-agent: *\nAllow: /api/v0/docs\nDisallow: /\n"
