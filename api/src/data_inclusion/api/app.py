@@ -11,8 +11,10 @@ from data_inclusion.api import auth
 from data_inclusion.api.auth.routes import router as auth_api_router
 from data_inclusion.api.config import settings
 from data_inclusion.api.core import db
-from data_inclusion.api.inclusion_data.routes import router as data_api_router
-from data_inclusion.api.inclusion_schema.routes import router as schema_api_router
+from data_inclusion.api.v0.inclusion_data.routes import router as data_api_router_v0
+from data_inclusion.api.v0.inclusion_schema.routes import router as schema_api_router_v0
+from data_inclusion.api.v1.inclusion_data.routes import router as data_api_router_v1
+from data_inclusion.api.v1.inclusion_schema.routes import router as schema_api_router_v1
 
 API_DESCRIPTION_PATH = Path(__file__).parent / "api_description.md"
 
@@ -53,7 +55,7 @@ def create_app() -> fastapi.FastAPI:
         servers=[{"url": settings.BASE_URL, "description": settings.ENV}],
         openapi_url="/api/openapi.json",
         description=description,
-        docs_url="/api/v0/docs",
+        docs_url="/api/v0/docs",  # TODO: check what to put here
         contact={
             "name": "data·inclusion",
             "email": "data-inclusion@inclusion.gouv.fr",
@@ -76,8 +78,14 @@ def create_app() -> fastapi.FastAPI:
 
     app.include_router(v0_api_router)
     app.include_router(
-        schema_api_router,
+        schema_api_router_v0,
         prefix="/api/v0/doc",
+        tags=["Documentation"],
+    )
+    app.include_router(v1_api_router)
+    app.include_router(
+        schema_api_router_v1,
+        prefix="/api/v1/doc",
         tags=["Documentation"],
     )
 
@@ -88,8 +96,13 @@ def create_app() -> fastapi.FastAPI:
 
 v0_api_router = fastapi.APIRouter(prefix="/api/v0")
 
-v0_api_router.include_router(data_api_router)
+v0_api_router.include_router(data_api_router_v0)
 v0_api_router.include_router(auth_api_router, include_in_schema=False)
+
+v1_api_router = fastapi.APIRouter(prefix="/api/v1")
+
+v1_api_router.include_router(data_api_router_v1)
+v1_api_router.include_router(auth_api_router, include_in_schema=False)
 
 
 app = create_app()
