@@ -4,14 +4,16 @@ from pydantic_settings import BaseSettings, SettingsConfigDict
 class Settings(BaseSettings):
     model_config = SettingsConfigDict(env_file=".env")
 
-    DEBUG: bool = False
+    ALLOWED_HOSTS: list[str] = ["api.data.inclusion.gouv.fr"]
     BASE_URL: str = "https://api.data.inclusion.gouv.fr"
-    DATABASE_URL: str
-    SECRET_KEY: str
     CORS_ALLOWED_ORIGINS: list[str] = ["*"]
-    TOKEN_ENABLED: bool = True
-    SENTRY_DSN: str | None = None
+    DATABASE_URL: str
+    DEBUG: bool = False
     ENV: str = "prod"
+    SECRET_KEY: str
+    SENTRY_DSN: str | None = None
+    TOKEN_ENABLED: bool = True
+
     SOLIGUIDE_API_URL: str = "https://api.soliguide.fr"
     SOLIGUIDE_API_TOKEN: str | None = None
 

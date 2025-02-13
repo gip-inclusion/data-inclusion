@@ -5,7 +5,7 @@ import sentry_sdk
 
 import fastapi
 import fastapi_pagination
-from fastapi.middleware import cors
+from fastapi.middleware import cors, trustedhost
 
 from data_inclusion.api import auth
 from data_inclusion.api.auth.routes import router as auth_api_router
@@ -71,6 +71,12 @@ def create_app() -> fastapi.FastAPI:
 
     if settings.ENV == "dev":
         setup_debug_toolbar_middleware(app)
+
+    if settings.ENV in ["prod", "staging"]:
+        app.add_middleware(
+            trustedhost.TrustedHostMiddleware,
+            allowed_hosts=settings.ALLOWED_HOSTS,
+        )
 
     app.middleware("http")(db.db_session_middleware)
 
