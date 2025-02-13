@@ -2740,17 +2740,7 @@
             },
             "doublons": {
               "items": {
-                "prefixItems": [
-                  {
-                    "type": "string"
-                  },
-                  {
-                    "type": "string"
-                  }
-                ],
-                "type": "array",
-                "maxItems": 2,
-                "minItems": 2
+                "$ref": "#/components/schemas/SourceIdDict"
               },
               "type": "array",
               "title": "Doublons",
@@ -3466,6 +3456,24 @@
             "description"
           ],
           "title": "Source"
+        },
+        "SourceIdDict": {
+          "properties": {
+            "source": {
+              "type": "string",
+              "title": "Source"
+            },
+            "id": {
+              "type": "string",
+              "title": "Id"
+            }
+          },
+          "type": "object",
+          "required": [
+            "source",
+            "id"
+          ],
+          "title": "SourceIdDict"
         },
         "Thematique": {
           "type": "string",

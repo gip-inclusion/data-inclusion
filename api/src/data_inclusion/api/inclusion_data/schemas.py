@@ -1,7 +1,7 @@
 from textwrap import dedent
 from typing import Annotated
 
-from pydantic import BaseModel, ConfigDict, Field, field_serializer
+from pydantic import BaseModel, ConfigDict, Field
 
 from data_inclusion import schema
 
@@ -63,16 +63,15 @@ class DetailedStructure(Structure):
     services: list[Service]
 
 
+class SourceIdDict(BaseModel):
+    source: str
+    id: str
+
+
 class ListedStructure(Structure):
     doublons: Annotated[
-        list[schema.Structure],
+        list[SourceIdDict],
         Field(
             description="Identifiants (source, id) des doublons connus de la structure",
         ),
     ]
-
-    @field_serializer("doublons")
-    def serialize_doublons(
-        self, doublons: list[schema.Structure]
-    ) -> list[tuple[str, str]]:
-        return [(d.source, d.id) for d in doublons]
