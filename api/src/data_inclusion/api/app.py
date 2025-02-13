@@ -40,8 +40,9 @@ def create_app() -> fastapi.FastAPI:
     # sentry must be initialized before app
     sentry_sdk.init(
         dsn=settings.SENTRY_DSN,
+        send_default_pii=True,  # get IP address & headers, useful to identify bots
         traces_sample_rate=1.0,
-        enable_tracing=True,
+        profiles_sample_rate=0.1,  # 10% of sampled requests will also be profiled
         environment=settings.ENV,
     )
 

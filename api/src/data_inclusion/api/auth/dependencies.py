@@ -1,3 +1,4 @@
+import sentry_sdk
 from starlette.authentication import AuthCredentials, SimpleUser, UnauthenticatedUser
 
 import fastapi
@@ -67,6 +68,8 @@ async def authenticated(
     """Ensure the request is authenticated"""
     if not request.user.is_authenticated:
         raise fastapi.HTTPException(status_code=status.HTTP_403_FORBIDDEN)
+
+    sentry_sdk.set_user({"username": request.user.username})
 
 
 authenticated_dependency = fastapi.Security(authenticated, scopes=["authenticated"])
