@@ -1428,8 +1428,8 @@ def test_retrieve_service_and_notify_soliguide(
         (
             "cluster_a",
             "cluster_a",
-            [["src_2", "second"]],
-            [["src_1", "first"]],
+            [{"source": "src_2", "id": "second"}],
+            [{"source": "src_1", "id": "first"}],
         ),
     ],
 )
