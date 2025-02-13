@@ -1,9 +1,9 @@
 import pytest
 import sqlalchemy as sqla
 
-from data_inclusion.api.analytics import models
+from data_inclusion.api.v0.analytics import models
 
-from ... import factories
+from .... import factories
 
 DUNKERQUE = {"code_insee": "59183", "latitude": 51.0361, "longitude": 2.3770}
 HAZEBROUCK = {"code_insee": "59295", "latitude": 50.7262, "longitude": 2.5387}

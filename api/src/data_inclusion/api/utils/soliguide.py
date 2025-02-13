@@ -8,7 +8,7 @@ import fastapi
 
 from data_inclusion.api.config import settings
 from data_inclusion.api.core import db
-from data_inclusion.api.inclusion_data import models
+from data_inclusion.api.v0.inclusion_data import models
 
 logger = logging.getLogger(__name__)
 

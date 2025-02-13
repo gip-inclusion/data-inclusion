@@ -14,13 +14,13 @@ import fastapi
 # TODO(vmttn): handle pagination outside ?
 from fastapi_pagination.ext.sqlalchemy import paginate
 
-from data_inclusion import schema as di_schema
 from data_inclusion.api.decoupage_administratif.constants import (
     Departement,
     Region,
 )
 from data_inclusion.api.decoupage_administratif.models import Commune
-from data_inclusion.api.inclusion_data import models
+from data_inclusion.api.v0.inclusion_data import models
+from data_inclusion.api.v0.inclusion_schema import legacy as di_schema
 
 logger = logging.getLogger(__name__)
 

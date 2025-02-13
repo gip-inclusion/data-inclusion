@@ -4,7 +4,7 @@ import click
 
 from data_inclusion.api import auth
 from data_inclusion.api.decoupage_administratif.commands import import_communes
-from data_inclusion.api.inclusion_data.commands import load_inclusion_data
+from data_inclusion.api.v0.inclusion_data.commands import load_inclusion_data
 
 logger = logging.getLogger(__name__)
 
