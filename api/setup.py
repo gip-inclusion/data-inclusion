@@ -47,6 +47,7 @@ setup(
             "pytest-dotenv",
             "fastapi-debug-toolbar",
             "syrupy",
+            "locust",
         ],
         "dev": [
             "fastapi-debug-toolbar",
