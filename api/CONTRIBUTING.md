@@ -33,38 +33,21 @@ uvicorn data_inclusion.api.app:app --reload
 ## Initialize the Database with Data from staging or prod
 
 ### Prerequisites:
+
 1. Launch Docker Compose.
 2. Set up MinIO alias.
 
 Check the [Deployment Guide](../DEPLOYMENT.md) for more details.
 
 ```bash
-# Copy staging (or production) data mart to your local MinIO instance
-mc cp --recursive staging/data-inclusion-datalake-staging-sincere-buzzard/data/marts/2024-06-12/ dev/data-inclusion-lake/data/marts/2024-06-12
+# (Optional) Copy staging (or production) data mart to your local MinIO instance
+mc cp --recursive \
+    staging/data-inclusion-datalake-staging-sincere-buzzard/data/marts/2024-06-12/ \
+    dev/data-inclusion-lake/data/marts/2024-06-12
 
-# Activate the virtual environment and install dependencies
-source .venv/bin/activate
-
-# Launch command to import the Admin Express database
-python src/data_inclusion/api/cli.py import_admin_express
-
-# Launch command to import data
-python src/data_inclusion/api/cli.py load_inclusion_data
-```
-
-## Initialize the Database with data compute by airflow locally
-
-You can also run locally airflow (with potentially less sources or only the sources that interest you).
-After running the main dag:
-```bash
-# Activate the virtual environment and install dependencies
-source .venv/bin/activate
-
-# Launch command to import the Admin Express database
-python src/data_inclusion/api/cli.py import_communes
-
-# Launch command to import data
-python src/data_inclusion/api/cli.py load_inclusion_data
+# Load data
+data-inclusion-api import_communes
+data-inclusion-api load_inclusion_data
 ```
 
 ## Running the test suite
@@ -72,6 +55,12 @@ python src/data_inclusion/api/cli.py load_inclusion_data
 ```bash
 # simply use tox (for reproducible environnement, packaging errors, etc.)
 tox
+```
+
+## Running the benchmark
+
+```bash
+locust --headless -u 3 -t 60s -H http://127.0.0.1:8001
 ```
 
 ## Managing the app requirements

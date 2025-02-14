@@ -14,9 +14,14 @@ argon2-cffi==23.1.0
     # via minio
 argon2-cffi-bindings==21.2.0
     # via argon2-cffi
+blinker==1.9.0
+    # via flask
+brotli==1.1.0
+    # via geventhttpclient
 certifi==2024.12.14
     # via
     #   data-inclusion-api (setup.py)
+    #   geventhttpclient
     #   httpcore
     #   httpx
     #   minio
@@ -33,7 +38,10 @@ charset-normalizer==3.4.1
 click==8.1.8
     # via
     #   data-inclusion-api (setup.py)
+    #   flask
     #   uvicorn
+configargparse==1.7
+    # via locust
 cryptography==44.0.0
     # via data-inclusion-api (setup.py)
 data-inclusion-schema==0.20.0
@@ -57,14 +65,29 @@ fastapi-debug-toolbar==0.6.3
     # via data-inclusion-api (setup.py)
 fastapi-pagination==0.12.34
     # via data-inclusion-api (setup.py)
+flask==3.1.0
+    # via
+    #   flask-cors
+    #   flask-login
+    #   locust
+flask-cors==5.0.0
+    # via locust
+flask-login==0.6.3
+    # via locust
 furl==2.1.3
     # via data-inclusion-api (setup.py)
 geoalchemy2==0.17.0
     # via data-inclusion-api (setup.py)
 geopandas==1.0.1
     # via data-inclusion-api (setup.py)
+gevent==24.11.1
+    # via geventhttpclient
+geventhttpclient==2.3.3
+    # via locust
 greenlet==3.1.1
-    # via sqlalchemy
+    # via
+    #   gevent
+    #   sqlalchemy
 gunicorn==23.0.0
     # via data-inclusion-api (setup.py)
 h11==0.14.0
@@ -85,18 +108,26 @@ idna==3.10
     #   requests
 iniconfig==2.0.0
     # via pytest
+itsdangerous==2.2.0
+    # via flask
 jinja2==3.1.5
     # via
     #   data-inclusion-api (setup.py)
     #   fastapi-debug-toolbar
+    #   flask
+locust==2.32.9
+    # via data-inclusion-api (setup.py)
 mako==1.3.8
     # via alembic
 markupsafe==3.0.2
     # via
     #   jinja2
     #   mako
+    #   werkzeug
 minio==7.2.14
     # via data-inclusion-api (setup.py)
+msgpack==1.1.0
+    # via locust
 numpy==2.2.1
     # via
     #   data-inclusion-api (setup.py)
@@ -121,6 +152,8 @@ pendulum==3.0.0
     # via data-inclusion-schema
 pluggy==1.5.0
     # via pytest
+psutil==7.0.0
+    # via locust
 psycopg2==2.9.10
     # via data-inclusion-api (setup.py)
 pyarrow==18.1.0
@@ -179,10 +212,19 @@ pytz==2024.2
     #   pandas
 pyyaml==6.0.2
     # via uvicorn
+pyzmq==26.2.1
+    # via locust
 requests==2.32.3
-    # via data-inclusion-api (setup.py)
+    # via
+    #   data-inclusion-api (setup.py)
+    #   locust
 sentry-sdk==2.20.0
     # via data-inclusion-api (setup.py)
+setuptools==75.8.0
+    # via
+    #   locust
+    #   zope-event
+    #   zope-interface
 shapely==2.0.6
     # via geopandas
 six==1.17.0
@@ -225,6 +267,7 @@ tzdata==2024.2
     #   pendulum
 urllib3==2.3.0
     # via
+    #   geventhttpclient
     #   minio
     #   requests
     #   sentry-sdk
@@ -236,3 +279,12 @@ watchfiles==1.0.4
     # via uvicorn
 websockets==14.1
     # via uvicorn
+werkzeug==3.1.3
+    # via
+    #   flask
+    #   flask-login
+    #   locust
+zope-event==5.0
+    # via gevent
+zope-interface==7.2
+    # via gevent
