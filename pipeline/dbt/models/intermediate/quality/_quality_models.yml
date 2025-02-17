@@ -43,6 +43,7 @@ models:
           - formations
           - garages
           - lieux
+          - offres
           - organisations
           - permis_velo
           - services
