@@ -2,6 +2,10 @@ WITH structures AS (
     SELECT * FROM {{ ref('int__union_structures__enhanced') }}
 ),
 
+doublons AS (
+    SELECT * FROM {{ ref('int__doublons_structures') }}
+),
+
 final AS (
     SELECT
         {{
@@ -14,8 +18,10 @@ final AS (
                     'adresse_id',
                 ]
             )
-        }}
+        }},
+        doublons.cluster_id
     FROM structures
+    LEFT JOIN doublons ON structures._di_surrogate_id = doublons.structure_id
     WHERE structures.source != 'finess'
 )
 
