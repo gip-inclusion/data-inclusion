@@ -152,6 +152,13 @@ class ServiceFactory(factory.alchemy.SQLAlchemyModelFactory):
         ],
         getter=lambda v: [v.value],
     )
+    mobilisable_par = factory.Iterator(
+        [
+            di_schema.MobilisablePar.PROFESSIONNELS,
+            di_schema.MobilisablePar.USAGERS,
+        ],
+        getter=lambda v: [v.value],
+    )
     modes_orientation_beneficiaire_autres = None
     zone_diffusion_type = None
     zone_diffusion_code = None
