@@ -1,0 +1,4696 @@
+# serializer version: 1
+# name: test_openapi_spec
+  '''
+  {
+    "openapi": "3.1.0",
+    "info": {
+      "title": "data·inclusion API",
+      "description": "### URL de base\n\nL'API est utilisable à partir de l'URL de base suivante:\n\n```\nhttp://testserver\n```\n\nPar exemple, l'adresse complète (URL) correspondant à une recherche de services,\nsans paramètres additionnels, est:\n\n```\nhttp://testserver/api/v0/search/services\n```\n\n\n\n### Token\n\nUn token est nécessaire pour accéder aux données.\n\nLes demandes de tokens s'effectuent via [ce formulaire](https://tally.so/r/mYjJ85). L'équipe data·inclusion prendra contact avec vous.\n\nLe token doit être renseigné dans chaque requête via un header:\n`Authorization: Bearer <VOTRE_TOKEN>`.\n\n### Schéma des données\n\nLes données utilisent le schéma data·inclusion. Ce schéma comprend deux modèles principaux :\n\n* les structures proposant des services\n* les services proposés par ces structures\n\nCes deux modèles utilisent des référentiels faisant également partie du schéma data·inclusion : les types de structures et de services, les thématiques, etc.\n\nPlus d'informations sur le\n[dépôt](https://github.com/gip-inclusion/data-inclusion-schema) versionnant le schéma,\nsur la [documentation officielle](https://data.inclusion.gouv.fr/outils-et-documentation/schema-de-donnees/)\nou sur la page [schema.gouv](https://schema.data.gouv.fr/gip-inclusion/data-inclusion-schema/) du schéma.\n\n### Sources des données\n\nLes données data·inclusion sont issues d'un ensemble de sources (emplois de l'inclusion, France Travail, etc.).\n\nLe endpoint `/sources` permet de lister les sources disponibles.\n\n\n### Filtrer géographiquement les données\n\nLes données renvoyées par certains endpoints peuvent être filtrées géographiquement.\n\nLes codes communes, départements et régions utilisés sont issus de l'API [découpage administratif](https://geo.api.gouv.fr/decoupage-administratif).\n\nL'[api de la base adresse nationale](https://adresse.data.gouv.fr/api-doc/adresse) est utilisée afin d'automatiser l'identification de codes insee associés à partir d'adresses ou de parties d'adresses (e.g. nom de commune, code postal).\n\n\n### Nous contacter\n\n#### via notre [formulaire de contact](https://data.inclusion.gouv.fr/nous-contacter/)\n\n#### par mail à [data-inclusion@inclusion.gouv.fr](mailto:data-inclusion@inclusion.gouv.fr)",
+      "contact": {
+        "name": "data·inclusion",
+        "url": "https://data.inclusion.gouv.fr/",
+        "email": "data-inclusion@inclusion.gouv.fr"
+      },
+      "version": "0.1.0"
+    },
+    "servers": [
+      {
+        "url": "http://testserver",
+        "description": "test"
+      }
+    ],
+    "paths": {
+      "/api/v0/structures": {
+        "get": {
+          "tags": [
+            "Données"
+          ],
+          "summary": "Lister les structures consolidées",
+          "operationId": "list_structures_endpoint_api_v0_structures_get",
+          "security": [
+            {
+              "HTTPBearer": []
+            }
+          ],
+          "parameters": [
+            {
+              "name": "sources",
+              "in": "query",
+              "required": false,
+              "schema": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                },
+                "description": "Une liste d'identifiants de source.\n                La liste des identifiants de source est disponible sur le endpoint\n                dédié. Les résultats seront limités aux sources spécifiées.\n            ",
+                "title": "Sources"
+              },
+              "description": "Une liste d'identifiants de source.\n                La liste des identifiants de source est disponible sur le endpoint\n                dédié. Les résultats seront limités aux sources spécifiées.\n            "
+            },
+            {
+              "name": "typologie",
+              "in": "query",
+              "required": false,
+              "schema": {
+                "$ref": "#/components/schemas/Typologie"
+              }
+            },
+            {
+              "name": "label_national",
+              "in": "query",
+              "required": false,
+              "schema": {
+                "$ref": "#/components/schemas/LabelNational"
+              }
+            },
+            {
+              "name": "thematiques",
+              "in": "query",
+              "required": false,
+              "schema": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/Thematique"
+                },
+                "description": "Une liste de thématique.\n                Chaque résultat renvoyé a (au moins) une thématique dans cette liste.",
+                "title": "Thematiques"
+              },
+              "description": "Une liste de thématique.\n                Chaque résultat renvoyé a (au moins) une thématique dans cette liste."
+            },
+            {
+              "name": "code_region",
+              "in": "query",
+              "required": false,
+              "schema": {
+                "$ref": "#/components/schemas/RegionCodeEnum",
+                "description": "Code insee géographique d'une région."
+              },
+              "description": "Code insee géographique d'une région."
+            },
+            {
+              "name": "slug_region",
+              "in": "query",
+              "required": false,
+              "schema": {
+                "$ref": "#/components/schemas/RegionSlugEnum"
+              }
+            },
+            {
+              "name": "code_departement",
+              "in": "query",
+              "required": false,
+              "schema": {
+                "$ref": "#/components/schemas/DepartementCodeEnum",
+                "description": "Code insee géographique d'un département."
+              },
+              "description": "Code insee géographique d'un département."
+            },
+            {
+              "name": "slug_departement",
+              "in": "query",
+              "required": false,
+              "schema": {
+                "$ref": "#/components/schemas/DepartementSlugEnum"
+              }
+            },
+            {
+              "name": "code_commune",
+              "in": "query",
+              "required": false,
+              "schema": {
+                "type": "string",
+                "minLength": 5,
+                "maxLength": 5,
+                "pattern": "^\\w{5}$",
+                "description": "Code insee géographique d'une commune.",
+                "title": "Code Commune"
+              },
+              "description": "Code insee géographique d'une commune."
+            },
+            {
+              "name": "page",
+              "in": "query",
+              "required": false,
+              "schema": {
+                "type": "integer",
+                "minimum": 1,
+                "description": "Page number",
+                "default": 1,
+                "title": "Page"
+              },
+              "description": "Page number"
+            },
+            {
+              "name": "size",
+              "in": "query",
+              "required": false,
+              "schema": {
+                "type": "integer",
+                "maximum": 1000,
+                "minimum": 1,
+                "description": "Page size",
+                "default": 500,
+                "title": "Size"
+              },
+              "description": "Page size"
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "Successful Response",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/CustomizedPage_Structure_"
+                  }
+                }
+              }
+            },
+            "422": {
+              "description": "Validation Error",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/HTTPValidationError"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "/api/v0/structures/{source}/{id}": {
+        "get": {
+          "tags": [
+            "Données"
+          ],
+          "summary": "Détailler une structure",
+          "operationId": "retrieve_structure_endpoint_api_v0_structures__source___id__get",
+          "security": [
+            {
+              "HTTPBearer": []
+            }
+          ],
+          "parameters": [
+            {
+              "name": "source",
+              "in": "path",
+              "required": true,
+              "schema": {
+                "type": "string",
+                "title": "Source"
+              }
+            },
+            {
+              "name": "id",
+              "in": "path",
+              "required": true,
+              "schema": {
+                "type": "string",
+                "title": "Id"
+              }
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "Successful Response",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/DetailedStructure"
+                  }
+                }
+              }
+            },
+            "422": {
+              "description": "Validation Error",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/HTTPValidationError"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "/api/v0/sources": {
+        "get": {
+          "tags": [
+            "Données"
+          ],
+          "summary": "Lister les sources consolidées",
+          "operationId": "list_sources_endpoint_api_v0_sources_get",
+          "responses": {
+            "200": {
+              "description": "Successful Response",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "items": {
+                      "$ref": "#/components/schemas/Source"
+                    },
+                    "type": "array",
+                    "title": "Response List Sources Endpoint Api V0 Sources Get"
+                  }
+                }
+              }
+            }
+          },
+          "security": [
+            {
+              "HTTPBearer": []
+            }
+          ]
+        }
+      },
+      "/api/v0/services": {
+        "get": {
+          "tags": [
+            "Données"
+          ],
+          "summary": "Lister les services consolidés",
+          "operationId": "list_services_endpoint_api_v0_services_get",
+          "security": [
+            {
+              "HTTPBearer": []
+            }
+          ],
+          "parameters": [
+            {
+              "name": "sources",
+              "in": "query",
+              "required": false,
+              "schema": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                },
+                "description": "Une liste d'identifiants de source.\n                La liste des identifiants de source est disponible sur le endpoint\n                dédié. Les résultats seront limités aux sources spécifiées.\n            ",
+                "title": "Sources"
+              },
+              "description": "Une liste d'identifiants de source.\n                La liste des identifiants de source est disponible sur le endpoint\n                dédié. Les résultats seront limités aux sources spécifiées.\n            "
+            },
+            {
+              "name": "thematiques",
+              "in": "query",
+              "required": false,
+              "schema": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/Thematique"
+                },
+                "description": "Une liste de thématique.\n                Chaque résultat renvoyé a (au moins) une thématique dans cette liste.",
+                "title": "Thematiques"
+              },
+              "description": "Une liste de thématique.\n                Chaque résultat renvoyé a (au moins) une thématique dans cette liste."
+            },
+            {
+              "name": "code_region",
+              "in": "query",
+              "required": false,
+              "schema": {
+                "$ref": "#/components/schemas/RegionCodeEnum",
+                "description": "Code insee géographique d'une région."
+              },
+              "description": "Code insee géographique d'une région."
+            },
+            {
+              "name": "slug_region",
+              "in": "query",
+              "required": false,
+              "schema": {
+                "$ref": "#/components/schemas/RegionSlugEnum"
+              }
+            },
+            {
+              "name": "code_departement",
+              "in": "query",
+              "required": false,
+              "schema": {
+                "$ref": "#/components/schemas/DepartementCodeEnum",
+                "description": "Code insee géographique d'un département."
+              },
+              "description": "Code insee géographique d'un département."
+            },
+            {
+              "name": "slug_departement",
+              "in": "query",
+              "required": false,
+              "schema": {
+                "$ref": "#/components/schemas/DepartementSlugEnum"
+              }
+            },
+            {
+              "name": "code_commune",
+              "in": "query",
+              "required": false,
+              "schema": {
+                "type": "string",
+                "minLength": 5,
+                "maxLength": 5,
+                "pattern": "^\\w{5}$",
+                "description": "Code insee géographique d'une commune.",
+                "title": "Code Commune"
+              },
+              "description": "Code insee géographique d'une commune."
+            },
+            {
+              "name": "frais",
+              "in": "query",
+              "required": false,
+              "schema": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/Frais"
+                },
+                "description": "Une liste de frais.\n                Chaque résultat renvoyé a (au moins) un frais dans cette liste.",
+                "title": "Frais"
+              },
+              "description": "Une liste de frais.\n                Chaque résultat renvoyé a (au moins) un frais dans cette liste."
+            },
+            {
+              "name": "profils",
+              "in": "query",
+              "required": false,
+              "schema": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/Profil"
+                },
+                "description": "Une liste de profils.\n                Chaque résultat renvoyé a (au moins) un profil dans cette liste.\n            ",
+                "title": "Profils"
+              },
+              "description": "Une liste de profils.\n                Chaque résultat renvoyé a (au moins) un profil dans cette liste.\n            "
+            },
+            {
+              "name": "recherche_public",
+              "in": "query",
+              "required": false,
+              "schema": {
+                "type": "string",
+                "description": "Une recherche en texte intégral parmi toutes\n              les valeurs \"publics\" que nous collectons chez nos producteurs de données.\n            ",
+                "title": "Recherche Public"
+              },
+              "description": "Une recherche en texte intégral parmi toutes\n              les valeurs \"publics\" que nous collectons chez nos producteurs de données.\n            "
+            },
+            {
+              "name": "modes_accueil",
+              "in": "query",
+              "required": false,
+              "schema": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/ModeAccueil"
+                },
+                "description": "Une liste de modes d'accueil.\n                Chaque résultat renvoyé a (au moins) un mode d'accueil dans cette liste.\n            ",
+                "title": "Modes Accueil"
+              },
+              "description": "Une liste de modes d'accueil.\n                Chaque résultat renvoyé a (au moins) un mode d'accueil dans cette liste.\n            "
+            },
+            {
+              "name": "types",
+              "in": "query",
+              "required": false,
+              "schema": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/TypologieService"
+                },
+                "description": "Une liste de typologies de service.\n                Chaque résultat renvoyé a (au moins) une typologie dans cette liste.",
+                "title": "Types"
+              },
+              "description": "Une liste de typologies de service.\n                Chaque résultat renvoyé a (au moins) une typologie dans cette liste."
+            },
+            {
+              "name": "score_qualite_minimum",
+              "in": "query",
+              "required": false,
+              "schema": {
+                "type": "number",
+                "description": "[BETA] Score de qualité minimum.\n                Les résultats renvoyés ont un score de qualité supérieur ou égal à ce\n                score.",
+                "title": "Score Qualite Minimum"
+              },
+              "description": "[BETA] Score de qualité minimum.\n                Les résultats renvoyés ont un score de qualité supérieur ou égal à ce\n                score."
+            },
+            {
+              "name": "inclure_suspendus",
+              "in": "query",
+              "required": false,
+              "schema": {
+                "type": "boolean",
+                "description": "Inclure les services ayant une date de suspension dépassée.\n                Ils sont exclus par défaut.\n            ",
+                "default": false,
+                "title": "Inclure Suspendus"
+              },
+              "description": "Inclure les services ayant une date de suspension dépassée.\n                Ils sont exclus par défaut.\n            "
+            },
+            {
+              "name": "page",
+              "in": "query",
+              "required": false,
+              "schema": {
+                "type": "integer",
+                "minimum": 1,
+                "description": "Page number",
+                "default": 1,
+                "title": "Page"
+              },
+              "description": "Page number"
+            },
+            {
+              "name": "size",
+              "in": "query",
+              "required": false,
+              "schema": {
+                "type": "integer",
+                "maximum": 1000,
+                "minimum": 1,
+                "description": "Page size",
+                "default": 500,
+                "title": "Size"
+              },
+              "description": "Page size"
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "Successful Response",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/CustomizedPage_Service_"
+                  }
+                }
+              }
+            },
+            "422": {
+              "description": "Validation Error",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/HTTPValidationError"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "/api/v0/services/{source}/{id}": {
+        "get": {
+          "tags": [
+            "Données"
+          ],
+          "summary": "Détailler un service",
+          "operationId": "retrieve_service_endpoint_api_v0_services__source___id__get",
+          "security": [
+            {
+              "HTTPBearer": []
+            }
+          ],
+          "parameters": [
+            {
+              "name": "source",
+              "in": "path",
+              "required": true,
+              "schema": {
+                "type": "string",
+                "title": "Source"
+              }
+            },
+            {
+              "name": "id",
+              "in": "path",
+              "required": true,
+              "schema": {
+                "type": "string",
+                "title": "Id"
+              }
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "Successful Response",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/DetailedService"
+                  }
+                }
+              }
+            },
+            "422": {
+              "description": "Validation Error",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/HTTPValidationError"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "/api/v0/search/services": {
+        "get": {
+          "tags": [
+            "Données"
+          ],
+          "summary": "Rechercher des services",
+          "description": "## Rechercher des services\n\nLa recherche de services permet de trouver des services dans une commune et à\nproximité.\n\nLes services peuvent être filtrés selon par thématiques, frais, typologies et\ncode_insee de commune.\n\nEn particulier, lorsqu'un `code_commune` est fourni :\n\n* les services sont filtrés par zone de diffusion lorsque celle-ci est définie.\n* de plus, les services en présentiel sont filtrés dans un rayon de 50km autour de\nla commune ou du point de recherche fourni.\n* le champ `distance` est :\n    * rempli pour les services (non exclusivement) en présentiel.\n    * laissé vide pour les services à distance et par défaut si le mode d'accueil\n    n'est pas définie.\n* les résultats sont triés par distance croissante.",
+          "operationId": "search_services_endpoint_api_v0_search_services_get",
+          "security": [
+            {
+              "HTTPBearer": []
+            }
+          ],
+          "parameters": [
+            {
+              "name": "sources",
+              "in": "query",
+              "required": false,
+              "schema": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                },
+                "description": "Une liste d'identifiants de source.\n                La liste des identifiants de source est disponible sur le endpoint\n                dédié. Les résultats seront limités aux sources spécifiées.\n            ",
+                "title": "Sources"
+              },
+              "description": "Une liste d'identifiants de source.\n                La liste des identifiants de source est disponible sur le endpoint\n                dédié. Les résultats seront limités aux sources spécifiées.\n            "
+            },
+            {
+              "name": "code_commune",
+              "in": "query",
+              "required": false,
+              "schema": {
+                "type": "string",
+                "minLength": 5,
+                "maxLength": 5,
+                "pattern": "^\\w{5}$",
+                "description": "Code insee de la commune considérée.\n                Si fourni, les résultats inclus également les services proches de\n                cette commune. Les résultats sont triés par ordre de distance\n                croissante.\n            ",
+                "title": "Code Commune"
+              },
+              "description": "Code insee de la commune considérée.\n                Si fourni, les résultats inclus également les services proches de\n                cette commune. Les résultats sont triés par ordre de distance\n                croissante.\n            "
+            },
+            {
+              "name": "lat",
+              "in": "query",
+              "required": false,
+              "schema": {
+                "type": "number",
+                "description": "Latitude du point de recherche.\n                Nécessite également de fournir `lon`.\n                Les résultats sont triés par ordre de distance croissante à ce point.\n            ",
+                "title": "Lat"
+              },
+              "description": "Latitude du point de recherche.\n                Nécessite également de fournir `lon`.\n                Les résultats sont triés par ordre de distance croissante à ce point.\n            "
+            },
+            {
+              "name": "lon",
+              "in": "query",
+              "required": false,
+              "schema": {
+                "type": "number",
+                "description": "Longitude du point de recherche.\n                Nécessite également de fournir `lat`.\n                Les résultats sont triés par ordre de distance croissante à ce point.\n            ",
+                "title": "Lon"
+              },
+              "description": "Longitude du point de recherche.\n                Nécessite également de fournir `lat`.\n                Les résultats sont triés par ordre de distance croissante à ce point.\n            "
+            },
+            {
+              "name": "thematiques",
+              "in": "query",
+              "required": false,
+              "schema": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/Thematique"
+                },
+                "description": "Une liste de thématique.\n                Chaque résultat renvoyé a (au moins) une thématique dans cette liste.",
+                "title": "Thematiques"
+              },
+              "description": "Une liste de thématique.\n                Chaque résultat renvoyé a (au moins) une thématique dans cette liste."
+            },
+            {
+              "name": "frais",
+              "in": "query",
+              "required": false,
+              "schema": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/Frais"
+                },
+                "description": "Une liste de frais.\n                Chaque résultat renvoyé a (au moins) un frais dans cette liste.",
+                "title": "Frais"
+              },
+              "description": "Une liste de frais.\n                Chaque résultat renvoyé a (au moins) un frais dans cette liste."
+            },
+            {
+              "name": "modes_accueil",
+              "in": "query",
+              "required": false,
+              "schema": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/ModeAccueil"
+                },
+                "description": "Une liste de modes d'accueil.\n                Chaque résultat renvoyé a (au moins) un mode d'accueil dans cette liste.\n            ",
+                "title": "Modes Accueil"
+              },
+              "description": "Une liste de modes d'accueil.\n                Chaque résultat renvoyé a (au moins) un mode d'accueil dans cette liste.\n            "
+            },
+            {
+              "name": "profils",
+              "in": "query",
+              "required": false,
+              "schema": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/Profil"
+                },
+                "description": "Une liste de profils.\n                Chaque résultat renvoyé a (au moins) un profil dans cette liste.\n            ",
+                "title": "Profils"
+              },
+              "description": "Une liste de profils.\n                Chaque résultat renvoyé a (au moins) un profil dans cette liste.\n            "
+            },
+            {
+              "name": "recherche_public",
+              "in": "query",
+              "required": false,
+              "schema": {
+                "type": "string",
+                "description": "Une recherche en texte intégral parmi toutes\n              les valeurs \"publics\" que nous collectons chez nos producteurs de données.\n            ",
+                "title": "Recherche Public"
+              },
+              "description": "Une recherche en texte intégral parmi toutes\n              les valeurs \"publics\" que nous collectons chez nos producteurs de données.\n            "
+            },
+            {
+              "name": "types",
+              "in": "query",
+              "required": false,
+              "schema": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/TypologieService"
+                },
+                "description": "Une liste de typologies de service.\n                Chaque résultat renvoyé a (au moins) une typologie dans cette liste.",
+                "title": "Types"
+              },
+              "description": "Une liste de typologies de service.\n                Chaque résultat renvoyé a (au moins) une typologie dans cette liste."
+            },
+            {
+              "name": "score_qualite_minimum",
+              "in": "query",
+              "required": false,
+              "schema": {
+                "type": "number",
+                "description": "Score de qualité minimum.\n                Les résultats renvoyés ont un score de qualité supérieur ou égal à ce\n                score.",
+                "title": "Score Qualite Minimum"
+              },
+              "description": "Score de qualité minimum.\n                Les résultats renvoyés ont un score de qualité supérieur ou égal à ce\n                score."
+            },
+            {
+              "name": "inclure_suspendus",
+              "in": "query",
+              "required": false,
+              "schema": {
+                "type": "boolean",
+                "description": "Inclure les services ayant une date de suspension dépassée.\n                Ils sont exclus par défaut.\n            ",
+                "default": false,
+                "title": "Inclure Suspendus"
+              },
+              "description": "Inclure les services ayant une date de suspension dépassée.\n                Ils sont exclus par défaut.\n            "
+            },
+            {
+              "name": "page",
+              "in": "query",
+              "required": false,
+              "schema": {
+                "type": "integer",
+                "minimum": 1,
+                "description": "Page number",
+                "default": 1,
+                "title": "Page"
+              },
+              "description": "Page number"
+            },
+            {
+              "name": "size",
+              "in": "query",
+              "required": false,
+              "schema": {
+                "type": "integer",
+                "maximum": 1000,
+                "minimum": 1,
+                "description": "Page size",
+                "default": 500,
+                "title": "Size"
+              },
+              "description": "Page size"
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "Successful Response",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/data_inclusion__api__utils__pagination__CustomizedPage_ServiceSearchResult___1"
+                  }
+                }
+              }
+            },
+            "422": {
+              "description": "Validation Error",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/HTTPValidationError"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "/api/v0/doc/labels-nationaux": {
+        "get": {
+          "tags": [
+            "Documentation"
+          ],
+          "summary": "Récupérer le référentiel des labels nationaux",
+          "operationId": "list_labels_nationaux_endpoint_api_v0_doc_labels_nationaux_get",
+          "responses": {
+            "200": {
+              "description": "Successful Response",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "items": {
+                      "$ref": "#/components/schemas/FrameworkValue"
+                    },
+                    "type": "array",
+                    "title": "Response List Labels Nationaux Endpoint Api V0 Doc Labels Nationaux Get"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "/api/v0/doc/thematiques": {
+        "get": {
+          "tags": [
+            "Documentation"
+          ],
+          "summary": "Récupérer le référentiel des thématiques",
+          "operationId": "list_thematiques_endpoint_api_v0_doc_thematiques_get",
+          "responses": {
+            "200": {
+              "description": "Successful Response",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "items": {
+                      "$ref": "#/components/schemas/FrameworkValue"
+                    },
+                    "type": "array",
+                    "title": "Response List Thematiques Endpoint Api V0 Doc Thematiques Get"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "/api/v0/doc/typologies-services": {
+        "get": {
+          "tags": [
+            "Documentation"
+          ],
+          "summary": "Récupérer le référentiel des typologies de services",
+          "operationId": "list_typologies_services_endpoint_api_v0_doc_typologies_services_get",
+          "responses": {
+            "200": {
+              "description": "Successful Response",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "items": {
+                      "$ref": "#/components/schemas/FrameworkValue"
+                    },
+                    "type": "array",
+                    "title": "Response List Typologies Services Endpoint Api V0 Doc Typologies Services Get"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "/api/v0/doc/frais": {
+        "get": {
+          "tags": [
+            "Documentation"
+          ],
+          "summary": "Récupérer le référentiel des frais",
+          "operationId": "list_frais_endpoint_api_v0_doc_frais_get",
+          "responses": {
+            "200": {
+              "description": "Successful Response",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "items": {
+                      "$ref": "#/components/schemas/FrameworkValue"
+                    },
+                    "type": "array",
+                    "title": "Response List Frais Endpoint Api V0 Doc Frais Get"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "/api/v0/doc/profils": {
+        "get": {
+          "tags": [
+            "Documentation"
+          ],
+          "summary": "Récupérer le référentiel des profils de publics",
+          "operationId": "list_profils_endpoint_api_v0_doc_profils_get",
+          "responses": {
+            "200": {
+              "description": "Successful Response",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "items": {
+                      "$ref": "#/components/schemas/FrameworkValue"
+                    },
+                    "type": "array",
+                    "title": "Response List Profils Endpoint Api V0 Doc Profils Get"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "/api/v0/doc/typologies-structures": {
+        "get": {
+          "tags": [
+            "Documentation"
+          ],
+          "summary": "Récupérer le référentiel des typologies de structures",
+          "operationId": "list_typologies_structures_endpoint_api_v0_doc_typologies_structures_get",
+          "responses": {
+            "200": {
+              "description": "Successful Response",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "items": {
+                      "$ref": "#/components/schemas/FrameworkValue"
+                    },
+                    "type": "array",
+                    "title": "Response List Typologies Structures Endpoint Api V0 Doc Typologies Structures Get"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "/api/v0/doc/modes-accueil": {
+        "get": {
+          "tags": [
+            "Documentation"
+          ],
+          "summary": "Récupérer le référentiel des modes d'accueil",
+          "operationId": "list_modes_accueil_endpoint_api_v0_doc_modes_accueil_get",
+          "responses": {
+            "200": {
+              "description": "Successful Response",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "items": {
+                      "$ref": "#/components/schemas/FrameworkValue"
+                    },
+                    "type": "array",
+                    "title": "Response List Modes Accueil Endpoint Api V0 Doc Modes Accueil Get"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "/api/v0/doc/modes-orientation-accompagnateur": {
+        "get": {
+          "tags": [
+            "Documentation"
+          ],
+          "summary": "Récupérer le référentiel des modes d'orientation de l'accompagnateur",
+          "operationId": "list_modes_orientation_accompagnateur_endpoint_api_v0_doc_modes_orientation_accompagnateur_get",
+          "responses": {
+            "200": {
+              "description": "Successful Response",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "items": {
+                      "$ref": "#/components/schemas/FrameworkValue"
+                    },
+                    "type": "array",
+                    "title": "Response List Modes Orientation Accompagnateur Endpoint Api V0 Doc Modes Orientation Accompagnateur Get"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "/api/v0/doc/modes-orientation-beneficiaire": {
+        "get": {
+          "tags": [
+            "Documentation"
+          ],
+          "summary": "Récupérer le référentiel des modes d'orientation du bénéficiaire",
+          "operationId": "list_modes_orientation_beneficiaire_endpoint_api_v0_doc_modes_orientation_beneficiaire_get",
+          "responses": {
+            "200": {
+              "description": "Successful Response",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "items": {
+                      "$ref": "#/components/schemas/FrameworkValue"
+                    },
+                    "type": "array",
+                    "title": "Response List Modes Orientation Beneficiaire Endpoint Api V0 Doc Modes Orientation Beneficiaire Get"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "/api/v1/structures": {
+        "get": {
+          "tags": [
+            "Données"
+          ],
+          "summary": "Lister les structures consolidées",
+          "operationId": "list_structures_endpoint_api_v1_structures_get",
+          "security": [
+            {
+              "HTTPBearer": []
+            }
+          ],
+          "parameters": [
+            {
+              "name": "sources",
+              "in": "query",
+              "required": false,
+              "schema": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                },
+                "description": "Une liste d'identifiants de source.\n                La liste des identifiants de source est disponible sur le endpoint\n                dédié. Les résultats seront limités aux sources spécifiées.\n            ",
+                "title": "Sources"
+              },
+              "description": "Une liste d'identifiants de source.\n                La liste des identifiants de source est disponible sur le endpoint\n                dédié. Les résultats seront limités aux sources spécifiées.\n            "
+            },
+            {
+              "name": "typologie",
+              "in": "query",
+              "required": false,
+              "schema": {
+                "$ref": "#/components/schemas/Typologie"
+              }
+            },
+            {
+              "name": "label_national",
+              "in": "query",
+              "required": false,
+              "schema": {
+                "$ref": "#/components/schemas/LabelNational"
+              }
+            },
+            {
+              "name": "thematiques",
+              "in": "query",
+              "required": false,
+              "schema": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/Thematique"
+                },
+                "description": "Une liste de thématique.\n                Chaque résultat renvoyé a (au moins) une thématique dans cette liste.",
+                "title": "Thematiques"
+              },
+              "description": "Une liste de thématique.\n                Chaque résultat renvoyé a (au moins) une thématique dans cette liste."
+            },
+            {
+              "name": "code_region",
+              "in": "query",
+              "required": false,
+              "schema": {
+                "$ref": "#/components/schemas/RegionCodeEnum",
+                "description": "Code insee géographique d'une région."
+              },
+              "description": "Code insee géographique d'une région."
+            },
+            {
+              "name": "slug_region",
+              "in": "query",
+              "required": false,
+              "schema": {
+                "$ref": "#/components/schemas/RegionSlugEnum"
+              }
+            },
+            {
+              "name": "code_departement",
+              "in": "query",
+              "required": false,
+              "schema": {
+                "$ref": "#/components/schemas/DepartementCodeEnum",
+                "description": "Code insee géographique d'un département."
+              },
+              "description": "Code insee géographique d'un département."
+            },
+            {
+              "name": "slug_departement",
+              "in": "query",
+              "required": false,
+              "schema": {
+                "$ref": "#/components/schemas/DepartementSlugEnum"
+              }
+            },
+            {
+              "name": "code_commune",
+              "in": "query",
+              "required": false,
+              "schema": {
+                "type": "string",
+                "minLength": 5,
+                "maxLength": 5,
+                "pattern": "^\\w{5}$",
+                "description": "Code insee géographique d'une commune.",
+                "title": "Code Commune"
+              },
+              "description": "Code insee géographique d'une commune."
+            },
+            {
+              "name": "page",
+              "in": "query",
+              "required": false,
+              "schema": {
+                "type": "integer",
+                "minimum": 1,
+                "description": "Page number",
+                "default": 1,
+                "title": "Page"
+              },
+              "description": "Page number"
+            },
+            {
+              "name": "size",
+              "in": "query",
+              "required": false,
+              "schema": {
+                "type": "integer",
+                "maximum": 1000,
+                "minimum": 1,
+                "description": "Page size",
+                "default": 500,
+                "title": "Size"
+              },
+              "description": "Page size"
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "Successful Response",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/CustomizedPage_Structure_"
+                  }
+                }
+              }
+            },
+            "422": {
+              "description": "Validation Error",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/HTTPValidationError"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "/api/v1/sources": {
+        "get": {
+          "tags": [
+            "Données"
+          ],
+          "summary": "Lister les sources consolidées",
+          "operationId": "list_sources_endpoint_api_v1_sources_get",
+          "responses": {
+            "200": {
+              "description": "Successful Response",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "items": {
+                      "$ref": "#/components/schemas/Source"
+                    },
+                    "type": "array",
+                    "title": "Response List Sources Endpoint Api V1 Sources Get"
+                  }
+                }
+              }
+            }
+          },
+          "security": [
+            {
+              "HTTPBearer": []
+            }
+          ]
+        }
+      },
+      "/api/v1/services": {
+        "get": {
+          "tags": [
+            "Données"
+          ],
+          "summary": "Lister les services consolidés",
+          "operationId": "list_services_endpoint_api_v1_services_get",
+          "security": [
+            {
+              "HTTPBearer": []
+            }
+          ],
+          "parameters": [
+            {
+              "name": "sources",
+              "in": "query",
+              "required": false,
+              "schema": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                },
+                "description": "Une liste d'identifiants de source.\n                La liste des identifiants de source est disponible sur le endpoint\n                dédié. Les résultats seront limités aux sources spécifiées.\n            ",
+                "title": "Sources"
+              },
+              "description": "Une liste d'identifiants de source.\n                La liste des identifiants de source est disponible sur le endpoint\n                dédié. Les résultats seront limités aux sources spécifiées.\n            "
+            },
+            {
+              "name": "thematiques",
+              "in": "query",
+              "required": false,
+              "schema": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/Thematique"
+                },
+                "description": "Une liste de thématique.\n                Chaque résultat renvoyé a (au moins) une thématique dans cette liste.",
+                "title": "Thematiques"
+              },
+              "description": "Une liste de thématique.\n                Chaque résultat renvoyé a (au moins) une thématique dans cette liste."
+            },
+            {
+              "name": "code_region",
+              "in": "query",
+              "required": false,
+              "schema": {
+                "$ref": "#/components/schemas/RegionCodeEnum",
+                "description": "Code insee géographique d'une région."
+              },
+              "description": "Code insee géographique d'une région."
+            },
+            {
+              "name": "slug_region",
+              "in": "query",
+              "required": false,
+              "schema": {
+                "$ref": "#/components/schemas/RegionSlugEnum"
+              }
+            },
+            {
+              "name": "code_departement",
+              "in": "query",
+              "required": false,
+              "schema": {
+                "$ref": "#/components/schemas/DepartementCodeEnum",
+                "description": "Code insee géographique d'un département."
+              },
+              "description": "Code insee géographique d'un département."
+            },
+            {
+              "name": "slug_departement",
+              "in": "query",
+              "required": false,
+              "schema": {
+                "$ref": "#/components/schemas/DepartementSlugEnum"
+              }
+            },
+            {
+              "name": "code_commune",
+              "in": "query",
+              "required": false,
+              "schema": {
+                "type": "string",
+                "minLength": 5,
+                "maxLength": 5,
+                "pattern": "^\\w{5}$",
+                "description": "Code insee géographique d'une commune.",
+                "title": "Code Commune"
+              },
+              "description": "Code insee géographique d'une commune."
+            },
+            {
+              "name": "frais",
+              "in": "query",
+              "required": false,
+              "schema": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/Frais"
+                },
+                "description": "Une liste de frais.\n                Chaque résultat renvoyé a (au moins) un frais dans cette liste.",
+                "title": "Frais"
+              },
+              "description": "Une liste de frais.\n                Chaque résultat renvoyé a (au moins) un frais dans cette liste."
+            },
+            {
+              "name": "profils",
+              "in": "query",
+              "required": false,
+              "schema": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/Profil"
+                },
+                "description": "Une liste de profils.\n                Chaque résultat renvoyé a (au moins) un profil dans cette liste.\n            ",
+                "title": "Profils"
+              },
+              "description": "Une liste de profils.\n                Chaque résultat renvoyé a (au moins) un profil dans cette liste.\n            "
+            },
+            {
+              "name": "recherche_public",
+              "in": "query",
+              "required": false,
+              "schema": {
+                "type": "string",
+                "description": "Une recherche en texte intégral parmi toutes\n              les valeurs \"publics\" que nous collectons chez nos producteurs de données.\n            ",
+                "title": "Recherche Public"
+              },
+              "description": "Une recherche en texte intégral parmi toutes\n              les valeurs \"publics\" que nous collectons chez nos producteurs de données.\n            "
+            },
+            {
+              "name": "modes_accueil",
+              "in": "query",
+              "required": false,
+              "schema": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/ModeAccueil"
+                },
+                "description": "Une liste de modes d'accueil.\n                Chaque résultat renvoyé a (au moins) un mode d'accueil dans cette liste.\n            ",
+                "title": "Modes Accueil"
+              },
+              "description": "Une liste de modes d'accueil.\n                Chaque résultat renvoyé a (au moins) un mode d'accueil dans cette liste.\n            "
+            },
+            {
+              "name": "types",
+              "in": "query",
+              "required": false,
+              "schema": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/TypologieService"
+                },
+                "description": "Une liste de typologies de service.\n                Chaque résultat renvoyé a (au moins) une typologie dans cette liste.",
+                "title": "Types"
+              },
+              "description": "Une liste de typologies de service.\n                Chaque résultat renvoyé a (au moins) une typologie dans cette liste."
+            },
+            {
+              "name": "score_qualite_minimum",
+              "in": "query",
+              "required": false,
+              "schema": {
+                "type": "number",
+                "description": "[BETA] Score de qualité minimum.\n                Les résultats renvoyés ont un score de qualité supérieur ou égal à ce\n                score.",
+                "title": "Score Qualite Minimum"
+              },
+              "description": "[BETA] Score de qualité minimum.\n                Les résultats renvoyés ont un score de qualité supérieur ou égal à ce\n                score."
+            },
+            {
+              "name": "inclure_suspendus",
+              "in": "query",
+              "required": false,
+              "schema": {
+                "type": "boolean",
+                "description": "Inclure les services ayant une date de suspension dépassée.\n                Ils sont exclus par défaut.\n            ",
+                "default": false,
+                "title": "Inclure Suspendus"
+              },
+              "description": "Inclure les services ayant une date de suspension dépassée.\n                Ils sont exclus par défaut.\n            "
+            },
+            {
+              "name": "page",
+              "in": "query",
+              "required": false,
+              "schema": {
+                "type": "integer",
+                "minimum": 1,
+                "description": "Page number",
+                "default": 1,
+                "title": "Page"
+              },
+              "description": "Page number"
+            },
+            {
+              "name": "size",
+              "in": "query",
+              "required": false,
+              "schema": {
+                "type": "integer",
+                "maximum": 1000,
+                "minimum": 1,
+                "description": "Page size",
+                "default": 500,
+                "title": "Size"
+              },
+              "description": "Page size"
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "Successful Response",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/CustomizedPage_Service_"
+                  }
+                }
+              }
+            },
+            "422": {
+              "description": "Validation Error",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/HTTPValidationError"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "/api/v1/search/services": {
+        "get": {
+          "tags": [
+            "Données"
+          ],
+          "summary": "Rechercher des services",
+          "description": "## Rechercher des services\n\nLa recherche de services permet de trouver des services dans une commune et à\nproximité.\n\nLes services peuvent être filtrés selon par thématiques, frais, typologies et\ncode_insee de commune.\n\nEn particulier, lorsqu'un `code_commune` est fourni :\n\n* les services sont filtrés par zone de diffusion lorsque celle-ci est définie.\n* de plus, les services en présentiel sont filtrés dans un rayon de 50km autour de\nla commune ou du point de recherche fourni.\n* le champ `distance` est :\n    * rempli pour les services (non exclusivement) en présentiel.\n    * laissé vide pour les services à distance et par défaut si le mode d'accueil\n    n'est pas définie.\n* les résultats sont triés par distance croissante.",
+          "operationId": "search_services_endpoint_api_v1_search_services_get",
+          "security": [
+            {
+              "HTTPBearer": []
+            }
+          ],
+          "parameters": [
+            {
+              "name": "sources",
+              "in": "query",
+              "required": false,
+              "schema": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                },
+                "description": "Une liste d'identifiants de source.\n                La liste des identifiants de source est disponible sur le endpoint\n                dédié. Les résultats seront limités aux sources spécifiées.\n            ",
+                "title": "Sources"
+              },
+              "description": "Une liste d'identifiants de source.\n                La liste des identifiants de source est disponible sur le endpoint\n                dédié. Les résultats seront limités aux sources spécifiées.\n            "
+            },
+            {
+              "name": "code_commune",
+              "in": "query",
+              "required": false,
+              "schema": {
+                "type": "string",
+                "minLength": 5,
+                "maxLength": 5,
+                "pattern": "^\\w{5}$",
+                "description": "Code insee de la commune considérée.\n                Si fourni, les résultats inclus également les services proches de\n                cette commune. Les résultats sont triés par ordre de distance\n                croissante.\n            ",
+                "title": "Code Commune"
+              },
+              "description": "Code insee de la commune considérée.\n                Si fourni, les résultats inclus également les services proches de\n                cette commune. Les résultats sont triés par ordre de distance\n                croissante.\n            "
+            },
+            {
+              "name": "lat",
+              "in": "query",
+              "required": false,
+              "schema": {
+                "type": "number",
+                "description": "Latitude du point de recherche.\n                Nécessite également de fournir `lon`.\n                Les résultats sont triés par ordre de distance croissante à ce point.\n            ",
+                "title": "Lat"
+              },
+              "description": "Latitude du point de recherche.\n                Nécessite également de fournir `lon`.\n                Les résultats sont triés par ordre de distance croissante à ce point.\n            "
+            },
+            {
+              "name": "lon",
+              "in": "query",
+              "required": false,
+              "schema": {
+                "type": "number",
+                "description": "Longitude du point de recherche.\n                Nécessite également de fournir `lat`.\n                Les résultats sont triés par ordre de distance croissante à ce point.\n            ",
+                "title": "Lon"
+              },
+              "description": "Longitude du point de recherche.\n                Nécessite également de fournir `lat`.\n                Les résultats sont triés par ordre de distance croissante à ce point.\n            "
+            },
+            {
+              "name": "thematiques",
+              "in": "query",
+              "required": false,
+              "schema": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/Thematique"
+                },
+                "description": "Une liste de thématique.\n                Chaque résultat renvoyé a (au moins) une thématique dans cette liste.",
+                "title": "Thematiques"
+              },
+              "description": "Une liste de thématique.\n                Chaque résultat renvoyé a (au moins) une thématique dans cette liste."
+            },
+            {
+              "name": "frais",
+              "in": "query",
+              "required": false,
+              "schema": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/Frais"
+                },
+                "description": "Une liste de frais.\n                Chaque résultat renvoyé a (au moins) un frais dans cette liste.",
+                "title": "Frais"
+              },
+              "description": "Une liste de frais.\n                Chaque résultat renvoyé a (au moins) un frais dans cette liste."
+            },
+            {
+              "name": "modes_accueil",
+              "in": "query",
+              "required": false,
+              "schema": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/ModeAccueil"
+                },
+                "description": "Une liste de modes d'accueil.\n                Chaque résultat renvoyé a (au moins) un mode d'accueil dans cette liste.\n            ",
+                "title": "Modes Accueil"
+              },
+              "description": "Une liste de modes d'accueil.\n                Chaque résultat renvoyé a (au moins) un mode d'accueil dans cette liste.\n            "
+            },
+            {
+              "name": "profils",
+              "in": "query",
+              "required": false,
+              "schema": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/Profil"
+                },
+                "description": "Une liste de profils.\n                Chaque résultat renvoyé a (au moins) un profil dans cette liste.\n            ",
+                "title": "Profils"
+              },
+              "description": "Une liste de profils.\n                Chaque résultat renvoyé a (au moins) un profil dans cette liste.\n            "
+            },
+            {
+              "name": "recherche_public",
+              "in": "query",
+              "required": false,
+              "schema": {
+                "type": "string",
+                "description": "Une recherche en texte intégral parmi toutes\n              les valeurs \"publics\" que nous collectons chez nos producteurs de données.\n            ",
+                "title": "Recherche Public"
+              },
+              "description": "Une recherche en texte intégral parmi toutes\n              les valeurs \"publics\" que nous collectons chez nos producteurs de données.\n            "
+            },
+            {
+              "name": "types",
+              "in": "query",
+              "required": false,
+              "schema": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/TypologieService"
+                },
+                "description": "Une liste de typologies de service.\n                Chaque résultat renvoyé a (au moins) une typologie dans cette liste.",
+                "title": "Types"
+              },
+              "description": "Une liste de typologies de service.\n                Chaque résultat renvoyé a (au moins) une typologie dans cette liste."
+            },
+            {
+              "name": "score_qualite_minimum",
+              "in": "query",
+              "required": false,
+              "schema": {
+                "type": "number",
+                "description": "Score de qualité minimum.\n                Les résultats renvoyés ont un score de qualité supérieur ou égal à ce\n                score.",
+                "title": "Score Qualite Minimum"
+              },
+              "description": "Score de qualité minimum.\n                Les résultats renvoyés ont un score de qualité supérieur ou égal à ce\n                score."
+            },
+            {
+              "name": "inclure_suspendus",
+              "in": "query",
+              "required": false,
+              "schema": {
+                "type": "boolean",
+                "description": "Inclure les services ayant une date de suspension dépassée.\n                Ils sont exclus par défaut.\n            ",
+                "default": false,
+                "title": "Inclure Suspendus"
+              },
+              "description": "Inclure les services ayant une date de suspension dépassée.\n                Ils sont exclus par défaut.\n            "
+            },
+            {
+              "name": "page",
+              "in": "query",
+              "required": false,
+              "schema": {
+                "type": "integer",
+                "minimum": 1,
+                "description": "Page number",
+                "default": 1,
+                "title": "Page"
+              },
+              "description": "Page number"
+            },
+            {
+              "name": "size",
+              "in": "query",
+              "required": false,
+              "schema": {
+                "type": "integer",
+                "maximum": 1000,
+                "minimum": 1,
+                "description": "Page size",
+                "default": 500,
+                "title": "Size"
+              },
+              "description": "Page size"
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "Successful Response",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/data_inclusion__api__utils__pagination__CustomizedPage_ServiceSearchResult___2"
+                  }
+                }
+              }
+            },
+            "422": {
+              "description": "Validation Error",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/HTTPValidationError"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "/api/v1/doc/labels-nationaux": {
+        "get": {
+          "tags": [
+            "Documentation"
+          ],
+          "summary": "Récupérer le référentiel des labels nationaux",
+          "operationId": "list_labels_nationaux_endpoint_api_v1_doc_labels_nationaux_get",
+          "responses": {
+            "200": {
+              "description": "Successful Response",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "items": {
+                      "$ref": "#/components/schemas/FrameworkValue"
+                    },
+                    "type": "array",
+                    "title": "Response List Labels Nationaux Endpoint Api V1 Doc Labels Nationaux Get"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "/api/v1/doc/thematiques": {
+        "get": {
+          "tags": [
+            "Documentation"
+          ],
+          "summary": "Récupérer le référentiel des thématiques",
+          "operationId": "list_thematiques_endpoint_api_v1_doc_thematiques_get",
+          "responses": {
+            "200": {
+              "description": "Successful Response",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "items": {
+                      "$ref": "#/components/schemas/FrameworkValue"
+                    },
+                    "type": "array",
+                    "title": "Response List Thematiques Endpoint Api V1 Doc Thematiques Get"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "/api/v1/doc/typologies-services": {
+        "get": {
+          "tags": [
+            "Documentation"
+          ],
+          "summary": "Récupérer le référentiel des typologies de services",
+          "operationId": "list_typologies_services_endpoint_api_v1_doc_typologies_services_get",
+          "responses": {
+            "200": {
+              "description": "Successful Response",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "items": {
+                      "$ref": "#/components/schemas/FrameworkValue"
+                    },
+                    "type": "array",
+                    "title": "Response List Typologies Services Endpoint Api V1 Doc Typologies Services Get"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "/api/v1/doc/frais": {
+        "get": {
+          "tags": [
+            "Documentation"
+          ],
+          "summary": "Récupérer le référentiel des frais",
+          "operationId": "list_frais_endpoint_api_v1_doc_frais_get",
+          "responses": {
+            "200": {
+              "description": "Successful Response",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "items": {
+                      "$ref": "#/components/schemas/FrameworkValue"
+                    },
+                    "type": "array",
+                    "title": "Response List Frais Endpoint Api V1 Doc Frais Get"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "/api/v1/doc/profils": {
+        "get": {
+          "tags": [
+            "Documentation"
+          ],
+          "summary": "Récupérer le référentiel des profils de publics",
+          "operationId": "list_profils_endpoint_api_v1_doc_profils_get",
+          "responses": {
+            "200": {
+              "description": "Successful Response",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "items": {
+                      "$ref": "#/components/schemas/FrameworkValue"
+                    },
+                    "type": "array",
+                    "title": "Response List Profils Endpoint Api V1 Doc Profils Get"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "/api/v1/doc/typologies-structures": {
+        "get": {
+          "tags": [
+            "Documentation"
+          ],
+          "summary": "Récupérer le référentiel des typologies de structures",
+          "operationId": "list_typologies_structures_endpoint_api_v1_doc_typologies_structures_get",
+          "responses": {
+            "200": {
+              "description": "Successful Response",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "items": {
+                      "$ref": "#/components/schemas/FrameworkValue"
+                    },
+                    "type": "array",
+                    "title": "Response List Typologies Structures Endpoint Api V1 Doc Typologies Structures Get"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "/api/v1/doc/modes-accueil": {
+        "get": {
+          "tags": [
+            "Documentation"
+          ],
+          "summary": "Récupérer le référentiel des modes d'accueil",
+          "operationId": "list_modes_accueil_endpoint_api_v1_doc_modes_accueil_get",
+          "responses": {
+            "200": {
+              "description": "Successful Response",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "items": {
+                      "$ref": "#/components/schemas/FrameworkValue"
+                    },
+                    "type": "array",
+                    "title": "Response List Modes Accueil Endpoint Api V1 Doc Modes Accueil Get"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "/api/v1/doc/modes-orientation-accompagnateur": {
+        "get": {
+          "tags": [
+            "Documentation"
+          ],
+          "summary": "Récupérer le référentiel des modes d'orientation de l'accompagnateur",
+          "operationId": "list_modes_orientation_accompagnateur_endpoint_api_v1_doc_modes_orientation_accompagnateur_get",
+          "responses": {
+            "200": {
+              "description": "Successful Response",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "items": {
+                      "$ref": "#/components/schemas/FrameworkValue"
+                    },
+                    "type": "array",
+                    "title": "Response List Modes Orientation Accompagnateur Endpoint Api V1 Doc Modes Orientation Accompagnateur Get"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "/api/v1/doc/modes-orientation-beneficiaire": {
+        "get": {
+          "tags": [
+            "Documentation"
+          ],
+          "summary": "Récupérer le référentiel des modes d'orientation du bénéficiaire",
+          "operationId": "list_modes_orientation_beneficiaire_endpoint_api_v1_doc_modes_orientation_beneficiaire_get",
+          "responses": {
+            "200": {
+              "description": "Successful Response",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "items": {
+                      "$ref": "#/components/schemas/FrameworkValue"
+                    },
+                    "type": "array",
+                    "title": "Response List Modes Orientation Beneficiaire Endpoint Api V1 Doc Modes Orientation Beneficiaire Get"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "components": {
+      "schemas": {
+        "CustomizedPage_Service_": {
+          "properties": {
+            "items": {
+              "items": {
+                "$ref": "#/components/schemas/Service"
+              },
+              "type": "array",
+              "title": "Items"
+            },
+            "total": {
+              "anyOf": [
+                {
+                  "type": "integer",
+                  "minimum": 0.0
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Total"
+            },
+            "page": {
+              "anyOf": [
+                {
+                  "type": "integer",
+                  "minimum": 1.0
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Page"
+            },
+            "size": {
+              "anyOf": [
+                {
+                  "type": "integer",
+                  "minimum": 1.0
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Size"
+            },
+            "pages": {
+              "anyOf": [
+                {
+                  "type": "integer",
+                  "minimum": 0.0
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Pages"
+            }
+          },
+          "type": "object",
+          "required": [
+            "items",
+            "total",
+            "page",
+            "size"
+          ],
+          "title": "CustomizedPage[Service]"
+        },
+        "CustomizedPage_Structure_": {
+          "properties": {
+            "items": {
+              "items": {
+                "$ref": "#/components/schemas/Structure"
+              },
+              "type": "array",
+              "title": "Items"
+            },
+            "total": {
+              "anyOf": [
+                {
+                  "type": "integer",
+                  "minimum": 0.0
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Total"
+            },
+            "page": {
+              "anyOf": [
+                {
+                  "type": "integer",
+                  "minimum": 1.0
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Page"
+            },
+            "size": {
+              "anyOf": [
+                {
+                  "type": "integer",
+                  "minimum": 1.0
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Size"
+            },
+            "pages": {
+              "anyOf": [
+                {
+                  "type": "integer",
+                  "minimum": 0.0
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Pages"
+            }
+          },
+          "type": "object",
+          "required": [
+            "items",
+            "total",
+            "page",
+            "size"
+          ],
+          "title": "CustomizedPage[Structure]"
+        },
+        "DepartementCodeEnum": {
+          "type": "string",
+          "enum": [
+            "01",
+            "02",
+            "03",
+            "04",
+            "06",
+            "07",
+            "08",
+            "09",
+            "10",
+            "11",
+            "12",
+            "67",
+            "13",
+            "14",
+            "15",
+            "17",
+            "16",
+            "18",
+            "19",
+            "2A",
+            "21",
+            "22",
+            "23",
+            "79",
+            "24",
+            "25",
+            "26",
+            "91",
+            "28",
+            "27",
+            "29",
+            "30",
+            "32",
+            "33",
+            "971",
+            "973",
+            "68",
+            "2B",
+            "31",
+            "43",
+            "52",
+            "70",
+            "74",
+            "87",
+            "05",
+            "65",
+            "92",
+            "34",
+            "35",
+            "37",
+            "36",
+            "38",
+            "39",
+            "974",
+            "40",
+            "41",
+            "44",
+            "42",
+            "45",
+            "47",
+            "46",
+            "48",
+            "49",
+            "50",
+            "51",
+            "972",
+            "53",
+            "976",
+            "54",
+            "55",
+            "56",
+            "57",
+            "58",
+            "59",
+            "60",
+            "61",
+            "75",
+            "62",
+            "63",
+            "64",
+            "66",
+            "69",
+            "71",
+            "72",
+            "73",
+            "77",
+            "76",
+            "93",
+            "80",
+            "82",
+            "81",
+            "90",
+            "95",
+            "94",
+            "83",
+            "84",
+            "85",
+            "86",
+            "88",
+            "89",
+            "78"
+          ],
+          "title": "DepartementCodeEnum"
+        },
+        "DepartementSlugEnum": {
+          "type": "string",
+          "enum": [
+            "ain",
+            "aisne",
+            "allier",
+            "alpes-de-haute-provence",
+            "alpes-maritimes",
+            "ardeche",
+            "ardennes",
+            "ariege",
+            "aube",
+            "aude",
+            "aveyron",
+            "bas-rhin",
+            "bouches-du-rhone",
+            "calvados",
+            "cantal",
+            "charente-maritime",
+            "charente",
+            "cher",
+            "correze",
+            "corse-du-sud",
+            "cote-d-or",
+            "cotes-d-armor",
+            "creuse",
+            "deux-sevres",
+            "dordogne",
+            "doubs",
+            "drome",
+            "essonne",
+            "eure-et-loir",
+            "eure",
+            "finistere",
+            "gard",
+            "gers",
+            "gironde",
+            "guadeloupe",
+            "guyane",
+            "haut-rhin",
+            "haute-corse",
+            "haute-garonne",
+            "haute-loire",
+            "haute-marne",
+            "haute-saone",
+            "haute-savoie",
+            "haute-vienne",
+            "hautes-alpes",
+            "hautes-pyrenees",
+            "hauts-de-seine",
+            "herault",
+            "ille-et-vilaine",
+            "indre-et-loire",
+            "indre",
+            "isere",
+            "jura",
+            "la-reunion",
+            "landes",
+            "loir-et-cher",
+            "loire-atlantique",
+            "loire",
+            "loiret",
+            "lot-et-garonne",
+            "lot",
+            "lozere",
+            "maine-et-loire",
+            "manche",
+            "marne",
+            "martinique",
+            "mayenne",
+            "mayotte",
+            "meurthe-et-moselle",
+            "meuse",
+            "morbihan",
+            "moselle",
+            "nievre",
+            "nord",
+            "oise",
+            "orne",
+            "paris",
+            "pas-de-calais",
+            "puy-de-dome",
+            "pyrenees-atlantiques",
+            "pyrenees-orientales",
+            "rhone",
+            "saone-et-loire",
+            "sarthe",
+            "savoie",
+            "seine-et-marne",
+            "seine-maritime",
+            "seine-saint-denis",
+            "somme",
+            "tarn-et-garonne",
+            "tarn",
+            "territoire-de-belfort",
+            "val-d-oise",
+            "val-de-marne",
+            "var",
+            "vaucluse",
+            "vendee",
+            "vienne",
+            "vosges",
+            "yonne",
+            "yvelines"
+          ],
+          "title": "DepartementSlugEnum"
+        },
+        "DetailedService": {
+          "properties": {
+            "id": {
+              "type": "string",
+              "title": "Id"
+            },
+            "structure_id": {
+              "type": "string",
+              "title": "Structure Id"
+            },
+            "source": {
+              "type": "string",
+              "title": "Source"
+            },
+            "nom": {
+              "type": "string",
+              "title": "Nom"
+            },
+            "presentation_resume": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "maxLength": 280
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Presentation Resume"
+            },
+            "presentation_detail": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Presentation Detail"
+            },
+            "types": {
+              "anyOf": [
+                {
+                  "items": {
+                    "$ref": "#/components/schemas/TypologieService"
+                  },
+                  "type": "array",
+                  "uniqueItems": true
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Types"
+            },
+            "thematiques": {
+              "anyOf": [
+                {
+                  "items": {
+                    "$ref": "#/components/schemas/Thematique"
+                  },
+                  "type": "array",
+                  "uniqueItems": true
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Thematiques"
+            },
+            "prise_rdv": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Prise Rdv"
+            },
+            "frais": {
+              "anyOf": [
+                {
+                  "items": {
+                    "$ref": "#/components/schemas/Frais"
+                  },
+                  "type": "array",
+                  "uniqueItems": true
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Frais"
+            },
+            "frais_autres": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Frais Autres"
+            },
+            "profils": {
+              "anyOf": [
+                {
+                  "items": {
+                    "$ref": "#/components/schemas/Profil"
+                  },
+                  "type": "array",
+                  "uniqueItems": true
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Profils"
+            },
+            "profils_precisions": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Profils Precisions"
+            },
+            "pre_requis": {
+              "anyOf": [
+                {
+                  "items": {
+                    "type": "string"
+                  },
+                  "type": "array",
+                  "uniqueItems": true
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Pre Requis"
+            },
+            "cumulable": {
+              "anyOf": [
+                {
+                  "type": "boolean"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Cumulable"
+            },
+            "justificatifs": {
+              "anyOf": [
+                {
+                  "items": {
+                    "type": "string"
+                  },
+                  "type": "array",
+                  "uniqueItems": true
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Justificatifs"
+            },
+            "formulaire_en_ligne": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Formulaire En Ligne"
+            },
+            "commune": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Commune"
+            },
+            "code_postal": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "maxLength": 5,
+                  "minLength": 5,
+                  "pattern": "^\\d{5}$"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Code Postal"
+            },
+            "code_insee": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "maxLength": 5,
+                  "minLength": 5,
+                  "pattern": "^\\w{5}$"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Code Insee"
+            },
+            "adresse": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Adresse"
+            },
+            "complement_adresse": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Complement Adresse"
+            },
+            "longitude": {
+              "anyOf": [
+                {
+                  "type": "number"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Longitude"
+            },
+            "latitude": {
+              "anyOf": [
+                {
+                  "type": "number"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Latitude"
+            },
+            "recurrence": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Recurrence"
+            },
+            "date_creation": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "format": "date"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Date Creation"
+            },
+            "date_suspension": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "format": "date"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Date Suspension"
+            },
+            "lien_source": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Lien Source"
+            },
+            "telephone": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Telephone"
+            },
+            "courriel": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "format": "email"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Courriel"
+            },
+            "contact_public": {
+              "anyOf": [
+                {
+                  "type": "boolean"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Contact Public"
+            },
+            "date_maj": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "format": "date"
+                },
+                {
+                  "type": "string",
+                  "format": "date-time"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Date Maj"
+            },
+            "modes_accueil": {
+              "anyOf": [
+                {
+                  "items": {
+                    "$ref": "#/components/schemas/ModeAccueil"
+                  },
+                  "type": "array",
+                  "uniqueItems": true
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Modes Accueil"
+            },
+            "zone_diffusion_type": {
+              "anyOf": [
+                {
+                  "$ref": "#/components/schemas/ZoneDiffusionType"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "zone_diffusion_code": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "maxLength": 5,
+                  "minLength": 5,
+                  "pattern": "^\\w{5}$"
+                },
+                {
+                  "type": "string",
+                  "maxLength": 9,
+                  "minLength": 9,
+                  "pattern": "^\\d{9}$"
+                },
+                {
+                  "type": "string",
+                  "maxLength": 3,
+                  "minLength": 2,
+                  "pattern": "^\\w{2,3}$"
+                },
+                {
+                  "type": "string",
+                  "maxLength": 2,
+                  "minLength": 2,
+                  "pattern": "^\\d{2}$"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Zone Diffusion Code"
+            },
+            "zone_diffusion_nom": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Zone Diffusion Nom"
+            },
+            "contact_nom_prenom": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Contact Nom Prenom"
+            },
+            "page_web": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "maxLength": 2083,
+                  "minLength": 1,
+                  "format": "uri"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Page Web",
+              "description": "Lien vers une page web dédiée au service sur le site web de la structure. Ce champ n'est pas destiné à recevoir un lien vers le site d'un producteur de donnée.",
+              "examples": [
+                "https://insersol.fr/biclou-atelier-reparation-participatif-solidaire/"
+              ]
+            },
+            "modes_orientation_beneficiaire": {
+              "anyOf": [
+                {
+                  "items": {
+                    "$ref": "#/components/schemas/ModeOrientationBeneficiaire"
+                  },
+                  "type": "array",
+                  "uniqueItems": true
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Modes Orientation Beneficiaire"
+            },
+            "modes_orientation_beneficiaire_autres": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Modes Orientation Beneficiaire Autres"
+            },
+            "modes_orientation_accompagnateur": {
+              "anyOf": [
+                {
+                  "items": {
+                    "$ref": "#/components/schemas/ModeOrientationAccompagnateur"
+                  },
+                  "type": "array",
+                  "uniqueItems": true
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Modes Orientation Accompagnateur"
+            },
+            "modes_orientation_accompagnateur_autres": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Modes Orientation Accompagnateur Autres"
+            },
+            "score_qualite": {
+              "type": "number",
+              "maximum": 1.0,
+              "minimum": 0.0,
+              "title": "Score Qualite",
+              "description": "Score de qualité du service, défini et calculé par data·inclusion.\n"
+            },
+            "structure": {
+              "$ref": "#/components/schemas/Structure"
+            }
+          },
+          "type": "object",
+          "required": [
+            "id",
+            "structure_id",
+            "source",
+            "nom",
+            "score_qualite",
+            "structure"
+          ],
+          "title": "DetailedService"
+        },
+        "DetailedStructure": {
+          "properties": {
+            "id": {
+              "type": "string",
+              "title": "Id"
+            },
+            "siret": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "maxLength": 14,
+                  "minLength": 14,
+                  "pattern": "^\\d{14}$"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Siret"
+            },
+            "rna": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "maxLength": 10,
+                  "minLength": 10,
+                  "pattern": "^W\\d{9}$"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Rna"
+            },
+            "nom": {
+              "type": "string",
+              "title": "Nom"
+            },
+            "commune": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Commune"
+            },
+            "code_postal": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "maxLength": 5,
+                  "minLength": 5,
+                  "pattern": "^\\d{5}$"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Code Postal"
+            },
+            "code_insee": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "maxLength": 5,
+                  "minLength": 5,
+                  "pattern": "^\\w{5}$"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Code Insee"
+            },
+            "adresse": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Adresse"
+            },
+            "complement_adresse": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Complement Adresse"
+            },
+            "longitude": {
+              "anyOf": [
+                {
+                  "type": "number"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Longitude"
+            },
+            "latitude": {
+              "anyOf": [
+                {
+                  "type": "number"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Latitude"
+            },
+            "typologie": {
+              "anyOf": [
+                {
+                  "$ref": "#/components/schemas/Typologie"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "telephone": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Telephone"
+            },
+            "courriel": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "format": "email"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Courriel"
+            },
+            "site_web": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Site Web"
+            },
+            "presentation_resume": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "maxLength": 280
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Presentation Resume"
+            },
+            "presentation_detail": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Presentation Detail"
+            },
+            "source": {
+              "type": "string",
+              "title": "Source"
+            },
+            "date_maj": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "format": "date"
+                },
+                {
+                  "type": "string",
+                  "format": "date-time"
+                }
+              ],
+              "title": "Date Maj"
+            },
+            "antenne": {
+              "anyOf": [
+                {
+                  "type": "boolean"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Antenne"
+            },
+            "lien_source": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Lien Source"
+            },
+            "horaires_ouverture": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Horaires Ouverture"
+            },
+            "accessibilite": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Accessibilite"
+            },
+            "labels_nationaux": {
+              "anyOf": [
+                {
+                  "items": {
+                    "$ref": "#/components/schemas/LabelNational"
+                  },
+                  "type": "array",
+                  "uniqueItems": true
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Labels Nationaux"
+            },
+            "labels_autres": {
+              "anyOf": [
+                {
+                  "items": {
+                    "type": "string"
+                  },
+                  "type": "array",
+                  "uniqueItems": true
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Labels Autres"
+            },
+            "thematiques": {
+              "anyOf": [
+                {
+                  "items": {
+                    "$ref": "#/components/schemas/Thematique"
+                  },
+                  "type": "array",
+                  "uniqueItems": true
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Thematiques"
+            },
+            "services": {
+              "items": {
+                "$ref": "#/components/schemas/Service"
+              },
+              "type": "array",
+              "title": "Services"
+            }
+          },
+          "type": "object",
+          "required": [
+            "id",
+            "nom",
+            "source",
+            "date_maj",
+            "services"
+          ],
+          "title": "DetailedStructure"
+        },
+        "Frais": {
+          "type": "string",
+          "enum": [
+            "gratuit",
+            "gratuit-sous-conditions",
+            "payant",
+            "adhesion",
+            "pass-numerique"
+          ],
+          "title": "Frais"
+        },
+        "FrameworkValue": {
+          "properties": {
+            "value": {
+              "type": "string",
+              "title": "Value"
+            },
+            "label": {
+              "type": "string",
+              "title": "Label"
+            },
+            "description": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Description"
+            }
+          },
+          "type": "object",
+          "required": [
+            "value",
+            "label"
+          ],
+          "title": "FrameworkValue",
+          "description": "Schema for members of a domain taxonomy"
+        },
+        "HTTPValidationError": {
+          "properties": {
+            "detail": {
+              "items": {
+                "$ref": "#/components/schemas/ValidationError"
+              },
+              "type": "array",
+              "title": "Detail"
+            }
+          },
+          "type": "object",
+          "title": "HTTPValidationError"
+        },
+        "LabelNational": {
+          "type": "string",
+          "enum": [
+            "60000-rebonds",
+            "action-logement",
+            "adie",
+            "afpa",
+            "agefiph",
+            "aidants-connect",
+            "alliance-villes-emploi",
+            "anlci",
+            "apec",
+            "apels",
+            "apprentis-dauteuil",
+            "aptic",
+            "banques-alimentaires",
+            "bge",
+            "caf",
+            "campus-connecte",
+            "cci",
+            "chantier-ecole",
+            "cap-emploi-reseau-cheops",
+            "cidff",
+            "cnam",
+            "collectif-emploi",
+            "conseiller-numerique",
+            "coorace",
+            "crepi",
+            "cresus",
+            "croix-rouge",
+            "dihal",
+            "duo-for-a-job",
+            "ecoles-de-la-deuxieme-chance",
+            "egee",
+            "emmaus",
+            "envie",
+            "epide",
+            "espace-emploi-agric-arrco",
+            "etcld",
+            "fabrique-de-territoire",
+            "face",
+            "fede-pro-fem",
+            "federation-des-acteurs-de-la-solidarite",
+            "federation-des-entreprises-dinsertion",
+            "force-femmes",
+            "france-active",
+            "france-service",
+            "france-travail",
+            "french-tech",
+            "geiq",
+            "grandes-ecoles-du-numerique",
+            "grand-test-couveuse-dentreprise",
+            "hup",
+            "inae",
+            "initiative-france",
+            "konexio",
+            "la-cravate-solidaire",
+            "la-ressourcerie",
+            "les-premieres",
+            "linklusion",
+            "maisons-de-lemploi",
+            "mdph",
+            "mission-locale",
+            "mobin",
+            "nqt",
+            "point-conseil-budget",
+            "point-justice",
+            "positive-planet",
+            "proxite",
+            "reseau-app",
+            "reseau-entreprendre",
+            "ressourceries",
+            "restos-du-coeur",
+            "scconseil",
+            "secours-populaire",
+            "siao",
+            "simplon",
+            "sinca",
+            "snc",
+            "sport-dans-la-ville",
+            "tous-tes-possible",
+            "tzcld",
+            "unaf",
+            "unai",
+            "unccas",
+            "unea",
+            "unis-cite",
+            "wimoov"
+          ],
+          "title": "LabelNational"
+        },
+        "ModeAccueil": {
+          "type": "string",
+          "enum": [
+            "a-distance",
+            "en-presentiel"
+          ],
+          "title": "ModeAccueil"
+        },
+        "ModeOrientationAccompagnateur": {
+          "type": "string",
+          "enum": [
+            "completer-le-formulaire-dadhesion",
+            "envoyer-un-mail",
+            "envoyer-un-mail-avec-une-fiche-de-prescription",
+            "telephoner",
+            "prendre-rdv",
+            "autre"
+          ],
+          "title": "ModeOrientationAccompagnateur"
+        },
+        "ModeOrientationBeneficiaire": {
+          "type": "string",
+          "enum": [
+            "completer-le-formulaire-dadhesion",
+            "envoyer-un-mail",
+            "se-presenter",
+            "telephoner",
+            "prendre-rdv",
+            "autre"
+          ],
+          "title": "ModeOrientationBeneficiaire"
+        },
+        "Profil": {
+          "type": "string",
+          "enum": [
+            "adultes",
+            "alternants",
+            "beneficiaires-rsa",
+            "deficience-visuelle",
+            "demandeurs-demploi",
+            "familles-enfants",
+            "etudiants",
+            "femmes",
+            "handicaps-mentaux",
+            "handicaps-psychiques",
+            "jeunes",
+            "jeunes-16-26",
+            "locataires",
+            "personnes-de-nationalite-etrangere",
+            "personnes-en-situation-de-handicap",
+            "personnes-en-situation-illettrisme",
+            "personnes-handicapees",
+            "proprietaires",
+            "public-langues-etrangeres",
+            "retraites",
+            "salaries",
+            "sans-domicile-fixe",
+            "seniors-65",
+            "sortants-de-detention",
+            "surdite",
+            "victimes",
+            "tous-publics",
+            "personnes-en-situation-durgence"
+          ],
+          "title": "Profil"
+        },
+        "RegionCodeEnum": {
+          "type": "string",
+          "enum": [
+            "84",
+            "27",
+            "53",
+            "24",
+            "94",
+            "44",
+            "01",
+            "03",
+            "32",
+            "11",
+            "04",
+            "02",
+            "06",
+            "28",
+            "75",
+            "76",
+            "52",
+            "93"
+          ],
+          "title": "RegionCodeEnum"
+        },
+        "RegionSlugEnum": {
+          "type": "string",
+          "enum": [
+            "auvergne-rhone-alpes",
+            "bourgogne-franche-comte",
+            "bretagne",
+            "centre-val-de-loire",
+            "corse",
+            "grand-est",
+            "guadeloupe",
+            "guyane",
+            "hauts-de-france",
+            "ile-de-france",
+            "la-reunion",
+            "martinique",
+            "mayotte",
+            "normandie",
+            "nouvelle-aquitaine",
+            "occitanie",
+            "pays-de-la-loire",
+            "provence-alpes-cote-d-azur"
+          ],
+          "title": "RegionSlugEnum"
+        },
+        "Service": {
+          "properties": {
+            "id": {
+              "type": "string",
+              "title": "Id"
+            },
+            "structure_id": {
+              "type": "string",
+              "title": "Structure Id"
+            },
+            "source": {
+              "type": "string",
+              "title": "Source"
+            },
+            "nom": {
+              "type": "string",
+              "title": "Nom"
+            },
+            "presentation_resume": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "maxLength": 280
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Presentation Resume"
+            },
+            "presentation_detail": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Presentation Detail"
+            },
+            "types": {
+              "anyOf": [
+                {
+                  "items": {
+                    "$ref": "#/components/schemas/TypologieService"
+                  },
+                  "type": "array",
+                  "uniqueItems": true
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Types"
+            },
+            "thematiques": {
+              "anyOf": [
+                {
+                  "items": {
+                    "$ref": "#/components/schemas/Thematique"
+                  },
+                  "type": "array",
+                  "uniqueItems": true
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Thematiques"
+            },
+            "prise_rdv": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Prise Rdv"
+            },
+            "frais": {
+              "anyOf": [
+                {
+                  "items": {
+                    "$ref": "#/components/schemas/Frais"
+                  },
+                  "type": "array",
+                  "uniqueItems": true
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Frais"
+            },
+            "frais_autres": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Frais Autres"
+            },
+            "profils": {
+              "anyOf": [
+                {
+                  "items": {
+                    "$ref": "#/components/schemas/Profil"
+                  },
+                  "type": "array",
+                  "uniqueItems": true
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Profils"
+            },
+            "profils_precisions": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Profils Precisions"
+            },
+            "pre_requis": {
+              "anyOf": [
+                {
+                  "items": {
+                    "type": "string"
+                  },
+                  "type": "array",
+                  "uniqueItems": true
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Pre Requis"
+            },
+            "cumulable": {
+              "anyOf": [
+                {
+                  "type": "boolean"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Cumulable"
+            },
+            "justificatifs": {
+              "anyOf": [
+                {
+                  "items": {
+                    "type": "string"
+                  },
+                  "type": "array",
+                  "uniqueItems": true
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Justificatifs"
+            },
+            "formulaire_en_ligne": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Formulaire En Ligne"
+            },
+            "commune": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Commune"
+            },
+            "code_postal": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "maxLength": 5,
+                  "minLength": 5,
+                  "pattern": "^\\d{5}$"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Code Postal"
+            },
+            "code_insee": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "maxLength": 5,
+                  "minLength": 5,
+                  "pattern": "^\\w{5}$"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Code Insee"
+            },
+            "adresse": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Adresse"
+            },
+            "complement_adresse": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Complement Adresse"
+            },
+            "longitude": {
+              "anyOf": [
+                {
+                  "type": "number"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Longitude"
+            },
+            "latitude": {
+              "anyOf": [
+                {
+                  "type": "number"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Latitude"
+            },
+            "recurrence": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Recurrence"
+            },
+            "date_creation": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "format": "date"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Date Creation"
+            },
+            "date_suspension": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "format": "date"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Date Suspension"
+            },
+            "lien_source": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Lien Source"
+            },
+            "telephone": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Telephone"
+            },
+            "courriel": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "format": "email"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Courriel"
+            },
+            "contact_public": {
+              "anyOf": [
+                {
+                  "type": "boolean"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Contact Public"
+            },
+            "date_maj": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "format": "date"
+                },
+                {
+                  "type": "string",
+                  "format": "date-time"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Date Maj"
+            },
+            "modes_accueil": {
+              "anyOf": [
+                {
+                  "items": {
+                    "$ref": "#/components/schemas/ModeAccueil"
+                  },
+                  "type": "array",
+                  "uniqueItems": true
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Modes Accueil"
+            },
+            "zone_diffusion_type": {
+              "anyOf": [
+                {
+                  "$ref": "#/components/schemas/ZoneDiffusionType"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "zone_diffusion_code": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "maxLength": 5,
+                  "minLength": 5,
+                  "pattern": "^\\w{5}$"
+                },
+                {
+                  "type": "string",
+                  "maxLength": 9,
+                  "minLength": 9,
+                  "pattern": "^\\d{9}$"
+                },
+                {
+                  "type": "string",
+                  "maxLength": 3,
+                  "minLength": 2,
+                  "pattern": "^\\w{2,3}$"
+                },
+                {
+                  "type": "string",
+                  "maxLength": 2,
+                  "minLength": 2,
+                  "pattern": "^\\d{2}$"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Zone Diffusion Code"
+            },
+            "zone_diffusion_nom": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Zone Diffusion Nom"
+            },
+            "contact_nom_prenom": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Contact Nom Prenom"
+            },
+            "page_web": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "maxLength": 2083,
+                  "minLength": 1,
+                  "format": "uri"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Page Web",
+              "description": "Lien vers une page web dédiée au service sur le site web de la structure. Ce champ n'est pas destiné à recevoir un lien vers le site d'un producteur de donnée.",
+              "examples": [
+                "https://insersol.fr/biclou-atelier-reparation-participatif-solidaire/"
+              ]
+            },
+            "modes_orientation_beneficiaire": {
+              "anyOf": [
+                {
+                  "items": {
+                    "$ref": "#/components/schemas/ModeOrientationBeneficiaire"
+                  },
+                  "type": "array",
+                  "uniqueItems": true
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Modes Orientation Beneficiaire"
+            },
+            "modes_orientation_beneficiaire_autres": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Modes Orientation Beneficiaire Autres"
+            },
+            "modes_orientation_accompagnateur": {
+              "anyOf": [
+                {
+                  "items": {
+                    "$ref": "#/components/schemas/ModeOrientationAccompagnateur"
+                  },
+                  "type": "array",
+                  "uniqueItems": true
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Modes Orientation Accompagnateur"
+            },
+            "modes_orientation_accompagnateur_autres": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Modes Orientation Accompagnateur Autres"
+            },
+            "score_qualite": {
+              "type": "number",
+              "maximum": 1.0,
+              "minimum": 0.0,
+              "title": "Score Qualite",
+              "description": "Score de qualité du service, défini et calculé par data·inclusion.\n"
+            }
+          },
+          "type": "object",
+          "required": [
+            "id",
+            "structure_id",
+            "source",
+            "nom",
+            "score_qualite"
+          ],
+          "title": "Service"
+        },
+        "Source": {
+          "properties": {
+            "slug": {
+              "type": "string",
+              "title": "Slug"
+            },
+            "nom": {
+              "type": "string",
+              "title": "Nom"
+            },
+            "description": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Description"
+            }
+          },
+          "type": "object",
+          "required": [
+            "slug",
+            "nom",
+            "description"
+          ],
+          "title": "Source"
+        },
+        "Structure": {
+          "properties": {
+            "id": {
+              "type": "string",
+              "title": "Id"
+            },
+            "siret": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "maxLength": 14,
+                  "minLength": 14,
+                  "pattern": "^\\d{14}$"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Siret"
+            },
+            "rna": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "maxLength": 10,
+                  "minLength": 10,
+                  "pattern": "^W\\d{9}$"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Rna"
+            },
+            "nom": {
+              "type": "string",
+              "title": "Nom"
+            },
+            "commune": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Commune"
+            },
+            "code_postal": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "maxLength": 5,
+                  "minLength": 5,
+                  "pattern": "^\\d{5}$"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Code Postal"
+            },
+            "code_insee": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "maxLength": 5,
+                  "minLength": 5,
+                  "pattern": "^\\w{5}$"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Code Insee"
+            },
+            "adresse": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Adresse"
+            },
+            "complement_adresse": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Complement Adresse"
+            },
+            "longitude": {
+              "anyOf": [
+                {
+                  "type": "number"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Longitude"
+            },
+            "latitude": {
+              "anyOf": [
+                {
+                  "type": "number"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Latitude"
+            },
+            "typologie": {
+              "anyOf": [
+                {
+                  "$ref": "#/components/schemas/Typologie"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "telephone": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Telephone"
+            },
+            "courriel": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "format": "email"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Courriel"
+            },
+            "site_web": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Site Web"
+            },
+            "presentation_resume": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "maxLength": 280
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Presentation Resume"
+            },
+            "presentation_detail": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Presentation Detail"
+            },
+            "source": {
+              "type": "string",
+              "title": "Source"
+            },
+            "date_maj": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "format": "date"
+                },
+                {
+                  "type": "string",
+                  "format": "date-time"
+                }
+              ],
+              "title": "Date Maj"
+            },
+            "antenne": {
+              "anyOf": [
+                {
+                  "type": "boolean"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Antenne"
+            },
+            "lien_source": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Lien Source"
+            },
+            "horaires_ouverture": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Horaires Ouverture"
+            },
+            "accessibilite": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Accessibilite"
+            },
+            "labels_nationaux": {
+              "anyOf": [
+                {
+                  "items": {
+                    "$ref": "#/components/schemas/LabelNational"
+                  },
+                  "type": "array",
+                  "uniqueItems": true
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Labels Nationaux"
+            },
+            "labels_autres": {
+              "anyOf": [
+                {
+                  "items": {
+                    "type": "string"
+                  },
+                  "type": "array",
+                  "uniqueItems": true
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Labels Autres"
+            },
+            "thematiques": {
+              "anyOf": [
+                {
+                  "items": {
+                    "$ref": "#/components/schemas/Thematique"
+                  },
+                  "type": "array",
+                  "uniqueItems": true
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Thematiques"
+            }
+          },
+          "type": "object",
+          "required": [
+            "id",
+            "nom",
+            "source",
+            "date_maj"
+          ],
+          "title": "Structure"
+        },
+        "Thematique": {
+          "type": "string",
+          "enum": [
+            "acces-aux-droits-et-citoyennete",
+            "acces-aux-droits-et-citoyennete--accompagnement-dans-les-demarches-administratives",
+            "acces-aux-droits-et-citoyennete--accompagnement-juridique",
+            "acces-aux-droits-et-citoyennete--aide-aux-victimes",
+            "acces-aux-droits-et-citoyennete--connaitre-ses-droits",
+            "acces-aux-droits-et-citoyennete--demandeurs-dasile-et-naturalisation",
+            "acces-aux-droits-et-citoyennete--developpement-durable",
+            "acces-aux-droits-et-citoyennete--faciliter-laction-citoyenne",
+            "accompagnement-social-et-professionnel-personnalise",
+            "accompagnement-social-et-professionnel-personnalise--decrochage-scolaire",
+            "accompagnement-social-et-professionnel-personnalise--definition-du-projet-professionnel",
+            "accompagnement-social-et-professionnel-personnalise--parcours-d-insertion-socioprofessionnel",
+            "apprendre-francais",
+            "apprendre-francais--accompagnement-insertion-pro",
+            "apprendre-francais--communiquer-vie-tous-les-jours",
+            "apprendre-francais--suivre-formation",
+            "choisir-un-metier",
+            "choisir-un-metier--confirmer-son-choix-de-metier",
+            "choisir-un-metier--connaitre-les-opportunites-demploi",
+            "choisir-un-metier--decouvrir-un-metier-ou-un-secteur-dactivite",
+            "choisir-un-metier--identifier-ses-points-forts-et-ses-competences",
+            "creation-activite",
+            "creation-activite--definir-son-projet-de-creation-dentreprise",
+            "creation-activite--developper-son-entreprise",
+            "creation-activite--financer-son-projet",
+            "creation-activite--reseautage-pour-createurs-dentreprise",
+            "creation-activite--structurer-son-projet-de-creation-dentreprise",
+            "equipement-et-alimentation",
+            "equipement-et-alimentation--acces-a-du-materiel-informatique",
+            "equipement-et-alimentation--acces-a-un-telephone-et-un-abonnement",
+            "equipement-et-alimentation--alimentation",
+            "equipement-et-alimentation--aide-menagere",
+            "equipement-et-alimentation--electromenager",
+            "equipement-et-alimentation--habillement",
+            "famille",
+            "famille--accompagnement-femme-enceinte-bebe-jeune-enfant",
+            "famille--garde-denfants",
+            "famille--information-et-accompagnement-des-parents",
+            "famille--jeunes-sans-soutien-familial",
+            "famille--soutien-a-la-parentalite",
+            "famille--soutien-aux-familles",
+            "famille--violences-intrafamiliales",
+            "gestion-financiere",
+            "gestion-financiere--accompagnement-aux-personnes-en-difficultes-financieres",
+            "gestion-financiere--acces-au-micro-credit",
+            "gestion-financiere--apprendre-a-gerer-son-budget",
+            "gestion-financiere--beneficier-daides-financieres",
+            "gestion-financiere--creation-et-utilisation-dun-compte-bancaire",
+            "gestion-financiere--obtenir-une-aide-alimentaire",
+            "gestion-financiere--prevention-et-gestion-du-surendettement",
+            "handicap",
+            "handicap--accompagnement-par-une-structure-specialisee",
+            "handicap--adaptation-au-poste-de-travail",
+            "handicap--adapter-son-logement",
+            "handicap--aide-a-la-personne",
+            "handicap--connaissance-des-droits-des-travailleurs",
+            "handicap--faire-reconnaitre-un-handicap",
+            "handicap--favoriser-le-retour-et-le-maintien-dans-lemploi",
+            "handicap--gerer-le-depart-a-la-retraite-des-personnes-en-situation-de-handicap",
+            "handicap--mobilite-des-personnes-en-situation-de-handicap",
+            "illettrisme",
+            "illettrisme--accompagner-scolarite",
+            "illettrisme--ameliorer-vocabulaire",
+            "illettrisme--etre-autonome",
+            "illettrisme--info-acquisition-connaissances",
+            "illettrisme--permis-conduire",
+            "illettrisme--reperer-situation-illettrisme",
+            "illettrisme--surmonter-trouble-apprentissage",
+            "illettrisme--trouver-emploi-formation",
+            "illettrisme--utiliser-numerique",
+            "illettrisme--valider-certification-clea",
+            "logement-hebergement",
+            "logement-hebergement--aides-financieres-investissement-locatif",
+            "logement-hebergement--besoin-dadapter-mon-logement",
+            "logement-hebergement--connaissance-de-ses-droits-et-interlocuteurs",
+            "logement-hebergement--demenagement",
+            "logement-hebergement--etre-accompagne-dans-son-projet-accession",
+            "logement-hebergement--etre-accompagne-en cas-de-difficultes-financieres",
+            "logement-hebergement--etre-accompagne-pour-se-loger",
+            "logement-hebergement--financer-son-projet-travaux",
+            "logement-hebergement--gerer-son-budget",
+            "logement-hebergement--mal-loges-sans-logis",
+            "logement-hebergement--probleme-avec-son-logement",
+            "logement-hebergement--reprendre-un-emploi-ou-une-formation",
+            "mobilite",
+            "mobilite--acheter-un-vehicule-motorise",
+            "mobilite--acheter-un-velo",
+            "mobilite--aides-a-la-reprise-demploi-ou-a-la-formation",
+            "mobilite--apprendre-a-utiliser-un-deux-roues",
+            "mobilite--comprendre-et-utiliser-les-transports-en-commun",
+            "mobilite--entretenir-reparer-son-vehicule",
+            "mobilite--etre-accompagne-dans-son-parcours-mobilite",
+            "mobilite--louer-un-vehicule",
+            "mobilite--financer-mon-projet-mobilite",
+            "mobilite--preparer-son-permis-de-conduire-se-reentrainer-a-la-conduite",
+            "numerique",
+            "numerique--acceder-a-du-materiel",
+            "numerique--acceder-a-une-connexion-internet",
+            "numerique--accompagner-les-demarches-de-sante",
+            "numerique--approfondir-ma-culture-numerique",
+            "numerique--creer-avec-le-numerique",
+            "numerique--creer-et-developper-mon-entreprise",
+            "numerique--devenir-autonome-dans-les-demarches-administratives",
+            "numerique--favoriser-mon-insertion-professionnelle",
+            "numerique--prendre-en-main-un-ordinateur",
+            "numerique--prendre-en-main-un-smartphone-ou-une-tablette",
+            "numerique--promouvoir-la-citoyennete-numerique",
+            "numerique--realiser-des-demarches-administratives-avec-un-accompagnement",
+            "numerique--s-equiper-en-materiel-informatique",
+            "numerique--soutenir-la-parentalite-et-l-education-avec-le-numerique",
+            "numerique--utiliser-le-numerique-au-quotidien",
+            "preparer-sa-candidature",
+            "preparer-sa-candidature--developper-son-reseau",
+            "preparer-sa-candidature--organiser-ses-demarches-de-recherche-demploi",
+            "preparer-sa-candidature--realiser-un-cv-et-ou-une-lettre-de-motivation",
+            "preparer-sa-candidature--valoriser-ses-competences",
+            "remobilisation",
+            "remobilisation--bien-etre",
+            "remobilisation--decouvrir-son-potentiel-via-le-sport-et-la-culture",
+            "remobilisation--discrimination",
+            "remobilisation--identifier-ses-competences-et-aptitudes",
+            "remobilisation--lien-social",
+            "remobilisation--participer-a-des-actions-solidaires-ou-de-benevolat",
+            "remobilisation--pression-sociale",
+            "remobilisation--restaurer-sa-confiance-son-image-de-soi",
+            "sante",
+            "sante--acces-aux-soins",
+            "sante--accompagnement-de-la-femme-enceinte-du-bebe-et-du-jeune-enfant",
+            "sante--accompagner-les-traumatismes",
+            "sante--bien-etre-psychologique",
+            "sante--diagnostic-et-accompagnement-a-lemployabilite",
+            "sante--faire-face-a-une-situation-daddiction",
+            "sante--obtenir-la-prise-en-charge-de-frais-medicaux",
+            "sante--prevention-et-acces-aux-soins",
+            "sante--se-soigner-et-prevenir-la-maladie",
+            "sante--vie-relationnelle-et-affective",
+            "se-former",
+            "se-former--monter-son-dossier-de-formation",
+            "se-former--trouver-sa-formation",
+            "se-former--utiliser-le-numerique",
+            "souvrir-a-linternational",
+            "souvrir-a-linternational--connaitre-les-opportunites-demploi-a-letranger",
+            "souvrir-a-linternational--sinformer-sur-les-aides-pour-travailler-a-letranger",
+            "souvrir-a-linternational--sorganiser-suite-a-son-retour-en-france",
+            "trouver-un-emploi",
+            "trouver-un-emploi--convaincre-un-recruteur-en-entretien",
+            "trouver-un-emploi--faire-des-candidatures-spontanees",
+            "trouver-un-emploi--repondre-a-des-offres-demploi",
+            "trouver-un-emploi--suivre-ses-candidatures-et-relancer-les-employeurs"
+          ],
+          "title": "Thematique"
+        },
+        "Typologie": {
+          "type": "string",
+          "enum": [
+            "ACI",
+            "ACIPHC",
+            "AFPA",
+            "AI",
+            "ASE",
+            "ASSO",
+            "ASSO_CHOMEUR",
+            "Autre",
+            "AVIP",
+            "BIB",
+            "CAARUD",
+            "CADA",
+            "CAF",
+            "CAP_EMPLOI",
+            "CAVA",
+            "CC",
+            "CCAS",
+            "CCONS",
+            "CD",
+            "CDAS",
+            "CFP",
+            "CHRS",
+            "CHU",
+            "CIAS",
+            "CIDFF",
+            "CITMET",
+            "CMP",
+            "CMS",
+            "CPAM",
+            "CPH",
+            "CS",
+            "CSAPA",
+            "CSC",
+            "DEETS",
+            "DEPT",
+            "DIPLP",
+            "E2C",
+            "EA",
+            "EATT",
+            "EI",
+            "EITI",
+            "ENM",
+            "EPCI",
+            "EPI",
+            "EPIDE",
+            "EPN",
+            "ES",
+            "ESS",
+            "ETABL_PRI",
+            "ETABL_PUB",
+            "ETAT",
+            "ETTI",
+            "EVS",
+            "FABLAB",
+            "FAIS",
+            "FT",
+            "GEIQ",
+            "HUDA",
+            "LA_POSTE",
+            "MDE",
+            "MDEF",
+            "MDPH",
+            "MDS",
+            "MJC",
+            "ML",
+            "MQ",
+            "MSA",
+            "MSAP",
+            "MUNI",
+            "OACAS",
+            "ODC",
+            "OF",
+            "OIL",
+            "OPCS",
+            "PAD",
+            "PENSION",
+            "PI",
+            "PIJ_BIJ",
+            "PIMMS",
+            "PJJ",
+            "PLIE",
+            "PREF",
+            "PREVENTION",
+            "REG",
+            "RESSOURCERIE",
+            "RFS",
+            "RS_FJT",
+            "SCP",
+            "SPIP",
+            "TIERS_LIEUX",
+            "UDAF"
+          ],
+          "title": "Typologie"
+        },
+        "TypologieService": {
+          "type": "string",
+          "enum": [
+            "accompagnement",
+            "accueil",
+            "aide-financiere",
+            "aide-materielle",
+            "atelier",
+            "formation",
+            "information",
+            "numerique",
+            "autonomie",
+            "delegation",
+            "financement"
+          ],
+          "title": "TypologieService"
+        },
+        "ValidationError": {
+          "properties": {
+            "loc": {
+              "items": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "integer"
+                  }
+                ]
+              },
+              "type": "array",
+              "title": "Location"
+            },
+            "msg": {
+              "type": "string",
+              "title": "Message"
+            },
+            "type": {
+              "type": "string",
+              "title": "Error Type"
+            }
+          },
+          "type": "object",
+          "required": [
+            "loc",
+            "msg",
+            "type"
+          ],
+          "title": "ValidationError"
+        },
+        "ZoneDiffusionType": {
+          "type": "string",
+          "enum": [
+            "commune",
+            "epci",
+            "region",
+            "departement",
+            "pays"
+          ],
+          "title": "ZoneDiffusionType"
+        },
+        "data_inclusion__api__utils__pagination__CustomizedPage_ServiceSearchResult___1": {
+          "properties": {
+            "items": {
+              "items": {
+                "$ref": "#/components/schemas/data_inclusion__api__v0__inclusion_data__schemas__ServiceSearchResult"
+              },
+              "type": "array",
+              "title": "Items"
+            },
+            "total": {
+              "anyOf": [
+                {
+                  "type": "integer",
+                  "minimum": 0.0
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Total"
+            },
+            "page": {
+              "anyOf": [
+                {
+                  "type": "integer",
+                  "minimum": 1.0
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Page"
+            },
+            "size": {
+              "anyOf": [
+                {
+                  "type": "integer",
+                  "minimum": 1.0
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Size"
+            },
+            "pages": {
+              "anyOf": [
+                {
+                  "type": "integer",
+                  "minimum": 0.0
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Pages"
+            }
+          },
+          "type": "object",
+          "required": [
+            "items",
+            "total",
+            "page",
+            "size"
+          ],
+          "title": "CustomizedPage[ServiceSearchResult]"
+        },
+        "data_inclusion__api__utils__pagination__CustomizedPage_ServiceSearchResult___2": {
+          "properties": {
+            "items": {
+              "items": {
+                "$ref": "#/components/schemas/data_inclusion__api__v1__inclusion_data__schemas__ServiceSearchResult"
+              },
+              "type": "array",
+              "title": "Items"
+            },
+            "total": {
+              "anyOf": [
+                {
+                  "type": "integer",
+                  "minimum": 0.0
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Total"
+            },
+            "page": {
+              "anyOf": [
+                {
+                  "type": "integer",
+                  "minimum": 1.0
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Page"
+            },
+            "size": {
+              "anyOf": [
+                {
+                  "type": "integer",
+                  "minimum": 1.0
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Size"
+            },
+            "pages": {
+              "anyOf": [
+                {
+                  "type": "integer",
+                  "minimum": 0.0
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Pages"
+            }
+          },
+          "type": "object",
+          "required": [
+            "items",
+            "total",
+            "page",
+            "size"
+          ],
+          "title": "CustomizedPage[ServiceSearchResult]"
+        },
+        "data_inclusion__api__v0__inclusion_data__schemas__ServiceSearchResult": {
+          "properties": {
+            "service": {
+              "$ref": "#/components/schemas/DetailedService"
+            },
+            "distance": {
+              "anyOf": [
+                {
+                  "type": "integer"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Distance"
+            }
+          },
+          "type": "object",
+          "required": [
+            "service"
+          ],
+          "title": "ServiceSearchResult"
+        },
+        "data_inclusion__api__v1__inclusion_data__schemas__ServiceSearchResult": {
+          "properties": {
+            "service": {
+              "$ref": "#/components/schemas/DetailedService"
+            },
+            "distance": {
+              "anyOf": [
+                {
+                  "type": "integer"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Distance"
+            }
+          },
+          "type": "object",
+          "required": [
+            "service"
+          ],
+          "title": "ServiceSearchResult"
+        }
+      },
+      "securitySchemes": {
+        "HTTPBearer": {
+          "type": "http",
+          "scheme": "bearer"
+        }
+      }
+    }
+  }
+  '''
+# ---

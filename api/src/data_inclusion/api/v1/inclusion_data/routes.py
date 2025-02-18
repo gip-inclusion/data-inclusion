@@ -1,3 +1,4 @@
+import functools
 from typing import Annotated, TypeVar
 
 from pydantic.json_schema import SkipJsonSchema
@@ -6,13 +7,14 @@ import fastapi
 
 from data_inclusion import schema as di_schema
 from data_inclusion.api import auth
-from data_inclusion.api.analytics.services import (
-    save_consult_service_event,
-    save_consult_structure_event,
-    save_list_services_event,
-    save_list_structures_event,
-    save_search_services_event,
-)
+
+# from data_inclusion.api.v0.analytics.services import (
+#     save_consult_service_event,
+#     save_consult_structure_event,
+#     save_list_services_event,
+#     save_list_structures_event,
+#     save_search_services_event,
+# )
 from data_inclusion.api.config import settings
 from data_inclusion.api.core import db
 from data_inclusion.api.decoupage_administratif.constants import (
@@ -21,13 +23,17 @@ from data_inclusion.api.decoupage_administratif.constants import (
     RegionCodeEnum,
     RegionSlugEnum,
 )
-from data_inclusion.api.decoupage_administratif.models import Commune
-from data_inclusion.api.decoupage_administratif.utils import (
-    get_departement_by_code_or_slug,
-    get_region_by_code_or_slug,
-)
-from data_inclusion.api.inclusion_data import schemas, services
-from data_inclusion.api.utils import pagination, soliguide
+
+# from data_inclusion.api.decoupage_administratif.models import Commune
+# from data_inclusion.api.decoupage_administratif.utils import (
+#     get_departement_by_code_or_slug,
+#     get_region_by_code_or_slug,
+# )
+# from data_inclusion.api.v1.inclusion_data import services
+from data_inclusion.api.utils import pagination
+from data_inclusion.api.v1.inclusion_data import schemas
+
+# from data_inclusion.api.utils import soliguide
 
 router = fastapi.APIRouter(tags=["Données"])
 
@@ -90,66 +96,85 @@ def list_structures_endpoint(
     code_commune: CodeCommuneFilter = None,
     db_session=fastapi.Depends(db.get_session),
 ):
-    region = get_region_by_code_or_slug(code=code_region, slug=slug_region)
+    # region = get_region_by_code_or_slug(code=code_region, slug=slug_region)
 
-    departement = get_departement_by_code_or_slug(
-        code=code_departement, slug=slug_departement
-    )
+    # departement = get_departement_by_code_or_slug(
+    #     code=code_departement, slug=slug_departement
+    # )
 
-    structures_list = services.list_structures(
-        request,
-        db_session,
-        sources=sources,
-        typologie=typologie,
-        label_national=label_national,
-        departement=departement,
-        region=region,
-        commune_code=code_commune,
-        thematiques=thematiques,
-    )
+    # structures_list = services.list_structures(
+    #     request,
+    #     db_session,
+    #     sources=sources,
+    #     typologie=typologie,
+    #     label_national=label_national,
+    #     departement=departement,
+    #     region=region,
+    #     commune_code=code_commune,
+    #     thematiques=thematiques,
+    # )
 
-    background_tasks.add_task(
-        save_list_structures_event,
-        request=request,
-        db_session=db_session,
-        sources=sources,
-        typologie=typologie,
-        label_national=label_national,
-        departement=departement,
-        region=region,
-        code_commune=code_commune,
-        thematiques=thematiques,
-    )
+    # background_tasks.add_task(
+    #     save_list_structures_event,
+    #     request=request,
+    #     db_session=db_session,
+    #     sources=sources,
+    #     typologie=typologie,
+    #     label_national=label_national,
+    #     departement=departement,
+    #     region=region,
+    #     code_commune=code_commune,
+    #     thematiques=thematiques,
+    # )
+    import json
+
+    with open("src/data_inclusion/api/v1/response_structure.json") as f:
+        structures_list = json.load(f)
 
     return structures_list
 
 
-@router.get(
-    "/structures/{source}/{id}",
-    response_model=schemas.DetailedStructure,
-    summary="Détailler une structure",
-    dependencies=[auth.authenticated_dependency] if settings.TOKEN_ENABLED else [],
-)
-def retrieve_structure_endpoint(
-    source: Annotated[str, fastapi.Path()],
-    id: Annotated[str, fastapi.Path()],
-    request: fastapi.Request,
-    background_tasks: fastapi.BackgroundTasks,
-    db_session=fastapi.Depends(db.get_session),
-    _=fastapi.Depends(soliguide.notify_soliguide_dependency),
-):
-    structure = services.retrieve_structure(
-        db_session=db_session,
-        source=source,
-        id_=id,
-    )
-    background_tasks.add_task(
-        save_consult_structure_event,
-        request=request,
-        structure=structure,
-        db_session=db_session,
-    )
-    return structure
+# @router.get(
+#     "/structures/{source}/{id}",
+#     response_model=schemas.DetailedStructure,
+#     summary="Détailler une structure",
+#     dependencies=[auth.authenticated_dependency] if settings.TOKEN_ENABLED else [],
+# )
+# def retrieve_structure_endpoint(
+#     source: Annotated[str, fastapi.Path()],
+#     id: Annotated[str, fastapi.Path()],
+#     request: fastapi.Request,
+#     background_tasks: fastapi.BackgroundTasks,
+#     db_session=fastapi.Depends(db.get_session),
+#     _=fastapi.Depends(soliguide.notify_soliguide_dependency),
+# ):
+#     structure = services.retrieve_structure(
+#         db_session=db_session,
+#         source=source,
+#         id_=id,
+#     )
+#     background_tasks.add_task(
+#         save_consult_structure_event,
+#         request=request,
+#         structure=structure,
+#         db_session=db_session,
+#     )
+#     return structure
+
+
+@functools.cache
+def read_sources():
+    import json
+    from pathlib import Path
+
+    return json.loads((Path(__file__).parent / "sources.json").read_text())
+
+
+def list_sources(request: fastapi.Request) -> list[dict]:
+    sources = read_sources()
+    if not request.user.is_authenticated or "dora" not in request.user.username:
+        sources = [d for d in sources if d["slug"] not in ["soliguide"]]
+    return sources
 
 
 @router.get(
@@ -161,7 +186,7 @@ def retrieve_structure_endpoint(
 def list_sources_endpoint(
     request: fastapi.Request,
 ):
-    return services.list_sources(request=request)
+    return list_sources(request=request)
 
 
 @router.get(
@@ -250,68 +275,74 @@ def list_services_endpoint(
         ),
     ] = False,
 ):
-    region = get_region_by_code_or_slug(code=code_region, slug=slug_region)
-    departement = get_departement_by_code_or_slug(
-        code=code_departement, slug=slug_departement
-    )
+    # region = get_region_by_code_or_slug(code=code_region, slug=slug_region)
+    # departement = get_departement_by_code_or_slug(
+    #     code=code_departement, slug=slug_departement
+    # )
 
-    services_listed = services.list_services(
-        request,
-        db_session,
-        sources=sources,
-        thematiques=thematiques,
-        departement=departement,
-        region=region,
-        code_commune=code_commune,
-        frais=frais,
-        profils=profils,
-        recherche_public=recherche_public,
-        modes_accueil=modes_accueil,
-        types=types,
-        score_qualite_minimum=score_qualite_minimum,
-        include_outdated=inclure_suspendus,
-    )
-    background_tasks.add_task(
-        save_list_services_event,
-        request=request,
-        db_session=db_session,
-        sources=sources,
-        thematiques=thematiques,
-        departement=departement,
-        region=region,
-        code_commune=code_commune,
-        frais=frais,
-        profils=profils,
-        modes_accueil=modes_accueil,
-        types=types,
-        inclure_suspendus=inclure_suspendus,
-    )
+    # services_listed = services.list_services(
+    #     request,
+    #     db_session,
+    #     sources=sources,
+    #     thematiques=thematiques,
+    #     departement=departement,
+    #     region=region,
+    #     code_commune=code_commune,
+    #     frais=frais,
+    #     profils=profils,
+    #     recherche_public=recherche_public,
+    #     modes_accueil=modes_accueil,
+    #     types=types,
+    #     score_qualite_minimum=score_qualite_minimum,
+    #     include_outdated=inclure_suspendus,
+    # )
+    # background_tasks.add_task(
+    #     save_list_services_event,
+    #     request=request,
+    #     db_session=db_session,
+    #     sources=sources,
+    #     thematiques=thematiques,
+    #     departement=departement,
+    #     region=region,
+    #     code_commune=code_commune,
+    #     frais=frais,
+    #     profils=profils,
+    #     modes_accueil=modes_accueil,
+    #     types=types,
+    #     inclure_suspendus=inclure_suspendus,
+    # )
+
+    import json
+
+    with open("src/data_inclusion/api/v1/response_service.json") as f:
+        services_listed = json.load(f)
+
     return services_listed
 
 
-@router.get(
-    "/services/{source}/{id}",
-    response_model=schemas.DetailedService,
-    summary="Détailler un service",
-    dependencies=[auth.authenticated_dependency] if settings.TOKEN_ENABLED else [],
-)
-def retrieve_service_endpoint(
-    request: fastapi.Request,
-    source: Annotated[str, fastapi.Path()],
-    id: Annotated[str, fastapi.Path()],
-    background_tasks: fastapi.BackgroundTasks,
-    db_session=fastapi.Depends(db.get_session),
-    _=fastapi.Depends(soliguide.notify_soliguide_dependency),
-):
-    service = services.retrieve_service(db_session=db_session, source=source, id_=id)
+# @router.get(
+#     "/services/{source}/{id}",
+#     response_model=schemas.DetailedService,
+#     summary="Détailler un service",
+#     dependencies=[auth.authenticated_dependency] if settings.TOKEN_ENABLED else [],
+# )
+# def retrieve_service_endpoint(
+#     request: fastapi.Request,
+#     source: Annotated[str, fastapi.Path()],
+#     id: Annotated[str, fastapi.Path()],
+#     background_tasks: fastapi.BackgroundTasks,
+#     db_session=fastapi.Depends(db.get_session),
+#     _=fastapi.Depends(soliguide.notify_soliguide_dependency),
+# ):
+#     service = services.retrieve_service(db_session=db_session, source=source, id_=id)
 
-    background_tasks.add_task(
-        save_consult_service_event,
-        request=request,
-        service=service,
-        db_session=db_session,
-    )
-    return service
+#     background_tasks.add_task(
+#         save_consult_service_event,
+#         request=request,
+#         service=service,
+#         db_session=db_session,
+#     )
+#     return service
 
 
 @router.get(
@@ -448,57 +479,62 @@ def search_services_endpoint(
     * les résultats sont triés par distance croissante.
     """
 
-    if code_commune is None and code_insee is not None:
-        code_commune = code_insee
+    # if code_commune is None and code_insee is not None:
+    #     code_commune = code_insee
 
-    commune_instance = None
-    search_point = None
-    if code_commune is not None:
-        commune_instance = db_session.get(Commune, code_commune)
-        if commune_instance is None:
-            raise fastapi.HTTPException(
-                status_code=fastapi.status.HTTP_422_UNPROCESSABLE_ENTITY,
-                detail="This `code_commune` does not exist.",
-            )
-        if lat and lon:
-            search_point = f"POINT({lon} {lat})"
-        elif lat or lon:
-            raise fastapi.HTTPException(
-                status_code=fastapi.status.HTTP_422_UNPROCESSABLE_ENTITY,
-                detail="The `lat` and `lon` must be simultaneously filled.",
-            )
+    # commune_instance = None
+    # search_point = None
+    # if code_commune is not None:
+    #     commune_instance = db_session.get(Commune, code_commune)
+    #     if commune_instance is None:
+    #         raise fastapi.HTTPException(
+    #             status_code=fastapi.status.HTTP_422_UNPROCESSABLE_ENTITY,
+    #             detail="This `code_commune` does not exist.",
+    #         )
+    #     if lat and lon:
+    #         search_point = f"POINT({lon} {lat})"
+    #     elif lat or lon:
+    #         raise fastapi.HTTPException(
+    #             status_code=fastapi.status.HTTP_422_UNPROCESSABLE_ENTITY,
+    #             detail="The `lat` and `lon` must be simultaneously filled.",
+    #         )
 
-    results = services.search_services(
-        request,
-        db_session,
-        sources=sources,
-        commune_instance=commune_instance,
-        thematiques=thematiques,
-        frais=frais,
-        modes_accueil=modes_accueil,
-        profils=profils,
-        profils_search=recherche_public,
-        types=types,
-        search_point=search_point,
-        score_qualite_minimum=score_qualite_minimum,
-        include_outdated=inclure_suspendus,
-    )
+    # results = services.search_services(
+    #     request,
+    #     db_session,
+    #     sources=sources,
+    #     commune_instance=commune_instance,
+    #     thematiques=thematiques,
+    #     frais=frais,
+    #     modes_accueil=modes_accueil,
+    #     profils=profils,
+    #     profils_search=recherche_public,
+    #     types=types,
+    #     search_point=search_point,
+    #     score_qualite_minimum=score_qualite_minimum,
+    #     include_outdated=inclure_suspendus,
+    # )
 
-    background_tasks.add_task(
-        save_search_services_event,
-        request=request,
-        db_session=db_session,
-        results=results,
-        sources=sources,
-        code_commune=code_commune,
-        lat=lat,
-        lon=lon,
-        thematiques=thematiques,
-        frais=frais,
-        modes_accueil=modes_accueil,
-        profils=profils,
-        types=types,
-        inclure_suspendus=inclure_suspendus,
-    )
+    # background_tasks.add_task(
+    #     save_search_services_event,
+    #     request=request,
+    #     db_session=db_session,
+    #     results=results,
+    #     sources=sources,
+    #     code_commune=code_commune,
+    #     lat=lat,
+    #     lon=lon,
+    #     thematiques=thematiques,
+    #     frais=frais,
+    #     modes_accueil=modes_accueil,
+    #     profils=profils,
+    #     types=types,
+    #     inclure_suspendus=inclure_suspendus,
+    # )
+
+    import json
+
+    with open("src/data_inclusion/api/v1/response_search_service.json") as f:
+        results = json.load(f)
 
     return results

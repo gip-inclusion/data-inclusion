@@ -2,20 +2,20 @@ from sqlalchemy import orm
 
 import fastapi
 
-from data_inclusion import schema as di_schema
-from data_inclusion.api.analytics.models import (
+from data_inclusion.api.decoupage_administratif.constants import (
+    Departement,
+    Region,
+)
+from data_inclusion.api.utils import pagination
+from data_inclusion.api.v0.analytics.models import (
     ConsultServiceEvent,
     ConsultStructureEvent,
     ListServicesEvent,
     ListStructuresEvent,
     SearchServicesEvent,
 )
-from data_inclusion.api.decoupage_administratif.constants import (
-    Departement,
-    Region,
-)
-from data_inclusion.api.inclusion_data import schemas
-from data_inclusion.api.utils import pagination
+from data_inclusion.api.v0.inclusion_data import schemas
+from data_inclusion.api.v0.inclusion_schema import legacy as di_schema
 
 
 def save_consult_structure_event(
