@@ -25,7 +25,6 @@ resource "scaleway_instance_server" "main" {
   type              = var.environment == "prod" ? "POP2-HC-8C-16G" : "GP1-XS"
   image             = "docker"
   ip_id             = scaleway_instance_ip.main.id
-  routed_ip_enabled = true
   security_group_id = scaleway_instance_security_group.main.id
 
   root_volume {
@@ -192,7 +191,7 @@ resource "scaleway_domain_record" "dns" {
   dns_zone = var.dns_zone
   name     = replace(each.key, ".${var.dns_zone}", "")
   type     = "A"
-  data     = scaleway_instance_server.main.public_ip
+  data     = scaleway_instance_server.main.public_ips[0].address
   ttl      = 3600
 }
 
@@ -204,7 +203,7 @@ resource "null_resource" "up" {
   connection {
     type        = "ssh"
     user        = "root"
-    host        = scaleway_instance_server.main.public_ip
+    host        = scaleway_instance_server.main.public_ips[0].address
     private_key = var.ssh_private_key
   }
 
