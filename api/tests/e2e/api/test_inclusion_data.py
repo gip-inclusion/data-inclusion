@@ -1275,9 +1275,13 @@ def test_search_services_with_code_commune_a_distance(api_client):
     assert response.status_code == 200
     resp_data = response.json()
     assert_paginated_response_data(resp_data, total=2)
-    assert resp_data["items"][0]["service"]["id"] == service_1.id
+    assert sorted([d["service"]["id"] for d in resp_data["items"]]) == sorted(
+        [
+            service_1.id,
+            service_2.id,
+        ]
+    )
     assert resp_data["items"][0]["distance"] is None
-    assert resp_data["items"][1]["service"]["id"] == service_2.id
     assert resp_data["items"][1]["distance"] is None
 
 
@@ -1386,24 +1390,9 @@ def test_retrieve_service_and_notify_soliguide(
         "expected_doublons_2",
     ),
     [
-        (
-            None,
-            None,
-            [],
-            [],
-        ),
-        (
-            "42",
-            None,
-            [],
-            [],
-        ),
-        (
-            "cluster_a",
-            "cluster_b",
-            [],
-            [],
-        ),
+        (None, None, [], []),
+        ("42", None, [], []),
+        ("cluster_a", "cluster_b", [], []),
         (
             "cluster_a",
             "cluster_a",
@@ -1420,7 +1409,7 @@ def test_list_structures_with_doublons(
     expected_doublons_1,
     expected_doublons_2,
 ):
-    factories.StructureFactory(
+    service_1 = factories.StructureFactory(
         source="src_1",
         id="first",
         cluster_id=cluster_a,
@@ -1434,13 +1423,15 @@ def test_list_structures_with_doublons(
     url = "/api/v0/structures/"
     response = api_client.get(url)
 
+    assert_paginated_response_data(response.json(), total=2)
     resp_data = response.json()
 
-    assert resp_data["items"][0]["id"] == "first"
-    assert resp_data["items"][1]["id"] == "second"
+    service_1_data, service_2_data = sorted(
+        resp_data["items"], key=lambda x: x["id"] != service_1.id
+    )
 
-    assert resp_data["items"][0]["doublons_groupe_id"] == cluster_a
-    assert resp_data["items"][1]["doublons_groupe_id"] == cluster_b
+    assert service_1_data["doublons_groupe_id"] == cluster_a
+    assert service_2_data["doublons_groupe_id"] == cluster_b
 
-    assert resp_data["items"][0]["doublons"] == expected_doublons_1
-    assert resp_data["items"][1]["doublons"] == expected_doublons_2
+    assert service_1_data["doublons"] == expected_doublons_1
+    assert service_2_data["doublons"] == expected_doublons_2
