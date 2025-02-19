@@ -5,7 +5,7 @@
 * [ ] Mes commits et ma PR suivent le [conventional commit](https://www.conventionalcommits.org/en/v1.0.0/)
   * `<type>(<optional scope>): <description>`
   * types : `feat`, `chore`, `fix`, `docs`, etc.
-  * scopes : `structure`, `service`, `thematiques`, etc.
+  * scopes : `api`, `pipeline`, `deployment`, `deduplication`, `datawarehouse`
 * [ ] Mes messages de commit sont en anglais
 * [ ] J'ai exécuté les pre-commits
 * [ ] J'ai indiqué le ticket notion associé
@@ -26,3 +26,4 @@ si ma PR concerne l'**api**
 * [ ] J'emploie le français dans l'interface de l'api (query params, description, etc.)
 * [ ] Si ma PR inclut des modifs de l'orm, j'ai inclus les migrations alembic
 * [ ] J'ai ajouté des tests
+* [ ] J'ai fait une analyse perfs avant/après via locust
