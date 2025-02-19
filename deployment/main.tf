@@ -25,7 +25,6 @@ resource "scaleway_instance_server" "main" {
   type              = var.environment == "prod" ? "POP2-HC-8C-16G" : "GP1-XS"
   image             = "docker"
   ip_id             = scaleway_instance_ip.main.id
-  routed_ip_enabled = true
   security_group_id = scaleway_instance_security_group.main.id
 
   root_volume {
@@ -192,9 +191,67 @@ resource "scaleway_domain_record" "dns" {
   dns_zone = var.dns_zone
   name     = replace(each.key, ".${var.dns_zone}", "")
   type     = "A"
-  data     = scaleway_instance_server.main.public_ip
+  data     = scaleway_instance_server.main.public_ips[0].address
   ttl      = 3600
 }
+
+provider "system" {
+  ssh {
+    user        = "root"
+    host        = scaleway_instance_server.main.public_ips[0].address
+    private_key = var.ssh_private_key
+  }
+}
+
+resource "system_file" "cleanup_service" {
+  path    = "/etc/systemd/system/cleanup.service"
+  mode    = 644
+  user    = "root"
+  group   = "root"
+  content = <<EOT
+[Unit]
+Description=Cleanup (docker, logs, ...) service
+After=network.target
+
+[Service]
+Type=oneshot
+User=root
+ExecStart=docker image prune --all --force --filter 'until=48h'
+ExecStart=docker container prune --force --filter 'until=48h'
+ExecStart=find /var/lib/docker/volumes/data-inclusion_airflow-logs/_data -maxdepth 2 -mtime +7 -exec rm -rf {} +
+ProtectSystem=full
+
+[Install]
+WantedBy=multi-user.target
+EOT
+}
+
+resource "system_file" "cleanup_timer" {
+  path    = "/etc/systemd/system/cleanup.timer"
+  mode    = 644
+  user    = "root"
+  group   = "root"
+  content = <<EOT
+[Unit]
+Description=Timer for running cleanup daily at 2AM
+After=network.target
+
+[Timer]
+Unit=cleanup.service
+OnCalendar=*-*-* 02:00:00
+Persistent=true
+
+[Install]
+WantedBy=timers.target
+EOT
+}
+
+resource "system_service_systemd" "cleanup_service" {
+  name = trimsuffix(system_file.cleanup_service.basename, ".service")
+  # enable but do not start the unit as it would wait during deployment
+  enabled = true
+}
+
 
 resource "null_resource" "up" {
   triggers = {
@@ -204,7 +261,7 @@ resource "null_resource" "up" {
   connection {
     type        = "ssh"
     user        = "root"
-    host        = scaleway_instance_server.main.public_ip
+    host        = scaleway_instance_server.main.public_ips[0].address
     private_key = var.ssh_private_key
   }
 
@@ -269,9 +326,10 @@ resource "null_resource" "up" {
   }
 
   provisioner "remote-exec" {
+    # robbert229/system does not support enabling timers yet, run the systemctl commands manually
     inline = [
-      "docker image prune --all --force --filter 'until=48h'",
-      "docker container prune --force --filter 'until=48h'",
+      "systemctl enable cleanup.timer",
+      "systemctl start cleanup.timer",
       "cd ${local.work_dir}",
       "docker compose --progress=plain up --pull=always --force-recreate --remove-orphans --wait --wait-timeout 1200 --quiet-pull --detach",
       # FIXME: ideally this file should be removed
