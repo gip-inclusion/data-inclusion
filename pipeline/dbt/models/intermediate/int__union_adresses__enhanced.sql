@@ -27,7 +27,13 @@ overriden_adresses AS (
     LEFT JOIN geocodages
         ON
             adresses._di_surrogate_id = geocodages.adresse_id
-            AND geocodages.score >= 0.8
+            AND (
+                geocodages.score >= 0.8
+                OR (
+                    geocodages.score >= 0.65
+                    AND geocodages.input_commune ILIKE '%cedex%'
+                )
+            )
 ),
 
 final AS (
