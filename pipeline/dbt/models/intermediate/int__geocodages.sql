@@ -22,6 +22,17 @@ WITH adresses AS (
     SELECT * FROM {{ ref('int__union_adresses') }}
 ),
 
+communes AS (
+    SELECT * FROM {{ ref('stg_decoupage_administratif__communes') }}
+),
+
+codes_postaux AS (
+    SELECT DISTINCT
+        UNNEST(communes.codes_postaux)
+        AS code_postal
+    FROM communes
+),
+
 final AS (
     SELECT
         CAST('{{ run_started_at }}' AS TIMESTAMP) AS "geocoded_at",
@@ -59,15 +70,18 @@ final AS (
                         ARRAY[
                             'id', adresses._di_surrogate_id,
                             'adresse', adresses.adresse,
-                            'code_postal', adresses.code_postal,
+                            -- use the code postal if it exists
+                            -- unfortunately, it's impossible to test in unit tests
+                            'code_postal', COALESCE(codes_postaux.code_postal, ''),
                             'code_insee', adresses.code_insee,
                             'commune', adresses.commune
                         ]
                     )
                 )
             FROM adresses
+            LEFT JOIN codes_postaux ON adresses.code_postal = codes_postaux.code_postal
             {% if is_incremental() %}
-                -- then only geocode new or changed rows
+            -- then only geocode new or changed rows
                 LEFT JOIN {{ this }} ON adresses._di_surrogate_id = {{ this }}.adresse_id
                 WHERE
                     -- new rows

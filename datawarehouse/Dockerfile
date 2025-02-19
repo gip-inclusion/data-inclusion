@@ -5,8 +5,6 @@ ENV PATH "${VIRTUAL_ENV}/bin:${PATH}"
 ENV PYTHONUNBUFFERED 1
 ENV PYTHONDONTWRITEBYTECODE 1
 
-
-
 RUN apt-get update \
     && apt-get install -y --no-install-recommends \
     postgresql-17-postgis-3 \

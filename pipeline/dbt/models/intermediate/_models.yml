@@ -208,9 +208,20 @@ unit_tests:
       - input: ref('int__union_adresses')
         rows:
           - {_di_surrogate_id: foo, adresse: 17 rue Malus, commune: Lille, code_postal: 59000, code_insee: 59350}
+      - input: ref('stg_decoupage_administratif__communes')
+        format: sql
+        rows: |
+          SELECT
+           '59350' AS code,
+           'Lille' AS nom,
+           ARRAY['59000'] AS codes_postaux,
+           '59' AS code_departement,
+           '23' AS code_region,
+           ST_GEOMFROMGEOJSON('{"type":"Point","coordinates":[4.9306,46.1517]}') AS centre
     expect:
       rows:
         - {adresse_id: foo}
+
 
   - name: test_geocodages_incremental_mode
     # - row `unchanged` was previously geocoded and has not changed. It must not be re-geocoded.
@@ -228,16 +239,26 @@ unit_tests:
         rows:
           - {_di_surrogate_id: unchanged, adresse: 17 rue Malus, code_postal: 59000, code_insee: 59350, commune: Lille}
           - {_di_surrogate_id: failed, adresse: 17 rue Malus, code_postal: 59000, code_insee: 59350, commune: Lille}
-          - {_di_surrogate_id: changed-adresse, adresse: changed, code_postal: 59000, code_insee: 59350, commune: Lille}
+          - {_di_surrogate_id: changed-adresse, adresse: 17 rue Malus, code_postal: 59000, code_insee: 59350, commune: Lille}
           - {_di_surrogate_id: changed-code-postal, adresse: 17 rue Malus, code_postal: changed, code_insee: 59350, commune: Lille}
           - {_di_surrogate_id: changed-code-insee, adresse: 17 rue Malus, code_postal: 59000, code_insee: changed, commune: Lille}
           - {_di_surrogate_id: changed-commune, adresse: 17 rue Malus, code_postal: 59000, code_insee: 59350, commune: changed}
           - {_di_surrogate_id: new, adresse: 17 rue Malus, code_postal: 59000, code_insee: 59350, commune: Lille}
+      - input: ref('stg_decoupage_administratif__communes')
+        format: sql
+        rows: |
+          SELECT
+           '59350' AS code,
+           'Lille' AS nom,
+           ARRAY['59000', 'changed'] AS codes_postaux,
+           '59' AS code_departement,
+           '23' AS code_region,
+           ST_GEOMFROMGEOJSON('{"type":"Point","coordinates":[4.9306,46.1517]}') AS centre
       - input: this
         rows:
           - {adresse_id: unchanged, input_adresse: 17 rue Malus, input_code_postal: 59000, input_code_insee: 59350, input_commune: Lille, score: 1}
           - {adresse_id: failed, input_adresse: 17 rue Malus, input_code_postal: 59000, input_code_insee: 59350, input_commune: Lille, score: null}
-          - {adresse_id: changed-adresse, input_adresse: 17 rue Malus, input_code_postal: 59000, input_code_insee: 59350, input_commune: Lille, score: 1}
+          - {adresse_id: changed-adresse, input_adresse: to be changed, input_code_postal: 59000, input_code_insee: 59350, input_commune: Lille, score: 1}
           - {adresse_id: changed-code-postal, input_adresse: 17 rue Malus, input_code_postal: 59000, input_code_insee: 59350, input_commune: Lille, score: 1}
           - {adresse_id: changed-code-insee, input_adresse: 17 rue Malus, input_code_postal: 59000, input_code_insee: 59350, input_commune: Lille, score: 1}
           - {adresse_id: changed-commune, input_adresse: 17 rue Malus, input_code_postal: 59000, input_code_insee: 59350, input_commune: Lille, score: 1}
