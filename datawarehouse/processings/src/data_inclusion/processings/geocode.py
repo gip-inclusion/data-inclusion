@@ -52,7 +52,12 @@ def _geocode(df: pd.DataFrame) -> pd.DataFrame:
         # a municipality as a result with a very high score. We should discard those,
         # since we want to be able to consider that a "high geocoding score" in our
         # database means a "complete and accurate" address, not just a city.
-        results_df = results_df[results_df.result_type != "municipality"]
+        # Of course, if there was no supplied address, let's keep the municipality.
+        results_df = results_df[
+            (results_df.result_type != "municipality")
+            | (results_df.adresse.isna())
+            | (results_df.adresse == "")
+        ]
 
     logger.info("Got result for address batch, dimensions=%s", results_df.shape)
     return results_df

@@ -22,17 +22,19 @@ WITH adresses AS (
     SELECT * FROM {{ ref('int__union_adresses') }}
 ),
 
-final AS (
+geocodages AS (
     SELECT
-        CAST('{{ run_started_at }}' AS TIMESTAMP) AS "geocoded_at",
-        adresses._di_surrogate_id                             AS "adresse_id",
-        adresses.adresse                                      AS "input_adresse",
-        adresses.code_postal                                  AS "input_code_postal",
-        adresses.code_insee                                   AS "input_code_insee",
-        adresses.commune                                      AS "input_commune",
-        geocodings.result_city                                AS "commune",
-        geocodings.result_name                                AS "adresse",
-        geocodings.result_postcode                            AS "code_postal",
+        CAST('{{ run_started_at }}' AS TIMESTAMP)               AS "geocoded_at",
+        adresses._di_surrogate_id                                           AS "adresse_id",
+        adresses.adresse                                                    AS "input_adresse",
+        adresses.code_postal                                                AS "input_code_postal",
+        adresses.code_insee                                                 AS "input_code_insee",
+        adresses.commune                                                    AS "input_commune",
+        LENGTH(CONCAT(adresses.adresse, ' ', adresses.commune))             AS "input_len",
+        geocodings.result_city                                              AS "commune",
+        geocodings.result_name                                              AS "adresse",
+        geocodings.result_postcode                                          AS "code_postal",
+        LENGTH(CONCAT(geocodings.result_name, ' ', geocodings.result_city)) AS "output_len",
         -- ban api returns district codes for Paris, Lyon and Marseille
         -- replace them with actual city codes
         CASE
@@ -40,15 +42,15 @@ final AS (
             WHEN LEFT(geocodings.result_citycode, 3) = '693' THEN '69123'  -- Lyon
             WHEN LEFT(geocodings.result_citycode, 3) = '132' THEN '13055'  -- Marseille
             ELSE geocodings.result_citycode
-        END                                                   AS "code_commune",
+        END                                                                 AS "code_commune",
         CASE
             WHEN LEFT(geocodings.result_citycode, 3) = ANY(ARRAY['751', '693', '132'])
                 THEN geocodings.result_citycode
-        END                                                   AS "code_arrondissement",
-        geocodings.result_score                               AS "score",
-        geocodings.result_type                                AS "type",
-        geocodings.longitude                                  AS "longitude",
-        geocodings.latitude                                   AS "latitude"
+        END                                                                 AS "code_arrondissement",
+        geocodings.result_score                                             AS "score",
+        geocodings.result_type                                              AS "type",
+        geocodings.longitude                                                AS "longitude",
+        geocodings.latitude                                                 AS "latitude"
     FROM
         adresses
     INNER JOIN processings.geocode(
@@ -82,6 +84,13 @@ final AS (
             {% endif %}
         )
     ) AS geocodings ON adresses._di_surrogate_id = geocodings.id
+),
+
+final AS (
+    SELECT
+        *,
+        score + CAST(ABS(input_len - output_len) AS FLOAT) / CAST(LEAST(input_len, output_len) AS FLOAT) AS score_redresse
+    FROM geocodages
 )
 
 SELECT * FROM final

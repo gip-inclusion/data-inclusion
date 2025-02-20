@@ -6,6 +6,7 @@ geocodages AS (
     SELECT * FROM {{ ref('int__geocodages') }}
 ),
 
+
 overriden_adresses AS (
     SELECT
         adresses._di_surrogate_id                              AS "_di_surrogate_id",
@@ -22,7 +23,9 @@ overriden_adresses AS (
         COALESCE(geocodages.commune, adresses.commune)         AS "commune",
         COALESCE(geocodages.code_postal, adresses.code_postal) AS "code_postal",
         COALESCE(geocodages.code_commune, adresses.code_insee) AS "code_insee",
-        geocodages.score                                       AS "score_geocodage"
+        geocodages.score                                       AS "score_geocodage",
+        geocodages.score_redresse                              AS "score_redresse"
+
     FROM adresses
     LEFT JOIN geocodages
         ON
@@ -30,8 +33,7 @@ overriden_adresses AS (
             AND (
                 geocodages.score >= 0.8
                 OR (
-                    geocodages.score >= 0.65
-                    AND geocodages.input_commune ILIKE '%cedex%'
+                    geocodages.score >= 0.6 AND geocodages.score_redresse >= 1.0
                 )
             )
 ),
