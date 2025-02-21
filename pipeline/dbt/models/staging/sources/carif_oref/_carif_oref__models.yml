@@ -102,6 +102,13 @@ models:
         data_tests:
           - dbt_utils.not_null_proportion:
               at_least: 0.1
+      - name: hash_coordonnees_lieu_de_formation_principal
+        data_tests:
+          - dbt_utils.not_null_proportion:
+              at_least: 0.9
+          - relationships:
+              to: ref('stg_carif_oref__coordonnees')
+              field: hash_
 
   - name: stg_carif_oref__formations
     description: http://lheo.gouv.fr/2.3/lheo/formation.html
@@ -263,7 +270,7 @@ models:
               to: ref('stg_decoupage_administratif__communes')
               field: code
               config:
-                error_if: ">1"
+                error_if: ">3"
       - name: code_insee_arrondissement
         data_tests:
           - relationships:

@@ -29,20 +29,14 @@ final AS (
             ),
             '{}'
         )                                                                      AS "url_action",
-        NULLIF(
-            ARRAY_REMOVE(
-                ARRAY(
-                    SELECT NULLIF(TRIM(x.urlweb), '')
-                    FROM JSONB_ARRAY_ELEMENTS_TEXT(lieux_de_formation.data -> 'coordonnees' -> 'web' -> 'urlweb') AS x (urlweb)
-                ),
-                NULL
-            ),
-            '{}'
-        )                                                                      AS "url_lieu_de_formation"
+        CAST(MD5(lieux_de_formation.data ->> 'coordonnees') AS TEXT)           AS "hash_coordonnees_lieu_de_formation_principal"
     FROM source
     INNER JOIN JSONB_PATH_QUERY(source.data, '$.action[*]') AS actions (data) ON TRUE
     INNER JOIN JSONB_PATH_QUERY(actions.data, '$.organisme\-formateur[*]') AS organismes_formateurs (data) ON TRUE
     LEFT JOIN JSONB_PATH_QUERY(actions.data, '$.lieu\-de\-formation[*]') AS lieux_de_formation (data) ON TRUE
+    ORDER BY
+        NULLIF(TRIM(actions.data ->> '@numero'), ''),
+        (lieux_de_formation.data ->> '@tag') = 'principal' DESC
 )
 
 SELECT * FROM final

@@ -8,6 +8,16 @@ all_coordonnees AS (
         source,  -- noqa: structure.unused_join
         JSONB_PATH_QUERY(source.data, '$.action[*].organisme\-formateur[*]') AS organismes_formateurs (data),  -- noqa: structure.unused_join
         JSONB_PATH_QUERY(organismes_formateurs.data, '$.contact\-formateur[*]') AS contacts_formateurs (data)
+    UNION ALL
+    (
+        SELECT DISTINCT ON (1) lieux_de_formation.data -> 'coordonnees' AS data_
+        FROM
+            source,  -- noqa: structure.unused_join
+            JSONB_PATH_QUERY(source.data, '$.action[*].lieu\-de\-formation[*]') AS lieux_de_formation (data)
+        ORDER BY
+            lieux_de_formation.data -> 'coordonnees',
+            (lieux_de_formation.data ->> '@tag') = 'principal' DESC
+    )
 ),
 
 final AS (
@@ -46,7 +56,6 @@ final AS (
         )                                                      AS "portable",
         CAST(MD5(all_coordonnees.data_ ->> 'adresse') AS TEXT) AS "hash_adresse"
     FROM all_coordonnees
-    WHERE all_coordonnees.data_ IS NOT NULL
 )
 
 SELECT * FROM final
