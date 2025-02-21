@@ -1,14 +1,16 @@
 WITH source AS (
-    {{ stg_source_header('carif_oref', 'formations') }}
+    SELECT * FROM {{ ref('_stg_carif_oref__source_filtered') }}
 ),
 
-final AS (
-    SELECT DISTINCT ON (1)-- TODO(vmttn): there are around 10 actions sharing the same "numero" value
-    -- these actions are closely related to each other, but do not have strictly the same content
+-- TODO(vmttn): there are around 10 actions sharing the same "numero" value
+-- these actions are closely related to each other, but do not have strictly the same content
 
+final AS (
+    SELECT DISTINCT ON (1)
         NULLIF(TRIM(actions.data ->> '@numero'), '')                           AS "numero",
         source.data ->> '@numero'                                              AS "numero_formation",
         NULLIF(TRIM(organismes_formateurs.data ->> '@numero'), '')             AS "numero_organisme_formateur",
+        CAST(NULLIF(actions.data ->> '@datemaj', '00000000') AS DATE)          AS "date_maj",
         NULLIF(TRIM(actions.data ->> 'code-perimetre-recrutement'), '')        AS "code_perimetre_recrutement",
         NULLIF(TRIM(actions.data ->> 'conditions-specifiques'), '')            AS "conditions_specifiques",
         NULLIF(TRIM(actions.data ->> 'detail-conditions-prise-en-charge'), '') AS "detail_conditions_prise_en_charge",
@@ -26,13 +28,21 @@ final AS (
                 NULL
             ),
             '{}'
-        )                                                                      AS "url_action"
-    FROM
-        source,
-        JSONB_PATH_QUERY(source.data, '$.action[*]') AS actions (data),
-        JSONB_PATH_QUERY(actions.data, '$.organisme\-formateur[*]') AS organismes_formateurs (data)
-    WHERE
-        actions.data IS NOT NULL
+        )                                                                      AS "url_action",
+        NULLIF(
+            ARRAY_REMOVE(
+                ARRAY(
+                    SELECT NULLIF(TRIM(x.urlweb), '')
+                    FROM JSONB_ARRAY_ELEMENTS_TEXT(lieux_de_formation.data -> 'coordonnees' -> 'web' -> 'urlweb') AS x (urlweb)
+                ),
+                NULL
+            ),
+            '{}'
+        )                                                                      AS "url_lieu_de_formation"
+    FROM source
+    INNER JOIN JSONB_PATH_QUERY(source.data, '$.action[*]') AS actions (data) ON TRUE
+    INNER JOIN JSONB_PATH_QUERY(actions.data, '$.organisme\-formateur[*]') AS organismes_formateurs (data) ON TRUE
+    LEFT JOIN JSONB_PATH_QUERY(actions.data, '$.lieu\-de\-formation[*]') AS lieux_de_formation (data) ON TRUE
 )
 
 SELECT * FROM final

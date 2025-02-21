@@ -1,5 +1,5 @@
 WITH source AS (
-    {{ stg_source_header('carif_oref', 'formations') }}
+    SELECT * FROM {{ ref('_stg_carif_oref__source_filtered') }}
 ),
 
 final AS (
@@ -9,7 +9,7 @@ final AS (
         CAST(MD5(contacts_formateurs.data ->> 'coordonnees') AS TEXT) AS "hash_coordonnees",
         NULLIF(TRIM(contacts_formateurs.data ->> 'type-contact'), '') AS "type_contact"
     FROM
-        source,
+        source,  -- noqa: structure.unused_join
         JSONB_PATH_QUERY(source.data, '$.action[*]') AS actions (data),
         JSONB_PATH_QUERY(source.data, '$.action[*].organisme\-formateur[*]') AS organismes_formateurs (data),
         JSONB_PATH_QUERY(organismes_formateurs.data, '$.contact\-formateur[*]') AS contacts_formateurs (data)

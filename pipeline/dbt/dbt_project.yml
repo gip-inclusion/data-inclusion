@@ -25,6 +25,9 @@ models:
       sources:
         +materialized: view
 
+        carif_oref:
+          +materialized: table
+
       decoupage_administratif:
         +materialized: table
 

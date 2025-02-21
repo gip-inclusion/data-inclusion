@@ -17,8 +17,15 @@ def read(path: Path):
 
     schema_path = Path(__file__).resolve().parent / "lheo.xsd"
     schema = xmlschema.XMLSchema(schema_path)
+    data = schema.to_dict(path)
+
+    for formation_data in data["offres"]["formation"]:
+        formation_data["objectif-formation"] = utils.html_to_markdown(
+            formation_data["objectif-formation"]
+        )
+
     df = pd.json_normalize(
-        data=schema.to_dict(path),
+        data=data,
         record_path=["offres", "formation"],
         max_level=0,
     )

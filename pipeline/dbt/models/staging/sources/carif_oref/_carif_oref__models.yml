@@ -1,6 +1,13 @@
 version: 2
 
 models:
+  - name: _stg_carif_oref__source_filtered
+    description: |
+      This model filters the source data to only include
+      the subset of rows related to our thematics.
+
+      All staging models here must use this model as a source.
+
   - name: stg_carif_oref__actions__publics
     columns:
       - name: numero_action
@@ -10,20 +17,19 @@ models:
               to: ref('stg_carif_oref__actions')
               field: numero
       - name: code_public_vise
+        description: http://lheo.gouv.fr/2.3/lheo/code-public-vise.html
         data_tests:
           - not_null
-          - dbt_utils.expression_is_true:
-              expression: ~ '\d{5}'
-          # TODO(vmttn): load formacode
-          # - relationships:
-          #     to: ref('')
-          #     field:
+          - relationships:
+              to: ref('stg_carif_oref__formacode_v13')
+              field: code
       - name: version_formacode
         data_tests:
           - accepted_values:
               values: [V13]
 
   - name: stg_carif_oref__actions
+    description: http://lheo.gouv.fr/2.3/lheo/action.html
     columns:
       - name: numero
         data_tests:
@@ -46,15 +52,19 @@ models:
           - relationships:
               to: ref('stg_carif_oref__organismes_formateurs')
               field: numero
+      - name: date_maj
+        data_tests:
+          - dbt_utils.not_null_proportion:
+              at_least: 0.5
       - name: code_perimetre_recrutement
+        description: http://lheo.gouv.fr/2.3/lheo/dict-perimetre-recrutement.html
         data_tests:
           - dbt_utils.not_null_proportion:
               at_least: 0.5
               config:
                 severity: warn
-          - relationships:
-              to: ref('stg_carif_oref__tables__perimetres_recrutement')
-              field: key
+          - accepted_values:
+              values: [0, 1, 2, 3, 4, 5, 6]
       - name: conditions_specifiques
         data_tests:
           - not_null
@@ -70,11 +80,11 @@ models:
               at_least: 0.1
           - dbt_utils.not_empty_string
       - name: modalites_enseignement
+        description: http://lheo.gouv.fr/2.3/lheo/dict-modalites-enseignement.html
         data_tests:
           - not_null
-          - relationships:
-              to: ref('stg_carif_oref__tables__modalites_enseignement')
-              field: key
+          - accepted_values:
+              values: [0, 1, 2]
       - name: modalites_recrutement
         data_tests:
           - dbt_utils.not_null_proportion:
@@ -94,6 +104,7 @@ models:
               at_least: 0.1
 
   - name: stg_carif_oref__formations
+    description: http://lheo.gouv.fr/2.3/lheo/formation.html
     columns:
       - name: numero
         data_tests:
@@ -111,8 +122,32 @@ models:
         data_tests:
           - not_null
           - dbt_utils.not_empty_string
+          - dbt_utils.expression_is_true:
+              expression: "!~ '<[^>]+>'"  # no HTML tags
+      - name: domaine_formation__formacode
+        data_tests:
+          - not_null
+          - dbt_utils.expression_is_true:
+              expression: "&& ARRAY['15040', '15043', '15235']"
+
+  - name: stg_carif_oref__formacode_v13
+    description: |
+      This model contains the public subset of the formacode (v13).
+
+      https://formacode.centre-inffo.fr/telechargements-54.html
+    columns:
+      - name: code
+        data_tests:
+          - unique
+          - not_null
+          - dbt_utils.not_empty_string
+      - name: libelle
+        data_tests:
+          - not_null
+          - dbt_utils.not_empty_string
 
   - name: stg_carif_oref__organismes_formateurs
+    description: http://lheo.gouv.fr/2.3/lheo/organisme-formateur.html
     columns:
       - name: numero
         data_tests:
@@ -128,6 +163,7 @@ models:
           - dbt_utils.not_empty_string
 
   - name: stg_carif_oref__organismes_formateurs__contacts
+    description: http://lheo.gouv.fr/2.3/lheo/contact-formateur.html
     data_tests:
       - dbt_utils.unique_combination_of_columns:
           combination_of_columns:
@@ -149,11 +185,11 @@ models:
               to: ref('stg_carif_oref__organismes_formateurs')
               field: numero
       - name: type_contact
+        description: http://lheo.gouv.fr/2.3/lheo/dict-type-contact.html
         data_tests:
           - not_null
-          - relationships:
-              to: ref('stg_carif_oref__tables__types_contact')
-              field: key
+          - accepted_values:
+              values: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14]
       - name: hash_coordonnees
         data_tests:
           - not_null
@@ -162,6 +198,7 @@ models:
               field: hash_
 
   - name: stg_carif_oref__coordonnees
+    description: http://lheo.gouv.fr/2.3/lheo/coordonnees.html
     columns:
       - name: hash_
         data_tests:
@@ -188,6 +225,7 @@ models:
               field: hash_
 
   - name: stg_carif_oref__adresses
+    description: http://lheo.gouv.fr/2.3/lheo/adresse.html
     columns:
       - name: hash_
         data_tests:
@@ -248,39 +286,3 @@ models:
         data_tests:
           - dbt_utils.not_null_proportion:
               at_least: 0.5
-
-  - name: stg_carif_oref__tables__modalites_enseignement
-    columns:
-      - name: key
-        data_tests:
-          - unique
-          - not_null
-          - dbt_utils.not_empty_string
-      - name: value
-        data_tests:
-          - not_null
-          - dbt_utils.not_empty_string
-
-  - name: stg_carif_oref__tables__perimetres_recrutement
-    columns:
-      - name: key
-        data_tests:
-          - unique
-          - not_null
-          - dbt_utils.not_empty_string
-      - name: value
-        data_tests:
-          - not_null
-          - dbt_utils.not_empty_string
-
-  - name: stg_carif_oref__tables__types_contact
-    columns:
-      - name: key
-        data_tests:
-          - unique
-          - not_null
-          - dbt_utils.not_empty_string
-      - name: value
-        data_tests:
-          - not_null
-          - dbt_utils.not_empty_string
