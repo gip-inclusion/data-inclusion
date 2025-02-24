@@ -267,14 +267,21 @@ resource "null_resource" "up" {
     destination = "${local.work_dir}/defaults.env"
   }
 
+  provisioner "file" {
+    source      = "${path.root}/systemd/system/"
+    destination = "/etc/systemd/system"
+  }
+
   provisioner "remote-exec" {
     inline = [
-      "docker image prune --all --force --filter 'until=48h'",
-      "docker container prune --force --filter 'until=48h'",
+      "systemctl enable cleanup.service",
+      "systemctl enable cleanup.timer",
+      "systemctl start cleanup.timer",
       "cd ${local.work_dir}",
       "docker compose --progress=plain up --pull=always --force-recreate --remove-orphans --wait --wait-timeout 1200 --quiet-pull --detach",
       # FIXME: ideally this file should be removed
       # "rm -f ${local.work_dir}/.env",
     ]
   }
+
 }

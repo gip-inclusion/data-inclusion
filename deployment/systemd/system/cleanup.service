@@ -1,0 +1,14 @@
+[Unit]
+Description=Cleanup (docker, logs, ...) service
+After=network.target
+
+[Service]
+Type=oneshot
+User=root
+ExecStart=docker image prune --all --force --filter 'until=48h'
+ExecStart=docker container prune --force --filter 'until=48h'
+ExecStart=find /var/lib/docker/volumes/data-inclusion_airflow-logs/_data -maxdepth 2 -mtime +90 -exec rm -rf {} +
+ProtectSystem=full
+
+[Install]
+WantedBy=multi-user.target
