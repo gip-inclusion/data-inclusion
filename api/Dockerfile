@@ -62,13 +62,12 @@ RUN useradd --no-log-init -g gunicorn gunicorn
 # Copy venv with compiled dependencies
 COPY --chown=gunicorn:gunicorn --from=compile-image /srv/venv /srv/venv
 
-COPY --chown=gunicorn:gunicorn ["execute_and_notify.sh", "docker-entrypoint.sh", "pyproject.toml", "alembic.ini", "/srv/"]
+COPY --chown=gunicorn:gunicorn ["docker-entrypoint.sh", "pyproject.toml", "alembic.ini", "/srv/"]
 COPY --chown=gunicorn:gunicorn src /srv/src
 COPY --chown=gunicorn:gunicorn tests /srv/tests
 
 
 RUN chmod +x docker-entrypoint.sh
-RUN chmod +x execute_and_notify.sh
 
 USER gunicorn
 EXPOSE 8000

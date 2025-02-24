@@ -2,14 +2,22 @@ import logging
 
 import numpy as np
 import pandas as pd
+import sentry_sdk
 from furl import furl
 from sqlalchemy import types
 from sqlalchemy.dialects.postgresql import insert
 
+from data_inclusion.api.config import settings
 from data_inclusion.api.core import db
 from data_inclusion.api.inclusion_data import models
 
 logger = logging.getLogger(__name__)
+
+
+sentry_sdk.init(
+    dsn=settings.SENTRY_DSN,
+    environment=settings.ENV,
+)
 
 
 def import_communes():

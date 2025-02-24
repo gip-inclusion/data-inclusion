@@ -7,6 +7,7 @@ import minio
 import numpy as np
 import pandas as pd
 import pydantic
+import sentry_sdk
 import sqlalchemy as sqla
 from furl import furl
 from tqdm import tqdm
@@ -17,6 +18,11 @@ from data_inclusion.api.core import db
 from data_inclusion.api.inclusion_data import models
 
 logger = logging.getLogger(__name__)
+
+sentry_sdk.init(
+    dsn=settings.SENTRY_DSN,
+    environment=settings.ENV,
+)
 
 
 class DatalakeClient:
@@ -200,6 +206,7 @@ def store_inclusion_data(
         by="_di_surrogate_id", ascending=True
     ).to_dict(orient="records")
 
+    # TODO(vmttn): load in a temporary table, truncate and then insert
     db_session.execute(sqla.delete(models.Service))
     db_session.execute(sqla.delete(models.Structure))
 
@@ -228,7 +235,27 @@ def store_inclusion_data(
     db_session.commit()
 
 
+@sentry_sdk.monitor(
+    monitor_slug="load-inclusion-data",
+    monitor_config={
+        "schedule": {"type": "crontab", "value": "0 * * * *"},
+        "checkin_margin": 60,
+        "max_runtime": 60,
+        "failure_issue_threshold": 1,
+        "recovery_threshold": 1,
+        "timezone": "UTC",
+    },
+)
 def load_inclusion_data():
+    """Download, validate and load the di dataset
+
+    1. Identify the latest version in the datalake
+    2. Generate presigned URLs for it
+    3. Download into dataframes
+    4. Validate data against pydantic models
+    5. Log validation errors
+    6. Load valid data using the sqla models
+    """
     df_by_ressource = load_di_dataset_as_dataframes()
 
     structures_df, services_df = validate_dataset(df_by_ressource)
