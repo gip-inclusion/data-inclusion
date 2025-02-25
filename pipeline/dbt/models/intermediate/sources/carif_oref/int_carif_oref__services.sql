@@ -83,90 +83,110 @@ profils AS (
 
 final AS (
     SELECT DISTINCT ON (actions.numero, organismes_formateurs.numero)
-        actions.numero                                                                                    AS "id",
+        actions.numero                                  AS "id",
         COALESCE(
             coordonnees_lieu_de_formation.hash_adresse,
             coordonnees_organisme_formateur.hash_adresse
-        )                                                                                                 AS "adresse_id",
-        NULL                                                                                              AS "prise_rdv",
-        actions.detail_conditions_prise_en_charge                                                         AS "frais_autres",
-        profils.profils                                                                                   AS "profils",
-        actions.info_public_vise                                                                          AS "profils_precisions",
-        organismes_formateurs.numero                                                                      AS "structure_id",
-        'carif-oref'                                                                                      AS "source",
-        TRUE                                                                                              AS "cumulable",
-        NULL                                                                                              AS "formulaire_en_ligne",
-        NULL                                                                                              AS "recurrence",
-        CAST(NULL AS DATE)                                                                                AS "date_creation",
-        CAST(NULL AS DATE)                                                                                AS "date_suspension",
-        COALESCE(coordonnees_organisme_formateur.telfixe[0], coordonnees_organisme_formateur.portable[0]) AS "telephone",
-        coordonnees_organisme_formateur.courriel                                                          AS "courriel",
-        TRUE                                                                                              AS "contact_public",
-        NULL                                                                                              AS "contact_nom_prenom",
-        COALESCE(actions.date_maj, formations.date_maj)                                                   AS "date_maj",
+        )                                               AS "adresse_id",
+        NULL                                            AS "prise_rdv",
+        actions.detail_conditions_prise_en_charge       AS "frais_autres",
+        profils.profils                                 AS "profils",
+        actions.info_public_vise                        AS "profils_precisions",
+        organismes_formateurs.numero                    AS "structure_id",
+        'carif-oref'                                    AS "source",
+        TRUE                                            AS "cumulable",
+        NULL                                            AS "formulaire_en_ligne",
+        NULL                                            AS "recurrence",
+        CAST(NULL AS DATE)                              AS "date_creation",
+        CAST(NULL AS DATE)                              AS "date_suspension",
+        COALESCE(
+            coordonnees_organisme_formateur.telfixe[1],
+            coordonnees_organisme_formateur.portable[1]
+        )                                               AS "telephone",
+        coordonnees_organisme_formateur.courriel        AS "courriel",
+        TRUE                                            AS "contact_public",
+        NULL                                            AS "contact_nom_prenom",
+        COALESCE(actions.date_maj, formations.date_maj) AS "date_maj",
         CASE actions.code_perimetre_recrutement
             WHEN '1' THEN 'commune'
             WHEN '2' THEN 'departement'
             WHEN '3' THEN 'region'
             ELSE 'pays'
-        END                                                                                               AS "zone_diffusion_type",
+        END                                             AS "zone_diffusion_type",
         CASE actions.code_perimetre_recrutement
             WHEN '1' THEN communes.code
             WHEN '2' THEN communes.code_departement
             WHEN '3' THEN communes.code_region
-        END                                                                                               AS "zone_diffusion_code",
+        END                                             AS "zone_diffusion_code",
         CASE actions.code_perimetre_recrutement
             WHEN '1' THEN communes.nom
             WHEN '2' THEN communes.nom_departement
             WHEN '3' THEN communes.nom_region
-        END                                                                                               AS "zone_diffusion_nom",
+        END                                             AS "zone_diffusion_nom",
         ARRAY_REMOVE(
             ARRAY[
-                CASE WHEN coordonnees_organisme_formateur.courriel IS NOT NULL THEN 'envoyer-un-mail' END,
-                CASE WHEN coordonnees_organisme_formateur.telfixe[0] IS NOT NULL OR coordonnees_organisme_formateur.portable[0] IS NOT NULL THEN 'telephoner' END
+                CASE
+                    WHEN coordonnees_organisme_formateur.courriel IS NOT NULL
+                        THEN 'envoyer-un-mail'
+                END,
+                CASE
+                    WHEN
+                        coordonnees_organisme_formateur.telfixe[1] IS NOT NULL
+                        OR coordonnees_organisme_formateur.portable[1] IS NOT NULL
+                        THEN 'telephoner'
+                END
             ],
             NULL
-        )                                                                                                 AS "modes_orientation_accompagnateur",
-        NULL                                                                                              AS "modes_orientation_accompagnateur_autres",
+        )                                               AS "modes_orientation_accompagnateur",
+        NULL                                            AS "modes_orientation_accompagnateur_autres",
         ARRAY_REMOVE(
             ARRAY[
-                CASE WHEN coordonnees_organisme_formateur.courriel IS NOT NULL THEN 'envoyer-un-mail' END,
-                CASE WHEN coordonnees_organisme_formateur.telfixe[0] IS NOT NULL OR coordonnees_organisme_formateur.portable[0] IS NOT NULL THEN 'telephoner' END
+                CASE
+                    WHEN coordonnees_organisme_formateur.courriel IS NOT NULL
+                        THEN 'envoyer-un-mail'
+                END,
+                CASE
+                    WHEN
+                        coordonnees_organisme_formateur.telfixe[1] IS NOT NULL
+                        OR coordonnees_organisme_formateur.portable[1] IS NOT NULL
+                        THEN 'telephoner'
+                END
             ],
             NULL
-        )                                                                                                 AS "modes_orientation_beneficiaire",
-        NULL                                                                                              AS "modes_orientation_beneficiaire_autres",
-        ARRAY[actions.conditions_specifiques]                                                             AS "pre_requis",
-        CAST(NULL AS TEXT [])                                                                             AS "justificatifs",
-        formations.intitule_formation                                                                     AS "nom",
+        )                                               AS "modes_orientation_beneficiaire",
+        NULL                                            AS "modes_orientation_beneficiaire_autres",
+        ARRAY[actions.conditions_specifiques]           AS "pre_requis",
+        CAST(NULL AS TEXT [])                           AS "justificatifs",
+        formations.intitule_formation                   AS "nom",
         ARRAY[
             CASE
                 WHEN actions.prix_total_ttc = 0 THEN 'gratuit'
                 WHEN actions.prise_en_charge_frais_possible THEN 'gratuit-sous-conditions'
                 ELSE 'payant'
             END
-        ]                                                                                                 AS "frais",
+        ]                                               AS "frais",
         CASE
-            WHEN '15043' = ANY(formations.domaine_formation__formacode) THEN ARRAY['illettrisme', 'apprendre-francais']
+            WHEN '15043' = ANY(formations.domaine_formation__formacode)
+                THEN ARRAY['illettrisme', 'apprendre-francais']
             ELSE ARRAY['apprendre-francais']
-        END                                                                                               AS "thematiques",
-        NULL                                                                                              AS "lien_source",
-        ARRAY['formation']                                                                                AS "types",
+        END                                             AS "thematiques",
+        NULL                                            AS "lien_source",
+        ARRAY['formation']                              AS "types",
         CASE
             WHEN actions.modalites_enseignement = '0' THEN ARRAY['en-presentiel']
             WHEN actions.modalites_enseignement = '1' THEN ARRAY['a-distance']
             WHEN actions.modalites_enseignement = '2' THEN ARRAY['en-presentiel', 'a-distance']
-        END                                                                                               AS "modes_accueil",
+        END                                             AS "modes_accueil",
         CASE
             WHEN LENGTH(formations.objectif_formation) <= 280 THEN formations.objectif_formation
             ELSE LEFT(formations.objectif_formation, 279) || '…'
-        END                                                                                               AS "presentation_resume",
-        formations.objectif_formation                                                                     AS "presentation_detail",
+        END                                             AS "presentation_resume",
+        formations.objectif_formation                   AS "presentation_detail",
         COALESCE(
             actions.url_action[1],
             coordonnees_organisme_formateur.web[1],
             coordonnees_lieu_de_formation.web[1]
-        )                                                                                                 AS "page_web"
+        )                                               AS "page_web"
     FROM actions
     INNER JOIN formations
         ON actions.numero_formation = formations.numero
