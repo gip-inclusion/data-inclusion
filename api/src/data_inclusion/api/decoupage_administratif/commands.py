@@ -20,8 +20,8 @@ def import_communes():
     dtypes = {
         "code": types.TEXT,
         "codeEpci": types.TEXT,
-        "departement": types.TEXT,
-        "region": types.TEXT,
+        "codeDepartement": types.TEXT,
+        "codeRegion": types.TEXT,
         "centre": types.JSON,
         "codesPostaux": types.ARRAY(types.TEXT),
     }
