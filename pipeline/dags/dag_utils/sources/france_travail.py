@@ -1,6 +1,6 @@
 import json
 from pathlib import Path
-from typing import Any, Dict, List, Optional
+from typing import Any, Optional
 from urllib.parse import urljoin
 
 
@@ -37,13 +37,13 @@ def extract(url, token, id=None):
     return response.content
 
 
-def same_values_every_day(formated_horaires: Dict[str, str]) -> bool:
+def same_values_every_day(formated_horaires: dict[str, str]) -> bool:
     first_value = next(iter(formated_horaires.values()))
     return all(value == first_value for value in formated_horaires.values())
 
 
 def format_date_ft_to_open_street_map(
-    horaires: Optional[List[Dict[str, Any]]],
+    horaires: Optional[list[dict[str, Any]]],
 ) -> Optional[str]:
     """Format horaires from France Travail to Open Street Map format
     cf: https://francetravail.io/data/api/referentiel-agences?tabgroup-api=documentation&doc-section=api-doc-section-caracteristiques
