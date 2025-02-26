@@ -91,6 +91,13 @@ def logging_raising_session():
     return session
 
 
+def filename_from_url(path: list, param: dict) -> str:
+    param_slug = [f"{k}-{v}" for k, v in sorted(param.items())]
+    path = "-".join(path + param_slug)
+
+    return f"{path}.json"
+
+
 class BaseApiClient:
     def __init__(self, base_url: str, **kwargs):
         self.base_url = base_url.rstrip("/")
