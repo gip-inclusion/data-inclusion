@@ -244,7 +244,6 @@ unit_tests:
     expect:
       rows:
         - {adresse_id: failed}
-        - {adresse_id: changed-adresse}
         - {adresse_id: changed-code-postal}
         - {adresse_id: changed-code-insee}
         - {adresse_id: changed-commune}
