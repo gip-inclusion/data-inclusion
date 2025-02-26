@@ -62,6 +62,13 @@ variable "brevo_api_key" {
   default     = ""
 }
 
+variable "data_inclusion_api_probe_token" {
+  description = "JWT token used to be authenticated on data inclusion api for probing purposes"
+  type        = string
+  sensitive   = true
+  default     = ""
+}
+
 variable "datawarehouse_di_database" {
   description = "Identifier for the data inclusion database"
   type        = string
