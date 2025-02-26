@@ -24,7 +24,7 @@ def df_clear_nan(df):
     return df.replace({np.nan: None})
 
 
-def read_json(path: Path):
+def df_from_json(path: Path):
     import pandas as pd
 
     # read data while preventing rough conversion of datatypes

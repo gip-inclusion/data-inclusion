@@ -105,7 +105,7 @@ def format_date_ft_to_open_street_map(
 
 
 def read(path: Path):
-    """utils.read_json is enough but parse horaires to horaires_open_street_map
+    """utils.df_from_json is enough but parse horaires to horaires_open_street_map
     cf: https://francetravail.io/data/api/referentiel-agences?tabgroup-api=documentation&doc-section=api-doc-section-caracteristiques
     cf: https://wiki.openstreetmap.org/wiki/Key:opening_hours
     """
