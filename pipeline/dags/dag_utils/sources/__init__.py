@@ -278,4 +278,4 @@ def get_reader(source_id: str, stream_id: str):
         return reader
     if reader := source_config.get("reader"):
         return reader
-    return utils.read_json
+    return utils.df_from_json
