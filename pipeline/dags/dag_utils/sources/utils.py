@@ -33,6 +33,13 @@ def df_from_json(path: Path):
     return df_clear_nan(df)
 
 
+def read_dict(path: Path):
+    import json
+
+    with path.open() as f:
+        return json.load(f)
+
+
 def to_json(df, path: Path):
     df.to_json(path, orient="records", force_ascii=False)
 
