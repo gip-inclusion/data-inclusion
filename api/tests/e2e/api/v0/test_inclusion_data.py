@@ -6,8 +6,7 @@ import pytest
 
 from data_inclusion.api.decoupage_administratif.constants import RegionEnum
 from data_inclusion.api.utils import soliguide
-from data_inclusion.api.v0.inclusion_data import models
-from data_inclusion.api.v0.inclusion_schema import legacy as schema
+from data_inclusion.api.v0.inclusion_data import models, schemas
 
 from .... import factories
 
@@ -164,17 +163,17 @@ def assert_structure_data(structure, data):
 
 @pytest.mark.with_token
 def test_list_structures_filter_by_typology(api_client):
-    structure_1 = factories.StructureFactory(typologie=schema.Typologie.ASSO.value)
-    factories.StructureFactory(typologie=schema.Typologie.CCAS.value)
+    structure_1 = factories.StructureFactory(typologie=schemas.Typologie.ASSO.value)
+    factories.StructureFactory(typologie=schemas.Typologie.CCAS.value)
 
     url = "/api/v0/structures/"
-    response = api_client.get(url, params={"typologie": schema.Typologie.ASSO.value})
+    response = api_client.get(url, params={"typologie": schemas.Typologie.ASSO.value})
 
     resp_data = response.json()
     assert_paginated_response_data(response.json(), total=1)
     assert_structure_data(structure_1, resp_data["items"][0])
 
-    response = api_client.get(url, params={"typologie": schema.Typologie.MUNI.value})
+    response = api_client.get(url, params={"typologie": schemas.Typologie.MUNI.value})
     assert_paginated_response_data(response.json(), total=0)
 
 
@@ -183,18 +182,18 @@ def test_list_structures_filter_by_label(
     api_client,
 ):
     factories.StructureFactory(
-        labels_nationaux=[schema.LabelNational.FRANCE_TRAVAIL.value]
+        labels_nationaux=[schemas.LabelNational.FRANCE_TRAVAIL.value]
     )
     structure_2 = factories.StructureFactory(
         labels_nationaux=[
-            schema.LabelNational.MOBIN.value,
-            schema.LabelNational.FRANCE_SERVICE.value,
+            schemas.LabelNational.MOBIN.value,
+            schemas.LabelNational.FRANCE_SERVICE.value,
         ]
     )
 
     url = "/api/v0/structures/"
     response = api_client.get(
-        url, params={"label_national": schema.LabelNational.FRANCE_SERVICE.value}
+        url, params={"label_national": schemas.LabelNational.FRANCE_SERVICE.value}
     )
 
     resp_data = response.json()
@@ -202,7 +201,7 @@ def test_list_structures_filter_by_label(
     assert_structure_data(structure_2, resp_data["items"][0])
 
     response = api_client.get(
-        url, params={"label_national": schema.LabelNational.AFPA.value}
+        url, params={"label_national": schemas.LabelNational.AFPA.value}
     )
     assert_paginated_response_data(response.json(), total=0)
 
@@ -445,11 +444,11 @@ def test_can_filter_resources_by_profils_precisions(
 @pytest.mark.parametrize(
     "profils,input,found",
     [
-        ([schema.Profil.FEMMES.value], "femme", True),
-        ([schema.Profil.JEUNES_16_26.value], "jeune", True),
-        ([schema.Profil.FEMMES.value], "jeune", False),
+        ([schemas.Profil.FEMMES.value], "femme", True),
+        ([schemas.Profil.JEUNES_16_26.value], "jeune", True),
+        ([schemas.Profil.FEMMES.value], "jeune", False),
         (
-            [schema.Profil.DEFICIENCE_VISUELLE.value],
+            [schemas.Profil.DEFICIENCE_VISUELLE.value],
             "deficience jeune difficulte",
             True,
         ),
@@ -467,7 +466,7 @@ def test_can_filter_resources_by_profils_precisions_with_only_profils_data(
     api_client, profils, input, found, url
 ):
     resource = factories.ServiceFactory(profils=profils, profils_precisions="")
-    factories.ServiceFactory(profils=schema.Profil.RETRAITES, profils_precisions="")
+    factories.ServiceFactory(profils=schemas.Profil.RETRAITES, profils_precisions="")
 
     response = api_client.get(url, params={"recherche_public": input})
 
@@ -483,27 +482,31 @@ def test_can_filter_resources_by_profils_precisions_with_only_profils_data(
 @pytest.mark.parametrize(
     "thematiques,input,found",
     [
-        ([], [schema.Thematique.FAMILLE.value], False),
-        ([schema.Thematique.FAMILLE.value], [schema.Thematique.FAMILLE.value], True),
-        ([schema.Thematique.NUMERIQUE.value], [schema.Thematique.FAMILLE.value], False),
+        ([], [schemas.Thematique.FAMILLE.value], False),
+        ([schemas.Thematique.FAMILLE.value], [schemas.Thematique.FAMILLE.value], True),
         (
-            [schema.Thematique.NUMERIQUE.value, schema.Thematique.FAMILLE.value],
-            [schema.Thematique.FAMILLE.value],
+            [schemas.Thematique.NUMERIQUE.value],
+            [schemas.Thematique.FAMILLE.value],
+            False,
+        ),
+        (
+            [schemas.Thematique.NUMERIQUE.value, schemas.Thematique.FAMILLE.value],
+            [schemas.Thematique.FAMILLE.value],
             True,
         ),
         (
-            [schema.Thematique.SANTE.value, schema.Thematique.NUMERIQUE.value],
-            [schema.Thematique.FAMILLE.value, schema.Thematique.NUMERIQUE.value],
+            [schemas.Thematique.SANTE.value, schemas.Thematique.NUMERIQUE.value],
+            [schemas.Thematique.FAMILLE.value, schemas.Thematique.NUMERIQUE.value],
             True,
         ),
         (
-            [schema.Thematique.SANTE.value, schema.Thematique.NUMERIQUE.value],
-            [schema.Thematique.FAMILLE.value, schema.Thematique.NUMERIQUE.value],
+            [schemas.Thematique.SANTE.value, schemas.Thematique.NUMERIQUE.value],
+            [schemas.Thematique.FAMILLE.value, schemas.Thematique.NUMERIQUE.value],
             True,
         ),
         (
-            [schema.Thematique.FAMILLE__GARDE_DENFANTS.value],
-            [schema.Thematique.FAMILLE.value],
+            [schemas.Thematique.FAMILLE__GARDE_DENFANTS.value],
+            [schemas.Thematique.FAMILLE.value],
             True,
         ),
     ],
@@ -521,7 +524,7 @@ def test_can_filter_resources_by_thematiques(
     api_client, url, factory, thematiques, input, found
 ):
     resource = factory(thematiques=thematiques)
-    factory(thematiques=[schema.Thematique.MOBILITE.value])
+    factory(thematiques=[schemas.Thematique.MOBILITE.value])
 
     response = api_client.get(url, params={"thematiques": input})
 
@@ -673,9 +676,9 @@ def test_can_filter_resources_by_code_commune(
 @pytest.mark.with_token
 @pytest.mark.parametrize("url", ["/api/v0/services", "/api/v0/search/services"])
 def test_can_filter_services_by_profils(api_client, url):
-    service_1 = factories.ServiceFactory(profils=[schema.Profil.FEMMES.value])
-    service_2 = factories.ServiceFactory(profils=[schema.Profil.JEUNES_16_26.value])
-    factories.ServiceFactory(profils=[schema.Profil.ADULTES.value])
+    service_1 = factories.ServiceFactory(profils=[schemas.Profil.FEMMES.value])
+    service_2 = factories.ServiceFactory(profils=[schemas.Profil.JEUNES_16_26.value])
+    factories.ServiceFactory(profils=[schemas.Profil.ADULTES.value])
     factories.ServiceFactory(profils=[])
     factories.ServiceFactory(profils=None)
 
@@ -684,8 +687,8 @@ def test_can_filter_services_by_profils(api_client, url):
         url,
         params={
             "profils": [
-                schema.Profil.FEMMES.value,
-                schema.Profil.JEUNES_16_26.value,
+                schemas.Profil.FEMMES.value,
+                schemas.Profil.JEUNES_16_26.value,
             ],
         },
     )
@@ -701,7 +704,7 @@ def test_can_filter_services_by_profils(api_client, url):
     response = api_client.get(
         url,
         params={
-            "profils": schema.Profil.BENEFICIAIRES_RSA.value,
+            "profils": schemas.Profil.BENEFICIAIRES_RSA.value,
         },
     )
     assert_paginated_response_data(response.json(), total=0)
@@ -710,18 +713,18 @@ def test_can_filter_services_by_profils(api_client, url):
 @pytest.mark.with_token
 @pytest.mark.parametrize("url", ["/api/v0/services", "/api/v0/search/services"])
 def test_list_services_by_types(api_client, url):
-    service_1 = factories.ServiceFactory(types=[schema.TypologieService.ACCUEIL.value])
+    service_1 = factories.ServiceFactory(types=[schemas.TypologieService.ACCUEIL.value])
     service_2 = factories.ServiceFactory(
-        types=[schema.TypologieService.ACCOMPAGNEMENT.value]
+        types=[schemas.TypologieService.ACCOMPAGNEMENT.value]
     )
-    factories.ServiceFactory(types=[schema.TypologieService.AIDE_FINANCIERE.value])
+    factories.ServiceFactory(types=[schemas.TypologieService.AIDE_FINANCIERE.value])
 
     response = api_client.get(
         url,
         params={
             "types": [
-                schema.TypologieService.ACCUEIL.value,
-                schema.TypologieService.ACCOMPAGNEMENT.value,
+                schemas.TypologieService.ACCUEIL.value,
+                schemas.TypologieService.ACCOMPAGNEMENT.value,
             ],
         },
     )
@@ -737,7 +740,7 @@ def test_list_services_by_types(api_client, url):
     response = api_client.get(
         url,
         params={
-            "types": schema.TypologieService.ATELIER.value,
+            "types": schemas.TypologieService.ATELIER.value,
         },
     )
     assert_paginated_response_data(response.json(), total=0)
@@ -767,16 +770,16 @@ def test_list_services_by_score_qualite(api_client, url):
 @pytest.mark.with_token
 @pytest.mark.parametrize("url", ["/api/v0/services", "/api/v0/search/services"])
 def test_can_filter_services_by_frais(api_client, url):
-    service_1 = factories.ServiceFactory(frais=[schema.Frais.GRATUIT.value])
-    service_2 = factories.ServiceFactory(frais=[schema.Frais.ADHESION.value])
-    factories.ServiceFactory(frais=[schema.Frais.PASS_NUMERIQUE.value])
+    service_1 = factories.ServiceFactory(frais=[schemas.Frais.GRATUIT.value])
+    service_2 = factories.ServiceFactory(frais=[schemas.Frais.ADHESION.value])
+    factories.ServiceFactory(frais=[schemas.Frais.PASS_NUMERIQUE.value])
 
     response = api_client.get(
         url,
         params={
             "frais": [
-                schema.Frais.GRATUIT.value,
-                schema.Frais.ADHESION.value,
+                schemas.Frais.GRATUIT.value,
+                schemas.Frais.ADHESION.value,
             ],
         },
     )
@@ -792,7 +795,7 @@ def test_can_filter_services_by_frais(api_client, url):
     response = api_client.get(
         url,
         params={
-            "frais": schema.Frais.PAYANT.value,
+            "frais": schemas.Frais.PAYANT.value,
         },
     )
     assert_paginated_response_data(response.json(), total=0)
@@ -828,9 +831,9 @@ def test_can_filter_services_with_an_outdated_suspension_date(api_client, url):
 @pytest.mark.parametrize("url", ["/api/v0/services", "/api/v0/search/services"])
 def test_can_filter_services_by_modes_accueil(api_client, url):
     service_1 = factories.ServiceFactory(
-        modes_accueil=[schema.ModeAccueil.EN_PRESENTIEL.value]
+        modes_accueil=[schemas.ModeAccueil.EN_PRESENTIEL.value]
     )
-    factories.ServiceFactory(modes_accueil=[schema.ModeAccueil.A_DISTANCE.value])
+    factories.ServiceFactory(modes_accueil=[schemas.ModeAccueil.A_DISTANCE.value])
     factories.ServiceFactory(modes_accueil=[])
     factories.ServiceFactory(modes_accueil=None)
 
@@ -838,7 +841,7 @@ def test_can_filter_services_by_modes_accueil(api_client, url):
         url,
         params={
             "modes_accueil": [
-                schema.ModeAccueil.EN_PRESENTIEL.value,
+                schemas.ModeAccueil.EN_PRESENTIEL.value,
             ],
         },
     )
@@ -901,7 +904,7 @@ def test_can_filter_resources_by_sources(api_client, url, factory):
 @pytest.mark.with_token
 def test_search_services_with_code_commune(api_client, commune_data, input, found):
     service = factories.ServiceFactory(
-        modes_accueil=[schema.ModeAccueil.EN_PRESENTIEL.value],
+        modes_accueil=[schemas.ModeAccueil.EN_PRESENTIEL.value],
         **(commune_data if commune_data is not None else {}),
     )
 
@@ -925,18 +928,18 @@ def test_search_services_with_code_commune_too_far(api_client):
     service_1 = factories.ServiceFactory(
         commune="Lille",
         **LILLE,
-        modes_accueil=[schema.ModeAccueil.EN_PRESENTIEL.value],
+        modes_accueil=[schemas.ModeAccueil.EN_PRESENTIEL.value],
     )
     service_2 = factories.ServiceFactory(
         commune="Dunkerque",
         **DUNKERQUE,
-        modes_accueil=[schema.ModeAccueil.EN_PRESENTIEL.value],
+        modes_accueil=[schemas.ModeAccueil.EN_PRESENTIEL.value],
     )
     factories.ServiceFactory(
         code_insee=None,
         latitude=None,
         longitude=None,
-        modes_accueil=[schema.ModeAccueil.EN_PRESENTIEL.value],
+        modes_accueil=[schemas.ModeAccueil.EN_PRESENTIEL.value],
     )
 
     url = "/api/v0/search/services"
@@ -1035,8 +1038,8 @@ def test_search_services_with_zone_diffusion_pays(api_client):
         code_insee=DUNKERQUE["code_insee"],
         latitude=51.034368,
         longitude=2.376776,
-        modes_accueil=[schema.ModeAccueil.A_DISTANCE.value],
-        zone_diffusion_type=schema.ZoneDiffusionType.PAYS.value,
+        modes_accueil=[schemas.ModeAccueil.A_DISTANCE.value],
+        zone_diffusion_type=schemas.ZoneDiffusionType.PAYS.value,
         zone_diffusion_code=None,
         zone_diffusion_nom=None,
     )
@@ -1062,8 +1065,8 @@ def test_search_services_with_zone_diffusion_commune(api_client):
         code_insee=DUNKERQUE["code_insee"],
         latitude=51.034368,
         longitude=2.376776,
-        modes_accueil=[schema.ModeAccueil.EN_PRESENTIEL.value],
-        zone_diffusion_type=schema.ZoneDiffusionType.COMMUNE.value,
+        modes_accueil=[schemas.ModeAccueil.EN_PRESENTIEL.value],
+        zone_diffusion_type=schemas.ZoneDiffusionType.COMMUNE.value,
         zone_diffusion_code=DUNKERQUE["code_insee"],
         zone_diffusion_nom="Dunkerque",
     )
@@ -1072,8 +1075,8 @@ def test_search_services_with_zone_diffusion_commune(api_client):
         code_insee=LILLE["code_insee"],
         latitude=50.633333,
         longitude=3.066667,
-        modes_accueil=[schema.ModeAccueil.EN_PRESENTIEL.value],
-        zone_diffusion_type=schema.ZoneDiffusionType.COMMUNE.value,
+        modes_accueil=[schemas.ModeAccueil.EN_PRESENTIEL.value],
+        zone_diffusion_type=schemas.ZoneDiffusionType.COMMUNE.value,
         zone_diffusion_code=LILLE["code_insee"],
         zone_diffusion_nom="Lille",
     )
@@ -1099,8 +1102,8 @@ def test_search_services_with_zone_diffusion_epci(api_client):
         code_insee=DUNKERQUE["code_insee"],
         latitude=51.034368,
         longitude=2.376776,
-        modes_accueil=[schema.ModeAccueil.EN_PRESENTIEL.value],
-        zone_diffusion_type=schema.ZoneDiffusionType.EPCI.value,
+        modes_accueil=[schemas.ModeAccueil.EN_PRESENTIEL.value],
+        zone_diffusion_type=schemas.ZoneDiffusionType.EPCI.value,
         zone_diffusion_code="245900428",
         zone_diffusion_nom="CU de Dunkerque",
     )
@@ -1109,8 +1112,8 @@ def test_search_services_with_zone_diffusion_epci(api_client):
         code_insee=LILLE["code_insee"],
         latitude=50.633333,
         longitude=3.066667,
-        modes_accueil=[schema.ModeAccueil.EN_PRESENTIEL.value],
-        zone_diffusion_type=schema.ZoneDiffusionType.EPCI.value,
+        modes_accueil=[schemas.ModeAccueil.EN_PRESENTIEL.value],
+        zone_diffusion_type=schemas.ZoneDiffusionType.EPCI.value,
         zone_diffusion_code="200093201",
         zone_diffusion_nom="Métropole Européenne de Lille",
     )
@@ -1136,8 +1139,8 @@ def test_search_services_with_zone_diffusion_departement(api_client):
         code_insee=DUNKERQUE["code_insee"],
         latitude=51.034368,
         longitude=2.376776,
-        modes_accueil=[schema.ModeAccueil.EN_PRESENTIEL.value],
-        zone_diffusion_type=schema.ZoneDiffusionType.DEPARTEMENT.value,
+        modes_accueil=[schemas.ModeAccueil.EN_PRESENTIEL.value],
+        zone_diffusion_type=schemas.ZoneDiffusionType.DEPARTEMENT.value,
         zone_diffusion_code="59",
         zone_diffusion_nom="Nord",
     )
@@ -1146,8 +1149,8 @@ def test_search_services_with_zone_diffusion_departement(api_client):
         code_insee=LILLE["code_insee"],
         latitude=50.633333,
         longitude=3.066667,
-        modes_accueil=[schema.ModeAccueil.EN_PRESENTIEL.value],
-        zone_diffusion_type=schema.ZoneDiffusionType.DEPARTEMENT.value,
+        modes_accueil=[schemas.ModeAccueil.EN_PRESENTIEL.value],
+        zone_diffusion_type=schemas.ZoneDiffusionType.DEPARTEMENT.value,
         zone_diffusion_code="62",
         zone_diffusion_nom="Pas-de-Calais",
     )
@@ -1173,8 +1176,8 @@ def test_search_services_with_zone_diffusion_region(api_client):
         code_insee=DUNKERQUE["code_insee"],
         latitude=51.034368,
         longitude=2.376776,
-        modes_accueil=[schema.ModeAccueil.EN_PRESENTIEL.value],
-        zone_diffusion_type=schema.ZoneDiffusionType.REGION.value,
+        modes_accueil=[schemas.ModeAccueil.EN_PRESENTIEL.value],
+        zone_diffusion_type=schemas.ZoneDiffusionType.REGION.value,
         zone_diffusion_code="32",
         zone_diffusion_nom="Nord",
     )
@@ -1183,8 +1186,8 @@ def test_search_services_with_zone_diffusion_region(api_client):
         code_insee=MAUBEUGE["code_insee"],
         latitude=50.277500,
         longitude=3.973400,
-        modes_accueil=[schema.ModeAccueil.EN_PRESENTIEL.value],
-        zone_diffusion_type=schema.ZoneDiffusionType.REGION.value,
+        modes_accueil=[schemas.ModeAccueil.EN_PRESENTIEL.value],
+        zone_diffusion_type=schemas.ZoneDiffusionType.REGION.value,
         zone_diffusion_code="44",
         zone_diffusion_nom="Grand Est",
     )
@@ -1210,7 +1213,7 @@ def test_search_services_with_bad_code_commune(api_client):
         code_insee=LILLE["code_insee"],
         latitude=50.633333,
         longitude=3.066667,
-        modes_accueil=[schema.ModeAccueil.A_DISTANCE.value],
+        modes_accueil=[schemas.ModeAccueil.A_DISTANCE.value],
     )
 
     url = "/api/v0/search/services"
@@ -1229,16 +1232,16 @@ def test_search_services_with_code_commune_ordering(api_client):
     service_1 = factories.ServiceFactory(
         commune="Hazebrouck",
         **HAZEBROUCK,
-        modes_accueil=[schema.ModeAccueil.EN_PRESENTIEL.value],
+        modes_accueil=[schemas.ModeAccueil.EN_PRESENTIEL.value],
     )
     service_2 = factories.ServiceFactory(
         commune="Lille",
         **LILLE,
-        modes_accueil=[schema.ModeAccueil.EN_PRESENTIEL.value],
+        modes_accueil=[schemas.ModeAccueil.EN_PRESENTIEL.value],
     )
     factories.ServiceFactory(
         code_insee=None,
-        modes_accueil=[schema.ModeAccueil.EN_PRESENTIEL.value],
+        modes_accueil=[schemas.ModeAccueil.EN_PRESENTIEL.value],
     )
 
     url = "/api/v0/search/services"
@@ -1258,11 +1261,11 @@ def test_search_services_with_code_commune_sample_distance(api_client):
     service_1 = factories.ServiceFactory(
         commune="Lille",
         **LILLE,
-        modes_accueil=[schema.ModeAccueil.EN_PRESENTIEL.value],
+        modes_accueil=[schemas.ModeAccueil.EN_PRESENTIEL.value],
     )
     factories.ServiceFactory(
         code_insee=None,
-        modes_accueil=[schema.ModeAccueil.EN_PRESENTIEL.value],
+        modes_accueil=[schemas.ModeAccueil.EN_PRESENTIEL.value],
     )
 
     url = "/api/v0/search/services"
@@ -1280,12 +1283,12 @@ def test_search_services_with_code_commune_a_distance(api_client):
     service_1 = factories.ServiceFactory(
         commune="Dunkerque",
         code_insee=DUNKERQUE["code_insee"],
-        modes_accueil=[schema.ModeAccueil.A_DISTANCE.value],
+        modes_accueil=[schemas.ModeAccueil.A_DISTANCE.value],
     )
     service_2 = factories.ServiceFactory(
         commune="Maubeuge",
         code_insee=MAUBEUGE["code_insee"],
-        modes_accueil=[schema.ModeAccueil.A_DISTANCE.value],
+        modes_accueil=[schemas.ModeAccueil.A_DISTANCE.value],
     )
 
     url = "/api/v0/search/services"

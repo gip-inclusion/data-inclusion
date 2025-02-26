@@ -2,7 +2,7 @@ from pydantic import BaseModel
 
 import fastapi
 
-from data_inclusion.api.v0.inclusion_schema import legacy as schema
+from data_inclusion.api.v0.inclusion_data import schemas
 
 router = fastapi.APIRouter()
 
@@ -21,7 +21,7 @@ class FrameworkValue(BaseModel):
     summary="Récupérer le référentiel des labels nationaux",
 )
 def list_labels_nationaux_endpoint():
-    return schema.LabelNational.as_dict_list()
+    return schemas.LabelNational.as_dict_list()
 
 
 @router.get(
@@ -30,7 +30,7 @@ def list_labels_nationaux_endpoint():
     summary="Récupérer le référentiel des thématiques",
 )
 def list_thematiques_endpoint():
-    return schema.Thematique.as_dict_list()
+    return schemas.Thematique.as_dict_list()
 
 
 @router.get(
@@ -39,7 +39,7 @@ def list_thematiques_endpoint():
     summary="Récupérer le référentiel des typologies de services",
 )
 def list_typologies_services_endpoint():
-    return schema.TypologieService.as_dict_list()
+    return schemas.TypologieService.as_dict_list()
 
 
 @router.get(
@@ -48,7 +48,7 @@ def list_typologies_services_endpoint():
     summary="Récupérer le référentiel des frais",
 )
 def list_frais_endpoint():
-    return schema.Frais.as_dict_list()
+    return schemas.Frais.as_dict_list()
 
 
 @router.get(
@@ -57,7 +57,7 @@ def list_frais_endpoint():
     summary="Récupérer le référentiel des profils de publics",
 )
 def list_profils_endpoint():
-    return schema.Profil.as_dict_list()
+    return schemas.Profil.as_dict_list()
 
 
 @router.get(
@@ -66,7 +66,7 @@ def list_profils_endpoint():
     summary="Récupérer le référentiel des typologies de structures",
 )
 def list_typologies_structures_endpoint():
-    return schema.Typologie.as_dict_list()
+    return schemas.Typologie.as_dict_list()
 
 
 @router.get(
@@ -75,7 +75,7 @@ def list_typologies_structures_endpoint():
     summary="Récupérer le référentiel des modes d'accueil",
 )
 def list_modes_accueil_endpoint():
-    return schema.ModeAccueil.as_dict_list()
+    return schemas.ModeAccueil.as_dict_list()
 
 
 @router.get(
@@ -84,7 +84,7 @@ def list_modes_accueil_endpoint():
     summary="Récupérer le référentiel des modes d'orientation de l'accompagnateur",
 )
 def list_modes_orientation_accompagnateur_endpoint():
-    return schema.ModeOrientationAccompagnateur.as_dict_list()
+    return schemas.ModeOrientationAccompagnateur.as_dict_list()
 
 
 @router.get(
@@ -93,4 +93,4 @@ def list_modes_orientation_accompagnateur_endpoint():
     summary="Récupérer le référentiel des modes d'orientation du bénéficiaire",
 )
 def list_modes_orientation_beneficiaire_endpoint():
-    return schema.ModeOrientationBeneficiaire.as_dict_list()
+    return schemas.ModeOrientationBeneficiaire.as_dict_list()

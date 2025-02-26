@@ -14,13 +14,13 @@ import fastapi
 # TODO(vmttn): handle pagination outside ?
 from fastapi_pagination.ext.sqlalchemy import paginate
 
+from data_inclusion import schema as di_schema
 from data_inclusion.api.decoupage_administratif.constants import (
     Departement,
     Region,
 )
 from data_inclusion.api.decoupage_administratif.models import Commune
-from data_inclusion.api.v0.inclusion_data import models
-from data_inclusion.api.v0.inclusion_schema import legacy as di_schema
+from data_inclusion.api.v0.inclusion_data import models, schemas as di_schema_v0
 
 logger = logging.getLogger(__name__)
 
@@ -35,7 +35,7 @@ def filter_by_sources(
 @functools.cache
 def get_thematiques_by_group():
     thematiques = defaultdict(list)
-    for thematique in di_schema.Thematique:
+    for thematique in di_schema_v0.Thematique:
         try:
             theme, _ = str(thematique.value).split("--")
         except ValueError:
@@ -44,7 +44,7 @@ def get_thematiques_by_group():
     return thematiques
 
 
-def get_sub_thematiques(thematiques: list[di_schema.Thematique]) -> list[str]:
+def get_sub_thematiques(thematiques: list[di_schema_v0.Thematique]) -> list[str]:
     """
     get_sub_thematiques(Thematique.MOBILITE) -> [
         "mobilite",
@@ -67,7 +67,7 @@ def get_sub_thematiques(thematiques: list[di_schema.Thematique]) -> list[str]:
 
 def filter_services_by_thematiques(
     query: sqla.Select,
-    thematiques: list[di_schema.Thematique],
+    thematiques: list[di_schema_v0.Thematique],
 ):
     return query.filter(
         sqla.text("api__services.thematiques && :thematiques").bindparams(
@@ -78,7 +78,7 @@ def filter_services_by_thematiques(
 
 def filter_structures_by_thematiques(
     query: sqla.Select,
-    thematiques: list[di_schema.Thematique],
+    thematiques: list[di_schema_v0.Thematique],
 ):
     return query.filter(
         sqla.text("api__structures.thematiques && :thematiques").bindparams(
@@ -89,7 +89,7 @@ def filter_structures_by_thematiques(
 
 def filter_services_by_frais(
     query: sqla.Select,
-    frais: list[di_schema.Frais],
+    frais: list[di_schema_v0.Frais],
 ):
     filter_stmt = """\
     EXISTS(
@@ -105,7 +105,7 @@ def filter_services_by_frais(
 
 def filter_services_by_modes_accueil(
     query: sqla.Select,
-    modes_accueil: list[di_schema.ModeAccueil],
+    modes_accueil: list[di_schema_v0.ModeAccueil],
 ):
     filter_stmt = """\
     EXISTS(
@@ -123,7 +123,7 @@ def filter_services_by_modes_accueil(
 
 def filter_services_by_profils(
     query: sqla.Select,
-    profils: list[di_schema.Profil],
+    profils: list[di_schema_v0.Profil],
 ):
     filter_stmt = """\
     EXISTS(
@@ -157,7 +157,7 @@ def filter_services_by_profils_search(
 
 def filter_services_by_types(
     query: sqla.Select,
-    types: list[di_schema.TypologieService],
+    types: list[di_schema_v0.TypologieService],
 ):
     filter_stmt = """\
     EXISTS(
@@ -205,12 +205,12 @@ def list_structures(
     db_session: orm.Session,
     sources: list[str] | None = None,
     id_: str | None = None,
-    typologie: di_schema.Typologie | None = None,
-    label_national: di_schema.LabelNational | None = None,
+    typologie: di_schema_v0.Typologie | None = None,
+    label_national: di_schema_v0.LabelNational | None = None,
     departement: Departement | None = None,
     region: Region | None = None,
     commune_code: di_schema.CodeCommune | None = None,
-    thematiques: list[di_schema.Thematique] | None = None,
+    thematiques: list[di_schema_v0.Thematique] | None = None,
 ) -> list:
     query = sqla.select(models.Structure)
     query = filter_restricted(query, request)
@@ -285,12 +285,12 @@ def list_sources(request: fastapi.Request) -> list[dict]:
 def filter_services(
     query: sqla.Select,
     sources: list[str] | None = None,
-    thematiques: list[di_schema.Thematique] | None = None,
-    frais: list[di_schema.Frais] | None = None,
-    profils: list[di_schema.Profil] | None = None,
+    thematiques: list[di_schema_v0.Thematique] | None = None,
+    frais: list[di_schema_v0.Frais] | None = None,
+    profils: list[di_schema_v0.Profil] | None = None,
     profils_search: str | None = None,
-    modes_accueil: list[di_schema.ModeAccueil] | None = None,
-    types: list[di_schema.TypologieService] | None = None,
+    modes_accueil: list[di_schema_v0.ModeAccueil] | None = None,
+    types: list[di_schema_v0.TypologieService] | None = None,
     score_qualite_minimum: float | None = None,
     include_outdated: bool | None = False,
 ) -> sqla.Select:
@@ -330,15 +330,15 @@ def list_services(
     request: fastapi.Request,
     db_session: orm.Session,
     sources: list[str] | None = None,
-    thematiques: list[di_schema.Thematique] | None = None,
+    thematiques: list[di_schema_v0.Thematique] | None = None,
     departement: Departement | None = None,
     region: Region | None = None,
     code_commune: di_schema.CodeCommune | None = None,
-    frais: list[di_schema.Frais] | None = None,
-    profils: list[di_schema.Profil] | None = None,
+    frais: list[di_schema_v0.Frais] | None = None,
+    profils: list[di_schema_v0.Profil] | None = None,
     recherche_public: str | None = None,
-    modes_accueil: list[di_schema.ModeAccueil] | None = None,
-    types: list[di_schema.TypologieService] | None = None,
+    modes_accueil: list[di_schema_v0.ModeAccueil] | None = None,
+    types: list[di_schema_v0.TypologieService] | None = None,
     score_qualite_minimum: float | None = None,
     include_outdated: bool | None = False,
 ):
@@ -385,12 +385,12 @@ def search_services(
     db_session: orm.Session,
     sources: list[str] | None = None,
     commune_instance: Commune | None = None,
-    thematiques: list[di_schema.Thematique] | None = None,
-    frais: list[di_schema.Frais] | None = None,
-    modes_accueil: list[di_schema.ModeAccueil] | None = None,
-    profils: list[di_schema.Profil] | None = None,
+    thematiques: list[di_schema_v0.Thematique] | None = None,
+    frais: list[di_schema_v0.Frais] | None = None,
+    modes_accueil: list[di_schema_v0.ModeAccueil] | None = None,
+    profils: list[di_schema_v0.Profil] | None = None,
     profils_search: str | None = None,
-    types: list[di_schema.TypologieService] | None = None,
+    types: list[di_schema_v0.TypologieService] | None = None,
     search_point: str | None = None,
     score_qualite_minimum: float | None = None,
     include_outdated: bool | None = False,
@@ -408,27 +408,27 @@ def search_services(
             sqla.or_(
                 models.Service.zone_diffusion_type.is_(None),
                 models.Service.zone_diffusion_type
-                == di_schema.ZoneDiffusionType.PAYS.value,
+                == di_schema_v0.ZoneDiffusionType.PAYS.value,
                 sqla.and_(
                     models.Service.zone_diffusion_type
-                    == di_schema.ZoneDiffusionType.COMMUNE.value,
+                    == di_schema_v0.ZoneDiffusionType.COMMUNE.value,
                     models.Service.zone_diffusion_code == commune_instance.code,
                 ),
                 sqla.and_(
                     models.Service.zone_diffusion_type
-                    == di_schema.ZoneDiffusionType.EPCI.value,
+                    == di_schema_v0.ZoneDiffusionType.EPCI.value,
                     sqla.literal(commune_instance.siren_epci).contains(
                         models.Service.zone_diffusion_code
                     ),
                 ),
                 sqla.and_(
                     models.Service.zone_diffusion_type
-                    == di_schema.ZoneDiffusionType.DEPARTEMENT.value,
+                    == di_schema_v0.ZoneDiffusionType.DEPARTEMENT.value,
                     models.Service.zone_diffusion_code == commune_instance.departement,
                 ),
                 sqla.and_(
                     models.Service.zone_diffusion_type
-                    == di_schema.ZoneDiffusionType.REGION.value,
+                    == di_schema_v0.ZoneDiffusionType.REGION.value,
                     models.Service.zone_diffusion_code == commune_instance.region,
                 ),
             )
@@ -456,7 +456,7 @@ def search_services(
                 ),
                 # or `a-distance`
                 models.Service.modes_accueil.contains(
-                    sqla.literal([di_schema.ModeAccueil.A_DISTANCE.value])
+                    sqla.literal([di_schema_v0.ModeAccueil.A_DISTANCE.value])
                 ),
             )
         )
@@ -467,7 +467,7 @@ def search_services(
                 sqla.case(
                     (
                         models.Service.modes_accueil.contains(
-                            sqla.literal([di_schema.ModeAccueil.EN_PRESENTIEL.value])
+                            sqla.literal([di_schema_v0.ModeAccueil.EN_PRESENTIEL.value])
                         ),
                         (
                             geoalchemy2.functions.ST_Distance(

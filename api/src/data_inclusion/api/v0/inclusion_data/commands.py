@@ -12,8 +12,7 @@ from tqdm import tqdm
 
 from data_inclusion.api.config import settings
 from data_inclusion.api.core import db
-from data_inclusion.api.v0.inclusion_data import models
-from data_inclusion.api.v0.inclusion_schema import legacy as schema
+from data_inclusion.api.v0.inclusion_data import models, schemas
 
 logger = logging.getLogger(__name__)
 
@@ -123,8 +122,10 @@ def load_inclusion_data():
     structures_df = structures_df.replace({np.nan: None})
     services_df = services_df.replace({np.nan: None})
 
-    structure_errors_df = validate_df(structures_df, model_schema=schema.Structure)
-    service_errors_df = validate_df(services_df, model_schema=schema.Service)
+    structure_errors_df = validate_df(
+        structures_df, model_schema=schemas.StructureFrozenV0
+    )
+    service_errors_df = validate_df(services_df, model_schema=schemas.ServiceFrozenV0)
 
     logger.info("Structure validation errors:")
     log_errors(structure_errors_df)

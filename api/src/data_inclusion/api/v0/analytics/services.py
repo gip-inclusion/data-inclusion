@@ -2,20 +2,20 @@ from sqlalchemy import orm
 
 import fastapi
 
-from data_inclusion.api.decoupage_administratif.constants import (
-    Departement,
-    Region,
-)
-from data_inclusion.api.utils import pagination
-from data_inclusion.api.v0.analytics.models import (
+from data_inclusion import schema as di_schema
+from data_inclusion.api.analytics.models import (
     ConsultServiceEvent,
     ConsultStructureEvent,
     ListServicesEvent,
     ListStructuresEvent,
     SearchServicesEvent,
 )
+from data_inclusion.api.decoupage_administratif.constants import (
+    Departement,
+    Region,
+)
+from data_inclusion.api.utils import pagination
 from data_inclusion.api.v0.inclusion_data import schemas
-from data_inclusion.api.v0.inclusion_schema import legacy as di_schema
 
 
 def save_consult_structure_event(
@@ -57,14 +57,14 @@ def save_list_services_event(
     request: fastapi.Request,
     db_session: orm.Session,
     sources: list[str] | None = None,
-    thematiques: list[di_schema.Thematique] | None = None,
+    thematiques: list[schemas.Thematique] | None = None,
     departement: Departement | None = None,
     region: Region | None = None,
     code_commune: di_schema.CodeCommune | None = None,
-    frais: list[di_schema.Frais] | None = None,
-    profils: list[di_schema.Profil] | None = None,
-    modes_accueil: list[di_schema.ModeAccueil] | None = None,
-    types: list[di_schema.TypologieService] | None = None,
+    frais: list[schemas.Frais] | None = None,
+    profils: list[schemas.Profil] | None = None,
+    modes_accueil: list[schemas.ModeAccueil] | None = None,
+    types: list[schemas.TypologieService] | None = None,
     inclure_suspendus: bool | None = False,
 ):
     user = request.scope.get("user")
@@ -92,12 +92,12 @@ def save_list_structures_event(
     request: fastapi.Request,
     db_session: orm.Session,
     sources: list[str] | None = None,
-    typologie: di_schema.Typologie | None = None,
-    label_national: di_schema.LabelNational | None = None,
+    typologie: schemas.Typologie | None = None,
+    label_national: schemas.LabelNational | None = None,
     departement: Departement | None = None,
     region: Region | None = None,
     code_commune: di_schema.CodeCommune | None = None,
-    thematiques: list[di_schema.Thematique] | None = None,
+    thematiques: list[schemas.Thematique] | None = None,
 ):
     user = request.scope.get("user")
     if user is None or not user.is_authenticated:
@@ -125,11 +125,11 @@ def save_search_services_event(
     code_commune: str | None = None,
     lat: float | None = None,
     lon: float | None = None,
-    thematiques: list[di_schema.Thematique] | None = None,
-    frais: list[di_schema.Frais] | None = None,
-    modes_accueil: list[di_schema.ModeAccueil] | None = None,
-    profils: list[di_schema.Profil] | None = None,
-    types: list[di_schema.TypologieService] | None = None,
+    thematiques: list[schemas.Thematique] | None = None,
+    frais: list[schemas.Frais] | None = None,
+    modes_accueil: list[schemas.ModeAccueil] | None = None,
+    profils: list[schemas.Profil] | None = None,
+    types: list[schemas.TypologieService] | None = None,
     inclure_suspendus: bool | None = False,
 ):
     user = request.scope.get("user")

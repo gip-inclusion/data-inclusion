@@ -1,7 +1,7 @@
 import pytest
 import sqlalchemy as sqla
 
-from data_inclusion.api.v0.analytics import models
+from data_inclusion.api.analytics import models
 
 from .... import factories
 

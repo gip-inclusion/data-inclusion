@@ -4,6 +4,7 @@ from pydantic.json_schema import SkipJsonSchema
 
 import fastapi
 
+from data_inclusion import schema as di_schema
 from data_inclusion.api import auth
 from data_inclusion.api.config import settings
 from data_inclusion.api.core import db
@@ -27,7 +28,6 @@ from data_inclusion.api.v0.analytics.services import (
     save_search_services_event,
 )
 from data_inclusion.api.v0.inclusion_data import schemas, services
-from data_inclusion.api.v0.inclusion_schema import legacy as di_schema
 
 router = fastapi.APIRouter(tags=["Données"])
 
@@ -72,12 +72,10 @@ def list_structures_endpoint(
         ),
     ] = None,
     id: Annotated[Optional[str], fastapi.Query(include_in_schema=False)] = None,
-    typologie: Annotated[Optional[di_schema.Typologie], fastapi.Query()] = None,
-    label_national: Annotated[
-        Optional[di_schema.LabelNational], fastapi.Query()
-    ] = None,
+    typologie: Annotated[Optional[schemas.Typologie], fastapi.Query()] = None,
+    label_national: Annotated[Optional[schemas.LabelNational], fastapi.Query()] = None,
     thematiques: Annotated[
-        Optional[list[di_schema.Thematique]],
+        Optional[list[schemas.Thematique]],
         fastapi.Query(
             description="""Une liste de thématique.
                 Chaque résultat renvoyé a (au moins) une thématique dans cette liste."""
@@ -184,7 +182,7 @@ def list_services_endpoint(
         ),
     ] = None,
     thematiques: Annotated[
-        Optional[list[di_schema.Thematique]],
+        Optional[list[schemas.Thematique]],
         fastapi.Query(
             description="""Une liste de thématique.
                 Chaque résultat renvoyé a (au moins) une thématique dans cette liste."""
@@ -196,14 +194,14 @@ def list_services_endpoint(
     slug_departement: Annotated[Optional[DepartementSlugEnum], fastapi.Query()] = None,
     code_commune: CodeCommuneFilter = None,
     frais: Annotated[
-        Optional[list[di_schema.Frais]],
+        Optional[list[schemas.Frais]],
         fastapi.Query(
             description="""Une liste de frais.
                 Chaque résultat renvoyé a (au moins) un frais dans cette liste."""
         ),
     ] = None,
     profils: Annotated[
-        Optional[list[di_schema.Profil]],
+        Optional[list[schemas.Profil]],
         fastapi.Query(
             description="""Une liste de profils.
                 Chaque résultat renvoyé a (au moins) un profil dans cette liste.
@@ -219,7 +217,7 @@ def list_services_endpoint(
         ),
     ] = None,
     modes_accueil: Annotated[
-        Optional[list[di_schema.ModeAccueil]],
+        Optional[list[schemas.ModeAccueil]],
         fastapi.Query(
             description="""Une liste de modes d'accueil.
                 Chaque résultat renvoyé a (au moins) un mode d'accueil dans cette liste.
@@ -227,7 +225,7 @@ def list_services_endpoint(
         ),
     ] = None,
     types: Annotated[
-        Optional[list[di_schema.TypologieService]],
+        Optional[list[schemas.TypologieService]],
         fastapi.Query(
             description="""Une liste de typologies de service.
                 Chaque résultat renvoyé a (au moins) une typologie dans cette liste."""
@@ -366,21 +364,21 @@ def search_services_endpoint(
         ),
     ] = None,
     thematiques: Annotated[
-        Optional[list[di_schema.Thematique]],
+        Optional[list[schemas.Thematique]],
         fastapi.Query(
             description="""Une liste de thématique.
                 Chaque résultat renvoyé a (au moins) une thématique dans cette liste."""
         ),
     ] = None,
     frais: Annotated[
-        Optional[list[di_schema.Frais]],
+        Optional[list[schemas.Frais]],
         fastapi.Query(
             description="""Une liste de frais.
                 Chaque résultat renvoyé a (au moins) un frais dans cette liste."""
         ),
     ] = None,
     modes_accueil: Annotated[
-        Optional[list[di_schema.ModeAccueil]],
+        Optional[list[schemas.ModeAccueil]],
         fastapi.Query(
             description="""Une liste de modes d'accueil.
                 Chaque résultat renvoyé a (au moins) un mode d'accueil dans cette liste.
@@ -388,7 +386,7 @@ def search_services_endpoint(
         ),
     ] = None,
     profils: Annotated[
-        Optional[list[di_schema.Profil]],
+        Optional[list[schemas.Profil]],
         fastapi.Query(
             description="""Une liste de profils.
                 Chaque résultat renvoyé a (au moins) un profil dans cette liste.
@@ -404,7 +402,7 @@ def search_services_endpoint(
         ),
     ] = None,
     types: Annotated[
-        Optional[list[di_schema.TypologieService]],
+        Optional[list[schemas.TypologieService]],
         fastapi.Query(
             description="""Une liste de typologies de service.
                 Chaque résultat renvoyé a (au moins) une typologie dans cette liste."""

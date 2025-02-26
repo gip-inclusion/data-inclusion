@@ -480,7 +480,7 @@
               "content": {
                 "application/json": {
                   "schema": {
-                    "$ref": "#/components/schemas/CustomizedPage_Service_"
+                    "$ref": "#/components/schemas/data_inclusion__api__utils__pagination__CustomizedPage_Service___1"
                   }
                 }
               }
@@ -536,7 +536,7 @@
               "content": {
                 "application/json": {
                   "schema": {
-                    "$ref": "#/components/schemas/DetailedService"
+                    "$ref": "#/components/schemas/data_inclusion__api__v0__inclusion_data__schemas__DetailedService"
                   }
                 }
               }
@@ -1403,7 +1403,7 @@
               "content": {
                 "application/json": {
                   "schema": {
-                    "$ref": "#/components/schemas/CustomizedPage_Service_"
+                    "$ref": "#/components/schemas/data_inclusion__api__utils__pagination__CustomizedPage_Service___2"
                   }
                 }
               }
@@ -1869,73 +1869,6 @@
     },
     "components": {
       "schemas": {
-        "CustomizedPage_Service_": {
-          "properties": {
-            "items": {
-              "items": {
-                "$ref": "#/components/schemas/Service"
-              },
-              "type": "array",
-              "title": "Items"
-            },
-            "total": {
-              "anyOf": [
-                {
-                  "type": "integer",
-                  "minimum": 0.0
-                },
-                {
-                  "type": "null"
-                }
-              ],
-              "title": "Total"
-            },
-            "page": {
-              "anyOf": [
-                {
-                  "type": "integer",
-                  "minimum": 1.0
-                },
-                {
-                  "type": "null"
-                }
-              ],
-              "title": "Page"
-            },
-            "size": {
-              "anyOf": [
-                {
-                  "type": "integer",
-                  "minimum": 1.0
-                },
-                {
-                  "type": "null"
-                }
-              ],
-              "title": "Size"
-            },
-            "pages": {
-              "anyOf": [
-                {
-                  "type": "integer",
-                  "minimum": 0.0
-                },
-                {
-                  "type": "null"
-                }
-              ],
-              "title": "Pages"
-            }
-          },
-          "type": "object",
-          "required": [
-            "items",
-            "total",
-            "page",
-            "size"
-          ],
-          "title": "CustomizedPage[Service]"
-        },
         "CustomizedPage_Structure_": {
           "properties": {
             "items": {
@@ -2216,542 +2149,6 @@
             "yvelines"
           ],
           "title": "DepartementSlugEnum"
-        },
-        "DetailedService": {
-          "properties": {
-            "id": {
-              "type": "string",
-              "title": "Id"
-            },
-            "structure_id": {
-              "type": "string",
-              "title": "Structure Id"
-            },
-            "source": {
-              "type": "string",
-              "title": "Source"
-            },
-            "nom": {
-              "type": "string",
-              "title": "Nom"
-            },
-            "presentation_resume": {
-              "anyOf": [
-                {
-                  "type": "string",
-                  "maxLength": 280
-                },
-                {
-                  "type": "null"
-                }
-              ],
-              "title": "Presentation Resume"
-            },
-            "presentation_detail": {
-              "anyOf": [
-                {
-                  "type": "string"
-                },
-                {
-                  "type": "null"
-                }
-              ],
-              "title": "Presentation Detail"
-            },
-            "types": {
-              "anyOf": [
-                {
-                  "items": {
-                    "$ref": "#/components/schemas/TypologieService"
-                  },
-                  "type": "array",
-                  "uniqueItems": true
-                },
-                {
-                  "type": "null"
-                }
-              ],
-              "title": "Types"
-            },
-            "thematiques": {
-              "anyOf": [
-                {
-                  "items": {
-                    "$ref": "#/components/schemas/Thematique"
-                  },
-                  "type": "array",
-                  "uniqueItems": true
-                },
-                {
-                  "type": "null"
-                }
-              ],
-              "title": "Thematiques"
-            },
-            "prise_rdv": {
-              "anyOf": [
-                {
-                  "type": "string"
-                },
-                {
-                  "type": "null"
-                }
-              ],
-              "title": "Prise Rdv"
-            },
-            "frais": {
-              "anyOf": [
-                {
-                  "items": {
-                    "$ref": "#/components/schemas/Frais"
-                  },
-                  "type": "array",
-                  "uniqueItems": true
-                },
-                {
-                  "type": "null"
-                }
-              ],
-              "title": "Frais"
-            },
-            "frais_autres": {
-              "anyOf": [
-                {
-                  "type": "string"
-                },
-                {
-                  "type": "null"
-                }
-              ],
-              "title": "Frais Autres"
-            },
-            "profils": {
-              "anyOf": [
-                {
-                  "items": {
-                    "$ref": "#/components/schemas/Profil"
-                  },
-                  "type": "array",
-                  "uniqueItems": true
-                },
-                {
-                  "type": "null"
-                }
-              ],
-              "title": "Profils"
-            },
-            "profils_precisions": {
-              "anyOf": [
-                {
-                  "type": "string"
-                },
-                {
-                  "type": "null"
-                }
-              ],
-              "title": "Profils Precisions"
-            },
-            "pre_requis": {
-              "anyOf": [
-                {
-                  "items": {
-                    "type": "string"
-                  },
-                  "type": "array",
-                  "uniqueItems": true
-                },
-                {
-                  "type": "null"
-                }
-              ],
-              "title": "Pre Requis"
-            },
-            "cumulable": {
-              "anyOf": [
-                {
-                  "type": "boolean"
-                },
-                {
-                  "type": "null"
-                }
-              ],
-              "title": "Cumulable"
-            },
-            "justificatifs": {
-              "anyOf": [
-                {
-                  "items": {
-                    "type": "string"
-                  },
-                  "type": "array",
-                  "uniqueItems": true
-                },
-                {
-                  "type": "null"
-                }
-              ],
-              "title": "Justificatifs"
-            },
-            "formulaire_en_ligne": {
-              "anyOf": [
-                {
-                  "type": "string"
-                },
-                {
-                  "type": "null"
-                }
-              ],
-              "title": "Formulaire En Ligne"
-            },
-            "commune": {
-              "anyOf": [
-                {
-                  "type": "string"
-                },
-                {
-                  "type": "null"
-                }
-              ],
-              "title": "Commune"
-            },
-            "code_postal": {
-              "anyOf": [
-                {
-                  "type": "string",
-                  "maxLength": 5,
-                  "minLength": 5,
-                  "pattern": "^\\d{5}$"
-                },
-                {
-                  "type": "null"
-                }
-              ],
-              "title": "Code Postal"
-            },
-            "code_insee": {
-              "anyOf": [
-                {
-                  "type": "string",
-                  "maxLength": 5,
-                  "minLength": 5,
-                  "pattern": "^\\w{5}$"
-                },
-                {
-                  "type": "null"
-                }
-              ],
-              "title": "Code Insee"
-            },
-            "adresse": {
-              "anyOf": [
-                {
-                  "type": "string"
-                },
-                {
-                  "type": "null"
-                }
-              ],
-              "title": "Adresse"
-            },
-            "complement_adresse": {
-              "anyOf": [
-                {
-                  "type": "string"
-                },
-                {
-                  "type": "null"
-                }
-              ],
-              "title": "Complement Adresse"
-            },
-            "longitude": {
-              "anyOf": [
-                {
-                  "type": "number"
-                },
-                {
-                  "type": "null"
-                }
-              ],
-              "title": "Longitude"
-            },
-            "latitude": {
-              "anyOf": [
-                {
-                  "type": "number"
-                },
-                {
-                  "type": "null"
-                }
-              ],
-              "title": "Latitude"
-            },
-            "recurrence": {
-              "anyOf": [
-                {
-                  "type": "string"
-                },
-                {
-                  "type": "null"
-                }
-              ],
-              "title": "Recurrence"
-            },
-            "date_creation": {
-              "anyOf": [
-                {
-                  "type": "string",
-                  "format": "date"
-                },
-                {
-                  "type": "null"
-                }
-              ],
-              "title": "Date Creation"
-            },
-            "date_suspension": {
-              "anyOf": [
-                {
-                  "type": "string",
-                  "format": "date"
-                },
-                {
-                  "type": "null"
-                }
-              ],
-              "title": "Date Suspension"
-            },
-            "lien_source": {
-              "anyOf": [
-                {
-                  "type": "string"
-                },
-                {
-                  "type": "null"
-                }
-              ],
-              "title": "Lien Source"
-            },
-            "telephone": {
-              "anyOf": [
-                {
-                  "type": "string"
-                },
-                {
-                  "type": "null"
-                }
-              ],
-              "title": "Telephone"
-            },
-            "courriel": {
-              "anyOf": [
-                {
-                  "type": "string",
-                  "format": "email"
-                },
-                {
-                  "type": "null"
-                }
-              ],
-              "title": "Courriel"
-            },
-            "contact_public": {
-              "anyOf": [
-                {
-                  "type": "boolean"
-                },
-                {
-                  "type": "null"
-                }
-              ],
-              "title": "Contact Public"
-            },
-            "date_maj": {
-              "anyOf": [
-                {
-                  "type": "string",
-                  "format": "date"
-                },
-                {
-                  "type": "string",
-                  "format": "date-time"
-                },
-                {
-                  "type": "null"
-                }
-              ],
-              "title": "Date Maj"
-            },
-            "modes_accueil": {
-              "anyOf": [
-                {
-                  "items": {
-                    "$ref": "#/components/schemas/ModeAccueil"
-                  },
-                  "type": "array",
-                  "uniqueItems": true
-                },
-                {
-                  "type": "null"
-                }
-              ],
-              "title": "Modes Accueil"
-            },
-            "zone_diffusion_type": {
-              "anyOf": [
-                {
-                  "$ref": "#/components/schemas/ZoneDiffusionType"
-                },
-                {
-                  "type": "null"
-                }
-              ]
-            },
-            "zone_diffusion_code": {
-              "anyOf": [
-                {
-                  "type": "string",
-                  "maxLength": 5,
-                  "minLength": 5,
-                  "pattern": "^\\w{5}$"
-                },
-                {
-                  "type": "string",
-                  "maxLength": 9,
-                  "minLength": 9,
-                  "pattern": "^\\d{9}$"
-                },
-                {
-                  "type": "string",
-                  "maxLength": 3,
-                  "minLength": 2,
-                  "pattern": "^\\w{2,3}$"
-                },
-                {
-                  "type": "string",
-                  "maxLength": 2,
-                  "minLength": 2,
-                  "pattern": "^\\d{2}$"
-                },
-                {
-                  "type": "null"
-                }
-              ],
-              "title": "Zone Diffusion Code"
-            },
-            "zone_diffusion_nom": {
-              "anyOf": [
-                {
-                  "type": "string"
-                },
-                {
-                  "type": "null"
-                }
-              ],
-              "title": "Zone Diffusion Nom"
-            },
-            "contact_nom_prenom": {
-              "anyOf": [
-                {
-                  "type": "string"
-                },
-                {
-                  "type": "null"
-                }
-              ],
-              "title": "Contact Nom Prenom"
-            },
-            "page_web": {
-              "anyOf": [
-                {
-                  "type": "string",
-                  "maxLength": 2083,
-                  "minLength": 1,
-                  "format": "uri"
-                },
-                {
-                  "type": "null"
-                }
-              ],
-              "title": "Page Web",
-              "description": "Lien vers une page web dédiée au service sur le site web de la structure. Ce champ n'est pas destiné à recevoir un lien vers le site d'un producteur de donnée.",
-              "examples": [
-                "https://insersol.fr/biclou-atelier-reparation-participatif-solidaire/"
-              ]
-            },
-            "modes_orientation_beneficiaire": {
-              "anyOf": [
-                {
-                  "items": {
-                    "$ref": "#/components/schemas/ModeOrientationBeneficiaire"
-                  },
-                  "type": "array",
-                  "uniqueItems": true
-                },
-                {
-                  "type": "null"
-                }
-              ],
-              "title": "Modes Orientation Beneficiaire"
-            },
-            "modes_orientation_beneficiaire_autres": {
-              "anyOf": [
-                {
-                  "type": "string"
-                },
-                {
-                  "type": "null"
-                }
-              ],
-              "title": "Modes Orientation Beneficiaire Autres"
-            },
-            "modes_orientation_accompagnateur": {
-              "anyOf": [
-                {
-                  "items": {
-                    "$ref": "#/components/schemas/ModeOrientationAccompagnateur"
-                  },
-                  "type": "array",
-                  "uniqueItems": true
-                },
-                {
-                  "type": "null"
-                }
-              ],
-              "title": "Modes Orientation Accompagnateur"
-            },
-            "modes_orientation_accompagnateur_autres": {
-              "anyOf": [
-                {
-                  "type": "string"
-                },
-                {
-                  "type": "null"
-                }
-              ],
-              "title": "Modes Orientation Accompagnateur Autres"
-            },
-            "score_qualite": {
-              "type": "number",
-              "maximum": 1.0,
-              "minimum": 0.0,
-              "title": "Score Qualite",
-              "description": "Score de qualité du service, défini et calculé par data·inclusion.\n"
-            },
-            "structure": {
-              "$ref": "#/components/schemas/Structure"
-            }
-          },
-          "type": "object",
-          "required": [
-            "id",
-            "structure_id",
-            "source",
-            "nom",
-            "score_qualite",
-            "structure"
-          ],
-          "title": "DetailedService"
         },
         "DetailedStructure": {
           "properties": {
@@ -3049,7 +2446,7 @@
             },
             "services": {
               "items": {
-                "$ref": "#/components/schemas/Service"
+                "$ref": "#/components/schemas/data_inclusion__api__v0__inclusion_data__schemas__Service"
               },
               "type": "array",
               "title": "Services"
@@ -3323,538 +2720,6 @@
             "provence-alpes-cote-d-azur"
           ],
           "title": "RegionSlugEnum"
-        },
-        "Service": {
-          "properties": {
-            "id": {
-              "type": "string",
-              "title": "Id"
-            },
-            "structure_id": {
-              "type": "string",
-              "title": "Structure Id"
-            },
-            "source": {
-              "type": "string",
-              "title": "Source"
-            },
-            "nom": {
-              "type": "string",
-              "title": "Nom"
-            },
-            "presentation_resume": {
-              "anyOf": [
-                {
-                  "type": "string",
-                  "maxLength": 280
-                },
-                {
-                  "type": "null"
-                }
-              ],
-              "title": "Presentation Resume"
-            },
-            "presentation_detail": {
-              "anyOf": [
-                {
-                  "type": "string"
-                },
-                {
-                  "type": "null"
-                }
-              ],
-              "title": "Presentation Detail"
-            },
-            "types": {
-              "anyOf": [
-                {
-                  "items": {
-                    "$ref": "#/components/schemas/TypologieService"
-                  },
-                  "type": "array",
-                  "uniqueItems": true
-                },
-                {
-                  "type": "null"
-                }
-              ],
-              "title": "Types"
-            },
-            "thematiques": {
-              "anyOf": [
-                {
-                  "items": {
-                    "$ref": "#/components/schemas/Thematique"
-                  },
-                  "type": "array",
-                  "uniqueItems": true
-                },
-                {
-                  "type": "null"
-                }
-              ],
-              "title": "Thematiques"
-            },
-            "prise_rdv": {
-              "anyOf": [
-                {
-                  "type": "string"
-                },
-                {
-                  "type": "null"
-                }
-              ],
-              "title": "Prise Rdv"
-            },
-            "frais": {
-              "anyOf": [
-                {
-                  "items": {
-                    "$ref": "#/components/schemas/Frais"
-                  },
-                  "type": "array",
-                  "uniqueItems": true
-                },
-                {
-                  "type": "null"
-                }
-              ],
-              "title": "Frais"
-            },
-            "frais_autres": {
-              "anyOf": [
-                {
-                  "type": "string"
-                },
-                {
-                  "type": "null"
-                }
-              ],
-              "title": "Frais Autres"
-            },
-            "profils": {
-              "anyOf": [
-                {
-                  "items": {
-                    "$ref": "#/components/schemas/Profil"
-                  },
-                  "type": "array",
-                  "uniqueItems": true
-                },
-                {
-                  "type": "null"
-                }
-              ],
-              "title": "Profils"
-            },
-            "profils_precisions": {
-              "anyOf": [
-                {
-                  "type": "string"
-                },
-                {
-                  "type": "null"
-                }
-              ],
-              "title": "Profils Precisions"
-            },
-            "pre_requis": {
-              "anyOf": [
-                {
-                  "items": {
-                    "type": "string"
-                  },
-                  "type": "array",
-                  "uniqueItems": true
-                },
-                {
-                  "type": "null"
-                }
-              ],
-              "title": "Pre Requis"
-            },
-            "cumulable": {
-              "anyOf": [
-                {
-                  "type": "boolean"
-                },
-                {
-                  "type": "null"
-                }
-              ],
-              "title": "Cumulable"
-            },
-            "justificatifs": {
-              "anyOf": [
-                {
-                  "items": {
-                    "type": "string"
-                  },
-                  "type": "array",
-                  "uniqueItems": true
-                },
-                {
-                  "type": "null"
-                }
-              ],
-              "title": "Justificatifs"
-            },
-            "formulaire_en_ligne": {
-              "anyOf": [
-                {
-                  "type": "string"
-                },
-                {
-                  "type": "null"
-                }
-              ],
-              "title": "Formulaire En Ligne"
-            },
-            "commune": {
-              "anyOf": [
-                {
-                  "type": "string"
-                },
-                {
-                  "type": "null"
-                }
-              ],
-              "title": "Commune"
-            },
-            "code_postal": {
-              "anyOf": [
-                {
-                  "type": "string",
-                  "maxLength": 5,
-                  "minLength": 5,
-                  "pattern": "^\\d{5}$"
-                },
-                {
-                  "type": "null"
-                }
-              ],
-              "title": "Code Postal"
-            },
-            "code_insee": {
-              "anyOf": [
-                {
-                  "type": "string",
-                  "maxLength": 5,
-                  "minLength": 5,
-                  "pattern": "^\\w{5}$"
-                },
-                {
-                  "type": "null"
-                }
-              ],
-              "title": "Code Insee"
-            },
-            "adresse": {
-              "anyOf": [
-                {
-                  "type": "string"
-                },
-                {
-                  "type": "null"
-                }
-              ],
-              "title": "Adresse"
-            },
-            "complement_adresse": {
-              "anyOf": [
-                {
-                  "type": "string"
-                },
-                {
-                  "type": "null"
-                }
-              ],
-              "title": "Complement Adresse"
-            },
-            "longitude": {
-              "anyOf": [
-                {
-                  "type": "number"
-                },
-                {
-                  "type": "null"
-                }
-              ],
-              "title": "Longitude"
-            },
-            "latitude": {
-              "anyOf": [
-                {
-                  "type": "number"
-                },
-                {
-                  "type": "null"
-                }
-              ],
-              "title": "Latitude"
-            },
-            "recurrence": {
-              "anyOf": [
-                {
-                  "type": "string"
-                },
-                {
-                  "type": "null"
-                }
-              ],
-              "title": "Recurrence"
-            },
-            "date_creation": {
-              "anyOf": [
-                {
-                  "type": "string",
-                  "format": "date"
-                },
-                {
-                  "type": "null"
-                }
-              ],
-              "title": "Date Creation"
-            },
-            "date_suspension": {
-              "anyOf": [
-                {
-                  "type": "string",
-                  "format": "date"
-                },
-                {
-                  "type": "null"
-                }
-              ],
-              "title": "Date Suspension"
-            },
-            "lien_source": {
-              "anyOf": [
-                {
-                  "type": "string"
-                },
-                {
-                  "type": "null"
-                }
-              ],
-              "title": "Lien Source"
-            },
-            "telephone": {
-              "anyOf": [
-                {
-                  "type": "string"
-                },
-                {
-                  "type": "null"
-                }
-              ],
-              "title": "Telephone"
-            },
-            "courriel": {
-              "anyOf": [
-                {
-                  "type": "string",
-                  "format": "email"
-                },
-                {
-                  "type": "null"
-                }
-              ],
-              "title": "Courriel"
-            },
-            "contact_public": {
-              "anyOf": [
-                {
-                  "type": "boolean"
-                },
-                {
-                  "type": "null"
-                }
-              ],
-              "title": "Contact Public"
-            },
-            "date_maj": {
-              "anyOf": [
-                {
-                  "type": "string",
-                  "format": "date"
-                },
-                {
-                  "type": "string",
-                  "format": "date-time"
-                },
-                {
-                  "type": "null"
-                }
-              ],
-              "title": "Date Maj"
-            },
-            "modes_accueil": {
-              "anyOf": [
-                {
-                  "items": {
-                    "$ref": "#/components/schemas/ModeAccueil"
-                  },
-                  "type": "array",
-                  "uniqueItems": true
-                },
-                {
-                  "type": "null"
-                }
-              ],
-              "title": "Modes Accueil"
-            },
-            "zone_diffusion_type": {
-              "anyOf": [
-                {
-                  "$ref": "#/components/schemas/ZoneDiffusionType"
-                },
-                {
-                  "type": "null"
-                }
-              ]
-            },
-            "zone_diffusion_code": {
-              "anyOf": [
-                {
-                  "type": "string",
-                  "maxLength": 5,
-                  "minLength": 5,
-                  "pattern": "^\\w{5}$"
-                },
-                {
-                  "type": "string",
-                  "maxLength": 9,
-                  "minLength": 9,
-                  "pattern": "^\\d{9}$"
-                },
-                {
-                  "type": "string",
-                  "maxLength": 3,
-                  "minLength": 2,
-                  "pattern": "^\\w{2,3}$"
-                },
-                {
-                  "type": "string",
-                  "maxLength": 2,
-                  "minLength": 2,
-                  "pattern": "^\\d{2}$"
-                },
-                {
-                  "type": "null"
-                }
-              ],
-              "title": "Zone Diffusion Code"
-            },
-            "zone_diffusion_nom": {
-              "anyOf": [
-                {
-                  "type": "string"
-                },
-                {
-                  "type": "null"
-                }
-              ],
-              "title": "Zone Diffusion Nom"
-            },
-            "contact_nom_prenom": {
-              "anyOf": [
-                {
-                  "type": "string"
-                },
-                {
-                  "type": "null"
-                }
-              ],
-              "title": "Contact Nom Prenom"
-            },
-            "page_web": {
-              "anyOf": [
-                {
-                  "type": "string",
-                  "maxLength": 2083,
-                  "minLength": 1,
-                  "format": "uri"
-                },
-                {
-                  "type": "null"
-                }
-              ],
-              "title": "Page Web",
-              "description": "Lien vers une page web dédiée au service sur le site web de la structure. Ce champ n'est pas destiné à recevoir un lien vers le site d'un producteur de donnée.",
-              "examples": [
-                "https://insersol.fr/biclou-atelier-reparation-participatif-solidaire/"
-              ]
-            },
-            "modes_orientation_beneficiaire": {
-              "anyOf": [
-                {
-                  "items": {
-                    "$ref": "#/components/schemas/ModeOrientationBeneficiaire"
-                  },
-                  "type": "array",
-                  "uniqueItems": true
-                },
-                {
-                  "type": "null"
-                }
-              ],
-              "title": "Modes Orientation Beneficiaire"
-            },
-            "modes_orientation_beneficiaire_autres": {
-              "anyOf": [
-                {
-                  "type": "string"
-                },
-                {
-                  "type": "null"
-                }
-              ],
-              "title": "Modes Orientation Beneficiaire Autres"
-            },
-            "modes_orientation_accompagnateur": {
-              "anyOf": [
-                {
-                  "items": {
-                    "$ref": "#/components/schemas/ModeOrientationAccompagnateur"
-                  },
-                  "type": "array",
-                  "uniqueItems": true
-                },
-                {
-                  "type": "null"
-                }
-              ],
-              "title": "Modes Orientation Accompagnateur"
-            },
-            "modes_orientation_accompagnateur_autres": {
-              "anyOf": [
-                {
-                  "type": "string"
-                },
-                {
-                  "type": "null"
-                }
-              ],
-              "title": "Modes Orientation Accompagnateur Autres"
-            },
-            "score_qualite": {
-              "type": "number",
-              "maximum": 1.0,
-              "minimum": 0.0,
-              "title": "Score Qualite",
-              "description": "Score de qualité du service, défini et calculé par data·inclusion.\n"
-            }
-          },
-          "type": "object",
-          "required": [
-            "id",
-            "structure_id",
-            "source",
-            "nom",
-            "score_qualite"
-          ],
-          "title": "Service"
         },
         "Source": {
           "properties": {
@@ -4637,10 +3502,1212 @@
           ],
           "title": "CustomizedPage[ServiceSearchResult]"
         },
+        "data_inclusion__api__utils__pagination__CustomizedPage_Service___1": {
+          "properties": {
+            "items": {
+              "items": {
+                "$ref": "#/components/schemas/data_inclusion__api__v0__inclusion_data__schemas__Service"
+              },
+              "type": "array",
+              "title": "Items"
+            },
+            "total": {
+              "anyOf": [
+                {
+                  "type": "integer",
+                  "minimum": 0.0
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Total"
+            },
+            "page": {
+              "anyOf": [
+                {
+                  "type": "integer",
+                  "minimum": 1.0
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Page"
+            },
+            "size": {
+              "anyOf": [
+                {
+                  "type": "integer",
+                  "minimum": 1.0
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Size"
+            },
+            "pages": {
+              "anyOf": [
+                {
+                  "type": "integer",
+                  "minimum": 0.0
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Pages"
+            }
+          },
+          "type": "object",
+          "required": [
+            "items",
+            "total",
+            "page",
+            "size"
+          ],
+          "title": "CustomizedPage[Service]"
+        },
+        "data_inclusion__api__utils__pagination__CustomizedPage_Service___2": {
+          "properties": {
+            "items": {
+              "items": {
+                "$ref": "#/components/schemas/data_inclusion__api__v1__inclusion_data__schemas__Service"
+              },
+              "type": "array",
+              "title": "Items"
+            },
+            "total": {
+              "anyOf": [
+                {
+                  "type": "integer",
+                  "minimum": 0.0
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Total"
+            },
+            "page": {
+              "anyOf": [
+                {
+                  "type": "integer",
+                  "minimum": 1.0
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Page"
+            },
+            "size": {
+              "anyOf": [
+                {
+                  "type": "integer",
+                  "minimum": 1.0
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Size"
+            },
+            "pages": {
+              "anyOf": [
+                {
+                  "type": "integer",
+                  "minimum": 0.0
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Pages"
+            }
+          },
+          "type": "object",
+          "required": [
+            "items",
+            "total",
+            "page",
+            "size"
+          ],
+          "title": "CustomizedPage[Service]"
+        },
+        "data_inclusion__api__v0__inclusion_data__schemas__DetailedService": {
+          "properties": {
+            "id": {
+              "type": "string",
+              "title": "Id"
+            },
+            "structure_id": {
+              "type": "string",
+              "title": "Structure Id"
+            },
+            "source": {
+              "type": "string",
+              "title": "Source"
+            },
+            "nom": {
+              "type": "string",
+              "title": "Nom"
+            },
+            "presentation_resume": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "maxLength": 280
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Presentation Resume"
+            },
+            "presentation_detail": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Presentation Detail"
+            },
+            "types": {
+              "anyOf": [
+                {
+                  "items": {
+                    "$ref": "#/components/schemas/TypologieService"
+                  },
+                  "type": "array",
+                  "uniqueItems": true
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Types"
+            },
+            "thematiques": {
+              "anyOf": [
+                {
+                  "items": {
+                    "$ref": "#/components/schemas/Thematique"
+                  },
+                  "type": "array",
+                  "uniqueItems": true
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Thematiques"
+            },
+            "prise_rdv": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Prise Rdv"
+            },
+            "frais": {
+              "anyOf": [
+                {
+                  "items": {
+                    "$ref": "#/components/schemas/Frais"
+                  },
+                  "type": "array",
+                  "uniqueItems": true
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Frais"
+            },
+            "frais_autres": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Frais Autres"
+            },
+            "profils": {
+              "anyOf": [
+                {
+                  "items": {
+                    "$ref": "#/components/schemas/Profil"
+                  },
+                  "type": "array",
+                  "uniqueItems": true
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Profils"
+            },
+            "profils_precisions": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Profils Precisions"
+            },
+            "pre_requis": {
+              "anyOf": [
+                {
+                  "items": {
+                    "type": "string"
+                  },
+                  "type": "array",
+                  "uniqueItems": true
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Pre Requis"
+            },
+            "cumulable": {
+              "anyOf": [
+                {
+                  "type": "boolean"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Cumulable"
+            },
+            "justificatifs": {
+              "anyOf": [
+                {
+                  "items": {
+                    "type": "string"
+                  },
+                  "type": "array",
+                  "uniqueItems": true
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Justificatifs"
+            },
+            "formulaire_en_ligne": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Formulaire En Ligne"
+            },
+            "commune": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Commune"
+            },
+            "code_postal": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "maxLength": 5,
+                  "minLength": 5,
+                  "pattern": "^\\d{5}$"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Code Postal"
+            },
+            "code_insee": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "maxLength": 5,
+                  "minLength": 5,
+                  "pattern": "^\\w{5}$"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Code Insee"
+            },
+            "adresse": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Adresse"
+            },
+            "complement_adresse": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Complement Adresse"
+            },
+            "longitude": {
+              "anyOf": [
+                {
+                  "type": "number"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Longitude"
+            },
+            "latitude": {
+              "anyOf": [
+                {
+                  "type": "number"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Latitude"
+            },
+            "recurrence": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Recurrence"
+            },
+            "date_creation": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "format": "date"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Date Creation"
+            },
+            "date_suspension": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "format": "date"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Date Suspension"
+            },
+            "lien_source": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Lien Source"
+            },
+            "telephone": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Telephone"
+            },
+            "courriel": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "format": "email"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Courriel"
+            },
+            "contact_public": {
+              "anyOf": [
+                {
+                  "type": "boolean"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Contact Public"
+            },
+            "date_maj": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "format": "date"
+                },
+                {
+                  "type": "string",
+                  "format": "date-time"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Date Maj"
+            },
+            "modes_accueil": {
+              "anyOf": [
+                {
+                  "items": {
+                    "$ref": "#/components/schemas/ModeAccueil"
+                  },
+                  "type": "array",
+                  "uniqueItems": true
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Modes Accueil"
+            },
+            "zone_diffusion_type": {
+              "anyOf": [
+                {
+                  "$ref": "#/components/schemas/ZoneDiffusionType"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "zone_diffusion_code": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "maxLength": 5,
+                  "minLength": 5,
+                  "pattern": "^\\w{5}$"
+                },
+                {
+                  "type": "string",
+                  "maxLength": 9,
+                  "minLength": 9,
+                  "pattern": "^\\d{9}$"
+                },
+                {
+                  "type": "string",
+                  "maxLength": 3,
+                  "minLength": 2,
+                  "pattern": "^\\w{2,3}$"
+                },
+                {
+                  "type": "string",
+                  "maxLength": 2,
+                  "minLength": 2,
+                  "pattern": "^\\d{2}$"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Zone Diffusion Code"
+            },
+            "zone_diffusion_nom": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Zone Diffusion Nom"
+            },
+            "contact_nom_prenom": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Contact Nom Prenom"
+            },
+            "page_web": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "maxLength": 2083,
+                  "minLength": 1,
+                  "format": "uri"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Page Web",
+              "description": "Lien vers une page web dédiée au service sur le site web de la structure. Ce champ n'est pas destiné à recevoir un lien vers le site d'un producteur de donnée.",
+              "examples": [
+                "https://insersol.fr/biclou-atelier-reparation-participatif-solidaire/"
+              ]
+            },
+            "modes_orientation_beneficiaire": {
+              "anyOf": [
+                {
+                  "items": {
+                    "$ref": "#/components/schemas/ModeOrientationBeneficiaire"
+                  },
+                  "type": "array",
+                  "uniqueItems": true
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Modes Orientation Beneficiaire"
+            },
+            "modes_orientation_beneficiaire_autres": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Modes Orientation Beneficiaire Autres"
+            },
+            "modes_orientation_accompagnateur": {
+              "anyOf": [
+                {
+                  "items": {
+                    "$ref": "#/components/schemas/ModeOrientationAccompagnateur"
+                  },
+                  "type": "array",
+                  "uniqueItems": true
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Modes Orientation Accompagnateur"
+            },
+            "modes_orientation_accompagnateur_autres": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Modes Orientation Accompagnateur Autres"
+            },
+            "score_qualite": {
+              "type": "number",
+              "maximum": 1.0,
+              "minimum": 0.0,
+              "title": "Score Qualite",
+              "description": "Score de qualité du service, défini et calculé par data·inclusion."
+            },
+            "structure": {
+              "$ref": "#/components/schemas/Structure"
+            }
+          },
+          "type": "object",
+          "required": [
+            "id",
+            "structure_id",
+            "source",
+            "nom",
+            "score_qualite",
+            "structure"
+          ],
+          "title": "DetailedService"
+        },
+        "data_inclusion__api__v0__inclusion_data__schemas__Service": {
+          "properties": {
+            "id": {
+              "type": "string",
+              "title": "Id"
+            },
+            "structure_id": {
+              "type": "string",
+              "title": "Structure Id"
+            },
+            "source": {
+              "type": "string",
+              "title": "Source"
+            },
+            "nom": {
+              "type": "string",
+              "title": "Nom"
+            },
+            "presentation_resume": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "maxLength": 280
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Presentation Resume"
+            },
+            "presentation_detail": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Presentation Detail"
+            },
+            "types": {
+              "anyOf": [
+                {
+                  "items": {
+                    "$ref": "#/components/schemas/TypologieService"
+                  },
+                  "type": "array",
+                  "uniqueItems": true
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Types"
+            },
+            "thematiques": {
+              "anyOf": [
+                {
+                  "items": {
+                    "$ref": "#/components/schemas/Thematique"
+                  },
+                  "type": "array",
+                  "uniqueItems": true
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Thematiques"
+            },
+            "prise_rdv": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Prise Rdv"
+            },
+            "frais": {
+              "anyOf": [
+                {
+                  "items": {
+                    "$ref": "#/components/schemas/Frais"
+                  },
+                  "type": "array",
+                  "uniqueItems": true
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Frais"
+            },
+            "frais_autres": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Frais Autres"
+            },
+            "profils": {
+              "anyOf": [
+                {
+                  "items": {
+                    "$ref": "#/components/schemas/Profil"
+                  },
+                  "type": "array",
+                  "uniqueItems": true
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Profils"
+            },
+            "profils_precisions": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Profils Precisions"
+            },
+            "pre_requis": {
+              "anyOf": [
+                {
+                  "items": {
+                    "type": "string"
+                  },
+                  "type": "array",
+                  "uniqueItems": true
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Pre Requis"
+            },
+            "cumulable": {
+              "anyOf": [
+                {
+                  "type": "boolean"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Cumulable"
+            },
+            "justificatifs": {
+              "anyOf": [
+                {
+                  "items": {
+                    "type": "string"
+                  },
+                  "type": "array",
+                  "uniqueItems": true
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Justificatifs"
+            },
+            "formulaire_en_ligne": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Formulaire En Ligne"
+            },
+            "commune": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Commune"
+            },
+            "code_postal": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "maxLength": 5,
+                  "minLength": 5,
+                  "pattern": "^\\d{5}$"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Code Postal"
+            },
+            "code_insee": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "maxLength": 5,
+                  "minLength": 5,
+                  "pattern": "^\\w{5}$"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Code Insee"
+            },
+            "adresse": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Adresse"
+            },
+            "complement_adresse": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Complement Adresse"
+            },
+            "longitude": {
+              "anyOf": [
+                {
+                  "type": "number"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Longitude"
+            },
+            "latitude": {
+              "anyOf": [
+                {
+                  "type": "number"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Latitude"
+            },
+            "recurrence": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Recurrence"
+            },
+            "date_creation": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "format": "date"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Date Creation"
+            },
+            "date_suspension": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "format": "date"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Date Suspension"
+            },
+            "lien_source": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Lien Source"
+            },
+            "telephone": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Telephone"
+            },
+            "courriel": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "format": "email"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Courriel"
+            },
+            "contact_public": {
+              "anyOf": [
+                {
+                  "type": "boolean"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Contact Public"
+            },
+            "date_maj": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "format": "date"
+                },
+                {
+                  "type": "string",
+                  "format": "date-time"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Date Maj"
+            },
+            "modes_accueil": {
+              "anyOf": [
+                {
+                  "items": {
+                    "$ref": "#/components/schemas/ModeAccueil"
+                  },
+                  "type": "array",
+                  "uniqueItems": true
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Modes Accueil"
+            },
+            "zone_diffusion_type": {
+              "anyOf": [
+                {
+                  "$ref": "#/components/schemas/ZoneDiffusionType"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "zone_diffusion_code": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "maxLength": 5,
+                  "minLength": 5,
+                  "pattern": "^\\w{5}$"
+                },
+                {
+                  "type": "string",
+                  "maxLength": 9,
+                  "minLength": 9,
+                  "pattern": "^\\d{9}$"
+                },
+                {
+                  "type": "string",
+                  "maxLength": 3,
+                  "minLength": 2,
+                  "pattern": "^\\w{2,3}$"
+                },
+                {
+                  "type": "string",
+                  "maxLength": 2,
+                  "minLength": 2,
+                  "pattern": "^\\d{2}$"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Zone Diffusion Code"
+            },
+            "zone_diffusion_nom": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Zone Diffusion Nom"
+            },
+            "contact_nom_prenom": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Contact Nom Prenom"
+            },
+            "page_web": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "maxLength": 2083,
+                  "minLength": 1,
+                  "format": "uri"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Page Web",
+              "description": "Lien vers une page web dédiée au service sur le site web de la structure. Ce champ n'est pas destiné à recevoir un lien vers le site d'un producteur de donnée.",
+              "examples": [
+                "https://insersol.fr/biclou-atelier-reparation-participatif-solidaire/"
+              ]
+            },
+            "modes_orientation_beneficiaire": {
+              "anyOf": [
+                {
+                  "items": {
+                    "$ref": "#/components/schemas/ModeOrientationBeneficiaire"
+                  },
+                  "type": "array",
+                  "uniqueItems": true
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Modes Orientation Beneficiaire"
+            },
+            "modes_orientation_beneficiaire_autres": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Modes Orientation Beneficiaire Autres"
+            },
+            "modes_orientation_accompagnateur": {
+              "anyOf": [
+                {
+                  "items": {
+                    "$ref": "#/components/schemas/ModeOrientationAccompagnateur"
+                  },
+                  "type": "array",
+                  "uniqueItems": true
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Modes Orientation Accompagnateur"
+            },
+            "modes_orientation_accompagnateur_autres": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Modes Orientation Accompagnateur Autres"
+            },
+            "score_qualite": {
+              "type": "number",
+              "maximum": 1.0,
+              "minimum": 0.0,
+              "title": "Score Qualite",
+              "description": "Score de qualité du service, défini et calculé par data·inclusion."
+            }
+          },
+          "type": "object",
+          "required": [
+            "id",
+            "structure_id",
+            "source",
+            "nom",
+            "score_qualite"
+          ],
+          "title": "Service"
+        },
         "data_inclusion__api__v0__inclusion_data__schemas__ServiceSearchResult": {
           "properties": {
             "service": {
-              "$ref": "#/components/schemas/DetailedService"
+              "$ref": "#/components/schemas/data_inclusion__api__v0__inclusion_data__schemas__DetailedService"
             },
             "distance": {
               "anyOf": [
@@ -4660,10 +4727,1078 @@
           ],
           "title": "ServiceSearchResult"
         },
+        "data_inclusion__api__v1__inclusion_data__schemas__DetailedService": {
+          "properties": {
+            "id": {
+              "type": "string",
+              "title": "Id"
+            },
+            "structure_id": {
+              "type": "string",
+              "title": "Structure Id"
+            },
+            "source": {
+              "type": "string",
+              "title": "Source"
+            },
+            "nom": {
+              "type": "string",
+              "title": "Nom"
+            },
+            "presentation_resume": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "maxLength": 280
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Presentation Resume"
+            },
+            "presentation_detail": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Presentation Detail"
+            },
+            "types": {
+              "anyOf": [
+                {
+                  "items": {
+                    "$ref": "#/components/schemas/TypologieService"
+                  },
+                  "type": "array",
+                  "uniqueItems": true
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Types"
+            },
+            "thematiques": {
+              "anyOf": [
+                {
+                  "items": {
+                    "$ref": "#/components/schemas/Thematique"
+                  },
+                  "type": "array",
+                  "uniqueItems": true
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Thematiques"
+            },
+            "prise_rdv": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Prise Rdv"
+            },
+            "frais": {
+              "anyOf": [
+                {
+                  "items": {
+                    "$ref": "#/components/schemas/Frais"
+                  },
+                  "type": "array",
+                  "uniqueItems": true
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Frais"
+            },
+            "frais_autres": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Frais Autres"
+            },
+            "profils": {
+              "anyOf": [
+                {
+                  "items": {
+                    "$ref": "#/components/schemas/Profil"
+                  },
+                  "type": "array",
+                  "uniqueItems": true
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Profils"
+            },
+            "profils_precisions": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Profils Precisions"
+            },
+            "pre_requis": {
+              "anyOf": [
+                {
+                  "items": {
+                    "type": "string"
+                  },
+                  "type": "array",
+                  "uniqueItems": true
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Pre Requis"
+            },
+            "cumulable": {
+              "anyOf": [
+                {
+                  "type": "boolean"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Cumulable"
+            },
+            "justificatifs": {
+              "anyOf": [
+                {
+                  "items": {
+                    "type": "string"
+                  },
+                  "type": "array",
+                  "uniqueItems": true
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Justificatifs"
+            },
+            "formulaire_en_ligne": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Formulaire En Ligne"
+            },
+            "commune": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Commune"
+            },
+            "code_postal": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "maxLength": 5,
+                  "minLength": 5,
+                  "pattern": "^\\d{5}$"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Code Postal"
+            },
+            "code_insee": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "maxLength": 5,
+                  "minLength": 5,
+                  "pattern": "^\\w{5}$"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Code Insee"
+            },
+            "adresse": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Adresse"
+            },
+            "complement_adresse": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Complement Adresse"
+            },
+            "longitude": {
+              "anyOf": [
+                {
+                  "type": "number"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Longitude"
+            },
+            "latitude": {
+              "anyOf": [
+                {
+                  "type": "number"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Latitude"
+            },
+            "recurrence": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Recurrence"
+            },
+            "date_creation": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "format": "date"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Date Creation"
+            },
+            "date_suspension": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "format": "date"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Date Suspension"
+            },
+            "lien_source": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Lien Source"
+            },
+            "telephone": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Telephone"
+            },
+            "courriel": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "format": "email"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Courriel"
+            },
+            "contact_public": {
+              "anyOf": [
+                {
+                  "type": "boolean"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Contact Public"
+            },
+            "date_maj": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "format": "date"
+                },
+                {
+                  "type": "string",
+                  "format": "date-time"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Date Maj"
+            },
+            "modes_accueil": {
+              "anyOf": [
+                {
+                  "items": {
+                    "$ref": "#/components/schemas/ModeAccueil"
+                  },
+                  "type": "array",
+                  "uniqueItems": true
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Modes Accueil"
+            },
+            "zone_diffusion_type": {
+              "anyOf": [
+                {
+                  "$ref": "#/components/schemas/ZoneDiffusionType"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "zone_diffusion_code": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "maxLength": 5,
+                  "minLength": 5,
+                  "pattern": "^\\w{5}$"
+                },
+                {
+                  "type": "string",
+                  "maxLength": 9,
+                  "minLength": 9,
+                  "pattern": "^\\d{9}$"
+                },
+                {
+                  "type": "string",
+                  "maxLength": 3,
+                  "minLength": 2,
+                  "pattern": "^\\w{2,3}$"
+                },
+                {
+                  "type": "string",
+                  "maxLength": 2,
+                  "minLength": 2,
+                  "pattern": "^\\d{2}$"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Zone Diffusion Code"
+            },
+            "zone_diffusion_nom": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Zone Diffusion Nom"
+            },
+            "contact_nom_prenom": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Contact Nom Prenom"
+            },
+            "page_web": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "maxLength": 2083,
+                  "minLength": 1,
+                  "format": "uri"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Page Web",
+              "description": "Lien vers une page web dédiée au service sur le site web de la structure. Ce champ n'est pas destiné à recevoir un lien vers le site d'un producteur de donnée.",
+              "examples": [
+                "https://insersol.fr/biclou-atelier-reparation-participatif-solidaire/"
+              ]
+            },
+            "modes_orientation_beneficiaire": {
+              "anyOf": [
+                {
+                  "items": {
+                    "$ref": "#/components/schemas/ModeOrientationBeneficiaire"
+                  },
+                  "type": "array",
+                  "uniqueItems": true
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Modes Orientation Beneficiaire"
+            },
+            "modes_orientation_beneficiaire_autres": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Modes Orientation Beneficiaire Autres"
+            },
+            "modes_orientation_accompagnateur": {
+              "anyOf": [
+                {
+                  "items": {
+                    "$ref": "#/components/schemas/ModeOrientationAccompagnateur"
+                  },
+                  "type": "array",
+                  "uniqueItems": true
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Modes Orientation Accompagnateur"
+            },
+            "modes_orientation_accompagnateur_autres": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Modes Orientation Accompagnateur Autres"
+            },
+            "score_qualite": {
+              "type": "number",
+              "maximum": 1.0,
+              "minimum": 0.0,
+              "title": "Score Qualite",
+              "description": "Score de qualité du service, défini et calculé par data·inclusion.\n"
+            },
+            "structure": {
+              "$ref": "#/components/schemas/Structure"
+            }
+          },
+          "type": "object",
+          "required": [
+            "id",
+            "structure_id",
+            "source",
+            "nom",
+            "score_qualite",
+            "structure"
+          ],
+          "title": "DetailedService"
+        },
+        "data_inclusion__api__v1__inclusion_data__schemas__Service": {
+          "properties": {
+            "id": {
+              "type": "string",
+              "title": "Id"
+            },
+            "structure_id": {
+              "type": "string",
+              "title": "Structure Id"
+            },
+            "source": {
+              "type": "string",
+              "title": "Source"
+            },
+            "nom": {
+              "type": "string",
+              "title": "Nom"
+            },
+            "presentation_resume": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "maxLength": 280
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Presentation Resume"
+            },
+            "presentation_detail": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Presentation Detail"
+            },
+            "types": {
+              "anyOf": [
+                {
+                  "items": {
+                    "$ref": "#/components/schemas/TypologieService"
+                  },
+                  "type": "array",
+                  "uniqueItems": true
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Types"
+            },
+            "thematiques": {
+              "anyOf": [
+                {
+                  "items": {
+                    "$ref": "#/components/schemas/Thematique"
+                  },
+                  "type": "array",
+                  "uniqueItems": true
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Thematiques"
+            },
+            "prise_rdv": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Prise Rdv"
+            },
+            "frais": {
+              "anyOf": [
+                {
+                  "items": {
+                    "$ref": "#/components/schemas/Frais"
+                  },
+                  "type": "array",
+                  "uniqueItems": true
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Frais"
+            },
+            "frais_autres": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Frais Autres"
+            },
+            "profils": {
+              "anyOf": [
+                {
+                  "items": {
+                    "$ref": "#/components/schemas/Profil"
+                  },
+                  "type": "array",
+                  "uniqueItems": true
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Profils"
+            },
+            "profils_precisions": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Profils Precisions"
+            },
+            "pre_requis": {
+              "anyOf": [
+                {
+                  "items": {
+                    "type": "string"
+                  },
+                  "type": "array",
+                  "uniqueItems": true
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Pre Requis"
+            },
+            "cumulable": {
+              "anyOf": [
+                {
+                  "type": "boolean"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Cumulable"
+            },
+            "justificatifs": {
+              "anyOf": [
+                {
+                  "items": {
+                    "type": "string"
+                  },
+                  "type": "array",
+                  "uniqueItems": true
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Justificatifs"
+            },
+            "formulaire_en_ligne": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Formulaire En Ligne"
+            },
+            "commune": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Commune"
+            },
+            "code_postal": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "maxLength": 5,
+                  "minLength": 5,
+                  "pattern": "^\\d{5}$"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Code Postal"
+            },
+            "code_insee": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "maxLength": 5,
+                  "minLength": 5,
+                  "pattern": "^\\w{5}$"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Code Insee"
+            },
+            "adresse": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Adresse"
+            },
+            "complement_adresse": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Complement Adresse"
+            },
+            "longitude": {
+              "anyOf": [
+                {
+                  "type": "number"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Longitude"
+            },
+            "latitude": {
+              "anyOf": [
+                {
+                  "type": "number"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Latitude"
+            },
+            "recurrence": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Recurrence"
+            },
+            "date_creation": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "format": "date"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Date Creation"
+            },
+            "date_suspension": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "format": "date"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Date Suspension"
+            },
+            "lien_source": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Lien Source"
+            },
+            "telephone": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Telephone"
+            },
+            "courriel": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "format": "email"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Courriel"
+            },
+            "contact_public": {
+              "anyOf": [
+                {
+                  "type": "boolean"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Contact Public"
+            },
+            "date_maj": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "format": "date"
+                },
+                {
+                  "type": "string",
+                  "format": "date-time"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Date Maj"
+            },
+            "modes_accueil": {
+              "anyOf": [
+                {
+                  "items": {
+                    "$ref": "#/components/schemas/ModeAccueil"
+                  },
+                  "type": "array",
+                  "uniqueItems": true
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Modes Accueil"
+            },
+            "zone_diffusion_type": {
+              "anyOf": [
+                {
+                  "$ref": "#/components/schemas/ZoneDiffusionType"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "zone_diffusion_code": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "maxLength": 5,
+                  "minLength": 5,
+                  "pattern": "^\\w{5}$"
+                },
+                {
+                  "type": "string",
+                  "maxLength": 9,
+                  "minLength": 9,
+                  "pattern": "^\\d{9}$"
+                },
+                {
+                  "type": "string",
+                  "maxLength": 3,
+                  "minLength": 2,
+                  "pattern": "^\\w{2,3}$"
+                },
+                {
+                  "type": "string",
+                  "maxLength": 2,
+                  "minLength": 2,
+                  "pattern": "^\\d{2}$"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Zone Diffusion Code"
+            },
+            "zone_diffusion_nom": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Zone Diffusion Nom"
+            },
+            "contact_nom_prenom": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Contact Nom Prenom"
+            },
+            "page_web": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "maxLength": 2083,
+                  "minLength": 1,
+                  "format": "uri"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Page Web",
+              "description": "Lien vers une page web dédiée au service sur le site web de la structure. Ce champ n'est pas destiné à recevoir un lien vers le site d'un producteur de donnée.",
+              "examples": [
+                "https://insersol.fr/biclou-atelier-reparation-participatif-solidaire/"
+              ]
+            },
+            "modes_orientation_beneficiaire": {
+              "anyOf": [
+                {
+                  "items": {
+                    "$ref": "#/components/schemas/ModeOrientationBeneficiaire"
+                  },
+                  "type": "array",
+                  "uniqueItems": true
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Modes Orientation Beneficiaire"
+            },
+            "modes_orientation_beneficiaire_autres": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Modes Orientation Beneficiaire Autres"
+            },
+            "modes_orientation_accompagnateur": {
+              "anyOf": [
+                {
+                  "items": {
+                    "$ref": "#/components/schemas/ModeOrientationAccompagnateur"
+                  },
+                  "type": "array",
+                  "uniqueItems": true
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Modes Orientation Accompagnateur"
+            },
+            "modes_orientation_accompagnateur_autres": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Modes Orientation Accompagnateur Autres"
+            },
+            "score_qualite": {
+              "type": "number",
+              "maximum": 1.0,
+              "minimum": 0.0,
+              "title": "Score Qualite",
+              "description": "Score de qualité du service, défini et calculé par data·inclusion.\n"
+            }
+          },
+          "type": "object",
+          "required": [
+            "id",
+            "structure_id",
+            "source",
+            "nom",
+            "score_qualite"
+          ],
+          "title": "Service"
+        },
         "data_inclusion__api__v1__inclusion_data__schemas__ServiceSearchResult": {
           "properties": {
             "service": {
-              "$ref": "#/components/schemas/DetailedService"
+              "$ref": "#/components/schemas/data_inclusion__api__v1__inclusion_data__schemas__DetailedService"
             },
             "distance": {
               "anyOf": [

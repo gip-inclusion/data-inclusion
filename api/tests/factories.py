@@ -3,8 +3,7 @@ from datetime import date
 import factory
 import faker
 
-from data_inclusion.api.v0.inclusion_data import models
-from data_inclusion.api.v0.inclusion_schema import legacy as di_schema
+from data_inclusion.api.v0.inclusion_data import models, schemas
 
 fake = faker.Faker("fr_FR")
 
@@ -28,9 +27,9 @@ class StructureFactory(factory.alchemy.SQLAlchemyModelFactory):
     latitude = factory.Faker("latitude")
     typologie = factory.Iterator(
         [
-            di_schema.Typologie.ACI,
-            di_schema.Typologie.MUNI,
-            di_schema.Typologie.FT,
+            schemas.Typologie.ACI,
+            schemas.Typologie.MUNI,
+            schemas.Typologie.FT,
         ],
         getter=lambda v: v.value,
     )
@@ -50,9 +49,9 @@ class StructureFactory(factory.alchemy.SQLAlchemyModelFactory):
     labels_autres = ["Nièvre médiation numérique"]
     thematiques = factory.Iterator(
         [
-            di_schema.Thematique.CHOISIR_UN_METIER,
-            di_schema.Thematique.CREATION_ACTIVITE,
-            di_schema.Thematique.MOBILITE,
+            schemas.Thematique.CHOISIR_UN_METIER,
+            schemas.Thematique.CREATION_ACTIVITE,
+            schemas.Thematique.MOBILITE,
         ],
         getter=lambda v: [v.value],
     )
@@ -78,23 +77,23 @@ class ServiceFactory(factory.alchemy.SQLAlchemyModelFactory):
     presentation_detail = factory.Faker("text", max_nb_chars=20, locale="fr_FR")
     types = factory.Iterator(
         [
-            di_schema.TypologieService.FORMATION,
-            di_schema.TypologieService.NUMÉRIQUE,
+            schemas.TypologieService.FORMATION,
+            schemas.TypologieService.NUMÉRIQUE,
         ],
         getter=lambda v: [v.value],
     )
     thematiques = factory.Iterator(
         [
-            di_schema.Thematique.CHOISIR_UN_METIER,
-            di_schema.Thematique.CREATION_ACTIVITE,
-            di_schema.Thematique.MOBILITE,
+            schemas.Thematique.CHOISIR_UN_METIER,
+            schemas.Thematique.CREATION_ACTIVITE,
+            schemas.Thematique.MOBILITE,
         ],
         getter=lambda v: [v.value],
     )
     prise_rdv = factory.Faker("url", locale="fr_FR")
     frais = factory.Iterator(
         [
-            di_schema.Frais.GRATUIT,
+            schemas.Frais.GRATUIT,
         ],
         getter=lambda v: [v.value],
     )
@@ -102,9 +101,9 @@ class ServiceFactory(factory.alchemy.SQLAlchemyModelFactory):
     page_web = factory.Faker("url", locale="fr_FR")
     profils = factory.Iterator(
         [
-            di_schema.Profil.FEMMES,
-            di_schema.Profil.JEUNES_16_26,
-            di_schema.Profil.SENIORS_65,
+            schemas.Profil.FEMMES,
+            schemas.Profil.JEUNES_16_26,
+            schemas.Profil.SENIORS_65,
         ],
         getter=lambda v: [v.value],
     )
@@ -131,24 +130,24 @@ class ServiceFactory(factory.alchemy.SQLAlchemyModelFactory):
     date_maj = factory.LazyFunction(lambda: date(2023, 1, 1))
     modes_accueil = factory.Iterator(
         [
-            di_schema.ModeAccueil.A_DISTANCE,
-            di_schema.ModeAccueil.EN_PRESENTIEL,
-            di_schema.ModeAccueil.EN_PRESENTIEL,
+            schemas.ModeAccueil.A_DISTANCE,
+            schemas.ModeAccueil.EN_PRESENTIEL,
+            schemas.ModeAccueil.EN_PRESENTIEL,
         ],
         getter=lambda v: [v.value],
     )
     modes_orientation_accompagnateur = factory.Iterator(
         [
-            di_schema.ModeOrientationAccompagnateur.TELEPHONER,
-            di_schema.ModeOrientationAccompagnateur.ENVOYER_UN_MAIL,
+            schemas.ModeOrientationAccompagnateur.TELEPHONER,
+            schemas.ModeOrientationAccompagnateur.ENVOYER_UN_MAIL,
         ],
         getter=lambda v: [v.value],
     )
     modes_orientation_accompagnateur_autres = None
     modes_orientation_beneficiaire = factory.Iterator(
         [
-            di_schema.ModeOrientationBeneficiaire.TELEPHONER,
-            di_schema.ModeOrientationBeneficiaire.SE_PRESENTER,
+            schemas.ModeOrientationBeneficiaire.TELEPHONER,
+            schemas.ModeOrientationBeneficiaire.SE_PRESENTER,
         ],
         getter=lambda v: [v.value],
     )

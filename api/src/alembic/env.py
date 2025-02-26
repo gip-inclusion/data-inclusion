@@ -3,10 +3,10 @@ from logging.config import fileConfig
 from alembic import context
 from sqlalchemy import engine_from_config, pool
 
+from data_inclusion.api.analytics import models as _  # noqa: F401 F811
 from data_inclusion.api.config import settings
 from data_inclusion.api.core import db
 from data_inclusion.api.decoupage_administratif import models as _  # noqa: F401 F811
-from data_inclusion.api.v0.analytics import models as _  # noqa: F401 F811
 from data_inclusion.api.v0.inclusion_data import models as _  # noqa: F401 F811
 
 # this is the Alembic Config object, which provides
