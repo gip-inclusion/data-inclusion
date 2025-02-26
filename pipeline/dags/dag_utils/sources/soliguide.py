@@ -81,7 +81,7 @@ def read(path: Path):
 
     from . import utils
 
-    # utils.read_json is enough
+    # utils.df_from_json is enough
     # but this adds the conversion of descriptions from html to markdown
     # should eventually be implemented as a python dbt model
 
