@@ -1,3 +1,4 @@
+from pydantic import field_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
@@ -24,6 +25,11 @@ class Settings(BaseSettings):
     DATALAKE_BUCKET_NAME: str | None = None
     DATALAKE_SECRET_KEY: str | None = None
     DATALAKE_ACCESS_KEY: str | None = None
+
+    @field_validator("DATABASE_URL", mode="before")
+    @classmethod
+    def valid_postgres_url(cls, value: str) -> str:
+        return value.replace("postgres://", "postgresql://")
 
 
 settings = Settings()
