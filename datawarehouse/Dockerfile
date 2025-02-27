@@ -15,6 +15,7 @@ RUN apt-get update \
     python3-venv \
     python3-dev \
     build-essential \
+    git-core \
     && apt-get autoremove --purge -y \
     && apt-get clean -y \
     && rm -rf /var/lib/apt/lists/*
