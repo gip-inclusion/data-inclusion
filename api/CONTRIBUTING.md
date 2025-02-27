@@ -81,6 +81,40 @@ make
 make upgrade all
 ```
 
+### 3. Using a development version of data-inclusion-schema
+
+In your [data-inclusion-schema](https://github.com/gip-inclusion/data-inclusion-schema) branch or pull request,
+edit the `pyproject.toml` to reference a version number that is unheard of. For instance:
+
+```
+[project]
+name = "data-inclusion-schema"
+version = "0.21.0-<COMMIT_HASH>"
+```
+
+The reason being that upon schema installation, Scalingo will fetch the python package as a source, directly
+from Github and check if it already knows the version specified in `pyproject.toml` in one of its caches.
+
+Specifying a new version number there ensures that you will install that source package from Github and not
+a pre-cached wheel.
+
+
+Then, edit data⋅inclusion API's `setup.py` to target your branch, tag or specific commit:
+
+```
+data-inclusion-schema @ git+https://github.com/gip-inclusion/data-inclusion-schema.git@BRANCH_NAME
+data-inclusion-schema @ git+https://github.com/gip-inclusion/data-inclusion-schema.git@TAG_NAME
+data-inclusion-schema @ git+https://github.com/gip-inclusion/data-inclusion-schema.git@COMMIT_HASH
+```
+
+Then run `make all` to update all the requirement files; those changes can now be commited on your branch
+to attempt a deployment on the staging environment, for instance.
+
+Use `pip install --force-reinstall -r requirements/requirements.txt` to install the development version
+of the schema locally (note the `--force-reinstall`)
+
+
+
 ### Infrastructure
 
 The app is deployed on Scalingo. Make sure you have access to the console.
