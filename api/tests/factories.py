@@ -28,9 +28,9 @@ class StructureFactory(factory.alchemy.SQLAlchemyModelFactory):
     latitude = factory.Faker("latitude")
     typologie = factory.Iterator(
         [
-            di_schema.Typologie.ACI,
-            di_schema.Typologie.MUNI,
-            di_schema.Typologie.FT,
+            di_schema.TypologieStructure.ACI,
+            di_schema.TypologieStructure.MUNI,
+            di_schema.TypologieStructure.FT,
         ],
         getter=lambda v: v.value,
     )
