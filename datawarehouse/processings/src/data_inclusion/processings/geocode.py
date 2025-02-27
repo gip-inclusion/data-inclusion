@@ -28,7 +28,7 @@ def _geocode(df: pd.DataFrame) -> pd.DataFrame:
                     # The INSEE code is more stable, unique and reliable.
                     # Also this post-filter does not return "possible" results,
                     # it blindly filters-out.
-                    "postcode": "code_postal",
+                    "citycode": "code_insee",
                 },
                 timeout=180,  # we upload 2MB of data, so we need a high timeout
             )
@@ -48,6 +48,16 @@ def _geocode(df: pd.DataFrame) -> pd.DataFrame:
             sep="|",
         )
         results_df = results_df.replace({np.nan: None})
+        # In some cases (ex: address='20' and city='Paris'), the BAN API will return
+        # a municipality as a result with a very high score. We should discard those,
+        # since we want to be able to consider that a "high geocoding score" in our
+        # database means a "complete and accurate" address, not just a city.
+        # Of course, if there was no supplied address, let's keep the municipality.
+        results_df = results_df[
+            (results_df.result_type != "municipality")
+            | (results_df.adresse.isna())
+            | (results_df.adresse == "")
+        ]
 
     logger.info("Got result for address batch, dimensions=%s", results_df.shape)
     return results_df

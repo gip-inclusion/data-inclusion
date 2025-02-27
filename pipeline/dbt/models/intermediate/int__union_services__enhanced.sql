@@ -148,7 +148,8 @@ final AS (
         adresses.commune            AS "commune",
         adresses.adresse            AS "adresse",
         adresses.code_postal        AS "code_postal",
-        adresses.code_insee         AS "code_insee"
+        adresses.code_insee         AS "code_insee",
+        adresses.score_redresse     AS "score_redresse"
     FROM
         valid_services AS services
     LEFT JOIN adresses_with_code_departement AS adresses
