@@ -52,7 +52,7 @@
               "in": "query",
               "required": false,
               "schema": {
-                "$ref": "#/components/schemas/Typologie"
+                "$ref": "#/components/schemas/TypologieStructure"
               }
             },
             {
@@ -2089,7 +2089,7 @@
             "typologie": {
               "anyOf": [
                 {
-                  "$ref": "#/components/schemas/Typologie"
+                  "$ref": "#/components/schemas/TypologieStructure"
                 },
                 {
                   "type": "null"
@@ -2576,7 +2576,7 @@
             "typologie": {
               "anyOf": [
                 {
-                  "$ref": "#/components/schemas/Typologie"
+                  "$ref": "#/components/schemas/TypologieStructure"
                 },
                 {
                   "type": "null"
@@ -3658,7 +3658,24 @@
           ],
           "title": "Thematique"
         },
-        "Typologie": {
+        "TypologieService": {
+          "type": "string",
+          "enum": [
+            "accompagnement",
+            "accueil",
+            "aide-financiere",
+            "aide-materielle",
+            "atelier",
+            "formation",
+            "information",
+            "numerique",
+            "autonomie",
+            "delegation",
+            "financement"
+          ],
+          "title": "TypologieService"
+        },
+        "TypologieStructure": {
           "type": "string",
           "enum": [
             "ACI",
@@ -3753,24 +3770,7 @@
             "TIERS_LIEUX",
             "UDAF"
           ],
-          "title": "Typologie"
-        },
-        "TypologieService": {
-          "type": "string",
-          "enum": [
-            "accompagnement",
-            "accueil",
-            "aide-financiere",
-            "aide-materielle",
-            "atelier",
-            "formation",
-            "information",
-            "numerique",
-            "autonomie",
-            "delegation",
-            "financement"
-          ],
-          "title": "TypologieService"
+          "title": "TypologieStructure"
         },
         "ValidationError": {
           "properties": {
@@ -3940,7 +3940,7 @@
             "typologie": {
               "anyOf": [
                 {
-                  "$ref": "#/components/schemas/Typologie"
+                  "$ref": "#/components/schemas/TypologieStructure"
                 },
                 {
                   "type": "null"
@@ -4265,7 +4265,7 @@
             "typologie": {
               "anyOf": [
                 {
-                  "$ref": "#/components/schemas/Typologie"
+                  "$ref": "#/components/schemas/TypologieStructure"
                 },
                 {
                   "type": "null"
