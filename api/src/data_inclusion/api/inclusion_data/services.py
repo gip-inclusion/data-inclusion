@@ -197,7 +197,7 @@ def list_structures(
     db_session: orm.Session,
     sources: list[str] | None = None,
     id_: str | None = None,
-    typologie: di_schema.Typologie | None = None,
+    typologie: di_schema.TypologieStructure | None = None,
     label_national: di_schema.LabelNational | None = None,
     departement: Departement | None = None,
     region: Region | None = None,

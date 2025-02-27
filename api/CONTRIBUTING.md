@@ -81,6 +81,21 @@ make
 make upgrade all
 ```
 
+### 3. Using a development version of data-inclusion-schema
+
+Edit `setup.py` to change the target version to one of the following:
+
+```
+data-inclusion-schema @ git+https://github.com/gip-inclusion/data-inclusion-schema.git@BRANCH_NAME
+data-inclusion-schema @ git+https://github.com/gip-inclusion/data-inclusion-schema.git@COMMIT_HASH
+```
+
+Then run `make all` and `pip install --force-reinstall -r requirements/requirements.txt` to use the newer version.
+
+Youn can also commit that change temporarily on a branch to deploy to staging.
+
+
+
 ### Infrastructure
 
 The app is deployed on Scalingo. Make sure you have access to the console.
