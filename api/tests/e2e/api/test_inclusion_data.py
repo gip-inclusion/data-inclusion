@@ -169,17 +169,23 @@ def assert_structure_data(structure, data):
 
 @pytest.mark.with_token
 def test_list_structures_filter_by_typology(api_client):
-    structure_1 = factories.StructureFactory(typologie=schema.Typologie.ASSO.value)
-    factories.StructureFactory(typologie=schema.Typologie.CCAS.value)
+    structure_1 = factories.StructureFactory(
+        typologie=schema.TypologieStructure.ASSO.value
+    )
+    factories.StructureFactory(typologie=schema.TypologieStructure.CCAS.value)
 
     url = "/api/v0/structures/"
-    response = api_client.get(url, params={"typologie": schema.Typologie.ASSO.value})
+    response = api_client.get(
+        url, params={"typologie": schema.TypologieStructure.ASSO.value}
+    )
 
     resp_data = response.json()
     assert_paginated_response_data(response.json(), total=1)
     assert_structure_data(structure_1, resp_data["items"][0])
 
-    response = api_client.get(url, params={"typologie": schema.Typologie.MUNI.value})
+    response = api_client.get(
+        url, params={"typologie": schema.TypologieStructure.MUNI.value}
+    )
     assert_paginated_response_data(response.json(), total=0)
 
 

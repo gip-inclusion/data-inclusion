@@ -66,7 +66,7 @@ def list_profils_endpoint():
     summary="Récupérer le référentiel des typologies de structures",
 )
 def list_typologies_structures_endpoint():
-    return schema.Typologie.as_dict_list()
+    return schema.TypologieStructure.as_dict_list()
 
 
 @router.get(
