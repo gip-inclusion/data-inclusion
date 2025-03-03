@@ -1,11 +1,11 @@
 {
     "jobs": [
         {
-            "command": "0 * * * * TQDM_DISABLE=1 ./execute_and_notify.sh data-inclusion-api load_inclusion_data",
+            "command": "0 * * * * TQDM_DISABLE=1 data-inclusion-api load_inclusion_data",
             "size": "XL"
         },
         {
-            "command": "0 4 * * * ./execute_and_notify.sh vacuumdb --full --analyze --verbose --table api__structures --table api__services $DATABASE_URL",
+            "command": "0 4 * * * vacuumdb --full --analyze --verbose --table api__structures --table api__services $DATABASE_URL",
             "size": "S"
         }
     ]

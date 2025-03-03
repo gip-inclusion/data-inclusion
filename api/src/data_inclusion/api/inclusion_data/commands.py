@@ -6,6 +6,7 @@ import minio
 import numpy as np
 import pandas as pd
 import pydantic
+import sentry_sdk
 import sqlalchemy as sqla
 from furl import furl
 from tqdm import tqdm
@@ -16,6 +17,11 @@ from data_inclusion.api.core import db
 from data_inclusion.api.inclusion_data import models
 
 logger = logging.getLogger(__name__)
+
+sentry_sdk.init(
+    dsn=settings.SENTRY_DSN,
+    environment=settings.ENV,
+)
 
 
 class DatalakeClient:
@@ -105,6 +111,17 @@ def log_errors(errors_df: pd.DataFrame):
     logger.info("\n" + info_str, stacklevel=2)
 
 
+@sentry_sdk.monitor(
+    monitor_slug="load-inclusion-data",
+    monitor_config={
+        "schedule": {"type": "crontab", "value": "0 * * * *"},
+        "checkin_margin": 5,
+        "max_runtime": 10,
+        "failure_issue_threshold": 1,
+        "recovery_threshold": 1,
+        "timezone": "UTC",
+    },
+)
 def load_inclusion_data():
     """Download, validate and load the di dataset
 
