@@ -105,7 +105,7 @@ def log_errors(errors_df: pd.DataFrame):
     logger.info("\n" + info_str, stacklevel=2)
 
 
-def load_inclusion_data():
+def load_inclusion_data(anonymize: bool):
     """Download, validate and load the di dataset
 
     1. Identify the latest version in the datalake
@@ -125,6 +125,10 @@ def load_inclusion_data():
 
     structure_errors_df = validate_df(structures_df, model_schema=schema.Structure)
     service_errors_df = validate_df(services_df, model_schema=schema.Service)
+    if anonymize:
+        services_df = services_df["telephone"].apply(lambda x: "0000000000")
+        services_df = services_df["courriel"].apply(lambda x: "john.doe@exemple.com")
+        services_df = services_df["contact_nom_prenom"].apply(lambda x: "John Doe")
 
     logger.info("Structure validation errors:")
     log_errors(structure_errors_df)
