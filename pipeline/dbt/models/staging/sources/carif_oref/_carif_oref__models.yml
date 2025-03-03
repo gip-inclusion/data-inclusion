@@ -167,6 +167,7 @@ models:
           - dbt_utils.not_empty_string
       - name: siret_formateur__siret
         data_tests:
+          - not_null
           - dbt_utils.not_empty_string
 
   - name: stg_carif_oref__organismes_formateurs__contacts

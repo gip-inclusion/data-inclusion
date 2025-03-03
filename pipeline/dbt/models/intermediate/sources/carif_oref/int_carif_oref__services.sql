@@ -65,7 +65,7 @@ profils_mapping AS (
         ('82074', 'salaries'),
         ('82075', 'salaries'),
         ('83056', 'tous-publics')
-    ) AS x (code, profil)
+    ) AS x (formacode_v13, profil)
 ),
 
 profils AS (
@@ -76,7 +76,7 @@ profils AS (
         LATERAL (
             SELECT profils_mapping.profil
             FROM profils_mapping
-            WHERE profils_mapping.code = actions__publics.code_public_vise
+            WHERE profils_mapping.formacode_v13 = actions__publics.code_public_vise
         ) AS profil (value)
     GROUP BY actions__publics.numero_action
 ),
