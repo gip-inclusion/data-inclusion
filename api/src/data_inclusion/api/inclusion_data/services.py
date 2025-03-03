@@ -205,9 +205,7 @@ def list_structures(
     thematiques: list[di_schema.Thematique] | None = None,
     deduplicate: bool = False,
 ) -> list:
-    query = sqla.select(models.Structure).options(
-        orm.joinedload(models.Structure.doublons)
-    )
+    query = sqla.select(models.Structure)
     query = filter_restricted(query, request)
 
     if sources is not None:

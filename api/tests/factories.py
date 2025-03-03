@@ -57,6 +57,7 @@ class StructureFactory(factory.alchemy.SQLAlchemyModelFactory):
         getter=lambda v: [v.value],
     )
     score_qualite = 0.0
+    doublons = []
 
 
 class ServiceFactory(factory.alchemy.SQLAlchemyModelFactory):

@@ -1,3 +1,4 @@
+import json
 import logging
 from datetime import timedelta
 from pathlib import Path
@@ -153,6 +154,23 @@ def load_inclusion_data():
     structures_df["score_qualite"] = (
         structures_df["_di_surrogate_id"].map(service_scores).fillna(0.0)
     )
+
+    clusters_df = structures_df[structures_df["cluster_id"].notna()]
+    cluster_groups = (
+        clusters_df.groupby("cluster_id")
+        .apply(lambda x: x.to_dict("records"))
+        .to_dict()
+    )
+
+    def get_doublons(row):
+        all_ids = cluster_groups.get(row["cluster_id"], [])
+        return [
+            json.loads(schema.Structure(**d).model_dump_json())
+            for d in all_ids
+            if d["_di_surrogate_id"] != row["_di_surrogate_id"]
+        ]
+
+    structures_df["doublons"] = structures_df.apply(get_doublons, axis=1)
 
     structure_data_list = structures_df.sort_values(
         by="_di_surrogate_id", ascending=True

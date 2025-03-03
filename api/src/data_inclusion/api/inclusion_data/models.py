@@ -48,17 +48,7 @@ class Structure(Base):
 
     cluster_id: Mapped[str | None]
 
-    doublons: Mapped[list["Structure"]] = relationship(
-        primaryjoin=(
-            "and_("
-            "foreign(Structure.cluster_id)==remote(Structure.cluster_id)"
-            ", "
-            "foreign(Structure._di_surrogate_id)!=remote(Structure._di_surrogate_id)"
-            ")"
-        ),
-        viewonly=True,
-        uselist=True,
-    )
+    doublons: Mapped[list[dict] | None]
 
     services: Mapped[list["Service"]] = relationship(back_populates="structure")
     commune_: Mapped[Commune] = relationship(back_populates="structures")

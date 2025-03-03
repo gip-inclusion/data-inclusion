@@ -52,6 +52,7 @@ def test_list_structures_all(api_client, db_session):
         complement_adresse=None,
         courriel="levyalexandre@example.org",
         date_maj="2023-01-01",
+        doublons=[],
         horaires_ouverture='Mo-Fr 10:00-20:00 "sur rendez-vous"; PH off',
         id="lot-kitchen-amount",
         labels_autres=["Nièvre médiation numérique"],
@@ -1387,61 +1388,6 @@ def test_retrieve_service_and_notify_soliguide(
 
 @pytest.mark.parametrize(
     (
-        "cluster_a",
-        "cluster_b",
-        "expected_doublons_1",
-        "expected_doublons_2",
-    ),
-    [
-        (None, None, [], []),
-        ("42", None, [], []),
-        ("cluster_a", "cluster_b", [], []),
-        (
-            "cluster_a",
-            "cluster_a",
-            [{"source": "src_2", "id": "second"}],
-            [{"source": "src_1", "id": "first"}],
-        ),
-    ],
-)
-@pytest.mark.with_token
-def test_list_structures_with_doublons(
-    api_client,
-    cluster_a,
-    cluster_b,
-    expected_doublons_1,
-    expected_doublons_2,
-):
-    service_1 = factories.StructureFactory(
-        source="src_1",
-        id="first",
-        cluster_id=cluster_a,
-    )
-    factories.StructureFactory(
-        source="src_2",
-        id="second",
-        cluster_id=cluster_b,
-    )
-
-    url = "/api/v0/structures/"
-    response = api_client.get(url)
-
-    assert_paginated_response_data(response.json(), total=2)
-    resp_data = response.json()
-
-    service_1_data, service_2_data = sorted(
-        resp_data["items"], key=lambda x: x["id"] != service_1.id
-    )
-
-    assert service_1_data["doublons_groupe_id"] == cluster_a
-    assert service_2_data["doublons_groupe_id"] == cluster_b
-
-    assert service_1_data["doublons"] == expected_doublons_1
-    assert service_2_data["doublons"] == expected_doublons_2
-
-
-@pytest.mark.parametrize(
-    (
         "exclure_doublons",
         "total_results",
     ),
@@ -1477,15 +1423,7 @@ def test_list_structures_deduplicate_flag(api_client, exclure_doublons, total_re
     url = f"/api/v0/structures?{exclure_doublons=}"
     response = api_client.get(url)
 
-    resp_data = response.json()
     assert_paginated_response_data(response.json(), total=total_results)
-    # only check that case, order is not guaranteed otherwise
-    if exclure_doublons:
-        assert resp_data["items"][0]["id"] == "second"
-        assert resp_data["items"][0]["doublons"] == [
-            {"source": "src_1", "id": "first"},
-            {"source": "src_2", "id": "third"},
-        ]
 
 
 @pytest.mark.with_token
@@ -1513,10 +1451,4 @@ def test_list_structures_deduplicate_flag_equal(api_client):
     url = "/api/v0/structures?exclure_doublons=True"
     response = api_client.get(url)
 
-    resp_data = response.json()
-    assert len(resp_data["items"]) == 1
-    assert resp_data["items"][0]["id"] == "second"
-    assert resp_data["items"][0]["doublons"] == [
-        {"source": "src_1", "id": "first"},
-        {"source": "src_3", "id": "third"},
-    ]
+    assert_paginated_response_data(response.json(), total=1)

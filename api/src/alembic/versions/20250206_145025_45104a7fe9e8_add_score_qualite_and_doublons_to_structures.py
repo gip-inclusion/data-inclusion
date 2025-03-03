@@ -1,4 +1,4 @@
-"""Add score_qualite to structures
+"""Add score_qualite and doublons to structures
 
 Revision ID: 45104a7fe9e8
 Revises: a06b6f7d1cbe
@@ -20,9 +20,14 @@ def upgrade() -> None:
     op.add_column(
         "api__structures", sa.Column("score_qualite", sa.Float(), nullable=True)
     )
+    op.add_column(
+        "api__structures",
+        sa.Column("doublons", sa.JSON(), nullable=True),
+    )
     op.execute("UPDATE api__structures SET score_qualite = 0.0")
     op.alter_column("api__structures", "score_qualite", nullable=False)
 
 
 def downgrade() -> None:
+    op.drop_column("api__structures", "doublons")
     op.drop_column("api__structures", "score_qualite")
