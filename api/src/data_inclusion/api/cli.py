@@ -35,9 +35,17 @@ def _generate_token_for_user(
 
 
 @cli.command(name="load_inclusion_data")
-def _load_inclusion_data():
+@click.option(
+    "--anonymize",
+    is_flag=True,
+    show_default=True,
+    default=False,
+    envvar="ANONYMIZE",
+    help="Anonymize the data",
+)
+def _load_inclusion_data(anonymize: bool):
     """Load the latest inclusion data"""
-    click.echo(load_inclusion_data())
+    click.echo(load_inclusion_data(anonymize=anonymize))
 
 
 @cli.command(name="import_communes")
