@@ -35,7 +35,7 @@ click==8.1.8
     #   uvicorn
 cryptography==44.0.0
     # via data-inclusion-api (setup.py)
-data-inclusion-schema==0.20.0
+data-inclusion-schema @ git+https://github.com/gip-inclusion/data-inclusion-schema.git@2d13ee3a864964dbf15e4b3a1f6e4dd58db47ac5
     # via data-inclusion-api (setup.py)
 dnspython==2.7.0
     # via email-validator
