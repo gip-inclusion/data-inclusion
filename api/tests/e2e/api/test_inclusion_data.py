@@ -898,6 +898,7 @@ def test_search_services_with_code_commune(api_client, commune_data, input, foun
     if found:
         assert_paginated_response_data(resp_data, total=1)
         assert resp_data["items"][0]["service"]["id"] == service.id
+        assert "doublons_groupe_id" not in resp_data["items"][0]["service"]["structure"]
     else:
         assert_paginated_response_data(resp_data, total=0)
 
@@ -1303,6 +1304,7 @@ def test_retrieve_service(api_client):
     assert resp_data["id"] == service_1.id
     assert "structure" in resp_data
     assert resp_data["structure"]["id"] == service_1.structure.id
+    assert "doublons_groupe_id" not in resp_data["structure"]
 
     response = api_client.get(url + f"{service_2.source}/{service_3.id}")
     assert response.status_code == 404
