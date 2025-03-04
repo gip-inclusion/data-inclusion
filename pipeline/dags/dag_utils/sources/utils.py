@@ -24,13 +24,20 @@ def df_clear_nan(df):
     return df.replace({np.nan: None})
 
 
-def read_json(path: Path):
+def df_from_json(path: Path):
     import pandas as pd
 
     # read data while preventing rough conversion of datatypes
     # e.g. siret/code_insee must not be converted to float
     df = pd.read_json(path, dtype=False)
     return df_clear_nan(df)
+
+
+def read_dict(path: Path):
+    import json
+
+    with path.open() as f:
+        return json.load(f)
 
 
 def to_json(df, path: Path):
