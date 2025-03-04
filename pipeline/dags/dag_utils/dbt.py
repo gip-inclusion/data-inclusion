@@ -57,8 +57,10 @@ def get_staging_tasks():
     for source_id in sorted(SOURCES_CONFIGS):
         dbt_source_id = source_id.replace("-", "_")
 
-        stg_selector = f"path:models/staging/sources/**/stg_{dbt_source_id}__*.sql"
-        int_selector = f"path:models/intermediate/sources/**/int_{dbt_source_id}__*.sql"
+        stg_selector = f"path:models/staging/sources/**/*stg_{dbt_source_id}__*.sql"
+        int_selector = (
+            f"path:models/intermediate/sources/**/*int_{dbt_source_id}__*.sql"
+        )
 
         with TaskGroup(group_id=source_id) as source_task_group:
             dbt_run_staging = dbt_operator_factory(

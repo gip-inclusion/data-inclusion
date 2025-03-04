@@ -17,6 +17,7 @@ models:
           values:
           - action_logement
           - agefiph
+          - carif_oref
           - cd35
           - data_inclusion
           - dora

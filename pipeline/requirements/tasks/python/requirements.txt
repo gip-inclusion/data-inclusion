@@ -242,6 +242,8 @@ docutils==0.16
     # via
     #   -c airflow/constraints.txt
     #   python-daemon
+elementpath==4.7.0
+    # via xmlschema
 email-validator==2.2.0
     # via
     #   -c airflow/constraints.txt
@@ -924,6 +926,8 @@ wtforms==3.1.2
     #   flask-appbuilder
     #   flask-wtf
 xlsxwriter==3.2.0
+    # via -r tasks/python/requirements.in
+xmlschema==3.4.3
     # via -r tasks/python/requirements.in
 yarl==1.9.7
     # via
