@@ -106,18 +106,7 @@ def log_errors(errors_df: pd.DataFrame):
     logger.info("\n" + info_str, stacklevel=2)
 
 
-def load_inclusion_data():
-    """Download, validate and load the di dataset
-
-    1. Identify the latest version in the datalake
-    2. Generate presigned URLs for it
-    3. Download into dataframes
-    4. Validate data against pydantic models
-    5. Log validation errors
-    6. Load valid data using the sqla models
-    """
-    df_by_ressource = load_di_dataset_as_dataframes()
-
+def validate_dataset(df_by_ressource: dict[str, pd.DataFrame]) -> tuple[pd.DataFrame]:
     structures_df = df_by_ressource["structures"]
     services_df = df_by_ressource["services"]
 
@@ -145,6 +134,12 @@ def load_inclusion_data():
             )
         ]
 
+    return structures_df, services_df
+
+
+def store_inclusion_data(
+    db_session, structures_df: pd.DataFrame, services_df: pd.DataFrame
+):
     service_scores = (
         services_df.groupby("_di_structure_surrogate_id")["score_qualite"]
         .mean()
@@ -179,35 +174,41 @@ def load_inclusion_data():
         by="_di_surrogate_id", ascending=True
     ).to_dict(orient="records")
 
-    # TODO(vmttn): load in a temporary table, truncate and then insert
+    db_session.execute(sqla.delete(models.Service))
+    db_session.execute(sqla.delete(models.Structure))
+
+    for structure_data in tqdm(structure_data_list):
+        structure_instance = models.Structure(**structure_data)
+        try:
+            with db_session.begin_nested():
+                db_session.add(structure_instance)
+        except sqla.exc.IntegrityError as exc:
+            logger.error(
+                f"Structure source={structure_data['source']} id={structure_data['id']}"
+            )
+            logger.info(exc.orig)
+
+    for service_data in tqdm(service_data_list):
+        service_instance = models.Service(**service_data)
+        try:
+            with db_session.begin_nested():
+                db_session.add(service_instance)
+        except sqla.exc.IntegrityError as exc:
+            logger.error(
+                f"Service source={service_data['source']} id={service_data['id']}"
+            )
+            logger.info(exc.orig)
+
+    db_session.commit()
+
+
+def load_inclusion_data():
+    df_by_ressource = load_di_dataset_as_dataframes()
+
+    structures_df, services_df = validate_dataset(df_by_ressource)
+
     with db.SessionLocal() as session:
-        session.execute(sqla.delete(models.Service))
-        session.execute(sqla.delete(models.Structure))
-
-        for structure_data in tqdm(structure_data_list):
-            structure_instance = models.Structure(**structure_data)
-            try:
-                with session.begin_nested():
-                    session.add(structure_instance)
-            except sqla.exc.IntegrityError as exc:
-                logger.error(
-                    f"Structure source={structure_data['source']} "
-                    f"id={structure_data['id']}"
-                )
-                logger.info(exc.orig)
-
-        for service_data in tqdm(service_data_list):
-            service_instance = models.Service(**service_data)
-            try:
-                with session.begin_nested():
-                    session.add(service_instance)
-            except sqla.exc.IntegrityError as exc:
-                logger.error(
-                    f"Service source={service_data['source']} id={service_data['id']}"
-                )
-                logger.info(exc.orig)
-
-        session.commit()
+        store_inclusion_data(session, structures_df, services_df)
 
     with db.default_db_engine.connect().execution_options(
         isolation_level="AUTOCOMMIT"
