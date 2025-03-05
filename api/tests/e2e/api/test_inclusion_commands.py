@@ -31,6 +31,7 @@ def test_store_inclusion_data_scores_doublons(db_session):
 
     db_structures = db_session.query(models.Structure).all()
     structures_by_id = {s.id: s for s in db_structures}
+    assert structures_by_id["id1"].cluster_best_duplicate == "s1"
     assert structures_by_id["id1"].score_qualite == 0.75  # average of 0.7 and 0.8
     assert structures_by_id["id1"].doublons == [
         {
@@ -62,7 +63,43 @@ def test_store_inclusion_data_scores_doublons(db_session):
             "typologie": None,
         }
     ]
+
+    assert structures_by_id["id2"].cluster_best_duplicate == "s1"
     assert structures_by_id["id2"].score_qualite == 0.5
     assert structures_by_id["id2"].doublons[0]["id"] == "id1"
+
+    assert structures_by_id["id3"].cluster_best_duplicate is None
     assert structures_by_id["id3"].score_qualite == 0.0  # no services, default to 0
     assert structures_by_id["id3"].doublons == []
+
+
+def test_store_inclusion_data_doublons_date_maj(db_session):
+    structures_df = pd.DataFrame(
+        {
+            "_di_surrogate_id": ["s1", "s2", "s3"],
+            "id": ["id1", "id2", "id3"],
+            "nom": ["Structure 1", "Structure 2", "Structure 3"],
+            "date_maj": ["2023-01-01", "2025-06-21", "2023-01-01"],
+            "source": ["source1", "source2", "source1"],
+            "cluster_id": ["cluster1", "cluster1", None],
+        }
+    )
+
+    services_df = pd.DataFrame(
+        {
+            "_di_surrogate_id": ["sv1"],
+            "_di_structure_surrogate_id": ["s1"],
+            "id": ["sid1"],
+            "source": ["source1"],
+            "score_qualite": [0.0],
+        }
+    )
+
+    commands.store_inclusion_data(db_session, structures_df, services_df)
+
+    db_structures = db_session.query(models.Structure).all()
+    structures_by_id = {s.id: s for s in db_structures}
+    assert structures_by_id["id1"].cluster_best_duplicate == "s2"
+    assert structures_by_id["id1"].score_qualite == 0.0
+    assert structures_by_id["id2"].cluster_best_duplicate == "s2"
+    assert structures_by_id["id2"].score_qualite == 0.0
