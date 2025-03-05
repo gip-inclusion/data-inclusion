@@ -1396,9 +1396,9 @@ def test_retrieve_service_and_notify_soliguide(
     [
         (
             False,
-            3,
+            4,
         ),
-        (True, 1),
+        (True, 2),
     ],
 )
 @pytest.mark.with_token
@@ -1426,6 +1426,14 @@ def test_list_structures_deduplicate_flag(api_client, exclure_doublons, total_re
         cluster_id="cluster_id",
         cluster_master_id="src_2-second",
         score_qualite=0.3,
+    )
+    factories.StructureFactory(
+        source="src_3",
+        id="fourth",
+        _di_surrogate_id="src_3-fourth",
+        cluster_id=None,
+        cluster_master_id=None,
+        score_qualite=0.8,
     )
 
     url = f"/api/v0/structures?{exclure_doublons=}"
@@ -1465,9 +1473,16 @@ def test_list_structures_deduplicate_flag_equal(api_client):
         cluster_id="cluster_id",
         cluster_master_id="src_2-second",
     )
+    factories.StructureFactory(
+        source="src_3",
+        id="fourth",
+        _di_surrogate_id="src_3-fourth",
+        cluster_id=None,
+        cluster_master_id=None,
+    )
 
     url = "/api/v0/structures?exclure_doublons=True"
     response = api_client.get(url)
 
-    assert_paginated_response_data(response.json(), total=1)
+    assert_paginated_response_data(response.json(), total=2)
     assert response.json()["items"][0]["id"] == "second"
