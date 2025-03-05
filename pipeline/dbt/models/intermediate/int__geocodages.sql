@@ -22,12 +22,27 @@ WITH adresses AS (
     SELECT * FROM {{ ref('int__union_adresses') }}
 ),
 
+communes AS (
+    SELECT * FROM {{ ref('stg_decoupage_administratif__communes') }}
+),
+
+codes_postaux AS (
+    SELECT DISTINCT
+        UNNEST(communes.codes_postaux)
+        AS code_postal
+    FROM communes
+),
+
 final AS (
     SELECT
         CAST('{{ run_started_at }}' AS TIMESTAMP) AS "geocoded_at",
         adresses._di_surrogate_id                             AS "adresse_id",
         adresses.adresse                                      AS "input_adresse",
-        adresses.code_postal                                  AS "input_code_postal",
+        CASE
+            WHEN adresses.code_postal IN (SELECT codes_postaux.code_postal FROM codes_postaux)
+                THEN adresses.code_postal
+            ELSE ''
+        END                                                   AS "input_code_postal",
         adresses.code_insee                                   AS "input_code_insee",
         adresses.commune                                      AS "input_commune",
         geocodings.result_city                                AS "commune",
@@ -51,6 +66,7 @@ final AS (
         geocodings.latitude                                   AS "latitude"
     FROM
         adresses
+    LEFT JOIN codes_postaux ON adresses.code_postal = codes_postaux.code_postal
     INNER JOIN processings.geocode(
         (
             SELECT
@@ -67,10 +83,10 @@ final AS (
                 )
             FROM adresses
             {% if is_incremental() %}
-                -- then only geocode new or changed rows
+            -- then only geocode new or changed rows
                 LEFT JOIN {{ this }} ON adresses._di_surrogate_id = {{ this }}.adresse_id
                 WHERE
-                    -- new rows
+                -- new rows
                     {{ this }}.adresse_id IS NULL
                     -- previously failed rows
                     OR {{ this }}.score IS NULL
