@@ -2,7 +2,7 @@ WITH etablissements AS (
     SELECT * FROM {{ ref('stg_finess__etablissements') }}
 ),
 
--- this subset of categories 
+-- this subset of categories
 -- cf https://finess.sante.gouv.fr/fininter/jsp/pdf.do?xsl=CategEta.xsl
 interesting_etablissement_categories AS (
     SELECT x.*
@@ -31,18 +31,25 @@ interesting_etablissement_categories AS (
 
 final AS (
     SELECT
-        nofinesset                                                        AS "id",
-        compvoie                                                          AS "complement_adresse",
-        NULL::FLOAT                                                       AS "longitude",
-        NULL::FLOAT                                                       AS "latitude",
-        _di_source_id                                                     AS "source",
-        TRIM(SUBSTRING(ligneacheminement FROM '\d{5} (.*?)(?= CEDEX|$)')) AS "commune",
-        LEFT(ligneacheminement, 5)                                        AS "code_postal",
+        etablissements.nofinesset                                                            AS "id",
+        etablissements.compvoie                                                              AS "complement_adresse",
+        CAST(NULL AS FLOAT)                                                                  AS "longitude",
+        CAST(NULL AS FLOAT)                                                                  AS "latitude",
+        etablissements._di_source_id                                                         AS "source",
+        TRIM(SUBSTRING(etablissements.ligneacheminement FROM '\d{5} (.*?)(?= CEDEX|$)'))     AS "commune",
+        LEFT(etablissements.ligneacheminement, 5)                                            AS "code_postal",
         -- cf: https://www.atih.sante.fr/constitution-codes-geographiques
-        REGEXP_REPLACE(departement, '9[A-F]', '97') || commune            AS "code_insee",
-        compldistrib || numvoie || typvoie || voie || lieuditbp           AS "adresse"
+        REGEXP_REPLACE(etablissements.departement, '9[A-F]', '97') || etablissements.commune AS "code_insee",
+        etablissements.compldistrib
+        || ' ' || etablissements.numvoie
+        || ' ' || etablissements.typvoie
+        || ' ' || etablissements.voie
+        || ' ' || etablissements.lieuditbp                                                   AS "adresse"
     FROM etablissements
-    WHERE categetab IN (SELECT categetab FROM interesting_etablissement_categories)
+    WHERE etablissements.categetab IN (
+        SELECT interesting_etablissement_categories.categetab
+        FROM interesting_etablissement_categories
+    )
 )
 
 SELECT * FROM final

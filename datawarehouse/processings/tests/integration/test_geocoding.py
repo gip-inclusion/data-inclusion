@@ -60,3 +60,146 @@ def test_ban_geocode(adresse: dict, expected: dict):
     result_df = geocode(data=adresse)
 
     assert result_df == ([expected] if expected is not None else [])
+
+
+@pytest.mark.parametrize(
+    ("raw", "formated"),
+    [
+        (
+            {
+                "id": "1",
+                "adresse": "3 route de Cobonne",
+                "code_postal": "26400",
+                "code_insee": "26011",
+                "commune": "Aouste-sur-Sye CEDEX 88793",
+            },
+            {
+                "id": "1",
+                "adresse": "3 route de Cobonne",
+                "code_postal": "26400",
+                "code_insee": "26011",
+                "commune": "Aouste-sur-Sye",
+            },
+        ),
+        (
+            {
+                "id": "1",
+                "adresse": "3 route de Cobonne",
+                "code_postal": "26400",
+                "code_insee": "26011",
+                "commune": "Aouste-sur-Sye cedex 88793",
+            },
+            {
+                "id": "1",
+                "adresse": "3 route de Cobonne",
+                "code_postal": "26400",
+                "code_insee": "26011",
+                "commune": "Aouste-sur-Sye",
+            },
+        ),
+        (
+            {
+                "id": "1",
+                "adresse": "3 route de Cobonne bp 7872387",
+                "code_postal": "26400",
+                "code_insee": "26011",
+                "commune": "Aouste-sur-Sye",
+            },
+            {
+                "id": "1",
+                "adresse": "3 route de Cobonne",
+                "code_postal": "26400",
+                "code_insee": "26011",
+                "commune": "Aouste-sur-Sye",
+            },
+        ),
+        (
+            {
+                "id": "1",
+                "adresse": "3 route de Cobonne CS 23123",
+                "code_postal": "26400",
+                "code_insee": "26011",
+                "commune": "Aouste-sur-Sye",
+            },
+            {
+                "id": "1",
+                "adresse": "3 route de Cobonne",
+                "code_postal": "26400",
+                "code_insee": "26011",
+                "commune": "Aouste-sur-Sye",
+            },
+        ),
+        (
+            {
+                "id": "1",
+                "adresse": "3 rte de Cobonne",
+                "code_postal": "26400",
+                "code_insee": "26011",
+                "commune": "Aouste-sur-Sye",
+            },
+            {
+                "id": "1",
+                "adresse": "3 route de Cobonne",
+                "code_postal": "26400",
+                "code_insee": "26011",
+                "commune": "Aouste-sur-Sye",
+            },
+        ),
+        (
+            {
+                "id": "1",
+                "adresse": "3 Rte de Cobonne",
+                "code_postal": "26400",
+                "code_insee": "26011",
+                "commune": "Aouste-sur-Sye",
+            },
+            {
+                "id": "1",
+                "adresse": "3 route de Cobonne",
+                "code_postal": "26400",
+                "code_insee": "26011",
+                "commune": "Aouste-sur-Sye",
+            },
+        ),
+        (
+            {
+                "id": "1",
+                "adresse": "3 RTE de Cobonne",
+                "code_postal": "26400",
+                "code_insee": "26011",
+                "commune": "Aouste-sur-Sye",
+            },
+            {
+                "id": "1",
+                "adresse": "3 route de Cobonne",
+                "code_postal": "26400",
+                "code_insee": "26011",
+                "commune": "Aouste-sur-Sye",
+            },
+        ),
+                (
+            {
+                "id": "1",
+                "adresse": "CS 23123 3 route de Cobonne",
+                "code_postal": "26400",
+                "code_insee": "26011",
+                "commune": "Aouste-sur-Sye",
+            },
+            {
+                "id": "1",
+                "adresse": "3 route de Cobonne",
+                "code_postal": "26400",
+                "code_insee": "26011",
+                "commune": "Aouste-sur-Sye",
+            },
+        ),
+    ],
+)
+def test_ban_cleaning_cedex(raw: dict, formated: dict):
+    result_df_raw = geocode(data=raw)
+    result_df_formated = geocode(data=formated)
+    print(result_df_raw)
+
+    assert result_df_raw[0]['result_status'] == 'ok'
+    assert result_df_formated[0]['result_status'] == 'ok'
+    assert result_df_raw[0]['result_score'] == result_df_formated[0]['result_score']
