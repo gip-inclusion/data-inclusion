@@ -41,10 +41,10 @@ final AS (
         -- cf: https://www.atih.sante.fr/constitution-codes-geographiques
         REGEXP_REPLACE(etablissements.departement, '9[A-F]', '97') || etablissements.commune AS "code_insee",
         etablissements.compldistrib
-        || etablissements.numvoie
-        || etablissements.typvoie
-        || etablissements.voie
-        || etablissements.lieuditbp                                                          AS "adresse"
+        || ' ' || etablissements.numvoie
+        || ' ' || etablissements.typvoie
+        || ' ' || etablissements.voie
+        || ' ' || etablissements.lieuditbp                                                   AS "adresse"
     FROM etablissements
     WHERE etablissements.categetab IN (
         SELECT interesting_etablissement_categories.categetab
