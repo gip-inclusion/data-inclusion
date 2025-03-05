@@ -436,6 +436,16 @@ def search_services_endpoint(
             """
         ),
     ] = False,
+    exclure_doublons: Annotated[
+        Optional[bool],
+        fastapi.Query(
+            description=(
+                "[BETA] Mode qui ne retourne, parmi les services attachés à des "
+                "structures en doublon, que ceux attachés à la structure la plus "
+                "qualitative (voir documentation)."
+            )
+        ),
+    ] = False,
 ):
     """
     ## Rechercher des services
@@ -492,6 +502,7 @@ def search_services_endpoint(
         search_point=search_point,
         score_qualite_minimum=score_qualite_minimum,
         include_outdated=inclure_suspendus,
+        deduplicate=exclure_doublons,
     )
 
     background_tasks.add_task(

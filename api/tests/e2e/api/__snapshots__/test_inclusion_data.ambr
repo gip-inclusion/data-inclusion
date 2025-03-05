@@ -735,6 +735,18 @@
               "description": "Inclure les services ayant une date de suspension dépassée.\n                Ils sont exclus par défaut.\n            "
             },
             {
+              "name": "exclure_doublons",
+              "in": "query",
+              "required": false,
+              "schema": {
+                "type": "boolean",
+                "description": "[BETA] Mode qui ne retourne, parmi les services attachés à des structures en doublon, que ceux attachés à la structure la plus qualitative (voir documentation).",
+                "default": false,
+                "title": "Exclure Doublons"
+              },
+              "description": "[BETA] Mode qui ne retourne, parmi les services attachés à des structures en doublon, que ceux attachés à la structure la plus qualitative (voir documentation)."
+            },
+            {
               "name": "page",
               "in": "query",
               "required": false,
