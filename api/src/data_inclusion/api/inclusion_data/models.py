@@ -46,7 +46,7 @@ class Structure(Base):
 
     score_qualite: Mapped[float]
 
-    cluster_id: Mapped[str | None]
+    cluster_best_duplicate: Mapped[str | None]
 
     doublons: Mapped[list[dict] | None]
 
@@ -55,7 +55,7 @@ class Structure(Base):
 
     __table_args__ = (
         sqla.Index(None, "source"),
-        sqla.Index(None, "cluster_id"),
+        sqla.Index(None, "cluster_best_duplicate"),
     )
 
     def __repr__(self) -> str:

@@ -32,7 +32,7 @@ class Service(schema.Service):
     ]
 
 
-class Structure(schema.Structure):
+class BaseStructure(schema.Structure):
     model_config = ConfigDict(from_attributes=True, populate_by_name=True)
 
     # Dont use pydantic's `HttpUrl`, because it would likely trigger validation errors
@@ -40,10 +40,17 @@ class Structure(schema.Structure):
     lien_source: str | None = None
     accessibilite: str | None = None
 
-    cluster_id: Annotated[
-        str | None,
-        Field(description="ID du groupe de doublons", alias="doublons_groupe_id"),
-    ]
+
+class DetailedService(Service):
+    structure: BaseStructure
+
+
+class ServiceSearchResult(BaseModel):
+    service: DetailedService
+    distance: int | None = None
+
+
+class Structure(BaseStructure):
     score_qualite: Annotated[
         float,
         Field(
@@ -56,15 +63,6 @@ class Structure(schema.Structure):
                 """),
         ),
     ]
-
-
-class DetailedService(Service):
-    structure: Structure
-
-
-class ServiceSearchResult(BaseModel):
-    service: DetailedService
-    distance: int | None = None
 
 
 class DetailedStructure(Structure):
