@@ -47,6 +47,7 @@ class Structure(Base):
     score_qualite: Mapped[float]
 
     cluster_id: Mapped[str | None]
+    cluster_master_id: Mapped[str | None]
 
     doublons: Mapped[list[dict] | None]
 

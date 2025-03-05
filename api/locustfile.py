@@ -62,3 +62,17 @@ class APIUser(locust.HttpUser):
                 },
             )
         )
+
+    @locust.task
+    @locust.tag("search_services_deduplicate")
+    def search_services_deduplicate(self):
+        self._list_paginated_endpoint(
+            furl.furl(
+                "/api/v0/search/services",
+                {
+                    "code_insee": "59350",
+                    "thematiques": "sante",
+                    "exclure_doublons": "True",
+                },
+            )
+        )

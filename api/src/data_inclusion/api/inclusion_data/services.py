@@ -240,48 +240,10 @@ def list_structures(
         query = filter_structures_by_thematiques(query, thematiques)
 
     if deduplicate:
-        max_scores = (
-            sqla.select(
-                models.Structure.cluster_id,
-                func.max(models.Structure.score_qualite).label("max_score"),
-            )
-            .where(models.Structure.cluster_id.is_not(None))
-            .group_by(models.Structure.cluster_id)
-            .subquery()
-        )
-        latest_updates = (
-            sqla.select(
-                models.Structure.cluster_id,
-                models.Structure.score_qualite,
-                func.max(models.Structure.date_maj).label("latest_date"),
-            )
-            .where(models.Structure.cluster_id.is_not(None))
-            .group_by(models.Structure.cluster_id, models.Structure.score_qualite)
-            .subquery()
-        )
-        query = (
-            query.filter(
-                sqla.or_(
-                    models.Structure.cluster_id.is_(None),
-                    sqla.and_(
-                        models.Structure.cluster_id == max_scores.c.cluster_id,
-                        models.Structure.score_qualite == max_scores.c.max_score,
-                        models.Structure.date_maj == latest_updates.c.latest_date,
-                    ),
-                )
-            )
-            .join(
-                max_scores,
-                models.Structure.cluster_id == max_scores.c.cluster_id,
-                isouter=True,
-            )
-            .join(
-                latest_updates,
-                sqla.and_(
-                    models.Structure.cluster_id == latest_updates.c.cluster_id,
-                    models.Structure.score_qualite == latest_updates.c.score_qualite,
-                ),
-                isouter=True,
+        query = query.filter(
+            sqla.or_(
+                models.Structure.cluster_id.is_(None),
+                models.Structure._di_surrogate_id == models.Structure.cluster_master_id,
             )
         )
 
@@ -425,6 +387,7 @@ def search_services(
     search_point: str | None = None,
     score_qualite_minimum: float | None = None,
     include_outdated: bool | None = False,
+    deduplicate: bool | None = False,
 ):
     query = (
         sqla.select(models.Service)
@@ -528,6 +491,15 @@ def search_services(
         score_qualite_minimum=score_qualite_minimum,
         include_outdated=include_outdated,
     )
+
+    if deduplicate:
+        query = query.filter(
+            sqla.or_(
+                models.Structure.cluster_id.is_(None),
+                models.Service._di_structure_surrogate_id
+                == models.Structure.cluster_master_id,
+            )
+        )
 
     query = query.order_by(sqla.column("distance").nulls_last())
 
