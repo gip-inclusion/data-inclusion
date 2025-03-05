@@ -14,7 +14,7 @@ class StructureFactory(factory.alchemy.SQLAlchemyModelFactory):
         model = models.Structure
         sqlalchemy_session_persistence = "commit"
 
-    _di_surrogate_id = factory.Faker("uuid4")
+    _di_surrogate_id = factory.LazyAttribute(lambda o: f"{o.source}-{o.id}")
 
     id = factory.Faker("slug", locale="fr_FR")
     siret = factory.LazyFunction(lambda: fake.siret().replace(" ", ""))
