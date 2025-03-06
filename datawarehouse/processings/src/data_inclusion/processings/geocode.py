@@ -28,7 +28,7 @@ def _geocode(df: pd.DataFrame) -> pd.DataFrame:
                     # The INSEE code is more stable, unique and reliable.
                     # Also this post-filter does not return "possible" results,
                     # it blindly filters-out.
-                    "postcode": "code_postal",
+                    "citycode": "code_insee",
                 },
                 timeout=180,  # we upload 2MB of data, so we need a high timeout
             )
@@ -49,6 +49,17 @@ def _geocode(df: pd.DataFrame) -> pd.DataFrame:
         )
         results_df = results_df.replace({np.nan: None})
 
+        # In some cases (ex: address='20' and city='Paris'), the BAN API will return
+        # a municipality as a result with a very high score. We should discard those,
+        # since we want to be able to consider that a "high geocoding score" in our
+        # database means a "complete and accurate" address, not just a city.
+        # Of course, if there was no supplied address, let's keep the municipality.
+        results_df = results_df[
+            (results_df.result_type != "municipality")
+            | (results_df.adresse.isna())
+            | (results_df.adresse == "")
+        ]
+
     logger.info("Got result for address batch, dimensions=%s", results_df.shape)
     return results_df
 
@@ -61,6 +72,22 @@ class GeocodeInput:
     code_postal: str
     commune: str
 
+
+STREET_ABBREVIATIONS = {
+    r"(?i)all": " allée ",
+    r"(?i)av": " avenue ",
+    r"(?i)bd": " boulevard ",
+    r"(?i)bvd": " boulevard ",
+    r"(?i)che": " chemin ",
+    r"(?i)crs": " cours ",
+    r"(?i)esp": " esplanade ",
+    r"(?i)imp": " impasse ",
+    r"(?i)pl": " place ",
+    r"(?i)pro": " promenade ",
+    r"(?i)rd pt": " rond point ",
+    r"(?i)rte": " route ",
+    r"(?i)sq": " square "
+}
 
 def geocode(
     data: GeocodeInput | list[GeocodeInput],
@@ -79,15 +106,29 @@ def geocode(
     # at least resolve the city.
     df = df.dropna(subset=["code_postal", "code_insee", "commune"], thresh=2)
 
-    # Cleanup the values a bit to help the BAN's scoring. After experimentation,
-    # looking for "Ville-Nouvelle" returns worse results than "Ville Nouvelle",
-    # probably due to a tokenization in the BAN that favors spaces.
-    # In the same fashion, looking for "U.R.S.S." returns worse results than using
-    # "URSS" for "Avenue de l'U.R.S.S.". With the dots, it does not find the
-    # street at all ¯\_(ツ)_/¯
-    df = df.assign(
-        adresse=df.adresse.str.strip().replace("-", " ").replace(".", ""),
-        commune=df.commune.str.strip(),
+    # Cleanup/rewrite the values to help the BAN's scoring.
+    df["adresse"] = (
+        df["adresse"].str
+        .strip(" -")
+        # After experimentation, looking for "Ville-Nouvelle" returns
+        # worse results than "Ville Nouvelle", probably due to a tokenization in
+        # the BAN that favors spaces.
+        # In the same fashion, looking for "U.R.S.S." returns worse results than
+        # using "URSS" for "Avenue de l'U.R.S.S.". With the dots, it does not
+        # find the street at all ¯\_(ツ)_/¯
+        .replace("-", " ").replace(".", "")
+        # Remove any "BP" or "CS" and any numbers that follows.
+        .replace(r'(?i)BP [0-9]*', '', regex=True)
+        .replace(r'(?i)CS [0-9]*', '', regex=True)
+        # Replace any abbreviations by the full word
+        .replace(STREET_ABBREVIATIONS, regex=True)
+    )
+    # We use (?i) to make the regex case-insensitive.
+    # We can remove everything after cedex, it is always at the end of the string.
+    df["commune"] = (
+        df["commune"].str
+        .strip(" -")
+        .replace(r'(?i)cedex.*', '', regex=True)
     )
 
     logger.info(f"Only {len(df)} rows can be geocoded.")
