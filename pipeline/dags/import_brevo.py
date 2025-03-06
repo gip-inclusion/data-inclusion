@@ -39,7 +39,7 @@ def _load_rgpd_contacts(run_id: str, stream_id: str, source_id: str, logical_dat
 
     s3_path = s3.source_file_path(source_id, f"{stream_id}.json", run_id, logical_date)
     tmp_filename = s3.download_file(s3_path)
-    df = utils.read_json(tmp_filename)
+    df = utils.df_from_json(tmp_filename)
 
     df = pd.DataFrame().assign(data=df.apply(lambda row: row.to_dict(), axis="columns"))
     df = df.assign(_di_batch_id=run_id)
