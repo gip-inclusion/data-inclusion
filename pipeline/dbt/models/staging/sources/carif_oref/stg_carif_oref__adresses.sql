@@ -22,6 +22,13 @@ all_adresses AS (
             lieux_de_formation.data -> 'coordonnees' -> 'adresse',
             (lieux_de_formation.data ->> '@tag') = 'principal' DESC
     )
+    UNION ALL
+    (
+        SELECT contacts_formations.data -> 'coordonnees' -> 'adresse' AS data_
+        FROM
+            source,  -- noqa: structure.unused_join
+            JSONB_PATH_QUERY(source.data, '$.contact\-formation[*]') AS contacts_formations (data)
+    )
 ),
 
 final AS (

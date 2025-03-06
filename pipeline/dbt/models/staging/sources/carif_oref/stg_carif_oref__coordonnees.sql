@@ -3,11 +3,13 @@ WITH source AS (
 ),
 
 all_coordonnees AS (
-    SELECT contacts_formateurs.data -> 'coordonnees' AS data_
-    FROM
-        source,  -- noqa: structure.unused_join
-        JSONB_PATH_QUERY(source.data, '$.action[*].organisme\-formateur[*]') AS organismes_formateurs (data),  -- noqa: structure.unused_join
-        JSONB_PATH_QUERY(organismes_formateurs.data, '$.contact\-formateur[*]') AS contacts_formateurs (data)
+    (
+        SELECT contacts_formateurs.data -> 'coordonnees' AS data_
+        FROM
+            source,  -- noqa: structure.unused_join
+            JSONB_PATH_QUERY(source.data, '$.action[*].organisme\-formateur[*]') AS organismes_formateurs (data),  -- noqa: structure.unused_join
+            JSONB_PATH_QUERY(organismes_formateurs.data, '$.contact\-formateur[*]') AS contacts_formateurs (data)
+    )
     UNION ALL
     (
         SELECT DISTINCT ON (1) lieux_de_formation.data -> 'coordonnees' AS data_
@@ -17,6 +19,13 @@ all_coordonnees AS (
         ORDER BY
             lieux_de_formation.data -> 'coordonnees',
             (lieux_de_formation.data ->> '@tag') = 'principal' DESC
+    )
+    UNION ALL
+    (
+        SELECT contacts_formations.data -> 'coordonnees' AS data_
+        FROM
+            source,  -- noqa: structure.unused_join
+            JSONB_PATH_QUERY(source.data, '$.contact\-formation[*]') AS contacts_formations (data)
     )
 ),
 

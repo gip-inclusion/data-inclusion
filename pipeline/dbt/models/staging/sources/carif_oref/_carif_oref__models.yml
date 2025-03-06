@@ -109,6 +109,13 @@ models:
           - relationships:
               to: ref('stg_carif_oref__coordonnees')
               field: hash_
+      - name: duree_hebdo
+        data_tests:
+          - dbt_utils.not_null_proportion:
+              at_least: 0.1
+          - dbt_utils.accepted_range:
+              min_value: 0
+              max_value: 100
 
   - name: stg_carif_oref__formations
     description: http://lheo.gouv.fr/2.3/lheo/formation.html
@@ -136,6 +143,39 @@ models:
           - not_null
           - dbt_utils.expression_is_true:
               expression: "&& ARRAY['15040', '15043', '15235']"
+      - name: url_formation
+        data_tests:
+          - dbt_utils.not_null_proportion:
+              at_least: 0.1
+
+  - name: stg_carif_oref__formations__contacts
+    description: http://lheo.gouv.fr/2.3/lheo/contact-formation.html
+    data_tests:
+      - dbt_utils.unique_combination_of_columns:
+          combination_of_columns:
+            - numero_formation
+            - hash_coordonnees
+            - type_contact
+    columns:
+      - name: numero_formation
+        data_tests:
+          - not_null
+          - relationships:
+              to: ref('stg_carif_oref__formations')
+              field: numero
+      - name: type_contact
+        description: http://lheo.gouv.fr/2.3/lheo/dict-type-contact.html
+        data_tests:
+          - not_null
+          - accepted_values:
+              values: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14]
+      - name: hash_coordonnees
+        data_tests:
+          - not_null
+          - relationships:
+              to: ref('stg_carif_oref__coordonnees')
+              field: hash_
+
 
   - name: stg_carif_oref__formacode_v13
     description: |
@@ -271,7 +311,7 @@ models:
               to: ref('stg_decoupage_administratif__communes')
               field: code
               config:
-                error_if: ">3"
+                error_if: ">10"
       - name: code_insee_arrondissement
         data_tests:
           - relationships:

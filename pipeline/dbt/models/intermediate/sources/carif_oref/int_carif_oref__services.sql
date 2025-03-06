@@ -18,6 +18,10 @@ formations AS (
     SELECT * FROM {{ ref('stg_carif_oref__formations') }}
 ),
 
+formations__contacts AS (
+    SELECT * FROM {{ ref('stg_carif_oref__formations__contacts') }}
+),
+
 coordonnees AS (
     SELECT * FROM {{ ref('stg_carif_oref__coordonnees') }}
 ),
@@ -101,9 +105,17 @@ final AS (
         CAST(NULL AS DATE)                              AS "date_suspension",
         COALESCE(
             coordonnees_organisme_formateur.telfixe[1],
-            coordonnees_organisme_formateur.portable[1]
+            coordonnees_organisme_formateur.portable[1],
+            coordonnees_lieu_de_formation.telfixe[1],
+            coordonnees_lieu_de_formation.portable[1],
+            coordonnees_formation.telfixe[1],
+            coordonnees_formation.portable[1]
         )                                               AS "telephone",
-        coordonnees_organisme_formateur.courriel        AS "courriel",
+        COALESCE(
+            coordonnees_organisme_formateur.courriel,
+            coordonnees_lieu_de_formation.courriel,
+            coordonnees_formation.courriel
+        )                                               AS "courriel",
         TRUE                                            AS "contact_public",
         NULL                                            AS "contact_nom_prenom",
         COALESCE(actions.date_maj, formations.date_maj) AS "date_maj",
@@ -111,7 +123,8 @@ final AS (
             WHEN '1' THEN 'commune'
             WHEN '2' THEN 'departement'
             WHEN '3' THEN 'region'
-            ELSE 'pays'
+            WHEN '5' THEN 'pays'
+            ELSE 'region'
         END                                             AS "zone_diffusion_type",
         CASE actions.code_perimetre_recrutement
             WHEN '1' THEN communes.code
@@ -185,25 +198,38 @@ final AS (
         COALESCE(
             actions.url_action[1],
             coordonnees_organisme_formateur.web[1],
-            coordonnees_lieu_de_formation.web[1]
+            coordonnees_lieu_de_formation.web[1],
+            formations.url_formation[1],
+            coordonnees_formation.web[1]
         )                                               AS "page_web"
     FROM actions
     INNER JOIN formations
         ON actions.numero_formation = formations.numero
     LEFT JOIN organismes_formateurs
         ON actions.numero_organisme_formateur = organismes_formateurs.numero
+
+    -- coordonnees organismes formateurs
     LEFT JOIN organismes_formateurs__contacts
         ON
             organismes_formateurs.numero = organismes_formateurs__contacts.numero_organisme_formateur
             AND actions.numero = organismes_formateurs__contacts.numero_action
     LEFT JOIN coordonnees AS coordonnees_organisme_formateur
         ON organismes_formateurs__contacts.hash_coordonnees = coordonnees_organisme_formateur.hash_
-    LEFT JOIN coordonnees AS coordonnees_lieu_de_formation
-        ON actions.hash_coordonnees_lieu_de_formation_principal = coordonnees_lieu_de_formation.hash_
     LEFT JOIN adresses AS adresses_organisme_formateur
         ON coordonnees_organisme_formateur.hash_adresse = adresses_organisme_formateur.hash_
+
+    -- coordonnees lieux de formation
+    LEFT JOIN coordonnees AS coordonnees_lieu_de_formation
+        ON actions.hash_coordonnees_lieu_de_formation_principal = coordonnees_lieu_de_formation.hash_
     LEFT JOIN adresses AS adresses_lieu_de_formation
         ON coordonnees_lieu_de_formation.hash_adresse = adresses_lieu_de_formation.hash_
+
+    -- coordonnes formations
+    LEFT JOIN formations__contacts
+        ON formations.numero = formations__contacts.numero_formation
+    LEFT JOIN coordonnees AS coordonnees_formation
+        ON formations__contacts.hash_coordonnees = coordonnees_formation.hash_
+
     LEFT JOIN communes
         ON COALESCE(adresses_lieu_de_formation.code_insee_commune, adresses_organisme_formateur.code_insee_commune) = communes.code
     LEFT JOIN profils

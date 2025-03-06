@@ -17,7 +17,17 @@ final AS (
                 NULL
             ),
             '{}'
-        )                                                      AS "domaine_formation__formacode"
+        )                                                      AS "domaine_formation__formacode",
+        NULLIF(
+            ARRAY_REMOVE(
+                ARRAY(
+                    SELECT NULLIF(TRIM(x.urlweb), '')
+                    FROM JSONB_ARRAY_ELEMENTS_TEXT(source.data -> 'url-formation' -> 'urlweb') AS x (urlweb)
+                ),
+                NULL
+            ),
+            '{}'
+        )                                                      AS "url_formation"
     FROM source
 )
 
