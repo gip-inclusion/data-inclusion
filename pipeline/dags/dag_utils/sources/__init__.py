@@ -222,14 +222,14 @@ SOURCES_CONFIGS = {
         },
     },
     "carif-oref": {
-        "schedule": "@daily",
+        "schedule": "@weekly",
         "snapshot": True,
         "extractor": carif_oref.extract,
         "reader": carif_oref.read,
         "streams": {
             "formations": {
                 "filename": "formations.xml",
-                "url": "",  # TODO
+                "url": Variable.get("CARIF_OREF_URL", None),
             }
         },
     },
