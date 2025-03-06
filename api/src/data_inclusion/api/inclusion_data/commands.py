@@ -167,6 +167,32 @@ def store_inclusion_data(
 
     structures_df["doublons"] = structures_df.apply(get_doublons, axis=1)
 
+    clusters_df = (
+        structures_df[structures_df["cluster_id"].notna()]
+        .sort_values(
+            ["cluster_id", "score_qualite", "date_maj"],
+            ascending=[True, False, False],
+        )
+        .groupby("cluster_id")
+        .first()
+        .reset_index()
+    )
+
+    cluster_master_mapping = dict(
+        zip(
+            clusters_df["cluster_id"],
+            clusters_df["_di_surrogate_id"],
+        )
+    )
+
+    structures_df["cluster_best_duplicate"] = (
+        structures_df["cluster_id"]
+        .map(cluster_master_mapping)
+        .replace([np.nan], [None])
+    )
+
+    structures_df = structures_df.drop(columns=["cluster_id"])
+
     structure_data_list = structures_df.sort_values(
         by="_di_surrogate_id", ascending=True
     ).to_dict(orient="records")

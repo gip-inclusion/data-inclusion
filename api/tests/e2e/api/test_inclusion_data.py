@@ -29,7 +29,10 @@ def test_openapi_spec(api_client, snapshot):
     response = api_client.get(url)
 
     assert response.status_code == 200
-    assert json.dumps(response.json(), indent=2, ensure_ascii=False) == snapshot
+    assert (
+        json.dumps(response.json(), indent=2, ensure_ascii=False, sort_keys=True)
+        == snapshot
+    )
 
 
 def test_list_structures_unauthenticated(api_client):
@@ -86,7 +89,6 @@ def test_list_structures_all(api_client, db_session):
                 "accessibilite": "https://acceslibre.beta.gouv.fr/app/kitchen-amount/",
                 "adresse": "49, avenue de Pichon",
                 "antenne": False,
-                "doublons_groupe_id": None,
                 "code_insee": "59350",
                 "code_postal": "46873",
                 "commune": "Sainte CharlotteBourg",
@@ -1400,9 +1402,9 @@ def test_retrieve_service_and_notify_soliguide(
     [
         (
             False,
-            3,
+            4,
         ),
-        (True, 1),
+        (True, 2),
     ],
 )
 @pytest.mark.with_token
@@ -1410,26 +1412,35 @@ def test_list_structures_deduplicate_flag(api_client, exclure_doublons, total_re
     factories.StructureFactory(
         source="src_1",
         id="first",
-        cluster_id="cluster_id",
+        cluster_best_duplicate="src_2-second",
         score_qualite=0.5,
     )
     factories.StructureFactory(
         source="src_2",
         id="second",
-        cluster_id="cluster_id",
+        cluster_best_duplicate="src_2-second",
         score_qualite=0.9,
     )
     factories.StructureFactory(
         source="src_2",
         id="third",
-        cluster_id="cluster_id",
+        cluster_best_duplicate="src_2-second",
         score_qualite=0.3,
+    )
+    factories.StructureFactory(
+        source="src_3",
+        id="fourth",
+        score_qualite=0.8,
     )
 
     url = f"/api/v0/structures?{exclure_doublons=}"
     response = api_client.get(url)
 
     assert_paginated_response_data(response.json(), total=total_results)
+
+    # only check that case, order is not guaranteed when not deduplicated
+    if exclure_doublons:
+        assert response.json()["items"][0]["id"] == "second"
 
 
 @pytest.mark.with_token
@@ -1439,22 +1450,82 @@ def test_list_structures_deduplicate_flag_equal(api_client):
         date_maj="2020-01-01",
         source="src_1",
         id="first",
-        cluster_id="same_doublons_groupe",
+        cluster_best_duplicate="src_2-second",
     )
     factories.StructureFactory(
         date_maj="2024-01-01",  # the latest update
         source="src_2",
         id="second",
-        cluster_id="same_doublons_groupe",
+        cluster_best_duplicate="src_2-second",
     )
     factories.StructureFactory(
         date_maj="2008-01-01",
         source="src_3",
         id="third",
-        cluster_id="same_doublons_groupe",
+        cluster_best_duplicate="src_2-second",
+    )
+    factories.StructureFactory(
+        source="src_3",
+        id="fourth",
+        cluster_best_duplicate=None,
     )
 
     url = "/api/v0/structures?exclure_doublons=True"
     response = api_client.get(url)
 
-    assert_paginated_response_data(response.json(), total=1)
+    assert_paginated_response_data(response.json(), total=2)
+    assert response.json()["items"][0]["id"] == "second"
+
+
+@pytest.mark.with_token
+def test_search_services_deduplicate_flag(api_client):
+    s1 = factories.StructureFactory(
+        date_maj="2020-01-01",
+        source="src_1",
+        id="first",
+        cluster_best_duplicate="src_2-second",
+    )
+    s2 = factories.StructureFactory(
+        date_maj="2024-01-01",  # the latest update
+        source="src_2",
+        id="second",
+        cluster_best_duplicate="src_2-second",
+    )
+    s3 = factories.StructureFactory(
+        date_maj="2008-01-01",
+        source="src_3",
+        id="third",
+        cluster_best_duplicate="src_2-second",
+    )
+    s4 = factories.StructureFactory(
+        source="src_3",
+        id="fourth",
+        cluster_best_duplicate=None,
+    )
+
+    factories.ServiceFactory(
+        source="src_1",
+        id="first",
+        structure=s1,
+    )
+    factories.ServiceFactory(
+        source="src_2",
+        id="second",
+        structure=s2,
+    )
+    factories.ServiceFactory(
+        source="src_2",
+        id="third",
+        structure=s3,
+    )
+    factories.ServiceFactory(
+        source="src_3",
+        id="fourth",
+        structure=s4,
+    )
+
+    url = "/api/v0/search/services?exclure_doublons=True"
+    response = api_client.get(url)
+
+    assert_paginated_response_data(response.json(), total=2)
+    assert response.json()["items"][0]["service"]["id"] == "second"
