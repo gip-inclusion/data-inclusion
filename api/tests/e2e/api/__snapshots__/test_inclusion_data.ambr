@@ -3802,6 +3802,18 @@
               }
             },
             {
+              "description": "[BETA] Mode qui ne retourne, parmi les services attachés à des structures en doublon, que ceux attachés à la structure la plus qualitative (voir documentation).",
+              "in": "query",
+              "name": "exclure_doublons",
+              "required": false,
+              "schema": {
+                "default": false,
+                "description": "[BETA] Mode qui ne retourne, parmi les services attachés à des structures en doublon, que ceux attachés à la structure la plus qualitative (voir documentation).",
+                "title": "Exclure Doublons",
+                "type": "boolean"
+              }
+            },
+            {
               "description": "Page number",
               "in": "query",
               "name": "page",

@@ -66,6 +66,7 @@ class ServiceFactory(factory.alchemy.SQLAlchemyModelFactory):
         sqlalchemy_session_persistence = "commit"
 
     _di_surrogate_id = factory.Faker("uuid4")
+    _di_structure_surrogate_id = factory.Faker("uuid4")
 
     structure = factory.SubFactory(
         StructureFactory,

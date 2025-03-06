@@ -388,6 +388,7 @@ def search_services(
     search_point: str | None = None,
     score_qualite_minimum: float | None = None,
     include_outdated: bool | None = False,
+    deduplicate: bool | None = False,
 ):
     query = (
         sqla.select(models.Service)
@@ -491,6 +492,15 @@ def search_services(
         score_qualite_minimum=score_qualite_minimum,
         include_outdated=include_outdated,
     )
+
+    if deduplicate:
+        query = query.filter(
+            sqla.or_(
+                models.Structure.cluster_best_duplicate.is_(None),
+                models.Service._di_structure_surrogate_id
+                == models.Structure.cluster_best_duplicate,
+            )
+        )
 
     query = query.order_by(sqla.column("distance").nulls_last())
 

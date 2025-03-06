@@ -1450,29 +1450,82 @@ def test_list_structures_deduplicate_flag_equal(api_client):
         date_maj="2020-01-01",
         source="src_1",
         id="first",
-        _di_surrogate_id="src_1-first",
-        cluster_id="cluster_id",
-        cluster_master_id="src_2-second",
+        cluster_best_duplicate="src_2-second",
     )
     factories.StructureFactory(
         date_maj="2024-01-01",  # the latest update
         source="src_2",
         id="second",
-        _di_surrogate_id="src_2-second",
-        cluster_id="cluster_id",
-        cluster_master_id="src_2-second",
+        cluster_best_duplicate="src_2-second",
     )
     factories.StructureFactory(
         date_maj="2008-01-01",
         source="src_3",
         id="third",
-        _di_surrogate_id="src_3-third",
-        cluster_id="cluster_id",
-        cluster_master_id="src_2-second",
+        cluster_best_duplicate="src_2-second",
+    )
+    factories.StructureFactory(
+        source="src_3",
+        id="fourth",
+        cluster_best_duplicate=None,
     )
 
     url = "/api/v0/structures?exclure_doublons=True"
     response = api_client.get(url)
 
-    assert_paginated_response_data(response.json(), total=1)
+    assert_paginated_response_data(response.json(), total=2)
     assert response.json()["items"][0]["id"] == "second"
+
+
+@pytest.mark.with_token
+def test_search_services_deduplicate_flag(api_client):
+    s1 = factories.StructureFactory(
+        date_maj="2020-01-01",
+        source="src_1",
+        id="first",
+        cluster_best_duplicate="src_2-second",
+    )
+    s2 = factories.StructureFactory(
+        date_maj="2024-01-01",  # the latest update
+        source="src_2",
+        id="second",
+        cluster_best_duplicate="src_2-second",
+    )
+    s3 = factories.StructureFactory(
+        date_maj="2008-01-01",
+        source="src_3",
+        id="third",
+        cluster_best_duplicate="src_2-second",
+    )
+    s4 = factories.StructureFactory(
+        source="src_3",
+        id="fourth",
+        cluster_best_duplicate=None,
+    )
+
+    factories.ServiceFactory(
+        source="src_1",
+        id="first",
+        structure=s1,
+    )
+    factories.ServiceFactory(
+        source="src_2",
+        id="second",
+        structure=s2,
+    )
+    factories.ServiceFactory(
+        source="src_2",
+        id="third",
+        structure=s3,
+    )
+    factories.ServiceFactory(
+        source="src_3",
+        id="fourth",
+        structure=s4,
+    )
+
+    url = "/api/v0/search/services?exclure_doublons=True"
+    response = api_client.get(url)
+
+    assert_paginated_response_data(response.json(), total=2)
+    assert response.json()["items"][0]["service"]["id"] == "second"

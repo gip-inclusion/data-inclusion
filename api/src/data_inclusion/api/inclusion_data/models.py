@@ -46,6 +46,10 @@ class Structure(Base):
 
     score_qualite: Mapped[float]
 
+    # Those should be self-refs: sqla.ForeignKey("api__structures._di_surrogate_id")
+    # Unfortunately the current version of load_inclusion_data does not support
+    # self-references as the "best duplicates" should be inserted first. See to
+    # add this extra validation in a future revamp of load_inclusion_data.
     cluster_best_duplicate: Mapped[str | None]
 
     doublons: Mapped[list[dict] | None]
