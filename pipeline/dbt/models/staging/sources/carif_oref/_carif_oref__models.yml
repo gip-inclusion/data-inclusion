@@ -127,7 +127,8 @@ models:
           - dbt_utils.not_empty_string
       - name: date_maj
         data_tests:
-          - not_null
+          - dbt_utils.not_null_proportion:
+              at_least: 0.9
       - name: intitule_formation
         data_tests:
           - not_null
