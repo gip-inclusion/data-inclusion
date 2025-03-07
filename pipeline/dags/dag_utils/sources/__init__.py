@@ -222,6 +222,7 @@ SOURCES_CONFIGS = {
         },
     },
     "carif-oref": {
+        # file updated by carif oref every sunday at 6:25am
         "schedule": "@weekly",
         "snapshot": True,
         "extractor": carif_oref.extract,
