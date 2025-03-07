@@ -1,0 +1,337 @@
+version: 2
+
+models:
+  - name: _stg_carif_oref__source_filtered
+    description: |
+      This model filters the source data to only include
+      the subset of rows related to our thematics.
+
+      All staging models here must use this model as a source.
+
+  - name: stg_carif_oref__actions__publics
+    columns:
+      - name: numero_action
+        data_tests:
+          - not_null
+          - relationships:
+              to: ref('stg_carif_oref__actions')
+              field: numero
+      - name: code_public_vise
+        description: http://lheo.gouv.fr/2.3/lheo/code-public-vise.html
+        data_tests:
+          - not_null
+          - relationships:
+              to: ref('stg_carif_oref__formacode_v13')
+              field: code
+      - name: version_formacode
+        data_tests:
+          - accepted_values:
+              values: [V13]
+
+  - name: stg_carif_oref__actions
+    description: http://lheo.gouv.fr/2.3/lheo/action.html
+    columns:
+      - name: numero
+        data_tests:
+          - unique
+          - not_null
+          - dbt_utils.not_empty_string
+          - relationships:
+              # check that every action has (at least) one corresponding public
+              to: ref('stg_carif_oref__actions__publics')
+              field: numero_action
+      - name: numero_formation
+        data_tests:
+          - not_null
+          - relationships:
+              to: ref('stg_carif_oref__formations')
+              field: numero
+      - name: numero_organisme_formateur
+        data_tests:
+          - not_null
+          - relationships:
+              to: ref('stg_carif_oref__organismes_formateurs')
+              field: numero
+      - name: date_maj
+        data_tests:
+          - dbt_utils.not_null_proportion:
+              at_least: 0.5
+      - name: code_perimetre_recrutement
+        description: http://lheo.gouv.fr/2.3/lheo/dict-perimetre-recrutement.html
+        data_tests:
+          - dbt_utils.not_null_proportion:
+              at_least: 0.5
+              config:
+                severity: warn
+          - accepted_values:
+              values: [0, 1, 2, 3, 4, 5, 6]
+      - name: conditions_specifiques
+        data_tests:
+          - not_null
+          - dbt_utils.not_empty_string
+      - name: detail_conditions_prise_en_charge
+        data_tests:
+          - dbt_utils.not_null_proportion:
+              at_least: 0.1
+          - dbt_utils.not_empty_string
+      - name: info_public_vise
+        data_tests:
+          - dbt_utils.not_null_proportion:
+              at_least: 0.1
+          - dbt_utils.not_empty_string
+      - name: modalites_enseignement
+        description: http://lheo.gouv.fr/2.3/lheo/dict-modalites-enseignement.html
+        data_tests:
+          - not_null
+          - accepted_values:
+              values: [0, 1, 2]
+      - name: modalites_recrutement
+        data_tests:
+          - dbt_utils.not_null_proportion:
+              at_least: 0.1
+          - dbt_utils.not_empty_string
+      - name: prise_en_charge_frais_possible
+        data_tests:
+          - not_null
+          - accepted_values:
+              values: [true, false]
+      - name: prix_total_ttc
+        data_tests:
+          - dbt_utils.at_least_one
+      - name: url_action
+        data_tests:
+          - dbt_utils.not_null_proportion:
+              at_least: 0.1
+      - name: hash_coordonnees_lieu_de_formation_principal
+        data_tests:
+          - dbt_utils.not_null_proportion:
+              at_least: 0.9
+          - relationships:
+              to: ref('stg_carif_oref__coordonnees')
+              field: hash_
+      - name: duree_hebdo
+        data_tests:
+          - dbt_utils.not_null_proportion:
+              at_least: 0.1
+          - dbt_utils.accepted_range:
+              min_value: 0
+              max_value: 100
+
+  - name: stg_carif_oref__formations
+    description: http://lheo.gouv.fr/2.3/lheo/formation.html
+    columns:
+      - name: numero
+        data_tests:
+          - unique
+          - not_null
+          - dbt_utils.not_empty_string
+      - name: date_maj
+        data_tests:
+          - dbt_utils.not_null_proportion:
+              at_least: 0.9
+      - name: intitule_formation
+        data_tests:
+          - not_null
+          - dbt_utils.not_empty_string
+      - name: objectif_formation
+        data_tests:
+          - not_null
+          - dbt_utils.not_empty_string
+          - dbt_utils.expression_is_true:
+              expression: "!~ '<[^>]+>'"  # no HTML tags
+      - name: domaine_formation__formacode
+        data_tests:
+          - not_null
+          - dbt_utils.expression_is_true:
+              expression: "&& ARRAY['15040', '15043', '15235']"
+      - name: url_formation
+        data_tests:
+          - dbt_utils.not_null_proportion:
+              at_least: 0.1
+
+  - name: stg_carif_oref__formations__contacts
+    description: http://lheo.gouv.fr/2.3/lheo/contact-formation.html
+    data_tests:
+      - dbt_utils.unique_combination_of_columns:
+          combination_of_columns:
+            - numero_formation
+            - hash_coordonnees
+            - type_contact
+    columns:
+      - name: numero_formation
+        data_tests:
+          - not_null
+          - relationships:
+              to: ref('stg_carif_oref__formations')
+              field: numero
+      - name: type_contact
+        description: http://lheo.gouv.fr/2.3/lheo/dict-type-contact.html
+        data_tests:
+          - not_null
+          - accepted_values:
+              values: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14]
+      - name: hash_coordonnees
+        data_tests:
+          - not_null
+          - relationships:
+              to: ref('stg_carif_oref__coordonnees')
+              field: hash_
+
+
+  - name: stg_carif_oref__formacode_v13
+    description: |
+      This model contains the public subset of the formacode (v13).
+
+      https://formacode.centre-inffo.fr/telechargements-54.html
+    columns:
+      - name: code
+        data_tests:
+          - unique
+          - not_null
+          - dbt_utils.not_empty_string
+      - name: libelle
+        data_tests:
+          - not_null
+          - dbt_utils.not_empty_string
+
+  - name: stg_carif_oref__organismes_formateurs
+    description: http://lheo.gouv.fr/2.3/lheo/organisme-formateur.html
+    columns:
+      - name: numero
+        data_tests:
+          - unique
+          - not_null
+          - dbt_utils.not_empty_string
+      - name: raison_sociale_formateur
+        data_tests:
+          - not_null
+          - dbt_utils.not_empty_string
+      - name: siret_formateur__siret
+        data_tests:
+          - not_null
+          - dbt_utils.not_empty_string
+
+  - name: stg_carif_oref__organismes_formateurs__contacts
+    description: http://lheo.gouv.fr/2.3/lheo/contact-formateur.html
+    data_tests:
+      - dbt_utils.unique_combination_of_columns:
+          combination_of_columns:
+            - numero_action
+            - numero_organisme_formateur
+            - hash_coordonnees
+            - type_contact
+    columns:
+      - name: numero_action
+        data_tests:
+          - not_null
+          - relationships:
+              to: ref('stg_carif_oref__actions')
+              field: numero
+      - name: numero_organisme_formateur
+        data_tests:
+          - not_null
+          - relationships:
+              to: ref('stg_carif_oref__organismes_formateurs')
+              field: numero
+      - name: type_contact
+        description: http://lheo.gouv.fr/2.3/lheo/dict-type-contact.html
+        data_tests:
+          - not_null
+          - accepted_values:
+              values: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14]
+      - name: hash_coordonnees
+        data_tests:
+          - not_null
+          - relationships:
+              to: ref('stg_carif_oref__coordonnees')
+              field: hash_
+
+  - name: stg_carif_oref__coordonnees
+    description: http://lheo.gouv.fr/2.3/lheo/coordonnees.html
+    columns:
+      - name: hash_
+        data_tests:
+          - unique
+          - not_null
+          - dbt_utils.not_empty_string
+      - name: courriel
+        data_tests:
+          - dbt_utils.not_empty_string
+      - name: web
+        data_tests:
+          - dbt_utils.at_least_one
+      - name: telfixe
+        data_tests:
+          - dbt_utils.not_null_proportion:
+              at_least: 0.5
+      - name: portable
+        data_tests:
+          - dbt_utils.at_least_one
+      - name: hash_adresse
+        data_tests:
+          - relationships:
+              to: ref('stg_carif_oref__adresses')
+              field: hash_
+
+  - name: stg_carif_oref__adresses
+    description: http://lheo.gouv.fr/2.3/lheo/adresse.html
+    columns:
+      - name: hash_
+        data_tests:
+          - unique
+          - not_null
+          - dbt_utils.not_empty_string
+      - name: denomination
+        data_tests:
+          - dbt_utils.not_null_proportion:
+              at_least: 0.1
+          - dbt_utils.not_empty_string
+      - name: ligne
+      - name: ligne__1
+        data_tests:
+          - not_null
+          - dbt_utils.not_empty_string
+      - name: codepostal
+        data_tests:
+          - not_null
+          - dbt_utils.not_empty_string
+      - name: ville
+        data_tests:
+          - not_null
+          - dbt_utils.not_empty_string
+      - name: departement
+        data_tests:
+          - not_null
+          - relationships:
+              to: ref('stg_decoupage_administratif__departements')
+              field: code
+      - name: code_insee_commune
+        data_tests:
+          - not_null
+          - relationships:
+              to: ref('stg_decoupage_administratif__communes')
+              field: code
+              config:
+                error_if: ">10"
+      - name: code_insee_arrondissement
+        data_tests:
+          - relationships:
+              to: ref('stg_decoupage_administratif__arrondissements')
+              field: code
+      - name: region
+        data_tests:
+          - relationships:
+              to: ref('stg_decoupage_administratif__regions')
+              field: code
+      - name: pays
+        data_tests:
+          - accepted_values:
+              values: [FR]
+      - name: geolocalisation__latitude
+        data_tests:
+          - dbt_utils.not_null_proportion:
+              at_least: 0.5
+      - name: geolocalisation__longitude
+        data_tests:
+          - dbt_utils.not_null_proportion:
+              at_least: 0.5

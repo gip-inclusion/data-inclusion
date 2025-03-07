@@ -1,0 +1,34 @@
+WITH source AS (
+    SELECT * FROM {{ ref('_stg_carif_oref__source_filtered') }}
+),
+
+final AS (
+    SELECT
+        NULLIF(TRIM(source.data ->> '@numero'), '')            AS "numero",
+        CAST((source.data ->> '@datemaj') AS DATE)             AS "date_maj",
+        NULLIF(TRIM(source.data ->> 'intitule-formation'), '') AS "intitule_formation",
+        NULLIF(TRIM(source.data ->> 'objectif-formation'), '') AS "objectif_formation",
+        NULLIF(
+            ARRAY_REMOVE(
+                ARRAY(
+                    SELECT codes.data ->> '$'
+                    FROM JSONB_ARRAY_ELEMENTS(source.data -> 'domaine-formation' -> 'code-FORMACODE') AS codes (data)
+                ),
+                NULL
+            ),
+            '{}'
+        )                                                      AS "domaine_formation__formacode",
+        NULLIF(
+            ARRAY_REMOVE(
+                ARRAY(
+                    SELECT NULLIF(TRIM(x.urlweb), '')
+                    FROM JSONB_ARRAY_ELEMENTS_TEXT(source.data -> 'url-formation' -> 'urlweb') AS x (urlweb)
+                ),
+                NULL
+            ),
+            '{}'
+        )                                                      AS "url_formation"
+    FROM source
+)
+
+SELECT * FROM final

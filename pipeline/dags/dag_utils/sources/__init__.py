@@ -8,6 +8,7 @@ from airflow.models import Variable
 from . import (
     agefiph,
     annuaire_du_service_public,
+    carif_oref,
     cd35,
     dora,
     emplois_de_linclusion,
@@ -218,6 +219,19 @@ SOURCES_CONFIGS = {
                 "filename": "structures.csv",
                 "url": Variable.get("ACTION_LOGEMENT_STRUCTURES_URL", None),
             },
+        },
+    },
+    "carif-oref": {
+        # file updated by carif oref every sunday at 6:25am
+        "schedule": "@weekly",
+        "snapshot": True,
+        "extractor": carif_oref.extract,
+        "reader": carif_oref.read,
+        "streams": {
+            "formations": {
+                "filename": "formations.xml",
+                "url": Variable.get("CARIF_OREF_URL", None),
+            }
         },
     },
     "odspep": {},

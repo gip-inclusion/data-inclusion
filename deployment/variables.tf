@@ -41,6 +41,13 @@ variable "api_scw_application_id" {
   sensitive   = false
 }
 
+variable "carif_oref_url" {
+  description = "Used in extraction tasks orchestrated by airflow"
+  type        = string
+  sensitive   = true
+  default     = ""
+}
+
 variable "datagouv_api_key" {
   description = "Used in extraction tasks orchestrated by airflow"
   type        = string

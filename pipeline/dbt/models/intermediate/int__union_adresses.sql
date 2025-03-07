@@ -5,6 +5,7 @@ WITH adresses AS (
                 ref('int_action_logement__adresses'),
                 ref('int_agefiph__adresses'),
                 ref('int_dora__adresses'),
+                ref('int_carif_oref__adresses'),
                 ref('int_cd35__adresses'),
                 ref('int_emplois_de_linclusion__adresses'),
                 ref('int_finess__adresses'),
