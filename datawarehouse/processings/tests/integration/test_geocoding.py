@@ -21,9 +21,11 @@ pytestmark = pytest.mark.ban_api
             {
                 "id": "1",
                 "adresse": "17 rue Malus",
+                "adresse_original": "17 rue Malus",
                 "code_postal": "59000",
                 "code_insee": "59350",
                 "commune": "Lille",
+                "commune_original": "Lille",
                 "latitude": ANY,
                 "longitude": ANY,
                 "result_label": "17 Rue Malus 59000 Lille",
@@ -54,6 +56,114 @@ pytestmark = pytest.mark.ban_api
             },
             None,
         ),
+        (
+            {
+                "id": "1",
+                "adresse": "17 rue Malus",
+                "code_postal": "59000",
+                "code_insee": "59350",
+                "commune": "Lille cedex 12345",
+            },
+            {
+                "id": "1",
+                "adresse": "17 rue Malus",
+                "adresse_original": "17 rue Malus",
+                "code_postal": None,
+                "code_insee": "59350",
+                "commune": "Lille",
+                "commune_original": "Lille cedex 12345",
+                "latitude": ANY,
+                "longitude": ANY,
+                "result_label": "17 Rue Malus 59000 Lille",
+                "result_score": ANY,
+                "result_score_next": None,
+                "result_type": "housenumber",
+                "result_id": "59350_5835_00017",
+                "result_housenumber": "17",
+                "result_name": "17 Rue Malus",
+                "result_street": "Rue Malus",
+                "result_postcode": "59000",
+                "result_city": "Lille",
+                "result_context": "59, Nord, Hauts-de-France",
+                "result_citycode": "59350",
+                "result_oldcitycode": "59350",
+                "result_oldcity": "Lille",
+                "result_district": None,
+                "result_status": "ok",
+            },
+        ),
+        (
+            {
+                "id": "1",
+                "adresse": "17 rue Malus BP 12345",
+                "code_postal": "59000",
+                "code_insee": "59350",
+                "commune": "Lille",
+            },
+            {
+                "id": "1",
+                "adresse": "17 rue Malus",
+                "adresse_original": "17 rue Malus BP 12345",
+                "code_postal": None,
+                "code_insee": "59350",
+                "commune": "Lille",
+                "commune_original": "Lille",
+                "latitude": ANY,
+                "longitude": ANY,
+                "result_label": "17 Rue Malus 59000 Lille",
+                "result_score": ANY,
+                "result_score_next": None,
+                "result_type": "housenumber",
+                "result_id": "59350_5835_00017",
+                "result_housenumber": "17",
+                "result_name": "17 Rue Malus",
+                "result_street": "Rue Malus",
+                "result_postcode": "59000",
+                "result_city": "Lille",
+                "result_context": "59, Nord, Hauts-de-France",
+                "result_citycode": "59350",
+                "result_oldcitycode": "59350",
+                "result_oldcity": "Lille",
+                "result_district": None,
+                "result_status": "ok",
+            },
+        ),
+        (
+            {
+                "id": "1",
+                "adresse": "17 rue Malus",
+                "code_postal": "59000",
+                "code_insee": "59350",
+                "commune": None,
+            },
+            {
+                "id": "1",
+                "adresse": "17 rue Malus",
+                "adresse_original": "17 rue Malus",
+                "code_postal": "59000",
+                "code_insee": "59350",
+                "commune": None,
+                "commune_original": None,
+                "latitude": ANY,
+                "longitude": ANY,
+                "result_label": "17 Rue Malus 59000 Lille",
+                "result_score": ANY,
+                "result_score_next": None,
+                "result_type": "housenumber",
+                "result_id": "59350_5835_00017",
+                "result_housenumber": "17",
+                "result_name": "17 Rue Malus",
+                "result_street": "Rue Malus",
+                "result_postcode": "59000",
+                "result_city": "Lille",
+                "result_context": "59, Nord, Hauts-de-France",
+                "result_citycode": "59350",
+                "result_oldcitycode": "59350",
+                "result_oldcity": "Lille",
+                "result_district": None,
+                "result_status": "ok",
+            },
+        ),
     ],
 )
 def test_ban_geocode(adresse: dict, expected: dict):
@@ -63,7 +173,7 @@ def test_ban_geocode(adresse: dict, expected: dict):
 
 
 @pytest.mark.parametrize(
-    ("raw", "formated"),
+    ("raw", "cleaned"),
     [
         (
             {
@@ -177,7 +287,7 @@ def test_ban_geocode(adresse: dict, expected: dict):
                 "commune": "Aouste-sur-Sye",
             },
         ),
-                (
+        (
             {
                 "id": "1",
                 "adresse": "CS 23123 3 route de Cobonne",
@@ -195,11 +305,10 @@ def test_ban_geocode(adresse: dict, expected: dict):
         ),
     ],
 )
-def test_ban_cleaning_cedex(raw: dict, formated: dict):
+def test_ban_cleaning_cedex(raw: dict, cleaned: dict):
     result_df_raw = geocode(data=raw)
-    result_df_formated = geocode(data=formated)
-    print(result_df_raw)
+    result_df_cleaned = geocode(data=cleaned)
 
     assert result_df_raw[0]['result_status'] == 'ok'
-    assert result_df_formated[0]['result_status'] == 'ok'
-    assert result_df_raw[0]['result_score'] == result_df_formated[0]['result_score']
+    assert result_df_cleaned[0]['result_status'] == 'ok'
+    assert result_df_raw[0]['result_score'] <= result_df_cleaned[0]['result_score']

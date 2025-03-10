@@ -239,7 +239,7 @@ unit_tests:
         rows:
           - {_di_surrogate_id: unchanged, adresse: 17 rue Malus, code_postal: 59000, code_insee: 59350, commune: Lille}
           - {_di_surrogate_id: failed, adresse: 17 rue Malus, code_postal: 59000, code_insee: 59350, commune: Lille}
-          - {_di_surrogate_id: changed-adresse, adresse: changed, code_postal: 59000, code_insee: 59350, commune: Lille}
+          - {_di_surrogate_id: changed-adresse, adresse: 17 rue Malus, code_postal: 59000, code_insee: 59350, commune: Lille}
           - {_di_surrogate_id: changed-code-postal, adresse: 17 rue Malus, code_postal: changed, code_insee: 59350, commune: Lille}
           - {_di_surrogate_id: changed-code-insee, adresse: 17 rue Malus, code_postal: 59000, code_insee: changed, commune: Lille}
           - {_di_surrogate_id: changed-commune, adresse: 17 rue Malus, code_postal: 59000, code_insee: 59350, commune: changed}
@@ -259,7 +259,7 @@ unit_tests:
         rows:
           - {adresse_id: unchanged, input_adresse: 17 rue Malus, input_code_postal: 59000, input_code_insee: 59350, input_commune: Lille, score: 1}
           - {adresse_id: failed, input_adresse: 17 rue Malus, input_code_postal: 59000, input_code_insee: 59350, input_commune: Lille, score: null}
-          - {adresse_id: changed-adresse, input_adresse: 17 rue Malus, input_code_postal: 59000, input_code_insee: 59350, input_commune: Lille, score: 1}
+          - {adresse_id: changed-adresse, input_adresse: to be changed, input_code_postal: 59000, input_code_insee: 59350, input_commune: Lille, score: 1}
           - {adresse_id: changed-code-postal, input_adresse: 17 rue Malus, input_code_postal: 59000, input_code_insee: 59350, input_commune: Lille, score: 1}
           - {adresse_id: changed-code-insee, input_adresse: 17 rue Malus, input_code_postal: 59000, input_code_insee: 59350, input_commune: Lille, score: 1}
           - {adresse_id: changed-commune, input_adresse: 17 rue Malus, input_code_postal: 59000, input_code_insee: 59350, input_commune: Lille, score: 1}

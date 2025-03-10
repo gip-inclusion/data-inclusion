@@ -38,11 +38,7 @@ final AS (
         CAST('{{ run_started_at }}' AS TIMESTAMP) AS "geocoded_at",
         adresses._di_surrogate_id                             AS "adresse_id",
         adresses.adresse                                      AS "input_adresse",
-        CASE
-            WHEN adresses.code_postal IN (SELECT codes_postaux.code_postal FROM codes_postaux)
-                THEN adresses.code_postal
-            ELSE ''
-        END                                                   AS "input_code_postal",
+        COALESCE(codes_postaux.code_postal, '')               AS "input_code_postal",
         adresses.code_insee                                   AS "input_code_insee",
         adresses.commune                                      AS "input_commune",
         geocodings.result_city                                AS "commune",
@@ -86,7 +82,7 @@ final AS (
             -- then only geocode new or changed rows
                 LEFT JOIN {{ this }} ON adresses._di_surrogate_id = {{ this }}.adresse_id
                 WHERE
-                -- new rows
+                    -- new rows
                     {{ this }}.adresse_id IS NULL
                     -- previously failed rows
                     OR {{ this }}.score IS NULL

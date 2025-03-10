@@ -117,20 +117,29 @@ def geocode(
         # using "URSS" for "Avenue de l'U.R.S.S.". With the dots, it does not
         # find the street at all ¯\_(ツ)_/¯
         .replace("-", " ").replace(".", "")
+    )
+    # Copy adresse in a new column to keep the original adresse
+    df["adresse_original"] = df["adresse"]
         # Remove any "BP" or "CS" and any numbers that follows.
-        .replace(r'(?i)BP [0-9]*', '', regex=True)
-        .replace(r'(?i)CS [0-9]*', '', regex=True)
+    df["adresse"] = (
+        df["adresse"].str
+        .replace(r'(?i)BP *[0-9]*', '', regex=True)
+        .replace(r'(?i)CS *[0-9]*', '', regex=True)
         # Replace any abbreviations by the full word
         .replace(STREET_ABBREVIATIONS, regex=True)
+        .apply(lambda x: x.strip(" -") if x else x)
     )
     # We use (?i) to make the regex case-insensitive.
     # We can remove everything after cedex, it is always at the end of the string.
+    df["commune_original"] = df["commune"]
     df["commune"] = (
         df["commune"].str
-        .strip(" -")
         .replace(r'(?i)cedex.*', '', regex=True)
+        .apply(lambda x: x.strip(" -") if x else x)
     )
 
+    df["code_postal"] = np.where(~df["adresse"].eq(df["adresse_original"]), None, df["code_postal"])
+    df["code_postal"] = np.where(~df["commune"].eq(df["commune_original"]), None, df["code_postal"])
     logger.info(f"Only {len(df)} rows can be geocoded.")
 
     return (
