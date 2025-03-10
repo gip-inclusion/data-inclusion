@@ -13,12 +13,19 @@ from data_inclusion.api.app import create_app
 from data_inclusion.api.config import settings
 from data_inclusion.api.core import db
 from data_inclusion.api.decoupage_administratif.models import Commune
-
-from . import factories
+from tests.e2e.api.v0 import factories
 
 DEFAULT_DATABASE_URL = sqla.engine.make_url(settings.DATABASE_URL)
 TEST_DATABASE_URL = DEFAULT_DATABASE_URL.set(
     database=f"{DEFAULT_DATABASE_URL.database}_test"
+)
+
+print(
+    "-----------------------------------------------------------------------------------"
+)
+print(TEST_DATABASE_URL)
+print(
+    "-----------------------------------------------------------------------------------"
 )
 
 DIR = Path(__file__).parent

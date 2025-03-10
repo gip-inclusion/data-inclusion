@@ -12,9 +12,9 @@ from data_inclusion.api.auth.routes import router as auth_api_router
 from data_inclusion.api.config import settings
 from data_inclusion.api.core import db
 from data_inclusion.api.v0.inclusion_data.routes import router as data_api_router_v0
-from data_inclusion.api.v0.inclusion_schema.routes import router as schema_api_router_v0
+from data_inclusion.api.v0.inclusion_doc.routes import router as schema_api_router_v0
 from data_inclusion.api.v1.inclusion_data.routes import router as data_api_router_v1
-from data_inclusion.api.v1.inclusion_schema.routes import router as schema_api_router_v1
+from data_inclusion.api.v1.inclusion_doc.routes import router as schema_api_router_v1
 
 API_DESCRIPTION_PATH = Path(__file__).parent / "api_description.md"
 
