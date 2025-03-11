@@ -53,7 +53,7 @@ class DatalakeClient:
     def get_dataset_presigned_urls(self) -> dict:
         latest_dataset_path = self.get_latest_dataset_path()
 
-        logger.info(f"Using {latest_dataset_path}")
+        logger.info("Using %s", latest_dataset_path)
 
         object_lists = self.s3_client.list_objects(
             self.bucket_name,
@@ -217,7 +217,9 @@ def store_inclusion_data(
                 db_session.add(structure_instance)
         except sqla.exc.IntegrityError as exc:
             logger.error(
-                f"Structure source={structure_data['source']} id={structure_data['id']}"
+                "Structure source=%s id=%s",
+                structure_data["source"],
+                structure_data["id"],
             )
             logger.info(exc.orig)
 
@@ -228,7 +230,9 @@ def store_inclusion_data(
                 db_session.add(service_instance)
         except sqla.exc.IntegrityError as exc:
             logger.error(
-                f"Service source={service_data['source']} id={service_data['id']}"
+                "Service source=%s id=%s",
+                service_data["source"],
+                service_data["id"],
             )
             logger.info(exc.orig)
 
