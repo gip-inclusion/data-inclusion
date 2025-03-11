@@ -95,7 +95,8 @@ def list_structures_endpoint(
         fastapi.Query(
             description=(
                 "[BETA] Mode qui ne retourne parmi les structures en doublon, que "
-                "celles ayant les services les plus qualitatifs (voir documentation)."
+                "celles ayant les services les plus qualitatifs "
+                "(voir [documentation](https://gip-inclusion.notion.site/Syst-me-de-d-duplication-des-donn-es-17d5f321b60480f99f6cf65522a83c8b?pvs=4))."
             )
         ),
     ] = False,
@@ -250,7 +251,7 @@ def list_services_endpoint(
         fastapi.Query(
             description="""[BETA] Score de qualité minimum.
                 Les résultats renvoyés ont un score de qualité supérieur ou égal à ce
-                score."""
+                score. (voir [documentation](https://gip-inclusion.notion.site/Conception-du-score-de-qualit-17b5f321b60480a1b79bf4a17b4567dd?pvs=4))"""
         ),
     ] = None,
     inclure_suspendus: Annotated[
@@ -427,7 +428,7 @@ def search_services_endpoint(
         fastapi.Query(
             description="""Score de qualité minimum.
                 Les résultats renvoyés ont un score de qualité supérieur ou égal à ce
-                score."""
+                score. (voir [documentation](https://gip-inclusion.notion.site/Conception-du-score-de-qualit-17b5f321b60480a1b79bf4a17b4567dd?pvs=4))"""
         ),
     ] = None,
     inclure_suspendus: Annotated[
@@ -444,7 +445,7 @@ def search_services_endpoint(
             description=(
                 "[BETA] Mode qui ne retourne, parmi les services attachés à des "
                 "structures en doublon, que ceux attachés à la structure la plus "
-                "qualitative (voir documentation)."
+                "qualitative (voir [documentation](https://gip-inclusion.notion.site/Syst-me-de-d-duplication-des-donn-es-17d5f321b60480f99f6cf65522a83c8b?pvs=4))."
             )
         ),
     ] = False,
