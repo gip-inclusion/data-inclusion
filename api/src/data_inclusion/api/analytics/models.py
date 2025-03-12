@@ -34,6 +34,8 @@ class ListServicesEvent(db.Base):
     modes_accueil: Mapped[list[str] | None]
     types: Mapped[list[str] | None]
     inclure_suspendus: Mapped[bool | None]
+    recherche_public: Mapped[str | None]
+    score_qualite_minimum: Mapped[float | None]
 
 
 class ListStructuresEvent(db.Base):
@@ -47,6 +49,7 @@ class ListStructuresEvent(db.Base):
     code_region: Mapped[str | None]
     code_commune: Mapped[str | None]
     thematiques: Mapped[list[str] | None]
+    exclure_doublons: Mapped[bool | None]
 
 
 class SearchServicesEvent(db.Base):
@@ -65,3 +68,6 @@ class SearchServicesEvent(db.Base):
     profils: Mapped[list[str] | None]
     types: Mapped[list[str] | None]
     inclure_suspendus: Mapped[bool | None]
+    recherche_public: Mapped[str | None]
+    score_qualite_minimum: Mapped[float | None]
+    exclure_doublons: Mapped[bool | None]

@@ -131,6 +131,7 @@ def list_structures_endpoint(
         region=region,
         code_commune=code_commune,
         thematiques=thematiques,
+        exclure_doublons=exclure_doublons,
     )
 
     return structures_list
@@ -297,6 +298,8 @@ def list_services_endpoint(
         modes_accueil=modes_accueil,
         types=types,
         inclure_suspendus=inclure_suspendus,
+        recherche_public=recherche_public,
+        score_qualite_minimum=score_qualite_minimum,
     )
     return services_listed
 
@@ -522,6 +525,9 @@ def search_services_endpoint(
         profils=profils,
         types=types,
         inclure_suspendus=inclure_suspendus,
+        recherche_public=recherche_public,
+        score_qualite_minimum=score_qualite_minimum,
+        exclure_doublons=exclure_doublons,
     )
 
     return results
