@@ -79,6 +79,8 @@ def test_list_services_event_saved(api_client, db_session):
         "modes_accueil": ["a-distance"],
         "types": ["accompagnement"],
         "inclure_suspendus": 1,
+        "recherche_public": "test",
+        "score_qualite_minimum": 0.5,
     }
     response = api_client.get(url, params=query_param)
 
@@ -102,6 +104,8 @@ def test_list_services_event_saved(api_client, db_session):
     assert event.modes_accueil == query_param["modes_accueil"]
     assert event.types == query_param["types"]
     assert event.inclure_suspendus == query_param["inclure_suspendus"]
+    assert event.recherche_public == query_param["recherche_public"]
+    assert event.score_qualite_minimum == query_param["score_qualite_minimum"]
 
 
 @pytest.mark.with_token
@@ -116,6 +120,7 @@ def test_list_structures_event_saved(api_client, db_session):
         "typologie": "ACIPHC",
         "id": "1",
         "label_national": "action-logement",
+        "exclure_doublons": True,
     }
     response = api_client.get(url, params=query_param)
 
@@ -136,6 +141,7 @@ def test_list_structures_event_saved(api_client, db_session):
     assert event.code_commune == query_param["code_commune"]
     assert event.typologie == query_param["typologie"]
     assert event.label_national == query_param["label_national"]
+    assert event.exclure_doublons == query_param["exclure_doublons"]
 
 
 @pytest.mark.with_token
@@ -154,6 +160,9 @@ def test_search_services_event_saved(api_client, db_session):
         "inclure_suspendus": True,
         "lat": 45.0,
         "lon": 5.0,
+        "exclure_doublons": True,
+        "recherche_public": "test",
+        "score_qualite_minimum": 0.5,
     }
     response = api_client.get(url, params=query_param)
 
@@ -180,6 +189,9 @@ def test_search_services_event_saved(api_client, db_session):
     assert event.modes_accueil == query_param["modes_accueil"]
     assert event.types == query_param["types"]
     assert event.inclure_suspendus == query_param["inclure_suspendus"]
+    assert event.recherche_public == query_param["recherche_public"]
+    assert event.score_qualite_minimum == query_param["score_qualite_minimum"]
+    assert event.exclure_doublons == query_param["exclure_doublons"]
 
 
 @pytest.mark.with_token

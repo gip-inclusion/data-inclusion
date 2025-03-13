@@ -66,6 +66,8 @@ def save_list_services_event(
     modes_accueil: list[di_schema.ModeAccueil] | None = None,
     types: list[di_schema.TypologieService] | None = None,
     inclure_suspendus: bool | None = False,
+    recherche_public: str | None = None,
+    score_qualite_minimum: float | None = None,
 ):
     user = request.scope.get("user")
     if user is None or not user.is_authenticated:
@@ -83,6 +85,8 @@ def save_list_services_event(
         modes_accueil=modes_accueil,
         types=types,
         inclure_suspendus=inclure_suspendus,
+        recherche_public=recherche_public,
+        score_qualite_minimum=score_qualite_minimum,
     )
     db_session.add(event)
     db_session.commit()
@@ -98,6 +102,7 @@ def save_list_structures_event(
     region: Region | None = None,
     code_commune: di_schema.CodeCommune | None = None,
     thematiques: list[di_schema.Thematique] | None = None,
+    exclure_doublons: bool | None = False,
 ):
     user = request.scope.get("user")
     if user is None or not user.is_authenticated:
@@ -112,6 +117,7 @@ def save_list_structures_event(
         code_region=region.code if region else None,
         code_commune=code_commune,
         thematiques=thematiques,
+        exclure_doublons=exclure_doublons,
     )
     db_session.add(event)
     db_session.commit()
@@ -131,6 +137,9 @@ def save_search_services_event(
     profils: list[di_schema.Profil] | None = None,
     types: list[di_schema.TypologieService] | None = None,
     inclure_suspendus: bool | None = False,
+    recherche_public: str | None = None,
+    score_qualite_minimum: float | None = None,
+    exclure_doublons: bool | None = False,
 ):
     user = request.scope.get("user")
     if user is None or not user.is_authenticated:
@@ -160,6 +169,9 @@ def save_search_services_event(
         profils=profils,
         types=types,
         inclure_suspendus=inclure_suspendus,
+        recherche_public=recherche_public,
+        score_qualite_minimum=score_qualite_minimum,
+        exclure_doublons=exclure_doublons,
     )
     db_session.add(event)
     db_session.commit()
