@@ -3779,12 +3779,12 @@
               }
             },
             {
-              "description": "Score de qualité minimum.\n                Les résultats renvoyés ont un score de qualité supérieur ou égal à ce\n                score.",
+              "description": "Score de qualité minimum.\n                Les résultats renvoyés ont un score de qualité supérieur ou égal à ce\n                score. (voir [documentation](https://gip-inclusion.notion.site/Conception-du-score-de-qualit-17b5f321b60480a1b79bf4a17b4567dd?pvs=4))",
               "in": "query",
               "name": "score_qualite_minimum",
               "required": false,
               "schema": {
-                "description": "Score de qualité minimum.\n                Les résultats renvoyés ont un score de qualité supérieur ou égal à ce\n                score.",
+                "description": "Score de qualité minimum.\n                Les résultats renvoyés ont un score de qualité supérieur ou égal à ce\n                score. (voir [documentation](https://gip-inclusion.notion.site/Conception-du-score-de-qualit-17b5f321b60480a1b79bf4a17b4567dd?pvs=4))",
                 "title": "Score Qualite Minimum",
                 "type": "number"
               }
@@ -3802,13 +3802,13 @@
               }
             },
             {
-              "description": "[BETA] Mode qui ne retourne, parmi les services attachés à des structures en doublon, que ceux attachés à la structure la plus qualitative (voir documentation).",
+              "description": "[BETA] Mode qui ne retourne, parmi les services attachés à des structures en doublon, que ceux attachés à la structure la plus qualitative (voir [documentation](https://gip-inclusion.notion.site/Syst-me-de-d-duplication-des-donn-es-17d5f321b60480f99f6cf65522a83c8b?pvs=4)).",
               "in": "query",
               "name": "exclure_doublons",
               "required": false,
               "schema": {
                 "default": false,
-                "description": "[BETA] Mode qui ne retourne, parmi les services attachés à des structures en doublon, que ceux attachés à la structure la plus qualitative (voir documentation).",
+                "description": "[BETA] Mode qui ne retourne, parmi les services attachés à des structures en doublon, que ceux attachés à la structure la plus qualitative (voir [documentation](https://gip-inclusion.notion.site/Syst-me-de-d-duplication-des-donn-es-17d5f321b60480f99f6cf65522a83c8b?pvs=4)).",
                 "title": "Exclure Doublons",
                 "type": "boolean"
               }
@@ -4024,12 +4024,12 @@
               }
             },
             {
-              "description": "[BETA] Score de qualité minimum.\n                Les résultats renvoyés ont un score de qualité supérieur ou égal à ce\n                score.",
+              "description": "[BETA] Score de qualité minimum.\n                Les résultats renvoyés ont un score de qualité supérieur ou égal à ce\n                score. (voir [documentation](https://gip-inclusion.notion.site/Conception-du-score-de-qualit-17b5f321b60480a1b79bf4a17b4567dd?pvs=4))",
               "in": "query",
               "name": "score_qualite_minimum",
               "required": false,
               "schema": {
-                "description": "[BETA] Score de qualité minimum.\n                Les résultats renvoyés ont un score de qualité supérieur ou égal à ce\n                score.",
+                "description": "[BETA] Score de qualité minimum.\n                Les résultats renvoyés ont un score de qualité supérieur ou égal à ce\n                score. (voir [documentation](https://gip-inclusion.notion.site/Conception-du-score-de-qualit-17b5f321b60480a1b79bf4a17b4567dd?pvs=4))",
                 "title": "Score Qualite Minimum",
                 "type": "number"
               }
@@ -4292,13 +4292,13 @@
               }
             },
             {
-              "description": "[BETA] Mode qui ne retourne parmi les structures en doublon, que celles ayant les services les plus qualitatifs (voir documentation).",
+              "description": "[BETA] Mode qui ne retourne parmi les structures en doublon, que celles ayant les services les plus qualitatifs (voir [documentation](https://gip-inclusion.notion.site/Syst-me-de-d-duplication-des-donn-es-17d5f321b60480f99f6cf65522a83c8b?pvs=4)).",
               "in": "query",
               "name": "exclure_doublons",
               "required": false,
               "schema": {
                 "default": false,
-                "description": "[BETA] Mode qui ne retourne parmi les structures en doublon, que celles ayant les services les plus qualitatifs (voir documentation).",
+                "description": "[BETA] Mode qui ne retourne parmi les structures en doublon, que celles ayant les services les plus qualitatifs (voir [documentation](https://gip-inclusion.notion.site/Syst-me-de-d-duplication-des-donn-es-17d5f321b60480f99f6cf65522a83c8b?pvs=4)).",
                 "title": "Exclure Doublons",
                 "type": "boolean"
               }
