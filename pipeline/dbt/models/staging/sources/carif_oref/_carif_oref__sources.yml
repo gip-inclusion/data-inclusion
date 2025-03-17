@@ -8,4 +8,4 @@ sources:
     tables:
       - name: formations
         meta:
-          kind: services
+          kind: service

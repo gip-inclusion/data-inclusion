@@ -6,6 +6,8 @@
 -- depends_on: {{ ref('int_action_logement__structures') }}
 -- depends_on: {{ ref('stg_agefiph__services') }}
 -- depends_on: {{ ref('int_agefiph__services') }}
+-- depends_on: {{ ref('stg_carif_oref__formations') }}
+-- depends_on: {{ ref('int_carif_oref__services') }}
 -- depends_on: {{ ref('stg_cd35__organisations') }}
 -- depends_on: {{ ref('int_cd35__structures') }}
 -- depends_on: {{ ref('stg_dora__services') }}
