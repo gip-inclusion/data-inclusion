@@ -1,11 +1,11 @@
-FROM postgres:17.0-bookworm
+FROM postgres:17.4-bookworm
 
 ENV VIRTUAL_ENV /app/venv
 ENV PATH "${VIRTUAL_ENV}/bin:${PATH}"
 ENV PYTHONUNBUFFERED 1
 ENV PYTHONDONTWRITEBYTECODE 1
 
-RUN localedef -i fr_FR -c -f UTF-8 -A /usr/share/locale/locale.alias fr_FR.UTF-8
+
 
 RUN apt-get update \
     && apt-get install -y --no-install-recommends \
@@ -30,3 +30,5 @@ RUN pip install --no-cache-dir -r processings/requirements/requirements.txt
 
 COPY processings processings
 RUN pip install --no-cache-dir -e processings
+
+RUN localedef -i fr_FR -c -f UTF-8 -A /usr/share/locale/locale.alias fr_FR.UTF-8
