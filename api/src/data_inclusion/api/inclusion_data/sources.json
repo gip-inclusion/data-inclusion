@@ -67,11 +67,11 @@
     {
         "slug": "fredo",
         "nom": "Fredo",
-        "description": "Fredo est un outil diagnostique terrain pour les travailleurs sociaux. Il permet de mettre en relation les bénéficiaires diagnostiqués et les structures d'accompagnements grâce à une personne ressource"
+        "description": "Fredo est un outil diagnostique terrain pour les travailleurs sociaux. Il permet de mettre en relation les bénéficiaires diagnostiqués et les structures d'accompagnements grâce à une personne ressource."
     },
     {
         "slug": "carif-oref",
         "nom": "Réseau des CARIF OREF",
-        "description": "Association qui accompagne les acteurs de l’emploi, de la formation et de l’orientation. Contient l’offre de formation FLE et Illettrisme nationale référencée par RCO"
+        "description": "Association qui accompagne les acteurs de l’emploi, de la formation et de l’orientation. Contient l’offre de formation FLE et Illettrisme nationale référencée par RCO."
     }
 ]
