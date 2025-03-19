@@ -107,14 +107,8 @@ def get_intermediate_tasks():
         command="build",
         select=" ".join(
             [
-                # NOTE(vperron, 2024-09-02) : The contacts union is build here,
-                # out of coherence but I don't really like that now the "brevo"
-                # machinery depends on 3 DAGs to run correctly: import_brevo,
-                # main and notify_rgpd_contacts. Maybe it should be concentrated
-                # into a single DAG. Another way to see it is that it depended on
-                # main since the beginning as it required intermediate data to be
-                # present ?
                 "path:models/intermediate/int__courriels_personnels.sql",
+                "path:models/intermediate/int__courriels_verifies.sql",
                 "path:models/intermediate/int__criteres_qualite.sql",
                 "path:models/intermediate/int__geocodages.sql",
                 "path:models/intermediate/int__union_contacts.sql",
