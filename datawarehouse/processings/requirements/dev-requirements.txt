@@ -13,7 +13,9 @@ cachetools==5.5.2
 categorical-distance==1.9
     # via dedupe
 certifi==2024.12.14
-    # via requests
+    # via
+    #   requests
+    #   sib-api-v3-sdk
 cffi==1.17.1
     # via persistent
 cfgv==3.4.0
@@ -115,6 +117,7 @@ python-dateutil==2.9.0.post0
     #   datetime-distance
     #   pandas
     #   pendulum
+    #   sib-api-v3-sdk
     #   time-machine
 pytz==2024.2
     # via pandas
@@ -134,10 +137,14 @@ setuptools==75.8.0
     #   zope-index
     #   zope-interface
     #   zope-proxy
+sib-api-v3-sdk==7.6.0
+    # via data-inclusion-processings (pyproject.toml)
 simplecosine==1.2
     # via dedupe
 six==1.17.0
-    # via python-dateutil
+    # via
+    #   python-dateutil
+    #   sib-api-v3-sdk
 threadpoolctl==3.5.0
     # via scikit-learn
 time-machine==2.16.0
@@ -156,6 +163,7 @@ unidecode==1.3.8
     # via data-inclusion-processings (pyproject.toml)
 urllib3==2.3.0
     # via requests
+    #   sib-api-v3-sdk
 virtualenv==20.29.3
     # via
     #   pre-commit

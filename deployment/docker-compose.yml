@@ -138,6 +138,7 @@ services:
       - POSTGRES_DB=${DATAWAREHOUSE_DI_DATABASE}
       - POSTGRES_USER=${DATAWAREHOUSE_DI_USERNAME}
       - POSTGRES_PASSWORD=${DATAWAREHOUSE_DI_PASSWORD}
+      - BREVO_API_KEY=${AIRFLOW_VAR_BREVO_API_KEY}
     volumes:
       - datawarehouse-data:/var/lib/postgresql/data
 
