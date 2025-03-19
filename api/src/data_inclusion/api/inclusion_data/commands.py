@@ -216,7 +216,7 @@ def store_inclusion_data(
             with db_session.begin_nested():
                 db_session.add(structure_instance)
         except sqla.exc.IntegrityError as exc:
-            logger.error(
+            logger.info(
                 "Structure source=%s id=%s",
                 structure_data["source"],
                 structure_data["id"],
@@ -229,7 +229,7 @@ def store_inclusion_data(
             with db_session.begin_nested():
                 db_session.add(service_instance)
         except sqla.exc.IntegrityError as exc:
-            logger.error(
+            logger.info(
                 "Service source=%s id=%s",
                 service_data["source"],
                 service_data["id"],
