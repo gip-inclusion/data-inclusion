@@ -1,5 +1,5 @@
 import logging
-from typing import Generator
+from collections.abc import Generator
 
 logger = logging.getLogger(__name__)
 
@@ -56,12 +56,12 @@ def _get_client():
                 )
             return responses
 
-        def import_to_list(self, list_id, contacts):
+        def import_to_list(self, list_id, emails):
             import_params = sib_api_v3_sdk.RequestContactImport()
             # Ensure we have no invalid emails in the list, it would
             # make the whole import fail
-            import_params.json_body = [c for c in contacts if c["email"]]
-            import_params.list_ids = [list_id]
+            import_params.json_body = [{"email": email} for email in emails if email]
+            import_params.list_ids = [int(list_id)]
             return self.contacts_api.import_contacts(
                 request_contact_import=import_params
             )

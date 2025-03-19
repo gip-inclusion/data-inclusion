@@ -183,6 +183,37 @@ models:
           - not_null
           - dbt_utils.not_empty_string
 
+  - name: int__courriels_verifies
+    columns:
+      - name: courriel
+        description: |
+          A validated version of the email address. It has been trimmed, lowercased, unescaped, and
+          for most of them an email has been sent to ensure deliverability and approval of its exposure.
+        data_tests:
+          - not_null
+          - unique
+          - dbt_utils.not_empty_string
+      - name: has_hardbounced
+        description: |
+          Derived from Brevo API's GetContactDetails.email_blacklisted field, returned by the get_contacts endpoint.
+          Cf. https://help.brevo.com/hc/en-us/articles/209458705-FAQs-What-are-the-different-types-of-blocklisted-contacts
+          Actually combines those different reasons for blocklisting:
+          - has hardbounced, or
+          - has unsubscribed, or
+          - has marked the campaign email as spam, or
+          - we, data⋅inclusion, have blocklisted them.
+          It has been discussed internally in 2024 and we assumed that in all these cases, we would hide the e-mail in data⋅inclusion.
+        data_tests:
+          - accepted_values:
+              values: [true, false]
+      - name: was_objected_to
+        description: |
+          Permet de savoir si le contact a fait l'objet d'une demande de retrait RGPD.
+        data_tests:
+          - accepted_values:
+              values: [true, false]
+
+
 unit_tests:
   - name: test_courriels_personnels
     model: int__courriels_personnels
@@ -281,7 +312,7 @@ unit_tests:
           - {"source": "mednum", "id": "bar", "courriel": "truc2@toto.at", "contact_nom_prenom": "Jean Valjean", "telephone": "0123456789"}
           - {"source": "lezemplois", "id": "baz", "courriel": "truc3@toto.at", "contact_nom_prenom": "Jean Valjean", "telephone": "0123456789"}
           - {"source": "autre", "id": "solo", "courriel": "solo@autre.net", "contact_nom_prenom": "Autre Personne", "telephone": "06666666"}
-      - input: ref('int_brevo__contacts')
+      - input: ref('int__courriels_verifies')
         rows:
           # note: values can't be NULL. has_hardbounced is set to true/false by brevo, and was_objected to is set to true/false by us.
           - {"courriel": "truc1@toto.at", "has_hardbounced": true, "was_objected_to": true}

@@ -12,6 +12,7 @@ dependencies = [
     "pandas~=2.2",
     "phonenumbers",
     "requests~=2.31",
+    "sib-api-v3-sdk",
     "unidecode",
     "data-inclusion-schema>=0.23.0",
 ]
@@ -50,5 +51,5 @@ markers = '''
     ban_api: mark test as requiring the base base adresse nationale api
 '''
 
-[tool.ruff.per-file-ignores]
+[tool.ruff.lint.per-file-ignores]
 "test_*.py" = ["S101"]

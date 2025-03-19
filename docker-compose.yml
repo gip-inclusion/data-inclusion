@@ -154,6 +154,7 @@ services:
       - POSTGRES_DB=data-inclusion
       - POSTGRES_USER=data-inclusion
       - POSTGRES_PASSWORD=data-inclusion
+      - BREVO_API_KEY=${AIRFLOW_VAR_BREVO_API_KEY}
     volumes:
       - pg-data:/var/lib/postgresql/data
 
