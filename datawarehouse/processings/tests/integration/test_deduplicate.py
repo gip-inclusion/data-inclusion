@@ -43,15 +43,13 @@ def test_deduplicate():
 
     assert result_df == [
         {
-            "id": 0,
+            'cluster_id': 0,
             "score": pytest.approx(0.99, 0.01),
-            "size": 2,
             "structure_id": "dora-29259c03-03c6-4a7a-979a-29e97ce1e1a3",
         },
         {
-            "id": 0,
+            'cluster_id': 0,
             "score": pytest.approx(0.99, 0.01),
-            "size": 2,
             "structure_id": "emplois-de-linclusion-3b2c8e75-d0f0-425f-b224-b4987e7b2d4d",
         },
     ]
