@@ -1,5 +1,4 @@
 import logging
-from typing import Generator
 
 logger = logging.getLogger(__name__)
 
@@ -9,8 +8,6 @@ def _get_client():
     import sib_api_v3_sdk
 
     class BrevoClient:
-        CONTACT_LIST_PAGE_SIZE = 500  # the maximum
-
         def __init__(self, token: str) -> None:
             self.token = token
             self._client = None
@@ -27,21 +24,6 @@ def _get_client():
         def contacts_api(self) -> sib_api_v3_sdk.ContactsApi:
             return sib_api_v3_sdk.ContactsApi(self.client)
 
-        def list_contacts(
-            self, list_id
-        ) -> Generator[sib_api_v3_sdk.GetContactDetails, None, None]:
-            index = 0
-            while True:
-                response = self.contacts_api.get_contacts_from_list(
-                    list_id=list_id,
-                    limit=self.CONTACT_LIST_PAGE_SIZE,
-                    offset=index,
-                )
-                if len(response.contacts) == 0:
-                    break
-                yield from response.contacts
-                index += self.CONTACT_LIST_PAGE_SIZE
-
         def empty_list(self, list_id) -> None:
             all_emails = [c["email"] for c in self.list_contacts(list_id=list_id)]
             responses = []
@@ -55,16 +37,6 @@ def _get_client():
                     )
                 )
             return responses
-
-        def import_to_list(self, list_id, contacts):
-            import_params = sib_api_v3_sdk.RequestContactImport()
-            # Ensure we have no invalid emails in the list, it would
-            # make the whole import fail
-            import_params.json_body = [c for c in contacts if c["email"]]
-            import_params.list_ids = [list_id]
-            return self.contacts_api.import_contacts(
-                request_contact_import=import_params
-            )
 
         def create_and_send_email_campaign(
             self,
