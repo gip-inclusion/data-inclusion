@@ -55,3 +55,21 @@ repos:
           - dbt-postgres==1.8.0
         args:
           - --config=./pipeline/pyproject.toml
+
+  # processings
+  - repo: https://github.com/astral-sh/ruff-pre-commit
+    rev: v0.9.1
+    hooks:
+      - id: ruff-format
+        name: processings|ruff-format
+        args: [--config=datawarehouse/processings/pyproject.toml]
+        files: ^datawarehouse/processings
+        types_or: [python]
+      - id: ruff
+        name: processings|ruff-check
+        args:
+          - --config=datawarehouse/processings/pyproject.toml
+          - --fix
+          - --fixable=I
+        files: ^datawarehouse/processings
+        types_or: [python]
