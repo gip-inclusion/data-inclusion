@@ -62,9 +62,9 @@ pytestmark = pytest.mark.ban_api
                 "adresse": "bla",
                 "code_postal": None,
                 "code_insee": 38009,
-                "commune": 'Anjou',
+                "commune": "Anjou",
             },
-            None
+            None,
         ),
         (
             {
@@ -72,7 +72,7 @@ pytestmark = pytest.mark.ban_api
                 "adresse": "",
                 "code_postal": None,
                 "code_insee": 38009,
-                "commune": 'Anjou',
+                "commune": "Anjou",
             },
             {
                 "id": "1",
@@ -108,7 +108,7 @@ pytestmark = pytest.mark.ban_api
                 "adresse": "bourg",
                 "code_postal": None,
                 "code_insee": 38009,
-                "commune": 'Anjou',
+                "commune": "Anjou",
             },
             {
                 "id": "1",
@@ -474,16 +474,15 @@ def test_ban_geocode(adresse: dict, expected: dict):
                 "code_insee": "69283",
                 "commune": "Mions",
             },
-        )
+        ),
     ],
 )
 def test_ban_cleaning_cedex(raw: dict, cleaned: dict):
     result_df_raw = geocode(data=raw)
     result_df_cleaned = geocode(data=cleaned)
 
-
-    assert result_df_cleaned[0]["adresse"] == result_df_raw[0]['adresse']
-    assert result_df_cleaned[0]["commune"] == result_df_raw[0]['commune']
-    assert result_df_raw[0]['result_status'] == 'ok'
-    assert result_df_cleaned[0]['result_status'] == 'ok'
-    assert result_df_raw[0]['result_score'] <= result_df_cleaned[0]['result_score']
+    assert result_df_cleaned[0]["adresse"] == result_df_raw[0]["adresse"]
+    assert result_df_cleaned[0]["commune"] == result_df_raw[0]["commune"]
+    assert result_df_raw[0]["result_status"] == "ok"
+    assert result_df_cleaned[0]["result_status"] == "ok"
+    assert result_df_raw[0]["result_score"] <= result_df_cleaned[0]["result_score"]
