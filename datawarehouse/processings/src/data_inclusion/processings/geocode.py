@@ -56,12 +56,21 @@ def _geocode(df: pd.DataFrame) -> pd.DataFrame:
             | (results_df.adresse.isna())
             | (results_df.adresse == "")
             # ... or the street address is "bourg", "mairie" or "village"
-            | (results_df.adresse.str.contains("bourg|village|mairie", case=False, regex=True))
+            | (
+                results_df.adresse.str.contains(
+                    "bourg|village|mairie", case=False, regex=True
+                )
+            )
             # ... or the address is more or less the same as the city name
             # (e.g: adresse=Anjou and commune=anjou 07300)
             | results_df.apply(
-                lambda row: str(row['commune']).lower() in str(row['adresse']).lower(), axis=1,)
-            | results_df.apply(lambda row: str(row['adresse']).lower() in str(row['commune']).lower(), axis=1,)
+                lambda row: str(row["commune"]).lower() in str(row["adresse"]).lower(),
+                axis=1,
+            )
+            | results_df.apply(
+                lambda row: str(row["adresse"]).lower() in str(row["commune"]).lower(),
+                axis=1,
+            )
         ]
 
     logger.info("Got result for address batch, dimensions=%s", results_df.shape)
@@ -90,8 +99,9 @@ STREET_ABBREVIATIONS = {
     r"(?i) pro ": " promenade ",
     r"(?i) rd pt ": " rond point ",
     r"(?i) rte ": " route ",
-    r"(?i) sq ": " square "
+    r"(?i) sq ": " square ",
 }
+
 
 def geocode(
     data: GeocodeInput | list[GeocodeInput],
@@ -112,34 +122,36 @@ def geocode(
 
     # Cleanup/rewrite the values to help the BAN's scoring.
     df["adresse"] = (
-        df["adresse"].str
-        .strip(" -")
+        df["adresse"]
+        .str.strip(" -")
         # After experimentation, looking for "Ville-Nouvelle" returns
         # worse results than "Ville Nouvelle", probably due to a tokenization in
         # the BAN that favors spaces.
         # In the same fashion, looking for "U.R.S.S." returns worse results than
         # using "URSS" for "Avenue de l'U.R.S.S.". With the dots, it does not
         # find the street at all ¯\_(ツ)_/¯
-        .replace("-", " ").replace(".", "")
+        .replace("-", " ")
+        .replace(".", "")
     )
     df["adresse_original"] = df["adresse"]
     df["adresse"] = (
-        df["adresse"].str
-        .replace(r'(?i)BP *[0-9]*', '', regex=True)
-        .replace(r'(?i)CS *[0-9]*', '', regex=True)
+        df["adresse"]
+        .str.replace(r"(?i)BP *[0-9]*", "", regex=True)
+        .replace(r"(?i)CS *[0-9]*", "", regex=True)
     )
     # We use (?i) to make the regex case-insensitive.
     # We can remove everything after cedex, it is always at the end of the string.
     df["commune_original"] = df["commune"]
-    df["commune"] = (
-        df["commune"].str
-        .replace(r'(?i)cedex.*', '', regex=True)
+    df["commune"] = df["commune"].str.replace(r"(?i)cedex.*", "", regex=True)
+
+    df["code_postal"] = np.where(
+        ~df["adresse"].eq(df["adresse_original"]), None, df["code_postal"]
+    )
+    df["code_postal"] = np.where(
+        ~df["commune"].eq(df["commune_original"]), None, df["code_postal"]
     )
 
-    df["code_postal"] = np.where(~df["adresse"].eq(df["adresse_original"]), None, df["code_postal"])
-    df["code_postal"] = np.where(~df["commune"].eq(df["commune_original"]), None, df["code_postal"])
-
-    df["commune"] =  df["commune"].apply(lambda x: x.strip(" -") if x else x)
+    df["commune"] = df["commune"].apply(lambda x: x.strip(" -") if x else x)
     df["adresse"] = (
         df["adresse"]
         .replace(STREET_ABBREVIATIONS, regex=True)
