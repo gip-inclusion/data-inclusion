@@ -48,3 +48,6 @@ testpaths = "tests"
 markers = '''
     ban_api: mark test as requiring the base base adresse nationale api
 '''
+
+[tool.ruff.per-file-ignores]
+"test_*.py" = ["S101"]
