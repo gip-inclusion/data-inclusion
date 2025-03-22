@@ -102,17 +102,13 @@
               "title": "Courriel"
             },
             "date_maj": {
-              "anyOf": [
-                {
-                  "format": "date",
-                  "type": "string"
-                },
-                {
-                  "format": "date-time",
-                  "type": "string"
-                }
+              "description": "Date de dernière modification de la structure chez le producteur de données.",
+              "examples": [
+                "2025-02-14"
               ],
-              "title": "Date Maj"
+              "format": "date",
+              "title": "Date Maj",
+              "type": "string"
             },
             "horaires_ouverture": {
               "anyOf": [
@@ -844,20 +840,13 @@
               "title": "Date Creation"
             },
             "date_maj": {
-              "anyOf": [
-                {
-                  "format": "date",
-                  "type": "string"
-                },
-                {
-                  "format": "date-time",
-                  "type": "string"
-                },
-                {
-                  "type": "null"
-                }
+              "description": "Date de dernière modification du service chez le producteur de données.",
+              "examples": [
+                "2025-02-14"
               ],
-              "title": "Date Maj"
+              "format": "date",
+              "title": "Date Maj",
+              "type": "string"
             },
             "date_suspension": {
               "anyOf": [
@@ -1253,6 +1242,7 @@
             "structure_id",
             "source",
             "nom",
+            "date_maj",
             "score_qualite",
             "structure"
           ],
@@ -1357,17 +1347,13 @@
               "title": "Courriel"
             },
             "date_maj": {
-              "anyOf": [
-                {
-                  "format": "date",
-                  "type": "string"
-                },
-                {
-                  "format": "date-time",
-                  "type": "string"
-                }
+              "description": "Date de dernière modification de la structure chez le producteur de données.",
+              "examples": [
+                "2025-02-14"
               ],
-              "title": "Date Maj"
+              "format": "date",
+              "title": "Date Maj",
+              "type": "string"
             },
             "doublons": {
               "description": "Doublons connus de la structure",
@@ -1831,17 +1817,13 @@
               "title": "Courriel"
             },
             "date_maj": {
-              "anyOf": [
-                {
-                  "format": "date",
-                  "type": "string"
-                },
-                {
-                  "format": "date-time",
-                  "type": "string"
-                }
+              "description": "Date de dernière modification de la structure chez le producteur de données.",
+              "examples": [
+                "2025-02-14"
               ],
-              "title": "Date Maj"
+              "format": "date",
+              "title": "Date Maj",
+              "type": "string"
             },
             "doublons": {
               "description": "Identifiants (source, id) des doublons connus de la structure",
@@ -2289,20 +2271,13 @@
               "title": "Date Creation"
             },
             "date_maj": {
-              "anyOf": [
-                {
-                  "format": "date",
-                  "type": "string"
-                },
-                {
-                  "format": "date-time",
-                  "type": "string"
-                },
-                {
-                  "type": "null"
-                }
+              "description": "Date de dernière modification du service chez le producteur de données.",
+              "examples": [
+                "2025-02-14"
               ],
-              "title": "Date Maj"
+              "format": "date",
+              "title": "Date Maj",
+              "type": "string"
             },
             "date_suspension": {
               "anyOf": [
@@ -2695,6 +2670,7 @@
             "structure_id",
             "source",
             "nom",
+            "date_maj",
             "score_qualite"
           ],
           "title": "Service",
@@ -2872,17 +2848,13 @@
               "title": "Courriel"
             },
             "date_maj": {
-              "anyOf": [
-                {
-                  "format": "date",
-                  "type": "string"
-                },
-                {
-                  "format": "date-time",
-                  "type": "string"
-                }
+              "description": "Date de dernière modification de la structure chez le producteur de données.",
+              "examples": [
+                "2025-02-14"
               ],
-              "title": "Date Maj"
+              "format": "date",
+              "title": "Date Maj",
+              "type": "string"
             },
             "horaires_ouverture": {
               "anyOf": [

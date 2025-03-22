@@ -37,7 +37,7 @@ setup(
         "sqlalchemy",
         "tqdm",
         "uvicorn[standard]",
-        "data-inclusion-schema==0.21.0",
+        "data-inclusion-schema @ git+https://github.com/gip-inclusion/data-inclusion-schema.git@6aca0eeebac6faed9f2793b2558e0430dfa740e9",
     ],
     extras_require={
         "test": [
