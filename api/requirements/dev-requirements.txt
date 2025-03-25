@@ -44,7 +44,7 @@ colorama==0.4.6
     # via tox
 cryptography==44.0.2
     # via data-inclusion-api (setup.py)
-data-inclusion-schema==0.21.0
+data-inclusion-schema @ git+https://github.com/gip-inclusion/data-inclusion-schema.git@03787b73ca269c284d33f058379ad45b9e57902b
     # via data-inclusion-api (setup.py)
 distlib==0.3.9
     # via virtualenv
