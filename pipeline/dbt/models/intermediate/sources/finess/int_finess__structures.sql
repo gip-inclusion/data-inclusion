@@ -2,7 +2,7 @@ WITH etablissements AS (
     SELECT * FROM {{ ref('stg_finess__etablissements') }}
 ),
 
--- this subset of categories 
+-- this subset of categories
 -- cf https://finess.sante.gouv.fr/fininter/jsp/pdf.do?xsl=CategEta.xsl
 interesting_etablissement_categories AS (
     SELECT x.*

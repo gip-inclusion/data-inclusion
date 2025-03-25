@@ -2,10 +2,6 @@ WITH formations AS (
     SELECT * FROM {{ ref('stg_reseau_alpha__formations') }}
 ),
 
-structures AS (
-    SELECT * FROM {{ ref('stg_reseau_alpha__structures') }}
-),
-
 final AS (
     SELECT
         TRUE                                                      AS "contact_public",
@@ -90,7 +86,6 @@ final AS (
         ARRAY['formation']                                        AS "types",
         CAST(NULL AS TEXT [])                                     AS "frais"
     FROM formations
-    LEFT JOIN structures ON formations.structure_id = structures.id
 )
 
 SELECT * FROM final
