@@ -31,7 +31,9 @@ services AS (
                 'sanitary_material',
                 'some_products_national'
             ) THEN NULL
-            ELSE NULLIF(services.data ->> 'name', '')
+            -- first replace trailing groups of 2 or more dots by an ellipsis
+            -- then remove trailing dot if not preceded by "etc"
+            ELSE NULLIF(REGEXP_REPLACE(REGEXP_REPLACE(services.data ->> 'name', '\.{2,}$', '…'), '(?<!etc)\.$', ''), '')
         END                                                                                                               AS "name",
         services.data ->> 'category'                                                                                      AS "category",
         NULLIF(services.data ->> 'description', '')                                                                       AS "description",

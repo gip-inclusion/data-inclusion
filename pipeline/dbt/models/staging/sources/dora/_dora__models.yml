@@ -97,6 +97,8 @@ models:
         data_tests:
           - not_null
           - dbt_utils.not_empty_string
+          - dbt_utils.expression_is_true:
+              expression: "!~ '(?<!etc)\\.$'"
       - name: pre_requis
         data_tests:
           - dbt_utils.not_constant
@@ -245,6 +247,8 @@ models:
                 severity: warn
           - dbt_utils.not_constant
           - dbt_utils.not_empty_string
+          - dbt_utils.expression_is_true:
+              expression: "!~ '(?<!etc)\\.$'"
       - name: presentation_detail
         data_tests:
           - dbt_utils.not_constant

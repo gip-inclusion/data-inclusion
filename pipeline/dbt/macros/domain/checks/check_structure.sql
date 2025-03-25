@@ -29,7 +29,7 @@ BEGIN
             ("source", "source IS NOT NULL"),
             ("siret", "siret IS NULL OR CHECK_SIRET(siret)"),
             ("rna", "rna IS NULL OR CHECK_RNA(rna)"),
-            ("nom", "nom IS NOT NULL"),
+            ("nom", "nom IS NOT NULL AND LENGTH(nom) <= 150 AND LENGTH(nom) >= 3 AND nom !~ '(?<!etc)\.$'"),
             ("date_maj", "date_maj IS NOT NULL"),
             ("typologie", "typologie IS NULL OR typologie IN (SELECT t.value FROM " ~ ref('typologies_de_structures') ~ " AS t)"),
             ("labels_nationaux", "labels_nationaux IS NULL OR labels_nationaux <@ ARRAY(SELECT l.value FROM " ~ ref('labels_nationaux') ~ " AS l)"),

@@ -14,7 +14,9 @@ lieux AS (
         CAST(data #>> '{modalities,orientation,checked}' AS BOOLEAN)                                     AS "modalities__orientation__checked",
         data ->> 'lieu_id'                                                                               AS "id",
         data ->> 'lieu_id'                                                                               AS "lieu_id",
-        data ->> 'name'                                                                                  AS "name",
+        -- first replace trailing groups of 2 or more dots by an ellipsis
+        -- then remove trailing dot if not preceded by "etc"
+        REGEXP_REPLACE(REGEXP_REPLACE(data ->> 'name', '\.{2,}$', '…'), '(?<!etc)\.$', '')               AS "name",
         data #>> '{position,city}'                                                                       AS "position__city",
         data #>> '{position,cityCode}'                                                                   AS "position__city_code",
         data #>> '{position,country}'                                                                    AS "position__country",

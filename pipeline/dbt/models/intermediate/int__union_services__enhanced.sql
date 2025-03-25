@@ -68,7 +68,7 @@ zones_diffusion AS (
         ON adresses.code_departement = departements.code
 ),
 
-services_with_zdf_and_contact AS (
+services_without_address AS (
     SELECT
         {{
             dbt_utils.star(
@@ -80,6 +80,7 @@ services_with_zdf_and_contact AS (
                     "contact_nom_prenom",
                     "courriel",
                     "telephone",
+                    "nom",
                 ]
             )
         }},
@@ -87,7 +88,11 @@ services_with_zdf_and_contact AS (
         zones_diffusion.zone_diffusion_nom  AS "zone_diffusion_nom",
         contacts.contact_nom_prenom         AS "contact_nom_prenom",
         contacts.courriel                   AS "courriel",
-        contacts.telephone                  AS "telephone"
+        contacts.telephone                  AS "telephone",
+        CASE
+            WHEN LENGTH(services.nom) <= 150 THEN services.nom
+            ELSE LEFT(services.nom, 149) || '…'
+        END AS "nom"
     FROM services_with_valid_structure AS services
     LEFT JOIN zones_diffusion
         ON services._di_surrogate_id = zones_diffusion._di_surrogate_id
@@ -97,7 +102,7 @@ services_with_zdf_and_contact AS (
 
 valid_services AS (
     SELECT services.*
-    FROM services_with_zdf_and_contact AS services
+    FROM services_without_address AS services
     LEFT JOIN
         LATERAL
         LIST_SERVICE_ERRORS(
