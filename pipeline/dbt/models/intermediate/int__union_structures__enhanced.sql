@@ -7,7 +7,20 @@ adresses AS (
 ),
 
 valid_structures AS (
-    SELECT structures.*
+    SELECT
+        {{
+            dbt_utils.star(
+                from=ref('int__union_structures'),
+                relation_alias='structures',
+                except=[
+                    "nom",
+                ]
+            )
+        }},
+        CASE
+            WHEN LENGTH(structures.nom) <= 150 THEN structures.nom
+            ELSE LEFT(structures.nom, 149) || '…'
+        END AS "nom"
     FROM structures
     LEFT JOIN
         LATERAL

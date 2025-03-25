@@ -43,7 +43,7 @@ BEGIN
             ("id", "id IS NOT NULL"),
             ("structure_id", "structure_id IS NOT NULL"),
             ("source", "source IS NOT NULL"),
-            ("nom", "nom IS NOT NULL"),
+            ("nom", "nom IS NOT NULL AND LENGTH(nom) <= 150 AND LENGTH(nom) >= 3 AND nom !~ '(?<!etc)\.$'"),
             ("presentation_resume", "presentation_resume IS NULL OR LENGTH(presentation_resume) <= 280"),
             ("types", "types IS NULL OR types <@ ARRAY(SELECT t.value FROM " ~ ref('typologies_de_services') ~ "AS t)"),
             ("thematiques", "thematiques IS NULL OR thematiques <@ ARRAY(SELECT t.value FROM " ~ ref('thematiques') ~ "AS t)"),

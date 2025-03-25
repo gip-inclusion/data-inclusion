@@ -21,7 +21,7 @@ final AS (
         NULLIF(TRIM(data ->> 'horaires_ouverture'), '')                            AS "horaires_ouverture",
         NULLIF(TRIM(data ->> 'id'), '')                                            AS "id",
         NULLIF(TRIM(data ->> 'lien_source'), '')                                   AS "lien_source",
-        NULLIF(TRIM(data ->> 'nom'), '')                                           AS "nom",
+        NULLIF(REGEXP_REPLACE(TRIM(data ->> 'nom'), '(?<!etc)\.+$', ''), '')       AS "nom",
         NULLIF(TRIM(data ->> 'presentation_detail'), '')                           AS "presentation_detail",
         NULLIF(TRIM(data ->> 'presentation_resume'), '')                           AS "presentation_resume",
         NULLIF(TRIM(data ->> 'rna'), '')                                           AS "rna",
