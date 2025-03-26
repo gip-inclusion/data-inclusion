@@ -80,6 +80,11 @@ data "scaleway_iam_group" "editors" {
   name            = "data-inclusion-terraform-editors"
 }
 
+data "scaleway_iam_group" "marts_consumers" {
+  organization_id = data.scaleway_account_project.main.organization_id
+  name            = "data-inclusion-${var.environment}-marts-consumers"
+}
+
 resource "scaleway_object_bucket_policy" "main" {
   bucket = scaleway_object_bucket.main.name
   policy = jsonencode(
@@ -161,6 +166,21 @@ resource "scaleway_object_bucket_policy" "main" {
           Resource = [
             "${scaleway_object_bucket.main.name}",
             "${scaleway_object_bucket.main.name}/*"
+          ]
+        },
+        {
+          Effect = "Allow",
+          Sid    = "Grant list, read & write in data/marts/* to consumers",
+          Principal = {
+            SCW = [for app_id in data.scaleway_iam_group.marts_consumers.application_ids : "application_id:${app_id}"]
+          },
+          Action = [
+            "s3:ListBucket",
+            "s3:GetObject"
+          ],
+          Resource = [
+            "${scaleway_object_bucket.main.name}",
+            "${scaleway_object_bucket.main.name}/data/marts/*",
           ]
         }
       ]
