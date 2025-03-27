@@ -67,6 +67,8 @@ def force_authenticate(request, api_client):
         token = auth.create_access_token("some_user")
     elif request.node.get_closest_marker("with_admin_token"):
         token = auth.create_access_token("admin_user", admin=True)
+    elif request.node.get_closest_marker("with_dora_token"):
+        token = auth.create_access_token("dora")
 
     if token is not None:
         api_client.headers.update({"Authorization": f"Bearer {token}"})
@@ -118,7 +120,7 @@ def db_engine(db_init):
 
 @pytest.fixture(scope="session", autouse=True)
 def communes(db_connection):
-    df = geopandas.read_parquet(DIR / "communes.parquet.gzip")
+    df = geopandas.read_parquet(DIR / "communes.parquet")
     df = df.to_wkt()
     commune_data_list = df.to_dict(orient="records")
 
