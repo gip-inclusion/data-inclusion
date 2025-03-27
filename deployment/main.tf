@@ -231,10 +231,8 @@ resource "scaleway_domain_record" "dns" {
   ttl      = 3600
 }
 
-resource "null_resource" "up" {
-  triggers = {
-    always_run = timestamp()
-  }
+resource "terraform_data" "up" {
+  triggers_replace = timestamp()
 
   connection {
     type        = "ssh"
