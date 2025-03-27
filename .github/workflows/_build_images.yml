@@ -57,6 +57,11 @@ jobs:
           cache-to: type=gha,mode=max
           labels: ${{ steps.meta.outputs.labels }}
 
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: pip
+
       - name: Run tests
         if: matrix.service == 'api'
         env:
@@ -68,6 +73,12 @@ jobs:
         if: matrix.service == 'pipeline'
         run: |
           echo #TODO
+
+      - name: Run tests
+        if: matrix.service == 'datawarehouse'
+        run: |
+          pip install tox
+          cd processings && tox
 
       - name: Push image to GitHub registry
         uses: docker/build-push-action@v5
