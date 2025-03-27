@@ -18,6 +18,7 @@ MAUBEUGE = {"code_insee": "59392"}
 PARIS = {"code_insee": "75056", "latitude": 48.866667, "longitude": 2.333333}
 PARIS_11 = {"code_insee": "75111", "latitude": 48.86010, "longitude": 2.38160}
 ROUBAIX = {"code_insee": "59512"}
+STRASBOURG = {"code_insee": "67482"}
 
 
 def list_resources_data(resp_data):
@@ -879,6 +880,48 @@ def test_can_filter_resources_by_sources(api_client, url, factory):
         },
     )
     assert_paginated_response_data(response.json(), total=0)
+
+
+@pytest.mark.parametrize(
+    ("is_dora",),
+    [
+        pytest.param(True, marks=pytest.mark.with_token("dora-test")),
+        pytest.param(False, marks=pytest.mark.with_token("not-dora")),
+    ],
+)
+@pytest.mark.parametrize(
+    ("url", "factory"),
+    [
+        ("/api/v0/services", factories.ServiceFactory),
+        ("/api/v0/services", factories.ServiceFactory),
+        ("/api/v0/structures", factories.StructureFactory),
+        ("/api/v0/structures", factories.StructureFactory),
+        ("/api/v0/search/services", factories.ServiceFactory),
+        ("/api/v0/search/services", factories.ServiceFactory),
+    ],
+)
+@pytest.mark.parametrize(
+    ("source", "code_insee", "restricted"),
+    [
+        ("soliguide", PARIS["code_insee"], True),
+        ("soliguide", None, True),
+        ("soliguide", LILLE["code_insee"], False),
+        ("soliguide", STRASBOURG["code_insee"], False),
+        ("emplois-de-linclusion", PARIS["code_insee"], False),
+        ("emplois-de-linclusion", None, False),
+    ],
+)
+def test_soliguide_is_partially_available(
+    api_client, is_dora, url, factory, source, code_insee, restricted
+):
+    factory(source=source, code_insee=code_insee)
+
+    response = api_client.get(url)
+
+    assert response.status_code == 200
+    resp_data = response.json()
+
+    assert (restricted and not is_dora) == (len(resp_data["items"]) == 0)
 
 
 @pytest.mark.parametrize(

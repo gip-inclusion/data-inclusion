@@ -187,7 +187,13 @@ def filter_restricted(
     request: fastapi.Request,
 ) -> sqla.Select:
     if not request.user.is_authenticated or "dora" not in request.user.username:
-        query = query.filter(models.Structure.source != "soliguide")
+        query = query.filter(
+            sqla.or_(
+                models.Structure.source != "soliguide",
+                models.Structure.code_insee.startswith("59"),  # Nord
+                models.Structure.code_insee.startswith("67"),  # Bas-Rhin
+            )
+        )
 
     return query
 
