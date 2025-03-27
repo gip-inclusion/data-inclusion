@@ -245,7 +245,7 @@ def store_inclusion_data(
         "schedule": {"type": "crontab", "value": "0 * * * *"},
         "checkin_margin": 60,
         "max_runtime": 60,
-        "failure_issue_threshold": 1,
+        "failure_issue_threshold": 3,
         "recovery_threshold": 1,
         "timezone": "UTC",
     },
