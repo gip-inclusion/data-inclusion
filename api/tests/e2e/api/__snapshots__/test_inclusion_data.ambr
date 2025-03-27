@@ -99,7 +99,12 @@
                   "type": "null"
                 }
               ],
-              "title": "Courriel"
+              "description": "Courriel à utiliser pour obtenir des informations complémentaires sur la structure.",
+              "examples": [
+                "exemple@inclusion.gouv.fr"
+              ],
+              "title": "Courriel",
+              "validation": "Doit suivre le format de la RFC 5322.\nSi non conforme ou destinataire inexistant, suppression de la valeur."
             },
             "date_maj": {
               "anyOf": [
@@ -818,7 +823,12 @@
                   "type": "null"
                 }
               ],
-              "title": "Courriel"
+              "description": "Courriel à utiliser pour obtenir des informations complémentaires sur le service. Si le mode de mobilisation est `envoyer-un-email`, à utiliser pour mobiliser le service.",
+              "examples": [
+                "exemple@inclusion.gouv.fr"
+              ],
+              "title": "Courriel",
+              "validation": "Doit suivre le format de la RFC 5322.\nVérification de l’existence du destinataire (envoi d’un courrier de notification)\nSi non conforme ou destinataire inexistant, suppression de la valeur."
             },
             "cumulable": {
               "anyOf": [
@@ -1354,7 +1364,12 @@
                   "type": "null"
                 }
               ],
-              "title": "Courriel"
+              "description": "Courriel à utiliser pour obtenir des informations complémentaires sur la structure.",
+              "examples": [
+                "exemple@inclusion.gouv.fr"
+              ],
+              "title": "Courriel",
+              "validation": "Doit suivre le format de la RFC 5322.\nSi non conforme ou destinataire inexistant, suppression de la valeur."
             },
             "date_maj": {
               "anyOf": [
@@ -1828,7 +1843,12 @@
                   "type": "null"
                 }
               ],
-              "title": "Courriel"
+              "description": "Courriel à utiliser pour obtenir des informations complémentaires sur la structure.",
+              "examples": [
+                "exemple@inclusion.gouv.fr"
+              ],
+              "title": "Courriel",
+              "validation": "Doit suivre le format de la RFC 5322.\nSi non conforme ou destinataire inexistant, suppression de la valeur."
             },
             "date_maj": {
               "anyOf": [
@@ -2263,7 +2283,12 @@
                   "type": "null"
                 }
               ],
-              "title": "Courriel"
+              "description": "Courriel à utiliser pour obtenir des informations complémentaires sur le service. Si le mode de mobilisation est `envoyer-un-email`, à utiliser pour mobiliser le service.",
+              "examples": [
+                "exemple@inclusion.gouv.fr"
+              ],
+              "title": "Courriel",
+              "validation": "Doit suivre le format de la RFC 5322.\nVérification de l’existence du destinataire (envoi d’un courrier de notification)\nSi non conforme ou destinataire inexistant, suppression de la valeur."
             },
             "cumulable": {
               "anyOf": [
@@ -2869,7 +2894,12 @@
                   "type": "null"
                 }
               ],
-              "title": "Courriel"
+              "description": "Courriel à utiliser pour obtenir des informations complémentaires sur la structure.",
+              "examples": [
+                "exemple@inclusion.gouv.fr"
+              ],
+              "title": "Courriel",
+              "validation": "Doit suivre le format de la RFC 5322.\nSi non conforme ou destinataire inexistant, suppression de la valeur."
             },
             "date_maj": {
               "anyOf": [
