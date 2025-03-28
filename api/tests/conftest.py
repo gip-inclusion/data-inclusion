@@ -1,7 +1,7 @@
+import json
 from pathlib import Path
 
 import faker
-import geopandas
 import pytest
 import sqlalchemy as sqla
 from alembic import command
@@ -61,14 +61,15 @@ def force_authenticate(request, api_client):
     """
     from data_inclusion.api import auth
 
-    token = None
-
-    if request.node.get_closest_marker("with_token"):
-        token = auth.create_access_token("some_user")
-    elif request.node.get_closest_marker("with_admin_token"):
-        token = auth.create_access_token("admin_user", admin=True)
-
-    if token is not None:
+    if mark := request.node.get_closest_marker("with_token"):
+        username = (
+            mark.args[0]
+            if len(mark.args) > 0
+            else mark.kwargs["username"]
+            if "username" in mark.kwargs
+            else "some_user"
+        )
+        token = auth.create_access_token(**(mark.kwargs | {"subject": username}))
         api_client.headers.update({"Authorization": f"Bearer {token}"})
 
 
@@ -118,9 +119,9 @@ def db_engine(db_init):
 
 @pytest.fixture(scope="session", autouse=True)
 def communes(db_connection):
-    df = geopandas.read_parquet(DIR / "communes.parquet.gzip")
-    df = df.to_wkt()
-    commune_data_list = df.to_dict(orient="records")
+    # handpicked data from :
+    # https://geo.api.gouv.fr/decoupage-administratif/communes
+    commune_data_list = json.load((DIR / "communes.json").open())
 
     db_connection.execute(sqla.insert(Commune).values(commune_data_list))
     db_connection.commit()

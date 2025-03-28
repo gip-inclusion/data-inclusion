@@ -137,3 +137,4 @@ scalingo -a data-inclusion-api-staging db-tunnel SCALINGO_POSTGRESQL_URL
 ```
 
 Once you launch the tunnel, you need a user to finish opening the connection. You can create one from the DB dashboard in the user tab.
+
