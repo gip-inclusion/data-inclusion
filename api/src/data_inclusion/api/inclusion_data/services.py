@@ -186,7 +186,9 @@ def filter_restricted(
     query: sqla.Select,
     request: fastapi.Request,
 ) -> sqla.Select:
-    if not request.user.is_authenticated or "dora" not in request.user.username:
+    if not request.user.is_authenticated or not request.user.username.startswith(
+        "dora-"
+    ):
         query = query.filter(
             sqla.or_(
                 models.Structure.source != "soliguide",
@@ -282,7 +284,9 @@ def read_sources():
 
 def list_sources(request: fastapi.Request) -> list[dict]:
     sources = read_sources()
-    if not request.user.is_authenticated or "dora" not in request.user.username:
+    if not request.user.is_authenticated or not request.user.username.startswith(
+        "dora-"
+    ):
         sources = [d for d in sources if d["slug"] not in ["soliguide"]]
     return sources
 
