@@ -1,0 +1,99 @@
+[
+    {
+        "code":59183,
+        "nom":"Dunkerque",
+        "departement":59,
+        "region":32,
+        "siren_epci":245900428,
+        "codes_postaux":[
+            "59140",
+            "59240",
+            "59279"
+        ],
+        "centre":"POINT (2.3431 51.0169)"
+    },
+    {
+        "code":59295,
+        "nom":"Hazebrouck",
+        "departement":59,
+        "region":32,
+        "siren_epci":200040947,
+        "codes_postaux":[
+            "59190"
+        ],
+        "centre":"POINT (2.5357 50.7254)"
+    },
+    {
+        "code":59350,
+        "nom":"Lille",
+        "departement":59,
+        "region":32,
+        "siren_epci":200093201,
+        "codes_postaux":[
+            "59000",
+            "59160",
+            "59260"
+        ],
+        "centre":"POINT (3.0468 50.6311)"
+    },
+    {
+        "code":59392,
+        "nom":"Maubeuge",
+        "departement":59,
+        "region":32,
+        "siren_epci":200043396,
+        "codes_postaux":[
+            "59600"
+        ],
+        "centre":"POINT (3.9611 50.2834)"
+    },
+    {
+        "code":59512,
+        "nom":"Roubaix",
+        "departement":59,
+        "region":32,
+        "siren_epci":200093201,
+        "codes_postaux":[
+            "59100"
+        ],
+        "centre":"POINT (3.1843 50.6887)"
+    },
+    {
+        "code":75056,
+        "nom":"Paris",
+        "departement":75,
+        "region":11,
+        "siren_epci":200054781,
+        "codes_postaux":[
+            "75001",
+            "75002",
+            "75003",
+            "75004"
+        ],
+        "centre":"POINT (2.347 48.8589)"
+    },
+    {
+        "code":75111,
+        "nom":"Paris 11e",
+        "departement":75,
+        "region":11,
+        "siren_epci":200054781,
+        "codes_postaux":[
+            "75011"
+        ],
+        "centre":"POINT (2.3816 48.8601)"
+    },
+    {
+        "code":67482,
+        "nom":"Strasbourg",
+        "departement":67,
+        "region":44,
+        "siren_epci":246700488,
+        "codes_postaux":[
+            "67000",
+            "67100",
+            "67200"
+        ],
+        "centre":"POINT (7.7621 48.5691)"
+    }
+]

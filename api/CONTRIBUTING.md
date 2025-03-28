@@ -57,43 +57,6 @@ data-inclusion-api load_inclusion_data
 tox
 ```
 
-To modify communes.parquet:
-```python
-import json
-import geopandas as gpd
-
-def reverse_communes(dir: str):
-    with open(f"{dir}/communes.json", "r", encoding="utf-8") as json_file:
-        commune_data_list = json.load(json_file)
-
-    df = gpd.GeoDataFrame.from_records(commune_data_list)
-
-    df["centre"] = gpd.GeoSeries.from_wkt(df["centre"])
-    df = df.set_geometry("centre")
-
-    df.to_parquet(f"{dir}/communes.parquet")
-```
-Json file must be this format:
-```json
-[
-    {
-        "code": 59183,
-        "nom": "Dunkerque",
-        "departement": 59,
-        "region": 32,
-        "siren_epci": 245900428,
-        "codes_postaux": [
-            "59140",
-            "59240",
-            "59279"
-        ],
-        "centre": "POINT (2.3431 51.0169)"
-    },
-...
-]
-```
-
-
 ## Running the benchmark
 
 ```bash
