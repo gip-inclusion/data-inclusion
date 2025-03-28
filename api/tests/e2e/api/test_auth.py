@@ -20,7 +20,7 @@ def test_create_token_unauthorized(api_client):
     assert response.status_code == 403
 
 
-@pytest.mark.with_admin_token
+@pytest.mark.with_token(admin=True)
 def test_create_token(api_client):
     url = "/api/v0/create_token/"
     response = api_client.post(url, json={"email": "foo@bar.com"})

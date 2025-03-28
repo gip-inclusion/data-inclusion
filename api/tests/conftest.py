@@ -61,16 +61,15 @@ def force_authenticate(request, api_client):
     """
     from data_inclusion.api import auth
 
-    token = None
-
-    if request.node.get_closest_marker("with_token"):
-        token = auth.create_access_token("some_user")
-    elif request.node.get_closest_marker("with_admin_token"):
-        token = auth.create_access_token("admin_user", admin=True)
-    elif request.node.get_closest_marker("with_dora_token"):
-        token = auth.create_access_token("dora")
-
-    if token is not None:
+    if mark := request.node.get_closest_marker("with_token"):
+        username = (
+            mark.args[0]
+            if len(mark.args) > 0
+            else mark.kwargs["username"]
+            if "username" in mark.kwargs
+            else "some_user"
+        )
+        token = auth.create_access_token(**(mark.kwargs | {"subject": username}))
         api_client.headers.update({"Authorization": f"Bearer {token}"})
 
 
