@@ -5,6 +5,8 @@ ENV PATH "${VIRTUAL_ENV}/bin:${PATH}"
 ENV PYTHONUNBUFFERED 1
 ENV PYTHONDONTWRITEBYTECODE 1
 
+WORKDIR /app
+
 RUN apt-get update \
     && apt-get install -y --no-install-recommends \
     postgresql-17-postgis-3 \
@@ -24,7 +26,7 @@ RUN pip install --no-cache-dir --upgrade pip setuptools wheel
 COPY ./docker-entrypoint-initdb.d /docker-entrypoint-initdb.d
 
 COPY processings/requirements processings/requirements
-RUN pip install --no-cache-dir -r processings/requirements/requirements.txt
+RUN pip install --no-cache-dir -r processings/requirements/test-requirements.txt
 
 COPY processings processings
 RUN pip install --no-cache-dir -e processings
