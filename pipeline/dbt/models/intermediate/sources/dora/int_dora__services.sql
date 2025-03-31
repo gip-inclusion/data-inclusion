@@ -37,7 +37,7 @@ final AS (
             ELSE services.modes_orientation_beneficiaire
         END                                                AS "modes_orientation_beneficiaire",
         services.modes_orientation_beneficiaire_autres     AS "modes_orientation_beneficiaire_autres",
-        services.nom                                       AS "nom",
+        RTRIM(SUBSTRING(services.nom, 1, 150), '.')        AS "nom",
         services.presentation_resume                       AS "presentation_resume",
         services.presentation_detail                       AS "presentation_detail",
         services.prise_rdv                                 AS "prise_rdv",

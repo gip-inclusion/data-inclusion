@@ -44,7 +44,7 @@ final AS (
         NULL                                                                      AS "modes_orientation_accompagnateur_autres",
         ARRAY[offres.modes_orientation_beneficiaire]                              AS "modes_orientation_beneficiaire",
         NULL                                                                      AS "modes_orientation_beneficiaire_autres",
-        offres.nom_dora                                                           AS "nom",
+        RTRIM(SUBSTRING(offres.nom_dora, 1, 150), '.')                            AS "nom",
         NULL                                                                      AS "page_web",
         offres.presentation                                                       AS "presentation_detail",
         offres.presentation                                                       AS "presentation_resume",

@@ -175,11 +175,11 @@ final AS (
             FROM di_types_by_fredo_services
             WHERE fredo_services.value = di_types_by_fredo_services.service_fredo
         )]                                                                                    AS "types",
-        (
+        RTRIM(SUBSTRING((
             SELECT REPLACE((UPPER(LEFT(di_types_by_fredo_services.service_fredo, 1)) || SUBSTRING(di_types_by_fredo_services.service_fredo FROM 2)), '/', 'et')
             FROM di_types_by_fredo_services
             WHERE fredo_services.value = di_types_by_fredo_services.service_fredo
-        )                                                                                     AS "nom",
+        ), 1, 150), '.')                                                                      AS "nom",
         CASE
             WHEN 'gratuit' = ANY(frais.frais) AND 'payant' = ANY(frais.frais)
                 THEN ARRAY['gratuit-sous-conditions']

@@ -26,7 +26,7 @@ final AS (
         services.modes_orientation_accompagnateur_autres AS "modes_orientation_accompagnateur_autres",
         services.modes_orientation_beneficiaire          AS "modes_orientation_beneficiaire",
         services.modes_orientation_beneficiaire_autres   AS "modes_orientation_beneficiaire_autres",
-        services.nom                                     AS "nom",
+        RTRIM(SUBSTRING(services.nom, 1, 150), '.')      AS "nom",
         services.page_web                                AS "page_web",
         services.presentation_detail                     AS "presentation_detail",
         services.presentation_resume                     AS "presentation_resume",

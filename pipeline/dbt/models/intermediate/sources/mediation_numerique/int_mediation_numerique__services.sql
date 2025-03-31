@@ -24,7 +24,7 @@ final AS (
     SELECT
         services.id                                                                                    AS "id",
         structures.id                                                                                  AS "adresse_id",
-        services.nom                                                                                   AS "nom",
+        RTRIM(SUBSTRING(services.nom, 1, 150), '.')                                                    AS "nom",
         services.prise_rdv                                                                             AS "prise_rdv",
         services.frais                                                                                 AS "frais",
         services.profils                                                                               AS "profils",
