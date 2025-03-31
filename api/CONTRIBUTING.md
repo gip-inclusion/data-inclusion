@@ -17,7 +17,7 @@ pip install -e .
 
 ## Running the api locally
 
-Make sure the `target-db` container is up and running. See instructions [here](../CONTRIBUTING.md#docker).
+Make sure the `datawarehouse` container is up and running. See instructions [here](../CONTRIBUTING.md#docker).
 
 ```bash
 # Copy (and optionally edit) the template .env

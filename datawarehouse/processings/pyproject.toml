@@ -20,6 +20,7 @@ dependencies = [
 dev = [
     "pre-commit",
     "ruff",
+    "tox",
 ]
 test = [
     "pytest",

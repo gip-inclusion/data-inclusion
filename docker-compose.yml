@@ -19,7 +19,7 @@ x-airflow-common:
     AIRFLOW__WEBSERVER__WORKERS: 1
 
     # Connections
-    AIRFLOW_CONN_PG: postgresql://data-inclusion:data-inclusion@target-db:5432/data-inclusion
+    AIRFLOW_CONN_PG: postgresql://data-inclusion:data-inclusion@datawarehouse:5432/data-inclusion
     AIRFLOW_CONN_S3: aws://@/data-inclusion-lake?endpoint_url=http%3A%2F%2Fminio%3A9000&aws_access_key_id=minioadmin&aws_secret_access_key=minioadmin
     AIRFLOW_CONN_S3_SOURCES: ${AIRFLOW_CONN_S3_SOURCES}
     AIRFLOW_CONN_SSH_API: ${AIRFLOW_CONN_SSH_API}
@@ -139,7 +139,7 @@ services:
     depends_on:
       - minio
 
-  target-db:
+  datawarehouse:
     build: datawarehouse
     restart: no
     command: -c fsync=off -c full_page_writes=off -c synchronous_commit=off -c log_statement=all
@@ -160,7 +160,7 @@ services:
     image: data-inclusion/api
     build: api
     depends_on:
-      target-db:
+      datawarehouse:
         condition: service_healthy
     restart: no
     ports:
@@ -168,7 +168,7 @@ services:
     environment:
       - ENV=${API_ENV:-dev}
       - DEBUG=${API_DEBUG:-False}
-      - DATABASE_URL=postgresql://data-inclusion:data-inclusion@target-db:5432/data-inclusion
+      - DATABASE_URL=postgresql://data-inclusion:data-inclusion@datawarehouse:5432/data-inclusion
       - BASE_URL=http://127.0.0.1:8000
       - SECRET_KEY=USE_IN_DEVELOPMENT_ONLY
       - DATALAKE_ENDPOINT_URL=http://minio:9000
