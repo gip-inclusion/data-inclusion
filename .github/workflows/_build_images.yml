@@ -58,21 +58,11 @@ jobs:
           labels: ${{ steps.meta.outputs.labels }}
 
       - name: Run tests
-        if: matrix.service == 'api'
+        if: matrix.service != 'pipeline'  # TODO: run pipeline tests
         env:
           API_ENV: test
         run: |
-          docker compose run --entrypoint pytest api -p no:cacheprovider -vv
-
-      - name: Run tests
-        if: matrix.service == 'pipeline'
-        run: |
-          echo #TODO
-
-      - name: Run tests
-        if: matrix.service == 'datawarehouse'
-        run: |
-          docker compose run --entrypoint pytest target-db -p no:cacheprovider -vv
+          docker compose run --entrypoint pytest ${{ matrix.service }} -p no:cacheprovider -vv
 
       - name: Push image to GitHub registry
         uses: docker/build-push-action@v5
