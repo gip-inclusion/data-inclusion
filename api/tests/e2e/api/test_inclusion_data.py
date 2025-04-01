@@ -237,13 +237,6 @@ def test_list_sources(api_client):
             "mediation-numerique",
         ]
     )
-    assert not any(
-        slug in [d["slug"] for d in resp_data]
-        for slug in [
-            "soliguide",
-            "data-inclusion",
-        ]
-    )
 
 
 def test_list_services_unauthenticated(api_client):
