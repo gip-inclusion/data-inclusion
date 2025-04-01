@@ -217,6 +217,78 @@ models:
           - accepted_values:
               values: [true, false]
 
+  - name: int__union_urls
+    description: |
+      This model contains all the potential URLs that we want to validate.
+    columns:
+      - name: url
+        data_tests:
+          - not_null
+          - dbt_utils.not_empty_string
+          - unique
+
+  - name: int__union_urls__enhanced
+    description: |
+      Contains the validation statuses, eventual error messages, and attempts for each URL
+      for which we attempted a validation.
+    columns:
+      - name: last_checked_at
+        description: |
+          Date of the last URL check.
+          It is updated each time the URL is verified.
+      - name: input_url
+        description: |
+          Contains the original URL to validate.
+          It can be a URL of type:
+          - http://www.example.com
+          - www.example.com
+          - ftp://ftp.example.com
+          - Completely invalid URL
+        data_tests:
+          - not_null
+          - dbt_utils.not_empty_string
+          - unique
+      - name: url
+        description: |
+          Contains the validated and corrected URL if possible.
+          This URL complies with RFC 3986 standard and is possibly obtained after a redirection
+          during the HTTP GET validation call.
+        data_tests:
+          - not_null
+          - dbt_utils.not_empty_string
+          - dbt_utils.not_constant
+      - name: status_code
+        description: |
+          Contains a status code which is:
+          - either an HTTP code (200, 301, 302, 404, 500, etc.)
+          - or 0 if the URL is syntactically invalid
+          - or -1 if the URL is not accessible (refused connection, SSL error, etc.)
+          - or -2 if a timeout was encountered.
+        data_tests:
+          - not_null
+          - dbt_utils.accepted_range:
+              min_value: -2
+              max_value: 999
+      - name: error_message
+        description: |
+          Contains a message describing the validation error encountered.
+          It can contain error messages such as:
+          - refused connection
+          - SSL error
+          - timeout
+        data_tests:
+          - dbt_utils.not_empty_string
+      - name: attempt_count
+        description: |
+          Number of attempts made to validate the URL.
+          URL tests are performed again (status_code < 0) within the limit of N attempts.
+          This is useful to retry on errors like site not accessible (timeout) or temporary
+          unavailability (refused connection, SSL error, etc.).
+          URLs are also tested again after a fixed time interval (e.g., 1 month)
+          After each successful "ping", the counter is reset to 1.
+        data_tests:
+          - not_null
+          - dbt_utils.not_constant
 
 unit_tests:
   - name: test_courriels_personnels
@@ -334,3 +406,62 @@ unit_tests:
         - {source: autre, id: solo, courriel: NULL, contact_nom_prenom: Autre Personne, telephone: '+33123456789'} # hardbounce : only email is hidden
         - {source: tel, id: fredo_gate, courriel: NULL, contact_nom_prenom: Autre Personne, telephone: '+33123456789'} # if email is NULL, we keep the phone number and the contact name
         - {source: tel_malformat, id: tel, courriel: NULL, contact_nom_prenom: Autre Personne, telephone: NULL} # if phone number is not valid, we set it to NULL
+
+  - name: test_union_urls__enhanced_full_refresh_1_item
+    model: int__union_urls__enhanced
+    overrides:
+      vars:
+        check_urls_batch_size: 1
+      macros:
+        is_incremental: false
+    given:
+      - input: ref('int__union_urls')
+        rows:
+          - {url: www.google.com}
+          - {url: http://facebook.com}
+          - {url: cecinestpasunsiteweb}
+          - {url: https://ce.site.nexiste.pas}
+    expect:
+      rows:
+        - input_url: www.google.com
+          status_code: 200
+          attempt_count: 1
+          url: https://www.google.com/
+
+  - name: test_union_urls__enhanced_full_refresh
+    model: int__union_urls__enhanced
+    overrides:
+      vars:
+        check_urls_batch_size: 5
+      macros:
+        is_incremental: false
+    given:
+      - input: ref('int__union_urls')
+        rows:
+          - {url: www.google.com}
+          - {url: http://facebook.com}
+          - {url: cecinestpasunsiteweb}
+          - {url: https://ce.site.nexiste.pas}
+          - {url: https://httpbin.org/delay/10}
+    expect:
+      rows:
+        - input_url: https://ce.site.nexiste.pas
+          status_code: -1
+          attempt_count: 1
+          url: https://ce.site.nexiste.pas
+        - input_url: www.google.com
+          status_code: 200
+          attempt_count: 1
+          url: https://www.google.com/
+        - input_url: cecinestpasunsiteweb
+          status_code: -1
+          attempt_count: 1
+          url: https://cecinestpasunsiteweb
+        - input_url: http://facebook.com
+          status_code: 200
+          attempt_count: 1
+          url: https://www.facebook.com/
+        - input_url: https://httpbin.org/delay/10
+          status_code: -2
+          attempt_count: 1
+          url: https://httpbin.org/delay/10
