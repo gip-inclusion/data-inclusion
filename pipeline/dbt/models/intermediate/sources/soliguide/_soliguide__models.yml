@@ -1,6 +1,21 @@
 version: 2
 
 models:
+  - name: _map_soliguide__thematiques
+    columns:
+      - name: category
+        data_tests:
+          - not_null
+          - relationships:
+              to: ref('stg_soliguide__categories')
+              field: code
+      - name: thematique
+        data_tests:
+          - not_null
+          - relationships:
+              to: ref('thematiques')
+              field: value
+
   - name: int_soliguide__adresses
     data_tests:
       - check_adresse:
