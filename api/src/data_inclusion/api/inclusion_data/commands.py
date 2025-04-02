@@ -10,7 +10,6 @@ import pydantic
 import sentry_sdk
 import sqlalchemy as sqla
 from furl import furl
-from tqdm import tqdm
 
 from data_inclusion import schema
 from data_inclusion.api.config import settings
@@ -64,87 +63,75 @@ class DatalakeClient:
         presigned_urls = {}
 
         for object in object_lists:
-            ressource = Path(object.object_name).name.split(".")[0]
+            filename = Path(object.object_name).name
             presigned_url = self.s3_client.get_presigned_url(
                 method="GET",
                 bucket_name=self.bucket_name,
                 object_name=object.object_name,
                 expires=timedelta(minutes=5),
             )
-            presigned_urls[ressource] = presigned_url
+            presigned_urls[filename] = presigned_url
 
         return presigned_urls
 
 
-def load_di_dataset_as_dataframes() -> dict[str, pd.DataFrame]:
+def fetch_dataset() -> tuple[pd.DataFrame, pd.DataFrame]:
     datalake_client = DatalakeClient()
 
-    url_by_ressource = datalake_client.get_dataset_presigned_urls()
+    url_by_filename = datalake_client.get_dataset_presigned_urls()
 
-    return {
-        ressource: pd.read_parquet(url) for ressource, url in url_by_ressource.items()
-    }
+    def df_from_url(url):
+        return pd.read_parquet(url).replace({np.nan: None})
 
-
-def validate_df(df: pd.DataFrame, model_schema) -> pd.DataFrame:
-    """Apply pydantic model validation to a dataframe
-
-    Returns a validation errors as a dataframe
-    """
-    errors_sr = df.apply(lambda d: validate_data(model_schema, d), axis="columns")
-    df = df.assign(errors=errors_sr)
-    errors_df = df[["_di_surrogate_id", "source", "errors"]]
-    errors_df = errors_df.dropna(subset="errors").explode("errors")
-    errors_df = pd.json_normalize(errors_df.to_dict(orient="records"))
-    errors_df = errors_df.assign(model=model_schema.__name__)
-    return errors_df
-
-
-def log_errors(errors_df: pd.DataFrame):
-    if errors_df.empty:
-        logger.info("no error")
-        return
-    info_str = str(
-        errors_df.groupby(["source", "errors.loc"])["_di_surrogate_id"]
-        .count()
-        .unstack()
+    return (
+        df_from_url(url_by_filename["structures.parquet"]),
+        df_from_url(url_by_filename["services.parquet"]),
     )
-    logger.info("\n" + info_str, stacklevel=2)
 
 
-def validate_dataset(df_by_ressource: dict[str, pd.DataFrame]) -> tuple[pd.DataFrame]:
-    structures_df = df_by_ressource["structures"]
-    services_df = df_by_ressource["services"]
+def validate_dataset(
+    db_session,
+    structures_df: pd.DataFrame,
+    services_df: pd.DataFrame,
+) -> tuple[pd.DataFrame, pd.DataFrame]:
+    city_codes = db_session.scalars(sqla.select(models.Commune.code)).all()
 
-    structures_df = structures_df.replace({np.nan: None})
-    services_df = services_df.replace({np.nan: None})
+    def validate_data(model_schema, data):
+        errors = []
 
-    structure_errors_df = validate_df(structures_df, model_schema=schema.Structure)
-    service_errors_df = validate_df(services_df, model_schema=schema.Service)
+        try:
+            model_schema(**data)
+        except pydantic.ValidationError as exc:
+            errors += exc.errors()
 
-    logger.info("Structure validation errors:")
-    log_errors(structure_errors_df)
-    logger.info("Services validation errors:")
-    log_errors(service_errors_df)
+        if data["code_insee"] is not None and data["code_insee"] not in city_codes:
+            errors += [{"loc": ("code_insee",), "input": data["code_insee"]}]
 
-    # exclude invalid data
-    if not structure_errors_df.empty:
-        structures_df = structures_df[
-            ~structures_df._di_surrogate_id.isin(structure_errors_df._di_surrogate_id)
-        ]
-    if not service_errors_df.empty:
-        services_df = services_df[
-            ~services_df._di_surrogate_id.isin(service_errors_df._di_surrogate_id)
-            & ~services_df._di_structure_surrogate_id.isin(
-                structure_errors_df._di_surrogate_id
-            )
-        ]
+        for error in errors:
+            model = model_schema.__name__
+            key, value = ".".join(error["loc"]), error["input"]
+            logger.warning(f"{model:20} {key=:20} {value=}")
+
+        return len(errors) == 0
+
+    structures_df = structures_df[
+        structures_df.apply(lambda d: validate_data(schema.Structure, d), axis=1)
+    ]
+    services_df = services_df[
+        services_df.apply(lambda d: validate_data(schema.Service, d), axis=1)
+    ]
+
+    # remove orphan services
+    services_df = services_df[
+        services_df._di_structure_surrogate_id.isin(structures_df._di_surrogate_id)
+    ]
 
     return structures_df, services_df
 
 
-def store_inclusion_data(
-    db_session, structures_df: pd.DataFrame, services_df: pd.DataFrame
+def prepare_dataset(
+    structures_df: pd.DataFrame,
+    services_df: pd.DataFrame,
 ):
     service_scores = (
         services_df.groupby("_di_structure_surrogate_id")["score_qualite"]
@@ -197,44 +184,42 @@ def store_inclusion_data(
         .replace([np.nan], [None])
     )
 
-    structures_df = structures_df.drop(columns=["cluster_id"])
+    return structures_df, services_df
 
-    structure_data_list = structures_df.sort_values(
-        by="_di_surrogate_id", ascending=True
-    ).to_dict(orient="records")
-    service_data_list = services_df.sort_values(
-        by="_di_surrogate_id", ascending=True
-    ).to_dict(orient="records")
 
-    # TODO(vmttn): load in a temporary table, truncate and then insert
-    db_session.execute(sqla.delete(models.Service))
-    db_session.execute(sqla.delete(models.Structure))
+def load_truncate_insert(
+    db_session,
+    structures_df: pd.DataFrame,
+    services_df: pd.DataFrame,
+):
+    db_session.execute(
+        sqla.text(f"""
+            DELETE FROM {models.Service.__tablename__};
+            DELETE FROM {models.Structure.__tablename__};
+        """)
+    )
 
-    for structure_data in tqdm(structure_data_list):
-        structure_instance = models.Structure(**structure_data)
-        try:
-            with db_session.begin_nested():
-                db_session.add(structure_instance)
-        except sqla.exc.IntegrityError as exc:
-            logger.info(
-                "Structure source=%s id=%s",
-                structure_data["source"],
-                structure_data["id"],
-            )
-            logger.info(exc.orig)
+    for df, model in [
+        (structures_df, models.Structure),
+        (services_df, models.Service),
+    ]:
+        columns_list = [
+            c
+            for c in sorted(model.__table__.columns, key=lambda c: c.name)
+            # ignore server computed columns
+            if c.server_default is None
+        ]
 
-    for service_data in tqdm(service_data_list):
-        service_instance = models.Service(**service_data)
-        try:
-            with db_session.begin_nested():
-                db_session.add(service_instance)
-        except sqla.exc.IntegrityError as exc:
-            logger.info(
-                "Service source=%s id=%s",
-                service_data["source"],
-                service_data["id"],
-            )
-            logger.info(exc.orig)
+        df = df.sort_values(by="_di_surrogate_id", ascending=True)
+        df = df[[c.name for c in columns_list]]
+
+        df.to_sql(
+            name=model.__tablename__,
+            con=db_session.connection(),
+            if_exists="append",
+            index=False,
+            dtype={column.name: column.type for column in columns_list},
+        )
 
     db_session.commit()
 
@@ -251,31 +236,27 @@ def store_inclusion_data(
     },
 )
 def load_inclusion_data():
-    """Download, validate and load the di dataset
+    logger.info("Fetching data...")
+    structures_df, services_df = fetch_dataset()
 
-    1. Identify the latest version in the datalake
-    2. Generate presigned URLs for it
-    3. Download into dataframes
-    4. Validate data against pydantic models
-    5. Log validation errors
-    6. Load valid data using the sqla models
-    """
-    df_by_ressource = load_di_dataset_as_dataframes()
+    logger.info("Validating data...")
+    with db.SessionLocal() as db_session:
+        structures_df, services_df = validate_dataset(
+            db_session, structures_df, services_df
+        )
 
-    structures_df, services_df = validate_dataset(df_by_ressource)
+    logger.info("Preparing data...")
+    structures_df, services_df = prepare_dataset(structures_df, services_df)
 
-    with db.SessionLocal() as session:
-        store_inclusion_data(session, structures_df, services_df)
+    logger.info("Loading data...")
+    with db.SessionLocal() as db_session:
+        load_truncate_insert(db_session, structures_df, services_df)
 
+    logger.info("Vacuuming...")
     with db.default_db_engine.connect().execution_options(
         isolation_level="AUTOCOMMIT"
     ) as connection:
-        connection.execute(sqla.text("VACUUM ANALYZE api__structures"))
-        connection.execute(sqla.text("VACUUM ANALYZE api__services"))
-
-
-def validate_data(model_schema, data):
-    try:
-        model_schema(**data)
-    except pydantic.ValidationError as exc:
-        return exc.errors()
+        connection.execute(
+            sqla.text(f"VACUUM ANALYZE {models.Structure.__tablename__}")
+        )
+        connection.execute(sqla.text(f"VACUUM ANALYZE {models.Service.__tablename__}"))
