@@ -1,5 +1,4 @@
 import json
-import logging
 import os
 from dataclasses import dataclass
 
@@ -8,10 +7,11 @@ import pandas as pd
 import phonenumbers
 from unidecode import unidecode
 
+from .log import setup_logging
+
 THRESHOLD = 0.75  # as defined in our Jupyter simulations
 
-
-logger = logging.getLogger(__name__)
+logger = setup_logging(__name__)
 
 
 @dataclass

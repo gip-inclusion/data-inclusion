@@ -1,13 +1,14 @@
 import csv
 import io
-import logging
 from dataclasses import dataclass
 
 import numpy as np
 import pandas as pd
 import requests
 
-logger = logging.getLogger(__name__)
+from .log import setup_logging
+
+logger = setup_logging(__name__)
 
 
 def _geocode(df: pd.DataFrame) -> pd.DataFrame:

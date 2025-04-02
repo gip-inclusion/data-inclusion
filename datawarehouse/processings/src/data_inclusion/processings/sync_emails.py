@@ -4,6 +4,10 @@ from typing import Any
 
 import sib_api_v3_sdk
 
+from .log import setup_logging
+
+logger = setup_logging(__name__)
+
 
 class BrevoClient:
     CONTACT_LIST_PAGE_SIZE = 500  # the maximum
