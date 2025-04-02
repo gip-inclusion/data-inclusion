@@ -5,7 +5,8 @@ from data_inclusion.api.inclusion_data import commands, models
 
 def test_store_inclusion_data_scores_doublons(db_session):
     structures_df = pd.DataFrame(
-        {
+        {c.name: None for c in models.Structure.__table__.columns}
+        | {
             "_di_surrogate_id": ["s1", "s2", "s3"],
             "id": ["id1", "id2", "id3"],
             "nom": ["Structure 1", "Structure 2", "Structure 3"],
@@ -16,9 +17,11 @@ def test_store_inclusion_data_scores_doublons(db_session):
     )
 
     services_df = pd.DataFrame(
-        {
+        {c.name: None for c in models.Service.__table__.columns}
+        | {
             "_di_surrogate_id": ["sv1", "sv2", "sv3"],
             "_di_structure_surrogate_id": ["s1", "s1", "s2"],
+            "structure_id": ["id1", "id2", "id3"],
             "id": ["sid1", "sid2", "sid3"],
             "source": ["source1", "source1", "source2"],
             "nom": ["Service 1", "Service 2", "Service 3"],
@@ -27,7 +30,8 @@ def test_store_inclusion_data_scores_doublons(db_session):
         }
     )
 
-    commands.store_inclusion_data(db_session, structures_df, services_df)
+    structures_df, services_df = commands.prepare_dataset(structures_df, services_df)
+    commands.load_truncate_insert(db_session, structures_df, services_df)
 
     db_structures = db_session.query(models.Structure).all()
     structures_by_id = {s.id: s for s in db_structures}
@@ -75,7 +79,8 @@ def test_store_inclusion_data_scores_doublons(db_session):
 
 def test_store_inclusion_data_doublons_date_maj(db_session):
     structures_df = pd.DataFrame(
-        {
+        {c.name: None for c in models.Structure.__table__.columns}
+        | {
             "_di_surrogate_id": ["s1", "s2", "s3"],
             "id": ["id1", "id2", "id3"],
             "nom": ["Structure 1", "Structure 2", "Structure 3"],
@@ -86,16 +91,20 @@ def test_store_inclusion_data_doublons_date_maj(db_session):
     )
 
     services_df = pd.DataFrame(
-        {
+        {c.name: None for c in models.Service.__table__.columns}
+        | {
             "_di_surrogate_id": ["sv1"],
             "_di_structure_surrogate_id": ["s1"],
+            "structure_id": ["id1"],
+            "nom": ["Service 1"],
             "id": ["sid1"],
             "source": ["source1"],
             "score_qualite": [0.0],
         }
     )
 
-    commands.store_inclusion_data(db_session, structures_df, services_df)
+    structures_df, services_df = commands.prepare_dataset(structures_df, services_df)
+    commands.load_truncate_insert(db_session, structures_df, services_df)
 
     db_structures = db_session.query(models.Structure).all()
     structures_by_id = {s.id: s for s in db_structures}
