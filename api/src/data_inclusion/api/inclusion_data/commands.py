@@ -140,15 +140,14 @@ def prepare_dataset(
     )
 
     structures_df["score_qualite"] = (
-        structures_df["_di_surrogate_id"].map(service_scores).fillna(0.0)
+        structures_df["_di_surrogate_id"].map(service_scores).astype(float).fillna(0.0)
     )
 
     clusters_df = structures_df[structures_df["cluster_id"].notna()]
-    cluster_groups = (
-        clusters_df.groupby("cluster_id")
-        .apply(lambda x: x.to_dict("records"))
-        .to_dict()
-    )
+    cluster_groups = {
+        key: group.to_dict(orient="records")
+        for key, group in clusters_df.groupby("cluster_id")
+    }
 
     def get_doublons(row):
         all_ids = cluster_groups.get(row["cluster_id"], [])
