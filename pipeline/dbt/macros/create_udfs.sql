@@ -14,6 +14,7 @@ CREATE SCHEMA IF NOT EXISTS processings;
 {{ udf__deduplicate() }}
 {{ udf__geocode() }}
 {{ udf__score() }}
+{{ udf__sync_emails() }}
 
 {{ create_udf_soliguide__new_hours_to_osm_opening_hours() }}
 {{ create_udf__common_checks() }}

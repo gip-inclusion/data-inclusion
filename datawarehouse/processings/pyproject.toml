@@ -12,6 +12,7 @@ dependencies = [
     "pandas~=2.2",
     "phonenumbers",
     "requests~=2.31",
+    "sib-api-v3-sdk",
     "unidecode",
     "data-inclusion-schema==0.21.0",
 ]
@@ -48,7 +49,8 @@ known-first-party = ["data_inclusion"]
 testpaths = "tests"
 markers = '''
     ban_api: mark test as requiring the base base adresse nationale api
+    brevo_api: mark test as requiring the Brevo API
 '''
 
-[tool.ruff.per-file-ignores]
+[tool.ruff.lint.per-file-ignores]
 "test_*.py" = ["S101"]
