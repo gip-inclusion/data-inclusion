@@ -22,7 +22,15 @@ final AS (
         NULL                                                          AS "typologie",
         lieux.updated_at                                              AS "date_maj",
         NULL                                                          AS "siret",
-        RTRIM(SUBSTRING(lieux.name, 1, 150), '.')                     AS "nom",
+        REGEXP_REPLACE(
+            REGEXP_REPLACE(
+                RTRIM(SUBSTRING(lieux.name, 1, 150)),
+                '\.{2,}$', -- Remplace deux points ou plus par "…"
+                '…'
+            ),
+            '(?<!etc)\.$', -- Supprime un seul point à la fin
+            ''
+        )                                                             AS "nom",
         lieux.entity_website                                          AS "site_web",
         lieux.entity_mail                                             AS "courriel",
         NULL                                                          AS "telephone",
