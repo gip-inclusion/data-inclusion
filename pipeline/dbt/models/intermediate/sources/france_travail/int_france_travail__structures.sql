@@ -4,27 +4,27 @@ WITH agences AS (
 
 final AS (
     SELECT
-        FALSE                          AS "antenne",
-        NULL::TEXT []                  AS "labels_autres",
-        NULL::TEXT []                  AS "thematiques",
-        horaires_open_street_map       AS "horaires_ouverture",
-        NULL                           AS "lien_source",
-        NULL                           AS "presentation_detail",
-        NULL                           AS "presentation_resume",
-        NULL                           AS "rna",
-        'https://www.francetravail.fr' AS "site_web",
-        accessibilite                  AS "accessibilite",
-        id                             AS "adresse_id",
+        FALSE                              AS "antenne",
+        CAST(NULL AS TEXT [])              AS "labels_autres",
+        CAST(NULL AS TEXT [])              AS "thematiques",
+        horaires_open_street_map           AS "horaires_ouverture",
+        NULL                               AS "lien_source",
+        NULL                               AS "presentation_detail",
+        NULL                               AS "presentation_resume",
+        NULL                               AS "rna",
+        'https://www.francetravail.fr'     AS "site_web",
+        accessibilite                      AS "accessibilite",
+        id                                 AS "adresse_id",
         -- As seen with FT, no contact should be displayed in the output.
-        NULL                           AS "courriel",
-        date_maj                       AS "date_maj",
-        id                             AS "id",
-        nom                            AS "nom",
-        siret                          AS "siret",
-        _di_source_id                  AS "source",
-        '3949'                         AS "telephone",
-        'FT'                           AS "typologie",
-        ARRAY['france-travail']        AS "labels_nationaux"
+        NULL                               AS "courriel",
+        date_maj                           AS "date_maj",
+        id                                 AS "id",
+        RTRIM(SUBSTRING(nom, 1, 150), '.') AS "nom",
+        siret                              AS "siret",
+        _di_source_id                      AS "source",
+        '3949'                             AS "telephone",
+        'FT'                               AS "typologie",
+        ARRAY['france-travail']            AS "labels_nationaux"
     FROM agences
 )
 

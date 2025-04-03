@@ -2,7 +2,7 @@ WITH etablissements AS (
     SELECT * FROM {{ ref('stg_finess__etablissements') }}
 ),
 
--- this subset of categories 
+-- this subset of categories
 -- cf https://finess.sante.gouv.fr/fininter/jsp/pdf.do?xsl=CategEta.xsl
 interesting_etablissement_categories AS (
     SELECT x.*
@@ -31,28 +31,28 @@ interesting_etablissement_categories AS (
 
 final AS (
     SELECT
-        nofinesset    AS "id",
-        nofinesset    AS "adresse_id",
-        siret         AS "siret",
-        NULL::BOOLEAN AS "antenne",
-        NULL          AS "rna",
-        telephone     AS "telephone",
-        NULL          AS "courriel",
-        NULL          AS "site_web",
-        _di_source_id AS "source",
-        NULL          AS "lien_source",
-        NULL          AS "horaires_ouverture",
-        NULL          AS "accessibilite",
-        NULL::TEXT [] AS "labels_nationaux",
-        NULL::TEXT [] AS "labels_autres",
-        NULL::TEXT [] AS "thematiques",
-        NULL          AS "typologie",
-        NULL          AS "presentation_resume",
-        NULL          AS "presentation_detail",
-        maj           AS "date_maj",
-        rs            AS "nom"
+        nofinesset                        AS "id",
+        nofinesset                        AS "adresse_id",
+        siret                             AS "siret",
+        CAST(NULL AS BOOLEAN)             AS "antenne",
+        NULL                              AS "rna",
+        telephone                         AS "telephone",
+        NULL                              AS "courriel",
+        NULL                              AS "site_web",
+        _di_source_id                     AS "source",
+        NULL                              AS "lien_source",
+        NULL                              AS "horaires_ouverture",
+        NULL                              AS "accessibilite",
+        CAST(NULL AS TEXT [])             AS "labels_nationaux",
+        CAST(NULL AS TEXT [])             AS "labels_autres",
+        CAST(NULL AS TEXT [])             AS "thematiques",
+        NULL                              AS "typologie",
+        NULL                              AS "presentation_resume",
+        NULL                              AS "presentation_detail",
+        maj                               AS "date_maj",
+        RTRIM(SUBSTRING(rs, 1, 150), '.') AS "nom"
     FROM etablissements
-    WHERE categetab IN (SELECT categetab FROM interesting_etablissement_categories)
+    WHERE categetab IN (SELECT iec.categetab FROM interesting_etablissement_categories AS iec)
 )
 
 SELECT * FROM final

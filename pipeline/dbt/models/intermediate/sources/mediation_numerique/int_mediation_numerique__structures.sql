@@ -12,7 +12,7 @@ final AS (
         id                                                                                                           AS "adresse_id",
         siret                                                                                                        AS "siret",
         NULL                                                                                                         AS "rna",
-        nom                                                                                                          AS "nom",
+        RTRIM(SUBSTRING(nom, 1, 150), '.')                                                                           AS "nom",
         telephone                                                                                                    AS "telephone",
         courriel                                                                                                     AS "courriel",
         site_web                                                                                                     AS "site_web",

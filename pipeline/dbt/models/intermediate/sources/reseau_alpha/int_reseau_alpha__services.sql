@@ -2,10 +2,6 @@ WITH formations AS (
     SELECT * FROM {{ ref('stg_reseau_alpha__formations') }}
 ),
 
-structures AS (
-    SELECT * FROM {{ ref('stg_reseau_alpha__structures') }}
-),
-
 final AS (
     SELECT
         TRUE                                                      AS "contact_public",
@@ -13,7 +9,7 @@ final AS (
         formations.content__contact_inscription__courriel         AS "courriel",
         formations.content__inscription__informations_en_ligne    AS "formulaire_en_ligne",
         NULL                                                      AS "frais_autres",
-        formations.nom                                            AS "nom",
+        RTRIM(SUBSTRING(formations.nom, 1, 150), '.')             AS "nom",
         NULL                                                      AS "prise_rdv",
         formations.content__lieux_et_horaires_formation__horaires AS "recurrence",
         formations._di_source_id                                  AS "source",
@@ -90,7 +86,6 @@ final AS (
         ARRAY['formation']                                        AS "types",
         CAST(NULL AS TEXT [])                                     AS "frais"
     FROM formations
-    LEFT JOIN structures ON formations.structure_id = structures.id
 )
 
 SELECT * FROM final

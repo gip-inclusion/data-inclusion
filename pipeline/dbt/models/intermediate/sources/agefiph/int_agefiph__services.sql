@@ -64,7 +64,7 @@ final AS (
         structures.courriel                                          AS "courriel",
         NULL                                                         AS "formulaire_en_ligne",
         NULL                                                         AS "frais_autres",
-        services.attributes__title                                   AS "nom",
+        RTRIM(SUBSTRING(services.attributes__title, 1, 150), '.')    AS "nom",
         services.attributes__field_titre_card_employeur              AS "presentation_resume",
         NULL                                                         AS "prise_rdv",
         NULL                                                         AS "recurrence",

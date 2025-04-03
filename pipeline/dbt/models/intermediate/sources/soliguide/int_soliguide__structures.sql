@@ -12,17 +12,25 @@ final AS (
     SELECT
         lieux.lieu_id                                                 AS "id",
         lieux.lieu_id                                                 AS "adresse_id",
-        NULL::BOOLEAN                                                 AS "antenne",
+        CAST(NULL AS BOOLEAN)                                         AS "antenne",
         NULL                                                          AS "rna",
         'soliguide'                                                   AS "source",
         NULL                                                          AS "accessibilite",
-        NULL::TEXT []                                                 AS "labels_nationaux",
-        NULL::TEXT []                                                 AS "labels_autres",
-        NULL::TEXT []                                                 AS "thematiques",
+        CAST(NULL AS TEXT [])                                         AS "labels_nationaux",
+        CAST(NULL AS TEXT [])                                         AS "labels_autres",
+        CAST(NULL AS TEXT [])                                         AS "thematiques",
         NULL                                                          AS "typologie",
         lieux.updated_at                                              AS "date_maj",
         NULL                                                          AS "siret",
-        lieux.name                                                    AS "nom",
+        REGEXP_REPLACE(
+            REGEXP_REPLACE(
+                RTRIM(SUBSTRING(lieux.name, 1, 150)),
+                '\.{2,}$', -- Remplace deux points ou plus par "…"
+                '…'
+            ),
+            '(?<!etc)\.$', -- Supprime un seul point à la fin
+            ''
+        )                                                             AS "nom",
         lieux.entity_website                                          AS "site_web",
         lieux.entity_mail                                             AS "courriel",
         NULL                                                          AS "telephone",

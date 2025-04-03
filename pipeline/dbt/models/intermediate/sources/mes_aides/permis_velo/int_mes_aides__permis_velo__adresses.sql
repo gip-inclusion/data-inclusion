@@ -10,8 +10,8 @@ final AS (
         NULL                        AS "code_insee",
         NULL                        AS "adresse",
         NULL                        AS "complement_adresse",
-        NULL::FLOAT                 AS "longitude",
-        NULL::FLOAT                 AS "latitude",
+        CAST(NULL AS FLOAT)         AS "longitude",
+        CAST(NULL AS FLOAT)         AS "latitude",
         _di_source_id               AS "source"
     FROM permis_velo
 )

@@ -193,6 +193,12 @@
               "title": "Longitude"
             },
             "nom": {
+              "description": "Nom de la structure.",
+              "examples": [
+                "Centre social Le Tournesol"
+              ],
+              "maxLength": 150,
+              "minLength": 3,
               "title": "Nom",
               "type": "string"
             },
@@ -1028,6 +1034,12 @@
               "title": "Modes Orientation Beneficiaire Autres"
             },
             "nom": {
+              "description": "Nom du service.",
+              "examples": [
+                "Atelier insertion et posture professionnelle."
+              ],
+              "maxLength": 150,
+              "minLength": 3,
               "title": "Nom",
               "type": "string"
             },
@@ -1456,6 +1468,12 @@
               "title": "Longitude"
             },
             "nom": {
+              "description": "Nom de la structure.",
+              "examples": [
+                "Centre social Le Tournesol"
+              ],
+              "maxLength": 150,
+              "minLength": 3,
               "title": "Nom",
               "type": "string"
             },
@@ -1930,6 +1948,12 @@
               "title": "Longitude"
             },
             "nom": {
+              "description": "Nom de la structure.",
+              "examples": [
+                "Centre social Le Tournesol"
+              ],
+              "maxLength": 150,
+              "minLength": 3,
               "title": "Nom",
               "type": "string"
             },
@@ -2473,6 +2497,12 @@
               "title": "Modes Orientation Beneficiaire Autres"
             },
             "nom": {
+              "description": "Nom du service.",
+              "examples": [
+                "Atelier insertion et posture professionnelle."
+              ],
+              "maxLength": 150,
+              "minLength": 3,
               "title": "Nom",
               "type": "string"
             },
@@ -2966,6 +2996,12 @@
               "title": "Longitude"
             },
             "nom": {
+              "description": "Nom de la structure.",
+              "examples": [
+                "Centre social Le Tournesol"
+              ],
+              "maxLength": 150,
+              "minLength": 3,
               "title": "Nom",
               "type": "string"
             },

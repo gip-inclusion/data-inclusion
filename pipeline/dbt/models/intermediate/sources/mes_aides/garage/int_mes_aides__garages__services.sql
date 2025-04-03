@@ -48,11 +48,11 @@ final AS (
             NULL
         )                                                                                           AS "modes_orientation_beneficiaire",
         NULL                                                                                        AS "modes_orientation_beneficiaire_autres",
-        FORMAT(
+        RTRIM(SUBSTRING(FORMAT(
             '%s de %s',
             COALESCE(service_types_by_garage.service_type, 'Réparation, vente et location'),
             LOWER(COALESCE(NULLIF(ARRAY_TO_STRING(garages.types_de_vehicule, ', '), ''), 'véhicule'))
-        )                                                                                           AS "nom",
+        ), 1, 150), '.')                                                                            AS "nom",
         FORMAT(
             '%s de %s à tarif solidaire pour les personnes en difficulté, et selon leur situation',
             COALESCE(service_types_by_garage.service_type, 'Réparation, vente et location'),

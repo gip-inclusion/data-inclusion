@@ -18,7 +18,7 @@ di_thematique_by_odspep_type_res_part AS (
 final AS (
     SELECT
         id_res                                          AS "adresse_id",
-        service                                         AS "nom",
+        RTRIM(SUBSTRING(service, 1, 150), '.')          AS "nom",
         'odspep'                                        AS "source",
         CAST(NULL AS TEXT [])                           AS "types",
         NULL                                            AS "prise_rdv",

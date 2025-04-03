@@ -9,7 +9,7 @@ final AS (
         NULL                                                                       AS "siret",
         CAST(NULL AS BOOLEAN)                                                      AS "antenne",
         NULL                                                                       AS "rna",
-        structure_name                                                             AS "nom",
+        RTRIM(SUBSTRING(structure_name, 1, 150), '.')                              AS "nom",
         coordonnees__telephone                                                     AS "telephone",
         coordonnees__adresse_mail                                                  AS "courriel",
         coordonnees__site_internet                                                 AS "site_web",

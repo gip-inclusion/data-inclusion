@@ -88,3 +88,24 @@ unit_tests:
       - {adresse: null}
       - {adresse: '36 Rte de Toulon'}
 
+- name: test_name_remove_dots
+  model: int_soliguide__structures
+  given:
+    - input: ref('stg_soliguide__lieux')
+      rows:
+        - {name: 'Asso des Amis de la Vie'}
+        - {name: 'Asso des Amis de la Vie....'}
+        - {name: 'Asso des Amis de la Vie...'}
+        - {name: 'Asso des Amis de la Vie..'}
+        - {name: 'Asso des Amis de la Vie.'}
+        - {name: 'Asso des Amis de la Vie, des arbres, etc.'}
+        - {name: 'Asso des Amis de la Vie, des arbres, etc..'}
+  expect:
+    rows:
+        - {nom: 'Asso des Amis de la Vie'}
+        - {nom: 'Asso des Amis de la Vie…'}
+        - {nom: 'Asso des Amis de la Vie…'}
+        - {nom: 'Asso des Amis de la Vie…'}
+        - {nom: 'Asso des Amis de la Vie'}
+        - {nom: 'Asso des Amis de la Vie, des arbres, etc.'}
+        - {nom: 'Asso des Amis de la Vie, des arbres, etc…'}
