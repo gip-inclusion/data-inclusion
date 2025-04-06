@@ -2,6 +2,73 @@
 build-backend = "setuptools.build_meta"
 requires = ["setuptools", "wheel"]
 
+[project]
+requires-python = ">=3.11"
+name = "data-inclusion-api"
+version = "0.1.0"
+authors = [{ name = "vmttn"}]
+readme = "README.md"
+dependencies = [
+    "alembic>=1.15.2",
+    "certifi>=2025.1.31",
+    "click>=8.1.8",
+    "cryptography>=44.0.2",
+    "data-inclusion-schema>=0.21.0",
+    "fastapi>=0.115.12",
+    "fastapi-pagination>=0.12.34",
+    "furl>=2.1.4",
+    "geoalchemy2>=0.17.1",
+    "geopandas>=1.0.1",
+    "gunicorn>=23.0.0",
+    "httpx>=0.28.1",
+    "jinja2>=3.1.6",
+    "minio>=7.2.15",
+    "numpy>=2.2.4",
+    "pandas>=2.2.3",
+    "psycopg2>=2.9.10",
+    "pyarrow>=19.0.1",
+    "pydantic-settings>=2.8.1",
+    "pydantic[email]>=2.11.1",
+    "pyjwt>=2.10.1",
+    "python-dotenv>=1.1.0",
+    "pytz>=2025.2",
+    "requests>=2.32.3",
+    "sentry-sdk[fastapi]>=2.25.1",
+    "sqlalchemy>=2.0.40",
+    "tqdm>=4.67.1",
+    "uvicorn[standard]>=0.34.0",
+]
+
+[dependency-groups]
+dev = [
+    "fastapi-debug-toolbar>=0.6.3",
+    "pre-commit>=4.2.0",
+    "ruff>=0.11.2",
+    "tox>=4.25.0",
+]
+test = [
+    "factory-boy>=3.3.3",
+    "faker>=37.1.0",
+    "fastapi-debug-toolbar>=0.6.3",
+    "locust>=2.33.2",
+    "pytest>=8.3.5",
+    "pytest-dotenv>=0.5.2",
+    "syrupy>=4.9.1",
+]
+
+[project.urls]
+Source = "https://github.com/gip-inclusion/data-inclusion"
+
+[project.scripts]
+data-inclusion-api = "data_inclusion.api.cli:cli"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+namespaces = true
+
+[tool.setuptools.package-data]
+"*" = ["*.md", "*.json"]
+
 [tool.ruff.lint]
 # see prefixes in https://beta.ruff.rs/docs/rules/
 select = [

@@ -1,18 +1,20 @@
 # Contributing
 
-## Setup
+## Prerequisites
+
+* `uv` : [installation instructions](https://docs.astral.sh/uv/getting-started/installation/#standalone-installer).
+
+## Installation
 
 ```bash
-# Create a new virtualenv in the project's root directory
-python3 -m venv .venv --prompt di-api
+# Clone the repository
+git clone git@github.com:gip-inclusion/data-inclusion.git
 
-# Activate the environment and install the dependencies
-source .venv/bin/activate
-pip install -U pip setuptools wheel
-pip install -r requirements/dev-requirements.txt
+# Init environment
+uv sync
 
-# install the api application in editable mode
-pip install -e .
+# Install precommits
+uv run pre-commit install
 ```
 
 ## Running the api locally
@@ -24,10 +26,10 @@ Make sure the `target-db` container is up and running. See instructions [here](.
 cp .template.env .env
 
 # Running the migrations
-alembic upgrade head
+uv run alembic upgrade head
 
 # Start the development server
-uvicorn data_inclusion.api.app:app --reload
+uv run uvicorn data_inclusion.api.app:app --reload
 ```
 
 ## Initialize the Database with Data from staging or prod
@@ -46,42 +48,28 @@ mc cp --recursive \
     dev/data-inclusion-lake/data/marts/2024-06-12
 
 # Load data
-data-inclusion-api import_communes
-data-inclusion-api load_inclusion_data
+uv run data-inclusion-api import_communes
+uv run data-inclusion-api load_inclusion_data
 ```
 
 ## Running the test suite
 
 ```bash
 # simply use tox (for reproducible environnement, packaging errors, etc.)
-tox
+uv run tox
 ```
 
 ## Running the benchmark
 
 ```bash
-locust --headless -u 3 -t 60s -H http://127.0.0.1:8001
+uv run locust --headless -u 3 -t 60s -H http://127.0.0.1:8001
 ```
 
 ## Managing the app requirements
 
-### 1. Adding/removing packages
+Checkout [uv's documentation](https://docs.astral.sh/uv/concepts/projects/dependencies/)
 
-```bash
-# 1. add/remove packages from the requirements in setup.py
-
-# 2. compile dependencies
-
-make
-```
-
-### 2. Upgrading packages
-
-```bash
-make upgrade all
-```
-
-### 3. Using a development version of data-inclusion-schema
+### Using a development version of data-inclusion-schema
 
 In your [data-inclusion-schema](https://github.com/gip-inclusion/data-inclusion-schema) branch or pull request,
 edit the `pyproject.toml` to reference a version number that is unheard of. For instance:
