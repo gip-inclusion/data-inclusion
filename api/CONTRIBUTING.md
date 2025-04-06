@@ -55,8 +55,7 @@ uv run data-inclusion-api load_inclusion_data
 ## Running the test suite
 
 ```bash
-# simply use tox (for reproducible environnement, packaging errors, etc.)
-uv run tox
+uv run pytest
 ```
 
 ## Running the benchmark
