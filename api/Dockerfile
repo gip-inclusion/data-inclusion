@@ -1,7 +1,7 @@
 ########
 # This image compile the dependencies
 ########
-FROM python:3.11-slim as compile-image
+FROM python:3.12-slim AS compile-image
 
 ENV PYTHONUNBUFFERED 1
 ENV PYTHONDONTWRITEBYTECODE 1
@@ -30,7 +30,7 @@ RUN uv pip install --no-cache --no-deps .
 ########
 # This image is the runtime
 ########
-FROM python:3.11-slim as runtime-image
+FROM python:3.12-slim AS runtime-image
 
 ARG VERSION_SHA
 ARG VERSION_NAME
