@@ -6,7 +6,7 @@ requires = ["setuptools", "wheel"]
 requires-python = ">=3.12"
 name = "data-inclusion-api"
 version = "0.1.0"
-authors = [{ name = "vmttn"}]
+authors = [{ name = "data⋅inclusion", email = "data-inclusion@inclusion.gouv.fr" }]
 readme = "README.md"
 dependencies = [
     "alembic>=1.15.2",
@@ -56,6 +56,7 @@ test = [
 ]
 
 [project.urls]
+Home = "https://data.inclusion.gouv.fr"
 Source = "https://github.com/gip-inclusion/data-inclusion"
 
 [project.scripts]
