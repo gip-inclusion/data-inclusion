@@ -130,11 +130,13 @@ final AS (
             WHEN '1' THEN communes.code
             WHEN '2' THEN communes.code_departement
             WHEN '3' THEN communes.code_region
+            ELSE communes.code_region
         END                                             AS "zone_diffusion_code",
         CASE actions.code_perimetre_recrutement
             WHEN '1' THEN communes.nom
             WHEN '2' THEN communes.nom_departement
             WHEN '3' THEN communes.nom_region
+            ELSE communes.nom_region
         END                                             AS "zone_diffusion_nom",
         ARRAY_REMOVE(
             ARRAY[
