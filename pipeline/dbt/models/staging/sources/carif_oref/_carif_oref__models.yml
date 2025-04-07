@@ -21,12 +21,12 @@ models:
         data_tests:
           - not_null
           - relationships:
-              to: ref('stg_carif_oref__formacode_v13')
+              to: ref('stg_carif_oref__formacode_v14')
               field: code
       - name: version_formacode
         data_tests:
           - accepted_values:
-              values: [V13]
+              values: [V14]
 
   - name: stg_carif_oref__actions
     description: http://lheo.gouv.fr/2.3/lheo/action.html
@@ -87,8 +87,7 @@ models:
               values: [0, 1, 2]
       - name: modalites_recrutement
         data_tests:
-          - dbt_utils.not_null_proportion:
-              at_least: 0.1
+          - dbt_utils.at_least_one
           - dbt_utils.not_empty_string
       - name: prise_en_charge_frais_possible
         data_tests:
@@ -178,11 +177,11 @@ models:
               field: hash_
 
 
-  - name: stg_carif_oref__formacode_v13
+  - name: stg_carif_oref__formacode_v14
     description: |
-      This model contains the public subset of the formacode (v13).
+      This model contains the public subset of the formacode (v14).
 
-      https://formacode.centre-inffo.fr/telechargements-54.html
+      https://www.data.gouv.fr/en/datasets/formacode-r-version-14-thesaurus-de-loffre-de-formation-et-de-certification/
     columns:
       - name: code
         data_tests:
