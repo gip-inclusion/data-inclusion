@@ -157,7 +157,6 @@ services:
       - pg-data:/var/lib/postgresql/data
 
   api:
-    image: data-inclusion/api
     build: api
     depends_on:
       datawarehouse:
