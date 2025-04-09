@@ -6,9 +6,24 @@ adresses AS (
     SELECT * FROM {{ ref('int__union_adresses__enhanced') }}
 ),
 
+structures_with_valid_format_phone_number AS (
+    SELECT
+        {{
+            dbt_utils.star(
+                from=ref('int__union_structures'),
+                relation_alias='structures',
+                except=[
+                    "telephone",
+                ]
+            )
+        }},
+        processings.format_phone_number(structures.telephone) AS "telephone"
+    FROM structures
+),
+
 valid_structures AS (
     SELECT structures.*
-    FROM structures
+    FROM structures_with_valid_format_phone_number AS structures  -- noqa: structure.unused_join
     LEFT JOIN
         LATERAL
         LIST_STRUCTURE_ERRORS(
