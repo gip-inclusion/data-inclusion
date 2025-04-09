@@ -32,6 +32,7 @@ BEGIN
             ("nom", "nom IS NOT NULL AND LENGTH(nom) <= 150 AND LENGTH(nom) >= 3 AND nom !~ '(?<!etc)\.$'"),
             ("date_maj", "date_maj IS NOT NULL"),
             ("typologie", "typologie IS NULL OR typologie IN (SELECT t.value FROM " ~ ref('typologies_de_structures') ~ " AS t)"),
+            ("telephone", "telephone IS NULL OR processings.format_phone_number(telephone) IS NOT NULL"),
             ("labels_nationaux", "labels_nationaux IS NULL OR labels_nationaux <@ ARRAY(SELECT l.value FROM " ~ ref('labels_nationaux') ~ " AS l)"),
             ("thematiques", "thematiques IS NULL OR thematiques <@ ARRAY(SELECT t.value FROM " ~ ref('thematiques') ~ "AS t)"),
             ("presentation_resume", "presentation_resume IS NULL OR LENGTH(presentation_resume) <= 280"),
