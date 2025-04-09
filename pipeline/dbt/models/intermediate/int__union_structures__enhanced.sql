@@ -14,9 +14,11 @@ valid_structures AS (
                 relation_alias='structures',
                 except=[
                     "nom",
+                    "telephone",
                 ]
             )
         }},
+        processings.format_phone_number(structures.telephone) AS "telephone",
         CASE
             WHEN LENGTH(structures.nom) <= 150 THEN structures.nom
             ELSE LEFT(structures.nom, 149) || '…'

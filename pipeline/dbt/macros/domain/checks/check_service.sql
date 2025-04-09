@@ -46,6 +46,7 @@ BEGIN
             ("nom", "nom IS NOT NULL AND LENGTH(nom) <= 150 AND LENGTH(nom) >= 3 AND nom !~ '(?<!etc)\.$'"),
             ("presentation_resume", "presentation_resume IS NULL OR LENGTH(presentation_resume) <= 280"),
             ("types", "types IS NULL OR types <@ ARRAY(SELECT t.value FROM " ~ ref('typologies_de_services') ~ "AS t)"),
+            ("telephone", "telephone IS NULL OR processings.format_phone_number(telephone) IS NOT NULL"),
             ("thematiques", "thematiques IS NULL OR thematiques <@ ARRAY(SELECT t.value FROM " ~ ref('thematiques') ~ "AS t)"),
             ("frais", "frais IS NULL OR frais <@ ARRAY(SELECT f.value FROM " ~ ref('frais') ~ "AS f)"),
             ("profils", "profils IS NULL OR profils <@ ARRAY(SELECT p.value FROM " ~ ref('profils') ~ "AS p)"),
