@@ -200,13 +200,21 @@ locals {
 
   s3_endpoint = replace(scaleway_object_bucket.main.endpoint, "${scaleway_object_bucket.main.name}.", "")
 
-  airflow_conn_s3 = format(
-    "aws://@/%s?endpoint_url=%s&region_name=%s&aws_access_key_id=%s&aws_secret_access_key=%s",
-    scaleway_object_bucket.main.name,
-    urlencode(local.s3_endpoint),
-    scaleway_object_bucket.main.region,
-    var.airflow_access_key,
-    var.airflow_secret_key
+  airflow_conn_s3 = jsonencode(
+    {
+      conn_type = "aws"
+      extra = {
+        "region_name" : "${scaleway_object_bucket.main.region}",
+        "endpoint_url" : "${local.s3_endpoint}",
+        "aws_access_key_id" : "${var.airflow_access_key}",
+        "aws_secret_access_key" : "${var.airflow_secret_key}",
+        "service_config" : {
+          "s3" : {
+            "bucket_name" : "${scaleway_object_bucket.main.name}",
+          }
+        }
+      }
+    }
   )
 
   base_hostname = "${var.dns_subdomain != "" ? "${var.dns_subdomain}." : ""}${var.dns_zone}"
