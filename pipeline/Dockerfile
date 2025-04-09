@@ -3,8 +3,8 @@
 ########
 FROM python:3.12-slim AS compile-image
 
-ENV PYTHONUNBUFFERED 1
-ENV PYTHONDONTWRITEBYTECODE 1
+ENV PYTHONUNBUFFERED=1
+ENV PYTHONDONTWRITEBYTECODE=1
 
 RUN apt-get update \
     && apt-get upgrade -y \
@@ -18,21 +18,21 @@ RUN apt-get update \
 COPY requirements requirements
 
 # virtual env path must match their location on the runtime image to be portable
-ENV VIRTUAL_ENV /opt/airflow/venvs/python/venv
+ENV VIRTUAL_ENV=/opt/airflow/venvs/python/venv
 
 RUN python -m venv ${VIRTUAL_ENV}
 RUN "${VIRTUAL_ENV}/bin/python" -m pip install --no-cache-dir --upgrade pip setuptools wheel
 RUN "${VIRTUAL_ENV}/bin/python" -m pip install --no-cache-dir -r requirements/tasks/python/requirements.txt
 
 # virtual env path must match their location on the runtime image to be portable
-ENV VIRTUAL_ENV /opt/airflow/venvs/pipx/venv
+ENV VIRTUAL_ENV=/opt/airflow/venvs/pipx/venv
 
 RUN python -m venv ${VIRTUAL_ENV}
 RUN "${VIRTUAL_ENV}/bin/python" -m pip install --no-cache-dir --upgrade pip setuptools wheel
 RUN "${VIRTUAL_ENV}/bin/python" -m pip install --no-cache-dir -r requirements/tasks/pipx/requirements.txt
 
 # virtual env path must match their location on the runtime image to be portable
-ENV VIRTUAL_ENV /opt/airflow/venvs/dbt/venv
+ENV VIRTUAL_ENV=/opt/airflow/venvs/dbt/venv
 
 RUN python -m venv ${VIRTUAL_ENV}
 RUN "${VIRTUAL_ENV}/bin/python" -m pip install --no-cache-dir --upgrade pip setuptools wheel
@@ -43,10 +43,10 @@ RUN "${VIRTUAL_ENV}/bin/python" -m pip install --no-cache-dir -r requirements/ta
 ########
 FROM apache/airflow:2.10.1-python3.12 as runtime-image
 
-ENV PYTHONUNBUFFERED 1
-ENV PYTHONDONTWRITEBYTECODE 1
+ENV PYTHONUNBUFFERED=1
+ENV PYTHONDONTWRITEBYTECODE=1
 
-ENV AIRFLOW_VAR_DBT_PROJECT_DIR /opt/airflow/dbt
+ENV AIRFLOW_VAR_DBT_PROJECT_DIR=/opt/airflow/dbt
 
 COPY requirements requirements
 RUN pip install -r requirements/airflow/requirements.txt
@@ -77,4 +77,4 @@ RUN /opt/airflow/venvs/dbt/venv/bin/dbt deps --project-dir /opt/airflow/dbt
 RUN /opt/airflow/venvs/python/venv/bin/playwright install chromium
 
 # make the dags package available in editable mode
-ENV PYTHONPATH "${PYTHONPATH}:/opt/airflow/dags"
+ENV PYTHONPATH="${PYTHONPATH}:/opt/airflow/dags"
