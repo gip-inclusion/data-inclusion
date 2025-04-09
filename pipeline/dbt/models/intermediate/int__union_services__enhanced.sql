@@ -83,21 +83,21 @@ services_with_zdf_and_contact AS (
                 ]
             )
         }},
-        zones_diffusion.zone_diffusion_code AS "zone_diffusion_code",
-        zones_diffusion.zone_diffusion_nom  AS "zone_diffusion_nom",
-        contacts.contact_nom_prenom         AS "contact_nom_prenom",
-        contacts.courriel                   AS "courriel",
-        contacts.telephone                  AS "telephone"
-    FROM services_with_valid_structure AS services
+        zones_diffusion.zone_diffusion_code                 AS "zone_diffusion_code",
+        zones_diffusion.zone_diffusion_nom                  AS "zone_diffusion_nom",
+        contacts.contact_nom_prenom                         AS "contact_nom_prenom",
+        contacts.courriel                                   AS "courriel",
+        processings.format_phone_number(contacts.telephone) AS "telephone"
+    FROM services_with_valid_structure
     LEFT JOIN zones_diffusion
-        ON services._di_surrogate_id = zones_diffusion._di_surrogate_id
+        ON services_with_valid_structure._di_surrogate_id = zones_diffusion._di_surrogate_id
     LEFT JOIN contacts
-        ON services._di_surrogate_id = contacts._di_surrogate_id
+        ON services_with_valid_structure._di_surrogate_id = contacts._di_surrogate_id
 ),
 
 valid_services AS (
     SELECT services.*
-    FROM services_with_zdf_and_contact AS services
+    FROM services_with_zdf_and_contact AS services -- noqa: structure.unused_join
     LEFT JOIN
         LATERAL
         LIST_SERVICE_ERRORS(
