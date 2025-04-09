@@ -37,7 +37,7 @@ jobs:
           echo "${TF_VARS_BASE64}" \
             | base64 --decode \
             | jq 'to_entries | map(.value // empty) | .[]' \
-            | xargs -I{} echo '::add-mask::{}'
+            | xargs -I{} --null echo '::add-mask::{}'
 
       - name: tf init
         run: |
