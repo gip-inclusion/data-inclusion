@@ -732,6 +732,7 @@ pyproject-api==1.9.0
 pytest==8.3.4
     # via
     #   -c airflow/constraints.txt
+    #   -r dev/../airflow/requirements.in
     #   -r dev/requirements.in
     #   pytest-dotenv
 pytest-dotenv==0.5.2
@@ -815,6 +816,7 @@ requests==2.32.3
 requests-mock==1.12.1
     # via
     #   -c airflow/constraints.txt
+    #   -r dev/../airflow/requirements.in
     #   -r dev/requirements.in
 requests-toolbelt==1.0.0
     # via
