@@ -58,11 +58,16 @@ jobs:
           labels: ${{ steps.meta.outputs.labels }}
 
       - name: Run tests
-        if: matrix.service != 'pipeline'  # TODO: run pipeline tests
         env:
+          CI: 1
           API_ENV: test
         run: |
-          docker compose run --entrypoint pytest ${{ matrix.service }} -p no:cacheprovider -vv
+            if [[ "${{ matrix.service }}" == "pipeline" ]]; then
+              TARGET_CONTAINER=airflow-scheduler
+            else
+              TARGET_CONTAINER=${{ matrix.service }}
+            fi
+            docker compose run --entrypoint pytest $TARGET_CONTAINER -p no:cacheprovider -vv
 
       - name: Push image to GitHub registry
         uses: docker/build-push-action@v5

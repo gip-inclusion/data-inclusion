@@ -24,10 +24,7 @@ known-local-folder = ["dags", "dag_utils"]
 airflow = ["airflow"]
 
 [tool.pytest.ini_options]
-testpaths = [
-	"tests/unit",
-	"tests/integration",
-]
+testpaths = "tests"
 markers = '''
     ban_api: mark test as requiring the base base adresse nationale api
 '''
