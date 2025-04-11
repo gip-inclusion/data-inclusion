@@ -41,7 +41,7 @@ RUN "${VIRTUAL_ENV}/bin/python" -m pip install --no-cache-dir -r requirements/ta
 ########
 # This image is the runtime
 ########
-FROM apache/airflow:2.10.5-python3.12 as runtime-image
+FROM apache/airflow:2.10.5-python3.12 AS runtime-image
 
 ENV PYTHONUNBUFFERED=1
 ENV PYTHONDONTWRITEBYTECODE=1
@@ -70,8 +70,10 @@ RUN /opt/airflow/venvs/python/venv/bin/playwright install-deps chromium
 
 USER airflow
 
+COPY --chown=airflow:0 pyproject.toml pyproject.toml
 COPY --chown=airflow:0 dags /opt/airflow/dags
 COPY --chown=airflow:0 dbt ${AIRFLOW_VAR_DBT_PROJECT_DIR}
+COPY --chown=airflow:0 tests /opt/airflow/tests
 
 RUN /opt/airflow/venvs/dbt/venv/bin/dbt deps --project-dir /opt/airflow/dbt
 RUN /opt/airflow/venvs/python/venv/bin/playwright install chromium

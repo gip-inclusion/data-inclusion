@@ -349,6 +349,10 @@ inflection==0.5.1
     #   -c airflow/constraints.txt
     #   apache-airflow-providers-amazon
     #   connexion
+iniconfig==2.0.0
+    # via
+    #   -c airflow/constraints.txt
+    #   pytest
 isodate==0.7.2
     # via
     #   -c airflow/constraints.txt
@@ -518,6 +522,7 @@ packaging==24.2
     #   limits
     #   marshmallow
     #   marshmallow-sqlalchemy
+    #   pytest
     #   redshift-connector
 paramiko==3.5.0
     # via
@@ -536,6 +541,7 @@ pluggy==1.5.0
     # via
     #   -c airflow/constraints.txt
     #   apache-airflow
+    #   pytest
 ply==3.11
     # via
     #   -c airflow/constraints.txt
@@ -585,6 +591,10 @@ pynacl==1.5.0
     # via
     #   -c airflow/constraints.txt
     #   paramiko
+pytest==8.3.4
+    # via
+    #   -c airflow/constraints.txt
+    #   -r airflow/requirements.in
 python-daemon==3.1.2
     # via
     #   -c airflow/constraints.txt
@@ -641,7 +651,12 @@ requests==2.32.3
     #   connexion
     #   opentelemetry-exporter-otlp-proto-http
     #   redshift-connector
+    #   requests-mock
     #   requests-toolbelt
+requests-mock==1.12.1
+    # via
+    #   -c airflow/constraints.txt
+    #   -r airflow/requirements.in
 requests-toolbelt==1.0.0
     # via
     #   -c airflow/constraints.txt
