@@ -102,17 +102,13 @@
               "title": "Courriel"
             },
             "date_maj": {
-              "anyOf": [
-                {
-                  "format": "date",
-                  "type": "string"
-                },
-                {
-                  "format": "date-time",
-                  "type": "string"
-                }
+              "description": "Date de dernière modification de la structure chez le producteur de données.",
+              "examples": [
+                "2025-02-14"
               ],
-              "title": "Date Maj"
+              "format": "date",
+              "title": "Date de dernière modification",
+              "type": "string"
             },
             "horaires_ouverture": {
               "anyOf": [
@@ -193,6 +189,12 @@
               "title": "Longitude"
             },
             "nom": {
+              "description": "Nom de la structure.\n\nChaîne de caractères entre 3 et 150 caractères, ne se terminant pas par un point.",
+              "examples": [
+                "Centre social Le Tournesol"
+              ],
+              "maxLength": 150,
+              "minLength": 3,
               "title": "Nom",
               "type": "string"
             },
@@ -844,20 +846,13 @@
               "title": "Date Creation"
             },
             "date_maj": {
-              "anyOf": [
-                {
-                  "format": "date",
-                  "type": "string"
-                },
-                {
-                  "format": "date-time",
-                  "type": "string"
-                },
-                {
-                  "type": "null"
-                }
+              "description": "Date de dernière modification du service chez le producteur de données.",
+              "examples": [
+                "2025-02-14"
               ],
-              "title": "Date Maj"
+              "format": "date",
+              "title": "Date de dernière modification",
+              "type": "string"
             },
             "date_suspension": {
               "anyOf": [
@@ -1028,6 +1023,12 @@
               "title": "Modes Orientation Beneficiaire Autres"
             },
             "nom": {
+              "description": "Nom du service.\n\nChaîne de caractères entre 3 et 150 caractères, ne se terminant pas par un point.",
+              "examples": [
+                "Atelier insertion et posture professionnelle"
+              ],
+              "maxLength": 150,
+              "minLength": 3,
               "title": "Nom",
               "type": "string"
             },
@@ -1253,6 +1254,7 @@
             "structure_id",
             "source",
             "nom",
+            "date_maj",
             "score_qualite",
             "structure"
           ],
@@ -1357,17 +1359,13 @@
               "title": "Courriel"
             },
             "date_maj": {
-              "anyOf": [
-                {
-                  "format": "date",
-                  "type": "string"
-                },
-                {
-                  "format": "date-time",
-                  "type": "string"
-                }
+              "description": "Date de dernière modification de la structure chez le producteur de données.",
+              "examples": [
+                "2025-02-14"
               ],
-              "title": "Date Maj"
+              "format": "date",
+              "title": "Date de dernière modification",
+              "type": "string"
             },
             "doublons": {
               "description": "Doublons connus de la structure",
@@ -1456,6 +1454,12 @@
               "title": "Longitude"
             },
             "nom": {
+              "description": "Nom de la structure.\n\nChaîne de caractères entre 3 et 150 caractères, ne se terminant pas par un point.",
+              "examples": [
+                "Centre social Le Tournesol"
+              ],
+              "maxLength": 150,
+              "minLength": 3,
               "title": "Nom",
               "type": "string"
             },
@@ -1831,17 +1835,13 @@
               "title": "Courriel"
             },
             "date_maj": {
-              "anyOf": [
-                {
-                  "format": "date",
-                  "type": "string"
-                },
-                {
-                  "format": "date-time",
-                  "type": "string"
-                }
+              "description": "Date de dernière modification de la structure chez le producteur de données.",
+              "examples": [
+                "2025-02-14"
               ],
-              "title": "Date Maj"
+              "format": "date",
+              "title": "Date de dernière modification",
+              "type": "string"
             },
             "doublons": {
               "description": "Identifiants (source, id) des doublons connus de la structure",
@@ -1930,6 +1930,12 @@
               "title": "Longitude"
             },
             "nom": {
+              "description": "Nom de la structure.\n\nChaîne de caractères entre 3 et 150 caractères, ne se terminant pas par un point.",
+              "examples": [
+                "Centre social Le Tournesol"
+              ],
+              "maxLength": 150,
+              "minLength": 3,
               "title": "Nom",
               "type": "string"
             },
@@ -2289,20 +2295,13 @@
               "title": "Date Creation"
             },
             "date_maj": {
-              "anyOf": [
-                {
-                  "format": "date",
-                  "type": "string"
-                },
-                {
-                  "format": "date-time",
-                  "type": "string"
-                },
-                {
-                  "type": "null"
-                }
+              "description": "Date de dernière modification du service chez le producteur de données.",
+              "examples": [
+                "2025-02-14"
               ],
-              "title": "Date Maj"
+              "format": "date",
+              "title": "Date de dernière modification",
+              "type": "string"
             },
             "date_suspension": {
               "anyOf": [
@@ -2473,6 +2472,12 @@
               "title": "Modes Orientation Beneficiaire Autres"
             },
             "nom": {
+              "description": "Nom du service.\n\nChaîne de caractères entre 3 et 150 caractères, ne se terminant pas par un point.",
+              "examples": [
+                "Atelier insertion et posture professionnelle"
+              ],
+              "maxLength": 150,
+              "minLength": 3,
               "title": "Nom",
               "type": "string"
             },
@@ -2695,6 +2700,7 @@
             "structure_id",
             "source",
             "nom",
+            "date_maj",
             "score_qualite"
           ],
           "title": "Service",
@@ -2872,17 +2878,13 @@
               "title": "Courriel"
             },
             "date_maj": {
-              "anyOf": [
-                {
-                  "format": "date",
-                  "type": "string"
-                },
-                {
-                  "format": "date-time",
-                  "type": "string"
-                }
+              "description": "Date de dernière modification de la structure chez le producteur de données.",
+              "examples": [
+                "2025-02-14"
               ],
-              "title": "Date Maj"
+              "format": "date",
+              "title": "Date de dernière modification",
+              "type": "string"
             },
             "horaires_ouverture": {
               "anyOf": [
@@ -2966,6 +2968,12 @@
               "title": "Longitude"
             },
             "nom": {
+              "description": "Nom de la structure.\n\nChaîne de caractères entre 3 et 150 caractères, ne se terminant pas par un point.",
+              "examples": [
+                "Centre social Le Tournesol"
+              ],
+              "maxLength": 150,
+              "minLength": 3,
               "title": "Nom",
               "type": "string"
             },
