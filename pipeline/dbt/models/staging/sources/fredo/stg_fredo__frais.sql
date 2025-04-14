@@ -8,7 +8,7 @@ final AS (
         REPLACE(LOWER(TRIM(frais)), 'rendez vous', 'rendez-vous') AS "value"
     FROM
         source,
-        LATERAL UNNEST(STRING_TO_ARRAY(data ->> 'frais', '/')) AS frais
+        LATERAL UNNEST(STRING_TO_ARRAY(TRIM(TRIM(data ->> 'frais'), '/'), '/')) AS frais
 )
 
 SELECT * FROM final
