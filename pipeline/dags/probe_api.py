@@ -33,8 +33,7 @@ def store_probe_results(get_requests: list[str], today: str) -> None:
         # For size, no need to get too many results.
         # We only want to compare the total number of items
         response = requests.get(url.add({"size": 100}).url, headers=headers)
-        print(response.json())
-        print(response.request.url)
+        response.raise_for_status()
         today_path = f"tests/{today}/{filename}"
         s3.store_content(
             today_path,
