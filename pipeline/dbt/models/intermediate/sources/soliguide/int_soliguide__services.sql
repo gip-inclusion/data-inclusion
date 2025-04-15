@@ -28,6 +28,10 @@ mapping_thematiques AS (
     SELECT * FROM {{ ref('_map_soliguide__thematiques') }}
 ),
 
+mapping_types AS (
+    SELECT * FROM {{ ref('_map_soliguide__types') }}
+),
+
 profils AS (
     SELECT
         publics.lieu_id,
@@ -105,7 +109,10 @@ final AS (
         open_services.id                                              AS "id",
         lieux.lieu_id                                                 AS "adresse_id",
         open_services._di_source_id                                   AS "source",
-        CAST(NULL AS TEXT [])                                         AS "types",
+        CASE
+            WHEN mapping_types.di_type IS NULL THEN NULL
+            ELSE ARRAY[mapping_types.di_type]
+        END                                                           AS "types",
         NULL                                                          AS "prise_rdv",
         CASE
             WHEN lieux.publics__accueil IN (0, 1) THEN ARRAY_APPEND(profils.profils, 'tous-publics')
@@ -201,6 +208,7 @@ final AS (
     LEFT JOIN categories ON open_services.category = categories.code
     LEFT JOIN filtered_phones ON open_services.lieu_id = filtered_phones.lieu_id
     LEFT JOIN profils ON lieux.id = profils.lieu_id
+    LEFT JOIN mapping_types ON open_services.category = mapping_types.category
     LEFT JOIN mapping_thematiques ON open_services.category = mapping_thematiques.category
     -- remove services without mapped thematiques which are assumed irrelevant
     WHERE mapping_thematiques.thematique IS NOT NULL
