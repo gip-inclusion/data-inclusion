@@ -15,6 +15,20 @@ models:
           - relationships:
               to: ref('thematiques')
               field: value
+  - name: _map_soliguide__types
+    columns:
+      - name: category
+        data_tests:
+          - not_null
+          - relationships:
+              to: ref('stg_soliguide__categories')
+              field: code
+      - name: di_type
+        data_tests:
+          - not_null
+          - relationships:
+              to: ref('types')
+              field: value
 
   - name: int_soliguide__adresses
     data_tests:
