@@ -4,32 +4,32 @@ WITH formations AS (
 
 final AS (
     SELECT
-        TRUE                                                      AS "contact_public",
-        formations.content__contact_inscription__contact          AS "contact_nom_prenom",
-        formations.content__contact_inscription__courriel         AS "courriel",
-        formations.content__inscription__informations_en_ligne    AS "formulaire_en_ligne",
-        NULL                                                      AS "frais_autres",
-        formations.nom                                            AS "nom",
-        NULL                                                      AS "prise_rdv",
-        formations.content__lieux_et_horaires_formation__horaires AS "recurrence",
-        formations._di_source_id                                  AS "source",
-        formations.structure_id                                   AS "structure_id",
-        formations.content__contact_inscription__telephone        AS "telephone",
-        NULL                                                      AS "zone_diffusion_code",
-        NULL                                                      AS "zone_diffusion_nom",  -- FIXME
-        'departement'                                             AS "zone_diffusion_type",
-        TRUE                                                      AS "cumulable",
-        formations.url                                            AS "lien_source",
-        formations.id                                             AS "id",
-        formations.content__date_maj                              AS "date_maj",
-        NULL                                                      AS "modes_orientation_accompagnateur_autres",
-        NULL                                                      AS "modes_orientation_beneficiaire_autres",
-        NULL                                                      AS "page_web",
+        TRUE                                                                   AS "contact_public",
+        formations.content__contact_inscription__contact                       AS "contact_nom_prenom",
+        formations.content__contact_inscription__courriel                      AS "courriel",
+        formations.content__inscription__informations_en_ligne                 AS "formulaire_en_ligne",
+        NULL                                                                   AS "frais_autres",
+        formations.nom                                                         AS "nom",
+        NULL                                                                   AS "prise_rdv",
+        formations.content__lieux_et_horaires_formation__horaires              AS "recurrence",
+        formations._di_source_id                                               AS "source",
+        formations.structure_id                                                AS "structure_id",
+        SPLIT_PART(formations.content__contact_inscription__telephone, '/', 1) AS "telephone",
+        NULL                                                                   AS "zone_diffusion_code",
+        NULL                                                                   AS "zone_diffusion_nom",  -- FIXME
+        'departement'                                                          AS "zone_diffusion_type",
+        TRUE                                                                   AS "cumulable",
+        formations.url                                                         AS "lien_source",
+        formations.id                                                          AS "id",
+        formations.content__date_maj                                           AS "date_maj",
+        NULL                                                                   AS "modes_orientation_accompagnateur_autres",
+        NULL                                                                   AS "modes_orientation_beneficiaire_autres",
+        NULL                                                                   AS "page_web",
         CASE
             WHEN LENGTH(formations.content__contenu_et_objectifs__titre) <= 280
                 THEN formations.content__contenu_et_objectifs__titre
             ELSE LEFT(formations.content__contenu_et_objectifs__titre, 279) || '…'
-        END                                                       AS "presentation_resume",
+        END                                                                    AS "presentation_resume",
         ARRAY_TO_STRING(
             ARRAY[
                 '# Contenu et objectifs de la formation',
@@ -52,12 +52,12 @@ final AS (
                 formations.content__informations_pratiques__garde
             ],
             E'\n\n'
-        )                                                         AS "presentation_detail",
-        'service--' || formations.id                              AS "adresse_id",
-        CAST(NULL AS TEXT [])                                     AS "justificatifs",
-        CAST(NULL AS TEXT [])                                     AS "pre_requis",
-        CAST(NULL AS DATE)                                        AS "date_suspension",
-        CAST(NULL AS DATE)                                        AS "date_creation",
+        )                                                                      AS "presentation_detail",
+        'service--' || formations.id                                           AS "adresse_id",
+        CAST(NULL AS TEXT [])                                                  AS "justificatifs",
+        CAST(NULL AS TEXT [])                                                  AS "pre_requis",
+        CAST(NULL AS DATE)                                                     AS "date_suspension",
+        CAST(NULL AS DATE)                                                     AS "date_creation",
         ARRAY_REMOVE(
             ARRAY[
                 'apprendre-francais--suivre-formation',
@@ -65,26 +65,26 @@ final AS (
                 CASE WHEN formations.activite = 'Français à visée sociale et communicative' THEN 'apprendre-francais--communiquer-vie-tous-les-jours' END
             ],
             NULL
-        )                                                         AS "thematiques",
-        ARRAY['en-presentiel']                                    AS "modes_accueil",
+        )                                                                      AS "thematiques",
+        ARRAY['en-presentiel']                                                 AS "modes_accueil",
         ARRAY_REMOVE(
             ARRAY[
                 CASE WHEN formations.content__contact_inscription__courriel IS NOT NULL THEN 'envoyer-un-mail' END,
                 CASE WHEN formations.content__contact_inscription__telephone IS NOT NULL THEN 'telephoner' END
             ],
             NULL
-        )                                                         AS "modes_orientation_accompagnateur",
+        )                                                                      AS "modes_orientation_accompagnateur",
         ARRAY_REMOVE(
             ARRAY[
                 CASE WHEN formations.content__contact_inscription__courriel IS NOT NULL THEN 'envoyer-un-mail' END,
                 CASE WHEN formations.content__contact_inscription__telephone IS NOT NULL THEN 'telephoner' END
             ],
             NULL
-        )                                                         AS "modes_orientation_beneficiaire",
-        ARRAY['public-langues-etrangeres']                        AS "profils",
-        NULL                                                      AS "profils_precisions",
-        ARRAY['formation']                                        AS "types",
-        CAST(NULL AS TEXT [])                                     AS "frais"
+        )                                                                      AS "modes_orientation_beneficiaire",
+        ARRAY['public-langues-etrangeres']                                     AS "profils",
+        NULL                                                                   AS "profils_precisions",
+        ARRAY['formation']                                                     AS "types",
+        CAST(NULL AS TEXT [])                                                  AS "frais"
     FROM formations
 )
 
