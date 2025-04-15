@@ -1,4 +1,4 @@
-PIP_COMPILE := pipx run uv pip compile pyproject.toml --quiet
+PIP_COMPILE := uv pip compile pyproject.toml --quiet
 
 ifeq ($(filter upgrade,$(MAKECMDGOALS)),upgrade)
 PIP_COMPILE += --upgrade
