@@ -55,7 +55,7 @@ python scripts/update_schema_seeds.py
 In order to prevent conflicts:
 
 * tasks requirements are compiled separately
-* cli based tasks (like dbt and pipx) are also compiled separately
+* cli based tasks (like dbt) are also compiled separately
 * python tasks run in dedicated virtuale envs using `ExternalPythonOperator`
 * python tasks requirements must comply to airflow constraints
 

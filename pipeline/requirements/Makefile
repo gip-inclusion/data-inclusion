@@ -8,9 +8,9 @@ AIRFLOW_VERSION := 2.10.5
 PYTHON_VERSION := 3.12
 CONSTRAINTS_FILE_URL := https://raw.githubusercontent.com/apache/airflow/constraints-$(AIRFLOW_VERSION)/constraints-$(PYTHON_VERSION).txt
 
-.PHONY: all airflow dbt pipx python dev upgrade constraints
+.PHONY: all airflow dbt python dev upgrade constraints
 
-all: airflow dbt pipx python dev constraints
+all: airflow dbt python dev constraints
 
 # https://airflow.apache.org/docs/apache-airflow/stable/installation/installing-from-pypi.html#constraints-files
 constraints:
@@ -24,10 +24,6 @@ airflow: airflow/requirements.in constraints
 # isolated env for dbt, which should be invoked using a bash operator
 dbt: tasks/dbt/requirements.in
 	$(PIP_COMPILE) tasks/dbt/requirements.in --output-file=tasks/dbt/requirements.txt
-
-# isolated env for pipx, which should be invoked using a bash operator
-pipx: tasks/pipx/requirements.in
-	$(PIP_COMPILE) tasks/pipx/requirements.in --output-file=tasks/pipx/requirements.txt
 
 # python based tasks requirements must be compatible with airflow requirements
 # therefore these requirements are compiled with airflow constraints

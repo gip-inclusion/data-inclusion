@@ -25,13 +25,6 @@ RUN "${VIRTUAL_ENV}/bin/python" -m pip install --no-cache-dir --upgrade pip setu
 RUN "${VIRTUAL_ENV}/bin/python" -m pip install --no-cache-dir -r requirements/tasks/python/requirements.txt
 
 # virtual env path must match their location on the runtime image to be portable
-ENV VIRTUAL_ENV=/opt/airflow/venvs/pipx/venv
-
-RUN python -m venv ${VIRTUAL_ENV}
-RUN "${VIRTUAL_ENV}/bin/python" -m pip install --no-cache-dir --upgrade pip setuptools wheel
-RUN "${VIRTUAL_ENV}/bin/python" -m pip install --no-cache-dir -r requirements/tasks/pipx/requirements.txt
-
-# virtual env path must match their location on the runtime image to be portable
 ENV VIRTUAL_ENV=/opt/airflow/venvs/dbt/venv
 
 RUN python -m venv ${VIRTUAL_ENV}
