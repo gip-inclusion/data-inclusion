@@ -92,7 +92,7 @@ final AS (
         garages.criteres_eligibilite                                                                AS "pre_requis",
         NULL                                                                                        AS "contact_nom_prenom",
         garages.email                                                                               AS "courriel",
-        garages.telephone                                                                           AS "telephone",
+        SUBSTRING(garages.telephone FROM '\+?\d[\d\.\-\s]*\d')                                      AS "telephone",
         CAST(NULL AS TEXT [])                                                                       AS "frais",
         NULL                                                                                        AS "page_web"
     FROM garages
