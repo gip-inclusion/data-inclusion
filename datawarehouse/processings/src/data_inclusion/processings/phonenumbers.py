@@ -24,10 +24,10 @@ URGENCY_NUMBERS = [
 ALLOWED_REGION_CODES = [
     "YT",  # Mayotte
     "MQ",  # Martinique
-    "FR",  # France
+    "GP",  # Guadeloupe
     "RE",  # Réunion
     "GF",  # Guyane
-    "GP",  # Guadeloupe
+    "FR",  # France
 ]
 
 FOUR_DIGIT_PATTERN = re.compile(r"^3\d{3}$")
@@ -41,6 +41,8 @@ def format_phone_number(phone_number: str) -> Optional[str]:
 
     if phone_number in URGENCY_NUMBERS or FOUR_DIGIT_PATTERN.fullmatch(phone_number):
         return phone_number
+
+    phone_number = phone_number.replace("+33", "0")
 
     for region_code in ALLOWED_REGION_CODES:
         try:
