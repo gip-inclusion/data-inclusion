@@ -32,6 +32,7 @@ from data_inclusion.processings.phonenumbers import format_phone_number
         pytest.param("05 94 00 00 00", "+594594000000", id="guyane-fixed-0594"),
         pytest.param("06 94 00 00 00", "+594694000000", id="guyane-mobile-0694"),
         # Mayotte
+        pytest.param("02 62 00 00 00", "+262262000000", id="mayotte-fixed-0262"),
         pytest.param("02 69 00 00 00", "+262269000000", id="mayotte-fixed-0269"),
         pytest.param("06 39 00 00 00", "+262639000000", id="mayotte-mobile-0639"),
         # Martinique
@@ -43,6 +44,16 @@ from data_inclusion.processings.phonenumbers import format_phone_number
         pytest.param("02 63 00 00 00", "+262263000000", id="reunion-fixed-0263"),
         pytest.param("06 92 00 00 00", "+262692000000", id="reunion-mobile-0692"),
         pytest.param("06 93 00 00 00", "+262693000000", id="reunion-mobile-0693"),
+        # DOM-TOM numbers using the +33 prefix
+        pytest.param(
+            "+33 5 90 00 00 00", "+590590000000", id="guadeloupe-fixed-+33-prefix"
+        ),
+        pytest.param(
+            "+33 2 62 00 00 00", "+262262000000", id="guyane-fixed-+33-prefix"
+        ),
+        pytest.param(
+            "+33 2 62 00 00 00", "+262262000000", id="mayotte-fixed-+33-prefix"
+        ),
     ],
 )
 def test_format_phone_number(phone_number: str, expected: bool):
