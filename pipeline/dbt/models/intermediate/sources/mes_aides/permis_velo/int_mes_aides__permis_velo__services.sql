@@ -145,76 +145,76 @@ mes_aides_natures AS (
 
 final AS (
     SELECT
-        permis_velo.id                                             AS "adresse_id",
-        TRUE                                                       AS "contact_public",
-        TRUE                                                       AS "cumulable",
-        permis_velo.creee_le                                       AS "date_creation",
-        permis_velo.modifiee_le                                    AS "date_maj",
-        CAST(NULL AS DATE)                                         AS "date_suspension",
-        permis_velo.formulaire_url                                 AS "formulaire_en_ligne",
-        mes_aides_natures.frais_autres                             AS "frais_autres",
-        permis_velo.id                                             AS "id",
+        permis_velo.id                                                     AS "adresse_id",
+        TRUE                                                               AS "contact_public",
+        TRUE                                                               AS "cumulable",
+        permis_velo.creee_le                                               AS "date_creation",
+        permis_velo.modifiee_le                                            AS "date_maj",
+        CAST(NULL AS DATE)                                                 AS "date_suspension",
+        permis_velo.formulaire_url                                         AS "formulaire_en_ligne",
+        mes_aides_natures.frais_autres                                     AS "frais_autres",
+        permis_velo.id                                                     AS "id",
         CASE
             WHEN permis_velo.autres_justificatifs IS NOT NULL THEN ARRAY[permis_velo.autres_justificatifs]
             ELSE CAST(NULL AS TEXT [])
-        END                                                        AS "justificatifs",
-        permis_velo.url_mes_aides                                  AS "lien_source",
+        END                                                                AS "justificatifs",
+        permis_velo.url_mes_aides                                          AS "lien_source",
         CASE
             WHEN permis_velo.en_ligne = TRUE THEN ARRAY['a-distance']
             ELSE ARRAY['en-presentiel']
-        END                                                        AS "modes_accueil",
+        END                                                                AS "modes_accueil",
         COALESCE(modes_orientation_transformed.modes_orientation_accompagnateur, CASE
             WHEN permis_velo.contact_telephone IS NOT NULL THEN ARRAY['telephoner']
             WHEN permis_velo.contact_email IS NOT NULL THEN ARRAY['envoyer-un-mail']
             WHEN permis_velo.formulaire_url IS NOT NULL THEN ARRAY['completer-le-formulaire-dadhesion']
-        END)                                                       AS "modes_orientation_accompagnateur",
-        NULL                                                       AS "modes_orientation_accompagnateur_autres",
+        END)                                                               AS "modes_orientation_accompagnateur",
+        NULL                                                               AS "modes_orientation_accompagnateur_autres",
         COALESCE(modes_orientation_transformed.modes_orientation_beneficiaire, CASE
             WHEN permis_velo.contact_telephone IS NOT NULL THEN ARRAY['telephoner']
             WHEN permis_velo.contact_email IS NOT NULL THEN ARRAY['envoyer-un-mail']
             WHEN permis_velo.formulaire_url IS NOT NULL THEN ARRAY['completer-le-formulaire-dadhesion']
-        END)                                                       AS "modes_orientation_beneficiaire",
-        permis_velo.demarche                                       AS "modes_orientation_beneficiaire_autres",
-        permis_velo.nom                                            AS "nom",
+        END)                                                               AS "modes_orientation_beneficiaire",
+        permis_velo.demarche                                               AS "modes_orientation_beneficiaire_autres",
+        permis_velo.nom                                                    AS "nom",
         CASE
             WHEN LENGTH(permis_velo.description) > 280 THEN SUBSTRING(permis_velo.description FROM 1 FOR 277) || '...'
             ELSE permis_velo.description
-        END                                                        AS "presentation_resume",
+        END                                                                AS "presentation_resume",
         permis_velo.description
         || COALESCE(E'\n\n' || permis_velo.bon_a_savoir, '')
-        || COALESCE(E'\n\n' || permis_velo.modalite_versement, '') AS "presentation_detail",
-        NULL                                                       AS "prise_rdv",
-        CAST(NULL AS TEXT [])                                      AS "profils",
-        LEFT(permis_velo.autres_conditions, 500)                   AS "profils_precisions",
-        NULL                                                       AS "recurrence",
-        permis_velo._di_source_id                                  AS "source",
-        permis_velo.id                                             AS "structure_id",
-        thematiques.thematiques                                    AS "thematiques",
-        transformed_types.transformed_types                        AS "types",
+        || COALESCE(E'\n\n' || permis_velo.modalite_versement, '')         AS "presentation_detail",
+        NULL                                                               AS "prise_rdv",
+        CAST(NULL AS TEXT [])                                              AS "profils",
+        LEFT(permis_velo.autres_conditions, 500)                           AS "profils_precisions",
+        NULL                                                               AS "recurrence",
+        permis_velo._di_source_id                                          AS "source",
+        permis_velo.id                                                     AS "structure_id",
+        thematiques.thematiques                                            AS "thematiques",
+        transformed_types.transformed_types                                AS "types",
         CASE
             WHEN zone_diffusion.zone_di = 'commune' THEN zone_code.code
             WHEN zone_diffusion.zone_di = 'epci' THEN zone_code.code_epci
             WHEN zone_diffusion.zone_di = 'region' THEN regions.code
             WHEN zone_diffusion.zone_di = 'departement' THEN departements.code
             WHEN zone_diffusion.zone_di = 'pays' THEN 'FR'
-        END                                                        AS "zone_diffusion_code",
+        END                                                                AS "zone_diffusion_code",
         CASE
             WHEN zone_diffusion.zone_di = 'commune' THEN permis_velo.liaisons_villes_nom
             WHEN zone_diffusion.zone_di = 'epci' THEN permis_velo.liaisons_villes_nom
             WHEN zone_diffusion.zone_di = 'region' THEN permis_velo.liaisons_region
             WHEN zone_diffusion.zone_di = 'departement' THEN departements.nom
             WHEN zone_diffusion.zone_di = 'pays' THEN 'France entière'
-        END                                                        AS "zone_diffusion_nom",
-        zone_diffusion.zone_di                                     AS "zone_diffusion_type",
+        END                                                                AS "zone_diffusion_nom",
+        zone_diffusion.zone_di                                             AS "zone_diffusion_type",
         CASE
             WHEN permis_velo.autres_conditions IS NULL THEN CAST(NULL AS TEXT [])
             ELSE ARRAY[permis_velo.autres_conditions]
-        END                                                        AS "pre_requis",
-        NULL                                                       AS "contact_nom_prenom",
-        permis_velo.contact_email                                  AS "courriel",
-        permis_velo.contact_telephone                              AS "telephone",
-        mes_aides_natures.frais                                    AS "frais",
-        permis_velo.site                                           AS "page_web"
+        END                                                                AS "pre_requis",
+        NULL                                                               AS "contact_nom_prenom",
+        permis_velo.contact_email                                          AS "courriel",
+        SUBSTRING(permis_velo.contact_telephone FROM '\+?\d[\d\.\-\s]*\d') AS "telephone",
+        mes_aides_natures.frais                                            AS "frais",
+        permis_velo.site                                                   AS "page_web"
     FROM permis_velo
     LEFT JOIN transformed_types ON permis_velo.id = transformed_types.id
     LEFT JOIN zone_diffusion ON permis_velo.id = zone_diffusion.id

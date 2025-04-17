@@ -22,29 +22,29 @@ thematiques AS (
 
 final AS (
     SELECT
-        permis_velo.id                  AS "id",
-        permis_velo.id                  AS "adresse_id",
-        permis_velo.siret               AS "siret",
-        NULL::BOOLEAN                   AS "antenne",
-        NULL                            AS "rna",
-        permis_velo.nom_organisme       AS "nom",
-        permis_velo.contact_telephone   AS "telephone",
-        permis_velo.contact_email       AS "courriel",
-        permis_velo.site                AS "site_web",
-        permis_velo._di_source_id       AS "source",
-        permis_velo.url_mes_aides       AS "lien_source",
-        NULL                            AS "horaires_ouverture",
-        NULL                            AS "accessibilite",
+        permis_velo.id                                                     AS "id",
+        permis_velo.id                                                     AS "adresse_id",
+        permis_velo.siret                                                  AS "siret",
+        CAST(NULL AS BOOLEAN)                                              AS "antenne",
+        NULL                                                               AS "rna",
+        permis_velo.nom_organisme                                          AS "nom",
+        SUBSTRING(permis_velo.contact_telephone FROM '\+?\d[\d\.\-\s]*\d') AS "telephone",
+        permis_velo.contact_email                                          AS "courriel",
+        permis_velo.site                                                   AS "site_web",
+        permis_velo._di_source_id                                          AS "source",
+        permis_velo.url_mes_aides                                          AS "lien_source",
+        NULL                                                               AS "horaires_ouverture",
+        NULL                                                               AS "accessibilite",
         CASE
             WHEN permis_velo.organisme_type ~* 'mission locale' THEN ARRAY['mission-locale']
-            ELSE NULL::TEXT []
-        END                             AS "labels_nationaux",
-        NULL::TEXT []                   AS "labels_autres",
-        NULL                            AS "typologie",
-        NULL                            AS "presentation_resume",
-        NULL                            AS "presentation_detail",
-        (permis_velo.modifiee_le)::DATE AS "date_maj",
-        thematiques.thematiques         AS "thematiques"
+            ELSE CAST(NULL AS TEXT [])
+        END                                                                AS "labels_nationaux",
+        CAST(NULL AS TEXT [])                                              AS "labels_autres",
+        NULL                                                               AS "typologie",
+        NULL                                                               AS "presentation_resume",
+        NULL                                                               AS "presentation_detail",
+        CAST(permis_velo.modifiee_le AS DATE)                              AS "date_maj",
+        thematiques.thematiques                                            AS "thematiques"
     FROM permis_velo
     LEFT JOIN thematiques ON permis_velo.id = thematiques.service_id
     WHERE permis_velo.slug_organisme NOT IN ('action-logement', 'france-travail')
