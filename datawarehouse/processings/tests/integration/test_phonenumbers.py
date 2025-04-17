@@ -17,6 +17,7 @@ from data_inclusion.processings.phonenumbers import format_phone_number
         ("+355 23 6 67 89", None),
         ("04 67 87 83 87 / 06 31 47 16 85", None),
         ("3333", "3333"),
+        ("33-33", "3333"),
         ("33  33", "3333"),
         ("116 000", "116000"),
         # Guadeloupe, Saint-Barthélemy et Saint-Martin

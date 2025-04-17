@@ -37,7 +37,7 @@ def format_phone_number(phone_number: str) -> Optional[str]:
     if phone_number is None:
         return None
 
-    phone_number = phone_number.replace(" ", "")
+    phone_number = re.sub(r"[\.\-\s]", "", phone_number)
 
     if phone_number in URGENCY_NUMBERS or FOUR_DIGIT_PATTERN.fullmatch(phone_number):
         return phone_number
