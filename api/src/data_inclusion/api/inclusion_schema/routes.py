@@ -2,7 +2,7 @@ from pydantic import BaseModel
 
 import fastapi
 
-from data_inclusion import schema
+from data_inclusion.schema import v0 as schema
 
 router = fastapi.APIRouter()
 

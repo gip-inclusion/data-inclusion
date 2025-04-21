@@ -4,10 +4,10 @@ from unittest.mock import ANY
 
 import pytest
 
-from data_inclusion import schema
 from data_inclusion.api.decoupage_administratif.constants import RegionEnum
 from data_inclusion.api.inclusion_data import models
 from data_inclusion.api.utils import soliguide
+from data_inclusion.schema import v0 as schema
 
 from ... import factories
 

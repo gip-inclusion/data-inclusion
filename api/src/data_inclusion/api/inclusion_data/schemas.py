@@ -3,7 +3,7 @@ from typing import Annotated
 
 from pydantic import BaseModel, ConfigDict, Field
 
-from data_inclusion import schema
+from data_inclusion.schema import v0 as schema
 
 
 class Source(BaseModel):

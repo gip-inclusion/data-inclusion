@@ -11,10 +11,10 @@ import sentry_sdk
 import sqlalchemy as sqla
 from furl import furl
 
-from data_inclusion import schema
 from data_inclusion.api.config import settings
 from data_inclusion.api.core import db
 from data_inclusion.api.inclusion_data import models
+from data_inclusion.schema import v0 as schema
 
 logger = logging.getLogger(__name__)
 
