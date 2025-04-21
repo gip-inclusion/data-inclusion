@@ -2,7 +2,6 @@ from sqlalchemy import orm
 
 import fastapi
 
-from data_inclusion import schema as di_schema
 from data_inclusion.api.analytics.models import (
     ConsultServiceEvent,
     ConsultStructureEvent,
@@ -16,6 +15,7 @@ from data_inclusion.api.decoupage_administratif.constants import (
 )
 from data_inclusion.api.inclusion_data import schemas
 from data_inclusion.api.utils import pagination
+from data_inclusion.schema import v0 as di_schema
 
 
 def save_consult_structure_event(

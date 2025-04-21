@@ -4,7 +4,6 @@ from pydantic.json_schema import SkipJsonSchema
 
 import fastapi
 
-from data_inclusion import schema as di_schema
 from data_inclusion.api import auth
 from data_inclusion.api.analytics.services import (
     save_consult_service_event,
@@ -28,6 +27,7 @@ from data_inclusion.api.decoupage_administratif.utils import (
 )
 from data_inclusion.api.inclusion_data import schemas, services
 from data_inclusion.api.utils import pagination, soliguide
+from data_inclusion.schema import v0 as di_schema
 
 router = fastapi.APIRouter(tags=["Données"])
 

@@ -3,8 +3,8 @@ from datetime import date
 import factory
 import faker
 
-from data_inclusion import schema as di_schema
 from data_inclusion.api.inclusion_data import models
+from data_inclusion.schema import v0 as di_schema
 
 fake = faker.Faker("fr_FR")
 
