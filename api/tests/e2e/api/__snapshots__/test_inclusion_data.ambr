@@ -3839,12 +3839,12 @@
               }
             },
             {
-              "description": "Score de qualité minimum.\n                Les résultats renvoyés ont un score de qualité supérieur ou égal à ce\n                score. (voir [documentation](https://gip-inclusion.notion.site/Conception-du-score-de-qualit-17b5f321b60480a1b79bf4a17b4567dd?pvs=4))",
+              "description": "[BETA] Score de qualité minimum.\n                Les résultats renvoyés ont un score de qualité supérieur ou égal à ce\n                score. (voir [documentation](https://gip-inclusion.notion.site/Conception-du-score-de-qualit-17b5f321b60480a1b79bf4a17b4567dd?pvs=4))",
               "in": "query",
               "name": "score_qualite_minimum",
               "required": false,
               "schema": {
-                "description": "Score de qualité minimum.\n                Les résultats renvoyés ont un score de qualité supérieur ou égal à ce\n                score. (voir [documentation](https://gip-inclusion.notion.site/Conception-du-score-de-qualit-17b5f321b60480a1b79bf4a17b4567dd?pvs=4))",
+                "description": "[BETA] Score de qualité minimum.\n                Les résultats renvoyés ont un score de qualité supérieur ou égal à ce\n                score. (voir [documentation](https://gip-inclusion.notion.site/Conception-du-score-de-qualit-17b5f321b60480a1b79bf4a17b4567dd?pvs=4))",
                 "title": "Score Qualite Minimum",
                 "type": "number"
               }

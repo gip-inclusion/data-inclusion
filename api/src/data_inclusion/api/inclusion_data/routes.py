@@ -15,9 +15,7 @@ from data_inclusion.api.analytics.services import (
 from data_inclusion.api.config import settings
 from data_inclusion.api.core import db
 from data_inclusion.api.decoupage_administratif.constants import (
-    DepartementCodeEnum,
     DepartementSlugEnum,
-    RegionCodeEnum,
     RegionSlugEnum,
 )
 from data_inclusion.api.decoupage_administratif.models import Commune
@@ -25,7 +23,7 @@ from data_inclusion.api.decoupage_administratif.utils import (
     get_departement_by_code_or_slug,
     get_region_by_code_or_slug,
 )
-from data_inclusion.api.inclusion_data import schemas, services
+from data_inclusion.api.inclusion_data import filters, schemas, services
 from data_inclusion.api.utils import pagination, soliguide
 from data_inclusion.schema import v0 as di_schema
 
@@ -37,21 +35,6 @@ router = fastapi.APIRouter(tags=["Données"])
 T = TypeVar("T")
 Optional = T | SkipJsonSchema[None]
 
-CodeCommuneFilter = Annotated[
-    Optional[di_schema.CodeCommune],
-    fastapi.Query(description="Code insee géographique d'une commune."),
-]
-
-CodeDepartementFilter = Annotated[
-    Optional[DepartementCodeEnum],
-    fastapi.Query(description="Code insee géographique d'un département."),
-]
-
-CodeRegionFilter = Annotated[
-    Optional[RegionCodeEnum],
-    fastapi.Query(description="Code insee géographique d'une région."),
-]
-
 
 @router.get(
     "/structures",
@@ -62,15 +45,7 @@ CodeRegionFilter = Annotated[
 def list_structures_endpoint(
     request: fastapi.Request,
     background_tasks: fastapi.BackgroundTasks,
-    sources: Annotated[
-        Optional[list[str]],
-        fastapi.Query(
-            description="""Une liste d'identifiants de source.
-                La liste des identifiants de source est disponible sur le endpoint
-                dédié. Les résultats seront limités aux sources spécifiées.
-            """,
-        ),
-    ] = None,
+    sources: filters.SourcesFilter = None,
     id: Annotated[Optional[str], fastapi.Query(include_in_schema=False)] = None,
     typologie: Annotated[
         Optional[di_schema.TypologieStructure], fastapi.Query()
@@ -78,28 +53,13 @@ def list_structures_endpoint(
     label_national: Annotated[
         Optional[di_schema.LabelNational], fastapi.Query()
     ] = None,
-    thematiques: Annotated[
-        Optional[list[di_schema.Thematique]],
-        fastapi.Query(
-            description="""Une liste de thématique.
-                Chaque résultat renvoyé a (au moins) une thématique dans cette liste."""
-        ),
-    ] = None,
-    code_region: CodeRegionFilter = None,
+    thematiques: filters.ThematiquesFilter[di_schema.Thematique] = None,
+    code_region: filters.CodeRegionFilter = None,
     slug_region: Annotated[Optional[RegionSlugEnum], fastapi.Query()] = None,
-    code_departement: CodeDepartementFilter = None,
+    code_departement: filters.CodeDepartementFilter = None,
     slug_departement: Annotated[Optional[DepartementSlugEnum], fastapi.Query()] = None,
-    code_commune: CodeCommuneFilter = None,
-    exclure_doublons: Annotated[
-        Optional[bool],
-        fastapi.Query(
-            description=(
-                "[BETA] Mode qui ne retourne parmi les structures en doublon, que "
-                "celles ayant les services les plus qualitatifs "
-                "(voir [documentation](https://gip-inclusion.notion.site/Syst-me-de-d-duplication-des-donn-es-17d5f321b60480f99f6cf65522a83c8b?pvs=4))."
-            )
-        ),
-    ] = False,
+    code_commune: filters.CodeCommuneFilter[di_schema.CodeCommune] = None,
+    exclure_doublons: filters.ExclureDoublonsStructuresFilter = False,
     db_session=fastapi.Depends(db.get_session),
 ):
     region = get_region_by_code_or_slug(code=code_region, slug=slug_region)
@@ -188,81 +148,20 @@ def list_services_endpoint(
     request: fastapi.Request,
     background_tasks: fastapi.BackgroundTasks,
     db_session=fastapi.Depends(db.get_session),
-    sources: Annotated[
-        Optional[list[str]],
-        fastapi.Query(
-            description="""Une liste d'identifiants de source.
-                La liste des identifiants de source est disponible sur le endpoint
-                dédié. Les résultats seront limités aux sources spécifiées.
-            """,
-        ),
-    ] = None,
-    thematiques: Annotated[
-        Optional[list[di_schema.Thematique]],
-        fastapi.Query(
-            description="""Une liste de thématique.
-                Chaque résultat renvoyé a (au moins) une thématique dans cette liste."""
-        ),
-    ] = None,
-    code_region: CodeRegionFilter = None,
+    sources: filters.SourcesFilter = None,
+    thematiques: filters.ThematiquesFilter[di_schema.Thematique] = None,
+    code_region: filters.CodeRegionFilter = None,
     slug_region: Annotated[Optional[RegionSlugEnum], fastapi.Query()] = None,
-    code_departement: CodeDepartementFilter = None,
+    code_departement: filters.CodeDepartementFilter = None,
     slug_departement: Annotated[Optional[DepartementSlugEnum], fastapi.Query()] = None,
-    code_commune: CodeCommuneFilter = None,
-    frais: Annotated[
-        Optional[list[di_schema.Frais]],
-        fastapi.Query(
-            description="""Une liste de frais.
-                Chaque résultat renvoyé a (au moins) un frais dans cette liste."""
-        ),
-    ] = None,
-    profils: Annotated[
-        Optional[list[di_schema.Profil]],
-        fastapi.Query(
-            description="""Une liste de profils.
-                Chaque résultat renvoyé a (au moins) un profil dans cette liste.
-            """
-        ),
-    ] = None,
-    recherche_public: Annotated[
-        Optional[str],
-        fastapi.Query(
-            description="""Une recherche en texte intégral parmi toutes
-              les valeurs "publics" que nous collectons chez nos producteurs de données.
-            """
-        ),
-    ] = None,
-    modes_accueil: Annotated[
-        Optional[list[di_schema.ModeAccueil]],
-        fastapi.Query(
-            description="""Une liste de modes d'accueil.
-                Chaque résultat renvoyé a (au moins) un mode d'accueil dans cette liste.
-            """
-        ),
-    ] = None,
-    types: Annotated[
-        Optional[list[di_schema.TypologieService]],
-        fastapi.Query(
-            description="""Une liste de typologies de service.
-                Chaque résultat renvoyé a (au moins) une typologie dans cette liste."""
-        ),
-    ] = None,
-    score_qualite_minimum: Annotated[
-        Optional[float],
-        fastapi.Query(
-            description="""[BETA] Score de qualité minimum.
-                Les résultats renvoyés ont un score de qualité supérieur ou égal à ce
-                score. (voir [documentation](https://gip-inclusion.notion.site/Conception-du-score-de-qualit-17b5f321b60480a1b79bf4a17b4567dd?pvs=4))"""
-        ),
-    ] = None,
-    inclure_suspendus: Annotated[
-        Optional[bool],
-        fastapi.Query(
-            description="""Inclure les services ayant une date de suspension dépassée.
-                Ils sont exclus par défaut.
-            """
-        ),
-    ] = False,
+    code_commune: filters.CodeCommuneFilter[di_schema.CodeCommune] = None,
+    frais: filters.FraisFilter[di_schema.Frais] = None,
+    profils: filters.ProfilsFilter[di_schema.Profil] = None,
+    recherche_public: filters.RecherchePublicFilter = None,
+    modes_accueil: filters.ModesAccueilFilter[di_schema.ModeAccueil] = None,
+    types: filters.ServiceTypesFilter[di_schema.TypologieService] = None,
+    score_qualite_minimum: filters.ScoreQualiteMinimumFilter = None,
+    inclure_suspendus: filters.SuspendusFilter = False,
 ):
     region = get_region_by_code_or_slug(code=code_region, slug=slug_region)
     departement = get_departement_by_code_or_slug(
@@ -340,118 +239,23 @@ def search_services_endpoint(
     request: fastapi.Request,
     background_tasks: fastapi.BackgroundTasks,
     db_session=fastapi.Depends(db.get_session),
-    sources: Annotated[
-        Optional[list[str]],
-        fastapi.Query(
-            description="""Une liste d'identifiants de source.
-                La liste des identifiants de source est disponible sur le endpoint
-                dédié. Les résultats seront limités aux sources spécifiées.
-            """,
-        ),
-    ] = None,
-    code_commune: Annotated[
-        Optional[di_schema.CodeCommune],
-        fastapi.Query(
-            description="""Code insee de la commune considérée.
-                Si fourni, les résultats inclus également les services proches de
-                cette commune. Les résultats sont triés par ordre de distance
-                croissante.
-            """
-        ),
-    ] = None,
+    sources: filters.SourcesFilter = None,
+    code_commune: filters.SearchCodeCommuneFilter[di_schema.CodeCommune] = None,
     code_insee: Annotated[
         Optional[di_schema.CodeCommune],
         fastapi.Query(include_in_schema=False),
     ] = None,
-    lat: Annotated[
-        Optional[float],
-        fastapi.Query(
-            description="""Latitude du point de recherche.
-                Nécessite également de fournir `lon`.
-                Les résultats sont triés par ordre de distance croissante à ce point.
-            """
-        ),
-    ] = None,
-    lon: Annotated[
-        Optional[float],
-        fastapi.Query(
-            description="""Longitude du point de recherche.
-                Nécessite également de fournir `lat`.
-                Les résultats sont triés par ordre de distance croissante à ce point.
-            """
-        ),
-    ] = None,
-    thematiques: Annotated[
-        Optional[list[di_schema.Thematique]],
-        fastapi.Query(
-            description="""Une liste de thématique.
-                Chaque résultat renvoyé a (au moins) une thématique dans cette liste."""
-        ),
-    ] = None,
-    frais: Annotated[
-        Optional[list[di_schema.Frais]],
-        fastapi.Query(
-            description="""Une liste de frais.
-                Chaque résultat renvoyé a (au moins) un frais dans cette liste."""
-        ),
-    ] = None,
-    modes_accueil: Annotated[
-        Optional[list[di_schema.ModeAccueil]],
-        fastapi.Query(
-            description="""Une liste de modes d'accueil.
-                Chaque résultat renvoyé a (au moins) un mode d'accueil dans cette liste.
-            """
-        ),
-    ] = None,
-    profils: Annotated[
-        Optional[list[di_schema.Profil]],
-        fastapi.Query(
-            description="""Une liste de profils.
-                Chaque résultat renvoyé a (au moins) un profil dans cette liste.
-            """
-        ),
-    ] = None,
-    recherche_public: Annotated[
-        Optional[str],
-        fastapi.Query(
-            description="""Une recherche en texte intégral parmi toutes
-              les valeurs "publics" que nous collectons chez nos producteurs de données.
-            """
-        ),
-    ] = None,
-    types: Annotated[
-        Optional[list[di_schema.TypologieService]],
-        fastapi.Query(
-            description="""Une liste de typologies de service.
-                Chaque résultat renvoyé a (au moins) une typologie dans cette liste."""
-        ),
-    ] = None,
-    score_qualite_minimum: Annotated[
-        Optional[float],
-        fastapi.Query(
-            description="""Score de qualité minimum.
-                Les résultats renvoyés ont un score de qualité supérieur ou égal à ce
-                score. (voir [documentation](https://gip-inclusion.notion.site/Conception-du-score-de-qualit-17b5f321b60480a1b79bf4a17b4567dd?pvs=4))"""
-        ),
-    ] = None,
-    inclure_suspendus: Annotated[
-        Optional[bool],
-        fastapi.Query(
-            description="""Inclure les services ayant une date de suspension dépassée.
-                Ils sont exclus par défaut.
-            """
-        ),
-    ] = False,
-    exclure_doublons: Annotated[
-        Optional[bool],
-        fastapi.Query(
-            description=(
-                "[BETA] Mode qui ne retourne, parmi les services attachés à des "
-                "structures en doublon, que ceux attachés à la structure la plus "
-                "qualitative (voir [documentation](https://gip-inclusion.notion.site/Syst-me-de-d-duplication-des-donn-es-17d5f321b60480f99f6cf65522a83c8b?pvs=4))."
-            )
-        ),
-    ] = False,
+    lat: filters.SearchLatitudeFilter = None,
+    lon: filters.SearchLongitudeFilter = None,
+    thematiques: filters.ThematiquesFilter[di_schema.Thematique] = None,
+    frais: filters.FraisFilter[di_schema.Frais] = None,
+    modes_accueil: filters.ModesAccueilFilter[di_schema.ModeAccueil] = None,
+    profils: filters.ProfilsFilter[di_schema.Profil] = None,
+    recherche_public: filters.RecherchePublicFilter = None,
+    types: filters.ServiceTypesFilter[di_schema.TypologieService] = None,
+    score_qualite_minimum: filters.ScoreQualiteMinimumFilter = None,
+    inclure_suspendus: filters.SuspendusFilter = False,
+    exclure_doublons: filters.ExclureDoublonsServicesFilter = False,
 ):
     """
     ## Rechercher des services
