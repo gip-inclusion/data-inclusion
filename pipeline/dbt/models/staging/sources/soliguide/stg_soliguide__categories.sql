@@ -53,6 +53,7 @@ FROM
         "gastroenterology": "Gastro-entérologie",
         "general_practitioner": "Médecin généraliste",
         "gynecology": "Gynécologie",
+        "hairdresser": "Coiffeur",
         "health_specialists": "Spécialistes",
         "health": "Santé",
         "hygiene_and_wellness": "Hygiène et bien-être",
