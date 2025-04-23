@@ -14,7 +14,7 @@ dependencies = [
     "requests~=2.31",
     "sib-api-v3-sdk",
     "unidecode",
-    "data-inclusion-schema>=0.23.0",
+    "data-inclusion-schema==0.24.0",
 ]
 
 [project.optional-dependencies]
