@@ -54,7 +54,7 @@ def create_app() -> fastapi.FastAPI:
         servers=[{"url": settings.BASE_URL, "description": settings.ENV}],
         openapi_url="/api/openapi.json",
         description=description,
-        docs_url="/api/v0/docs",
+        docs_url="/api/docs",
         contact={
             "name": "data·inclusion",
             "email": "data-inclusion@inclusion.gouv.fr",
@@ -94,6 +94,11 @@ def create_app() -> fastapi.FastAPI:
     def get_robots_txt():
         content = "User-agent: *\nAllow: /api/v0/docs\nDisallow: /\n"
         return fastapi.Response(content=content, media_type="text/plain")
+
+    # redirect legacy /api/v0/docs to version agnostic /api/docs
+    @app.get("/api/v0/docs", include_in_schema=False)
+    def redirect_v0_docs():
+        return fastapi.responses.RedirectResponse(url="/api/docs", status_code=301)
 
     return app
 
