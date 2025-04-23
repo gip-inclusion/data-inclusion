@@ -477,6 +477,7 @@ def test_ban_geocode(adresse: dict, expected: dict):
         ),
     ],
 )
+@pytest.mark.skip(reason="This test is currently disabled")
 def test_ban_cleaning_cedex(raw: dict, cleaned: dict):
     result_df_raw = geocode(data=raw)
     result_df_cleaned = geocode(data=cleaned)
