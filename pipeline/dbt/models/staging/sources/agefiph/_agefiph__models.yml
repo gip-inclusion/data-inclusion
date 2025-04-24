@@ -12,6 +12,37 @@ models:
           - not_null
           - dbt_utils.not_empty_string
 
+  - name: stg_agefiph__structures
+    columns:
+      - name: id
+        data_tests:
+          - unique
+          - not_null
+          - dbt_utils.not_empty_string
+      - name: attributes__title
+        data_tests:
+          - not_null
+          - dbt_utils.not_empty_string
+      - name: attributes__created
+        data_tests:
+          - not_null
+      - name: attributes__changed
+        data_tests:
+          - not_null
+      - name: attributes__field_adresse__postal_code
+        data_tests:
+          - not_null
+          - dbt_utils.not_empty_string
+      - name: attributes__field_geolocalisation__lat
+        data_tests:
+          - not_null
+      - name: attributes__field_geolocalisation__lng
+        data_tests:
+          - not_null
+      - name: attributes__field_texte_brut_long
+        data_tests:
+          - not_null
+          - dbt_utils.not_empty_string
   - name: stg_agefiph__services_thematiques
     columns:
       - name: service_id
