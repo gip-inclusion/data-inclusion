@@ -179,12 +179,17 @@ SOURCES_CONFIGS = {
     "agefiph": {
         "schedule": "@daily",
         "snapshot": True,
-        "reader": agefiph.read,
         "streams": {
             "services": {
                 "filename": "services.json",
                 "url": Variable.get("AGEFIPH_SERVICES_API_URL", None),
-            }
+                "reader": agefiph.read,
+            },
+            "structures": {
+                "filename": "structures.json",
+                "url": Variable.get("AGEFIPH_STRUCTURES_API_URL", None),
+                "extractor": agefiph.extract,
+            },
         },
     },
     "france-travail": {
