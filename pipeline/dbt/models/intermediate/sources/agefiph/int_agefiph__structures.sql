@@ -1,20 +1,24 @@
+WITH structures AS (
+    SELECT * FROM {{ ref('stg_agefiph__structures') }}
+)
+
 SELECT
     NULL                                                                                         AS "accessibilite",
-    'c7f4be8b-309e-4a6a-b562-c4f7f3bb3c5c'                                                       AS "adresse_id",
+    structures.id                                                                                AS "adresse_id",
     FALSE                                                                                        AS "antenne",
-    NULL                                                                                         AS "courriel",
-    NULL                                                                                         AS "horaires_ouverture",
-    'c7f4be8b-309e-4a6a-b562-c4f7f3bb3c5c'                                                       AS "id",
+    structures.attributes__field_courriel                                                        AS "courriel",
+    structures.attributes__field_texte_brut_long                                                 AS "horaires_ouverture",
+    structures.id                                                                                AS "id",
     NULL                                                                                         AS "lien_source",
-    'Agefiph'                                                                                    AS "nom",
-    'W921000912'                                                                                 AS "rna",
-    '34995887600188'                                                                             AS "siret",
-    'https://www.agefiph.fr/'                                                                    AS "site_web",
+    structures.attributes__title                                                                 AS "nom",
+    NULL                                                                                         AS "rna",
+    NULL                                                                                         AS "siret",
+    structures.attributes__field_lien_externe__uri                                               AS "site_web",
     'agefiph'                                                                                    AS "source",
-    '0800 111 009'                                                                               AS "telephone",
+    structures.attributes__field_telephone                                                       AS "telephone",
     'ASSO'                                                                                       AS "typologie",
     'L’Agefiph est chargée de soutenir le développement de l’emploi des personnes handicapées. ' AS "presentation_resume",
-    CAST('2023-12-01' AS DATE)                                                                   AS "date_maj",
+    CAST(structures.attributes__changed AS DATE)                                                 AS "date_maj",
     (
         'L’Agefiph aide les personnes à se former, trouver un emploi ou créer leur entreprise ; '
         'elle permet à toute personne handicapée de compenser les conséquences de son handicap en '
@@ -24,3 +28,4 @@ SELECT
     CAST(NULL AS TEXT [])                                                                        AS "labels_autres",
     ARRAY['agefiph']                                                                             AS "labels_nationaux",
     ARRAY['handicap']                                                                            AS "thematiques"
+FROM structures

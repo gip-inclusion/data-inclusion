@@ -2,6 +2,7 @@ WITH services_publics AS (
     SELECT * FROM {{ ref('stg_agefiph__services_publics') }}
 ),
 
+
 services AS (
     SELECT
         s.*,
@@ -21,7 +22,7 @@ services_thematiques AS (
 ),
 
 structures AS (
-    SELECT * FROM {{ ref('int_agefiph__structures') }}
+    SELECT * FROM {{ ref('stg_agefiph__structures') }}
 ),
 
 -- https://www.agefiph.fr/jsonapi/taxonomy_term/thematique
@@ -61,7 +62,7 @@ final AS (
         structures.id                                                AS "adresse_id",
         TRUE                                                         AS "contact_public",
         NULL                                                         AS "contact_nom_prenom",
-        structures.courriel                                          AS "courriel",
+        structures.attributes__field_courriel                        AS "courriel",
         NULL                                                         AS "formulaire_en_ligne",
         NULL                                                         AS "frais_autres",
         services.attributes__title                                   AS "nom",
@@ -70,11 +71,11 @@ final AS (
         NULL                                                         AS "recurrence",
         services._di_source_id                                       AS "source",
         structures.id                                                AS "structure_id",
-        structures.telephone                                         AS "telephone",
+        structures.attributes__field_telephone                       AS "telephone",
         NULL                                                         AS "zone_diffusion_code",
         NULL                                                         AS "zone_diffusion_nom",
         'pays'                                                       AS "zone_diffusion_type",
-        services.id                                                  AS "id",
+        structures.id || '-' || services.id                          AS "id",
         NULL                                                         AS "page_web",
         'https://www.agefiph.fr' || services.attributes__path__alias AS "modes_orientation_accompagnateur_autres",
         'https://www.agefiph.fr' || services.attributes__path__alias AS "modes_orientation_beneficiaire_autres",

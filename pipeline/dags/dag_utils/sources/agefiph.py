@@ -5,6 +5,29 @@ from pathlib import Path
 from . import utils
 
 
+class APIClient(utils.BaseApiClient):
+    def __init__(self, base_url: str):
+        super().__init__(base_url)
+
+    def get_structures(self) -> list[dict]:
+        url = self.base_url
+        result = []
+        i = 0
+        while True:
+            response = self.session.get(url)
+            response.raise_for_status()
+            data = response.json()
+            result += data["data"]
+            i += 1
+            if "next" in data["links"]:
+                url = data["links"]["next"]["href"]
+            elif i == 15:
+                raise RuntimeError("Too many pages")
+            else:
+                break
+        return result
+
+
 def read(path: Path):
     # utils.df_from_json is enough
     # but this adds the conversion of descriptions from html to markdown
@@ -34,3 +57,10 @@ def read(path: Path):
 
     df = pd.DataFrame.from_records(data)
     return utils.df_clear_nan(df)
+
+
+def extract(url: str, **kwargs) -> bytes:
+    print(f"Fetching data from {url}")
+    agefiph_client = APIClient(base_url=url)
+    data = agefiph_client.get_structures()
+    return json.dumps(data).encode()
