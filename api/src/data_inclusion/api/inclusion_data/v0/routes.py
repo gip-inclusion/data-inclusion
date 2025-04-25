@@ -29,7 +29,7 @@ from data_inclusion.api.inclusion_data.v0 import schemas
 from data_inclusion.api.utils import pagination, soliguide
 from data_inclusion.schema import v0 as schema
 
-router = fastapi.APIRouter(tags=["Données"])
+router = fastapi.APIRouter(tags=["v0 | Données"])
 
 
 # This ensures a dropdown is shown in the openapi doc

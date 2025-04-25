@@ -3,6 +3,7 @@ from unittest.mock import ANY
 import pytest
 
 
+@pytest.mark.parametrize("schema_version", ["v0", "v1"])
 @pytest.mark.parametrize(
     "framework",
     [
@@ -18,8 +19,8 @@ import pytest
     ],
 )
 @pytest.mark.with_token
-def test_list_framework(api_client, framework):
-    url = f"/api/v0/doc/{framework}/"
+def test_list_framework(api_client, schema_version, framework):
+    url = f"/api/{schema_version}/doc/{framework}/"
 
     response = api_client.get(url)
 

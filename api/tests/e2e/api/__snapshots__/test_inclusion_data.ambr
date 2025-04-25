@@ -3475,7 +3475,7 @@
     "paths": {
       "/api/v0/doc/frais": {
         "get": {
-          "operationId": "list_frais_endpoint",
+          "operationId": "_lambda__api_v0_doc_frais_get",
           "responses": {
             "200": {
               "content": {
@@ -3484,7 +3484,7 @@
                     "items": {
                       "$ref": "#/components/schemas/FrameworkValue"
                     },
-                    "title": "Response List Frais Endpoint",
+                    "title": "Response  Lambda  Api V0 Doc Frais Get",
                     "type": "array"
                   }
                 }
@@ -3494,13 +3494,13 @@
           },
           "summary": "Récupérer le référentiel des frais",
           "tags": [
-            "Documentation"
+            "v0 | Documentation"
           ]
         }
       },
       "/api/v0/doc/labels-nationaux": {
         "get": {
-          "operationId": "list_labels_nationaux_endpoint",
+          "operationId": "_lambda__api_v0_doc_labels_nationaux_get",
           "responses": {
             "200": {
               "content": {
@@ -3509,7 +3509,7 @@
                     "items": {
                       "$ref": "#/components/schemas/FrameworkValue"
                     },
-                    "title": "Response List Labels Nationaux Endpoint",
+                    "title": "Response  Lambda  Api V0 Doc Labels Nationaux Get",
                     "type": "array"
                   }
                 }
@@ -3519,13 +3519,13 @@
           },
           "summary": "Récupérer le référentiel des labels nationaux",
           "tags": [
-            "Documentation"
+            "v0 | Documentation"
           ]
         }
       },
       "/api/v0/doc/modes-accueil": {
         "get": {
-          "operationId": "list_modes_accueil_endpoint",
+          "operationId": "_lambda__api_v0_doc_modes_accueil_get",
           "responses": {
             "200": {
               "content": {
@@ -3534,7 +3534,7 @@
                     "items": {
                       "$ref": "#/components/schemas/FrameworkValue"
                     },
-                    "title": "Response List Modes Accueil Endpoint",
+                    "title": "Response  Lambda  Api V0 Doc Modes Accueil Get",
                     "type": "array"
                   }
                 }
@@ -3544,13 +3544,13 @@
           },
           "summary": "Récupérer le référentiel des modes d'accueil",
           "tags": [
-            "Documentation"
+            "v0 | Documentation"
           ]
         }
       },
       "/api/v0/doc/modes-orientation-accompagnateur": {
         "get": {
-          "operationId": "list_modes_orientation_accompagnateur_endpoint",
+          "operationId": "_lambda__api_v0_doc_modes_orientation_accompagnateur_get",
           "responses": {
             "200": {
               "content": {
@@ -3559,7 +3559,7 @@
                     "items": {
                       "$ref": "#/components/schemas/FrameworkValue"
                     },
-                    "title": "Response List Modes Orientation Accompagnateur Endpoint",
+                    "title": "Response  Lambda  Api V0 Doc Modes Orientation Accompagnateur Get",
                     "type": "array"
                   }
                 }
@@ -3569,13 +3569,13 @@
           },
           "summary": "Récupérer le référentiel des modes d'orientation de l'accompagnateur",
           "tags": [
-            "Documentation"
+            "v0 | Documentation"
           ]
         }
       },
       "/api/v0/doc/modes-orientation-beneficiaire": {
         "get": {
-          "operationId": "list_modes_orientation_beneficiaire_endpoint",
+          "operationId": "_lambda__api_v0_doc_modes_orientation_beneficiaire_get",
           "responses": {
             "200": {
               "content": {
@@ -3584,7 +3584,7 @@
                     "items": {
                       "$ref": "#/components/schemas/FrameworkValue"
                     },
-                    "title": "Response List Modes Orientation Beneficiaire Endpoint",
+                    "title": "Response  Lambda  Api V0 Doc Modes Orientation Beneficiaire Get",
                     "type": "array"
                   }
                 }
@@ -3594,13 +3594,13 @@
           },
           "summary": "Récupérer le référentiel des modes d'orientation du bénéficiaire",
           "tags": [
-            "Documentation"
+            "v0 | Documentation"
           ]
         }
       },
       "/api/v0/doc/profils": {
         "get": {
-          "operationId": "list_profils_endpoint",
+          "operationId": "_lambda__api_v0_doc_profils_get",
           "responses": {
             "200": {
               "content": {
@@ -3609,7 +3609,7 @@
                     "items": {
                       "$ref": "#/components/schemas/FrameworkValue"
                     },
-                    "title": "Response List Profils Endpoint",
+                    "title": "Response  Lambda  Api V0 Doc Profils Get",
                     "type": "array"
                   }
                 }
@@ -3619,13 +3619,13 @@
           },
           "summary": "Récupérer le référentiel des profils de publics",
           "tags": [
-            "Documentation"
+            "v0 | Documentation"
           ]
         }
       },
       "/api/v0/doc/thematiques": {
         "get": {
-          "operationId": "list_thematiques_endpoint",
+          "operationId": "_lambda__api_v0_doc_thematiques_get",
           "responses": {
             "200": {
               "content": {
@@ -3634,7 +3634,7 @@
                     "items": {
                       "$ref": "#/components/schemas/FrameworkValue"
                     },
-                    "title": "Response List Thematiques Endpoint",
+                    "title": "Response  Lambda  Api V0 Doc Thematiques Get",
                     "type": "array"
                   }
                 }
@@ -3644,13 +3644,13 @@
           },
           "summary": "Récupérer le référentiel des thématiques",
           "tags": [
-            "Documentation"
+            "v0 | Documentation"
           ]
         }
       },
       "/api/v0/doc/typologies-services": {
         "get": {
-          "operationId": "list_typologies_services_endpoint",
+          "operationId": "_lambda__api_v0_doc_typologies_services_get",
           "responses": {
             "200": {
               "content": {
@@ -3659,7 +3659,7 @@
                     "items": {
                       "$ref": "#/components/schemas/FrameworkValue"
                     },
-                    "title": "Response List Typologies Services Endpoint",
+                    "title": "Response  Lambda  Api V0 Doc Typologies Services Get",
                     "type": "array"
                   }
                 }
@@ -3669,13 +3669,13 @@
           },
           "summary": "Récupérer le référentiel des typologies de services",
           "tags": [
-            "Documentation"
+            "v0 | Documentation"
           ]
         }
       },
       "/api/v0/doc/typologies-structures": {
         "get": {
-          "operationId": "list_typologies_structures_endpoint",
+          "operationId": "_lambda__api_v0_doc_typologies_structures_get",
           "responses": {
             "200": {
               "content": {
@@ -3684,7 +3684,7 @@
                     "items": {
                       "$ref": "#/components/schemas/FrameworkValue"
                     },
-                    "title": "Response List Typologies Structures Endpoint",
+                    "title": "Response  Lambda  Api V0 Doc Typologies Structures Get",
                     "type": "array"
                   }
                 }
@@ -3694,7 +3694,7 @@
           },
           "summary": "Récupérer le référentiel des typologies de structures",
           "tags": [
-            "Documentation"
+            "v0 | Documentation"
           ]
         }
       },
@@ -3926,7 +3926,7 @@
           ],
           "summary": "Rechercher des services",
           "tags": [
-            "Données"
+            "v0 | Données"
           ]
         }
       },
@@ -4159,7 +4159,7 @@
           ],
           "summary": "Lister les services consolidés",
           "tags": [
-            "Données"
+            "v0 | Données"
           ]
         }
       },
@@ -4215,7 +4215,7 @@
           ],
           "summary": "Détailler un service",
           "tags": [
-            "Données"
+            "v0 | Données"
           ]
         }
       },
@@ -4245,7 +4245,7 @@
           ],
           "summary": "Lister les sources consolidées",
           "tags": [
-            "Données"
+            "v0 | Données"
           ]
         }
       },
@@ -4416,7 +4416,7 @@
           ],
           "summary": "Lister les structures consolidées",
           "tags": [
-            "Données"
+            "v0 | Données"
           ]
         }
       },
@@ -4472,7 +4472,232 @@
           ],
           "summary": "Détailler une structure",
           "tags": [
-            "Données"
+            "v0 | Données"
+          ]
+        }
+      },
+      "/api/v1/doc/frais": {
+        "get": {
+          "operationId": "_lambda__api_v1_doc_frais_get",
+          "responses": {
+            "200": {
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "items": {
+                      "$ref": "#/components/schemas/FrameworkValue"
+                    },
+                    "title": "Response  Lambda  Api V1 Doc Frais Get",
+                    "type": "array"
+                  }
+                }
+              },
+              "description": "Successful Response"
+            }
+          },
+          "summary": "Récupérer le référentiel des frais",
+          "tags": [
+            "v1 | Documentation"
+          ]
+        }
+      },
+      "/api/v1/doc/labels-nationaux": {
+        "get": {
+          "operationId": "_lambda__api_v1_doc_labels_nationaux_get",
+          "responses": {
+            "200": {
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "items": {
+                      "$ref": "#/components/schemas/FrameworkValue"
+                    },
+                    "title": "Response  Lambda  Api V1 Doc Labels Nationaux Get",
+                    "type": "array"
+                  }
+                }
+              },
+              "description": "Successful Response"
+            }
+          },
+          "summary": "Récupérer le référentiel des labels nationaux",
+          "tags": [
+            "v1 | Documentation"
+          ]
+        }
+      },
+      "/api/v1/doc/modes-accueil": {
+        "get": {
+          "operationId": "_lambda__api_v1_doc_modes_accueil_get",
+          "responses": {
+            "200": {
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "items": {
+                      "$ref": "#/components/schemas/FrameworkValue"
+                    },
+                    "title": "Response  Lambda  Api V1 Doc Modes Accueil Get",
+                    "type": "array"
+                  }
+                }
+              },
+              "description": "Successful Response"
+            }
+          },
+          "summary": "Récupérer le référentiel des modes d'accueil",
+          "tags": [
+            "v1 | Documentation"
+          ]
+        }
+      },
+      "/api/v1/doc/modes-orientation-accompagnateur": {
+        "get": {
+          "operationId": "_lambda__api_v1_doc_modes_orientation_accompagnateur_get",
+          "responses": {
+            "200": {
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "items": {
+                      "$ref": "#/components/schemas/FrameworkValue"
+                    },
+                    "title": "Response  Lambda  Api V1 Doc Modes Orientation Accompagnateur Get",
+                    "type": "array"
+                  }
+                }
+              },
+              "description": "Successful Response"
+            }
+          },
+          "summary": "Récupérer le référentiel des modes d'orientation de l'accompagnateur",
+          "tags": [
+            "v1 | Documentation"
+          ]
+        }
+      },
+      "/api/v1/doc/modes-orientation-beneficiaire": {
+        "get": {
+          "operationId": "_lambda__api_v1_doc_modes_orientation_beneficiaire_get",
+          "responses": {
+            "200": {
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "items": {
+                      "$ref": "#/components/schemas/FrameworkValue"
+                    },
+                    "title": "Response  Lambda  Api V1 Doc Modes Orientation Beneficiaire Get",
+                    "type": "array"
+                  }
+                }
+              },
+              "description": "Successful Response"
+            }
+          },
+          "summary": "Récupérer le référentiel des modes d'orientation du bénéficiaire",
+          "tags": [
+            "v1 | Documentation"
+          ]
+        }
+      },
+      "/api/v1/doc/profils": {
+        "get": {
+          "operationId": "_lambda__api_v1_doc_profils_get",
+          "responses": {
+            "200": {
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "items": {
+                      "$ref": "#/components/schemas/FrameworkValue"
+                    },
+                    "title": "Response  Lambda  Api V1 Doc Profils Get",
+                    "type": "array"
+                  }
+                }
+              },
+              "description": "Successful Response"
+            }
+          },
+          "summary": "Récupérer le référentiel des profils de publics",
+          "tags": [
+            "v1 | Documentation"
+          ]
+        }
+      },
+      "/api/v1/doc/thematiques": {
+        "get": {
+          "operationId": "_lambda__api_v1_doc_thematiques_get",
+          "responses": {
+            "200": {
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "items": {
+                      "$ref": "#/components/schemas/FrameworkValue"
+                    },
+                    "title": "Response  Lambda  Api V1 Doc Thematiques Get",
+                    "type": "array"
+                  }
+                }
+              },
+              "description": "Successful Response"
+            }
+          },
+          "summary": "Récupérer le référentiel des thématiques",
+          "tags": [
+            "v1 | Documentation"
+          ]
+        }
+      },
+      "/api/v1/doc/typologies-services": {
+        "get": {
+          "operationId": "_lambda__api_v1_doc_typologies_services_get",
+          "responses": {
+            "200": {
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "items": {
+                      "$ref": "#/components/schemas/FrameworkValue"
+                    },
+                    "title": "Response  Lambda  Api V1 Doc Typologies Services Get",
+                    "type": "array"
+                  }
+                }
+              },
+              "description": "Successful Response"
+            }
+          },
+          "summary": "Récupérer le référentiel des typologies de services",
+          "tags": [
+            "v1 | Documentation"
+          ]
+        }
+      },
+      "/api/v1/doc/typologies-structures": {
+        "get": {
+          "operationId": "_lambda__api_v1_doc_typologies_structures_get",
+          "responses": {
+            "200": {
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "items": {
+                      "$ref": "#/components/schemas/FrameworkValue"
+                    },
+                    "title": "Response  Lambda  Api V1 Doc Typologies Structures Get",
+                    "type": "array"
+                  }
+                }
+              },
+              "description": "Successful Response"
+            }
+          },
+          "summary": "Récupérer le référentiel des typologies de structures",
+          "tags": [
+            "v1 | Documentation"
           ]
         }
       }
