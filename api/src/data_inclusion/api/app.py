@@ -11,7 +11,7 @@ from data_inclusion.api import auth
 from data_inclusion.api.auth.routes import router as auth_api_router
 from data_inclusion.api.config import settings
 from data_inclusion.api.core import db
-from data_inclusion.api.inclusion_data.routes import router as data_api_router
+from data_inclusion.api.inclusion_data.v0.routes import router as data_api_router
 from data_inclusion.api.inclusion_schema.routes import router as schema_api_router
 
 API_DESCRIPTION_PATH = Path(__file__).parent / "api_description.md"
@@ -104,7 +104,6 @@ def create_app() -> fastapi.FastAPI:
 
 
 v0_api_router = fastapi.APIRouter(prefix="/api/v0")
-
 v0_api_router.include_router(data_api_router)
 v0_api_router.include_router(auth_api_router, include_in_schema=False)
 

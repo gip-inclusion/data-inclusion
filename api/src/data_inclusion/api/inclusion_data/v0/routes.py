@@ -23,7 +23,9 @@ from data_inclusion.api.decoupage_administratif.utils import (
     get_departement_by_code_or_slug,
     get_region_by_code_or_slug,
 )
-from data_inclusion.api.inclusion_data import filters, schemas, services
+from data_inclusion.api.inclusion_data import services
+from data_inclusion.api.inclusion_data.common import filters
+from data_inclusion.api.inclusion_data.v0 import schemas
 from data_inclusion.api.utils import pagination, soliguide
 from data_inclusion.schema import v0 as schema
 
@@ -34,6 +36,7 @@ router = fastapi.APIRouter(tags=["Données"])
 # for optional enum query parameters.
 T = TypeVar("T")
 Optional = T | SkipJsonSchema[None]
+
 
 service_layer = services.ServiceLayerV0()
 
