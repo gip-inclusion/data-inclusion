@@ -25,7 +25,7 @@ from data_inclusion.api.decoupage_administratif.utils import (
 )
 from data_inclusion.api.inclusion_data import filters, schemas, services
 from data_inclusion.api.utils import pagination, soliguide
-from data_inclusion.schema import v0 as di_schema
+from data_inclusion.schema import v0 as schema
 
 router = fastapi.APIRouter(tags=["Données"])
 
@@ -47,18 +47,14 @@ def list_structures_endpoint(
     background_tasks: fastapi.BackgroundTasks,
     sources: filters.SourcesFilter = None,
     id: Annotated[Optional[str], fastapi.Query(include_in_schema=False)] = None,
-    typologie: Annotated[
-        Optional[di_schema.TypologieStructure], fastapi.Query()
-    ] = None,
-    label_national: Annotated[
-        Optional[di_schema.LabelNational], fastapi.Query()
-    ] = None,
-    thematiques: filters.ThematiquesFilter[di_schema.Thematique] = None,
+    typologie: Annotated[Optional[schema.TypologieStructure], fastapi.Query()] = None,
+    label_national: Annotated[Optional[schema.LabelNational], fastapi.Query()] = None,
+    thematiques: filters.ThematiquesFilter[schema.Thematique] = None,
     code_region: filters.CodeRegionFilter = None,
     slug_region: Annotated[Optional[RegionSlugEnum], fastapi.Query()] = None,
     code_departement: filters.CodeDepartementFilter = None,
     slug_departement: Annotated[Optional[DepartementSlugEnum], fastapi.Query()] = None,
-    code_commune: filters.CodeCommuneFilter[di_schema.CodeCommune] = None,
+    code_commune: filters.CodeCommuneFilter[schema.CodeCommune] = None,
     exclure_doublons: filters.ExclureDoublonsStructuresFilter = False,
     db_session=fastapi.Depends(db.get_session),
 ):
@@ -149,17 +145,17 @@ def list_services_endpoint(
     background_tasks: fastapi.BackgroundTasks,
     db_session=fastapi.Depends(db.get_session),
     sources: filters.SourcesFilter = None,
-    thematiques: filters.ThematiquesFilter[di_schema.Thematique] = None,
+    thematiques: filters.ThematiquesFilter[schema.Thematique] = None,
     code_region: filters.CodeRegionFilter = None,
     slug_region: Annotated[Optional[RegionSlugEnum], fastapi.Query()] = None,
     code_departement: filters.CodeDepartementFilter = None,
     slug_departement: Annotated[Optional[DepartementSlugEnum], fastapi.Query()] = None,
-    code_commune: filters.CodeCommuneFilter[di_schema.CodeCommune] = None,
-    frais: filters.FraisFilter[di_schema.Frais] = None,
-    profils: filters.ProfilsFilter[di_schema.Profil] = None,
+    code_commune: filters.CodeCommuneFilter[schema.CodeCommune] = None,
+    frais: filters.FraisFilter[schema.Frais] = None,
+    profils: filters.ProfilsFilter[schema.Profil] = None,
     recherche_public: filters.RecherchePublicFilter = None,
-    modes_accueil: filters.ModesAccueilFilter[di_schema.ModeAccueil] = None,
-    types: filters.ServiceTypesFilter[di_schema.TypologieService] = None,
+    modes_accueil: filters.ModesAccueilFilter[schema.ModeAccueil] = None,
+    types: filters.ServiceTypesFilter[schema.TypologieService] = None,
     score_qualite_minimum: filters.ScoreQualiteMinimumFilter = None,
     inclure_suspendus: filters.SuspendusFilter = False,
 ):
@@ -240,19 +236,19 @@ def search_services_endpoint(
     background_tasks: fastapi.BackgroundTasks,
     db_session=fastapi.Depends(db.get_session),
     sources: filters.SourcesFilter = None,
-    code_commune: filters.SearchCodeCommuneFilter[di_schema.CodeCommune] = None,
+    code_commune: filters.SearchCodeCommuneFilter[schema.CodeCommune] = None,
     code_insee: Annotated[
-        Optional[di_schema.CodeCommune],
+        Optional[schema.CodeCommune],
         fastapi.Query(include_in_schema=False),
     ] = None,
     lat: filters.SearchLatitudeFilter = None,
     lon: filters.SearchLongitudeFilter = None,
-    thematiques: filters.ThematiquesFilter[di_schema.Thematique] = None,
-    frais: filters.FraisFilter[di_schema.Frais] = None,
-    modes_accueil: filters.ModesAccueilFilter[di_schema.ModeAccueil] = None,
-    profils: filters.ProfilsFilter[di_schema.Profil] = None,
+    thematiques: filters.ThematiquesFilter[schema.Thematique] = None,
+    frais: filters.FraisFilter[schema.Frais] = None,
+    modes_accueil: filters.ModesAccueilFilter[schema.ModeAccueil] = None,
+    profils: filters.ProfilsFilter[schema.Profil] = None,
     recherche_public: filters.RecherchePublicFilter = None,
-    types: filters.ServiceTypesFilter[di_schema.TypologieService] = None,
+    types: filters.ServiceTypesFilter[schema.TypologieService] = None,
     score_qualite_minimum: filters.ScoreQualiteMinimumFilter = None,
     inclure_suspendus: filters.SuspendusFilter = False,
     exclure_doublons: filters.ExclureDoublonsServicesFilter = False,
