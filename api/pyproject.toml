@@ -20,6 +20,7 @@ dependencies = [
     "geoalchemy2>=0.17.1",
     "geopandas>=1.0.1",
     "gunicorn>=23.0.0",
+    "h11>=0.16.0",
     "httpx>=0.28.1",
     "jinja2>=3.1.6",
     "minio>=7.2.15",
