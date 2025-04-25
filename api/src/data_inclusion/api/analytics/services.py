@@ -13,7 +13,7 @@ from data_inclusion.api.decoupage_administratif.constants import (
     Departement,
     Region,
 )
-from data_inclusion.api.inclusion_data import schemas
+from data_inclusion.api.inclusion_data.v0 import schemas
 from data_inclusion.api.utils import pagination
 from data_inclusion.schema import v0 as di_schema
 
