@@ -26,8 +26,8 @@ geoalchemy2==0.17.1
 geopandas==1.0.1
 greenlet==3.1.1 ; (python_full_version < '3.14' and platform_machine == 'AMD64') or (python_full_version < '3.14' and platform_machine == 'WIN32') or (python_full_version < '3.14' and platform_machine == 'aarch64') or (python_full_version < '3.14' and platform_machine == 'amd64') or (python_full_version < '3.14' and platform_machine == 'ppc64le') or (python_full_version < '3.14' and platform_machine == 'win32') or (python_full_version < '3.14' and platform_machine == 'x86_64')
 gunicorn==23.0.0
-h11==0.14.0
-httpcore==1.0.8
+h11==0.16.0
+httpcore==1.0.9
 httptools==0.6.4
 httpx==0.28.1
 identify==2.6.9
