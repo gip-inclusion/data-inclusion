@@ -35,6 +35,8 @@ router = fastapi.APIRouter(tags=["Données"])
 T = TypeVar("T")
 Optional = T | SkipJsonSchema[None]
 
+service_layer = services.ServiceLayerV0()
+
 
 @router.get(
     "/structures",
@@ -64,9 +66,9 @@ def list_structures_endpoint(
         code=code_departement, slug=slug_departement
     )
 
-    structures_list = services.list_structures(
-        request,
-        db_session,
+    structures_list = service_layer.list_structures(
+        request=request,
+        db_session=db_session,
         sources=sources,
         typologie=typologie,
         label_national=label_national,
@@ -108,7 +110,7 @@ def retrieve_structure_endpoint(
     db_session=fastapi.Depends(db.get_session),
     _=fastapi.Depends(soliguide.notify_soliguide_dependency),
 ):
-    structure = services.retrieve_structure(
+    structure = service_layer.retrieve_structure(
         db_session=db_session,
         source=source,
         id_=id,
@@ -131,7 +133,7 @@ def retrieve_structure_endpoint(
 def list_sources_endpoint(
     request: fastapi.Request,
 ):
-    return services.list_sources(request=request)
+    return service_layer.list_sources(request=request)
 
 
 @router.get(
@@ -164,9 +166,9 @@ def list_services_endpoint(
         code=code_departement, slug=slug_departement
     )
 
-    services_listed = services.list_services(
-        request,
-        db_session,
+    services_listed = service_layer.list_services(
+        request=request,
+        db_session=db_session,
         sources=sources,
         thematiques=thematiques,
         departement=departement,
@@ -214,7 +216,9 @@ def retrieve_service_endpoint(
     db_session=fastapi.Depends(db.get_session),
     _=fastapi.Depends(soliguide.notify_soliguide_dependency),
 ):
-    service = services.retrieve_service(db_session=db_session, source=source, id_=id)
+    service = service_layer.retrieve_service(
+        db_session=db_session, source=source, id_=id
+    )
 
     background_tasks.add_task(
         save_consult_service_event,
@@ -294,9 +298,9 @@ def search_services_endpoint(
                 detail="The `lat` and `lon` must be simultaneously filled.",
             )
 
-    results = services.search_services(
-        request,
-        db_session,
+    results = service_layer.search_services(
+        request=request,
+        db_session=db_session,
         sources=sources,
         commune_instance=commune_instance,
         thematiques=thematiques,
