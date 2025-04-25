@@ -6,19 +6,14 @@ endif
 
 AIRFLOW_VERSION := 2.10.5
 PYTHON_VERSION := 3.12
-CONSTRAINTS_FILE_URL := https://raw.githubusercontent.com/apache/airflow/constraints-$(AIRFLOW_VERSION)/constraints-$(PYTHON_VERSION).txt
 
-.PHONY: all airflow dbt python dev upgrade constraints
+.PHONY: all airflow dbt python dev upgrade
 
-all: airflow dbt python dev constraints
-
-# https://airflow.apache.org/docs/apache-airflow/stable/installation/installing-from-pypi.html#constraints-files
-constraints:
-	wget --quiet $(CONSTRAINTS_FILE_URL) -O airflow/constraints.txt
+all: airflow dbt python dev
 
 # airflow requirements for scalingo deployments
 # unlike docker based deployments, scalingo requires airflow to be installed from pypi
-airflow: airflow/requirements.in constraints
+airflow: airflow/requirements.in
 	$(PIP_COMPILE) --constraint airflow/constraints.txt airflow/requirements.in --output-file=airflow/requirements.txt
 
 # isolated env for dbt, which should be invoked using a bash operator
