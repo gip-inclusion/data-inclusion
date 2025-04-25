@@ -7,25 +7,14 @@ import fastapi
 import fastapi_pagination
 from fastapi.middleware import cors, trustedhost
 
-from data_inclusion.api import auth
+from data_inclusion.api import auth, config
 from data_inclusion.api.auth.routes import router as auth_api_router
-from data_inclusion.api.config import settings
 from data_inclusion.api.core import db
 from data_inclusion.api.inclusion_data.v0.routes import router as data_api_router
 from data_inclusion.api.inclusion_schema.v0.routes import router as v0_schema_api_router
 from data_inclusion.api.inclusion_schema.v1.routes import router as v1_schema_api_router
 
 API_DESCRIPTION_PATH = Path(__file__).parent / "api_description.md"
-
-
-def setup_cors_middleware(app: fastapi.FastAPI) -> None:
-    app.add_middleware(
-        cors.CORSMiddleware,
-        allow_origins=settings.CORS_ALLOWED_ORIGINS,
-        allow_credentials=True,
-        allow_methods=["*"],
-        allow_headers=["*"],
-    )
 
 
 def setup_debug_toolbar_middleware(app: fastapi.FastAPI) -> None:
@@ -37,7 +26,7 @@ def setup_debug_toolbar_middleware(app: fastapi.FastAPI) -> None:
     )
 
 
-def create_app() -> fastapi.FastAPI:
+def create_app(settings: config.Settings) -> fastapi.FastAPI:
     # sentry must be initialized before app
     sentry_sdk.init(
         dsn=settings.SENTRY_DSN,
@@ -69,7 +58,13 @@ def create_app() -> fastapi.FastAPI:
         dependencies=[auth.authenticate_dependency],
     )
 
-    setup_cors_middleware(app)
+    app.add_middleware(
+        cors.CORSMiddleware,
+        allow_origins=settings.CORS_ALLOWED_ORIGINS,
+        allow_credentials=True,
+        allow_methods=["*"],
+        allow_headers=["*"],
+    )
 
     if settings.ENV == "dev":
         setup_debug_toolbar_middleware(app)
@@ -109,4 +104,4 @@ v1_api_router = fastapi.APIRouter(prefix="/api/v1")
 v1_api_router.include_router(v1_schema_api_router, prefix="/doc")
 
 
-app = create_app()
+app = create_app(settings=config.settings)

@@ -10,25 +10,33 @@ from alembic.config import Config
 from fastapi.testclient import TestClient
 
 from data_inclusion.api.app import create_app
-from data_inclusion.api.config import settings
 from data_inclusion.api.core import db
 from data_inclusion.api.decoupage_administratif.models import Commune
 
 from . import factories
 
-DEFAULT_DATABASE_URL = sqla.engine.make_url(settings.DATABASE_URL)
-TEST_DATABASE_URL = DEFAULT_DATABASE_URL.set(
-    database=f"{DEFAULT_DATABASE_URL.database}_test"
-)
-
 DIR = Path(__file__).parent
 
 
-@pytest.fixture(scope="session")
-def app():
-    settings.BASE_URL = "http://testserver"
-    settings.ENV = "test"
-    yield create_app()
+@pytest.fixture(scope="function", autouse=True)
+def settings(request):
+    from data_inclusion.api import config
+
+    settings = config.Settings(
+        ALLOWED_HOSTS=["*"],
+        BASE_URL="http://testserver",
+        ENV="test",
+    )
+
+    if mark := request.node.get_closest_marker("env"):
+        settings.ENV = mark.args[0] if len(mark.args) > 0 else mark.kwargs["env"]
+
+    yield settings
+
+
+@pytest.fixture(scope="function")
+def app(settings):
+    yield create_app(settings=settings)
 
 
 def swap_middleware(app, before, after):
@@ -75,6 +83,13 @@ def force_authenticate(request, api_client):
 
 @pytest.fixture(scope="session")
 def db_init():
+    from data_inclusion.api import config
+
+    DEFAULT_DATABASE_URL = sqla.engine.make_url(config.settings.DATABASE_URL)
+    TEST_DATABASE_URL = DEFAULT_DATABASE_URL.set(
+        database=f"{DEFAULT_DATABASE_URL.database}_test"
+    )
+
     default_engine = sqla.create_engine(
         DEFAULT_DATABASE_URL, isolation_level="AUTOCOMMIT"
     )
