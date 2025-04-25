@@ -9,7 +9,7 @@ from sqlalchemy.dialects.postgresql import insert
 
 from data_inclusion.api.config import settings
 from data_inclusion.api.core import db
-from data_inclusion.api.inclusion_data import models
+from data_inclusion.api.decoupage_administratif import models
 
 logger = logging.getLogger(__name__)
 
