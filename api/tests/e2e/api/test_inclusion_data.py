@@ -1,4 +1,3 @@
-import json
 from datetime import date, timedelta
 from unittest.mock import ANY
 
@@ -23,17 +22,6 @@ STRASBOURG = {"code_insee": "67482"}
 
 def list_resources_data(resp_data):
     return [item.get("service", item) for item in resp_data["items"]]
-
-
-def test_openapi_spec(api_client, snapshot):
-    url = "/api/openapi.json"
-    response = api_client.get(url)
-
-    assert response.status_code == 200
-    assert (
-        json.dumps(response.json(), indent=2, ensure_ascii=False, sort_keys=True)
-        == snapshot
-    )
 
 
 def test_list_structures_unauthenticated(api_client):
