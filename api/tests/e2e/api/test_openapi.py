@@ -1,4 +1,17 @@
+import json
+
 import pytest
+
+
+def test_openapi_spec(api_client, snapshot):
+    url = "/api/openapi.json"
+    response = api_client.get(url)
+
+    assert response.status_code == 200
+    assert (
+        json.dumps(response.json(), indent=2, ensure_ascii=False, sort_keys=True)
+        == snapshot
+    )
 
 
 @pytest.mark.parametrize(
