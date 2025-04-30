@@ -1,3 +1,5 @@
+from typing import Literal
+
 from sqlalchemy import orm
 
 import fastapi
@@ -18,6 +20,10 @@ from data_inclusion.api.utils import pagination
 from data_inclusion.schema import v0 as di_schema
 
 
+def get_schema_version(request: fastapi.Request) -> Literal["v0", "v1"]:
+    return "v0" if "v0" in str(request.url) else "v1"
+
+
 def save_consult_structure_event(
     request: fastapi.Request,
     structure: schemas.DetailedStructure,
@@ -28,7 +34,10 @@ def save_consult_structure_event(
         return
 
     event = ConsultStructureEvent(
-        structure_id=structure.id, source=structure.source, user=user.username
+        structure_id=structure.id,
+        source=structure.source,
+        user=user.username,
+        schema_version=get_schema_version(request),
     )
     db_session.add(event)
     db_session.commit()
@@ -48,6 +57,7 @@ def save_consult_service_event(
         source=service.source,
         user=user.username,
         score_qualite=service.score_qualite,
+        schema_version=get_schema_version(request),
     )
     db_session.add(event)
     db_session.commit()
@@ -87,6 +97,7 @@ def save_list_services_event(
         inclure_suspendus=inclure_suspendus,
         recherche_public=recherche_public,
         score_qualite_minimum=score_qualite_minimum,
+        schema_version=get_schema_version(request),
     )
     db_session.add(event)
     db_session.commit()
@@ -118,6 +129,7 @@ def save_list_structures_event(
         code_commune=code_commune,
         thematiques=thematiques,
         exclure_doublons=exclure_doublons,
+        schema_version=get_schema_version(request),
     )
     db_session.add(event)
     db_session.commit()
@@ -172,6 +184,7 @@ def save_search_services_event(
         recherche_public=recherche_public,
         score_qualite_minimum=score_qualite_minimum,
         exclure_doublons=exclure_doublons,
+        schema_version=get_schema_version(request),
     )
     db_session.add(event)
     db_session.commit()
