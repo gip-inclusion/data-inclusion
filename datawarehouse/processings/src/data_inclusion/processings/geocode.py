@@ -164,7 +164,6 @@ def geocode(
         df.groupby(
             np.arange(len(df)) // batch_size,
             group_keys=False,
-        )
-        .apply(_geocode)
-        .to_dict(orient="records")
+        ).apply(_geocode)
+        # .to_dict(orient="records")
     )
