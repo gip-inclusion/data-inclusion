@@ -45,22 +45,6 @@ def _format_phonenumber(s):
 def deduplicate(data: list[DeduplicateInput]) -> pd.DataFrame:
     df = pd.DataFrame.from_records(data)
 
-    # focus on "quality" sources
-    df = df.loc[
-        df["source"].isin(
-            [
-                "action-logement",
-                "dora",
-                "fredo",
-                "emplois-de-linclusion",
-                "france-travail",
-                "mediation-numerique",
-                "mes-aides",
-                "soliguide",
-            ]
-        )
-    ]
-
     # exclude structures with long surrogate_id (mednum...)
     df = df.loc[df["_di_surrogate_id"].str.len() <= 256]
 
@@ -72,7 +56,7 @@ def deduplicate(data: list[DeduplicateInput]) -> pd.DataFrame:
 
     # some cleanups and formatting
     df["id"] = df["_di_surrogate_id"]
-    df["date_maj"] = pd.to_datetime(df["date_maj"]).dt.strftime("%m/%d/%Y")
+    df["date_maj"] = df["date_maj"].dt.strftime("%m/%d/%Y")
     df["nom"] = df["nom"].str.lower().str.strip().apply(unidecode)
     df["location"] = df.apply(
         lambda row: [
@@ -129,4 +113,5 @@ def deduplicate(data: list[DeduplicateInput]) -> pd.DataFrame:
     )
     # ignore clusters with single element
     clusters_df = clusters_df[clusters_df.duplicated(subset="cluster_id", keep=False)]
+    return clusters_df
     return clusters_df.to_dict(orient="records")
