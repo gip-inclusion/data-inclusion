@@ -23,7 +23,7 @@ def test_openapi_spec(api_client, snapshot):
         pytest.param(True, id="dev", marks=[pytest.mark.env("dev")]),
     ],
 )
-def test_v1_include_in_schema(api_client, included_in_schema, settings):
+def test_v1_include_in_schema(api_client, included_in_schema):
     url = "/api/openapi.json"
     response = api_client.get(url)
 
