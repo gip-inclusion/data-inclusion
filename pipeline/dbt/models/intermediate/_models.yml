@@ -121,6 +121,10 @@ models:
           - relationships:
               to: ref('stg_decoupage_administratif__communes')
               field: code
+              # FIXME: temporarily disabled, as the ban api returns
+              # codes that are not the decoupage administratif codes
+              config:
+                error_if: "> 1000"
       - name: code_arrondissement
         data_tests:
           - dbt_utils.not_empty_string
