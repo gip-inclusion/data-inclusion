@@ -124,7 +124,6 @@ def test_list_services_event_saved(api_client, db_session, url, schema_version):
 def test_list_structures_event_saved(api_client, db_session, url, schema_version):
     query_param = {
         "sources": ["foo"],
-        "thematiques": ["acces-aux-droits-et-citoyennete"],
         "code_departement": "26",
         "code_region": "84",
         "code_commune": "26400",
@@ -133,6 +132,8 @@ def test_list_structures_event_saved(api_client, db_session, url, schema_version
         "label_national": "action-logement",
         "exclure_doublons": True,
     }
+    if schema_version == "v0":
+        query_param["thematiques"] = ["acces-aux-droits-et-citoyennete"]
     response = api_client.get(url, params=query_param)
 
     assert response.status_code == 200
@@ -148,13 +149,14 @@ def test_list_structures_event_saved(api_client, db_session, url, schema_version
     event = db_session.scalars(sqla.select(models.ListStructuresEvent)).first()
     assert event.user == "some_user"
     assert event.sources == query_param["sources"]
-    assert event.thematiques == query_param["thematiques"]
     assert event.code_departement == query_param["code_departement"]
     assert event.code_region == query_param["code_region"]
     assert event.code_commune == query_param["code_commune"]
     assert event.typologie == query_param["typologie"]
     assert event.label_national == query_param["label_national"]
     assert event.exclure_doublons == query_param["exclure_doublons"]
+    if schema_version == "v0":
+        assert event.thematiques == query_param["thematiques"]
 
 
 @pytest.mark.parametrize("schema_version", ["v0", "v1"])
