@@ -332,7 +332,7 @@ requires-dist = [
     { name = "certifi", specifier = ">=2025.1.31" },
     { name = "click", specifier = ">=8.1.8" },
     { name = "cryptography", specifier = ">=44.0.2" },
-    { name = "data-inclusion-schema", specifier = "==0.24.0" },
+    { name = "data-inclusion-schema", specifier = "==0.25.0" },
     { name = "fastapi", specifier = ">=0.115.12" },
     { name = "fastapi-pagination", specifier = ">=0.12.34" },
     { name = "furl", specifier = ">=2.1.4" },
@@ -377,15 +377,15 @@ test = [
 
 [[package]]
 name = "data-inclusion-schema"
-version = "0.24.0"
+version = "0.25.0"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "pendulum" },
     { name = "pydantic", extra = ["email"] },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/50/d6/76af9cfb94b1edd74345b455c0f012f9760342a3140ea36b5ca11fdcb18c/data_inclusion_schema-0.24.0.tar.gz", hash = "sha256:9571f6cd35dc98b5c72c32775c2f85aab4feefeedfa3cf4f86d021143c1486bc", size = 23220 }
+sdist = { url = "https://files.pythonhosted.org/packages/10/6e/99a1570f22187ba8b6d25bc1418fa5ccf6c1004fb8f95c7c740aaad25a18/data_inclusion_schema-0.25.0.tar.gz", hash = "sha256:0e9e9acf9db3610d9f118eb80a48e9ac19eea2d761838b7047d9c02ab269fecb", size = 23327 }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/cb/87/e2de708e12c39eb60b11512b07354c97b5c16fce869ed3767dc652db6e92/data_inclusion_schema-0.24.0-py3-none-any.whl", hash = "sha256:39666513a91c7a97679689cf5a912a29f68f65c74f6b1f4adaf8ec9d2a9a5106", size = 27569 },
+    { url = "https://files.pythonhosted.org/packages/fc/1f/722270a218e9925ead9374a7d909f65e3b2b7b0eb9704f6a48b36ad0e6d8/data_inclusion_schema-0.25.0-py3-none-any.whl", hash = "sha256:f87c22c5adc68b608d259c348a4beb8a103dc8f2218571404925d2af291486a3", size = 27685 },
 ]
 
 [[package]]
