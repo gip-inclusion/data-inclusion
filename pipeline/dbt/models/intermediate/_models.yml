@@ -316,6 +316,7 @@ unit_tests:
           - {"source": "mednum", "id": "bar", "courriel": "truc2@toto.at", "contact_nom_prenom": "Jean Valjean", "telephone": "0123456789"}
           - {"source": "lezemplois", "id": "baz", "courriel": "truc3@toto.at", "contact_nom_prenom": "Jean Valjean", "telephone": "0123456789"}
           - {"source": "autre", "id": "solo", "courriel": "solo@autre.net", "contact_nom_prenom": "Autre Personne", "telephone": "06666666"}
+          - {"source": "tel", "id": "fredo_gate", "courriel": NULL, "contact_nom_prenom": "Autre Personne", "telephone": "0123456789"}
       - input: ref('int__courriels_verifies')
         rows:
           # note: values can't be NULL. has_hardbounced is set to true/false by brevo, and was_objected to is set to true/false by us.
@@ -330,3 +331,4 @@ unit_tests:
         - {source: mednum, id: bar, courriel: NULL, contact_nom_prenom: NULL, telephone: NULL}  # objected to, no hardbounce
         - {source: lezemplois, id: baz, courriel: truc3@toto.at, contact_nom_prenom: Jean Valjean, telephone: '0123456789'} # not objected to, no hardbounce
         - {source: autre, id: solo, courriel: NULL, contact_nom_prenom: Autre Personne, telephone: '06666666'} # hardbounce : only email is hidden
+        - {source: tel, id: fredo_gate, courriel: NULL, contact_nom_prenom: Autre Personne, telephone: '0123456789'} # if email is NULL, we keep the phone number and the contact name
