@@ -13,7 +13,7 @@ dependencies = [
     "certifi>=2025.1.31",
     "click>=8.1.8",
     "cryptography>=44.0.2",
-    "data-inclusion-schema==0.24.0",
+    "data-inclusion-schema @ git+https://github.com/gip-inclusion/data-inclusion-schema.git@vperron/chore/schema-urls",
     "fastapi>=0.115.12",
     "fastapi-pagination>=0.12.34",
     "furl>=2.1.4",
