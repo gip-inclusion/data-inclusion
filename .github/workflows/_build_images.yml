@@ -10,6 +10,7 @@ jobs:
     strategy:
       matrix:
         service: ["api", "datawarehouse", "pipeline"]
+      fail-fast: false
 
     env:
       REGISTRY: ghcr.io
