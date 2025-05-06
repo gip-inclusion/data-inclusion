@@ -16,7 +16,11 @@ final AS (
         contacts.id                        AS "id",
         contacts.source                    AS "source",
         CASE
-            WHEN courriels_verifies.courriel IS NOT NULL AND courriels_verifies.was_objected_to THEN NULL ELSE contacts.contact_nom_prenom
+            WHEN
+                courriels_verifies.courriel IS NOT NULL
+                AND courriels_verifies.was_objected_to
+                THEN NULL
+            ELSE contacts.contact_nom_prenom
         END                                AS "contact_nom_prenom",
         CASE
             WHEN
@@ -29,7 +33,11 @@ final AS (
             ELSE contacts.courriel
         END                                AS "courriel",
         CASE
-            WHEN courriels_verifies.courriel IS NOT NULL AND courriels_verifies.was_objected_to THEN NULL ELSE contacts.telephone
+            WHEN
+                courriels_verifies.courriel IS NOT NULL
+                AND courriels_verifies.was_objected_to
+                THEN NULL
+            ELSE processings.format_phone_number(contacts.telephone)
         END                                AS "telephone",
         courriels_verifies.was_objected_to AS "rgpd_notice_was_objected_to",
         courriels_verifies.has_hardbounced AS "rgpd_notice_has_hardbounced"
