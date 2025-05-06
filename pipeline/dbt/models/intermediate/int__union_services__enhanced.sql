@@ -84,15 +84,15 @@ services_without_address AS (
                 ]
             )
         }},
-        zones_diffusion.zone_diffusion_code                 AS "zone_diffusion_code",
-        zones_diffusion.zone_diffusion_nom                  AS "zone_diffusion_nom",
-        contacts.contact_nom_prenom                         AS "contact_nom_prenom",
-        contacts.courriel                                   AS "courriel",
-        processings.format_phone_number(contacts.telephone) AS "telephone",
+        zones_diffusion.zone_diffusion_code AS "zone_diffusion_code",
+        zones_diffusion.zone_diffusion_nom  AS "zone_diffusion_nom",
+        contacts.contact_nom_prenom         AS "contact_nom_prenom",
+        contacts.courriel                   AS "courriel",
+        contacts.telephone                  AS "telephone",
         CASE
             WHEN LENGTH(services.nom) <= 150 THEN services.nom
             ELSE LEFT(services.nom, 149) || '…'
-        END                                                 AS "nom"
+        END                                 AS "nom"
     FROM services_with_valid_structure AS services
     LEFT JOIN zones_diffusion
         ON services._di_surrogate_id = zones_diffusion._di_surrogate_id
