@@ -16,22 +16,20 @@ final AS (
         contacts.id                        AS "id",
         contacts.source                    AS "source",
         CASE
-            WHEN
-                courriels_verifies.courriel IS NULL
-                OR NOT courriels_verifies.was_objected_to
-                THEN contacts.contact_nom_prenom
+            WHEN courriels_verifies.courriel IS NOT NULL AND courriels_verifies.was_objected_to THEN NULL ELSE contacts.contact_nom_prenom
         END                                AS "contact_nom_prenom",
         CASE
             WHEN
-                courriels_verifies.courriel IS NULL
-                OR (NOT courriels_verifies.was_objected_to AND NOT courriels_verifies.has_hardbounced)
-                THEN contacts.courriel
+                courriels_verifies.courriel IS NOT NULL
+                AND (
+                    courriels_verifies.was_objected_to
+                    OR courriels_verifies.has_hardbounced
+                )
+                THEN NULL
+            ELSE contacts.courriel
         END                                AS "courriel",
         CASE
-            WHEN
-                courriels_verifies.courriel IS NULL
-                OR NOT courriels_verifies.was_objected_to
-                THEN contacts.telephone
+            WHEN courriels_verifies.courriel IS NOT NULL AND courriels_verifies.was_objected_to THEN NULL ELSE contacts.telephone
         END                                AS "telephone",
         courriels_verifies.was_objected_to AS "rgpd_notice_was_objected_to",
         courriels_verifies.has_hardbounced AS "rgpd_notice_has_hardbounced"
