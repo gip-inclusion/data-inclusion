@@ -137,7 +137,7 @@ final AS (
         open_services.lieu_id                                         AS "structure_id",
         ARRAY[mapping_thematiques.thematique]                         AS "thematiques",
         ARRAY['en-presentiel']                                        AS "modes_accueil",
-        categories.label || COALESCE(' : ' || open_services.name, '') AS "nom",
+        categories.label                                              AS "nom",
         'https://soliguide.fr/fr/fiche/' || lieux.seo_url             AS "lien_source",
         CASE
             WHEN LENGTH(open_services.description) <= 280 THEN open_services.description
