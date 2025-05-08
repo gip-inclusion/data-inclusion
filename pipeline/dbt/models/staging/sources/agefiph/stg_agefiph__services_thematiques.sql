@@ -9,7 +9,7 @@ final AS (
         thematiques.data ->> 'id' AS "thematique_id"
     FROM
         source,
-        LATERAL(SELECT * FROM JSONB_PATH_QUERY(source.data, '$.relationships.field_thematique.data[*]')) AS thematiques (data)
+        LATERAL (SELECT th.* FROM JSONB_PATH_QUERY(source.data, '$.relationships.field_thematique.data[*]') AS th) AS thematiques (data)
     WHERE
         thematiques.data ->> 'id' IS NOT NULL
 )
