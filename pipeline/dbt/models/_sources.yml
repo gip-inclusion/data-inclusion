@@ -127,6 +127,9 @@ sources:
       - name: services
         meta:
           kind: service
+      - name: structures
+        meta:
+          kind: structure
 
   - name: reseau_alpha
     schema: reseau_alpha
@@ -165,7 +168,6 @@ sources:
       - name: services
         meta:
           kind: service
-        
   - name: mission_locale
     schema: mission_locale
     meta:
