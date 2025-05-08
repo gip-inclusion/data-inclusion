@@ -76,10 +76,6 @@ models:
         data_tests:
           - not_null
           - unique
-      - name: name
-        data_tests:
-          - dbt_utils.expression_is_true:
-              expression: "!~ '(?<!etc)\\.$'"
       - name: lieu_id
         data_tests:
           - not_null
