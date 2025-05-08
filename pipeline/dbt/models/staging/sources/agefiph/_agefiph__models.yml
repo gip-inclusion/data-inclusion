@@ -1,16 +1,6 @@
 version: 2
 
 models:
-  - name: stg_agefiph__services_publics
-    columns:
-      - name: service_id
-        data_tests:
-          - not_null
-          - dbt_utils.not_empty_string
-      - name: public_id
-        data_tests:
-          - not_null
-          - dbt_utils.not_empty_string
 
   - name: stg_agefiph__structures
     columns:
@@ -43,16 +33,7 @@ models:
         data_tests:
           - not_null
           - dbt_utils.not_empty_string
-  - name: stg_agefiph__services_thematiques
-    columns:
-      - name: service_id
-        data_tests:
-          - not_null
-          - dbt_utils.not_empty_string
-      - name: thematique_id
-        data_tests:
-          - not_null
-          - dbt_utils.not_empty_string
+
 
   - name: stg_agefiph__services
     columns:

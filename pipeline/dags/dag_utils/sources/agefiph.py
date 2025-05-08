@@ -18,13 +18,12 @@ class APIClient(utils.BaseApiClient):
             response.raise_for_status()
             data = response.json()
             result += data["data"]
-            i += 1
-            if "next" in data["links"]:
-                url = data["links"]["next"]["href"]
-            elif i == 15:
-                raise RuntimeError("Too many pages")
-            else:
+            if "next" not in data["links"]:
                 break
+            if i > 15:
+                raise RuntimeError("explain why too many iterations here")
+            url = data["links"]["next"]["href"]
+            i += 1
         return result
 
 
@@ -35,7 +34,7 @@ def read(path: Path):
     import pandas as pd
 
     with path.open() as file:
-        data = json.load(file)["data"]
+        data = json.load(file)
 
     def _get(d: dict, keys: list[str]):
         return reduce(lambda subd, key: subd.get(key) if subd else None, keys, d)
@@ -49,9 +48,7 @@ def read(path: Path):
 
     for service_data in data:
         for keys in [
-            ["attributes", "field_essentiel_ph", "processed"],
-            ["attributes", "field_essentiel_employeur", "processed"],
-            ["attributes", "field_texte_brut_long"],
+            ["attributes", "field_solution_detail", "processed"],
         ]:
             _set(service_data, keys, utils.html_to_markdown(_get(service_data, keys)))
 
