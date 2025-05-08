@@ -9,11 +9,12 @@ DUNKERQUE = {"code_insee": "59183", "latitude": 51.0361, "longitude": 2.3770}
 HAZEBROUCK = {"code_insee": "59295", "latitude": 50.7262, "longitude": 2.5387}
 
 
+@pytest.mark.parametrize("schema_version", ["v0", "v1"])
 @pytest.mark.parametrize(
-    ("url", "model"),
+    ("path", "model"),
     [
-        ("/api/v0/structures/foo/bar", models.ConsultStructureEvent),
-        ("/api/v0/services/foo/bar", models.ConsultServiceEvent),
+        ("/structures/foo/bar", models.ConsultStructureEvent),
+        ("/services/foo/bar", models.ConsultServiceEvent),
     ],
 )
 @pytest.mark.with_token
@@ -24,16 +25,19 @@ def test_ignore_event_if_resource_not_found(api_client, db_session, url, model):
     assert db_session.scalar(sqla.select(sqla.func.count()).select_from(model)) == 0
 
 
+@pytest.mark.parametrize("schema_version", ["v0", "v1"])
+@pytest.mark.parametrize("path", ["/structures"])
 @pytest.mark.with_token
-def test_consult_structure_event_saved(api_client, db_session):
+def test_consult_structure_event_saved(api_client, db_session, url, schema_version):
     structure = factories.StructureFactory(source="foo", id="1")
-    url = f"/api/v0/structures/{structure.source}/{structure.id}"
-    response = api_client.get(url)
+    response = api_client.get(f"{url}/{structure.source}/{structure.id}")
 
     assert response.status_code == 200
     assert (
         db_session.scalar(
-            sqla.select(sqla.func.count()).select_from(models.ConsultStructureEvent)
+            sqla.select(sqla.func.count())
+            .select_from(models.ConsultStructureEvent)
+            .filter_by(schema_version=schema_version)
         )
         == 1
     )
@@ -44,16 +48,19 @@ def test_consult_structure_event_saved(api_client, db_session):
     assert event.source == structure.source
 
 
+@pytest.mark.parametrize("schema_version", ["v0", "v1"])
+@pytest.mark.parametrize("path", ["/services"])
 @pytest.mark.with_token
-def test_consult_service_event_saved(api_client, db_session):
+def test_consult_service_event_saved(api_client, db_session, url, schema_version):
     service = factories.ServiceFactory(source="foo", id="1", score_qualite=0.8)
-    url = f"/api/v0/services/{service.source}/{service.id}"
-    response = api_client.get(url)
+    response = api_client.get(f"{url}/{service.source}/{service.id}")
 
     assert response.status_code == 200
     assert (
         db_session.scalar(
-            sqla.select(sqla.func.count()).select_from(models.ConsultServiceEvent)
+            sqla.select(sqla.func.count())
+            .select_from(models.ConsultServiceEvent)
+            .filter_by(schema_version=schema_version)
         )
         == 1
     )
@@ -65,9 +72,10 @@ def test_consult_service_event_saved(api_client, db_session):
     assert event.score_qualite == service.score_qualite
 
 
+@pytest.mark.parametrize("schema_version", ["v0", "v1"])
+@pytest.mark.parametrize("path", ["/services"])
 @pytest.mark.with_token
-def test_list_services_event_saved(api_client, db_session):
-    url = "/api/v0/services"
+def test_list_services_event_saved(api_client, db_session, url, schema_version):
     query_param = {
         "sources": ["foo"],
         "thematiques": ["acces-aux-droits-et-citoyennete"],
@@ -87,7 +95,9 @@ def test_list_services_event_saved(api_client, db_session):
     assert response.status_code == 200
     assert (
         db_session.scalar(
-            sqla.select(sqla.func.count()).select_from(models.ListServicesEvent)
+            sqla.select(sqla.func.count())
+            .select_from(models.ListServicesEvent)
+            .filter_by(schema_version=schema_version)
         )
         == 1
     )
@@ -108,9 +118,10 @@ def test_list_services_event_saved(api_client, db_session):
     assert event.score_qualite_minimum == query_param["score_qualite_minimum"]
 
 
+@pytest.mark.parametrize("schema_version", ["v0", "v1"])
+@pytest.mark.parametrize("path", ["/structures"])
 @pytest.mark.with_token
-def test_list_structures_event_saved(api_client, db_session):
-    url = "/api/v0/structures"
+def test_list_structures_event_saved(api_client, db_session, url, schema_version):
     query_param = {
         "sources": ["foo"],
         "thematiques": ["acces-aux-droits-et-citoyennete"],
@@ -127,7 +138,9 @@ def test_list_structures_event_saved(api_client, db_session):
     assert response.status_code == 200
     assert (
         db_session.scalar(
-            sqla.select(sqla.func.count()).select_from(models.ListStructuresEvent)
+            sqla.select(sqla.func.count())
+            .select_from(models.ListStructuresEvent)
+            .filter_by(schema_version=schema_version)
         )
         == 1
     )
@@ -144,9 +157,10 @@ def test_list_structures_event_saved(api_client, db_session):
     assert event.exclure_doublons == query_param["exclure_doublons"]
 
 
+@pytest.mark.parametrize("schema_version", ["v0", "v1"])
+@pytest.mark.parametrize("path", ["/search/services"])
 @pytest.mark.with_token
-def test_search_services_event_saved(api_client, db_session):
-    url = "/api/v0/search/services"
+def test_search_services_event_saved(api_client, db_session, url, schema_version):
     query_param = {
         "sources": ["foo"],
         "thematiques": ["acces-aux-droits-et-citoyennete"],
@@ -169,7 +183,9 @@ def test_search_services_event_saved(api_client, db_session):
     assert response.status_code == 200
     assert (
         db_session.scalar(
-            sqla.select(sqla.func.count()).select_from(models.SearchServicesEvent)
+            sqla.select(sqla.func.count())
+            .select_from(models.SearchServicesEvent)
+            .filter_by(schema_version=schema_version)
         )
         == 1
     )
@@ -194,19 +210,25 @@ def test_search_services_event_saved(api_client, db_session):
     assert event.exclure_doublons == query_param["exclure_doublons"]
 
 
+@pytest.mark.parametrize("schema_version", ["v0", "v1"])
+@pytest.mark.parametrize("path", ["/search/services"])
 @pytest.mark.with_token
-def test_search_services_event_saved_with_results(api_client, db_session):
+def test_search_services_event_saved_with_results(
+    api_client, db_session, url, schema_version
+):
     number_of_results_to_saved = 10
 
     for _ in range(number_of_results_to_saved + 1):
         factories.ServiceFactory()
 
-    response = api_client.get("/api/v0/search/services")
+    response = api_client.get(url)
 
     assert response.status_code == 200
     assert (
         db_session.scalar(
-            sqla.select(sqla.func.count()).select_from(models.SearchServicesEvent)
+            sqla.select(sqla.func.count())
+            .select_from(models.SearchServicesEvent)
+            .filter_by(schema_version=schema_version)
         )
         == 1
     )
@@ -224,19 +246,23 @@ def test_search_services_event_saved_with_results(api_client, db_session):
     assert event.total_services == response.json()["total"]
 
 
+@pytest.mark.parametrize("schema_version", ["v0", "v1"])
+@pytest.mark.parametrize("path", ["/search/services"])
 @pytest.mark.with_token
-def test_search_services_event_only_first_page_saved(api_client, db_session):
+def test_search_services_event_only_first_page_saved(
+    api_client, db_session, url, schema_version
+):
     factories.ServiceFactory()
     factories.ServiceFactory()
 
-    first_response = api_client.get(
-        "/api/v0/search/services", params={"size": 1, "page": 1}
-    )
+    first_response = api_client.get(url, params={"size": 1, "page": 1})
     api_client.get("/api/v0/search/services", params={"size": 1, "page": 2})
 
     assert (
         db_session.scalar(
-            sqla.select(sqla.func.count()).select_from(models.SearchServicesEvent)
+            sqla.select(sqla.func.count())
+            .select_from(models.SearchServicesEvent)
+            .filter_by(schema_version=schema_version)
         )
         == 1
     )

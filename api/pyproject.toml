@@ -13,7 +13,7 @@ dependencies = [
     "certifi>=2025.1.31",
     "click>=8.1.8",
     "cryptography>=44.0.2",
-    "data-inclusion-schema==0.24.0",
+    "data-inclusion-schema==1.0.0",
     "fastapi>=0.115.12",
     "fastapi-pagination>=0.12.34",
     "furl>=2.1.4",
@@ -94,6 +94,10 @@ fastapi = ["fastapi", "fastapi_pagination"]
 markers = '''
     with_token: inject token headers in test client
     with_admin_token: inject admin token headers in test client
+    env: override settings.ENV (prod, dev, etc.)
     feature_deprecated: the marked test is deprecated
 '''
 testpaths = "tests"
+
+[tool.uv.sources]
+data-inclusion-schema = { git = "https://github.com/gip-inclusion/data-inclusion-schema.git", rev = "vmttn/feat/v1" }

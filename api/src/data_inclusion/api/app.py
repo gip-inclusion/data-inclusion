@@ -7,24 +7,15 @@ import fastapi
 import fastapi_pagination
 from fastapi.middleware import cors, trustedhost
 
-from data_inclusion.api import auth
+from data_inclusion.api import auth, config
 from data_inclusion.api.auth.routes import router as auth_api_router
-from data_inclusion.api.config import settings
 from data_inclusion.api.core import db
-from data_inclusion.api.inclusion_data.routes import router as data_api_router
-from data_inclusion.api.inclusion_schema.routes import router as schema_api_router
+from data_inclusion.api.inclusion_data.v0.routes import router as v0_data_api_router
+from data_inclusion.api.inclusion_data.v1.routes import router as v1_data_api_router
+from data_inclusion.api.inclusion_schema.v0.routes import router as v0_schema_api_router
+from data_inclusion.api.inclusion_schema.v1.routes import router as v1_schema_api_router
 
 API_DESCRIPTION_PATH = Path(__file__).parent / "api_description.md"
-
-
-def setup_cors_middleware(app: fastapi.FastAPI) -> None:
-    app.add_middleware(
-        cors.CORSMiddleware,
-        allow_origins=settings.CORS_ALLOWED_ORIGINS,
-        allow_credentials=True,
-        allow_methods=["*"],
-        allow_headers=["*"],
-    )
 
 
 def setup_debug_toolbar_middleware(app: fastapi.FastAPI) -> None:
@@ -36,7 +27,7 @@ def setup_debug_toolbar_middleware(app: fastapi.FastAPI) -> None:
     )
 
 
-def create_app() -> fastapi.FastAPI:
+def create_app(settings: config.Settings) -> fastapi.FastAPI:
     # sentry must be initialized before app
     sentry_sdk.init(
         dsn=settings.SENTRY_DSN,
@@ -54,7 +45,7 @@ def create_app() -> fastapi.FastAPI:
         servers=[{"url": settings.BASE_URL, "description": settings.ENV}],
         openapi_url="/api/openapi.json",
         description=description,
-        docs_url="/api/v0/docs",
+        docs_url="/api/docs",
         contact={
             "name": "data·inclusion",
             "email": "data-inclusion@inclusion.gouv.fr",
@@ -68,7 +59,13 @@ def create_app() -> fastapi.FastAPI:
         dependencies=[auth.authenticate_dependency],
     )
 
-    setup_cors_middleware(app)
+    app.add_middleware(
+        cors.CORSMiddleware,
+        allow_origins=settings.CORS_ALLOWED_ORIGINS,
+        allow_credentials=True,
+        allow_methods=["*"],
+        allow_headers=["*"],
+    )
 
     if settings.ENV == "dev":
         setup_debug_toolbar_middleware(app)
@@ -82,11 +79,7 @@ def create_app() -> fastapi.FastAPI:
     app.middleware("http")(db.db_session_middleware)
 
     app.include_router(v0_api_router)
-    app.include_router(
-        schema_api_router,
-        prefix="/api/v0/doc",
-        tags=["Documentation"],
-    )
+    app.include_router(v1_api_router, include_in_schema=settings.ENV != "prod")
 
     fastapi_pagination.add_pagination(app)
 
@@ -95,13 +88,22 @@ def create_app() -> fastapi.FastAPI:
         content = "User-agent: *\nAllow: /api/v0/docs\nDisallow: /\n"
         return fastapi.Response(content=content, media_type="text/plain")
 
+    # redirect legacy /api/v0/docs to version agnostic /api/docs
+    @app.get("/api/v0/docs", include_in_schema=False)
+    def redirect_v0_docs():
+        return fastapi.responses.RedirectResponse(url="/api/docs", status_code=301)
+
     return app
 
 
 v0_api_router = fastapi.APIRouter(prefix="/api/v0")
-
-v0_api_router.include_router(data_api_router)
+v0_api_router.include_router(v0_data_api_router)
 v0_api_router.include_router(auth_api_router, include_in_schema=False)
+v0_api_router.include_router(v0_schema_api_router, prefix="/doc")
+
+v1_api_router = fastapi.APIRouter(prefix="/api/v1")
+v1_api_router.include_router(v1_data_api_router)
+v1_api_router.include_router(v1_schema_api_router, prefix="/doc")
 
 
-app = create_app()
+app = create_app(settings=config.settings)
