@@ -1,6 +1,5 @@
 WITH source AS (
-    {{ stg_source_header('soliguide', 'lieux') }}
-),
+    {{ stg_source_header('soliguide', 'lieux') }}),
 
 -- about timestamps : soliguide can have corrupted timestamps,
 -- therefore timestamps are extracted from datetime fields and then casted to date
@@ -11,30 +10,6 @@ services AS (
         CAST(SUBSTRING(source.data ->> 'updatedAt' FROM '\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d{3}Z') AS DATE)           AS "updated_at",
         source.data ->> 'lieu_id'                                                                                         AS "lieu_id",
         services.data ->> 'serviceObjectId'                                                                               AS "id",
-        CASE
-            WHEN services.data ->> 'name' IN (
-                'some_products_organic',
-                'do_not_know',
-                'majority_of_products_organic',
-                'sanitary_materials',
-                'other_care_products',
-                'all_products_organic',
-                'no_organic_products',
-                'free_choice',
-                'we_adapt',
-                'accompagnied_choice',
-                'no_choice',
-                'try_to_adapt',
-                'cannot_adapt',
-                'all_products_national',
-                'majority_of_products_national',
-                'sanitary_material',
-                'some_products_national'
-            ) THEN NULL
-            -- first replace trailing groups of 2 or more dots by an ellipsis
-            -- then remove trailing dot if not preceded by "etc"
-            ELSE NULLIF(REGEXP_REPLACE(REGEXP_REPLACE(services.data ->> 'name', '\.{2,}$', '…'), '(?<!etc)\.$', ''), '')
-        END                                                                                                               AS "name",
         services.data ->> 'category'                                                                                      AS "category",
         NULLIF(services.data ->> 'description', '')                                                                       AS "description",
         services.data -> 'hours'                                                                                          AS "hours",
