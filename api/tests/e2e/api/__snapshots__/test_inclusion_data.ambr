@@ -277,7 +277,7 @@
                   "type": "null"
                 }
               ],
-              "description": "Numéro de téléphone à utiliser pour obtenir des informations complémentaires sur la structure.\n\nChaîne de caractères contenant un seul numéro de téléphone, de préfèrence au format E.164.",
+              "description": "Numéro de téléphone à utiliser pour obtenir des informations complémentaires sur la structure.\n\nChaîne de caractères contenant un seul numéro de téléphone, de préférence au format E.164.",
               "examples": [
                 "+33123456789"
               ],
@@ -1175,7 +1175,7 @@
                   "type": "null"
                 }
               ],
-              "description": "Numéro de téléphone à utiliser pour obtenir des informations complémentaires sur le service. Si le mode de mobilisation est `telephoner`, peut être utilisé pour mobiliser le service.\n\nChaîne de caractères contenant un seul numéro de téléphone, de préfèrence au format E.164.",
+              "description": "Numéro de téléphone à utiliser pour obtenir des informations complémentaires sur le service. Si le mode de mobilisation est `telephoner`, peut être utilisé pour mobiliser le service.\n\nChaîne de caractères contenant un seul numéro de téléphone, de préférence au format E.164.",
               "examples": [
                 "+33123456789"
               ],
@@ -1572,7 +1572,7 @@
                   "type": "null"
                 }
               ],
-              "description": "Numéro de téléphone à utiliser pour obtenir des informations complémentaires sur la structure.\n\nChaîne de caractères contenant un seul numéro de téléphone, de préfèrence au format E.164.",
+              "description": "Numéro de téléphone à utiliser pour obtenir des informations complémentaires sur la structure.\n\nChaîne de caractères contenant un seul numéro de téléphone, de préférence au format E.164.",
               "examples": [
                 "+33123456789"
               ],
@@ -2049,7 +2049,7 @@
                   "type": "null"
                 }
               ],
-              "description": "Numéro de téléphone à utiliser pour obtenir des informations complémentaires sur la structure.\n\nChaîne de caractères contenant un seul numéro de téléphone, de préfèrence au format E.164.",
+              "description": "Numéro de téléphone à utiliser pour obtenir des informations complémentaires sur la structure.\n\nChaîne de caractères contenant un seul numéro de téléphone, de préférence au format E.164.",
               "examples": [
                 "+33123456789"
               ],
@@ -2645,7 +2645,7 @@
                   "type": "null"
                 }
               ],
-              "description": "Numéro de téléphone à utiliser pour obtenir des informations complémentaires sur le service. Si le mode de mobilisation est `telephoner`, peut être utilisé pour mobiliser le service.\n\nChaîne de caractères contenant un seul numéro de téléphone, de préfèrence au format E.164.",
+              "description": "Numéro de téléphone à utiliser pour obtenir des informations complémentaires sur le service. Si le mode de mobilisation est `telephoner`, peut être utilisé pour mobiliser le service.\n\nChaîne de caractères contenant un seul numéro de téléphone, de préférence au format E.164.",
               "examples": [
                 "+33123456789"
               ],
@@ -3084,6 +3084,10 @@
                   "type": "null"
                 }
               ],
+              "description": "Site internet de la structure.\n\nL’URL est validée par un appel HTTP GET (redirections prises en compte). Doit suivre le format de la RFC 3986.",
+              "examples": [
+                "https://www.asso-mon-entraide.net/"
+              ],
               "title": "Site Web"
             },
             "source": {
@@ -3099,7 +3103,7 @@
                   "type": "null"
                 }
               ],
-              "description": "Numéro de téléphone à utiliser pour obtenir des informations complémentaires sur la structure.\n\nChaîne de caractères contenant un seul numéro de téléphone, de préfèrence au format E.164.",
+              "description": "Numéro de téléphone à utiliser pour obtenir des informations complémentaires sur la structure.\n\nChaîne de caractères contenant un seul numéro de téléphone, de préférence au format E.164.",
               "examples": [
                 "+33123456789"
               ],

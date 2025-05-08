@@ -6,6 +6,14 @@ adresses AS (
     SELECT * FROM {{ ref('int__union_adresses__enhanced') }}
 ),
 
+valid_site_web AS (
+    SELECT
+        input_url,
+        "url"
+    FROM {{ ref('int__union_urls__enhanced') }}
+    WHERE status_code > 0
+),
+
 valid_structures AS (
     SELECT
         {{
@@ -15,15 +23,18 @@ valid_structures AS (
                 except=[
                     "nom",
                     "telephone",
+                    "site_web",
                 ]
             )
         }},
         processings.format_phone_number(structures.telephone) AS "telephone",
+        valid_site_web.url                                    AS "site_web",
         CASE
             WHEN LENGTH(structures.nom) <= 150 THEN structures.nom
             ELSE LEFT(structures.nom, 149) || '…'
-        END AS "nom"
+        END                                                   AS "nom"
     FROM structures
+    LEFT JOIN valid_site_web ON structures.site_web = valid_site_web.input_url
     LEFT JOIN
         LATERAL
         LIST_STRUCTURE_ERRORS(
