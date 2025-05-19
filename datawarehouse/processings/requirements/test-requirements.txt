@@ -10,13 +10,13 @@ btrees==6.1
     #   zope-index
 categorical-distance==1.9
     # via dedupe
-certifi==2024.12.14
+certifi==2025.4.26
     # via
     #   requests
     #   sib-api-v3-sdk
 cffi==1.17.1
     # via persistent
-charset-normalizer==3.4.1
+charset-normalizer==3.4.2
     # via requests
 data-inclusion-schema==0.24.0
     # via data-inclusion-processings (pyproject.toml)
@@ -32,7 +32,7 @@ dedupe-variable-datetime==2.0.0
     # via data-inclusion-processings (pyproject.toml)
 dnspython==2.7.0
     # via email-validator
-doublemetaphone==1.1
+doublemetaphone==1.2
     # via dedupe
 email-validator==2.2.0
     # via pydantic
@@ -46,11 +46,11 @@ idna==3.10
     # via
     #   email-validator
     #   requests
-iniconfig==2.0.0
+iniconfig==2.1.0
     # via pytest
-joblib==1.4.2
+joblib==1.5.0
     # via scikit-learn
-numpy==2.2.1
+numpy==2.2.6
     # via
     #   data-inclusion-processings (pyproject.toml)
     #   categorical-distance
@@ -62,31 +62,31 @@ numpy==2.2.1
     #   scikit-learn
     #   scipy
     #   simplecosine
-packaging==24.2
+packaging==25.0
     # via pytest
 pandas==2.2.3
     # via data-inclusion-processings (pyproject.toml)
-pendulum==3.0.0
+pendulum==3.1.0
     # via data-inclusion-schema
-persistent==6.1
+persistent==6.1.1
     # via
     #   btrees
     #   zope-index
-phonenumbers==8.13.52
+phonenumbers==9.0.5
     # via data-inclusion-processings (pyproject.toml)
-pluggy==1.5.0
+pluggy==1.6.0
     # via pytest
 pycparser==2.22
     # via cffi
-pydantic==2.10.5
+pydantic==2.11.4
     # via data-inclusion-schema
-pydantic-core==2.27.2
+pydantic-core==2.33.2
     # via pydantic
 pyhacrf-datamade==0.2.8
     # via highered
 pylbfgs==0.2.0.16
     # via pyhacrf-datamade
-pytest==8.3.4
+pytest==8.3.5
     # via data-inclusion-processings (pyproject.toml)
 python-dateutil==2.9.0.post0
     # via
@@ -94,16 +94,15 @@ python-dateutil==2.9.0.post0
     #   pandas
     #   pendulum
     #   sib-api-v3-sdk
-    #   time-machine
-pytz==2024.2
+pytz==2025.2
     # via pandas
 requests==2.32.3
     # via data-inclusion-processings (pyproject.toml)
 scikit-learn==1.6.1
     # via dedupe
-scipy==1.15.1
+scipy==1.15.3
     # via scikit-learn
-setuptools==75.8.0
+setuptools==80.7.1
     # via
     #   zope-deferredimport
     #   zope-index
@@ -117,21 +116,22 @@ six==1.17.0
     # via
     #   python-dateutil
     #   sib-api-v3-sdk
-threadpoolctl==3.5.0
+threadpoolctl==3.6.0
     # via scikit-learn
-time-machine==2.16.0
-    # via pendulum
-typing-extensions==4.12.2
+typing-extensions==4.13.2
     # via
     #   pydantic
     #   pydantic-core
-tzdata==2024.2
+    #   typing-inspection
+typing-inspection==0.4.0
+    # via pydantic
+tzdata==2025.2
     # via
     #   pandas
     #   pendulum
-unidecode==1.3.8
+unidecode==1.4.0
     # via data-inclusion-processings (pyproject.toml)
-urllib3==2.3.0
+urllib3==2.4.0
     # via
     #   requests
     #   sib-api-v3-sdk
