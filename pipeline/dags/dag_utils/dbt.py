@@ -115,10 +115,12 @@ def get_intermediate_tasks():
                 "path:models/intermediate/int__union_adresses.sql",
                 "path:models/intermediate/int__union_services.sql",
                 "path:models/intermediate/int__union_structures.sql",
+                "path:models/intermediate/int__union_urls.sql",
                 "path:models/intermediate/int__union_contacts__enhanced.sql+",
                 "path:models/intermediate/int__union_adresses__enhanced.sql+",
                 "path:models/intermediate/int__union_services__enhanced.sql+",
                 "path:models/intermediate/int__union_structures__enhanced.sql+",
+                "path:models/intermediate/int__union_urls__enhanced.sql+",
                 "path:models/intermediate/deduplicate/*",
                 "marts",
             ]

@@ -8,6 +8,7 @@ version = "0.1.0"
 dependencies = [
     "dedupe",
     "dedupe-variable-datetime",
+    "furl",
     "numpy~=2.0",
     "pandas~=2.2",
     "phonenumbers",
