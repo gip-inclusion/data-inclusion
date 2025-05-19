@@ -50,6 +50,8 @@ filelock==3.18.0
     # via
     #   tox
     #   virtualenv
+furl==2.1.4
+    # via data-inclusion-processings (pyproject.toml)
 future==1.0.0
     # via datetime-distance
 haversine==2.9.0
@@ -78,6 +80,8 @@ numpy==2.2.6
     #   scikit-learn
     #   scipy
     #   simplecosine
+orderedmultidict==1.0.1
+    # via furl
 packaging==25.0
     # via
     #   pyproject-api
@@ -142,6 +146,8 @@ simplecosine==1.2
     # via dedupe
 six==1.17.0
     # via
+    #   furl
+    #   orderedmultidict
     #   python-dateutil
     #   sib-api-v3-sdk
 threadpoolctl==3.6.0
