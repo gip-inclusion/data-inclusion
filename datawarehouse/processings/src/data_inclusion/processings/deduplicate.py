@@ -51,6 +51,7 @@ def deduplicate(data: list[DeduplicateInput]) -> pd.DataFrame:
             [
                 "action-logement",
                 "dora",
+                "cd35",
                 "fredo",
                 "emplois-de-linclusion",
                 "france-travail",
