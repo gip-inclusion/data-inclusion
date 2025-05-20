@@ -37,6 +37,7 @@ dependencies = [
     "sentry-sdk[fastapi]>=2.25.1",
     "sqlalchemy>=2.0.40",
     "tqdm>=4.67.1",
+    "ua-parser[regex]>=1.0",
     "uvicorn[standard]>=0.34.0",
 ]
 
