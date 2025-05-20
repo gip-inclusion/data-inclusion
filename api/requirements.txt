@@ -73,6 +73,9 @@ tqdm==4.67.1
 typing-extensions==4.13.2
 typing-inspection==0.4.0
 tzdata==2025.2
+ua-parser==1.0.1
+ua-parser-builtins==0.18.0.post1
+ua-parser-rs==0.1.2
 urllib3==2.4.0
 uvicorn==0.34.1
 uvloop==0.21.0 ; platform_python_implementation != 'PyPy' and sys_platform != 'cygwin' and sys_platform != 'win32'

@@ -57,6 +57,7 @@ def api_client(app, db_session):
     app.dependency_overrides[db.get_session] = lambda: db_session
 
     with TestClient(app) as c:
+        c.headers.update({"User-Agent": "data-inclusion-test-client"})
         yield c
 
 

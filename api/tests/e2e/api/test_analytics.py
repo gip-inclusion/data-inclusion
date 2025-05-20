@@ -27,10 +27,26 @@ def test_ignore_event_if_resource_not_found(api_client, db_session, url, model):
 
 @pytest.mark.parametrize("schema_version", ["v0", "v1"])
 @pytest.mark.parametrize("path", ["/structures"])
+@pytest.mark.parametrize(
+    ("user_agent", "num_events"),
+    [
+        ("bingbot/2.0; +http://www.bing.com/bingbot.htm)", 0),
+        ("python-requests/2.28.1", 1),
+    ],
+)
 @pytest.mark.with_token
-def test_consult_structure_event_saved(api_client, db_session, url, schema_version):
+def test_consult_structure_event_saved(
+    api_client, db_session, url, schema_version, user_agent, num_events
+):
     structure = factories.StructureFactory(source="foo", id="1")
-    response = api_client.get(f"{url}/{structure.source}/{structure.id}")
+    url = f"{url}/{structure.source}/{structure.id}"
+
+    response = api_client.get(
+        url,
+        headers={
+            "User-Agent": user_agent,
+        },
+    )
 
     assert response.status_code == 200
     assert (
@@ -39,21 +55,38 @@ def test_consult_structure_event_saved(api_client, db_session, url, schema_versi
             .select_from(models.ConsultStructureEvent)
             .filter_by(schema_version=schema_version)
         )
-        == 1
+        == num_events
     )
 
     event = db_session.scalars(sqla.select(models.ConsultStructureEvent)).first()
-    assert event.user == "some_user"
-    assert event.structure_id == structure.id
-    assert event.source == structure.source
+    if event:
+        assert event.user == "some_user"
+        assert event.structure_id == structure.id
+        assert event.source == structure.source
 
 
 @pytest.mark.parametrize("schema_version", ["v0", "v1"])
 @pytest.mark.parametrize("path", ["/services"])
+@pytest.mark.parametrize(
+    ("user_agent", "num_events"),
+    [
+        ("bingbot/2.0; +http://www.bing.com/bingbot.htm)", 0),
+        ("python-requests/2.28.1", 1),
+    ],
+)
 @pytest.mark.with_token
-def test_consult_service_event_saved(api_client, db_session, url, schema_version):
+def test_consult_service_event_saved(
+    api_client, db_session, url, schema_version, user_agent, num_events
+):
     service = factories.ServiceFactory(source="foo", id="1", score_qualite=0.8)
-    response = api_client.get(f"{url}/{service.source}/{service.id}")
+    url = f"{url}/{service.source}/{service.id}"
+
+    response = api_client.get(
+        url,
+        headers={
+            "User-Agent": user_agent,
+        },
+    )
 
     assert response.status_code == 200
     assert (
@@ -62,14 +95,15 @@ def test_consult_service_event_saved(api_client, db_session, url, schema_version
             .select_from(models.ConsultServiceEvent)
             .filter_by(schema_version=schema_version)
         )
-        == 1
+        == num_events
     )
 
     event = db_session.scalars(sqla.select(models.ConsultServiceEvent)).first()
-    assert event.user == "some_user"
-    assert event.service_id == service.id
-    assert event.source == service.source
-    assert event.score_qualite == service.score_qualite
+    if event:
+        assert event.user == "some_user"
+        assert event.service_id == service.id
+        assert event.source == service.source
+        assert event.score_qualite == service.score_qualite
 
 
 @pytest.mark.parametrize("schema_version", ["v0", "v1"])

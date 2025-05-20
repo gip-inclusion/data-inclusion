@@ -1,5 +1,6 @@
 from typing import Literal
 
+import ua_parser
 from sqlalchemy import orm
 
 import fastapi
@@ -24,6 +25,16 @@ def get_schema_version(request: fastapi.Request) -> Literal["v0", "v1"]:
     return "v0" if "v0" in str(request.url) else "v1"
 
 
+def is_bot(user_agent):
+    if not user_agent:
+        return False  # probably most of our consumers :/
+    match ua_parser.parse(user_agent):
+        case ua_parser.Result(device=ua_parser.Device(family="Spider")):
+            return True
+        case _:
+            return False
+
+
 def save_consult_structure_event(
     request: fastapi.Request,
     structure: schemas.DetailedStructure,
@@ -31,6 +42,10 @@ def save_consult_structure_event(
 ):
     user = request.scope.get("user")
     if user is None or not user.is_authenticated:
+        return
+
+    user_agent = request.headers.get("User-Agent")
+    if is_bot(user_agent):
         return
 
     event = ConsultStructureEvent(
@@ -50,6 +65,10 @@ def save_consult_service_event(
 ):
     user = request.scope.get("user")
     if user is None or not user.is_authenticated:
+        return
+
+    user_agent = request.headers.get("User-Agent")
+    if is_bot(user_agent):
         return
 
     event = ConsultServiceEvent(
