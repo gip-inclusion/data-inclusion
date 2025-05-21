@@ -1,18 +1,38 @@
 import concurrent.futures
+import socket
 from dataclasses import astuple, dataclass
+from functools import lru_cache
 
 import requests
 from furl import furl
 
 # 1 second resulted in a LOT of timeouts unfortunately, seems that many
 # websites about the topic are quite slow. This results in about ~10s for
-# resolving a batch of 1000 URLs (with 10_000 workers, see below)
+# resolving a batch of 1000 URLs
 PING_TIMEOUT = 5.0
 
-# 1000 is a bit arbitrary but since we're mostly IO bound, the assumption is that
-# we can have a lot of threads without blocking each other. So we use as many
-# threads as we have URLs in a batch.
-NUM_WORKERS = 10_000
+# Let's use, in nominal conditions, 1 thread per URL. Along with the current
+# cache settings, it is the fastest implementation in the typical case.
+NUM_WORKERS = 1000
+
+# On average we get ~800 distinct hosts per batch of 1000 but let's
+# be safe and use the worst case.
+# In some "good" batches though we get the same host a lot of times,
+# which improves performance.
+NUM_DISTINCT_HOSTS = 1000
+
+
+# Within the same database session or connection, all pl/Python functions
+# share the same socket module.
+if not hasattr(socket, "_dns_cache_patched"):
+    original_getaddrinfo = socket.getaddrinfo
+
+    @lru_cache(maxsize=NUM_DISTINCT_HOSTS)
+    def cached_getaddrinfo(*args, **kwargs):
+        return original_getaddrinfo(*args, **kwargs)
+
+    socket.getaddrinfo = cached_getaddrinfo
+    socket._dns_cache_patched = True
 
 
 @dataclass
@@ -60,9 +80,17 @@ def check_url(input_url, timeout=PING_TIMEOUT) -> CheckedURL:
         )
 
 
+def get_host(url: str) -> str:
+    """
+    Get the host from a URL. If the URL is invalid, return an empty string.
+    """
+    try:
+        return furl(url).host
+    except ValueError:
+        return None
+
+
 def check_urls(data: list[str]) -> list[CheckedURL]:
     with concurrent.futures.ThreadPoolExecutor(max_workers=NUM_WORKERS) as executor:
         results = list(executor.map(check_url, data))
-    for x in results:
-        print(x.input_url, x.status_code, x.error)
     return [astuple(d) for d in results]
