@@ -17,6 +17,14 @@ repos:
         files: ^api
         types_or: [python]
 
+  - repo: https://github.com/astral-sh/uv-pre-commit
+    rev: 0.7.6
+    hooks:
+      - id: uv-export
+        name: api|uv-export
+        args: [--output-file, api/requirements.txt, --no-hashes, --project, api, --quiet]
+        files: ^api/(pyproject.toml|requirements.txt|uv.lock)$
+
   # deployment
   - repo: https://github.com/antonbabenko/pre-commit-terraform
     rev: v1.99.0
