@@ -131,6 +131,8 @@ class Service(Base):
     zone_diffusion_nom: Mapped[str | None]
     zone_diffusion_type: Mapped[str | None]
     score_qualite: Mapped[float]
+    volume_horaire_hebdomadaire: Mapped[int | None]
+    nombre_semaines: Mapped[int | None]
 
     commune_: Mapped[Commune] = relationship(back_populates="services")
 

@@ -233,6 +233,10 @@ models:
         data_type: text
       - name: zone_diffusion_nom
         data_type: text
+      - name: volume_horaire_hebdomadaire
+        data_type: integer
+      - name: nombre_semaines
+        data_type: text
       - name: score_qualite
         data_type: float
         constraints:

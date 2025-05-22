@@ -55,6 +55,8 @@ final AS (
         structures.code_insee                            AS "zone_diffusion_code",
         structures.commune                               AS "zone_diffusion_nom",
         NULL                                             AS "page_web",
+        CAST(NULL AS INT)                                AS "volume_horaire_hebdomadaire",
+        CAST(NULL AS INT)                                AS "nombre_semaines",
         CAST(NULL AS DATE)                               AS "date_suspension",
         structures.id || '-' || services.id              AS "id"
     FROM services
