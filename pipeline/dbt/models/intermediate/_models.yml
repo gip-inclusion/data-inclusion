@@ -442,7 +442,7 @@ unit_tests:
           - {url: http://facebook.com}
           - {url: cecinestpasunsiteweb}
           - {url: https://ce.site.nexiste.pas}
-          - {url: https://httpbin.org/delay/10}
+          - {url: https://httpstat.us/200?sleep=10000}
     expect:
       rows:
         - input_url: https://ce.site.nexiste.pas
@@ -461,7 +461,7 @@ unit_tests:
           status_code: 200
           attempt_count: 1
           url: https://www.facebook.com/
-        - input_url: https://httpbin.org/delay/10
+        - input_url: https://httpstat.us/200?sleep=10000
           status_code: -2
           attempt_count: 1
-          url: https://httpbin.org/delay/10
+          url: https://httpstat.us/200?sleep=10000
