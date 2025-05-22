@@ -116,6 +116,9 @@ final AS (
             FROM di_type_by_agefiph_type
             WHERE services.relationships__field_type_aide_service__data__id = di_type_by_agefiph_type.agefiph_type
         )                                                            AS "types",
+        CAST(NULL AS INT)                                            AS "volume_horaire_hebdomadaire",
+        CAST(NULL AS INT)                                            AS "nombre_semaines",
+
         CAST(NULL AS TEXT [])                                        AS "frais"
     FROM
         structures
