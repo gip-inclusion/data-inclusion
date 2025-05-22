@@ -272,6 +272,8 @@ def test_list_services_all(api_client, db_session, url, snapshot):
         zone_diffusion_code=None,
         zone_diffusion_nom=None,
         zone_diffusion_type=None,
+        volume_horaire_hebdomadaire=1,
+        nombre_semaines=1,
     )
     db_session.add(structure)
     db_session.add(service)
@@ -1559,4 +1561,7 @@ def test_search_services_deduplicate_flag(api_client, url):
     response = api_client.get(url, params={"exclure_doublons": True})
 
     assert_paginated_response_data(response.json(), total=2)
-    assert response.json()["items"][0]["service"]["id"] == "second"
+    items = response.json()["items"]
+    items_sorted = sorted(items, key=lambda item: item["service"]["id"])
+    assert items_sorted[0]["service"]["id"] == "fourth"
+    assert items_sorted[1]["service"]["id"] == "second"
