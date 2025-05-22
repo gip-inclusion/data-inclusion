@@ -79,6 +79,7 @@ services_without_address AS (
                     "zone_diffusion_nom",
                     "contact_nom_prenom",
                     "courriel",
+                    "nombre_semaines",
                     "telephone",
                     "nom",
                 ]
@@ -92,7 +93,11 @@ services_without_address AS (
         CASE
             WHEN LENGTH(services.nom) <= 150 THEN services.nom
             ELSE LEFT(services.nom, 149) || '…'
-        END                                 AS "nom"
+        END                                 AS "nom",
+        CASE
+            WHEN services.nombre_semaines < 1 THEN 1
+            ELSE services.nombre_semaines
+        END                                 AS "nombre_semaines"
     FROM services_with_valid_structure AS services
     LEFT JOIN zones_diffusion
         ON services._di_surrogate_id = zones_diffusion._di_surrogate_id
@@ -124,6 +129,7 @@ valid_services AS (
             services.modes_orientation_beneficiaire,
             services.modes_orientation_beneficiaire_autres,
             services.nom,
+            services.nombre_semaines,
             services.page_web,
             services.presentation_detail,
             services.presentation_resume,
@@ -136,6 +142,7 @@ valid_services AS (
             services.telephone,
             services.thematiques,
             services.types,
+            services.volume_horaire_hebdomadaire,
             services.zone_diffusion_code,
             services.zone_diffusion_nom,
             services.zone_diffusion_type,
