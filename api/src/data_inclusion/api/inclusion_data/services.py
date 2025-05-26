@@ -5,7 +5,7 @@ import logging
 from collections import defaultdict
 from datetime import date
 from pathlib import Path
-from typing import ClassVar
+from typing import Literal
 
 import geoalchemy2
 import sqlalchemy as sqla
@@ -22,20 +22,20 @@ from data_inclusion.api.decoupage_administratif.constants import (
 )
 from data_inclusion.api.decoupage_administratif.models import Commune
 from data_inclusion.api.inclusion_data import models
-from data_inclusion.api.utils.schema_utils import SchemaV0, SchemaV1
+from data_inclusion.schema import v0, v1
 
 logger = logging.getLogger(__name__)
 
 
 class ServiceLayer[
-    Thematique: SchemaV0.Thematique | SchemaV1.Thematique,
-    Frais: SchemaV0.Frais | SchemaV1.Frais,
-    Profil: SchemaV0.Profil | SchemaV1.Profil,
-    TypologieService: SchemaV0.TypologieService | SchemaV1.TypologieService,
-    TypologieStructure: SchemaV0.TypologieStructure | SchemaV1.TypologieStructure,
-    LabelNational: SchemaV0.LabelNational | SchemaV1.LabelNational,
-    ModeAccueil: SchemaV0.ModeAccueil | SchemaV1.ModeAccueil,
-    CodeCommune: SchemaV0.CodeCommune | SchemaV1.CodeCommune,
+    Thematique: v0.Thematique | v1.Thematique,
+    Frais: v0.Frais | v1.Frais,
+    Profil: v0.Profil | v1.Profil,
+    TypologieService: v0.TypologieService | v1.TypologieService,
+    TypologieStructure: v0.TypologieStructure | v1.TypologieStructure,
+    LabelNational: v0.LabelNational | v1.LabelNational,
+    ModeAccueil: v0.ModeAccueil | v1.ModeAccueil,
+    CodeCommune: v0.CodeCommune | v1.CodeCommune,
 ](abc.ABC):
     """Service layer for managing structures and services.
 
@@ -50,13 +50,16 @@ class ServiceLayer[
 
     The `schema` attribute is used internally to access actual schema values.
     It can also be used to do things depending on the schema in use.
-    For instance using `isinstance(self.schema, SchemaV0)`.
+    For instance using `if self.schema is v0`.
 
     The generic parameters are used to type the methods of this class, and provide
     type safety in consuming code and in methods implementations.
     """
 
-    schema: ClassVar[SchemaV0 | SchemaV1]
+    schema_version: Literal["v0"] | Literal["v1"]
+
+    def __init__(self) -> None:
+        self.schema = v0 if self.schema_version == "v0" else v1
 
     @functools.cache
     def get_thematiques_by_group(self) -> dict[str, list[str]]:
@@ -503,43 +506,43 @@ class ServiceLayer[
 
 class ServiceLayerV0(
     ServiceLayer[
-        SchemaV0.Thematique,
-        SchemaV0.Frais,
-        SchemaV0.Profil,
-        SchemaV0.TypologieService,
-        SchemaV0.TypologieStructure,
-        SchemaV0.LabelNational,
-        SchemaV0.ModeAccueil,
-        SchemaV0.CodeCommune,
+        v0.Thematique,
+        v0.Frais,
+        v0.Profil,
+        v0.TypologieService,
+        v0.TypologieStructure,
+        v0.LabelNational,
+        v0.ModeAccueil,
+        v0.CodeCommune,
     ]
 ):
-    schema = SchemaV0()
+    schema_version = "v0"
 
 
 class ServiceLayerV1(
     ServiceLayer[
-        SchemaV1.Thematique,
-        SchemaV1.Frais,
-        SchemaV1.Profil,
-        SchemaV1.TypologieService,
-        SchemaV1.TypologieStructure,
-        SchemaV1.LabelNational,
-        SchemaV1.ModeAccueil,
-        SchemaV1.CodeCommune,
+        v1.Thematique,
+        v1.Frais,
+        v1.Profil,
+        v1.TypologieService,
+        v1.TypologieStructure,
+        v1.LabelNational,
+        v1.ModeAccueil,
+        v1.CodeCommune,
     ]
 ):
-    schema = SchemaV1()
+    schema_version = "v1"
 
     def list_structures(
         self,
         request: fastapi.Request,
         db_session: orm.Session,
         sources: list[str] | None = None,
-        typologie: SchemaV1.TypologieStructure | None = None,
-        label_national: SchemaV1.LabelNational | None = None,
+        typologie: v1.TypologieStructure | None = None,
+        label_national: v1.LabelNational | None = None,
         departement: Departement | None = None,
         region: Region | None = None,
-        commune_code: SchemaV1.CodeCommune | None = None,
+        commune_code: v1.CodeCommune | None = None,
         deduplicate: bool | None = False,
     ) -> list:
         # structures does not have thematiques in v1
