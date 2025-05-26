@@ -141,9 +141,7 @@ class Service(Base):
         sqla.Index(None, "thematiques", postgresql_using="gin"),
         sqla.Index(
             "ix_api__services__geography",
-            sqla.text(
-                "CAST(ST_MakePoint(longitude, latitude) AS geography(geometry, 4326))"
-            ),
+            sqla.text("ST_MakePoint(longitude, latitude)::geography(geometry, 4326)"),
             postgresql_using="gist",
         ),
     )
