@@ -144,6 +144,8 @@ class Service(Base):
             sqla.text("ST_MakePoint(longitude, latitude)::geography(geometry, 4326)"),
             postgresql_using="gist",
         ),
+        sqla.Index(None, "searchable_index_profils", postgresql_using="gin"),
+        sqla.Index(None, "searchable_index_profils_precisions", postgresql_using="gin"),
     )
 
     def __repr__(self) -> str:
