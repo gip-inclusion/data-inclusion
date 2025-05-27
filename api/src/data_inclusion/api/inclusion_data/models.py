@@ -12,27 +12,30 @@ from data_inclusion.api.decoupage_administratif.models import Commune
 # query valid data coming from the data pipeline.
 
 
-class Structure(Base):
+class HasAddress:
+    adresse: Mapped[str | None]
+    complement_adresse: Mapped[str | None]
+    code_insee: Mapped[str | None] = mapped_column(sqla.ForeignKey(Commune.code))
+    code_postal: Mapped[str | None]
+    commune: Mapped[str | None]
+    longitude: Mapped[float | None]
+    latitude: Mapped[float | None]
+
+
+class Structure(HasAddress, Base):
     # internal metadata
     _di_surrogate_id: Mapped[str] = mapped_column(primary_key=True)
 
     # structure data
     accessibilite: Mapped[str | None]
-    adresse: Mapped[str | None]
     antenne: Mapped[bool | None] = mapped_column(default=False)
-    code_insee: Mapped[str | None] = mapped_column(sqla.ForeignKey(Commune.code))
-    code_postal: Mapped[str | None]
-    commune: Mapped[str | None]
-    complement_adresse: Mapped[str | None]
     courriel: Mapped[str | None]
     date_maj: Mapped[date | None]
     horaires_ouverture: Mapped[str | None]
     id: Mapped[str]
     labels_autres: Mapped[list[str] | None]
     labels_nationaux: Mapped[list[str] | None]
-    latitude: Mapped[float | None]
     lien_source: Mapped[str | None]
-    longitude: Mapped[float | None]
     nom: Mapped[str]
     presentation_detail: Mapped[str | None]
     presentation_resume: Mapped[str | None]
@@ -66,7 +69,7 @@ class Structure(Base):
         return f"<Structure(source={self.source}, id={self.id}, nom={self.nom})>"
 
 
-class Service(Base):
+class Service(HasAddress, Base):
     # internal metadata
     _di_surrogate_id: Mapped[str] = mapped_column(primary_key=True)
     _di_structure_surrogate_id: Mapped[str] = mapped_column(
@@ -75,11 +78,6 @@ class Service(Base):
     structure: Mapped[Structure] = relationship(back_populates="services")
 
     # service data
-    adresse: Mapped[str | None]
-    code_insee: Mapped[str | None] = mapped_column(sqla.ForeignKey(Commune.code))
-    code_postal: Mapped[str | None]
-    commune: Mapped[str | None]
-    complement_adresse: Mapped[str | None]
     contact_nom_prenom: Mapped[str | None]
     contact_public: Mapped[bool | None] = mapped_column(default=False)
     courriel: Mapped[str | None]
@@ -92,9 +90,7 @@ class Service(Base):
     frais: Mapped[list[str] | None]
     id: Mapped[str]
     justificatifs: Mapped[list[str] | None]
-    latitude: Mapped[float | None]
     lien_source: Mapped[str | None]
-    longitude: Mapped[float | None]
     modes_accueil: Mapped[list[str] | None]
     modes_orientation_accompagnateur_autres: Mapped[str | None]
     modes_orientation_accompagnateur: Mapped[list[str] | None]
