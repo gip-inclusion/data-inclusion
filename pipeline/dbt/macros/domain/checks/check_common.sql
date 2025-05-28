@@ -48,6 +48,10 @@ RETURNS
 AS $$
 import json
 from data_inclusion import processings
-return processings.check_urls(data=json.loads(data))
+return (
+    processings.check_urls(data=json.loads(data))
+    if data is not None
+    else []
+)
 $$ LANGUAGE plpython3u;
 {% endmacro %}
