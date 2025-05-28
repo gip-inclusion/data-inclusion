@@ -1423,21 +1423,12 @@ def test_retrieve_service_and_notify_soliguide(
 @pytest.mark.parametrize("schema_version", ["v0", "v1"])
 @pytest.mark.parametrize("path", ["/structures"])
 @pytest.mark.parametrize(
-    (
-        "exclure_doublons",
-        "total_results",
-    ),
-    [
-        (
-            False,
-            4,
-        ),
-        (True, 2),
-    ],
+    ("exclure_doublons", "expected_ids"),
+    [(False, {"first", "second", "third", "fourth"}), (True, {"second", "fourth"})],
 )
 @pytest.mark.with_token
 def test_list_structures_deduplicate_flag(
-    api_client, url, exclure_doublons, total_results
+    api_client, url, exclure_doublons, expected_ids
 ):
     factories.StructureFactory(
         source="src_1",
@@ -1465,11 +1456,8 @@ def test_list_structures_deduplicate_flag(
 
     response = api_client.get(url, params={"exclure_doublons": exclure_doublons})
 
-    assert_paginated_response_data(response.json(), total=total_results)
-
-    # only check that case, order is not guaranteed when not deduplicated
-    if exclure_doublons:
-        assert response.json()["items"][0]["id"] == "second"
+    assert_paginated_response_data(response.json(), total=len(expected_ids))
+    assert {d["id"] for d in response.json()["items"]} == expected_ids
 
 
 @pytest.mark.parametrize("schema_version", ["v0", "v1"])
@@ -1504,7 +1492,7 @@ def test_list_structures_deduplicate_flag_equal(api_client, url):
     response = api_client.get(url, params={"exclure_doublons": True})
 
     assert_paginated_response_data(response.json(), total=2)
-    assert response.json()["items"][0]["id"] == "second"
+    assert {d["id"] for d in response.json()["items"]} == {"second", "fourth"}
 
 
 @pytest.mark.parametrize("schema_version", ["v0", "v1"])
@@ -1559,4 +1547,7 @@ def test_search_services_deduplicate_flag(api_client, url):
     response = api_client.get(url, params={"exclure_doublons": True})
 
     assert_paginated_response_data(response.json(), total=2)
-    assert response.json()["items"][0]["service"]["id"] == "second"
+    assert {d["service"]["id"] for d in response.json()["items"]} == {
+        "second",
+        "fourth",
+    }
