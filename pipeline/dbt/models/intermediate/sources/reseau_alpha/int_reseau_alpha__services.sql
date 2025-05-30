@@ -4,7 +4,6 @@ WITH formations AS (
 
 final AS (
     SELECT
-        TRUE                                                                   AS "contact_public",
         formations.content__contact_inscription__contact                       AS "contact_nom_prenom",
         formations.content__contact_inscription__courriel                      AS "courriel",
         formations.content__inscription__informations_en_ligne                 AS "formulaire_en_ligne",
@@ -18,7 +17,6 @@ final AS (
         NULL                                                                   AS "zone_diffusion_code",
         NULL                                                                   AS "zone_diffusion_nom",  -- FIXME
         'departement'                                                          AS "zone_diffusion_type",
-        TRUE                                                                   AS "cumulable",
         formations.url                                                         AS "lien_source",
         formations.id                                                          AS "id",
         formations.content__date_maj                                           AS "date_maj",
@@ -56,8 +54,6 @@ final AS (
         'service--' || formations.id                                           AS "adresse_id",
         CAST(NULL AS TEXT [])                                                  AS "justificatifs",
         CAST(NULL AS TEXT [])                                                  AS "pre_requis",
-        CAST(NULL AS DATE)                                                     AS "date_suspension",
-        CAST(NULL AS DATE)                                                     AS "date_creation",
         ARRAY_REMOVE(
             ARRAY[
                 'apprendre-francais--suivre-formation',

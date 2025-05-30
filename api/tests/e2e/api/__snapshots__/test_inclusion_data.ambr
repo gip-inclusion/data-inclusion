@@ -81,12 +81,8 @@
         "commune": "Sainte Gabriel",
         "complement_adresse": null,
         "contact_nom_prenom": "Thibaut de Michaud",
-        "contact_public": false,
         "courriel": "michelgerard@example.net",
-        "cumulable": false,
-        "date_creation": "2022-01-01",
         "date_maj": "2023-01-01",
-        "date_suspension": "2054-01-01",
         "formulaire_en_ligne": null,
         "frais": [
           "gratuit"
@@ -95,7 +91,6 @@
         "id": "be-water-scene-wind",
         "justificatifs": [],
         "latitude": -77.857573,
-        "lien_source": "https://dora.fr/be-water-scene-wind",
         "longitude": -62.54684,
         "modes_accueil": [
           "a-distance"
@@ -208,7 +203,6 @@
         ],
         "labels_nationaux": [],
         "latitude": -20.074628,
-        "lien_source": "https://dora.fr/kitchen-amount",
         "longitude": 99.899603,
         "nom": "Perrin",
         "presentation_detail": "Or personne jambe.",

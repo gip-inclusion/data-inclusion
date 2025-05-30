@@ -19,7 +19,12 @@ final AS (
                 ]
             )
         }},
-        doublons.cluster_id
+        doublons.cluster_id,
+
+        -- the following fields will be removed in v1
+        -- for now they are kept for compatibility, but without any value
+        CAST(NULL AS BOOLEAN) AS "antenne"
+
     FROM structures
     LEFT JOIN doublons ON structures._di_surrogate_id = doublons.structure_id
     WHERE structures.source != 'finess'

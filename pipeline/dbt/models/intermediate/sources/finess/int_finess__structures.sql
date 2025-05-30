@@ -34,7 +34,6 @@ final AS (
         nofinesset    AS "id",
         nofinesset    AS "adresse_id",
         siret         AS "siret",
-        NULL::BOOLEAN AS "antenne",
         NULL          AS "rna",
         telephone     AS "telephone",
         NULL          AS "courriel",

@@ -9,11 +9,7 @@ structures AS (
 services AS (
     SELECT
         _di_source_id                                                                                       AS "_di_source_id",
-        CAST((data ->> 'contact_public') AS BOOLEAN)                                                        AS "contact_public",
-        CAST((data ->> 'cumulable') AS BOOLEAN)                                                             AS "cumulable",
-        CAST((data ->> 'date_creation') AS TIMESTAMP WITH TIME ZONE)                                        AS "date_creation",
         CAST((data ->> 'date_maj') AS TIMESTAMP WITH TIME ZONE)                                             AS "date_maj",
-        CAST((data ->> 'date_suspension') AS TIMESTAMP WITH TIME ZONE)                                      AS "date_suspension",
         CAST((data ->> 'latitude') AS FLOAT)                                                                AS "latitude",
         CAST((data ->> 'longitude') AS FLOAT)                                                               AS "longitude",
         ARRAY(SELECT * FROM JSONB_ARRAY_ELEMENTS_TEXT(data -> 'modes_accueil'))                             AS "modes_accueil",

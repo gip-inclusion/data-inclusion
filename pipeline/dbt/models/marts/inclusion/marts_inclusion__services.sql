@@ -27,7 +27,14 @@ final AS (
                 ]
             )
         }},
-        scores.score AS "score_qualite"
+        scores.score          AS "score_qualite",
+
+        -- the following fields will be removed in v1
+        -- for now they are kept for compatibility, but without any value
+        CAST(NULL AS BOOLEAN) AS "contact_public",
+        CAST(NULL AS BOOLEAN) AS "cumulable",
+        CAST(NULL AS DATE)    AS "date_creation",
+        CAST(NULL AS DATE)    AS "date_suspension"
     FROM services
     LEFT JOIN scores ON services._di_surrogate_id = scores.service_id
     -- TODO(vmttn): services that pass SQL validation, but fail pydantic validation

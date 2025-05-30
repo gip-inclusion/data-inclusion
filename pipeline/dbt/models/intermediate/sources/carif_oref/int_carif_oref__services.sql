@@ -98,11 +98,8 @@ final AS (
         actions.info_public_vise                        AS "profils_precisions",
         organismes_formateurs.numero                    AS "structure_id",
         'carif-oref'                                    AS "source",
-        TRUE                                            AS "cumulable",
         NULL                                            AS "formulaire_en_ligne",
         NULL                                            AS "recurrence",
-        CAST(NULL AS DATE)                              AS "date_creation",
-        CAST(NULL AS DATE)                              AS "date_suspension",
         COALESCE(
             coordonnees_organisme_formateur.telfixe[1],
             coordonnees_organisme_formateur.portable[1],
@@ -116,7 +113,6 @@ final AS (
             coordonnees_lieu_de_formation.courriel,
             coordonnees_formation.courriel
         )                                               AS "courriel",
-        TRUE                                            AS "contact_public",
         NULL                                            AS "contact_nom_prenom",
         COALESCE(actions.date_maj, formations.date_maj) AS "date_maj",
         CASE actions.code_perimetre_recrutement

@@ -39,14 +39,12 @@ valid_structures AS (
         LATERAL
         LIST_STRUCTURE_ERRORS(
             structures.accessibilite,
-            structures.antenne,
             structures.courriel,
             structures.date_maj,
             structures.horaires_ouverture,
             structures.id,
             structures.labels_autres,
             structures.labels_nationaux,
-            structures.lien_source,
             structures.nom,
             structures.presentation_detail,
             structures.presentation_resume,

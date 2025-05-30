@@ -18,7 +18,6 @@ STRUCTURES = [
         "courriel": "",
         "site_web": "",
         "date_maj": "2024-02-23",
-        "antenne": "f",
     },
     {
         "_di_surrogate_id": (
@@ -36,7 +35,6 @@ STRUCTURES = [
         "telephone": "",
         "courriel": "",
         "date_maj": "2023-12-19",
-        "antenne": "f",
     },
 ]
 
