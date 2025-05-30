@@ -45,7 +45,6 @@ valid_structures AS (
             structures.id,
             structures.labels_autres,
             structures.labels_nationaux,
-            structures.lien_source,
             structures.nom,
             structures.presentation_detail,
             structures.presentation_resume,

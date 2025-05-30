@@ -113,7 +113,6 @@ valid_services AS (
             services.frais_autres,
             services.id,
             services.justificatifs,
-            services.lien_source,
             services.modes_accueil,
             services.modes_orientation_accompagnateur,
             services.modes_orientation_accompagnateur_autres,
