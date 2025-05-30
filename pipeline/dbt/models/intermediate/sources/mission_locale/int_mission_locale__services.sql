@@ -33,7 +33,6 @@ final AS (
         CAST(NULL AS BOOLEAN)                                                     AS "contact_public",
         NULL                                                                      AS "contact_nom_prenom",
         CAST(offres.date_maj AS DATE)                                             AS "date_maj",
-        CAST(offres.date_import AS DATE)                                          AS "date_creation",
         NULL                                                                      AS "formulaire_en_ligne",
         NULL                                                                      AS "frais_autres",
         CAST(NULL AS TEXT [])                                                     AS "justificatifs",
@@ -63,8 +62,7 @@ final AS (
         CASE WHEN offres.frais IS NOT NULL THEN ARRAY[offres.frais] END           AS "frais",
         offres.perimetre_offre                                                    AS "zone_diffusion_type",
         NULL                                                                      AS "zone_diffusion_code",
-        NULL                                                                      AS "zone_diffusion_nom",
-        CAST(NULL AS DATE)                                                        AS "date_suspension"
+        NULL                                                                      AS "zone_diffusion_nom"
     FROM structures_offres
     INNER JOIN offres
         ON structures_offres.offre_id = offres.id_offre

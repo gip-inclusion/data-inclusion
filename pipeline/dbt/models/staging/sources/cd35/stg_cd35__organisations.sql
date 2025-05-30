@@ -13,7 +13,6 @@ final AS (
         data ->> 'COMMUNE'                                                                          AS "commune",
         data ->> 'COMPLEMENT_ADRESSE'                                                               AS "complement_adresse",
         data ->> 'COURRIEL'                                                                         AS "courriel",
-        TO_DATE(data ->> 'DATE_CREATION', 'YYYYMMDD')                                               AS "date_creation",
         TO_DATE(data ->> 'DATE_MAJ', 'YYYYMMDD')                                                    AS "date_maj",
         data ->> 'HORAIRES_OUVERTURE'                                                               AS "horaires_ouvertures",
         data ->> 'ID'                                                                               AS "id",

@@ -18,9 +18,7 @@ WITH services AS (
             ],
             column_override={
                 "contact_public": "BOOLEAN",
-                "date_creation": "DATE",
                 "date_maj": "DATE",
-                "date_suspension": "DATE",
                 "frais": "TEXT[]",
                 "justificatifs": "TEXT[]",
                 "modes_accueil": "TEXT[]",

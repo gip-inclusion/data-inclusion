@@ -28,8 +28,6 @@ final AS (
         CAST(NULL AS TEXT [])                           AS "justificatifs",
         NULL                                            AS "formulaire_en_ligne",
         NULL                                            AS "recurrence",
-        CAST(NULL AS DATE)                              AS "date_creation",
-        date_fin_valid                                  AS "date_suspension",
         NULL                                            AS "lien_source",
         NULL                                            AS "telephone",
         NULL                                            AS "courriel",

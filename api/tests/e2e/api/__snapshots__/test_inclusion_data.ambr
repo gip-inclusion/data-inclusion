@@ -83,9 +83,7 @@
         "contact_nom_prenom": "Thibaut de Michaud",
         "contact_public": false,
         "courriel": "michelgerard@example.net",
-        "date_creation": "2022-01-01",
         "date_maj": "2023-01-01",
-        "date_suspension": "2054-01-01",
         "formulaire_en_ligne": null,
         "frais": [
           "gratuit"
