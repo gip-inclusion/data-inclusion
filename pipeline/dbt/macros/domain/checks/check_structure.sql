@@ -2,7 +2,6 @@
 DROP FUNCTION IF EXISTS LIST_STRUCTURE_ERRORS;
 CREATE OR REPLACE FUNCTION LIST_STRUCTURE_ERRORS(
         accessibilite TEXT,
-        antenne BOOLEAN,
         courriel TEXT,
         date_maj DATE,
         horaires_ouverture TEXT,
@@ -72,7 +71,6 @@ WITH final AS (
         {{ model }},
         LATERAL LIST_STRUCTURE_ERRORS(
             accessibilite,
-            antenne,
             courriel,
             date_maj,
             horaires_ouverture,

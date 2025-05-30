@@ -35,7 +35,6 @@ final AS (
         organismes_formateurs.numero                              AS "id",
         coordonnees.hash_adresse                                  AS "adresse_id",
         organismes_formateurs.siret_formateur__siret              AS "siret",
-        CAST(NULL AS BOOLEAN)                                     AS "antenne",
         NULL                                                      AS "rna",
         organismes_formateurs.raison_sociale_formateur            AS "nom",
         COALESCE(coordonnees.telfixe[1], coordonnees.portable[1]) AS "telephone",

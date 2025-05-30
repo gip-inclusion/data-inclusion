@@ -39,7 +39,6 @@ valid_structures AS (
         LATERAL
         LIST_STRUCTURE_ERRORS(
             structures.accessibilite,
-            structures.antenne,
             structures.courriel,
             structures.date_maj,
             structures.horaires_ouverture,
