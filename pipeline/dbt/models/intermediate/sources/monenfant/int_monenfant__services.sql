@@ -31,7 +31,6 @@ final AS (
         service_commun__calendrier__jours_horaires_text                                                             AS "recurrence",
         coordonnees__telephone                                                                                      AS "telephone",
         coordonnees__adresse_mail                                                                                   AS "courriel",
-        FALSE                                                                                                       AS "contact_public",
         NULL                                                                                                        AS "contact_nom_prenom",
         modified_date                                                                                               AS "date_maj",
         'commune'                                                                                                   AS "zone_diffusion_type",

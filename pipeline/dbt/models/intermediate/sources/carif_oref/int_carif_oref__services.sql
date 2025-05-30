@@ -113,7 +113,6 @@ final AS (
             coordonnees_lieu_de_formation.courriel,
             coordonnees_formation.courriel
         )                                               AS "courriel",
-        TRUE                                            AS "contact_public",
         NULL                                            AS "contact_nom_prenom",
         COALESCE(actions.date_maj, formations.date_maj) AS "date_maj",
         CASE actions.code_perimetre_recrutement

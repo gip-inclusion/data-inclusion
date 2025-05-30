@@ -81,7 +81,6 @@
         "commune": "Sainte Gabriel",
         "complement_adresse": null,
         "contact_nom_prenom": "Thibaut de Michaud",
-        "contact_public": false,
         "courriel": "michelgerard@example.net",
         "date_maj": "2023-01-01",
         "formulaire_en_ligne": null,

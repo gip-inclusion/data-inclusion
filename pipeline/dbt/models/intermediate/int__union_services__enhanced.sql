@@ -106,7 +106,6 @@ valid_services AS (
     LEFT JOIN
         LATERAL
         LIST_SERVICE_ERRORS(
-            services.contact_public,
             services.contact_nom_prenom,
             services.courriel,
             services.date_maj,
