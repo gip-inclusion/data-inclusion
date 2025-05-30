@@ -109,7 +109,6 @@ valid_services AS (
             services.contact_public,
             services.contact_nom_prenom,
             services.courriel,
-            services.cumulable,
             services.date_creation,
             services.date_maj,
             services.date_suspension,

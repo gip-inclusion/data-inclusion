@@ -25,7 +25,6 @@ final AS (
         CAST(NULL AS TEXT [])                           AS "frais",
         NULL                                            AS "frais_autres",
         CAST(NULL AS TEXT [])                           AS "pre_requis",
-        CAST(NULL AS BOOLEAN)                           AS "cumulable",
         CAST(NULL AS TEXT [])                           AS "justificatifs",
         NULL                                            AS "formulaire_en_ligne",
         NULL                                            AS "recurrence",
