@@ -265,6 +265,8 @@ def test_list_services_all(api_client, db_session, url, snapshot):
         zone_diffusion_code=None,
         zone_diffusion_nom=None,
         zone_diffusion_type=None,
+        volume_horaire_hebdomadaire=1,
+        nombre_semaines=1,
     )
     db_session.add(structure)
     db_session.add(service)

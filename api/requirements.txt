@@ -53,7 +53,7 @@ colorama==0.4.6 ; sys_platform == 'win32'
     #   uvicorn
 cryptography==44.0.2
     # via data-inclusion-api
-data-inclusion-schema==1.0.0a1
+data-inclusion-schema==1.0.0a2
     # via data-inclusion-api
 distlib==0.3.9
     # via virtualenv
