@@ -1,18 +1,13 @@
 {% macro create_udf__service_checks() %}
 DROP FUNCTION IF EXISTS LIST_SERVICE_ERRORS;
 CREATE OR REPLACE FUNCTION LIST_SERVICE_ERRORS(
-        contact_public BOOLEAN,
         contact_nom_prenom TEXT,
         courriel TEXT,
-        cumulable BOOLEAN,
-        date_creation DATE,
         date_maj DATE,
-        date_suspension DATE,
         frais TEXT[],
         frais_autres TEXT,
         id TEXT,
         justificatifs TEXT[],
-        lien_source TEXT,
         modes_accueil TEXT[],
         modes_orientation_accompagnateur TEXT[],
         modes_orientation_accompagnateur_autres TEXT,
@@ -91,18 +86,13 @@ WITH final AS (
     FROM
         {{ model }},
         LATERAL LIST_SERVICE_ERRORS(
-            contact_public,
             contact_nom_prenom,
             courriel,
-            cumulable,
-            date_creation,
             date_maj,
-            date_suspension,
             frais,
             frais_autres,
             id,
             justificatifs,
-            lien_source,
             modes_accueil,
             modes_orientation_accompagnateur,
             modes_orientation_accompagnateur_autres,

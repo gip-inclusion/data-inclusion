@@ -36,7 +36,6 @@ final AS (
         NULL                                                                                           AS "recurrence",
         structures.telephone                                                                           AS "telephone",
         structures.courriel                                                                            AS "courriel",
-        TRUE                                                                                           AS "contact_public",
         NULL                                                                                           AS "contact_nom_prenom",
         NULL                                                                                           AS "zone_diffusion_nom",
         NULL                                                                                           AS "modes_orientation_accompagnateur_autres",
@@ -44,11 +43,8 @@ final AS (
         NULL                                                                                           AS "lien_source",
         'departement'                                                                                  AS "zone_diffusion_type",
         CAST(NULL AS TEXT [])                                                                          AS "pre_requis",
-        CAST(NULL AS BOOLEAN)                                                                          AS "cumulable",
         CAST(NULL AS TEXT [])                                                                          AS "justificatifs",
-        CAST(NULL AS DATE)                                                                             AS "date_suspension",
         CAST(structures.date_maj AS DATE)                                                              AS "date_maj",
-        CAST(NULL AS DATE)                                                                             AS "date_creation",
         CASE
             WHEN structures.code_insee LIKE '97%' THEN LEFT(structures.code_insee, 3)
             ELSE LEFT(structures.code_insee, 2)

@@ -15,11 +15,7 @@ service_types_by_garage AS (
 final AS (
     SELECT
         garages.id                                                                                  AS "adresse_id",
-        TRUE                                                                                        AS "contact_public",
-        TRUE                                                                                        AS "cumulable",
-        garages.cree_le                                                                             AS "date_creation",
         garages.modifie_le                                                                          AS "date_maj",
-        CAST(NULL AS DATE)                                                                          AS "date_suspension",
         NULL                                                                                        AS "formulaire_en_ligne",
         '{{ check_structure_str }}'                                    AS "frais_autres",
         CAST((UUID(MD5(garages.id || COALESCE(service_types_by_garage.service_type, '')))) AS TEXT) AS "id",

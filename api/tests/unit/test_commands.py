@@ -41,7 +41,6 @@ def test_store_inclusion_data_scores_doublons(db_session):
         {
             "accessibilite": None,
             "adresse": None,
-            "antenne": None,
             "code_insee": None,
             "code_postal": None,
             "commune": None,

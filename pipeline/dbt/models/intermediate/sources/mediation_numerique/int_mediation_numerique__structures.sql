@@ -37,7 +37,6 @@ final AS (
         CAST(date_maj AS DATE)                                                                                       AS "date_maj",
         _di_source_id                                                                                                AS "source",
         labels_autres                                                                                                AS "labels_autres",
-        CAST(NULL AS BOOLEAN)                                                                                        AS "antenne"
     FROM structures
 )
 

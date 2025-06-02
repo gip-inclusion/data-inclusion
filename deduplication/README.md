@@ -68,7 +68,6 @@ Lorsqu'une paire de structures est examinée, 3 cas de figures sont possibles :
 * les structures ne correspondent pas du tout => **non doublon**
 * les structures ont un lien, mais *pourrait être distinctes* => **incertain**. Par exemple :
     * l'une est un sous-service de l'autre
-    * ou une antenne régionale
     * ou dépend fortement de l'autre dans son fonctionnement (e.g. une mairie et son ccas)
 * si les données correspondent (à l'erreur de saisie près), et qu'il n'y a pas de doute => **doublon**
 

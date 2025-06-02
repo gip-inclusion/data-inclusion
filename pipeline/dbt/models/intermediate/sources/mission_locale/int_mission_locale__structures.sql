@@ -9,7 +9,6 @@ final AS (
         siret                   AS "siret",
         NULL                    AS "rna",
         email                   AS "courriel",
-        CAST(NULL AS BOOLEAN)   AS "antenne",
         horaires                AS "horaires_ouverture",
         site_web                AS "site_web",
         NULL                    AS "lien_source",

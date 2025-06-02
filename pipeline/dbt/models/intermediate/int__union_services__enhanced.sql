@@ -106,18 +106,13 @@ valid_services AS (
     LEFT JOIN
         LATERAL
         LIST_SERVICE_ERRORS(
-            services.contact_public,
             services.contact_nom_prenom,
             services.courriel,
-            services.cumulable,
-            services.date_creation,
             services.date_maj,
-            services.date_suspension,
             services.frais,
             services.frais_autres,
             services.id,
             services.justificatifs,
-            services.lien_source,
             services.modes_accueil,
             services.modes_orientation_accompagnateur,
             services.modes_orientation_accompagnateur_autres,
