@@ -26,10 +26,10 @@ next_batch AS (
             OR ({{ this }}.status_code < 0 AND {{ this }}.attempt_count < 10) -- timeout
             OR {{ this }}.last_checked_at < (NOW() - INTERVAL '1 month')
     {% endif %}
-    -- enables a shuffle of the URLs instead of an alphabetic order, maybe overkill
-    ORDER BY MD5(urls.url)
+    -- alphabetic order can dramatically improve performance in the best cases.
+    ORDER BY urls.url
     -- we can optionnally run a very large batch resolution
-    LIMIT {{ var("check_urls_batch_size", 10000) }}
+    LIMIT {{ var("check_urls_batch_size", 1000) }}
 ),
 
 resolved_batch AS (
