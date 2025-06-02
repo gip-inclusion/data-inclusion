@@ -160,5 +160,6 @@ class ServiceFactory(factory.alchemy.SQLAlchemyModelFactory):
     zone_diffusion_type = None
     zone_diffusion_code = None
     zone_diffusion_nom = None
-
+    nombre_semaines = 1
+    volume_horaire_hebdomadaire = 1
     score_qualite = 0.5
