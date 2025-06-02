@@ -49,6 +49,8 @@ final AS (
         CAST(NULL AS DATE)                                                                             AS "date_suspension",
         CAST(structures.date_maj AS DATE)                                                              AS "date_maj",
         CAST(NULL AS DATE)                                                                             AS "date_creation",
+        CAST(NULL AS FLOAT)                                                                            AS "volume_horaire_hebdomadaire",
+        CAST(NULL AS INT)                                                                              AS "nombre_semaines",
         CASE
             WHEN structures.code_insee LIKE '97%' THEN LEFT(structures.code_insee, 3)
             ELSE LEFT(structures.code_insee, 2)

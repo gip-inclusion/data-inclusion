@@ -65,6 +65,8 @@ final AS (
         offres.perimetre_offre                                                    AS "zone_diffusion_type",
         NULL                                                                      AS "zone_diffusion_code",
         NULL                                                                      AS "zone_diffusion_nom",
+        CAST(NULL AS FLOAT)                                                       AS "volume_horaire_hebdomadaire",
+        CAST(NULL AS INT)                                                         AS "nombre_semaines",
         CAST(NULL AS DATE)                                                        AS "date_suspension"
     FROM structures_offres
     INNER JOIN offres
