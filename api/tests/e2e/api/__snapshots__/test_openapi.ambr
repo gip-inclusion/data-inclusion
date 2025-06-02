@@ -4,73 +4,6 @@
   {
     "components": {
       "schemas": {
-        "CustomizedPage_Service_": {
-          "properties": {
-            "items": {
-              "items": {
-                "$ref": "#/components/schemas/Service"
-              },
-              "title": "Items",
-              "type": "array"
-            },
-            "page": {
-              "anyOf": [
-                {
-                  "minimum": 1.0,
-                  "type": "integer"
-                },
-                {
-                  "type": "null"
-                }
-              ],
-              "title": "Page"
-            },
-            "pages": {
-              "anyOf": [
-                {
-                  "minimum": 0.0,
-                  "type": "integer"
-                },
-                {
-                  "type": "null"
-                }
-              ],
-              "title": "Pages"
-            },
-            "size": {
-              "anyOf": [
-                {
-                  "minimum": 1.0,
-                  "type": "integer"
-                },
-                {
-                  "type": "null"
-                }
-              ],
-              "title": "Size"
-            },
-            "total": {
-              "anyOf": [
-                {
-                  "minimum": 0.0,
-                  "type": "integer"
-                },
-                {
-                  "type": "null"
-                }
-              ],
-              "title": "Total"
-            }
-          },
-          "required": [
-            "items",
-            "total",
-            "page",
-            "size"
-          ],
-          "title": "CustomizedPage[Service]",
-          "type": "object"
-        },
         "DepartementCodeEnum": {
           "enum": [
             "01",
@@ -543,549 +476,6 @@
           ],
           "title": "RegionSlugEnum",
           "type": "string"
-        },
-        "Service": {
-          "properties": {
-            "adresse": {
-              "anyOf": [
-                {
-                  "type": "string"
-                },
-                {
-                  "type": "null"
-                }
-              ],
-              "title": "Adresse"
-            },
-            "code_insee": {
-              "anyOf": [
-                {
-                  "maxLength": 5,
-                  "minLength": 5,
-                  "pattern": "^\\w{5}$",
-                  "type": "string"
-                },
-                {
-                  "type": "null"
-                }
-              ],
-              "title": "Code Insee"
-            },
-            "code_postal": {
-              "anyOf": [
-                {
-                  "maxLength": 5,
-                  "minLength": 5,
-                  "pattern": "^\\d{5}$",
-                  "type": "string"
-                },
-                {
-                  "type": "null"
-                }
-              ],
-              "title": "Code Postal"
-            },
-            "commune": {
-              "anyOf": [
-                {
-                  "type": "string"
-                },
-                {
-                  "type": "null"
-                }
-              ],
-              "title": "Commune"
-            },
-            "complement_adresse": {
-              "anyOf": [
-                {
-                  "type": "string"
-                },
-                {
-                  "type": "null"
-                }
-              ],
-              "title": "Complement Adresse"
-            },
-            "contact_nom_prenom": {
-              "anyOf": [
-                {
-                  "type": "string"
-                },
-                {
-                  "type": "null"
-                }
-              ],
-              "title": "Contact Nom Prenom"
-            },
-            "contact_public": {
-              "anyOf": [
-                {
-                  "type": "boolean"
-                },
-                {
-                  "type": "null"
-                }
-              ],
-              "title": "Contact Public"
-            },
-            "courriel": {
-              "anyOf": [
-                {
-                  "format": "email",
-                  "type": "string"
-                },
-                {
-                  "type": "null"
-                }
-              ],
-              "description": "Courriel à utiliser pour obtenir des informations complémentaires sur le service. Si le mode de mobilisation est `envoyer-un-email`, peut être utilisé pour mobiliser le service.\n\nDoit suivre le format de la RFC 5322. Vérification de l’existence du destinataire (envoi d’un courrier de notification)\n\nSi non conforme ou destinataire inexistant, suppression de la valeur.",
-              "examples": [
-                "exemple@inclusion.gouv.fr"
-              ],
-              "title": "Courriel"
-            },
-            "cumulable": {
-              "anyOf": [
-                {
-                  "type": "boolean"
-                },
-                {
-                  "type": "null"
-                }
-              ],
-              "title": "Cumulable"
-            },
-            "date_creation": {
-              "anyOf": [
-                {
-                  "format": "date",
-                  "type": "string"
-                },
-                {
-                  "type": "null"
-                }
-              ],
-              "title": "Date Creation"
-            },
-            "date_maj": {
-              "description": "Date de dernière modification du service chez le producteur de données.",
-              "examples": [
-                "2025-02-14"
-              ],
-              "format": "date",
-              "title": "Date de dernière modification",
-              "type": "string"
-            },
-            "date_suspension": {
-              "anyOf": [
-                {
-                  "format": "date",
-                  "type": "string"
-                },
-                {
-                  "type": "null"
-                }
-              ],
-              "title": "Date Suspension"
-            },
-            "formulaire_en_ligne": {
-              "anyOf": [
-                {
-                  "type": "string"
-                },
-                {
-                  "type": "null"
-                }
-              ],
-              "title": "Formulaire En Ligne"
-            },
-            "frais": {
-              "anyOf": [
-                {
-                  "items": {
-                    "$ref": "#/components/schemas/Frais"
-                  },
-                  "type": "array",
-                  "uniqueItems": true
-                },
-                {
-                  "type": "null"
-                }
-              ],
-              "title": "Frais"
-            },
-            "frais_autres": {
-              "anyOf": [
-                {
-                  "type": "string"
-                },
-                {
-                  "type": "null"
-                }
-              ],
-              "title": "Frais Autres"
-            },
-            "id": {
-              "title": "Id",
-              "type": "string"
-            },
-            "justificatifs": {
-              "anyOf": [
-                {
-                  "items": {
-                    "type": "string"
-                  },
-                  "type": "array",
-                  "uniqueItems": true
-                },
-                {
-                  "type": "null"
-                }
-              ],
-              "title": "Justificatifs"
-            },
-            "latitude": {
-              "anyOf": [
-                {
-                  "type": "number"
-                },
-                {
-                  "type": "null"
-                }
-              ],
-              "title": "Latitude"
-            },
-            "lien_source": {
-              "anyOf": [
-                {
-                  "format": "uri",
-                  "maxLength": 2083,
-                  "minLength": 1,
-                  "type": "string"
-                },
-                {
-                  "type": "null"
-                }
-              ],
-              "title": "Lien Source"
-            },
-            "longitude": {
-              "anyOf": [
-                {
-                  "type": "number"
-                },
-                {
-                  "type": "null"
-                }
-              ],
-              "title": "Longitude"
-            },
-            "modes_accueil": {
-              "anyOf": [
-                {
-                  "items": {
-                    "$ref": "#/components/schemas/ModeAccueil"
-                  },
-                  "type": "array",
-                  "uniqueItems": true
-                },
-                {
-                  "type": "null"
-                }
-              ],
-              "title": "Modes Accueil"
-            },
-            "modes_orientation_accompagnateur": {
-              "anyOf": [
-                {
-                  "items": {
-                    "$ref": "#/components/schemas/ModeOrientationAccompagnateur"
-                  },
-                  "type": "array",
-                  "uniqueItems": true
-                },
-                {
-                  "type": "null"
-                }
-              ],
-              "title": "Modes Orientation Accompagnateur"
-            },
-            "modes_orientation_accompagnateur_autres": {
-              "anyOf": [
-                {
-                  "type": "string"
-                },
-                {
-                  "type": "null"
-                }
-              ],
-              "title": "Modes Orientation Accompagnateur Autres"
-            },
-            "modes_orientation_beneficiaire": {
-              "anyOf": [
-                {
-                  "items": {
-                    "$ref": "#/components/schemas/ModeOrientationBeneficiaire"
-                  },
-                  "type": "array",
-                  "uniqueItems": true
-                },
-                {
-                  "type": "null"
-                }
-              ],
-              "title": "Modes Orientation Beneficiaire"
-            },
-            "modes_orientation_beneficiaire_autres": {
-              "anyOf": [
-                {
-                  "type": "string"
-                },
-                {
-                  "type": "null"
-                }
-              ],
-              "title": "Modes Orientation Beneficiaire Autres"
-            },
-            "nom": {
-              "description": "Nom du service.\n\nChaîne de caractères entre 3 et 150 caractères, ne se terminant pas par un point.",
-              "examples": [
-                "Atelier insertion et posture professionnelle"
-              ],
-              "maxLength": 150,
-              "minLength": 3,
-              "title": "Nom",
-              "type": "string"
-            },
-            "page_web": {
-              "anyOf": [
-                {
-                  "format": "uri",
-                  "maxLength": 2083,
-                  "minLength": 1,
-                  "type": "string"
-                },
-                {
-                  "type": "null"
-                }
-              ],
-              "description": "Lien vers une page web dédiée au service sur le site web de la structure. Ce champ n'est pas destiné à recevoir un lien vers le site d'un producteur de donnée.",
-              "examples": [
-                "https://insersol.fr/biclou-atelier-reparation-participatif-solidaire/"
-              ],
-              "title": "Page Web"
-            },
-            "pre_requis": {
-              "anyOf": [
-                {
-                  "items": {
-                    "type": "string"
-                  },
-                  "type": "array",
-                  "uniqueItems": true
-                },
-                {
-                  "type": "null"
-                }
-              ],
-              "title": "Pre Requis"
-            },
-            "presentation_detail": {
-              "anyOf": [
-                {
-                  "type": "string"
-                },
-                {
-                  "type": "null"
-                }
-              ],
-              "title": "Presentation Detail"
-            },
-            "presentation_resume": {
-              "anyOf": [
-                {
-                  "maxLength": 280,
-                  "type": "string"
-                },
-                {
-                  "type": "null"
-                }
-              ],
-              "title": "Presentation Resume"
-            },
-            "prise_rdv": {
-              "anyOf": [
-                {
-                  "type": "string"
-                },
-                {
-                  "type": "null"
-                }
-              ],
-              "title": "Prise Rdv"
-            },
-            "profils": {
-              "anyOf": [
-                {
-                  "items": {
-                    "$ref": "#/components/schemas/Profil"
-                  },
-                  "type": "array",
-                  "uniqueItems": true
-                },
-                {
-                  "type": "null"
-                }
-              ],
-              "title": "Profils"
-            },
-            "profils_precisions": {
-              "anyOf": [
-                {
-                  "type": "string"
-                },
-                {
-                  "type": "null"
-                }
-              ],
-              "title": "Profils Precisions"
-            },
-            "recurrence": {
-              "anyOf": [
-                {
-                  "type": "string"
-                },
-                {
-                  "type": "null"
-                }
-              ],
-              "title": "Recurrence"
-            },
-            "score_qualite": {
-              "description": "Score de qualité du service, défini et calculé par data·inclusion.\n",
-              "maximum": 1.0,
-              "minimum": 0.0,
-              "title": "Score Qualite",
-              "type": "number"
-            },
-            "source": {
-              "title": "Source",
-              "type": "string"
-            },
-            "structure_id": {
-              "title": "Structure Id",
-              "type": "string"
-            },
-            "telephone": {
-              "anyOf": [
-                {
-                  "type": "string"
-                },
-                {
-                  "type": "null"
-                }
-              ],
-              "description": "Numéro de téléphone à utiliser pour obtenir des informations complémentaires sur le service. Si le mode de mobilisation est `telephoner`, peut être utilisé pour mobiliser le service.\n\nChaîne de caractères contenant un seul numéro de téléphone, de préférence au format E.164.",
-              "examples": [
-                "+33123456789"
-              ],
-              "title": "Téléphone"
-            },
-            "thematiques": {
-              "anyOf": [
-                {
-                  "items": {
-                    "$ref": "#/components/schemas/Thematique"
-                  },
-                  "type": "array",
-                  "uniqueItems": true
-                },
-                {
-                  "type": "null"
-                }
-              ],
-              "title": "Thematiques"
-            },
-            "types": {
-              "anyOf": [
-                {
-                  "items": {
-                    "$ref": "#/components/schemas/TypologieService"
-                  },
-                  "type": "array",
-                  "uniqueItems": true
-                },
-                {
-                  "type": "null"
-                }
-              ],
-              "title": "Types"
-            },
-            "zone_diffusion_code": {
-              "anyOf": [
-                {
-                  "maxLength": 5,
-                  "minLength": 5,
-                  "pattern": "^\\w{5}$",
-                  "type": "string"
-                },
-                {
-                  "maxLength": 9,
-                  "minLength": 9,
-                  "pattern": "^\\d{9}$",
-                  "type": "string"
-                },
-                {
-                  "maxLength": 3,
-                  "minLength": 2,
-                  "pattern": "^\\w{2,3}$",
-                  "type": "string"
-                },
-                {
-                  "maxLength": 2,
-                  "minLength": 2,
-                  "pattern": "^\\d{2}$",
-                  "type": "string"
-                },
-                {
-                  "type": "null"
-                }
-              ],
-              "title": "Zone Diffusion Code"
-            },
-            "zone_diffusion_nom": {
-              "anyOf": [
-                {
-                  "type": "string"
-                },
-                {
-                  "type": "null"
-                }
-              ],
-              "title": "Zone Diffusion Nom"
-            },
-            "zone_diffusion_type": {
-              "anyOf": [
-                {
-                  "$ref": "#/components/schemas/ZoneDiffusionType"
-                },
-                {
-                  "type": "null"
-                }
-              ]
-            }
-          },
-          "required": [
-            "id",
-            "structure_id",
-            "source",
-            "nom",
-            "date_maj",
-            "score_qualite"
-          ],
-          "title": "Service",
-          "type": "object"
         },
         "Source": {
           "properties": {
@@ -2079,6 +1469,22 @@
               "title": "Nom",
               "type": "string"
             },
+            "nombre_semaines": {
+              "anyOf": [
+                {
+                  "minimum": 1.0,
+                  "type": "integer"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Nombre de semaines sur lequel dure le service.\n\nNe peut pas être inférieur à 1. L’absence de valeur signifie que le service n’est pas concerné (exemple aide financière) ou que l’information n’est pas disponible.\n\nChamp utilisé dans le cadre des 15h-20h d’activité hebdomadaire des BRSA.",
+              "examples": [
+                3
+              ],
+              "title": "Nombre Semaines"
+            },
             "page_web": {
               "anyOf": [
                 {
@@ -2091,7 +1497,7 @@
                   "type": "null"
                 }
               ],
-              "description": "Lien vers une page web dédiée au service sur le site web de la structure. Ce champ n'est pas destiné à recevoir un lien vers le site d'un producteur de donnée.",
+              "description": "Lien vers une page web dédiée au service sur le site web de la structure. Ce champ n’est pas destiné à recevoir un lien vers le site d’un producteur de donnée.",
               "examples": [
                 "https://insersol.fr/biclou-atelier-reparation-participatif-solidaire/"
               ],
@@ -2245,6 +1651,22 @@
                 }
               ],
               "title": "Types"
+            },
+            "volume_horaire_hebdomadaire": {
+              "anyOf": [
+                {
+                  "minimum": 0.0,
+                  "type": "number"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Durée du service en heures sur une semaine.\n\nL’absence de valeur signifie que le service n’est pas concerné (exemple aide financière) ou que l’information n’est pas disponible.\n\nChamp utilisé dans le cadre des 15h-20h d’activité hebdomadaire des BRSA.",
+              "examples": [
+                1
+              ],
+              "title": "Volume Horaire Hebdomadaire"
             },
             "zone_diffusion_code": {
               "anyOf": [
@@ -2567,7 +1989,7 @@
             },
             "services": {
               "items": {
-                "$ref": "#/components/schemas/Service"
+                "$ref": "#/components/schemas/data_inclusion__api__inclusion_data__v0__schemas__Service"
               },
               "title": "Services",
               "type": "array"
@@ -2988,307 +2410,7 @@
           "title": "ListedStructure",
           "type": "object"
         },
-        "data_inclusion__api__inclusion_data__v0__schemas__ServiceSearchResult": {
-          "properties": {
-            "distance": {
-              "anyOf": [
-                {
-                  "type": "integer"
-                },
-                {
-                  "type": "null"
-                }
-              ],
-              "title": "Distance"
-            },
-            "service": {
-              "$ref": "#/components/schemas/data_inclusion__api__inclusion_data__v0__schemas__DetailedService"
-            }
-          },
-          "required": [
-            "service"
-          ],
-          "title": "ServiceSearchResult",
-          "type": "object"
-        },
-        "data_inclusion__api__inclusion_data__v1__schemas__BaseStructure": {
-          "properties": {
-            "accessibilite": {
-              "anyOf": [
-                {
-                  "type": "string"
-                },
-                {
-                  "type": "null"
-                }
-              ],
-              "title": "Accessibilite"
-            },
-            "adresse": {
-              "anyOf": [
-                {
-                  "type": "string"
-                },
-                {
-                  "type": "null"
-                }
-              ],
-              "title": "Adresse"
-            },
-            "code_insee": {
-              "anyOf": [
-                {
-                  "maxLength": 5,
-                  "minLength": 5,
-                  "pattern": "^\\w{5}$",
-                  "type": "string"
-                },
-                {
-                  "type": "null"
-                }
-              ],
-              "title": "Code Insee"
-            },
-            "code_postal": {
-              "anyOf": [
-                {
-                  "maxLength": 5,
-                  "minLength": 5,
-                  "pattern": "^\\d{5}$",
-                  "type": "string"
-                },
-                {
-                  "type": "null"
-                }
-              ],
-              "title": "Code Postal"
-            },
-            "commune": {
-              "anyOf": [
-                {
-                  "type": "string"
-                },
-                {
-                  "type": "null"
-                }
-              ],
-              "title": "Commune"
-            },
-            "complement_adresse": {
-              "anyOf": [
-                {
-                  "type": "string"
-                },
-                {
-                  "type": "null"
-                }
-              ],
-              "title": "Complement Adresse"
-            },
-            "courriel": {
-              "anyOf": [
-                {
-                  "format": "email",
-                  "type": "string"
-                },
-                {
-                  "type": "null"
-                }
-              ],
-              "description": "Courriel à utiliser pour obtenir des informations complémentaires sur la structure.\n\nDoit suivre le format de la RFC 5322.",
-              "examples": [
-                "exemple@inclusion.gouv.fr"
-              ],
-              "title": "Courriel"
-            },
-            "date_maj": {
-              "description": "Date de dernière modification de la structure chez le producteur de données.",
-              "examples": [
-                "2025-02-14"
-              ],
-              "format": "date",
-              "title": "Date de dernière modification",
-              "type": "string"
-            },
-            "horaires_ouverture": {
-              "anyOf": [
-                {
-                  "type": "string"
-                },
-                {
-                  "type": "null"
-                }
-              ],
-              "title": "Horaires Ouverture"
-            },
-            "id": {
-              "title": "Id",
-              "type": "string"
-            },
-            "labels_autres": {
-              "anyOf": [
-                {
-                  "items": {
-                    "type": "string"
-                  },
-                  "type": "array",
-                  "uniqueItems": true
-                },
-                {
-                  "type": "null"
-                }
-              ],
-              "title": "Labels Autres"
-            },
-            "labels_nationaux": {
-              "anyOf": [
-                {
-                  "items": {
-                    "$ref": "#/components/schemas/LabelNational"
-                  },
-                  "type": "array",
-                  "uniqueItems": true
-                },
-                {
-                  "type": "null"
-                }
-              ],
-              "title": "Labels Nationaux"
-            },
-            "latitude": {
-              "anyOf": [
-                {
-                  "type": "number"
-                },
-                {
-                  "type": "null"
-                }
-              ],
-              "title": "Latitude"
-            },
-            "lien_source": {
-              "anyOf": [
-                {
-                  "format": "uri",
-                  "maxLength": 2083,
-                  "minLength": 1,
-                  "type": "string"
-                },
-                {
-                  "type": "null"
-                }
-              ],
-              "title": "Lien Source"
-            },
-            "longitude": {
-              "anyOf": [
-                {
-                  "type": "number"
-                },
-                {
-                  "type": "null"
-                }
-              ],
-              "title": "Longitude"
-            },
-            "nom": {
-              "description": "Nom de la structure.\n\nChaîne de caractères entre 3 et 150 caractères, ne se terminant pas par un point.",
-              "examples": [
-                "Centre social Le Tournesol"
-              ],
-              "maxLength": 150,
-              "minLength": 3,
-              "title": "Nom",
-              "type": "string"
-            },
-            "presentation_detail": {
-              "anyOf": [
-                {
-                  "type": "string"
-                },
-                {
-                  "type": "null"
-                }
-              ],
-              "title": "Presentation Detail"
-            },
-            "presentation_resume": {
-              "anyOf": [
-                {
-                  "maxLength": 280,
-                  "type": "string"
-                },
-                {
-                  "type": "null"
-                }
-              ],
-              "title": "Presentation Resume"
-            },
-            "siret": {
-              "anyOf": [
-                {
-                  "maxLength": 14,
-                  "minLength": 14,
-                  "pattern": "^\\d{14}$",
-                  "type": "string"
-                },
-                {
-                  "type": "null"
-                }
-              ],
-              "title": "Siret"
-            },
-            "site_web": {
-              "anyOf": [
-                {
-                  "type": "string"
-                },
-                {
-                  "type": "null"
-                }
-              ],
-              "title": "Site Web"
-            },
-            "source": {
-              "title": "Source",
-              "type": "string"
-            },
-            "telephone": {
-              "anyOf": [
-                {
-                  "type": "string"
-                },
-                {
-                  "type": "null"
-                }
-              ],
-              "description": "Numéro de téléphone à utiliser pour obtenir des informations complémentaires sur la structure.\n\nChaîne de caractères contenant un seul numéro de téléphone, de préfèrence au format E.164.",
-              "examples": [
-                "+33123456789"
-              ],
-              "title": "Téléphone"
-            },
-            "typologie": {
-              "anyOf": [
-                {
-                  "$ref": "#/components/schemas/TypologieStructure"
-                },
-                {
-                  "type": "null"
-                }
-              ]
-            }
-          },
-          "required": [
-            "id",
-            "nom",
-            "source",
-            "date_maj"
-          ],
-          "title": "BaseStructure",
-          "type": "object"
-        },
-        "data_inclusion__api__inclusion_data__v1__schemas__DetailedService": {
+        "data_inclusion__api__inclusion_data__v0__schemas__Service": {
           "properties": {
             "adresse": {
               "anyOf": [
@@ -3602,6 +2724,22 @@
               "title": "Nom",
               "type": "string"
             },
+            "nombre_semaines": {
+              "anyOf": [
+                {
+                  "minimum": 1.0,
+                  "type": "integer"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Nombre de semaines sur lequel dure le service.\n\nNe peut pas être inférieur à 1. L’absence de valeur signifie que le service n’est pas concerné (exemple aide financière) ou que l’information n’est pas disponible.\n\nChamp utilisé dans le cadre des 15h-20h d’activité hebdomadaire des BRSA.",
+              "examples": [
+                3
+              ],
+              "title": "Nombre Semaines"
+            },
             "page_web": {
               "anyOf": [
                 {
@@ -3614,7 +2752,7 @@
                   "type": "null"
                 }
               ],
-              "description": "Lien vers une page web dédiée au service sur le site web de la structure. Ce champ n'est pas destiné à recevoir un lien vers le site d'un producteur de donnée.",
+              "description": "Lien vers une page web dédiée au service sur le site web de la structure. Ce champ n’est pas destiné à recevoir un lien vers le site d’un producteur de donnée.",
               "examples": [
                 "https://insersol.fr/biclou-atelier-reparation-participatif-solidaire/"
               ],
@@ -3717,6 +2855,796 @@
               "title": "Source",
               "type": "string"
             },
+            "structure_id": {
+              "title": "Structure Id",
+              "type": "string"
+            },
+            "telephone": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Numéro de téléphone à utiliser pour obtenir des informations complémentaires sur le service. Si le mode de mobilisation est `telephoner`, peut être utilisé pour mobiliser le service.\n\nChaîne de caractères contenant un seul numéro de téléphone, de préférence au format E.164.",
+              "examples": [
+                "+33123456789"
+              ],
+              "title": "Téléphone"
+            },
+            "thematiques": {
+              "anyOf": [
+                {
+                  "items": {
+                    "$ref": "#/components/schemas/Thematique"
+                  },
+                  "type": "array",
+                  "uniqueItems": true
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Thematiques"
+            },
+            "types": {
+              "anyOf": [
+                {
+                  "items": {
+                    "$ref": "#/components/schemas/TypologieService"
+                  },
+                  "type": "array",
+                  "uniqueItems": true
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Types"
+            },
+            "volume_horaire_hebdomadaire": {
+              "anyOf": [
+                {
+                  "minimum": 0.0,
+                  "type": "number"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Durée du service en heures sur une semaine.\n\nL’absence de valeur signifie que le service n’est pas concerné (exemple aide financière) ou que l’information n’est pas disponible.\n\nChamp utilisé dans le cadre des 15h-20h d’activité hebdomadaire des BRSA.",
+              "examples": [
+                1
+              ],
+              "title": "Volume Horaire Hebdomadaire"
+            },
+            "zone_diffusion_code": {
+              "anyOf": [
+                {
+                  "maxLength": 5,
+                  "minLength": 5,
+                  "pattern": "^\\w{5}$",
+                  "type": "string"
+                },
+                {
+                  "maxLength": 9,
+                  "minLength": 9,
+                  "pattern": "^\\d{9}$",
+                  "type": "string"
+                },
+                {
+                  "maxLength": 3,
+                  "minLength": 2,
+                  "pattern": "^\\w{2,3}$",
+                  "type": "string"
+                },
+                {
+                  "maxLength": 2,
+                  "minLength": 2,
+                  "pattern": "^\\d{2}$",
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Zone Diffusion Code"
+            },
+            "zone_diffusion_nom": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Zone Diffusion Nom"
+            },
+            "zone_diffusion_type": {
+              "anyOf": [
+                {
+                  "$ref": "#/components/schemas/ZoneDiffusionType"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            }
+          },
+          "required": [
+            "id",
+            "structure_id",
+            "source",
+            "nom",
+            "date_maj",
+            "score_qualite"
+          ],
+          "title": "Service",
+          "type": "object"
+        },
+        "data_inclusion__api__inclusion_data__v0__schemas__ServiceSearchResult": {
+          "properties": {
+            "distance": {
+              "anyOf": [
+                {
+                  "type": "integer"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Distance"
+            },
+            "service": {
+              "$ref": "#/components/schemas/data_inclusion__api__inclusion_data__v0__schemas__DetailedService"
+            }
+          },
+          "required": [
+            "service"
+          ],
+          "title": "ServiceSearchResult",
+          "type": "object"
+        },
+        "data_inclusion__api__inclusion_data__v1__schemas__BaseStructure": {
+          "properties": {
+            "accessibilite": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Accessibilite"
+            },
+            "adresse": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Adresse"
+            },
+            "code_insee": {
+              "anyOf": [
+                {
+                  "maxLength": 5,
+                  "minLength": 5,
+                  "pattern": "^\\w{5}$",
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Code Insee"
+            },
+            "code_postal": {
+              "anyOf": [
+                {
+                  "maxLength": 5,
+                  "minLength": 5,
+                  "pattern": "^\\d{5}$",
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Code Postal"
+            },
+            "commune": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Commune"
+            },
+            "complement_adresse": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Complement Adresse"
+            },
+            "courriel": {
+              "anyOf": [
+                {
+                  "format": "email",
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Courriel à utiliser pour obtenir des informations complémentaires sur la structure.\n\nDoit suivre le format de la RFC 5322.",
+              "examples": [
+                "exemple@inclusion.gouv.fr"
+              ],
+              "title": "Courriel"
+            },
+            "date_maj": {
+              "description": "Date de dernière modification de la structure chez le producteur de données.",
+              "examples": [
+                "2025-02-14"
+              ],
+              "format": "date",
+              "title": "Date de dernière modification",
+              "type": "string"
+            },
+            "horaires_ouverture": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Horaires Ouverture"
+            },
+            "id": {
+              "title": "Id",
+              "type": "string"
+            },
+            "labels_autres": {
+              "anyOf": [
+                {
+                  "items": {
+                    "type": "string"
+                  },
+                  "type": "array",
+                  "uniqueItems": true
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Labels Autres"
+            },
+            "labels_nationaux": {
+              "anyOf": [
+                {
+                  "items": {
+                    "$ref": "#/components/schemas/LabelNational"
+                  },
+                  "type": "array",
+                  "uniqueItems": true
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Labels Nationaux"
+            },
+            "latitude": {
+              "anyOf": [
+                {
+                  "type": "number"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Latitude"
+            },
+            "longitude": {
+              "anyOf": [
+                {
+                  "type": "number"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Longitude"
+            },
+            "nom": {
+              "description": "Nom de la structure.\n\nChaîne de caractères entre 3 et 150 caractères, ne se terminant pas par un point.",
+              "examples": [
+                "Centre social Le Tournesol"
+              ],
+              "maxLength": 150,
+              "minLength": 3,
+              "title": "Nom",
+              "type": "string"
+            },
+            "presentation_detail": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Presentation Detail"
+            },
+            "presentation_resume": {
+              "anyOf": [
+                {
+                  "maxLength": 280,
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Presentation Resume"
+            },
+            "siret": {
+              "anyOf": [
+                {
+                  "maxLength": 14,
+                  "minLength": 14,
+                  "pattern": "^\\d{14}$",
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Siret"
+            },
+            "site_web": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Site Web"
+            },
+            "source": {
+              "title": "Source",
+              "type": "string"
+            },
+            "telephone": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Numéro de téléphone à utiliser pour obtenir des informations complémentaires sur la structure.\n\nChaîne de caractères contenant un seul numéro de téléphone, de préfèrence au format E.164.",
+              "examples": [
+                "+33123456789"
+              ],
+              "title": "Téléphone"
+            },
+            "typologie": {
+              "anyOf": [
+                {
+                  "$ref": "#/components/schemas/TypologieStructure"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            }
+          },
+          "required": [
+            "id",
+            "nom",
+            "source",
+            "date_maj"
+          ],
+          "title": "BaseStructure",
+          "type": "object"
+        },
+        "data_inclusion__api__inclusion_data__v1__schemas__DetailedService": {
+          "properties": {
+            "adresse": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Adresse"
+            },
+            "code_insee": {
+              "anyOf": [
+                {
+                  "maxLength": 5,
+                  "minLength": 5,
+                  "pattern": "^\\w{5}$",
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Code Insee"
+            },
+            "code_postal": {
+              "anyOf": [
+                {
+                  "maxLength": 5,
+                  "minLength": 5,
+                  "pattern": "^\\d{5}$",
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Code Postal"
+            },
+            "commune": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Commune"
+            },
+            "complement_adresse": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Complement Adresse"
+            },
+            "contact_nom_prenom": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Contact Nom Prenom"
+            },
+            "courriel": {
+              "anyOf": [
+                {
+                  "format": "email",
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Courriel à utiliser pour obtenir des informations complémentaires sur le service. Si le mode de mobilisation est `envoyer-un-email`, peut être utilisé pour mobiliser le service.\n\nDoit suivre le format de la RFC 5322. Vérification de l’existence du destinataire (envoi d’un courrier de notification)\n\nSi non conforme ou destinataire inexistant, suppression de la valeur.",
+              "examples": [
+                "exemple@inclusion.gouv.fr"
+              ],
+              "title": "Courriel"
+            },
+            "date_maj": {
+              "description": "Date de dernière modification du service chez le producteur de données.",
+              "examples": [
+                "2025-02-14"
+              ],
+              "format": "date",
+              "title": "Date de dernière modification",
+              "type": "string"
+            },
+            "formulaire_en_ligne": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Formulaire En Ligne"
+            },
+            "frais": {
+              "anyOf": [
+                {
+                  "items": {
+                    "$ref": "#/components/schemas/Frais"
+                  },
+                  "type": "array",
+                  "uniqueItems": true
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Frais"
+            },
+            "frais_autres": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Frais Autres"
+            },
+            "id": {
+              "title": "Id",
+              "type": "string"
+            },
+            "justificatifs": {
+              "anyOf": [
+                {
+                  "items": {
+                    "type": "string"
+                  },
+                  "type": "array",
+                  "uniqueItems": true
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Justificatifs"
+            },
+            "latitude": {
+              "anyOf": [
+                {
+                  "type": "number"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Latitude"
+            },
+            "longitude": {
+              "anyOf": [
+                {
+                  "type": "number"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Longitude"
+            },
+            "modes_accueil": {
+              "anyOf": [
+                {
+                  "items": {
+                    "$ref": "#/components/schemas/ModeAccueil"
+                  },
+                  "type": "array",
+                  "uniqueItems": true
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Modes Accueil"
+            },
+            "modes_orientation_accompagnateur": {
+              "anyOf": [
+                {
+                  "items": {
+                    "$ref": "#/components/schemas/ModeOrientationAccompagnateur"
+                  },
+                  "type": "array",
+                  "uniqueItems": true
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Modes Orientation Accompagnateur"
+            },
+            "modes_orientation_accompagnateur_autres": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Modes Orientation Accompagnateur Autres"
+            },
+            "modes_orientation_beneficiaire": {
+              "anyOf": [
+                {
+                  "items": {
+                    "$ref": "#/components/schemas/ModeOrientationBeneficiaire"
+                  },
+                  "type": "array",
+                  "uniqueItems": true
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Modes Orientation Beneficiaire"
+            },
+            "modes_orientation_beneficiaire_autres": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Modes Orientation Beneficiaire Autres"
+            },
+            "nom": {
+              "description": "Nom du service.\n\nChaîne de caractères entre 3 et 150 caractères, ne se terminant pas par un point.",
+              "examples": [
+                "Atelier insertion et posture professionnelle"
+              ],
+              "maxLength": 150,
+              "minLength": 3,
+              "title": "Nom",
+              "type": "string"
+            },
+            "nombre_semaines": {
+              "anyOf": [
+                {
+                  "minimum": 1.0,
+                  "type": "integer"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Nombre de semaines sur lequel dure le service.\n\nNe peut pas être inférieur à 1. L’absence de valeur signifie que le service n’est pas concerné (exemple aide financière) ou que l’information n’est pas disponible.\n\nChamp utilisé dans le cadre des 15h-20h d’activité hebdomadaire des BRSA.",
+              "examples": [
+                3
+              ],
+              "title": "Nombre Semaines"
+            },
+            "page_web": {
+              "anyOf": [
+                {
+                  "format": "uri",
+                  "maxLength": 2083,
+                  "minLength": 1,
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Lien vers une page web dédiée au service sur le site web de la structure. Ce champ n’est pas destiné à recevoir un lien vers le site d’un producteur de donnée.",
+              "examples": [
+                "https://insersol.fr/biclou-atelier-reparation-participatif-solidaire/"
+              ],
+              "title": "Page Web"
+            },
+            "pre_requis": {
+              "anyOf": [
+                {
+                  "items": {
+                    "type": "string"
+                  },
+                  "type": "array",
+                  "uniqueItems": true
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Pre Requis"
+            },
+            "presentation_detail": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Presentation Detail"
+            },
+            "presentation_resume": {
+              "anyOf": [
+                {
+                  "maxLength": 280,
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Presentation Resume"
+            },
+            "prise_rdv": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Prise Rdv"
+            },
+            "profils": {
+              "anyOf": [
+                {
+                  "items": {
+                    "$ref": "#/components/schemas/Profil"
+                  },
+                  "type": "array",
+                  "uniqueItems": true
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Profils"
+            },
+            "profils_precisions": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Profils Precisions"
+            },
+            "score_qualite": {
+              "description": "Score de qualité du service, défini et calculé par data·inclusion.\n",
+              "maximum": 1.0,
+              "minimum": 0.0,
+              "title": "Score Qualite",
+              "type": "number"
+            },
+            "source": {
+              "title": "Source",
+              "type": "string"
+            },
             "structure": {
               "$ref": "#/components/schemas/data_inclusion__api__inclusion_data__v1__schemas__BaseStructure"
             },
@@ -3768,6 +3696,22 @@
                 }
               ],
               "title": "Types"
+            },
+            "volume_horaire_hebdomadaire": {
+              "anyOf": [
+                {
+                  "minimum": 0.0,
+                  "type": "number"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Durée du service en heures sur une semaine.\n\nL’absence de valeur signifie que le service n’est pas concerné (exemple aide financière) ou que l’information n’est pas disponible.\n\nChamp utilisé dans le cadre des 15h-20h d’activité hebdomadaire des BRSA.",
+              "examples": [
+                1
+              ],
+              "title": "Volume Horaire Hebdomadaire"
             },
             "zone_diffusion_code": {
               "anyOf": [
@@ -3998,20 +3942,6 @@
               ],
               "title": "Latitude"
             },
-            "lien_source": {
-              "anyOf": [
-                {
-                  "format": "uri",
-                  "maxLength": 2083,
-                  "minLength": 1,
-                  "type": "string"
-                },
-                {
-                  "type": "null"
-                }
-              ],
-              "title": "Lien Source"
-            },
             "longitude": {
               "anyOf": [
                 {
@@ -4065,7 +3995,7 @@
             },
             "services": {
               "items": {
-                "$ref": "#/components/schemas/Service"
+                "$ref": "#/components/schemas/data_inclusion__api__inclusion_data__v1__schemas__Service"
               },
               "title": "Services",
               "type": "array"
@@ -4300,20 +4230,6 @@
               ],
               "title": "Latitude"
             },
-            "lien_source": {
-              "anyOf": [
-                {
-                  "format": "uri",
-                  "maxLength": 2083,
-                  "minLength": 1,
-                  "type": "string"
-                },
-                {
-                  "type": "null"
-                }
-              ],
-              "title": "Lien Source"
-            },
             "longitude": {
               "anyOf": [
                 {
@@ -4429,6 +4345,510 @@
             "doublons"
           ],
           "title": "ListedStructure",
+          "type": "object"
+        },
+        "data_inclusion__api__inclusion_data__v1__schemas__Service": {
+          "properties": {
+            "adresse": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Adresse"
+            },
+            "code_insee": {
+              "anyOf": [
+                {
+                  "maxLength": 5,
+                  "minLength": 5,
+                  "pattern": "^\\w{5}$",
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Code Insee"
+            },
+            "code_postal": {
+              "anyOf": [
+                {
+                  "maxLength": 5,
+                  "minLength": 5,
+                  "pattern": "^\\d{5}$",
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Code Postal"
+            },
+            "commune": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Commune"
+            },
+            "complement_adresse": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Complement Adresse"
+            },
+            "contact_nom_prenom": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Contact Nom Prenom"
+            },
+            "courriel": {
+              "anyOf": [
+                {
+                  "format": "email",
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Courriel à utiliser pour obtenir des informations complémentaires sur le service. Si le mode de mobilisation est `envoyer-un-email`, peut être utilisé pour mobiliser le service.\n\nDoit suivre le format de la RFC 5322. Vérification de l’existence du destinataire (envoi d’un courrier de notification)\n\nSi non conforme ou destinataire inexistant, suppression de la valeur.",
+              "examples": [
+                "exemple@inclusion.gouv.fr"
+              ],
+              "title": "Courriel"
+            },
+            "date_maj": {
+              "description": "Date de dernière modification du service chez le producteur de données.",
+              "examples": [
+                "2025-02-14"
+              ],
+              "format": "date",
+              "title": "Date de dernière modification",
+              "type": "string"
+            },
+            "formulaire_en_ligne": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Formulaire En Ligne"
+            },
+            "frais": {
+              "anyOf": [
+                {
+                  "items": {
+                    "$ref": "#/components/schemas/Frais"
+                  },
+                  "type": "array",
+                  "uniqueItems": true
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Frais"
+            },
+            "frais_autres": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Frais Autres"
+            },
+            "id": {
+              "title": "Id",
+              "type": "string"
+            },
+            "justificatifs": {
+              "anyOf": [
+                {
+                  "items": {
+                    "type": "string"
+                  },
+                  "type": "array",
+                  "uniqueItems": true
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Justificatifs"
+            },
+            "latitude": {
+              "anyOf": [
+                {
+                  "type": "number"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Latitude"
+            },
+            "longitude": {
+              "anyOf": [
+                {
+                  "type": "number"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Longitude"
+            },
+            "modes_accueil": {
+              "anyOf": [
+                {
+                  "items": {
+                    "$ref": "#/components/schemas/ModeAccueil"
+                  },
+                  "type": "array",
+                  "uniqueItems": true
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Modes Accueil"
+            },
+            "modes_orientation_accompagnateur": {
+              "anyOf": [
+                {
+                  "items": {
+                    "$ref": "#/components/schemas/ModeOrientationAccompagnateur"
+                  },
+                  "type": "array",
+                  "uniqueItems": true
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Modes Orientation Accompagnateur"
+            },
+            "modes_orientation_accompagnateur_autres": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Modes Orientation Accompagnateur Autres"
+            },
+            "modes_orientation_beneficiaire": {
+              "anyOf": [
+                {
+                  "items": {
+                    "$ref": "#/components/schemas/ModeOrientationBeneficiaire"
+                  },
+                  "type": "array",
+                  "uniqueItems": true
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Modes Orientation Beneficiaire"
+            },
+            "modes_orientation_beneficiaire_autres": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Modes Orientation Beneficiaire Autres"
+            },
+            "nom": {
+              "description": "Nom du service.\n\nChaîne de caractères entre 3 et 150 caractères, ne se terminant pas par un point.",
+              "examples": [
+                "Atelier insertion et posture professionnelle"
+              ],
+              "maxLength": 150,
+              "minLength": 3,
+              "title": "Nom",
+              "type": "string"
+            },
+            "nombre_semaines": {
+              "anyOf": [
+                {
+                  "minimum": 1.0,
+                  "type": "integer"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Nombre de semaines sur lequel dure le service.\n\nNe peut pas être inférieur à 1. L’absence de valeur signifie que le service n’est pas concerné (exemple aide financière) ou que l’information n’est pas disponible.\n\nChamp utilisé dans le cadre des 15h-20h d’activité hebdomadaire des BRSA.",
+              "examples": [
+                3
+              ],
+              "title": "Nombre Semaines"
+            },
+            "page_web": {
+              "anyOf": [
+                {
+                  "format": "uri",
+                  "maxLength": 2083,
+                  "minLength": 1,
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Lien vers une page web dédiée au service sur le site web de la structure. Ce champ n’est pas destiné à recevoir un lien vers le site d’un producteur de donnée.",
+              "examples": [
+                "https://insersol.fr/biclou-atelier-reparation-participatif-solidaire/"
+              ],
+              "title": "Page Web"
+            },
+            "pre_requis": {
+              "anyOf": [
+                {
+                  "items": {
+                    "type": "string"
+                  },
+                  "type": "array",
+                  "uniqueItems": true
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Pre Requis"
+            },
+            "presentation_detail": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Presentation Detail"
+            },
+            "presentation_resume": {
+              "anyOf": [
+                {
+                  "maxLength": 280,
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Presentation Resume"
+            },
+            "prise_rdv": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Prise Rdv"
+            },
+            "profils": {
+              "anyOf": [
+                {
+                  "items": {
+                    "$ref": "#/components/schemas/Profil"
+                  },
+                  "type": "array",
+                  "uniqueItems": true
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Profils"
+            },
+            "profils_precisions": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Profils Precisions"
+            },
+            "score_qualite": {
+              "description": "Score de qualité du service, défini et calculé par data·inclusion.\n",
+              "maximum": 1.0,
+              "minimum": 0.0,
+              "title": "Score Qualite",
+              "type": "number"
+            },
+            "source": {
+              "title": "Source",
+              "type": "string"
+            },
+            "structure_id": {
+              "title": "Structure Id",
+              "type": "string"
+            },
+            "telephone": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Numéro de téléphone à utiliser pour obtenir des informations complémentaires sur le service. Si le mode de mobilisation est `telephoner`, peut être utilisé pour mobiliser le service.\n\nChaîne de caractères contenant un seul numéro de téléphone, de préférence au format E.164.",
+              "examples": [
+                "+33123456789"
+              ],
+              "title": "Téléphone"
+            },
+            "thematiques": {
+              "anyOf": [
+                {
+                  "items": {
+                    "$ref": "#/components/schemas/Thematique"
+                  },
+                  "type": "array",
+                  "uniqueItems": true
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Thematiques"
+            },
+            "types": {
+              "anyOf": [
+                {
+                  "items": {
+                    "$ref": "#/components/schemas/TypologieService"
+                  },
+                  "type": "array",
+                  "uniqueItems": true
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Types"
+            },
+            "volume_horaire_hebdomadaire": {
+              "anyOf": [
+                {
+                  "minimum": 0.0,
+                  "type": "number"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Durée du service en heures sur une semaine.\n\nL’absence de valeur signifie que le service n’est pas concerné (exemple aide financière) ou que l’information n’est pas disponible.\n\nChamp utilisé dans le cadre des 15h-20h d’activité hebdomadaire des BRSA.",
+              "examples": [
+                1
+              ],
+              "title": "Volume Horaire Hebdomadaire"
+            },
+            "zone_diffusion_code": {
+              "anyOf": [
+                {
+                  "maxLength": 5,
+                  "minLength": 5,
+                  "pattern": "^\\w{5}$",
+                  "type": "string"
+                },
+                {
+                  "maxLength": 9,
+                  "minLength": 9,
+                  "pattern": "^\\d{9}$",
+                  "type": "string"
+                },
+                {
+                  "maxLength": 3,
+                  "minLength": 2,
+                  "pattern": "^\\w{2,3}$",
+                  "type": "string"
+                },
+                {
+                  "maxLength": 2,
+                  "minLength": 2,
+                  "pattern": "^\\d{2}$",
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Zone Diffusion Code"
+            },
+            "zone_diffusion_nom": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Zone Diffusion Nom"
+            },
+            "zone_diffusion_type": {
+              "anyOf": [
+                {
+                  "$ref": "#/components/schemas/ZoneDiffusionType"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            }
+          },
+          "required": [
+            "id",
+            "structure_id",
+            "source",
+            "nom",
+            "date_maj",
+            "score_qualite"
+          ],
+          "title": "Service",
           "type": "object"
         },
         "data_inclusion__api__inclusion_data__v1__schemas__ServiceSearchResult": {
@@ -4720,6 +5140,140 @@
             "size"
           ],
           "title": "CustomizedPage[ServiceSearchResult]",
+          "type": "object"
+        },
+        "data_inclusion__api__utils__pagination__CustomizedPage_Service___1": {
+          "properties": {
+            "items": {
+              "items": {
+                "$ref": "#/components/schemas/data_inclusion__api__inclusion_data__v0__schemas__Service"
+              },
+              "title": "Items",
+              "type": "array"
+            },
+            "page": {
+              "anyOf": [
+                {
+                  "minimum": 1.0,
+                  "type": "integer"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Page"
+            },
+            "pages": {
+              "anyOf": [
+                {
+                  "minimum": 0.0,
+                  "type": "integer"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Pages"
+            },
+            "size": {
+              "anyOf": [
+                {
+                  "minimum": 1.0,
+                  "type": "integer"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Size"
+            },
+            "total": {
+              "anyOf": [
+                {
+                  "minimum": 0.0,
+                  "type": "integer"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Total"
+            }
+          },
+          "required": [
+            "items",
+            "total",
+            "page",
+            "size"
+          ],
+          "title": "CustomizedPage[Service]",
+          "type": "object"
+        },
+        "data_inclusion__api__utils__pagination__CustomizedPage_Service___2": {
+          "properties": {
+            "items": {
+              "items": {
+                "$ref": "#/components/schemas/data_inclusion__api__inclusion_data__v1__schemas__Service"
+              },
+              "title": "Items",
+              "type": "array"
+            },
+            "page": {
+              "anyOf": [
+                {
+                  "minimum": 1.0,
+                  "type": "integer"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Page"
+            },
+            "pages": {
+              "anyOf": [
+                {
+                  "minimum": 0.0,
+                  "type": "integer"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Pages"
+            },
+            "size": {
+              "anyOf": [
+                {
+                  "minimum": 1.0,
+                  "type": "integer"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Size"
+            },
+            "total": {
+              "anyOf": [
+                {
+                  "minimum": 0.0,
+                  "type": "integer"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Total"
+            }
+          },
+          "required": [
+            "items",
+            "total",
+            "page",
+            "size"
+          ],
+          "title": "CustomizedPage[Service]",
           "type": "object"
         },
         "data_inclusion__schema__v0__structures__Structure": {
@@ -5206,20 +5760,6 @@
                 }
               ],
               "title": "Latitude"
-            },
-            "lien_source": {
-              "anyOf": [
-                {
-                  "format": "uri",
-                  "maxLength": 2083,
-                  "minLength": 1,
-                  "type": "string"
-                },
-                {
-                  "type": "null"
-                }
-              ],
-              "title": "Lien Source"
             },
             "longitude": {
               "anyOf": [
@@ -5990,7 +6530,7 @@
               "content": {
                 "application/json": {
                   "schema": {
-                    "$ref": "#/components/schemas/CustomizedPage_Service_"
+                    "$ref": "#/components/schemas/data_inclusion__api__utils__pagination__CustomizedPage_Service___1"
                   }
                 }
               },
@@ -6969,7 +7509,7 @@
               "content": {
                 "application/json": {
                   "schema": {
-                    "$ref": "#/components/schemas/CustomizedPage_Service_"
+                    "$ref": "#/components/schemas/data_inclusion__api__utils__pagination__CustomizedPage_Service___2"
                   }
                 }
               },
