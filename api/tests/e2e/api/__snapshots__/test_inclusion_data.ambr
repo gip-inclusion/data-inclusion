@@ -38,6 +38,7 @@
         ],
         "modes_orientation_beneficiaire_autres": null,
         "nom": "Munoz",
+        "nombre_semaines": 1,
         "page_web": "http://aubert.net/",
         "pre_requis": [],
         "presentation_detail": "Épaule élever un.",
@@ -58,6 +59,7 @@
         "types": [
           "formation"
         ],
+        "volume_horaire_hebdomadaire": 1.0,
         "zone_diffusion_code": null,
         "zone_diffusion_nom": null,
         "zone_diffusion_type": null
@@ -81,12 +83,8 @@
         "commune": "Sainte Gabriel",
         "complement_adresse": null,
         "contact_nom_prenom": "Thibaut de Michaud",
-        "contact_public": null,
         "courriel": "michelgerard@example.net",
-        "cumulable": null,
-        "date_creation": null,
         "date_maj": "2023-01-01",
-        "date_suspension": null,
         "formulaire_en_ligne": null,
         "frais": [
           "gratuit"
@@ -95,7 +93,6 @@
         "id": "be-water-scene-wind",
         "justificatifs": [],
         "latitude": -77.857573,
-        "lien_source": null,
         "longitude": -62.54684,
         "modes_accueil": [
           "a-distance"
@@ -109,6 +106,7 @@
         ],
         "modes_orientation_beneficiaire_autres": null,
         "nom": "Munoz",
+        "nombre_semaines": 1,
         "page_web": "http://aubert.net/",
         "pre_requis": [],
         "presentation_detail": "Épaule élever un.",
@@ -118,7 +116,6 @@
           "femmes"
         ],
         "profils_precisions": "Femme en situation d'insertion",
-        "recurrence": null,
         "score_qualite": 0.5,
         "source": "dora",
         "structure_id": "much-mention",
@@ -129,6 +126,7 @@
         "types": [
           "formation"
         ],
+        "volume_horaire_hebdomadaire": 1.0,
         "zone_diffusion_code": null,
         "zone_diffusion_nom": null,
         "zone_diffusion_type": null
@@ -208,7 +206,6 @@
         ],
         "labels_nationaux": [],
         "latitude": -20.074628,
-        "lien_source": null,
         "longitude": 99.899603,
         "nom": "Perrin",
         "presentation_detail": "Or personne jambe.",
