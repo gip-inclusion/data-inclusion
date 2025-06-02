@@ -146,6 +146,8 @@ class ServiceLayer[
                 )
             )
 
+        query = query.order_by(models.Structure._di_surrogate_id)
+
         return paginate(db_session, query)
 
     def retrieve_structure(
@@ -332,6 +334,8 @@ class ServiceLayer[
             include_outdated=include_outdated,
         )
 
+        query = query.order_by(models.Service._di_surrogate_id)
+
         return paginate(db_session, query, unique=False)
 
     def search_services(
@@ -466,7 +470,10 @@ class ServiceLayer[
                 )
             )
 
-        query = query.order_by(sqla.column("distance").nulls_last())
+        query = query.order_by(
+            sqla.column("distance").nulls_last(),
+            models.Service._di_surrogate_id,
+        )
 
         def _items_to_mappings(items: list) -> list[dict]:
             # convert rows returned by `Session.execute` to a list of dicts that will be

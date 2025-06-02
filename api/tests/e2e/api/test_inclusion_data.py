@@ -1551,3 +1551,31 @@ def test_search_services_deduplicate_flag(api_client, url):
         "second",
         "fourth",
     }
+
+
+@pytest.mark.parametrize("schema_version", ["v0", "v1"])
+@pytest.mark.parametrize(
+    ("path", "factory"),
+    [
+        (
+            "/search/services",
+            lambda **kwargs: factories.ServiceFactory(
+                modes_accueil=[schema.ModeAccueil.A_DISTANCE], **kwargs
+            ),
+        ),
+        ("/services", factories.ServiceFactory),
+        ("/structures", factories.StructureFactory),
+    ],
+)
+@pytest.mark.with_token
+def test_ressources_ordered_by_surrogate_id(api_client, url, factory):
+    # Create 10 rows with ids in **reverse** order
+    for i in reversed(range(10)):
+        factory(_di_surrogate_id=str(i), id=str(i))
+
+    response = api_client.get(url)
+    assert response.status_code == 200
+    items_data = response.json()["items"]
+    assert [d["service"]["id"] if "search" in url else d["id"] for d in items_data] == [
+        str(i) for i in range(10)
+    ]
