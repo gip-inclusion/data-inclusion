@@ -44,7 +44,7 @@ colorama==0.4.6 ; sys_platform == 'win32'
     #   uvicorn
 cryptography==44.0.2
     # via data-inclusion-api
-data-inclusion-schema==1.0.0a1
+data-inclusion-schema @ git+https://github.com/gip-inclusion/data-inclusion-schema.git@3bf9cdbd87e58b790cf682cdafc61c3607cf1854
     # via data-inclusion-api
 distlib==0.3.9
     # via virtualenv

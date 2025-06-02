@@ -38,6 +38,7 @@
         ],
         "modes_orientation_beneficiaire_autres": null,
         "nom": "Munoz",
+        "nombre_semaines": 1,
         "page_web": "http://aubert.net/",
         "pre_requis": [],
         "presentation_detail": "Épaule élever un.",
@@ -58,6 +59,7 @@
         "types": [
           "formation"
         ],
+        "volume_horaire_hebdomadaire": 1.0,
         "zone_diffusion_code": null,
         "zone_diffusion_nom": null,
         "zone_diffusion_type": null
@@ -109,6 +111,7 @@
         ],
         "modes_orientation_beneficiaire_autres": null,
         "nom": "Munoz",
+        "nombre_semaines": 1,
         "page_web": "http://aubert.net/",
         "pre_requis": [],
         "presentation_detail": "Épaule élever un.",
@@ -129,6 +132,7 @@
         "types": [
           "formation"
         ],
+        "volume_horaire_hebdomadaire": 1.0,
         "zone_diffusion_code": null,
         "zone_diffusion_nom": null,
         "zone_diffusion_type": null
