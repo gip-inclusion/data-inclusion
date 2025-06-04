@@ -17,6 +17,8 @@ for tablename in [
     "frais",
     "labels-nationaux",
     "modes-accueil",
+    "modes-mobilisation",
+    "mobilisable-par",
     "modes-orientation-accompagnateur",
     "modes-orientation-beneficiaire",
     "profils",
