@@ -6,8 +6,6 @@ from airflow.operators import empty
 from dag_utils import date, dbt
 from dag_utils.virtualenvs import PYTHON_BIN_PATH
 
-default_args = {}
-
 
 @task.external_python(
     python=str(PYTHON_BIN_PATH),

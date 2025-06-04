@@ -6,8 +6,6 @@ from airflow.operators import empty, python
 from dag_utils import date
 from dag_utils.virtualenvs import PYTHON_BIN_PATH
 
-default_args = {}
-
 
 def _import_stock_etablissement_historique():
     import pandas as pd
@@ -298,7 +296,6 @@ def _import_stock_etablissement_geocode():
 with airflow.DAG(
     dag_id="import_sirene",
     start_date=pendulum.datetime(2022, 1, 1, tz=date.TIME_ZONE),
-    default_args=default_args,
     schedule=None,
     catchup=False,
     concurrency=1,
