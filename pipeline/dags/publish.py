@@ -57,7 +57,11 @@ def _publish_to_datagouv():
     to_buf_fn_by_format = {
         "json": lambda df, buf: df.to_json(buf, orient="records", force_ascii=False),
         "csv": lambda df, buf: df.to_csv(buf, index=False),
-        "xlsx": lambda df, buf: df.to_excel(buf, engine="xlsxwriter"),
+        "xlsx": lambda df, buf: df.to_excel(
+            buf,
+            engine="xlsxwriter",
+            engine_kwargs={"options": {"strings_to_urls": False}},
+        ),
         "geojson": to_geojson,
     }
 
