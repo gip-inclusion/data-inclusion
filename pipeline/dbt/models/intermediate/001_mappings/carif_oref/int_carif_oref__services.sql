@@ -166,6 +166,9 @@ final AS (
             NULL
         )                                               AS "modes_orientation_beneficiaire",
         NULL                                            AS "modes_orientation_beneficiaire_autres",
+        CAST(NULL AS TEXT [])                           AS "modes_mobilisation",
+        CAST(NULL AS TEXT [])                           AS "mobilisable_par",
+        NULL                                            AS "mobilisation_precisions",
         ARRAY[actions.conditions_specifiques]           AS "pre_requis",
         CAST(NULL AS TEXT [])                           AS "justificatifs",
         formations.intitule_formation                   AS "nom",

@@ -79,6 +79,9 @@ final AS (
             ],
             NULL
         )                                                                      AS "modes_orientation_beneficiaire",
+        CAST(NULL AS TEXT [])                                                  AS "modes_mobilisation",
+        CAST(NULL AS TEXT [])                                                  AS "mobilisable_par",
+        NULL                                                                   AS "mobilisation_precisions",
         ARRAY['public-langues-etrangeres']                                     AS "profils",
         NULL                                                                   AS "profils_precisions",
         ARRAY['formation']                                                     AS "types",

@@ -171,6 +171,9 @@ final AS (
             WHEN permis_velo.formulaire_url IS NOT NULL THEN ARRAY['completer-le-formulaire-dadhesion']
         END)                                                               AS "modes_orientation_beneficiaire",
         permis_velo.demarche                                               AS "modes_orientation_beneficiaire_autres",
+        CAST(NULL AS TEXT [])                                              AS "modes_mobilisation",
+        CAST(NULL AS TEXT [])                                              AS "mobilisable_par",
+        NULL                                                               AS "mobilisation_precisions",
         permis_velo.nom                                                    AS "nom",
         CASE
             WHEN LENGTH(permis_velo.description) > 280 THEN SUBSTRING(permis_velo.description FROM 1 FOR 277) || '...'
