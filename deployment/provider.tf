@@ -2,11 +2,11 @@ terraform {
   required_providers {
     scaleway = {
       source  = "scaleway/scaleway"
-      version = ">= 2.52.0"
+      version = ">= 2.55.0"
     }
     random = {
       source  = "hashicorp/random"
-      version = ">= 3.7.1"
+      version = ">= 3.7.2"
     }
   }
 }
