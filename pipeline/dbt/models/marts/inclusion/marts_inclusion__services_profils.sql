@@ -1,1 +1,6 @@
-{{ unnest_jsonb_list_to_table('service', 'profils') }}
+{{ unnest(
+    from=ref('marts_inclusion__services_v0'),
+    column='profils',
+    foreign_key='_di_surrogate_id',
+    fk_alias='service_surrogate_id'
+) }}
