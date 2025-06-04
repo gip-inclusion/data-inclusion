@@ -101,62 +101,60 @@ open_services AS (
         )  -- noqa: enable=PRS
 ),
 
-
 -- TODO(vmttn): clean up modes_orientation_* with dbt macros ?
-
 final AS (
     SELECT
-        open_services.id                                              AS "id",
-        lieux.lieu_id                                                 AS "adresse_id",
-        open_services._di_source_id                                   AS "source",
+        open_services.id                                  AS "id",
+        lieux.lieu_id                                     AS "adresse_id",
+        open_services._di_source_id                       AS "source",
         CASE
             WHEN mapping_types.di_type IS NULL THEN NULL
             ELSE ARRAY[mapping_types.di_type]
-        END                                                           AS "types",
-        NULL                                                          AS "prise_rdv",
+        END                                               AS "types",
+        NULL                                              AS "prise_rdv",
         CASE
             WHEN lieux.publics__accueil IN (0, 1) THEN ARRAY_APPEND(profils.profils, 'tous-publics')
             ELSE profils.profils
-        END                                                           AS "profils",
-        profils.traduction                                            AS "profils_precisions",
-        CAST(NULL AS TEXT [])                                         AS "pre_requis",
-        TRUE                                                          AS "cumulable",
-        CAST(NULL AS TEXT [])                                         AS "justificatifs",
-        CAST(NULL AS DATE)                                            AS "date_creation",
-        CAST(NULL AS DATE)                                            AS "date_suspension",
-        filtered_phones.phone_number                                  AS "telephone",
-        lieux.entity_mail                                             AS "courriel",
-        CAST(NULL AS BOOLEAN)                                         AS "contact_public",
-        NULL                                                          AS "contact_nom_prenom",
-        open_services.updated_at                                      AS "date_maj",
-        NULL                                                          AS "page_web",
-        'commune'                                                     AS "zone_diffusion_type",
-        NULL                                                          AS "zone_diffusion_code",  -- will be overridden after geocoding
-        NULL                                                          AS "zone_diffusion_nom",  -- will be overridden after geocoding
-        NULL                                                          AS "formulaire_en_ligne",
-        open_services.lieu_id                                         AS "structure_id",
-        ARRAY[mapping_thematiques.thematique]                         AS "thematiques",
-        ARRAY['en-presentiel']                                        AS "modes_accueil",
-        categories.label                                              AS "nom",
-        'https://soliguide.fr/fr/fiche/' || lieux.seo_url             AS "lien_source",
+        END                                               AS "profils",
+        profils.traduction                                AS "profils_precisions",
+        CAST(NULL AS TEXT [])                             AS "pre_requis",
+        TRUE                                              AS "cumulable",
+        CAST(NULL AS TEXT [])                             AS "justificatifs",
+        CAST(NULL AS DATE)                                AS "date_creation",
+        CAST(NULL AS DATE)                                AS "date_suspension",
+        filtered_phones.phone_number                      AS "telephone",
+        lieux.entity_mail                                 AS "courriel",
+        CAST(NULL AS BOOLEAN)                             AS "contact_public",
+        NULL                                              AS "contact_nom_prenom",
+        open_services.updated_at                          AS "date_maj",
+        NULL                                              AS "page_web",
+        'commune'                                         AS "zone_diffusion_type",
+        NULL                                              AS "zone_diffusion_code",  -- will be overridden after geocoding
+        NULL                                              AS "zone_diffusion_nom",  -- will be overridden after geocoding
+        NULL                                              AS "formulaire_en_ligne",
+        open_services.lieu_id                             AS "structure_id",
+        ARRAY[mapping_thematiques.thematique]             AS "thematiques",
+        ARRAY['en-presentiel']                            AS "modes_accueil",
+        categories.label                                  AS "nom",
+        'https://soliguide.fr/fr/fiche/' || lieux.seo_url AS "lien_source",
         CASE
             WHEN LENGTH(open_services.description) <= 280 THEN open_services.description
             ELSE LEFT(open_services.description, 279) || '…'
-        END                                                           AS "presentation_resume",
+        END                                               AS "presentation_resume",
         CASE
             WHEN LENGTH(open_services.description) <= 280 THEN NULL
             ELSE open_services.description
-        END                                                           AS "presentation_detail",
+        END                                               AS "presentation_detail",
         CASE
             WHEN open_services.modalities__price__checked THEN ARRAY['payant']
             ELSE ARRAY['gratuit']
-        END                                                           AS "frais",
-        open_services.modalities__price__precisions                   AS "frais_autres",
+        END                                               AS "frais",
+        open_services.modalities__price__precisions       AS "frais_autres",
         CASE
             WHEN open_services.different_hours
                 THEN UDF_SOLIGUIDE__NEW_HOURS_TO_OSM_OPENING_HOURS(open_services.hours)
             ELSE UDF_SOLIGUIDE__NEW_HOURS_TO_OSM_OPENING_HOURS(lieux.newhours)
-        END                                                           AS "recurrence",
+        END                                               AS "recurrence",
         ARRAY_REMOVE(
             ARRAY[
                 CASE
@@ -177,7 +175,7 @@ final AS (
                 CASE WHEN open_services.modalities__orientation__checked THEN 'envoyer-un-mail-avec-une-fiche-de-prescription' END
             ],
             NULL
-        )                                                             AS "modes_orientation_accompagnateur",
+        )                                                 AS "modes_orientation_accompagnateur",
         ARRAY_TO_STRING(
             ARRAY[
                 CASE WHEN open_services.modalities__appointment__checked THEN '## Sur rendez-vous :' || E'\n' || open_services.modalities__appointment__precisions END,
@@ -185,7 +183,7 @@ final AS (
                 CASE WHEN open_services.modalities__orientation__checked THEN '## Sur orientation :' || E'\n' || open_services.modalities__orientation__precisions END
             ],
             E'\n\n'
-        )                                                             AS "modes_orientation_accompagnateur_autres",
+        )                                                 AS "modes_orientation_accompagnateur_autres",
         ARRAY_REMOVE(
             ARRAY[
                 CASE WHEN (open_services.modalities__inconditionnel OR open_services.modalities__inscription__checked) AND lieux.position__address IS NOT NULL THEN 'se-presenter' END,
@@ -194,7 +192,7 @@ final AS (
                 CASE WHEN open_services.modalities__orientation__checked THEN 'autre' END
             ],
             NULL
-        )                                                             AS "modes_orientation_beneficiaire",
+        )                                                 AS "modes_orientation_beneficiaire",
         ARRAY_TO_STRING(
             ARRAY[
                 CASE WHEN open_services.modalities__orientation__checked THEN '## Orientation par un professionnel' END,
@@ -202,7 +200,10 @@ final AS (
                 CASE WHEN open_services.modalities__inscription__checked THEN '## Sur inscription :' || E'\n' || open_services.modalities__inscription__precisions END
             ],
             E'\n\n'
-        )                                                             AS "modes_orientation_beneficiaire_autres"
+        )                                                 AS "modes_orientation_beneficiaire_autres",
+        CAST(NULL AS TEXT [])                             AS "modes_mobilisation",
+        CAST(NULL AS TEXT [])                             AS "mobilisable_par",
+        NULL                                              AS "mobilisation_precisions"
     FROM open_services
     LEFT JOIN lieux ON open_services.lieu_id = lieux.id
     LEFT JOIN categories ON open_services.category = categories.code

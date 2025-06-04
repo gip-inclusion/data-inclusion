@@ -71,6 +71,14 @@ modes_orientation_accompagnateur IS NULL OR modes_orientation_accompagnateur <@ 
 modes_orientation_beneficiaire IS NULL OR modes_orientation_beneficiaire <@ ARRAY(SELECT m.value FROM {{ ref('modes_orientation_beneficiaire') }} AS m)
 {% endmacro %}
 
+{% macro check_mobilisable_par() %}
+mobilisable_par IS NULL OR mobilisable_par <@ ARRAY(SELECT m.value FROM {{ ref('mobilisable_par') }} AS m)
+{% endmacro %}
+
+{% macro check_modes_mobilisation() %}
+modes_mobilisation IS NULL OR modes_mobilisation <@ ARRAY(SELECT m.value FROM {{ ref('modes_mobilisation') }} AS m)
+{% endmacro %}
+
 {% macro check_zone_diffusion_code() %}
 zone_diffusion_code IS NULL OR zone_diffusion_code ~ '^(\d{9}|\w{5}|\w{2,3}|\d{2})$'
 {% endmacro %}
@@ -131,7 +139,10 @@ code_insee IS NULL OR code_insee ~ '^.{5}$'
 {% if schema_version == 'v0' %}
 {% set checks = checks + [] %}
 {% elif schema_version == 'v1' %}
-{% set checks = checks + [] %}
+{% set checks = checks + [
+    ("mobilisable_par", check_mobilisable_par()),
+    ("modes_mobilisation", check_modes_mobilisation()),
+] %}
 {% endif %}
 
 {{ select_errors(model, checks, 'service', schema_version) }}

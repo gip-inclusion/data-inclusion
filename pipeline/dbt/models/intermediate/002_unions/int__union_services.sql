@@ -25,6 +25,8 @@ WITH services AS (
                 "frais": "TEXT[]",
                 "justificatifs": "TEXT[]",
                 "modes_accueil": "TEXT[]",
+                "modes_mobilisation": "TEXT[]",
+                "mobilisable_par": "TEXT[]",
                 "modes_orientation_accompagnateur": "TEXT[]",
                 "modes_orientation_beneficiaire": "TEXT[]",
                 "pre_requis": "TEXT[]",
