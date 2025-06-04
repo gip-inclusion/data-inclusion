@@ -5,8 +5,6 @@ from airflow.operators import empty, python
 
 from dag_utils.virtualenvs import PYTHON_BIN_PATH
 
-default_args = {}
-
 
 def _publish_to_datagouv():
     import io
@@ -94,7 +92,6 @@ with airflow.DAG(
     dag_id="publish",
     description="Publish the consolidated dataset to datagouv",
     start_date=pendulum.datetime(2022, 1, 1),
-    default_args=default_args,
     schedule=EVERY_MONDAY_AT_2PM,
     catchup=False,
 ) as dag:
