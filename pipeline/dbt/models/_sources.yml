@@ -13,11 +13,6 @@ sources:
         meta:
           kind: service
 
-  - name: finess
-    schema: finess
-    tables:
-      - name: etablissements
-
   - name: un_jeune_une_solution
     schema: un_jeune_une_solution
     tables:

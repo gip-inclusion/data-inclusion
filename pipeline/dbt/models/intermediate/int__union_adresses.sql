@@ -8,7 +8,6 @@ WITH adresses AS (
                 ref('int_carif_oref__adresses'),
                 ref('int_cd35__adresses'),
                 ref('int_emplois_de_linclusion__adresses'),
-                ref('int_finess__adresses'),
                 ref('int_france_travail__adresses'),
                 ref('int_fredo__adresses'),
                 ref('int_mission_locale__adresses'),

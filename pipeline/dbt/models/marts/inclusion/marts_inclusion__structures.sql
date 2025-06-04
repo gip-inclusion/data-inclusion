@@ -22,7 +22,6 @@ final AS (
         doublons.cluster_id
     FROM structures
     LEFT JOIN doublons ON structures._di_surrogate_id = doublons.structure_id
-    WHERE structures.source != 'finess'
 )
 
 SELECT * FROM final
