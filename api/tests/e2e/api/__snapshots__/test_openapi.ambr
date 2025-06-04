@@ -5327,7 +5327,7 @@
     "paths": {
       "/api/v0/doc/frais": {
         "get": {
-          "operationId": "_lambda__api_v0_doc_frais_get",
+          "operationId": "as_dict_list_api_v0_doc_frais_get",
           "responses": {
             "200": {
               "content": {
@@ -5336,7 +5336,7 @@
                     "items": {
                       "$ref": "#/components/schemas/FrameworkValue"
                     },
-                    "title": "Response  Lambda  Api V0 Doc Frais Get",
+                    "title": "Response As Dict List Api V0 Doc Frais Get",
                     "type": "array"
                   }
                 }
@@ -5352,7 +5352,7 @@
       },
       "/api/v0/doc/labels-nationaux": {
         "get": {
-          "operationId": "_lambda__api_v0_doc_labels_nationaux_get",
+          "operationId": "as_dict_list_api_v0_doc_labels_nationaux_get",
           "responses": {
             "200": {
               "content": {
@@ -5361,7 +5361,7 @@
                     "items": {
                       "$ref": "#/components/schemas/FrameworkValue"
                     },
-                    "title": "Response  Lambda  Api V0 Doc Labels Nationaux Get",
+                    "title": "Response As Dict List Api V0 Doc Labels Nationaux Get",
                     "type": "array"
                   }
                 }
@@ -5377,7 +5377,7 @@
       },
       "/api/v0/doc/modes-accueil": {
         "get": {
-          "operationId": "_lambda__api_v0_doc_modes_accueil_get",
+          "operationId": "as_dict_list_api_v0_doc_modes_accueil_get",
           "responses": {
             "200": {
               "content": {
@@ -5386,7 +5386,7 @@
                     "items": {
                       "$ref": "#/components/schemas/FrameworkValue"
                     },
-                    "title": "Response  Lambda  Api V0 Doc Modes Accueil Get",
+                    "title": "Response As Dict List Api V0 Doc Modes Accueil Get",
                     "type": "array"
                   }
                 }
@@ -5402,7 +5402,7 @@
       },
       "/api/v0/doc/modes-orientation-accompagnateur": {
         "get": {
-          "operationId": "_lambda__api_v0_doc_modes_orientation_accompagnateur_get",
+          "operationId": "as_dict_list_api_v0_doc_modes_orientation_accompagnateur_get",
           "responses": {
             "200": {
               "content": {
@@ -5411,7 +5411,7 @@
                     "items": {
                       "$ref": "#/components/schemas/FrameworkValue"
                     },
-                    "title": "Response  Lambda  Api V0 Doc Modes Orientation Accompagnateur Get",
+                    "title": "Response As Dict List Api V0 Doc Modes Orientation Accompagnateur Get",
                     "type": "array"
                   }
                 }
@@ -5427,7 +5427,7 @@
       },
       "/api/v0/doc/modes-orientation-beneficiaire": {
         "get": {
-          "operationId": "_lambda__api_v0_doc_modes_orientation_beneficiaire_get",
+          "operationId": "as_dict_list_api_v0_doc_modes_orientation_beneficiaire_get",
           "responses": {
             "200": {
               "content": {
@@ -5436,7 +5436,7 @@
                     "items": {
                       "$ref": "#/components/schemas/FrameworkValue"
                     },
-                    "title": "Response  Lambda  Api V0 Doc Modes Orientation Beneficiaire Get",
+                    "title": "Response As Dict List Api V0 Doc Modes Orientation Beneficiaire Get",
                     "type": "array"
                   }
                 }
@@ -5452,7 +5452,7 @@
       },
       "/api/v0/doc/profils": {
         "get": {
-          "operationId": "_lambda__api_v0_doc_profils_get",
+          "operationId": "as_dict_list_api_v0_doc_profils_get",
           "responses": {
             "200": {
               "content": {
@@ -5461,7 +5461,7 @@
                     "items": {
                       "$ref": "#/components/schemas/FrameworkValue"
                     },
-                    "title": "Response  Lambda  Api V0 Doc Profils Get",
+                    "title": "Response As Dict List Api V0 Doc Profils Get",
                     "type": "array"
                   }
                 }
@@ -5477,7 +5477,7 @@
       },
       "/api/v0/doc/thematiques": {
         "get": {
-          "operationId": "_lambda__api_v0_doc_thematiques_get",
+          "operationId": "as_dict_list_api_v0_doc_thematiques_get",
           "responses": {
             "200": {
               "content": {
@@ -5486,7 +5486,7 @@
                     "items": {
                       "$ref": "#/components/schemas/FrameworkValue"
                     },
-                    "title": "Response  Lambda  Api V0 Doc Thematiques Get",
+                    "title": "Response As Dict List Api V0 Doc Thematiques Get",
                     "type": "array"
                   }
                 }
@@ -5502,7 +5502,7 @@
       },
       "/api/v0/doc/typologies-services": {
         "get": {
-          "operationId": "_lambda__api_v0_doc_typologies_services_get",
+          "operationId": "as_dict_list_api_v0_doc_typologies_services_get",
           "responses": {
             "200": {
               "content": {
@@ -5511,7 +5511,7 @@
                     "items": {
                       "$ref": "#/components/schemas/FrameworkValue"
                     },
-                    "title": "Response  Lambda  Api V0 Doc Typologies Services Get",
+                    "title": "Response As Dict List Api V0 Doc Typologies Services Get",
                     "type": "array"
                   }
                 }
@@ -5527,7 +5527,7 @@
       },
       "/api/v0/doc/typologies-structures": {
         "get": {
-          "operationId": "_lambda__api_v0_doc_typologies_structures_get",
+          "operationId": "as_dict_list_api_v0_doc_typologies_structures_get",
           "responses": {
             "200": {
               "content": {
@@ -5536,7 +5536,7 @@
                     "items": {
                       "$ref": "#/components/schemas/FrameworkValue"
                     },
-                    "title": "Response  Lambda  Api V0 Doc Typologies Structures Get",
+                    "title": "Response As Dict List Api V0 Doc Typologies Structures Get",
                     "type": "array"
                   }
                 }
@@ -6330,7 +6330,7 @@
       },
       "/api/v1/doc/frais": {
         "get": {
-          "operationId": "_lambda__api_v1_doc_frais_get",
+          "operationId": "as_dict_list_api_v1_doc_frais_get",
           "responses": {
             "200": {
               "content": {
@@ -6339,7 +6339,7 @@
                     "items": {
                       "$ref": "#/components/schemas/FrameworkValue"
                     },
-                    "title": "Response  Lambda  Api V1 Doc Frais Get",
+                    "title": "Response As Dict List Api V1 Doc Frais Get",
                     "type": "array"
                   }
                 }
@@ -6355,7 +6355,7 @@
       },
       "/api/v1/doc/labels-nationaux": {
         "get": {
-          "operationId": "_lambda__api_v1_doc_labels_nationaux_get",
+          "operationId": "as_dict_list_api_v1_doc_labels_nationaux_get",
           "responses": {
             "200": {
               "content": {
@@ -6364,7 +6364,7 @@
                     "items": {
                       "$ref": "#/components/schemas/FrameworkValue"
                     },
-                    "title": "Response  Lambda  Api V1 Doc Labels Nationaux Get",
+                    "title": "Response As Dict List Api V1 Doc Labels Nationaux Get",
                     "type": "array"
                   }
                 }
@@ -6380,7 +6380,7 @@
       },
       "/api/v1/doc/modes-accueil": {
         "get": {
-          "operationId": "_lambda__api_v1_doc_modes_accueil_get",
+          "operationId": "as_dict_list_api_v1_doc_modes_accueil_get",
           "responses": {
             "200": {
               "content": {
@@ -6389,7 +6389,7 @@
                     "items": {
                       "$ref": "#/components/schemas/FrameworkValue"
                     },
-                    "title": "Response  Lambda  Api V1 Doc Modes Accueil Get",
+                    "title": "Response As Dict List Api V1 Doc Modes Accueil Get",
                     "type": "array"
                   }
                 }
@@ -6405,7 +6405,7 @@
       },
       "/api/v1/doc/modes-orientation-accompagnateur": {
         "get": {
-          "operationId": "_lambda__api_v1_doc_modes_orientation_accompagnateur_get",
+          "operationId": "as_dict_list_api_v1_doc_modes_orientation_accompagnateur_get",
           "responses": {
             "200": {
               "content": {
@@ -6414,7 +6414,7 @@
                     "items": {
                       "$ref": "#/components/schemas/FrameworkValue"
                     },
-                    "title": "Response  Lambda  Api V1 Doc Modes Orientation Accompagnateur Get",
+                    "title": "Response As Dict List Api V1 Doc Modes Orientation Accompagnateur Get",
                     "type": "array"
                   }
                 }
@@ -6430,7 +6430,7 @@
       },
       "/api/v1/doc/modes-orientation-beneficiaire": {
         "get": {
-          "operationId": "_lambda__api_v1_doc_modes_orientation_beneficiaire_get",
+          "operationId": "as_dict_list_api_v1_doc_modes_orientation_beneficiaire_get",
           "responses": {
             "200": {
               "content": {
@@ -6439,7 +6439,7 @@
                     "items": {
                       "$ref": "#/components/schemas/FrameworkValue"
                     },
-                    "title": "Response  Lambda  Api V1 Doc Modes Orientation Beneficiaire Get",
+                    "title": "Response As Dict List Api V1 Doc Modes Orientation Beneficiaire Get",
                     "type": "array"
                   }
                 }
@@ -6455,7 +6455,7 @@
       },
       "/api/v1/doc/profils": {
         "get": {
-          "operationId": "_lambda__api_v1_doc_profils_get",
+          "operationId": "as_dict_list_api_v1_doc_profils_get",
           "responses": {
             "200": {
               "content": {
@@ -6464,7 +6464,7 @@
                     "items": {
                       "$ref": "#/components/schemas/FrameworkValue"
                     },
-                    "title": "Response  Lambda  Api V1 Doc Profils Get",
+                    "title": "Response As Dict List Api V1 Doc Profils Get",
                     "type": "array"
                   }
                 }
@@ -6480,7 +6480,7 @@
       },
       "/api/v1/doc/thematiques": {
         "get": {
-          "operationId": "_lambda__api_v1_doc_thematiques_get",
+          "operationId": "as_dict_list_api_v1_doc_thematiques_get",
           "responses": {
             "200": {
               "content": {
@@ -6489,7 +6489,7 @@
                     "items": {
                       "$ref": "#/components/schemas/FrameworkValue"
                     },
-                    "title": "Response  Lambda  Api V1 Doc Thematiques Get",
+                    "title": "Response As Dict List Api V1 Doc Thematiques Get",
                     "type": "array"
                   }
                 }
@@ -6505,7 +6505,7 @@
       },
       "/api/v1/doc/typologies-services": {
         "get": {
-          "operationId": "_lambda__api_v1_doc_typologies_services_get",
+          "operationId": "as_dict_list_api_v1_doc_typologies_services_get",
           "responses": {
             "200": {
               "content": {
@@ -6514,7 +6514,7 @@
                     "items": {
                       "$ref": "#/components/schemas/FrameworkValue"
                     },
-                    "title": "Response  Lambda  Api V1 Doc Typologies Services Get",
+                    "title": "Response As Dict List Api V1 Doc Typologies Services Get",
                     "type": "array"
                   }
                 }
@@ -6530,7 +6530,7 @@
       },
       "/api/v1/doc/typologies-structures": {
         "get": {
-          "operationId": "_lambda__api_v1_doc_typologies_structures_get",
+          "operationId": "as_dict_list_api_v1_doc_typologies_structures_get",
           "responses": {
             "200": {
               "content": {
@@ -6539,7 +6539,7 @@
                     "items": {
                       "$ref": "#/components/schemas/FrameworkValue"
                     },
-                    "title": "Response  Lambda  Api V1 Doc Typologies Structures Get",
+                    "title": "Response As Dict List Api V1 Doc Typologies Structures Get",
                     "type": "array"
                   }
                 }
