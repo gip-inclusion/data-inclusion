@@ -58,17 +58,6 @@ SOURCES_CONFIGS = {
             },
         },
     },
-    "finess": {
-        "schedule": "@daily",
-        "snapshot": True,
-        "reader": lambda path: utils.read_csv(path, sep=","),
-        "streams": {
-            "etablissements": {
-                "filename": "etablissements.xlsx",
-                "url": Variable.get("FINESS_FILE_URL", None),
-            },
-        },
-    },
     "fredo": {
         "schedule": "@daily",
         "snapshot": True,
