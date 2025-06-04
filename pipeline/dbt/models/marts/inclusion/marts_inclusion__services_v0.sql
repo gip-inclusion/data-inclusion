@@ -1,4 +1,4 @@
--- depends_on: {{ ref('marts_inclusion__structures') }}
+-- depends_on: {{ ref('marts_inclusion__structures', version=0) }}
 
 WITH services AS (
     SELECT * FROM {{ ref('int__union_services__enhanced') }}

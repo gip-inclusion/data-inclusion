@@ -16,10 +16,12 @@ from dag_utils.virtualenvs import PYTHON_BIN_PATH
 @task.external_python(
     python=str(PYTHON_BIN_PATH),
 )
-def export_di_dataset_to_s3(
+def export_dataset(
     logical_date,
     run_id,
 ):
+    from pathlib import Path
+
     from airflow.providers.amazon.aws.hooks import s3
     from airflow.providers.postgres.hooks import postgres
 
@@ -28,20 +30,26 @@ def export_di_dataset_to_s3(
     pg_hook = postgres.PostgresHook(postgres_conn_id="pg")
     s3_hook = s3.S3Hook(aws_conn_id="s3")
 
-    prefix = f"data/marts/{date.local_date_str(logical_date)}/{run_id}/"
+    base_prefix = Path("data") / "marts" / date.local_date_str(logical_date) / run_id
 
-    for ressource in ["structures", "services"]:
-        key = f"{prefix}{ressource}.parquet"
-        query = f"SELECT * FROM public_marts.marts_inclusion__{ressource}"
-
-        print(f"Downloading data from query='{query}'")
-        df = pg_hook.get_pandas_df(sql=query)
-
-        df.info()
-        bytes_data = df.to_parquet(compression="gzip")
-
-        print(f"Uploading data to bucket='{key}'")
-        s3_hook.load_bytes(bytes_data, key=key, replace=True)
+    for version in ["v0", "v1"]:
+        for resource in ["structures", "services"]:
+            if version == "v0":
+                # for retro-compatibility, we keep the old key structure in v0
+                key = (base_prefix / resource).with_suffix(".parquet")
+                query = f"SELECT * FROM public_marts.marts__{resource}"
+            else:
+                key = (base_prefix / version / resource).with_suffix(".parquet")
+                query = f"SELECT * FROM public_marts.marts__{resource}_{version}"
+            print(f"Downloading data from query='{query}'")
+            df = pg_hook.get_pandas_df(sql=query)
+            df.info()
+            print(f"Uploading data to bucket='{key}'")
+            s3_hook.load_bytes(
+                bytes_data=df.to_parquet(compression="gzip"),
+                key=str(key),
+                replace=True,
+            )
 
 
 @dag(
@@ -78,7 +86,7 @@ def main():
         >> get_staging_tasks()
         >> get_intermediate_tasks()
         >> snapshot_deduplicate_stats
-        >> export_di_dataset_to_s3()
+        >> export_dataset()
         >> end
     )
 
