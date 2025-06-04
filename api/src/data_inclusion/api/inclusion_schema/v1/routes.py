@@ -38,7 +38,7 @@ for name, model, summary in [
 ]:
     router.add_api_route(
         path=f"/{name}",
-        endpoint=lambda: model.as_dict_list(),
+        endpoint=model.as_dict_list,
         response_model=list[FrameworkValue],
         summary=summary,
     )
