@@ -1,1 +1,6 @@
-{{ unnest_jsonb_list_to_table('structure', 'labels_nationaux') }}
+{{ unnest(
+    from=ref('marts_inclusion__structures_v0'),
+    column='labels_nationaux',
+    foreign_key='_di_surrogate_id',
+    fk_alias='structure_surrogate_id'
+) }}
