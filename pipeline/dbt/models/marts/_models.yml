@@ -220,7 +220,13 @@ models:
         data_type: text
       - name: date_maj
         data_type: date
+      - name: mobilisable_par
+        data_type: text[]
+      - name: mobilisation_precisions
+        data_type: text
       - name: modes_accueil
+        data_type: text[]
+      - name: modes_mobilisation
         data_type: text[]
       - name: modes_orientation_accompagnateur
         data_type: text[]

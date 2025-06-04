@@ -102,7 +102,6 @@ open_services AS (
 ),
 
 -- TODO(vmttn): clean up modes_orientation_* with dbt macros ?
-
 final AS (
     SELECT
         open_services.id                                  AS "id",

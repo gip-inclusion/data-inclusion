@@ -79,6 +79,14 @@ modes_orientation_accompagnateur IS NULL OR modes_orientation_accompagnateur <@ 
 modes_orientation_beneficiaire IS NULL OR modes_orientation_beneficiaire <@ ARRAY(SELECT m.value FROM {{ ref('modes_orientation_beneficiaire') }} AS m)
 {% endmacro %}
 
+{% macro check_mobilisable_par() %}
+mobilisable_par IS NULL OR mobilisable_par <@ ARRAY(SELECT m.value FROM {{ ref('mobilisable_par') }} AS m)
+{% endmacro %}
+
+{% macro check_modes_mobilisation() %}
+modes_mobilisation IS NULL OR modes_mobilisation <@ ARRAY(SELECT m.value FROM {{ ref('modes_mobilisation') }} AS m)
+{% endmacro %}
+
 {% macro check_volume_horaire_hebdomadaire() %}
 volume_horaire_hebdomadaire IS NULL OR volume_horaire_hebdomadaire >= 0
 {% endmacro %}
@@ -149,6 +157,8 @@ code_insee IS NULL OR code_insee ~ '^.{5}$'
 {% elif schema_version == 'v1' %}
 {% set checks = checks + [
         ("description", check_description()),
+        ("mobilisable_par", check_mobilisable_par()),
+        ("modes_mobilisation", check_modes_mobilisation()),
 ] %}
 {% endif %}
 
