@@ -1,5 +1,3 @@
-import logging
-
 import pendulum
 
 from airflow.decorators import dag, task
@@ -7,8 +5,6 @@ from airflow.operators import empty
 
 from dag_utils import date, dbt
 from dag_utils.virtualenvs import PYTHON_BIN_PATH
-
-logger = logging.getLogger(__name__)
 
 default_args = {}
 
