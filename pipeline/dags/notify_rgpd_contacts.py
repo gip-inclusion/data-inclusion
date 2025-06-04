@@ -1,5 +1,3 @@
-import logging
-
 import pendulum
 
 import airflow
@@ -7,8 +5,6 @@ from airflow.operators import empty, python
 
 from dag_utils import sentry
 from dag_utils.virtualenvs import PYTHON_BIN_PATH
-
-logger = logging.getLogger(__name__)
 
 
 def _send_rgpd_notice():

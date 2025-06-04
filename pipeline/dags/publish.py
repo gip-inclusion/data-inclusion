@@ -10,7 +10,6 @@ default_args = {}
 
 def _publish_to_datagouv():
     import io
-    import logging
     import tempfile
 
     import geopandas as gpd
@@ -19,9 +18,7 @@ def _publish_to_datagouv():
     from airflow.models import Variable
     from airflow.providers.postgres.hooks import postgres
 
-    from dag_utils.sources import datagouv, utils
-
-    logger = logging.getLogger(__name__)
+    from dag_utils.sources import datagouv
 
     pg_hook = postgres.PostgresHook(postgres_conn_id="pg")
 
@@ -78,7 +75,7 @@ def _publish_to_datagouv():
         df = df.assign(telephone=df["telephone"].mask(df["_has_pii"], None))
         df = df.drop(columns="_has_pii")
 
-        utils.log_df_info(df, logger)
+        df.info()
 
         for format in ["csv", "json", "xlsx", "geojson"]:
             with io.BytesIO() as buf:
