@@ -45,17 +45,9 @@ models:
 
     marts:
       +schema: marts
+      +materialized: table
       +contract:
         enforced: true
-
-      inclusion:
-        +materialized: table
-
-      opendata:
-        +schema: opendata
-        +materialized: view
-        +contract:
-          enforced: false
 
 data_tests:
   +store_failures: true

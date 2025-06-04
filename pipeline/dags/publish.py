@@ -10,7 +10,6 @@ default_args = {}
 
 def _publish_to_datagouv():
     import io
-    import itertools
     import logging
     import tempfile
 
@@ -65,34 +64,31 @@ def _publish_to_datagouv():
         "geojson": to_geojson,
     }
 
-    # 1. fetch data
-    structures_df = pg_hook.get_pandas_df(
-        sql="SELECT * FROM public_opendata.opendata_structures",
-    )
-    utils.log_df_info(structures_df, logger)
+    for resource in ["structures", "services"]:
+        df = pg_hook.get_pandas_df(
+            sql=f"SELECT * FROM public_marts.marts_inclusion__{resource}_v0",
+        )
 
-    services_df = pg_hook.get_pandas_df(
-        sql="SELECT * FROM public_opendata.opendata_services",
-    )
-    utils.log_df_info(services_df, logger)
+        # remove closed sources
+        df = df.loc[df["_in_opendata"]]
+        df = df.drop(columns="_in_opendata")
 
-    for kind, format in itertools.product(
-        ["structures", "services"],
-        ["csv", "json", "xlsx", "geojson"],
-    ):
-        df = structures_df if kind == "structures" else services_df
+        # remove pii
+        df = df.assign(courriel=df["courriel"].mask(df["_has_pii"], None))
+        df = df.assign(telephone=df["telephone"].mask(df["_has_pii"], None))
+        df = df.drop(columns="_has_pii")
 
-        with io.BytesIO() as buf:
-            # 2. serialize data
-            to_buf_fn_by_format[format](df, buf)
+        utils.log_df_info(df, logger)
 
-            # 3. upload
-            datagouv_client.upload_dataset_resource(
-                dataset_id=DATAGOUV_DI_DATASET_ID,
-                resource_id=DATAGOUV_DI_RESOURCE_IDS[kind][format],
-                buf=buf,
-                filename=f"{kind}-inclusion-{date_str}.{format}",
-            )
+        for format in ["csv", "json", "xlsx", "geojson"]:
+            with io.BytesIO() as buf:
+                to_buf_fn_by_format[format](df, buf)
+                datagouv_client.upload_dataset_resource(
+                    dataset_id=DATAGOUV_DI_DATASET_ID,
+                    resource_id=DATAGOUV_DI_RESOURCE_IDS[resource][format],
+                    buf=buf,
+                    filename=f"{resource}-inclusion-{date_str}.{format}",
+                )
 
 
 EVERY_MONDAY_AT_2PM = "0 14 * * 1"
