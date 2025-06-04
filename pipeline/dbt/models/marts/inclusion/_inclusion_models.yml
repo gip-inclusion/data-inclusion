@@ -95,13 +95,15 @@ models:
         constraints:
           - type: not_null
           - type: foreign_key
-            expression: "public_marts.marts_inclusion__structures (_di_surrogate_id)"
+            to: ref('marts_inclusion__structures')
+            to_columns: [_di_surrogate_id]
       - name: value
         data_type: text
         constraints:
           - type: not_null
           - type: foreign_key
-            expression: "public_schema.labels_nationaux (value)"
+            to: ref('labels_nationaux')
+            to_columns: [value]
 
   - name: marts_inclusion__structures_thematiques
     config:
@@ -113,13 +115,15 @@ models:
         constraints:
           - type: not_null
           - type: foreign_key
-            expression: "public_marts.marts_inclusion__structures (_di_surrogate_id)"
+            to: ref('marts_inclusion__structures')
+            to_columns: [_di_surrogate_id]
       - name: value
         data_type: text
         constraints:
           - type: not_null
           - type: foreign_key
-            expression: "public_schema.thematiques (value)"
+            to: ref('thematiques')
+            to_columns: [value]
 
   - name: marts_inclusion__services
     config:
@@ -142,7 +146,8 @@ models:
         constraints:
           - type: not_null
           - type: foreign_key
-            expression: "public_marts.marts_inclusion__structures (_di_surrogate_id)"
+            to: ref('marts_inclusion__structures')
+            to_columns: [_di_surrogate_id]
       - name: id
         data_type: text
         constraints:
@@ -266,13 +271,15 @@ models:
         constraints:
           - type: not_null
           - type: foreign_key
-            expression: "public_marts.marts_inclusion__services (_di_surrogate_id)"
+            to: ref('marts_inclusion__services')
+            to_columns: [_di_surrogate_id]
       - name: value
         data_type: text
         constraints:
           - type: not_null
           - type: foreign_key
-            expression: "public_schema.frais (value)"
+            to: ref('frais')
+            to_columns: [value]
 
   - name: marts_inclusion__services_justificatifs
     config:
@@ -284,7 +291,8 @@ models:
         constraints:
           - type: not_null
           - type: foreign_key
-            expression: "public_marts.marts_inclusion__services (_di_surrogate_id)"
+            to: ref('marts_inclusion__services')
+            to_columns: [_di_surrogate_id]
       - name: value
         data_type: text
         constraints:
@@ -300,13 +308,15 @@ models:
         constraints:
           - type: not_null
           - type: foreign_key
-            expression: "public_marts.marts_inclusion__services (_di_surrogate_id)"
+            to: ref('marts_inclusion__services')
+            to_columns: [_di_surrogate_id]
       - name: value
         data_type: text
         constraints:
           - type: not_null
           - type: foreign_key
-            expression: "public_schema.modes_accueil (value)"
+            to: ref('modes_accueil')
+            to_columns: [value]
 
   - name: marts_inclusion__services_modes_orientation_accompagnateur
     config:
@@ -318,13 +328,15 @@ models:
         constraints:
           - type: not_null
           - type: foreign_key
-            expression: "public_marts.marts_inclusion__services (_di_surrogate_id)"
+            to: ref('marts_inclusion__services')
+            to_columns: [_di_surrogate_id]
       - name: value
         data_type: text
         constraints:
           - type: not_null
           - type: foreign_key
-            expression: "public_schema.modes_orientation_accompagnateur (value)"
+            to: ref('modes_orientation_accompagnateur')
+            to_columns: [value]
 
   - name: marts_inclusion__services_modes_orientation_beneficiaire
     config:
@@ -336,13 +348,15 @@ models:
         constraints:
           - type: not_null
           - type: foreign_key
-            expression: "public_marts.marts_inclusion__services (_di_surrogate_id)"
+            to: ref('marts_inclusion__services')
+            to_columns: [_di_surrogate_id]
       - name: value
         data_type: text
         constraints:
           - type: not_null
           - type: foreign_key
-            expression: "public_schema.modes_orientation_beneficiaire (value)"
+            to: ref('modes_orientation_beneficiaire')
+            to_columns: [value]
 
   - name: marts_inclusion__services_profils
     config:
@@ -354,13 +368,15 @@ models:
         constraints:
           - type: not_null
           - type: foreign_key
-            expression: "public_marts.marts_inclusion__services (_di_surrogate_id)"
+            to: ref('marts_inclusion__services')
+            to_columns: [_di_surrogate_id]
       - name: value
         data_type: text
         constraints:
           - type: not_null
           - type: foreign_key
-            expression: "public_schema.profils (value)"
+            to: ref('profils')
+            to_columns: [value]
 
   - name: marts_inclusion__services_pre_requis
     config:
@@ -372,7 +388,8 @@ models:
         constraints:
           - type: not_null
           - type: foreign_key
-            expression: "public_marts.marts_inclusion__services (_di_surrogate_id)"
+            to: ref('marts_inclusion__services')
+            to_columns: [_di_surrogate_id]
       - name: value
         data_type: text
         constraints:
@@ -388,13 +405,15 @@ models:
         constraints:
           - type: not_null
           - type: foreign_key
-            expression: "public_marts.marts_inclusion__services (_di_surrogate_id)"
+            to: ref('marts_inclusion__services')
+            to_columns: [_di_surrogate_id]
       - name: value
         data_type: text
         constraints:
           - type: not_null
           - type: foreign_key
-            expression: "public_schema.thematiques (value)"
+            to: ref('thematiques')
+            to_columns: [value]
 
   - name: marts_inclusion__services_types
     config:
@@ -406,10 +425,12 @@ models:
         constraints:
           - type: not_null
           - type: foreign_key
-            expression: "public_marts.marts_inclusion__services (_di_surrogate_id)"
+            to: ref('marts_inclusion__services')
+            to_columns: [_di_surrogate_id]
       - name: value
         data_type: text
         constraints:
           - type: not_null
           - type: foreign_key
-            expression: "public_schema.typologies_de_services (value)"
+            to: ref('typologies_de_services')
+            to_columns: [value]
