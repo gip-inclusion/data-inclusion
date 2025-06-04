@@ -76,6 +76,14 @@ models:
         data_type: text[]
       - name: cluster_id
         data_type: text
+      - name: _has_pii
+        data_type: boolean
+        constraints:
+          - type: not_null
+      - name: _in_opendata
+        data_type: boolean
+        constraints:
+          - type: not_null
 
   - name: marts_inclusion__structures_labels_nationaux
     config:
@@ -239,6 +247,14 @@ models:
           - type: not_null
           - type: check
             expression: 'score_qualite BETWEEN 0 AND 1'
+      - name: _has_pii
+        data_type: boolean
+        constraints:
+          - type: not_null
+      - name: _in_opendata
+        data_type: boolean
+        constraints:
+          - type: not_null
 
   - name: marts_inclusion__services_frais
     config:
