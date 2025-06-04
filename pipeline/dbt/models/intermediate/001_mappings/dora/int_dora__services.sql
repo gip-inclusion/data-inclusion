@@ -33,6 +33,9 @@ final AS (
             ELSE services.modes_orientation_beneficiaire
         END                                                AS "modes_orientation_beneficiaire",
         services.modes_orientation_beneficiaire_autres     AS "modes_orientation_beneficiaire_autres",
+        CAST(NULL AS TEXT [])                              AS "modes_mobilisation",
+        CAST(NULL AS TEXT [])                              AS "mobilisable_par",
+        NULL                                               AS "mobilisation_precisions",
         services.nom                                       AS "nom",
         services.presentation_resume                       AS "presentation_resume",
         services.presentation_detail                       AS "presentation_detail",
