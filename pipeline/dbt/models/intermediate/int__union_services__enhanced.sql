@@ -84,15 +84,61 @@ services_without_address AS (
                 ]
             )
         }},
-        zones_diffusion.zone_diffusion_code AS "zone_diffusion_code",
-        zones_diffusion.zone_diffusion_nom  AS "zone_diffusion_nom",
-        contacts.contact_nom_prenom         AS "contact_nom_prenom",
-        contacts.courriel                   AS "courriel",
-        contacts.telephone                  AS "telephone",
+        zones_diffusion.zone_diffusion_code                                                                       AS "zone_diffusion_code",
+        zones_diffusion.zone_diffusion_nom                                                                        AS "zone_diffusion_nom",
+        contacts.contact_nom_prenom                                                                               AS "contact_nom_prenom",
+        contacts.courriel                                                                                         AS "courriel",
+        contacts.telephone                                                                                        AS "telephone",
         CASE
             WHEN LENGTH(services.nom) <= 150 THEN services.nom
             ELSE LEFT(services.nom, 149) || '…'
-        END                                 AS "nom"
+        END                                                                                                       AS "nom",
+        ARRAY(
+            -- Mapping https://www.notion.so/gip-inclusion/24610bd08f8a412c83c09f6b36a1a44f?v=34cdd4c049e44f49aec060657c72c9b0&p=1fa5f321b604805a9ba5d0c7c2386dc2&pm=s
+            SELECT x FROM
+                UNNEST(ARRAY[
+                    -- envoyer-un-courriel
+                    CASE
+                        WHEN
+                            ARRAY['envoyer-un-mail', 'envoyer-un-mail-avec-une-fiche-de-prescription', 'prendre-rdv'] && services.modes_orientation_accompagnateur
+                            OR ARRAY['envoyer-un-mail', 'prendre-rdv'] && services.modes_orientation_beneficiaire
+                            THEN 'envoyer-un-courriel'
+                    END,
+                    -- se-presenter
+                    CASE
+                        WHEN 'se-presenter' = ANY(services.modes_orientation_beneficiaire)
+                            THEN 'se-presenter'
+                    END,
+                    -- telephoner
+                    CASE
+                        WHEN
+                            'telephoner' = ANY(services.modes_orientation_accompagnateur)
+                            OR 'telephoner' = ANY(services.modes_orientation_beneficiaire)
+                            THEN 'telephoner'
+                    END,
+                    -- utiliser-lien-mobilisation
+                    CASE
+                        WHEN
+                            ARRAY['completer-le-formulaire-dadhesion', 'prendre-rdv'] && services.modes_orientation_accompagnateur
+                            OR ARRAY['completer-le-formulaire-dadhesion', 'prendre-rdv'] && services.modes_orientation_beneficiaire
+                            -- TODO: change this when migrate to the `lien_mobilisation` field
+                            OR services.prise_rdv IS NOT NULL
+                            OR services.formulaire_en_ligne IS NOT NULL
+                            OR services.page_web IS NOT NULL
+                            THEN 'utiliser-lien-mobilisation'
+                    END
+                ]) AS x
+            WHERE x IS NOT NULL
+        )                                                                                                         AS "modes_mobilisation",
+        ARRAY(
+            SELECT x FROM
+                UNNEST(ARRAY[
+                    CASE WHEN ARRAY_LENGTH(services.modes_orientation_beneficiaire, 1) > 0 THEN 'usagers' END,
+                    CASE WHEN ARRAY_LENGTH(services.modes_orientation_accompagnateur, 1) > 0 THEN 'professionnels' END
+                ]) AS x
+            WHERE x IS NOT NULL
+        )                                                                                                         AS "mobilisable_par",
+        services.modes_orientation_beneficiaire_autres || ' ' || services.modes_orientation_accompagnateur_autres AS "mobilisation_precisions"
     FROM services_with_valid_structure AS services
     LEFT JOIN zones_diffusion
         ON services._di_surrogate_id = zones_diffusion._di_surrogate_id
@@ -118,7 +164,10 @@ valid_services AS (
             services.id,
             services.justificatifs,
             services.lien_source,
+            services.mobilisable_par,
+            services.mobilisation_precisions,
             services.modes_accueil,
+            services.modes_mobilisation,
             services.modes_orientation_accompagnateur,
             services.modes_orientation_accompagnateur_autres,
             services.modes_orientation_beneficiaire,
