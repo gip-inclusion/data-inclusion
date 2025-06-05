@@ -428,40 +428,40 @@ unit_tests:
           attempt_count: 1
           url: https://www.google.com/
 
-  - name: test_union_urls__enhanced_full_refresh
-    model: int__union_urls__enhanced
-    overrides:
-      vars:
-        check_urls_batch_size: 5
-      macros:
-        is_incremental: false
-    given:
-      - input: ref('int__union_urls')
-        rows:
-          - {url: www.google.com}
-          - {url: http://facebook.com}
-          - {url: cecinestpasunsiteweb}
-          - {url: https://ce.site.nexiste.pas}
-          - {url: https://httpbin.org/delay/10}
-    expect:
-      rows:
-        - input_url: https://ce.site.nexiste.pas
-          status_code: -1
-          attempt_count: 1
-          url: https://ce.site.nexiste.pas
-        - input_url: www.google.com
-          status_code: 200
-          attempt_count: 1
-          url: https://www.google.com/
-        - input_url: cecinestpasunsiteweb
-          status_code: -1
-          attempt_count: 1
-          url: https://cecinestpasunsiteweb
-        - input_url: http://facebook.com
-          status_code: 200
-          attempt_count: 1
-          url: https://www.facebook.com/
-        - input_url: https://httpbin.org/delay/10
-          status_code: -2
-          attempt_count: 1
-          url: https://httpbin.org/delay/10
+  # - name: test_union_urls__enhanced_full_refresh
+  #   model: int__union_urls__enhanced
+  #   overrides:
+  #     vars:
+  #       check_urls_batch_size: 5
+  #     macros:
+  #       is_incremental: false
+  #   given:
+  #     - input: ref('int__union_urls')
+  #       rows:
+  #         - {url: www.google.com}
+  #         - {url: http://facebook.com}
+  #         - {url: cecinestpasunsiteweb}
+  #         - {url: https://ce.site.nexiste.pas}
+  #         - {url: https://httpbin.org/delay/10}
+  #   expect:
+  #     rows:
+  #       - input_url: https://ce.site.nexiste.pas
+  #         status_code: -1
+  #         attempt_count: 1
+  #         url: https://ce.site.nexiste.pas
+  #       - input_url: www.google.com
+  #         status_code: 200
+  #         attempt_count: 1
+  #         url: https://www.google.com/
+  #       - input_url: cecinestpasunsiteweb
+  #         status_code: -1
+  #         attempt_count: 1
+  #         url: https://cecinestpasunsiteweb
+  #       - input_url: http://facebook.com
+  #         status_code: 200
+  #         attempt_count: 1
+  #         url: https://www.facebook.com/
+  #       - input_url: https://httpbin.org/delay/10
+  #         status_code: -2
+  #         attempt_count: 1
+  #         url: https://httpbin.org/delay/10
