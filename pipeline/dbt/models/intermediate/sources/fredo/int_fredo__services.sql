@@ -156,6 +156,8 @@ final AS (
         CAST(NULL AS DATE)                                                                    AS "date_creation",
         CAST(NULL AS DATE)                                                                    AS "date_suspension",
         CAST(NULL AS BOOLEAN)                                                                 AS "contact_public",
+        CAST(NULL AS FLOAT)                                                                   AS "volume_horaire_hebdomadaire",
+        CAST(NULL AS INT)                                                                     AS "nombre_semaines",
         CASE
             WHEN
                 fredo_structures.adresse IS NOT NULL

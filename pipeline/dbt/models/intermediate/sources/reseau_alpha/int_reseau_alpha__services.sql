@@ -58,6 +58,8 @@ final AS (
         CAST(NULL AS TEXT [])                                                  AS "pre_requis",
         CAST(NULL AS DATE)                                                     AS "date_suspension",
         CAST(NULL AS DATE)                                                     AS "date_creation",
+        CAST(NULL AS FLOAT)                                                    AS "volume_horaire_hebdomadaire",
+        CAST(NULL AS INT)                                                      AS "nombre_semaines",
         ARRAY_REMOVE(
             ARRAY[
                 'apprendre-francais--suivre-formation',
