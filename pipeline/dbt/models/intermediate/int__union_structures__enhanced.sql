@@ -14,7 +14,7 @@ valid_site_web AS (
     WHERE status_code > 0
 ),
 
-valid_structures AS (
+structures_to_validate AS (
     SELECT
         {{
             dbt_utils.star(
@@ -35,6 +35,11 @@ valid_structures AS (
         END                                                   AS "nom"
     FROM structures
     LEFT JOIN valid_site_web ON structures.site_web = valid_site_web.input_url
+),
+
+valid_structures AS (
+    SELECT structures.*
+    FROM structures_to_validate AS structures
     LEFT JOIN
         LATERAL
         LIST_STRUCTURE_ERRORS(
@@ -63,7 +68,7 @@ valid_structures AS (
 
 final AS (
     SELECT
-        valid_structures.*,
+        structures.*,
         adresses.longitude          AS "longitude",
         adresses.latitude           AS "latitude",
         adresses.complement_adresse AS "complement_adresse",
@@ -71,9 +76,8 @@ final AS (
         adresses.adresse            AS "adresse",
         adresses.code_postal        AS "code_postal",
         adresses.code_insee         AS "code_insee"
-    FROM
-        valid_structures
-    LEFT JOIN adresses ON valid_structures._di_adresse_surrogate_id = adresses._di_surrogate_id
+    FROM valid_structures AS structures
+    LEFT JOIN adresses ON structures._di_adresse_surrogate_id = adresses._di_surrogate_id
 )
 
 SELECT * FROM final
