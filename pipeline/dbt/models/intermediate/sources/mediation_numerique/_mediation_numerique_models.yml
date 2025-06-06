@@ -8,6 +8,11 @@ models:
             - source
             - id
       - check_adresse:
+          schema_version: v0
+          config:
+            severity: warn
+      - check_adresse:
+          schema_version: v1
           config:
             severity: warn
     columns:
@@ -23,6 +28,11 @@ models:
             - source
             - id
       - check_service:
+          schema_version: v0
+          config:
+            severity: warn
+      - check_service:
+          schema_version: v1
           config:
             severity: warn
     columns:
@@ -50,6 +60,11 @@ models:
             - source
             - id
       - check_structure:
+          schema_version: v0
+          config:
+            severity: warn
+      - check_structure:
+          schema_version: v1
           config:
             severity: warn
     columns:

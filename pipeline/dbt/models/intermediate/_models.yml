@@ -29,6 +29,13 @@ models:
           - not_null
           - dbt_utils.not_empty_string
       - name: value
+      - name: schema_version
+        data_tests:
+          - not_null
+          - accepted_values:
+              values:
+                - v0
+                - v1
       - name: resource_type
         data_tests:
           - not_null

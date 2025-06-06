@@ -6,8 +6,6 @@ models:
     config:
       indexes:
         - columns: ['source']
-    data_tests:
-      - check_structure
     columns:
       - name: _di_surrogate_id
         data_type: text
@@ -83,9 +81,15 @@ models:
           - type: not_null
     versions:
       - v: 0
+        data_tests:
+          - check_structure:
+              schema_version: v0
         columns:
           - include: all
       - v: 1
+        data_tests:
+          - check_structure:
+              schema_version: v1
         columns:
           - include: all
             exclude:
@@ -143,8 +147,6 @@ models:
           type: gin
         - columns: ['CAST(ST_MakePoint(longitude, latitude) AS geography(geometry, 4326))']
           type: gist
-    data_tests:
-      - check_service
     columns:
       - name: _di_surrogate_id
         data_type: text
@@ -265,9 +267,15 @@ models:
           - type: not_null
     versions:
       - v: 0
+        data_tests:
+          - check_service:
+              schema_version: v0
         columns:
           - include: all
       - v: 1
+        data_tests:
+          - check_service:
+              schema_version: v1
         columns:
           - include: all
 

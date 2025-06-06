@@ -4,6 +4,11 @@ models:
   - name: int_cd35__adresses
     data_tests:
       - check_adresse:
+          schema_version: v0
+          config:
+            severity: warn
+      - check_adresse:
+          schema_version: v1
           config:
             severity: warn
     columns:
@@ -16,6 +21,11 @@ models:
   - name: int_cd35__structures
     data_tests:
       - check_structure:
+          schema_version: v0
+          config:
+            severity: warn
+      - check_structure:
+          schema_version: v1
           config:
             severity: warn
     columns:

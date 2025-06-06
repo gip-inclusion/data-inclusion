@@ -1,13 +1,13 @@
-{% test check_service(model) %}
-    {{ select_service_errors(model) }}
+{% test check_service(model, schema_version) %}
+    {{ select_service_errors(model, schema_version) }}
 {% endtest %}
 
-{% test check_structure(model) %}
-    {{ select_structure_errors(model) }}
+{% test check_structure(model, schema_version) %}
+    {{ select_structure_errors(model, schema_version) }}
 {% endtest %}
 
-{% test check_adresse(model) %}
-    {{ select_adresse_errors(model) }}
+{% test check_adresse(model, schema_version) %}
+    {{ select_adresse_errors(model, schema_version) }}
 {% endtest %}
 
 {% macro check_id() %}
@@ -107,7 +107,7 @@ code_postal IS NULL OR code_postal ~ '^\d{5}$'
 code_insee IS NULL OR code_insee ~ '^.{5}$'
 {% endmacro %}
 
-{% macro select_service_errors(model) %}
+{% macro select_service_errors(model, schema_version) %}
 {% set checks = [
         ('id', check_id()),
         ("source", check_source()),
@@ -128,11 +128,16 @@ code_insee IS NULL OR code_insee ~ '^.{5}$'
         ("zone_diffusion_code", check_zone_diffusion_code()),
         ("zone_diffusion_type", check_zone_diffusion_type())
 ] %}
+{% if schema_version == 'v0' %}
+{% set checks = checks + [] %}
+{% elif schema_version == 'v1' %}
+{% set checks = checks + [] %}
+{% endif %}
 
-{{ select_errors(model, checks) }}
+{{ select_errors(model, checks, 'service', schema_version) }}
 {% endmacro %}
 
-{% macro select_structure_errors(model) %}
+{% macro select_structure_errors(model, schema_version) %}
 {% set checks = [
         ('id', check_id()),
         ("source", check_source()),
@@ -178,6 +183,7 @@ SELECT
     id                        AS "id",
     '{{ field }}'             AS "field",
     CAST({{ field }} AS TEXT) AS "value",
+    '{{ schema_version }}'    AS "schema_version",
     '{{ resource_type }}'     AS "resource_type"
 FROM {{ model }}
 WHERE NOT ({{ expression }})
