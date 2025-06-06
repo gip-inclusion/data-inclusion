@@ -46,41 +46,34 @@
 -- depends_on: {{ ref('int_reseau_alpha__structures') }}
 -- depends_on: {{ ref('stg_soliguide__lieux') }}
 -- depends_on: {{ ref('int_soliguide__structures') }}
--- depends_on: {{ ref('marts_inclusion__services') }}
--- depends_on: {{ ref('marts_inclusion__structures') }}
+-- depends_on: {{ ref('marts__services') }}
+-- depends_on: {{ ref('marts__structures') }}
 
 WITH
 
 {% for source_node in graph.sources.values() if source_node.source_meta.is_provider %}
-
     {% if source_node.meta.kind %}
-
         {% set source_name = source_node.source_name %}
         {% set source_slug = source_name | replace("_", "-") %}
         {% set stream_name = source_node.name %}
         {% set staging_name = source_node.meta.staging_name or stream_name %}
         {% set stream_kind = source_node.meta.kind ~ "s" %}
-
         {{ source_name }}__{{ stream_name }}__tmp_marts AS (
-            SELECT * FROM {{ ref('marts_inclusion__' ~ stream_kind) }}
+            SELECT * FROM {{ ref('marts__' ~ stream_kind) }}
             WHERE source = '{{ source_slug }}'
         ),
-
         {{ source_name }}__{{ stream_name }}__tmp_api AS (
             SELECT * FROM public.api__{{ stream_kind }}
             WHERE source = '{{ source_slug }}'
         ),
-
         {{ source_name }}__{{ stream_name }}__tmp_api_contacts AS (
             SELECT * FROM {{ source_name }}__{{ stream_name }}__tmp_api
             WHERE courriel IS NOT NULL AND telephone IS NOT NULL
         ),
-
         {{ source_name }}__{{ stream_name }}__tmp_api_adresse AS (
             SELECT * FROM {{ source_name }}__{{ stream_name }}__tmp_api
             WHERE NOT (adresse IS NOT NULL AND code_insee IS NOT NULL)
         ),
-
         {{ source_name }}__{{ stream_name }}__stats AS (
             /*
             Manually handle the layout as the sqlfluff DBT templater can't handle spacing
@@ -100,29 +93,20 @@ WITH
                 (SELECT COUNT(*) FROM {{ source_name }}__{{ stream_name }}__tmp_api_adresse) AS count_addresses
         -- noqa: enable=layout.spacing
         ),
-
     {% endif %}
-
 {% endfor %}
 
 final AS (
-
     {% for source_node in graph.sources.values() if source_node.source_meta.is_provider %}
-
         {% if source_node.meta.kind %}
             {% if not loop.first %}
                 UNION ALL
             {% endif %}
-
-
             {% set source_name = source_node.source_name %}
             {% set stream_name = source_node.name %}
-
             SELECT * FROM {{ source_name }}__{{ stream_name }}__stats
         {% endif %}
-
     {% endfor %}
-
 )
 
 SELECT * FROM final

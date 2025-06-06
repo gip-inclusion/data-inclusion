@@ -3,7 +3,7 @@ WITH services AS (
 ),
 
 structures AS (
-    SELECT * FROM {{ ref('marts_inclusion__structures', version=1) }}
+    SELECT * FROM {{ ref('marts__structures', version=1) }}
 ),
 
 courriels_personnels AS (
