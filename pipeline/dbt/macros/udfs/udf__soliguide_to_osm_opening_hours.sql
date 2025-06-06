@@ -1,4 +1,4 @@
-{% macro create_udf_soliguide__new_hours_to_osm_opening_hours() %}
+{% macro udf__soliguide_to_osm_opening_hours() %}
 CREATE OR REPLACE FUNCTION udf_soliguide__new_hours_to_osm_opening_hours(data JSONB) RETURNS TEXT AS $$
 DECLARE
     opening_hours TEXT := '';
