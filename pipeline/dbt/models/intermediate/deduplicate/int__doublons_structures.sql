@@ -1,12 +1,12 @@
 WITH structures AS (
-    SELECT * FROM {{ ref('int__union_structures__enhanced') }}
+    SELECT * FROM {{ ref('int__structures') }}
 ),
 
 final AS (
     SELECT
         cluster.*,
         structures.source,
-        COUNT(*) OVER (PARTITION BY cluster_id) AS size
+        COUNT(*) OVER (PARTITION BY cluster.cluster_id) AS size  -- noqa: references.keywords
     FROM
         processings.deduplicate(TO_JSONB(
             (SELECT JSONB_AGG(ROW_TO_JSON(structures)) FROM structures)  -- noqa: references.qualification

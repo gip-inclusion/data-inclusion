@@ -105,31 +105,8 @@ def get_intermediate_tasks():
     return dbt_operator_factory(
         task_id="dbt_build_intermediate",
         command="build",
-        select=" ".join(
-            [
-                "path:models/intermediate/int__courriels_personnels.sql",
-                "path:models/intermediate/int__courriels_verifies.sql",
-                "path:models/intermediate/int__criteres_qualite.sql",
-                "path:models/intermediate/int__geocodages.sql",
-                "path:models/intermediate/int__union_contacts.sql",
-                "path:models/intermediate/int__union_adresses.sql",
-                "path:models/intermediate/int__union_services.sql",
-                "path:models/intermediate/int__union_structures.sql",
-                "path:models/intermediate/int__union_urls.sql",
-                "path:models/intermediate/int__union_contacts__enhanced.sql+",
-                "path:models/intermediate/int__union_adresses__enhanced.sql+",
-                "path:models/intermediate/int__union_services__enhanced.sql+",
-                "path:models/intermediate/int__union_structures__enhanced.sql+",
-                "path:models/intermediate/int__union_urls__enhanced.sql+",
-                "path:models/intermediate/deduplicate/*",
-                "marts",
-            ]
-        ),
-        exclude=" ".join(
-            [
-                "path:models/intermediate/quality/int_quality__stats.sql+",
-            ]
-        ),
+        select=" ".join(["intermediate", "marts"]),
+        exclude=" ".join(["intermediate.quality", "intermediate.sources"]),
         trigger_rule=TriggerRule.ALL_DONE,
         exclude_unit_tests=exclude_unit_tests,
     )
