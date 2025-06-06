@@ -1,5 +1,5 @@
 WITH services AS (
-    SELECT * FROM {{ ref('int__union_services__enhanced') }}
+    SELECT * FROM {{ ref('int__services') }}
 ),
 
 final AS (

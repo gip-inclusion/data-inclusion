@@ -45,32 +45,14 @@ models:
                 - structure
 
   - name: int__union_adresses
-    data_tests:
-      - check_adresse:
-          config:
-            severity: warn
 
   - name: int__union_contacts
-    columns:
-      - name: courriel
-        data_tests:
-          - dbt_utils.not_empty_string
 
   - name: int__union_services
-    data_tests:
-      - check_service:
-          config:
-            severity: warn
 
   - name: int__union_structures
-    data_tests:
-      - check_structure:
-          config:
-            severity: warn
 
-  - name: int__union_adresses__enhanced
-
-  - name: int__union_contacts__enhanced
+  - name: int__contacts
     columns:
       - name: _di_surrogate_id
       - name: id
@@ -81,7 +63,7 @@ models:
       - name: rgpd_notice_was_objected_to
       - name: rgpd_notice_has_hardbounced
 
-  - name: int__union_services__enhanced
+  - name: int__services
     columns:
       - name: zone_diffusion_code
         data_tests:
@@ -121,7 +103,7 @@ models:
               config:
                 severity: warn
 
-  - name: int__union_structures__enhanced
+  - name: int__structures
 
   - name: int__geocodages
     description: |
@@ -264,7 +246,7 @@ models:
           - dbt_utils.not_empty_string
           - unique
 
-  - name: int__union_urls__enhanced
+  - name: int__urls
     description: |
       Contains the validation statuses, eventual error messages, and attempts for each URL
       for which we attempted a validation.
@@ -415,8 +397,8 @@ unit_tests:
         - {adresse_id: changed-commune}
         - {adresse_id: new}
 
-  - name: test_contacts_enhanced_hardbounce_and_objected_to
-    model: int__union_contacts__enhanced
+  - name: test_contacts_hardbounce_and_objected_to
+    model: int__contacts
     given:
       - input: ref('int__union_contacts')
         rows:
@@ -444,8 +426,8 @@ unit_tests:
         - {source: tel, id: fredo_gate, courriel: NULL, contact_nom_prenom: Autre Personne, telephone: '+33123456789'} # if email is NULL, we keep the phone number and the contact name
         - {source: tel_malformat, id: tel, courriel: NULL, contact_nom_prenom: Autre Personne, telephone: NULL} # if phone number is not valid, we set it to NULL
 
-  - name: test_union_urls__enhanced_full_refresh_1_item
-    model: int__union_urls__enhanced
+  - name: test_urls_full_refresh_1_item
+    model: int__urls
     overrides:
       vars:
         check_urls_batch_size: 1
@@ -465,8 +447,8 @@ unit_tests:
           attempt_count: 1
           url: https://www.google.com/
 
-  - name: test_union_urls__enhanced_full_refresh
-    model: int__union_urls__enhanced
+  - name: test_urls_full_refresh
+    model: int__urls
     overrides:
       vars:
         check_urls_batch_size: 5

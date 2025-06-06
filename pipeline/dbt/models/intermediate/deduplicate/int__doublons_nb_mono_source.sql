@@ -8,7 +8,6 @@ WITH groups AS (
     HAVING COUNT(*) >= 2
 ),
 
-
 counts AS (
     SELECT
         source,

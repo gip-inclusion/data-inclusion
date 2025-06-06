@@ -68,31 +68,31 @@ final AS (
                 JSONB_AGG(
                     JSONB_OBJECT(
                         ARRAY[
-                            'id', adresses._di_surrogate_id,
-                            'adresse', adresses.adresse,
+                            'id', input_adresses._di_surrogate_id,
+                            'adresse', input_adresses.adresse,
                             -- use the code postal if it exists
                             -- unfortunately, it's impossible to test in unit tests
                             'code_postal', COALESCE(codes_postaux.code_postal, ''),
-                            'code_insee', adresses.code_insee,
-                            'commune', adresses.commune
+                            'code_insee', input_adresses.code_insee,
+                            'commune', input_adresses.commune
                         ]
                     )
                 )
-            FROM adresses
-            LEFT JOIN codes_postaux ON adresses.code_postal = codes_postaux.code_postal
+            FROM adresses AS input_adresses
+            LEFT JOIN codes_postaux ON input_adresses.code_postal = codes_postaux.code_postal
             {% if is_incremental() %}
             -- then only geocode new or changed rows
-                LEFT JOIN {{ this }} ON adresses._di_surrogate_id = {{ this }}.adresse_id
+                LEFT JOIN {{ this }} ON input_adresses._di_surrogate_id = {{ this }}.adresse_id
                 WHERE
                     -- new rows
                     {{ this }}.adresse_id IS NULL
                     -- previously failed rows
                     OR {{ this }}.score IS NULL
                     -- changed rows
-                    OR {{ this }}.input_adresse != adresses.adresse
-                    OR {{ this }}.input_code_postal != adresses.code_postal
-                    OR {{ this }}.input_code_insee != adresses.code_insee
-                    OR {{ this }}.input_commune != adresses.commune
+                    OR {{ this }}.input_adresse != input_adresses.adresse
+                    OR {{ this }}.input_code_postal != input_adresses.code_postal
+                    OR {{ this }}.input_code_insee != input_adresses.code_insee
+                    OR {{ this }}.input_commune != input_adresses.commune
             {% endif %}
         )
     ) AS geocodings ON adresses._di_surrogate_id = geocodings.id

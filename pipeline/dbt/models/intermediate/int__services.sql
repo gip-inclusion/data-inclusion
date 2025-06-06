@@ -3,7 +3,7 @@ WITH services AS (
 ),
 
 structures AS (
-    SELECT * FROM {{ ref('int__union_structures__enhanced') }}
+    SELECT * FROM {{ ref('int__structures') }}
 ),
 
 departements AS (
@@ -11,11 +11,11 @@ departements AS (
 ),
 
 contacts AS (
-    SELECT * FROM {{ ref('int__union_contacts__enhanced') }}
+    SELECT * FROM {{ ref('int__contacts') }}
 ),
 
 adresses AS (
-    SELECT * FROM {{ ref('int__union_adresses__enhanced') }}
+    SELECT * FROM {{ ref('int__adresses') }}
 ),
 
 adresses_with_code_departement AS (
