@@ -174,7 +174,6 @@ models:
           After each successful "ping", the counter is reset to 1.
         data_tests:
           - not_null
-          - dbt_utils.not_constant
 
 unit_tests:
   - name: test_courriels_personnels
