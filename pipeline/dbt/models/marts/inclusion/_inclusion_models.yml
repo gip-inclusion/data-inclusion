@@ -29,14 +29,8 @@ models:
         data_type: text
       - name: code_postal
         data_type: text
-        constraints:
-          - type: check
-            expression: '(CHECK_CODE_POSTAL(code_postal))'
       - name: code_insee
         data_type: text
-        constraints:
-          - type: check
-            expression: '(CHECK_CODE_INSEE(code_insee))'
       - name: adresse
         data_type: text
       - name: complement_adresse
@@ -211,14 +205,8 @@ models:
         data_type: text
       - name: code_postal
         data_type: text
-        constraints:
-          - type: check
-            expression: '(CHECK_CODE_POSTAL(code_postal))'
       - name: code_insee
         data_type: text
-        constraints:
-          - type: check
-            expression: '(CHECK_CODE_INSEE(code_insee))'
       - name: adresse
         data_type: text
       - name: complement_adresse
