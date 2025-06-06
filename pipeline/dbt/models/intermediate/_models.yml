@@ -198,6 +198,13 @@ models:
           - dbt_utils.accepted_range:
               min_value: 0
               max_value: 1
+      - name: schema_version
+        data_tests:
+          - not_null
+          - accepted_values:
+              values:
+                - v0
+                - v1
 
   - name: int__courriels_personnels
     columns:
