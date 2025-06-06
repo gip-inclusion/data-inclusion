@@ -1,4 +1,3 @@
-import io
 import logging
 from pathlib import Path
 from typing import Optional
@@ -9,13 +8,6 @@ logger = logging.getLogger(__name__)
 
 def safe_urljoin(base, path):
     return urljoin(base, path) if base is not None else None
-
-
-def log_df_info(df, logger: logging.Logger = logger):
-    buf = io.StringIO()
-    df.info(buf=buf)
-    for line in buf.getvalue().splitlines():
-        logger.info(line, stacklevel=2)
 
 
 def df_clear_nan(df):
