@@ -25,6 +25,7 @@ scores AS (
         criteres.service_id  AS "service_id",
         criteres.score_ligne AS "score"
     FROM criteres
+    WHERE criteres.schema_version = 'v0'
 ),
 
 final AS (
