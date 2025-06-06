@@ -1,0 +1,14 @@
+version: 2
+
+sources:
+  - name: france_travail
+    schema: france_travail
+    meta:
+      is_provider: true
+    tables:
+      - name: agences
+        meta:
+          kind: structure
+      - name: services
+        meta:
+          kind: service
