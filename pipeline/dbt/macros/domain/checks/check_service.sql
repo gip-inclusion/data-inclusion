@@ -41,6 +41,7 @@ DECLARE
 BEGIN
     {% set checks = [
             ("id", "id IS NOT NULL"),
+            ("date_maj", "date_maj IS NOT NULL"),
             ("structure_id", "structure_id IS NOT NULL"),
             ("source", "source IS NOT NULL"),
             ("nom", "nom IS NOT NULL AND LENGTH(nom) <= 150 AND LENGTH(nom) >= 3 AND nom !~ '(?<!etc)\.$'"),
