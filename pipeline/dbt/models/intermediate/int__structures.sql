@@ -3,14 +3,14 @@ WITH structures AS (
 ),
 
 adresses AS (
-    SELECT * FROM {{ ref('int__union_adresses__enhanced') }}
+    SELECT * FROM {{ ref('int__adresses') }}
 ),
 
 valid_site_web AS (
     SELECT
         input_url,
         "url"
-    FROM {{ ref('int__union_urls__enhanced') }}
+    FROM {{ ref('int__urls') }}
     WHERE status_code > 0
 )
 

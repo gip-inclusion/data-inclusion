@@ -1,5 +1,5 @@
 WITH structures AS (
-    SELECT * FROM {{ ref('int__union_structures__enhanced') }}
+    SELECT * FROM {{ ref('int__structures') }}
 ),
 
 courriels_personnels AS (
@@ -21,7 +21,7 @@ final AS (
         {{
             dbt_utils.star(
                 relation_alias='structures',
-                from=ref('int__union_structures__enhanced'),
+                from=ref('int__structures'),
                 except=[
                     '_di_adresse_surrogate_id',
                     'adresse_id',
