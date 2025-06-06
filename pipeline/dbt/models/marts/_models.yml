@@ -1,7 +1,7 @@
 version: 2
 
 models:
-  - name: marts_inclusion__structures
+  - name: marts__structures
     latest_version: 0
     config:
       indexes:
@@ -95,7 +95,7 @@ models:
             exclude:
               - thematiques
 
-  - name: marts_inclusion__structures_labels_nationaux
+  - name: marts__structures_labels_nationaux
     config:
       indexes:
         - columns: ['value']
@@ -105,7 +105,7 @@ models:
         constraints:
           - type: not_null
           - type: foreign_key
-            to: ref('marts_inclusion__structures')
+            to: ref('marts__structures')
             to_columns: [_di_surrogate_id]
       - name: value
         data_type: text
@@ -115,7 +115,7 @@ models:
             to: ref('labels_nationaux')
             to_columns: [value]
 
-  - name: marts_inclusion__structures_thematiques
+  - name: marts__structures_thematiques
     config:
       indexes:
         - columns: ['value']
@@ -125,7 +125,7 @@ models:
         constraints:
           - type: not_null
           - type: foreign_key
-            to: ref('marts_inclusion__structures')
+            to: ref('marts__structures')
             to_columns: [_di_surrogate_id]
       - name: value
         data_type: text
@@ -135,7 +135,7 @@ models:
             to: ref('thematiques')
             to_columns: [value]
 
-  - name: marts_inclusion__services
+  - name: marts__services
     latest_version: 0
     config:
       indexes:
@@ -157,7 +157,7 @@ models:
         constraints:
           - type: not_null
           - type: foreign_key
-            to: ref('marts_inclusion__structures')
+            to: ref('marts__structures')
             to_columns: [_di_surrogate_id]
       - name: id
         data_type: text
@@ -279,7 +279,7 @@ models:
         columns:
           - include: all
 
-  - name: marts_inclusion__services_frais
+  - name: marts__services_frais
     config:
       indexes:
         - columns: ['value']
@@ -289,7 +289,7 @@ models:
         constraints:
           - type: not_null
           - type: foreign_key
-            to: ref('marts_inclusion__services')
+            to: ref('marts__services')
             to_columns: [_di_surrogate_id]
       - name: value
         data_type: text
@@ -299,7 +299,7 @@ models:
             to: ref('frais')
             to_columns: [value]
 
-  - name: marts_inclusion__services_justificatifs
+  - name: marts__services_justificatifs
     config:
       indexes:
         - columns: ['value']
@@ -309,14 +309,14 @@ models:
         constraints:
           - type: not_null
           - type: foreign_key
-            to: ref('marts_inclusion__services')
+            to: ref('marts__services')
             to_columns: [_di_surrogate_id]
       - name: value
         data_type: text
         constraints:
           - type: not_null
 
-  - name: marts_inclusion__services_modes_accueil
+  - name: marts__services_modes_accueil
     config:
       indexes:
         - columns: ['value']
@@ -326,7 +326,7 @@ models:
         constraints:
           - type: not_null
           - type: foreign_key
-            to: ref('marts_inclusion__services')
+            to: ref('marts__services')
             to_columns: [_di_surrogate_id]
       - name: value
         data_type: text
@@ -336,7 +336,7 @@ models:
             to: ref('modes_accueil')
             to_columns: [value]
 
-  - name: marts_inclusion__services_modes_orientation_accompagnateur
+  - name: marts__services_modes_orientation_accompagnateur
     config:
       indexes:
         - columns: ['value']
@@ -346,7 +346,7 @@ models:
         constraints:
           - type: not_null
           - type: foreign_key
-            to: ref('marts_inclusion__services')
+            to: ref('marts__services')
             to_columns: [_di_surrogate_id]
       - name: value
         data_type: text
@@ -356,7 +356,7 @@ models:
             to: ref('modes_orientation_accompagnateur')
             to_columns: [value]
 
-  - name: marts_inclusion__services_modes_orientation_beneficiaire
+  - name: marts__services_modes_orientation_beneficiaire
     config:
       indexes:
         - columns: ['value']
@@ -366,7 +366,7 @@ models:
         constraints:
           - type: not_null
           - type: foreign_key
-            to: ref('marts_inclusion__services')
+            to: ref('marts__services')
             to_columns: [_di_surrogate_id]
       - name: value
         data_type: text
@@ -376,7 +376,7 @@ models:
             to: ref('modes_orientation_beneficiaire')
             to_columns: [value]
 
-  - name: marts_inclusion__services_profils
+  - name: marts__services_profils
     config:
       indexes:
         - columns: ['value']
@@ -386,7 +386,7 @@ models:
         constraints:
           - type: not_null
           - type: foreign_key
-            to: ref('marts_inclusion__services')
+            to: ref('marts__services')
             to_columns: [_di_surrogate_id]
       - name: value
         data_type: text
@@ -396,7 +396,7 @@ models:
             to: ref('profils')
             to_columns: [value]
 
-  - name: marts_inclusion__services_pre_requis
+  - name: marts__services_pre_requis
     config:
       indexes:
         - columns: ['value']
@@ -406,14 +406,14 @@ models:
         constraints:
           - type: not_null
           - type: foreign_key
-            to: ref('marts_inclusion__services')
+            to: ref('marts__services')
             to_columns: [_di_surrogate_id]
       - name: value
         data_type: text
         constraints:
           - type: not_null
 
-  - name: marts_inclusion__services_thematiques
+  - name: marts__services_thematiques
     config:
       indexes:
         - columns: ['value']
@@ -423,7 +423,7 @@ models:
         constraints:
           - type: not_null
           - type: foreign_key
-            to: ref('marts_inclusion__services')
+            to: ref('marts__services')
             to_columns: [_di_surrogate_id]
       - name: value
         data_type: text
@@ -433,7 +433,7 @@ models:
             to: ref('thematiques')
             to_columns: [value]
 
-  - name: marts_inclusion__services_types
+  - name: marts__services_types
     config:
       indexes:
         - columns: ['value']
@@ -443,7 +443,7 @@ models:
         constraints:
           - type: not_null
           - type: foreign_key
-            to: ref('marts_inclusion__services')
+            to: ref('marts__services')
             to_columns: [_di_surrogate_id]
       - name: value
         data_type: text

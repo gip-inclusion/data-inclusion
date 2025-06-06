@@ -38,12 +38,10 @@ def export_dataset(
             # for retro-compatibility, we keep the old key structure in v0
             if version == "v0":
                 key = (prefix / resource).with_suffix(".parquet")
-                query = f"SELECT * FROM public_marts.marts_inclusion__{resource}"
+                query = f"SELECT * FROM public_marts.marts__{resource}"
             else:
                 key = (prefix / version / resource).with_suffix(".parquet")
-                query = (
-                    f"SELECT * FROM public_marts.marts_inclusion__{resource}_{version}"
-                )
+                query = f"SELECT * FROM public_marts.marts__{resource}_{version}"
             print(f"Downloading data from query='{query}'")
             df = pg_hook.get_pandas_df(sql=query)
             df.info()

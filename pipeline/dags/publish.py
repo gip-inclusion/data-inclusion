@@ -61,7 +61,7 @@ def _publish_to_datagouv():
 
     for resource in ["structures", "services"]:
         df = pg_hook.get_pandas_df(
-            sql=f"SELECT * FROM public_marts.marts_inclusion__{resource}_v0",
+            sql=f"SELECT * FROM public_marts.marts__{resource}_v0",
         )
 
         # remove closed sources
