@@ -2,7 +2,7 @@
 
 DROP FUNCTION IF EXISTS processings.score;
 
-CREATE OR REPLACE FUNCTION processings.score(data JSONB)
+CREATE OR REPLACE FUNCTION processings.score(schema_version TEXT, data JSONB)
 RETURNS
     TABLE(
         score_ligne FLOAT,
@@ -15,7 +15,10 @@ import json
 
 import pydantic
 
-from data_inclusion.schema import Service, score_qualite
+if schema_version == "v1":
+    from data_inclusion.schema.v1 import Service, score_qualite
+else:
+    from data_inclusion.schema.v0 import Service, score_qualite
 
 
 # TODO(vmttn): run score *after* pydantic validation then remove this try/except
