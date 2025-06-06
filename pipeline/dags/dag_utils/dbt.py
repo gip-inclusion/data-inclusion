@@ -3,10 +3,8 @@ from typing import Optional
 
 from airflow.models import Variable
 from airflow.operators import bash
-from airflow.utils.task_group import TaskGroup
 from airflow.utils.trigger_rule import TriggerRule
 
-from dag_utils.sources import SOURCES_CONFIGS
 from dag_utils.virtualenvs import DBT_PYTHON_BIN_PATH
 
 
@@ -17,7 +15,6 @@ def dbt_operator_factory(
     select: Optional[str] = None,
     exclude: Optional[str] = None,
     trigger_rule: TriggerRule = TriggerRule.ALL_SUCCESS,
-    exclude_unit_tests: bool = False,
 ) -> bash.BashOperator:
     """A basic factory for bash operators operating dbt commands."""
 
@@ -29,7 +26,7 @@ def dbt_operator_factory(
     if dbt_vars is not None:
         dbt_vars = json.dumps(dbt_vars)
         dbt_args += f" --vars '{dbt_vars}'"
-    if exclude_unit_tests:
+    if Variable.get("ENVIRONMENT", None) == "prod":
         dbt_args += " --exclude-resource-type unit_test"
 
     return bash.BashOperator(
@@ -48,65 +45,4 @@ def dbt_operator_factory(
             "POSTGRES_DB": "{{ conn.pg.schema }}",
         },
         cwd=Variable.get("DBT_PROJECT_DIR"),
-    )
-
-
-def get_staging_tasks():
-    task_list = []
-
-    for source_id in sorted(SOURCES_CONFIGS):
-        dbt_source_id = source_id.replace("-", "_")
-
-        stg_selector = f"path:models/staging/sources/**/*stg_{dbt_source_id}__*.sql"
-        int_selector = (
-            f"path:models/intermediate/sources/**/*int_{dbt_source_id}__*.sql"
-        )
-
-        with TaskGroup(group_id=source_id) as source_task_group:
-            dbt_run_staging = dbt_operator_factory(
-                task_id="dbt_run_staging",
-                command="run",
-                select=stg_selector,
-            )
-
-            dbt_test_staging = dbt_operator_factory(
-                task_id="dbt_test_staging",
-                command="test",
-                select=stg_selector,
-            )
-
-            dbt_build_intermediate_tmp = dbt_operator_factory(
-                task_id="dbt_build_intermediate_tmp",
-                command="build",
-                select=int_selector,
-                dbt_vars={"build_intermediate_tmp": True},
-            )
-
-            dbt_run_intermediate = dbt_operator_factory(
-                task_id="dbt_run_intermediate",
-                command="run",
-                select=int_selector,
-            )
-
-            (
-                dbt_run_staging
-                >> dbt_test_staging
-                >> dbt_build_intermediate_tmp
-                >> dbt_run_intermediate
-            )
-
-        task_list += [source_task_group]
-
-    return task_list
-
-
-def get_intermediate_tasks():
-    exclude_unit_tests = True if Variable.get("ENVIRONMENT", None) == "prod" else False
-    return dbt_operator_factory(
-        task_id="dbt_build_intermediate",
-        command="build",
-        select=" ".join(["intermediate", "marts"]),
-        exclude=" ".join(["intermediate.quality", "intermediate.sources"]),
-        trigger_rule=TriggerRule.ALL_DONE,
-        exclude_unit_tests=exclude_unit_tests,
     )
