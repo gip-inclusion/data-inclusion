@@ -1,11 +1,45 @@
 version: 2
 
 models:
+  - name: int__erreurs_validation
+    columns:
+      - name: _di_surrogate_id
+        data_tests:
+          - not_null
+          - relationships:
+              to: ref('int__structures')
+              field: _di_surrogate_id
+              config:
+                where: resource_type = 'structure'
+          - relationships:
+              to: ref('int__services')
+              field: _di_surrogate_id
+              config:
+                where: resource_type = 'service'
+      - name: source
+        data_tests:
+          - not_null
+          - dbt_utils.not_empty_string
+      - name: id
+        data_tests:
+          - not_null
+          - dbt_utils.not_empty_string
+      - name: field
+        data_tests:
+          - not_null
+          - dbt_utils.not_empty_string
+      - name: value
+      - name: resource_type
+        data_tests:
+          - not_null
+          - accepted_values:
+              values:
+                - service
+                - structure
+
   - name: int__union_adresses
     data_tests:
       - check_adresse:
-          include:
-            - _di_surrogate_id
           config:
             severity: warn
 
@@ -18,16 +52,12 @@ models:
   - name: int__union_services
     data_tests:
       - check_service:
-          include:
-            - _di_surrogate_id
           config:
             severity: warn
 
   - name: int__union_structures
     data_tests:
       - check_structure:
-          include:
-            - _di_surrogate_id
           config:
             severity: warn
 
