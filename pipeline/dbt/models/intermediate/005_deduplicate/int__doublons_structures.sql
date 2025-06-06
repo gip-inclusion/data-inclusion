@@ -1,5 +1,6 @@
 WITH structures AS (
     SELECT * FROM {{ ref('int__structures') }}
+    WHERE nom IS NOT NULL
 ),
 
 final AS (
