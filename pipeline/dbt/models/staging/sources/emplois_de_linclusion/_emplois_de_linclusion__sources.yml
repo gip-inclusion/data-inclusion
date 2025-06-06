@@ -1,0 +1,11 @@
+version: 2
+
+sources:
+  - name: emplois_de_linclusion
+    schema: emplois_de_linclusion
+    meta:
+      is_provider: true
+    tables:
+      - name: organisations
+        meta:
+          kind: structure

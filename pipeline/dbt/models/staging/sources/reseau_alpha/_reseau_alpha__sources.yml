@@ -1,0 +1,14 @@
+version: 2
+
+sources:
+  - name: reseau_alpha
+    schema: reseau_alpha
+    meta:
+      is_provider: true
+    tables:
+      - name: structures
+        meta:
+          kind: structure
+      - name: formations
+        meta:
+          kind: service
