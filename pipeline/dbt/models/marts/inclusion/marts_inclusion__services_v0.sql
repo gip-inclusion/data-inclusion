@@ -1,7 +1,9 @@
--- depends_on: {{ ref('marts_inclusion__structures', version=0) }}
-
 WITH services AS (
     SELECT * FROM {{ ref('int__union_services__enhanced') }}
+),
+
+structures AS (
+    SELECT * FROM {{ ref('marts_inclusion__structures', version=1) }}
 ),
 
 courriels_personnels AS (
@@ -10,6 +12,12 @@ courriels_personnels AS (
 
 criteres AS (
     SELECT * FROM {{ ref('int__criteres_qualite') }}
+),
+
+erreurs AS (
+    SELECT DISTINCT _di_surrogate_id
+    FROM {{ ref('int__erreurs_validation') }}
+    WHERE resource_type = 'service' AND schema_version = 'v0'
 ),
 
 scores AS (
@@ -37,11 +45,16 @@ final AS (
     FROM services
     LEFT JOIN courriels_personnels ON services.courriel = courriels_personnels.courriel
     LEFT JOIN scores ON services._di_surrogate_id = scores.service_id
-    -- TODO(vmttn): services that pass SQL validation, but fail pydantic validation
-    -- don't have a score... scoring must be done on pydantic validated data
-    -- this filter is a temporary workaround until validation is done consistently
-    -- with pydantic
-    WHERE scores.score IS NOT NULL
+    LEFT JOIN erreurs ON services._di_surrogate_id = erreurs._di_surrogate_id
+    LEFT JOIN structures ON services._di_structure_surrogate_id = structures._di_surrogate_id
+    WHERE
+        -- TODO(vmttn): services that pass SQL validation, but fail pydantic validation
+        -- don't have a score... scoring must be done on pydantic validated data
+        -- this filter is a temporary workaround until validation is done consistently
+        -- with pydantic
+        scores.score IS NOT NULL
+        AND erreurs._di_surrogate_id IS NULL
+        AND structures._di_surrogate_id IS NOT NULL
 )
 
 SELECT * FROM final

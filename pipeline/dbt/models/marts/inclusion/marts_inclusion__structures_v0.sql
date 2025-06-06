@@ -10,6 +10,12 @@ doublons AS (
     SELECT * FROM {{ ref('int__doublons_structures') }}
 ),
 
+erreurs AS (
+    SELECT DISTINCT _di_surrogate_id
+    FROM {{ ref('int__erreurs_validation') }}
+    WHERE resource_type = 'structure' AND schema_version = 'v0'
+),
+
 final AS (
     SELECT
         {{
@@ -28,6 +34,8 @@ final AS (
     FROM structures
     LEFT JOIN doublons ON structures._di_surrogate_id = doublons.structure_id
     LEFT JOIN courriels_personnels ON structures.courriel = courriels_personnels.courriel
+    LEFT JOIN erreurs ON structures._di_surrogate_id = erreurs._di_surrogate_id
+    WHERE erreurs._di_surrogate_id IS NULL
 )
 
 SELECT * FROM final
