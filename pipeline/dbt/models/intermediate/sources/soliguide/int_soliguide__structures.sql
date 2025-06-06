@@ -1,6 +1,6 @@
 {{
     config(
-        pre_hook="{{ create_udf_soliguide__new_hours_to_osm_opening_hours() }}"
+        pre_hook="{{ udf__soliguide_to_osm_opening_hours() }}"
     )
 }}
 
