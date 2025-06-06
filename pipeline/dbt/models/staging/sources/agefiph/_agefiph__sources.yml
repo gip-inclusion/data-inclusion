@@ -1,0 +1,14 @@
+version: 2
+
+sources:
+  - name: agefiph
+    schema: agefiph
+    meta:
+      is_provider: true
+    tables:
+      - name: services
+        meta:
+          kind: service
+      - name: structures
+        meta:
+          kind: structure
