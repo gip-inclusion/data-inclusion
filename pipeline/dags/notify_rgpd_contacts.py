@@ -1,13 +1,14 @@
 import pendulum
 
-import airflow
-from airflow.operators import empty, python
+from airflow.decorators import dag, task
+from airflow.operators import empty
 
 from dag_utils import sentry
 from dag_utils.virtualenvs import PYTHON_BIN_PATH
 
 
-def _send_rgpd_notice():
+@task.external_python(python=str(PYTHON_BIN_PATH))
+def send_rgpd_notice():
     import time
 
     from airflow.models import Variable
@@ -46,21 +47,15 @@ def _send_rgpd_notice():
     )
 
 
-with airflow.DAG(
-    dag_id="notify_rgpd_contacts",
+@dag(
     description="Sends RGPD notifications to DI users",
     start_date=pendulum.datetime(2023, 11, 1),
     default_args=sentry.notify_failure_args(),
     schedule="@monthly",
     catchup=False,
-) as dag:
+)
+def notify_rgpd_contacts():
     start = empty.EmptyOperator(task_id="start")
     end = empty.EmptyOperator(task_id="end")
 
-    send_rgpd_notice = python.ExternalPythonOperator(
-        task_id="send_rgpd_notice",
-        python=str(PYTHON_BIN_PATH),
-        python_callable=_send_rgpd_notice,
-    )
-
-    (start >> send_rgpd_notice >> end)
+    start >> send_rgpd_notice() >> end

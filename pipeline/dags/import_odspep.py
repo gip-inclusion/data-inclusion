@@ -1,13 +1,14 @@
 import pendulum
 
-import airflow
-from airflow.operators import empty, python
+from airflow.decorators import dag, task
+from airflow.operators import empty
 
 from dag_utils import date, sentry
 from dag_utils.virtualenvs import PYTHON_BIN_PATH
 
 
-def _import_dataset(
+@task.external_python(python=str(PYTHON_BIN_PATH))
+def import_dataset(
     run_id: str,
     logical_date,
 ):
@@ -49,21 +50,18 @@ def _import_dataset(
             )
 
 
-with airflow.DAG(
-    dag_id="import_odspep",
+@dag(
     start_date=pendulum.datetime(2022, 1, 1, tz=date.TIME_ZONE),
     default_args=sentry.notify_failure_args(),
     schedule="@once",
     catchup=False,
     tags=["source"],
-) as dag:
+)
+def import_odspep():
     start = empty.EmptyOperator(task_id="start")
     end = empty.EmptyOperator(task_id="end")
 
-    import_dataset = python.ExternalPythonOperator(
-        task_id="import",
-        python=str(PYTHON_BIN_PATH),
-        python_callable=_import_dataset,
-    )
+    start >> import_dataset() >> end
 
-    start >> import_dataset >> end
+
+import_odspep()

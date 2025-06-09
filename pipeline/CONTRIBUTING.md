@@ -56,7 +56,7 @@ In order to prevent conflicts:
 
 * tasks requirements are compiled separately
 * cli based tasks (like dbt) are also compiled separately
-* python tasks run in dedicated virtuale envs using `ExternalPythonOperator`
+* python tasks run in dedicated virtuale envs using `python.external_python`
 * python tasks requirements must comply to airflow constraints
 
 
