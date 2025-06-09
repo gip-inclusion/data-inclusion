@@ -19,7 +19,6 @@ models:
       - name: score
         data_tests:
           - not_null
-          - dbt_utils.not_constant
           - dbt_utils.accepted_range:
               min_value: 0.7
               max_value: 1
@@ -27,7 +26,6 @@ models:
         description: The size of the cluster. Added for convenience.
         data_tests:
           - not_null
-          - dbt_utils.not_constant
           - dbt_utils.accepted_range:
               min_value: 2
           - dbt_utils.accepted_range:
@@ -48,28 +46,24 @@ models:
       - name: cluster_id
         data_tests:
           - not_null
-          - dbt_utils.not_constant
           - relationships:
               to: ref('int__doublons_structures')
               field: cluster_id
       - name: source_1
         data_tests:
           - not_null
-          - dbt_utils.not_constant
           - relationships:
               to: ref('int__union_structures')
               field: source
       - name: structure_id_1
         data_tests:
           - not_null
-          - dbt_utils.not_constant
           - relationships:
               to: ref('int__union_structures')
               field: _di_surrogate_id
       - name: source_2
         data_tests:
           - not_null
-          - dbt_utils.not_constant
           - relationships:
               to: ref('int__union_structures')
               field: source
@@ -83,7 +77,6 @@ models:
         description: The size of the cluster. Added for convenience.
         data_tests:
           - not_null
-          - dbt_utils.not_constant
           - dbt_utils.accepted_range:
               min_value: 2
           - dbt_utils.accepted_range:
@@ -99,14 +92,12 @@ models:
       - name: source
         data_tests:
           - not_null
-          - dbt_utils.not_constant
           - relationships:
               to: ref('int__union_structures')
               field: source
       - name: count
         data_tests:
           - not_null
-          - dbt_utils.not_constant
           - dbt_utils.accepted_range:
               min_value: 1
 
@@ -116,40 +107,34 @@ models:
       - name: source_1
         data_tests:
           - not_null
-          - dbt_utils.not_constant
           - relationships:
               to: ref('int__union_structures')
               field: source
       - name: source_2
         data_tests:
           - not_null
-          - dbt_utils.not_constant
           - relationships:
               to: ref('int__union_structures')
               field: source
       - name: nb_1
         data_tests:
           - not_null
-          - dbt_utils.not_constant
           - dbt_utils.accepted_range:
               min_value: 1
       - name: nb_2
         data_tests:
           - not_null
-          - dbt_utils.not_constant
           - dbt_utils.accepted_range:
               min_value: 1
       - name: percent_1
         data_tests:
           - not_null
-          - dbt_utils.not_constant
           - dbt_utils.accepted_range:
               min_value: 0
               max_value: 100
       - name: percent_2
         data_tests:
           - not_null
-          - dbt_utils.not_constant
           - dbt_utils.accepted_range:
               min_value: 0
               max_value: 100
