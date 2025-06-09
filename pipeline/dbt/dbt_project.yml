@@ -16,6 +16,8 @@ clean-targets:
   - "dbt_packages"
 
 flags:
+  send_anonymous_usage_stats: false
+
   # configure which tests dbt should run for the selected nodes.
   # given that we build subsets of the DAG (e..g staging THEN intermediate),
   # we cannot use the default strategy `eager`, that would run tests on unbuilt
