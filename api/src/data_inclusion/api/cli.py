@@ -17,7 +17,7 @@ def cli(verbose: int):
     logging.basicConfig(level=[logging.INFO, logging.INFO, logging.DEBUG][verbose])
 
 
-@cli.command(name="generate_token")
+@cli.command(name="generate-token")
 @click.argument("email", type=click.STRING)
 @click.option(
     "--admin",
@@ -34,13 +34,13 @@ def _generate_token_for_user(
     click.echo(auth.create_access_token(subject=email, admin=admin))
 
 
-@cli.command(name="load_inclusion_data")
+@cli.command(name="load-inclusion-data")
 def _load_inclusion_data():
     """Load the latest inclusion data"""
     click.echo(load_inclusion_data())
 
 
-@cli.command(name="import_communes")
+@cli.command(name="import-communes")
 def _import_communes():
     """Import the communes from the Decoupage Administratif API"""
     click.echo(import_communes())

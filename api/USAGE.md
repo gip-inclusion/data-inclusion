@@ -6,9 +6,9 @@
 
 ## `data-inclusion-api` cli
 
-### `generate_token`
+### `generate-token`
 
 ```bash
 # Generate a token that will be associated with the given USERNAME.
-data-inclusion-api generate_token USERNAME
+data-inclusion-api generate-token USERNAME
 ```
