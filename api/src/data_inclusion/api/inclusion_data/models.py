@@ -15,7 +15,9 @@ from data_inclusion.api.decoupage_administratif.models import Commune
 class HasAddress:
     adresse: Mapped[str | None]
     complement_adresse: Mapped[str | None]
-    code_insee: Mapped[str | None] = mapped_column(sqla.ForeignKey(Commune.code))
+    code_insee: Mapped[str | None] = mapped_column(
+        sqla.ForeignKey(Commune.code, ondelete="CASCADE")
+    )
     code_postal: Mapped[str | None]
     commune: Mapped[str | None]
     longitude: Mapped[float | None]
@@ -73,7 +75,7 @@ class Service(HasAddress, Base):
     # internal metadata
     _di_surrogate_id: Mapped[str] = mapped_column(primary_key=True)
     _di_structure_surrogate_id: Mapped[str] = mapped_column(
-        sqla.ForeignKey(Structure._di_surrogate_id)
+        sqla.ForeignKey(Structure._di_surrogate_id, ondelete="CASCADE")
     )
     structure: Mapped[Structure] = relationship(back_populates="services")
 
