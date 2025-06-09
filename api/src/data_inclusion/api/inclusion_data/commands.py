@@ -1,18 +1,15 @@
 import json
 import logging
-from datetime import timedelta
 from pathlib import Path
 
-import minio
 import numpy as np
 import pandas as pd
 import pydantic
 import sentry_sdk
 import sqlalchemy as sqla
-from furl import furl
+from sqlalchemy import orm
 
 from data_inclusion.api.config import settings
-from data_inclusion.api.core import db
 from data_inclusion.api.inclusion_data import models
 from data_inclusion.schema import v0 as schema
 
@@ -22,71 +19,6 @@ sentry_sdk.init(
     dsn=settings.SENTRY_DSN,
     environment=settings.ENV,
 )
-
-
-class DatalakeClient:
-    MARTS_PREFIX = "data/marts"
-
-    def __init__(self) -> None:
-        self.bucket_name = settings.DATALAKE_BUCKET_NAME
-
-        endpoint_url = furl(settings.DATALAKE_ENDPOINT_URL)
-        self.s3_client = minio.Minio(
-            endpoint=str(endpoint_url.netloc),
-            access_key=settings.DATALAKE_ACCESS_KEY,
-            secret_key=settings.DATALAKE_SECRET_KEY,
-            secure=endpoint_url.scheme == "https",
-            region="fr-par" if "fr-par" in str(endpoint_url) else None,
-        )
-
-    def get_latest_dataset_path(self) -> Path:
-        object_lists = self.s3_client.list_objects(
-            bucket_name=self.bucket_name,
-            prefix=self.MARTS_PREFIX,
-            recursive=True,
-        )
-
-        object_lists = sorted(object_lists, key=lambda o: o.object_name)
-        return Path(object_lists[-1].object_name).parent
-
-    def get_dataset_presigned_urls(self) -> dict:
-        latest_dataset_path = self.get_latest_dataset_path()
-
-        logger.info("Using %s", latest_dataset_path)
-
-        object_lists = self.s3_client.list_objects(
-            self.bucket_name,
-            prefix=str(latest_dataset_path),
-            recursive=True,
-        )
-
-        presigned_urls = {}
-
-        for object in object_lists:
-            filename = Path(object.object_name).name
-            presigned_url = self.s3_client.get_presigned_url(
-                method="GET",
-                bucket_name=self.bucket_name,
-                object_name=object.object_name,
-                expires=timedelta(minutes=5),
-            )
-            presigned_urls[filename] = presigned_url
-
-        return presigned_urls
-
-
-def fetch_dataset() -> tuple[pd.DataFrame, pd.DataFrame]:
-    datalake_client = DatalakeClient()
-
-    url_by_filename = datalake_client.get_dataset_presigned_urls()
-
-    def df_from_url(url):
-        return pd.read_parquet(url).replace({np.nan: None})
-
-    return (
-        df_from_url(url_by_filename["structures.parquet"]),
-        df_from_url(url_by_filename["services.parquet"]),
-    )
 
 
 def validate_dataset(
@@ -132,15 +64,18 @@ def validate_dataset(
 def prepare_dataset(
     structures_df: pd.DataFrame,
     services_df: pd.DataFrame,
-):
+) -> tuple[pd.DataFrame, pd.DataFrame]:
     service_scores = (
         services_df.groupby("_di_structure_surrogate_id")["score_qualite"]
         .mean()
         .round(2)
     )
 
-    structures_df["score_qualite"] = (
-        structures_df["_di_surrogate_id"].map(service_scores).astype(float).fillna(0.0)
+    structures_df = structures_df.assign(
+        score_qualite=structures_df["_di_surrogate_id"]
+        .map(service_scores)
+        .astype(float)
+        .fillna(0.0)
     )
 
     clusters_df = structures_df[structures_df["cluster_id"].notna()]
@@ -157,7 +92,9 @@ def prepare_dataset(
             if d["_di_surrogate_id"] != row["_di_surrogate_id"]
         ]
 
-    structures_df["doublons"] = structures_df.apply(get_doublons, axis=1)
+    structures_df = structures_df.assign(
+        doublons=structures_df.apply(get_doublons, axis=1)
+    )
 
     clusters_df = (
         structures_df[structures_df["cluster_id"].notna()]
@@ -177,8 +114,8 @@ def prepare_dataset(
         )
     )
 
-    structures_df["cluster_best_duplicate"] = (
-        structures_df["cluster_id"]
+    structures_df = structures_df.assign(
+        cluster_best_duplicate=structures_df["cluster_id"]
         .map(cluster_master_mapping)
         .replace([np.nan], [None])
     )
@@ -186,40 +123,43 @@ def prepare_dataset(
     return structures_df, services_df
 
 
-def load_truncate_insert(
+def load_df_to_table(
     db_session,
+    df: pd.DataFrame,
+    model,
+):
+    """Replace a table with a DataFrame.
+
+    Does not commit the transaction, caller must do it.
+    """
+    db_session.execute(sqla.text(f"DELETE FROM {model.__tablename__}"))
+
+    columns_list = [
+        c
+        for c in sorted(model.__table__.columns, key=lambda c: c.name)
+        # ignore server computed columns
+        if c.server_default is None
+    ]
+
+    df = df.sort_values(by="_di_surrogate_id", ascending=True)
+    df = df[[c.name for c in columns_list]]
+
+    df.to_sql(
+        name=model.__tablename__,
+        con=db_session.connection(),
+        if_exists="append",
+        index=False,
+        dtype={column.name: column.type for column in columns_list},
+    )
+
+
+def load_dataset(
+    db_session: orm.Session,
     structures_df: pd.DataFrame,
     services_df: pd.DataFrame,
 ):
-    db_session.execute(
-        sqla.text(f"""
-            DELETE FROM {models.Service.__tablename__};
-            DELETE FROM {models.Structure.__tablename__};
-        """)
-    )
-
-    for df, model in [
-        (structures_df, models.Structure),
-        (services_df, models.Service),
-    ]:
-        columns_list = [
-            c
-            for c in sorted(model.__table__.columns, key=lambda c: c.name)
-            # ignore server computed columns
-            if c.server_default is None
-        ]
-
-        df = df.sort_values(by="_di_surrogate_id", ascending=True)
-        df = df[[c.name for c in columns_list]]
-
-        df.to_sql(
-            name=model.__tablename__,
-            con=db_session.connection(),
-            if_exists="append",
-            index=False,
-            dtype={column.name: column.type for column in columns_list},
-        )
-
+    load_df_to_table(db_session, structures_df, models.Structure)
+    load_df_to_table(db_session, services_df, models.Service)
     db_session.commit()
 
 
@@ -234,28 +174,40 @@ def load_truncate_insert(
         "timezone": "UTC",
     },
 )
-def load_inclusion_data():
-    logger.info("Fetching data...")
-    structures_df, services_df = fetch_dataset()
+def load_inclusion_data(
+    db_session,
+    path: Path,
+):
+    structures_df, services_df = [
+        pd.read_parquet(path / filename).replace({np.nan: None})
+        for filename in ("structures.parquet", "services.parquet")
+    ]
 
     logger.info("Validating data...")
-    with db.SessionLocal() as db_session:
-        structures_df, services_df = validate_dataset(
-            db_session, structures_df, services_df
-        )
+    structures_df, services_df = validate_dataset(
+        db_session=db_session,
+        structures_df=structures_df,
+        services_df=services_df,
+    )
 
     logger.info("Preparing data...")
-    structures_df, services_df = prepare_dataset(structures_df, services_df)
+    structures_df, services_df = prepare_dataset(
+        structures_df=structures_df,
+        services_df=services_df,
+    )
 
     logger.info("Loading data...")
-    with db.SessionLocal() as db_session:
-        load_truncate_insert(db_session, structures_df, services_df)
+    load_dataset(
+        db_session=db_session,
+        structures_df=structures_df,
+        services_df=services_df,
+    )
 
     logger.info("Vacuuming...")
-    with db.default_db_engine.connect().execution_options(
-        isolation_level="AUTOCOMMIT"
-    ) as connection:
-        connection.execute(
-            sqla.text(f"VACUUM ANALYZE {models.Structure.__tablename__}")
-        )
-        connection.execute(sqla.text(f"VACUUM ANALYZE {models.Service.__tablename__}"))
+    with (
+        db_session.get_bind()
+        .engine.connect()
+        .execution_options(isolation_level="AUTOCOMMIT") as connection
+    ):
+        for model in (models.Structure, models.Service):
+            connection.execute(sqla.text(f"VACUUM ANALYZE {model.__tablename__}"))
