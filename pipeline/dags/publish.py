@@ -1,12 +1,13 @@
 import pendulum
 
-import airflow
-from airflow.operators import empty, python
+from airflow.decorators import dag, task
+from airflow.operators import empty
 
 from dag_utils.virtualenvs import PYTHON_BIN_PATH
 
 
-def _publish_to_datagouv():
+@task.external_python(python=str(PYTHON_BIN_PATH))
+def publish_to_datagouv():
     import io
     import tempfile
 
@@ -88,20 +89,15 @@ def _publish_to_datagouv():
 
 EVERY_MONDAY_AT_2PM = "0 14 * * 1"
 
-with airflow.DAG(
-    dag_id="publish",
+
+@dag(
     description="Publish the consolidated dataset to datagouv",
     start_date=pendulum.datetime(2022, 1, 1),
     schedule=EVERY_MONDAY_AT_2PM,
     catchup=False,
-) as dag:
+)
+def publish():
     start = empty.EmptyOperator(task_id="start")
     end = empty.EmptyOperator(task_id="end")
 
-    publish_to_datagouv = python.ExternalPythonOperator(
-        task_id="publish",
-        python=str(PYTHON_BIN_PATH),
-        python_callable=_publish_to_datagouv,
-    )
-
-    start >> publish_to_datagouv >> end
+    start >> publish_to_datagouv() >> end
