@@ -1,13 +1,14 @@
 import pendulum
 
-import airflow
-from airflow.operators import empty, python
+from airflow.decorators import dag, task
+from airflow.operators import empty
 
 from dag_utils import date
 from dag_utils.virtualenvs import PYTHON_BIN_PATH
 
 
-def _import_stock_etablissement_historique():
+@task.external_python(python=str(PYTHON_BIN_PATH))
+def import_stock_etablissement_historique():
     import pandas as pd
     import sqlalchemy as sqla
 
@@ -48,7 +49,8 @@ def _import_stock_etablissement_historique():
         )
 
 
-def _import_stock_etablissement_liens_succession():
+@task.external_python(python=str(PYTHON_BIN_PATH))
+def import_stock_etablissement_liens_succession():
     import pandas as pd
     import sqlalchemy as sqla
 
@@ -94,7 +96,8 @@ def _import_stock_etablissement_liens_succession():
         )
 
 
-def _import_stock_unite_legale():
+@task.external_python(python=str(PYTHON_BIN_PATH))
+def import_stock_unite_legale():
     import pandas as pd
 
     from airflow.models import Variable
@@ -153,7 +156,8 @@ def _import_stock_unite_legale():
         )
 
 
-def _import_stock_etablissement_geocode():
+@task.external_python(python=str(PYTHON_BIN_PATH))
+def import_stock_etablissement_geocode():
     import geopandas
     import pandas as pd
 
@@ -293,45 +297,23 @@ def _import_stock_etablissement_geocode():
         )
 
 
-with airflow.DAG(
-    dag_id="import_sirene",
+@dag(
     start_date=pendulum.datetime(2022, 1, 1, tz=date.TIME_ZONE),
     schedule=None,
     catchup=False,
     concurrency=1,
-) as dag:
+)
+def import_sirene():
     start = empty.EmptyOperator(task_id="start")
-
-    import_stock_etablissement_historique = python.ExternalPythonOperator(
-        task_id="import_stock_etablissement_historique",
-        python=str(PYTHON_BIN_PATH),
-        python_callable=_import_stock_etablissement_historique,
-    )
-
-    import_stock_etablissement_liens_succession = python.ExternalPythonOperator(
-        task_id="import_stock_etablissement_liens_succession",
-        python=str(PYTHON_BIN_PATH),
-        python_callable=_import_stock_etablissement_liens_succession,
-    )
-
-    import_stock_unite_legale = python.ExternalPythonOperator(
-        task_id="import_stock_unite_legale",
-        python=str(PYTHON_BIN_PATH),
-        python_callable=_import_stock_unite_legale,
-    )
-
-    import_stock_etablissement_geocode = python.ExternalPythonOperator(
-        task_id="import_stock_etablissement_geocode",
-        python=str(PYTHON_BIN_PATH),
-        python_callable=_import_stock_etablissement_geocode,
-    )
+    end = empty.EmptyOperator(task_id="end")
 
     (
         start
         >> [
-            import_stock_etablissement_historique,
-            import_stock_etablissement_liens_succession,
-            import_stock_etablissement_geocode,
-            import_stock_unite_legale,
+            import_stock_etablissement_historique(),
+            import_stock_etablissement_liens_succession(),
+            import_stock_etablissement_geocode(),
+            import_stock_unite_legale(),
         ]
+        >> end
     )

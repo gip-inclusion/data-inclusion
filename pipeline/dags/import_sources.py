@@ -1,14 +1,18 @@
 import pendulum
 
-import airflow
-from airflow.operators import empty, python
+from airflow.decorators import dag, task
+from airflow.operators import empty
 from airflow.utils.task_group import TaskGroup
 
 from dag_utils import date, sentry, sources
 from dag_utils.virtualenvs import PYTHON_BIN_PATH
 
 
-def extract_from_source_to_datalake_bucket(source_id, stream_id, run_id, logical_date):
+@task.external_python(
+    python=str(PYTHON_BIN_PATH),
+    retries=2,
+)
+def extract(source_id, stream_id, run_id, logical_date):
     from dag_utils import s3, sources
 
     source = sources.SOURCES_CONFIGS[source_id]
@@ -34,7 +38,8 @@ def extract_from_source_to_datalake_bucket(source_id, stream_id, run_id, logical
     )
 
 
-def load_from_s3_to_data_warehouse(source_id, stream_id, run_id, logical_date):
+@task.external_python(python=str(PYTHON_BIN_PATH))
+def load(source_id, stream_id, run_id, logical_date):
     import pandas as pd
     import sqlalchemy as sqla
     from sqlalchemy.dialects.postgresql import JSONB
@@ -110,7 +115,7 @@ for source_id, source_config in sources.SOURCES_CONFIGS.items():
     model_name = source_id.replace("-", "_")
     dag_id = f"import_{model_name}"
 
-    with airflow.DAG(
+    @dag(
         dag_id=dag_id,
         start_date=pendulum.datetime(2022, 1, 1, tz=date.TIME_ZONE),
         default_args=sentry.notify_failure_args(),
@@ -118,34 +123,19 @@ for source_id, source_config in sources.SOURCES_CONFIGS.items():
         catchup=False,
         tags=["source"],
         user_defined_macros={"local_ds": date.local_date_str},
-    ) as dag:
+    )
+    def _dag():
         start = empty.EmptyOperator(task_id="start")
         end = empty.EmptyOperator(task_id="end")
 
         for stream_id in source_config["streams"]:
             with TaskGroup(group_id=stream_id) as stream_task_group:
-                extract = python.ExternalPythonOperator(
-                    task_id="extract",
-                    python=str(PYTHON_BIN_PATH),
-                    python_callable=extract_from_source_to_datalake_bucket,
-                    retries=2,
-                    op_kwargs={
-                        "source_id": source_id,
-                        "stream_id": stream_id,
-                    },
+                (
+                    start
+                    >> extract(source_id=source_id, stream_id=stream_id)
+                    >> load(source_id=source_id, stream_id=stream_id)
                 )
-                load = python.ExternalPythonOperator(
-                    task_id="load",
-                    python=str(PYTHON_BIN_PATH),
-                    python_callable=load_from_s3_to_data_warehouse,
-                    op_kwargs={
-                        "source_id": source_id,
-                        "stream_id": stream_id,
-                    },
-                )
-
-                start >> extract >> load
 
             stream_task_group >> end
 
-    globals()[dag_id] = dag
+    globals()[dag_id] = _dag()
