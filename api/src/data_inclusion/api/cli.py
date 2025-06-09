@@ -7,6 +7,7 @@ import s3fs
 
 from data_inclusion.api import auth
 from data_inclusion.api.config import settings
+from data_inclusion.api.core import db
 from data_inclusion.api.decoupage_administratif.commands import import_communes
 from data_inclusion.api.inclusion_data.commands import load_inclusion_data
 
@@ -16,9 +17,13 @@ logger = logging.getLogger(__name__)
 @click.group()
 @click.version_option()
 @click.option("--verbose", "-v", count=True)
-def cli(verbose: int):
-    "api management commands"
+@click.pass_context
+def cli(ctx: click.Context, verbose: int):
+    """api management commands"""
     logging.basicConfig(level=[logging.INFO, logging.INFO, logging.DEBUG][verbose])
+
+    if ctx.obj is None:
+        ctx.obj = ctx.with_resource(db.SessionLocal())
 
 
 @cli.command(name="generate-token")
@@ -40,6 +45,10 @@ def _generate_token_for_user(
 
 def get_path(value) -> Path:
     """Get a valid local path to the target dataset."""
+
+    if value is not None and Path(value).exists():
+        return Path(value).absolute()
+
     s3fs_client = s3fs.S3FileSystem()
 
     if value is None:
@@ -59,7 +68,8 @@ def get_path(value) -> Path:
         return local_path
 
     raise ValueError(
-        f"""Path must start with the bucket name: {settings.DATALAKE_BUCKET_NAME}"""
+        f"""Path must be a local path or start with
+        the bucket name: {settings.DATALAKE_BUCKET_NAME}"""
     )
 
 
