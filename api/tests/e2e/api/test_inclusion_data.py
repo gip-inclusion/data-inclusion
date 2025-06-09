@@ -340,13 +340,13 @@ def test_can_filter_resources_by_profils_precisions_with_only_profils_data(
 
 
 @pytest.mark.parametrize(
-    ("schema_version", "path", "factory"),
+    ("schema_version", "path"),
     [
-        ("v0", "/services", factories.ServiceFactory),
-        ("v1", "/services", factories.ServiceFactory),
-        ("v0", "/search/services", factories.ServiceFactory),
-        ("v1", "/search/services", factories.ServiceFactory),
-        ("v0", "/structures", factories.StructureFactory),
+        ("v0", "/services"),
+        ("v1", "/services"),
+        ("v0", "/search/services"),
+        ("v1", "/search/services"),
+        ("v0", "/structures"),
     ],
 )
 @pytest.mark.parametrize(
@@ -401,13 +401,7 @@ def test_can_filter_resources_by_thematiques(
 
 @pytest.mark.with_token
 @pytest.mark.parametrize("schema_version", ["v0", "v1"])
-@pytest.mark.parametrize(
-    ("path", "factory"),
-    [
-        ("/structures", factories.StructureFactory),
-        ("/services", factories.ServiceFactory),
-    ],
-)
+@pytest.mark.parametrize("path", ["/structures", "/services"])
 def test_can_filter_resources_by_code_departement(api_client, url, factory):
     resource = factory(code_insee=PARIS["code_insee"])
     factory(code_insee=LILLE["code_insee"])
@@ -426,13 +420,7 @@ def test_can_filter_resources_by_code_departement(api_client, url, factory):
 
 @pytest.mark.with_token
 @pytest.mark.parametrize("schema_version", ["v0", "v1"])
-@pytest.mark.parametrize(
-    ("path", "factory"),
-    [
-        ("/structures", factories.StructureFactory),
-        ("/services", factories.ServiceFactory),
-    ],
-)
+@pytest.mark.parametrize("path", ["/structures", "/services"])
 def test_can_filter_resources_by_slug_departement(api_client, url, factory):
     resource = factory(code_insee=PARIS["code_insee"])
     factory(code_insee=LILLE["code_insee"])
@@ -450,13 +438,7 @@ def test_can_filter_resources_by_slug_departement(api_client, url, factory):
 
 @pytest.mark.with_token
 @pytest.mark.parametrize("schema_version", ["v0", "v1"])
-@pytest.mark.parametrize(
-    ("path", "factory"),
-    [
-        ("/structures", factories.StructureFactory),
-        ("/services", factories.ServiceFactory),
-    ],
-)
+@pytest.mark.parametrize("path", ["/structures", "/services"])
 def test_can_filter_resources_by_code_region(api_client, url, factory):
     resource = factory(code_insee=PARIS["code_insee"])
     factory(code_insee=LILLE["code_insee"])
@@ -478,13 +460,7 @@ def test_can_filter_resources_by_code_region(api_client, url, factory):
 
 @pytest.mark.with_token
 @pytest.mark.parametrize("schema_version", ["v0", "v1"])
-@pytest.mark.parametrize(
-    ("path", "factory"),
-    [
-        ("/structures", factories.StructureFactory),
-        ("/services", factories.ServiceFactory),
-    ],
-)
+@pytest.mark.parametrize("path", ["/structures", "/services"])
 def test_can_filter_resources_by_slug_region(api_client, url, factory):
     resource = factory(code_insee=PARIS["code_insee"])
     factory(code_insee=LILLE["code_insee"])
@@ -506,13 +482,7 @@ def test_can_filter_resources_by_slug_region(api_client, url, factory):
 
 @pytest.mark.with_token
 @pytest.mark.parametrize("schema_version", ["v0", "v1"])
-@pytest.mark.parametrize(
-    ("path", "factory"),
-    [
-        ("/structures", factories.StructureFactory),
-        ("/services", factories.ServiceFactory),
-    ],
-)
+@pytest.mark.parametrize("path", ["/structures", "/services"])
 @pytest.mark.parametrize(
     "code_commune, input, found",
     [
@@ -733,14 +703,7 @@ def test_can_filter_services_by_modes_accueil(
 
 @pytest.mark.with_token
 @pytest.mark.parametrize("schema_version", ["v0", "v1"])
-@pytest.mark.parametrize(
-    ("path", "factory"),
-    [
-        ("/services", factories.ServiceFactory),
-        ("/search/services", factories.ServiceFactory),
-        ("/structures", factories.StructureFactory),
-    ],
-)
+@pytest.mark.parametrize("path", ["/services", "/search/services", "/structures"])
 def test_can_filter_resources_by_sources(api_client, url, factory):
     service_1 = factory(source="dora")
     service_2 = factory(source="emplois-de-linclusion")
@@ -778,17 +741,7 @@ def test_can_filter_resources_by_sources(api_client, url, factory):
         pytest.param(False, marks=pytest.mark.with_token("not-dora")),
     ],
 )
-@pytest.mark.parametrize(
-    ("path", "factory"),
-    [
-        ("/services", factories.ServiceFactory),
-        ("/services", factories.ServiceFactory),
-        ("/structures", factories.StructureFactory),
-        ("/structures", factories.StructureFactory),
-        ("/search/services", factories.ServiceFactory),
-        ("/search/services", factories.ServiceFactory),
-    ],
-)
+@pytest.mark.parametrize("path", ["/services", "/search/services", "/structures"])
 @pytest.mark.parametrize(
     ("source", "code_insee", "restricted"),
     [
@@ -1502,24 +1455,18 @@ def test_search_services_deduplicate_flag(api_client, url):
 
 
 @pytest.mark.parametrize("schema_version", ["v0", "v1"])
-@pytest.mark.parametrize(
-    ("path", "factory"),
-    [
-        (
-            "/search/services",
-            lambda **kwargs: factories.ServiceFactory(
-                modes_accueil=[v0.ModeAccueil.A_DISTANCE], **kwargs
-            ),
-        ),
-        ("/services", factories.ServiceFactory),
-        ("/structures", factories.StructureFactory),
-    ],
-)
+@pytest.mark.parametrize("path", ["/search/services", "/services", "/structures"])
 @pytest.mark.with_token
 def test_ressources_ordered_by_surrogate_id(api_client, url, factory):
     # Create 10 rows with ids in **reverse** order
     for i in reversed(range(10)):
-        factory(_di_surrogate_id=str(i), id=str(i))
+        factory_kwargs = {
+            "id": str(i),
+            "_di_surrogate_id": str(i),
+        }
+        if "search" in url:
+            factory_kwargs["modes_accueil"] = [v0.ModeAccueil.EN_PRESENTIEL]
+        factory(**factory_kwargs)
 
     response = api_client.get(url)
     assert response.status_code == 200
