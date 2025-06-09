@@ -27,7 +27,7 @@ models:
         data_tests:
           - not_null
           - relationships:
-              to: ref('types')
+              to: ref('typologies_de_services')
               field: value
 
   - name: int_soliguide__adresses
