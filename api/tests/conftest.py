@@ -174,5 +174,14 @@ def predictable_sequences():
     import factory.random
 
     factory.random.reseed_random(0)
-    factories.ServiceFactory.reset_sequence()
-    factories.StructureFactory.reset_sequence()
+
+
+@pytest.fixture
+def cli_runner(db_session):
+    from click.testing import CliRunner
+
+    class CustomRunner(CliRunner):
+        def invoke(self, *args, **kwargs):
+            return super().invoke(*args, **kwargs, obj=db_session)
+
+    yield CustomRunner()
