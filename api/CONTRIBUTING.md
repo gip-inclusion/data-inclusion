@@ -48,8 +48,8 @@ mc cp --recursive \
     dev/data-inclusion-lake/data/marts/2024-06-12
 
 # Load data
-uv run data-inclusion-api import_communes
-uv run data-inclusion-api load_inclusion_data
+uv run data-inclusion-api import-communes
+uv run data-inclusion-api load-inclusion-data
 ```
 
 ## Running the test suite
