@@ -37,13 +37,13 @@ def _generate_token_for_user(
 @cli.command(name="load-inclusion-data")
 def _load_inclusion_data():
     """Load the latest inclusion data"""
-    click.echo(load_inclusion_data())
+    load_inclusion_data()
 
 
 @cli.command(name="import-communes")
 def _import_communes():
     """Import the communes from the Decoupage Administratif API"""
-    click.echo(import_communes())
+    import_communes()
 
 
 if __name__ == "__main__":
