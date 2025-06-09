@@ -3,7 +3,7 @@ import pandas as pd
 from data_inclusion.api.inclusion_data import commands, models
 
 
-def test_store_inclusion_data_scores_doublons(db_session):
+def test_prepare_dataset_doublons():
     structures_df = pd.DataFrame(
         {c.name: None for c in models.Structure.__table__.columns}
         | {
@@ -31,13 +31,12 @@ def test_store_inclusion_data_scores_doublons(db_session):
     )
 
     structures_df, services_df = commands.prepare_dataset(structures_df, services_df)
-    commands.load_truncate_insert(db_session, structures_df, services_df)
 
-    db_structures = db_session.query(models.Structure).all()
-    structures_by_id = {s.id: s for s in db_structures}
-    assert structures_by_id["id1"].cluster_best_duplicate == "s1"
-    assert structures_by_id["id1"].score_qualite == 0.75  # average of 0.7 and 0.8
-    assert structures_by_id["id1"].doublons == [
+    structures_df = structures_df.set_index("id")
+
+    assert structures_df.loc["id1"].cluster_best_duplicate == "s1"
+    assert structures_df.loc["id1"].score_qualite == 0.75  # average of 0.7 and 0.8
+    assert structures_df.loc["id1"].doublons == [
         {
             "accessibilite": None,
             "adresse": None,
@@ -68,16 +67,16 @@ def test_store_inclusion_data_scores_doublons(db_session):
         }
     ]
 
-    assert structures_by_id["id2"].cluster_best_duplicate == "s1"
-    assert structures_by_id["id2"].score_qualite == 0.5
-    assert structures_by_id["id2"].doublons[0]["id"] == "id1"
+    assert structures_df.loc["id2"].cluster_best_duplicate == "s1"
+    assert structures_df.loc["id2"].score_qualite == 0.5
+    assert structures_df.loc["id2"].doublons[0]["id"] == "id1"
 
-    assert structures_by_id["id3"].cluster_best_duplicate is None
-    assert structures_by_id["id3"].score_qualite == 0.0  # no services, default to 0
-    assert structures_by_id["id3"].doublons == []
+    assert structures_df.loc["id3"].cluster_best_duplicate is None
+    assert structures_df.loc["id3"].score_qualite == 0.0  # no services, default to 0
+    assert structures_df.loc["id3"].doublons == []
 
 
-def test_store_inclusion_data_doublons_date_maj(db_session):
+def test_prepare_dataset_doublons_date_maj():
     structures_df = pd.DataFrame(
         {c.name: None for c in models.Structure.__table__.columns}
         | {
@@ -104,11 +103,10 @@ def test_store_inclusion_data_doublons_date_maj(db_session):
     )
 
     structures_df, services_df = commands.prepare_dataset(structures_df, services_df)
-    commands.load_truncate_insert(db_session, structures_df, services_df)
 
-    db_structures = db_session.query(models.Structure).all()
-    structures_by_id = {s.id: s for s in db_structures}
-    assert structures_by_id["id1"].cluster_best_duplicate == "s2"
-    assert structures_by_id["id1"].score_qualite == 0.0
-    assert structures_by_id["id2"].cluster_best_duplicate == "s2"
-    assert structures_by_id["id2"].score_qualite == 0.0
+    structures_df = structures_df.set_index("id")
+
+    assert structures_df.loc["id1"].cluster_best_duplicate == "s2"
+    assert structures_df.loc["id1"].score_qualite == 0.0
+    assert structures_df.loc["id2"].cluster_best_duplicate == "s2"
+    assert structures_df.loc["id2"].score_qualite == 0.0
