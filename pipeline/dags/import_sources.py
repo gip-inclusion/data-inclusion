@@ -39,6 +39,14 @@ def extract(source_id, stream_id, run_id, logical_date):
 
 
 @task.external_python(python=str(PYTHON_BIN_PATH))
+def create_schema(source_id):
+    from dag_utils import pg
+
+    schema_name = source_id.replace("-", "_")
+    pg.create_schema(schema_name)
+
+
+@task.external_python(python=str(PYTHON_BIN_PATH))
 def load(source_id, stream_id, run_id, logical_date):
     import pandas as pd
     import sqlalchemy as sqla
@@ -75,8 +83,6 @@ def load(source_id, stream_id, run_id, logical_date):
 
     schema_name = source_id.replace("-", "_")
     table_name = stream_id.replace("-", "_")
-
-    pg.create_schema(schema_name)
 
     with pg.connect_begin() as conn:
         df.to_sql(
@@ -127,15 +133,15 @@ for source_id, source_config in sources.SOURCES_CONFIGS.items():
     def _dag():
         start = empty.EmptyOperator(task_id="start")
         end = empty.EmptyOperator(task_id="end")
+        create_schema_task = create_schema(source_id=source_id)
 
         for stream_id in source_config["streams"]:
             with TaskGroup(group_id=stream_id) as stream_task_group:
                 (
-                    start
-                    >> extract(source_id=source_id, stream_id=stream_id)
+                    extract(source_id=source_id, stream_id=stream_id)
                     >> load(source_id=source_id, stream_id=stream_id)
                 )
 
-            stream_task_group >> end
+            start >> create_schema_task >> stream_task_group >> end
 
     globals()[dag_id] = _dag()
