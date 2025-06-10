@@ -13,8 +13,13 @@ class StructureFactory(factory.alchemy.SQLAlchemyModelFactory):
     class Meta:
         model = models.Structure
         sqlalchemy_session_persistence = "commit"
+        # attributes starting with an underscore ignored by default
+        # the recommended way is to use the `rename` dict
+        rename = {
+            "di_surrogate_id": "_di_surrogate_id",
+        }
 
-    _di_surrogate_id = factory.LazyAttribute(lambda o: f"{o.source}-{o.id}")
+    di_surrogate_id = factory.LazyAttribute(lambda o: f"{o.source}-{o.id}")
 
     id = factory.Faker("slug", locale="fr_FR")
     siret = factory.LazyFunction(lambda: fake.siret().replace(" ", ""))
@@ -64,9 +69,15 @@ class ServiceFactory(factory.alchemy.SQLAlchemyModelFactory):
     class Meta:
         model = models.Service
         sqlalchemy_session_persistence = "commit"
+        # attributes starting with an underscore ignored by default
+        # the recommended way is to use the `rename` dict
+        rename = {
+            "di_surrogate_id": "_di_surrogate_id",
+            "di_structure_surrogate_id": "_di_structure_surrogate_id",
+        }
 
-    _di_surrogate_id = factory.Faker("uuid4")
-    _di_structure_surrogate_id = factory.Faker("uuid4")
+    di_surrogate_id = factory.LazyAttribute(lambda o: f"{o.source}-{o.id}")
+    di_structure_surrogate_id = factory.SelfAttribute("structure._di_surrogate_id")
 
     structure = factory.SubFactory(
         StructureFactory,
