@@ -1462,7 +1462,7 @@ def test_ressources_ordered_by_surrogate_id(api_client, url, factory):
     for i in reversed(range(10)):
         factory_kwargs = {
             "id": str(i),
-            "_di_surrogate_id": str(i),
+            "source": str(i // 2),
         }
         if "search" in url:
             factory_kwargs["modes_accueil"] = [v0.ModeAccueil.EN_PRESENTIEL]
