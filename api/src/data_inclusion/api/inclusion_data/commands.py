@@ -11,7 +11,7 @@ from sqlalchemy import orm
 
 from data_inclusion.api.config import settings
 from data_inclusion.api.inclusion_data import models
-from data_inclusion.schema import v0 as schema
+from data_inclusion.schema import v0, v1
 
 logger = logging.getLogger(__name__)
 
@@ -26,6 +26,12 @@ def validate_dataset(
     structures_df: pd.DataFrame,
     services_df: pd.DataFrame,
 ) -> tuple[pd.DataFrame, pd.DataFrame]:
+    """Run validation on the dataset.
+
+    Validate each dataframe against both versions of the schema (v0 and v1).
+    Add `_is_valid_v0` and `_is_valid_v1` columns to the dataframes.
+    Remove invalid `code_insee` values that are not present in the database.
+    """
     city_codes = db_session.scalars(sqla.select(models.Commune.code)).all()
 
     def validate_data(model_schema, data):
@@ -41,22 +47,37 @@ def validate_dataset(
 
         for error in errors:
             model = model_schema.__name__
-            key, value = ".".join(error["loc"]), error["input"]
+            key, value = ".".join(map(str, error["loc"])), error["input"]
             logger.warning(f"{model:20} {key=:20} {value=}")
 
-        return len(errors) == 0
+        return errors
 
-    structures_df = structures_df[
-        structures_df.apply(lambda d: validate_data(schema.Structure, d), axis=1)
-    ]
-    services_df = services_df[
-        services_df.apply(lambda d: validate_data(schema.Service, d), axis=1)
-    ]
+    def remove_invalid_code_insee(df):
+        return df.assign(
+            code_insee=df["code_insee"].mask(
+                cond=df["code_insee"].apply(
+                    lambda c: c is not None or c not in city_codes
+                ),
+                other=None,
+            )
+        )
 
-    # remove orphan services
-    services_df = services_df[
-        services_df._di_structure_surrogate_id.isin(structures_df._di_surrogate_id)
-    ]
+    def is_valid(df, model_schema):
+        return df.apply(lambda d: len(validate_data(model_schema, d)) == 0, axis=1)
+
+    if not structures_df.empty:
+        structures_df = structures_df.assign(
+            _is_valid_v0=is_valid(structures_df, v0.Structure)
+        )
+        structures_df = structures_df.assign(
+            _is_valid_v1=is_valid(structures_df, v1.Structure)
+        )
+        structures_df = remove_invalid_code_insee(structures_df)
+
+    if not services_df.empty:
+        services_df = services_df.assign(_is_valid_v0=is_valid(services_df, v0.Service))
+        services_df = services_df.assign(_is_valid_v1=is_valid(services_df, v1.Service))
+        services_df = remove_invalid_code_insee(services_df)
 
     return structures_df, services_df
 
@@ -87,7 +108,7 @@ def prepare_dataset(
     def get_doublons(row):
         all_ids = cluster_groups.get(row["cluster_id"], [])
         return [
-            json.loads(schema.Structure(**d).model_dump_json())
+            json.loads(v0.Structure(**d).model_dump_json())
             for d in all_ids
             if d["_di_surrogate_id"] != row["_di_surrogate_id"]
         ]

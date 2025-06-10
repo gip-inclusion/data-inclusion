@@ -106,6 +106,11 @@ class ServiceLayer[
         query = sqla.select(models.Structure)
         query = self.filter_restricted(query, request)
 
+        if self.schema is v1:
+            query = query.filter(models.Structure._is_valid_v1)
+        else:
+            query = query.filter(models.Structure._is_valid_v0)
+
         if sources is not None:
             query = query.filter(
                 models.Structure.source == sqla.any_(sqla.literal(sources))
@@ -159,12 +164,19 @@ class ServiceLayer[
         source: str,
         id_: str,
     ) -> models.Structure:
-        structure_instance = db_session.scalars(
+        query = (
             sqla.select(models.Structure)
             .options(orm.selectinload(models.Structure.services))
             .filter_by(source=source)
             .filter_by(id=id_)
-        ).first()
+        )
+
+        if self.schema is v1:
+            query = query.filter(models.Structure._is_valid_v1)
+        else:
+            query = query.filter(models.Structure._is_valid_v0)
+
+        structure_instance = db_session.scalars(query).first()
 
         if structure_instance is None:
             raise fastapi.HTTPException(status_code=404)
@@ -312,6 +324,13 @@ class ServiceLayer[
         )
         query = self.filter_restricted(query, request)
 
+        if self.schema is v1:
+            query = query.filter(models.Structure._is_valid_v1)
+            query = query.filter(models.Service._is_valid_v1)
+        else:
+            query = query.filter(models.Structure._is_valid_v0)
+            query = query.filter(models.Service._is_valid_v0)
+
         if departement is not None:
             query = query.filter(models.Service.code_insee.startswith(departement.code))
 
@@ -364,6 +383,13 @@ class ServiceLayer[
             .options(orm.contains_eager(models.Service.structure))
         )
         query = self.filter_restricted(query, request)
+
+        if self.schema is v1:
+            query = query.filter(models.Structure._is_valid_v1)
+            query = query.filter(models.Service._is_valid_v1)
+        else:
+            query = query.filter(models.Structure._is_valid_v0)
+            query = query.filter(models.Service._is_valid_v0)
 
         if commune_instance is not None:
             # filter by zone de diffusion
@@ -491,12 +517,21 @@ class ServiceLayer[
         source: str,
         id_: str,
     ) -> models.Service:
-        service_instance = db_session.scalars(
+        query = (
             sqla.select(models.Service)
-            .options(orm.selectinload(models.Service.structure))
-            .filter_by(source=source)
-            .filter_by(id=id_)
-        ).first()
+            .join(models.Structure)
+            .filter(models.Service.source == source)
+            .filter(models.Service.id == id_)
+        )
+
+        if self.schema is v1:
+            query = query.filter(models.Structure._is_valid_v1)
+            query = query.filter(models.Service._is_valid_v1)
+        else:
+            query = query.filter(models.Structure._is_valid_v0)
+            query = query.filter(models.Service._is_valid_v0)
+
+        service_instance = db_session.scalars(query).first()
 
         if service_instance is None:
             raise fastapi.HTTPException(status_code=404)
