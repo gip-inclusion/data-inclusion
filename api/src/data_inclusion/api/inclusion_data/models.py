@@ -27,6 +27,8 @@ class HasAddress:
 class Structure(HasAddress, Base):
     # internal metadata
     _di_surrogate_id: Mapped[str] = mapped_column(primary_key=True)
+    _is_valid_v0: Mapped[bool]
+    _is_valid_v1: Mapped[bool]
 
     # structure data
     accessibilite: Mapped[str | None]
@@ -78,6 +80,8 @@ class Service(HasAddress, Base):
         sqla.ForeignKey(Structure._di_surrogate_id, ondelete="CASCADE")
     )
     structure: Mapped[Structure] = relationship(back_populates="services")
+    _is_valid_v0: Mapped[bool]
+    _is_valid_v1: Mapped[bool]
 
     # service data
     contact_nom_prenom: Mapped[str | None]

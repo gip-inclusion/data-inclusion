@@ -39,6 +39,8 @@ def test_list_structures_unauthenticated(api_client, schema_version):
 def test_list_structures_all(api_client, db_session, url, snapshot):
     structure = models.Structure(
         _di_surrogate_id="04cfed4d-d3f7-4f9f-ad97-64bb6bbd7c96",
+        _is_valid_v0=True,
+        _is_valid_v1=True,
         accessibilite="https://acceslibre.beta.gouv.fr/app/kitchen-amount/",
         adresse="49, avenue de Pichon",
         antenne=False,
@@ -185,6 +187,8 @@ def test_list_services_unauthenticated(api_client, schema_version):
 def test_list_services_all(api_client, db_session, url, snapshot):
     structure = models.Structure(
         _di_surrogate_id="04cfed4d-d3f7-4f9f-ad97-64bb6bbd7c96",
+        _is_valid_v0=True,
+        _is_valid_v1=True,
         accessibilite="https://acceslibre.beta.gouv.fr/app/kitchen-amount/",
         adresse="49, avenue de Pichon",
         antenne=False,
@@ -216,6 +220,8 @@ def test_list_services_all(api_client, db_session, url, snapshot):
     service = models.Service(
         _di_surrogate_id="eafdc798-18a6-446d-acda-7bc14ba83a39",
         _di_structure_surrogate_id="04cfed4d-d3f7-4f9f-ad97-64bb6bbd7c96",
+        _is_valid_v0=True,
+        _is_valid_v1=True,
         adresse="62, rue Eugène Rodrigues",
         code_insee="59350",
         code_postal="92950",
