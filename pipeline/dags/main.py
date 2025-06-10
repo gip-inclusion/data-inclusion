@@ -31,24 +31,18 @@ def export_dataset(
 
     base_prefix = Path("data") / "marts" / date.local_date_str(logical_date) / run_id
 
-    for version in ["v0", "v1"]:
-        for resource in ["structures", "services"]:
-            if version == "v0":
-                # for retro-compatibility, we keep the old key structure in v0
-                key = (base_prefix / resource).with_suffix(".parquet")
-                query = f"SELECT * FROM public_marts.marts__{resource}"
-            else:
-                key = (base_prefix / version / resource).with_suffix(".parquet")
-                query = f"SELECT * FROM public_marts.marts__{resource}_{version}"
-            print(f"Downloading data from query='{query}'")
-            df = pg_hook.get_pandas_df(sql=query)
-            df.info()
-            print(f"Uploading data to bucket='{key}'")
-            s3_hook.load_bytes(
-                bytes_data=df.to_parquet(compression="gzip"),
-                key=str(key),
-                replace=True,
-            )
+    for resource in ["structures", "services"]:
+        key = (base_prefix / resource).with_suffix(".parquet")
+        query = f"SELECT * FROM public_marts.marts__{resource}"
+        print(f"Downloading data from query='{query}'")
+        df = pg_hook.get_pandas_df(sql=query)
+        df.info()
+        print(f"Uploading data to bucket='{key}'")
+        s3_hook.load_bytes(
+            bytes_data=df.to_parquet(compression="gzip"),
+            key=str(key),
+            replace=True,
+        )
 
 
 def get_staging_tasks():

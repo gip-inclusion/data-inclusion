@@ -62,7 +62,7 @@ def publish_to_datagouv():
 
     for resource in ["structures", "services"]:
         df = pg_hook.get_pandas_df(
-            sql=f"SELECT * FROM public_marts.marts__{resource}_v0",
+            sql=f"SELECT * FROM public_marts.marts__{resource}",
         )
 
         # remove closed sources
@@ -73,6 +73,9 @@ def publish_to_datagouv():
         df = df.assign(courriel=df["courriel"].mask(df["_has_pii"], None))
         df = df.assign(telephone=df["telephone"].mask(df["_has_pii"], None))
         df = df.drop(columns="_has_pii")
+
+        # remove invalid rows
+        df = df.loc[~df["_is_valid_v0"]]
 
         df.info()
 
