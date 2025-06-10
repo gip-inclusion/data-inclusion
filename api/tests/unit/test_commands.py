@@ -1,6 +1,64 @@
+import numpy as np
 import pandas as pd
+import pytest
 
 from data_inclusion.api.inclusion_data import commands, models
+
+
+@pytest.mark.parametrize(
+    ("structure_data", "is_valid_v0", "is_valid_v1"),
+    [
+        (
+            {
+                "_di_surrogate_id": "dora-1",
+                "source": "dora",
+                "id": "1",
+                "code_insee": "59350",
+                "nom": "Chez Dora",
+                "date_maj": "not-a-date",
+            },
+            False,
+            False,
+        ),
+        (
+            {
+                "_di_surrogate_id": "dora-1",
+                "source": "dora",
+                "id": "1",
+                "code_insee": "59350",
+                "nom": "Chez Dora",
+                "date_maj": "2025-01-01",
+                "thematiques": ["not-a-thematique"],
+            },
+            False,  # v0 should consider thematiques invalid
+            True,  # v1 should ignore thematiques
+        ),
+        (
+            {
+                "_di_surrogate_id": "dora-1",
+                "source": "dora",
+                "id": "1",
+                "code_insee": "not-a-code-insee",
+                "nom": "Chez Dora",
+                "date_maj": "2025-01-01",
+            },
+            False,
+            False,
+        ),
+    ],
+)
+def test_validate_dataset(db_session, structure_data, is_valid_v0, is_valid_v1):
+    input_structures_df = pd.DataFrame(data=[structure_data]).replace({np.nan: None})
+
+    output_structures_df, _ = commands.validate_dataset(
+        db_session=db_session,
+        structures_df=input_structures_df,
+        services_df=pd.DataFrame(),
+    )
+
+    assert len(output_structures_df) == len(input_structures_df)
+    assert output_structures_df.iloc[0]._is_valid_v0 == is_valid_v0
+    assert output_structures_df.iloc[0]._is_valid_v1 == is_valid_v1
 
 
 def test_prepare_dataset_doublons():

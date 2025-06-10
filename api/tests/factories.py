@@ -17,9 +17,13 @@ class StructureFactory(factory.alchemy.SQLAlchemyModelFactory):
         # the recommended way is to use the `rename` dict
         rename = {
             "di_surrogate_id": "_di_surrogate_id",
+            "is_valid_v0": "_is_valid_v0",
+            "is_valid_v1": "_is_valid_v1",
         }
 
     di_surrogate_id = factory.LazyAttribute(lambda o: f"{o.source}-{o.id}")
+    is_valid_v0 = True
+    is_valid_v1 = True
 
     id = factory.Faker("slug", locale="fr_FR")
     siret = factory.LazyFunction(lambda: fake.siret().replace(" ", ""))
@@ -74,10 +78,14 @@ class ServiceFactory(factory.alchemy.SQLAlchemyModelFactory):
         rename = {
             "di_surrogate_id": "_di_surrogate_id",
             "di_structure_surrogate_id": "_di_structure_surrogate_id",
+            "is_valid_v0": "_is_valid_v0",
+            "is_valid_v1": "_is_valid_v1",
         }
 
     di_surrogate_id = factory.LazyAttribute(lambda o: f"{o.source}-{o.id}")
     di_structure_surrogate_id = factory.SelfAttribute("structure._di_surrogate_id")
+    is_valid_v0 = True
+    is_valid_v1 = True
 
     structure = factory.SubFactory(
         StructureFactory,
