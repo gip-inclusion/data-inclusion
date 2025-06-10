@@ -17,6 +17,8 @@ def publish_to_datagouv():
     from airflow.models import Variable
     from airflow.providers.postgres.hooks import postgres
 
+    from data_inclusion.schema import v0
+
     from dag_utils.sources import datagouv
 
     pg_hook = postgres.PostgresHook(postgres_conn_id="pg")
@@ -62,7 +64,7 @@ def publish_to_datagouv():
 
     for resource in ["structures", "services"]:
         df = pg_hook.get_pandas_df(
-            sql=f"SELECT * FROM public_marts.marts__{resource}_v0",
+            sql=f"SELECT * FROM public_marts.marts__{resource}",
         )
 
         # remove closed sources
@@ -73,6 +75,18 @@ def publish_to_datagouv():
         df = df.assign(courriel=df["courriel"].mask(df["_has_pii"], None))
         df = df.assign(telephone=df["telephone"].mask(df["_has_pii"], None))
         df = df.drop(columns="_has_pii")
+
+        # remove invalid rows
+        df = df.loc[~df["_is_valid_v0"]]
+
+        # keep only the columns we want to publish
+        if resource == "structures":
+            df = df[list(v0.Structure.model_fields.keys()) + ["_di_surrogate_id"]]
+        elif resource == "services":
+            df = df[
+                list(v0.Service.model_fields.keys())
+                + ["_di_surrogate_id", "_di_structure_surrogate_id"]
+            ]
 
         df.info()
 

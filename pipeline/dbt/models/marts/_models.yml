@@ -2,7 +2,6 @@ version: 2
 
 models:
   - name: marts__structures
-    latest_version: 0
     config:
       indexes:
         - columns: ['source']
@@ -21,8 +20,6 @@ models:
         data_type: text
       - name: nom
         data_type: text
-        constraints:
-          - type: not_null
       - name: commune
         data_type: text
       - name: code_postal
@@ -79,21 +76,14 @@ models:
         data_type: boolean
         constraints:
           - type: not_null
-    versions:
-      - v: 0
-        data_tests:
-          - check_structure:
-              schema_version: v0
-        columns:
-          - include: all
-      - v: 1
-        data_tests:
-          - check_structure:
-              schema_version: v1
-        columns:
-          - include: all
-            exclude:
-              - thematiques
+      - name: _is_valid_v0
+        data_type: boolean
+        constraints:
+          - type: not_null
+      - name: _is_valid_v1
+        data_type: boolean
+        constraints:
+          - type: not_null
 
   - name: marts__structures_labels_nationaux
     config:
@@ -111,9 +101,6 @@ models:
         data_type: text
         constraints:
           - type: not_null
-          - type: foreign_key
-            to: ref('labels_nationaux')
-            to_columns: [value]
 
   - name: marts__structures_thematiques
     config:
@@ -131,12 +118,8 @@ models:
         data_type: text
         constraints:
           - type: not_null
-          - type: foreign_key
-            to: ref('thematiques')
-            to_columns: [value]
 
   - name: marts__services
-    latest_version: 0
     config:
       indexes:
         - columns: ['_di_structure_surrogate_id']
@@ -173,8 +156,6 @@ models:
           - type: not_null
       - name: nom
         data_type: text
-        constraints:
-          - type: not_null
       - name: page_web
         data_type: text
       - name: presentation_resume
@@ -253,10 +234,10 @@ models:
         data_type: text
       - name: score_qualite
         data_type: float
-        constraints:
-          - type: not_null
-          - type: check
-            expression: 'score_qualite BETWEEN 0 AND 1'
+      - name: score_qualite_v0
+        data_type: float
+      - name: score_qualite_v1
+        data_type: float
       - name: _has_pii
         data_type: boolean
         constraints:
@@ -265,19 +246,14 @@ models:
         data_type: boolean
         constraints:
           - type: not_null
-    versions:
-      - v: 0
-        data_tests:
-          - check_service:
-              schema_version: v0
-        columns:
-          - include: all
-      - v: 1
-        data_tests:
-          - check_service:
-              schema_version: v1
-        columns:
-          - include: all
+      - name: _is_valid_v0
+        data_type: boolean
+        constraints:
+          - type: not_null
+      - name: _is_valid_v1
+        data_type: boolean
+        constraints:
+          - type: not_null
 
   - name: marts__services_frais
     config:
@@ -295,9 +271,6 @@ models:
         data_type: text
         constraints:
           - type: not_null
-          - type: foreign_key
-            to: ref('frais')
-            to_columns: [value]
 
   - name: marts__services_justificatifs
     config:
@@ -332,9 +305,6 @@ models:
         data_type: text
         constraints:
           - type: not_null
-          - type: foreign_key
-            to: ref('modes_accueil')
-            to_columns: [value]
 
   - name: marts__services_modes_orientation_accompagnateur
     config:
@@ -352,9 +322,6 @@ models:
         data_type: text
         constraints:
           - type: not_null
-          - type: foreign_key
-            to: ref('modes_orientation_accompagnateur')
-            to_columns: [value]
 
   - name: marts__services_modes_orientation_beneficiaire
     config:
@@ -372,9 +339,6 @@ models:
         data_type: text
         constraints:
           - type: not_null
-          - type: foreign_key
-            to: ref('modes_orientation_beneficiaire')
-            to_columns: [value]
 
   - name: marts__services_profils
     config:
@@ -392,9 +356,6 @@ models:
         data_type: text
         constraints:
           - type: not_null
-          - type: foreign_key
-            to: ref('profils')
-            to_columns: [value]
 
   - name: marts__services_pre_requis
     config:
@@ -429,9 +390,6 @@ models:
         data_type: text
         constraints:
           - type: not_null
-          - type: foreign_key
-            to: ref('thematiques')
-            to_columns: [value]
 
   - name: marts__services_types
     config:
@@ -449,6 +407,3 @@ models:
         data_type: text
         constraints:
           - type: not_null
-          - type: foreign_key
-            to: ref('typologies_de_services')
-            to_columns: [value]
