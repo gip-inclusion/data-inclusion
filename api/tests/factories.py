@@ -19,11 +19,15 @@ class StructureFactory(factory.alchemy.SQLAlchemyModelFactory):
             "di_surrogate_id": "_di_surrogate_id",
             "is_valid_v0": "_is_valid_v0",
             "is_valid_v1": "_is_valid_v1",
+            "is_best_duplicate": "_is_best_duplicate",
+            "cluster_id": "_cluster_id",
         }
 
     di_surrogate_id = factory.LazyAttribute(lambda o: f"{o.source}-{o.id}")
     is_valid_v0 = True
     is_valid_v1 = True
+    is_best_duplicate = None
+    cluster_id = None
 
     id = factory.Faker("slug", locale="fr_FR")
     siret = factory.LazyFunction(lambda: fake.siret().replace(" ", ""))
@@ -66,7 +70,6 @@ class StructureFactory(factory.alchemy.SQLAlchemyModelFactory):
         getter=lambda v: [v.value],
     )
     score_qualite = 0.0
-    doublons = []
 
 
 class ServiceFactory(factory.alchemy.SQLAlchemyModelFactory):

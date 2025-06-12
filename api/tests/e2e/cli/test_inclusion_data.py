@@ -21,7 +21,7 @@ def dataset_path(structures_df, services_df, tmpdir):
                 [
                     {
                         "_di_surrogate_id": "foo-1",
-                        "cluster_id": None,
+                        "_cluster_id": None,
                         **v0.Structure(
                             source="foo",
                             id="1",

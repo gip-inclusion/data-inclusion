@@ -1250,9 +1250,13 @@ def test_retrieve_service(api_client, url):
 @pytest.mark.parametrize("path", ["/structures"])
 @pytest.mark.with_token
 def test_retrieve_structure(api_client, url):
-    structure_1 = factories.StructureFactory(source="foo", id="1")
+    structure_1 = factories.StructureFactory(
+        source="foo", id="1", cluster_id="1", is_best_duplicate=True
+    )
     service_1 = factories.ServiceFactory(structure=structure_1)
-    structure_2 = factories.StructureFactory(source="bar", id="1")
+    structure_2 = factories.StructureFactory(
+        source="bar", id="1", cluster_id="1", is_best_duplicate=False
+    )
     factories.ServiceFactory(structure=structure_2)
     structure_3 = factories.StructureFactory(source="foo", id="2")
 
@@ -1264,6 +1268,9 @@ def test_retrieve_structure(api_client, url):
     assert "services" in resp_data
     assert len(resp_data["services"]) == 1
     assert resp_data["services"][0]["id"] == service_1.id
+    assert "doublons" in resp_data
+    assert len(resp_data["doublons"]) == 1
+    assert resp_data["doublons"][0]["id"] == structure_2.id
 
     response = api_client.get(url + f"{structure_2.source}/{structure_3.id}")
     assert response.status_code == 404
@@ -1340,25 +1347,30 @@ def test_list_structures_deduplicate_flag(
     factories.StructureFactory(
         source="src_1",
         id="first",
-        cluster_best_duplicate="src_2-second",
+        cluster_id="cluster_1",
+        is_best_duplicate=False,
         score_qualite=0.5,
     )
     factories.StructureFactory(
         source="src_2",
         id="second",
-        cluster_best_duplicate="src_2-second",
+        cluster_id="cluster_1",
+        is_best_duplicate=True,
         score_qualite=0.9,
     )
     factories.StructureFactory(
         source="src_2",
         id="third",
-        cluster_best_duplicate="src_2-second",
+        cluster_id="cluster_1",
+        is_best_duplicate=False,
         score_qualite=0.3,
     )
     factories.StructureFactory(
         source="src_3",
         id="fourth",
         score_qualite=0.8,
+        cluster_id=None,
+        is_best_duplicate=None,
     )
 
     response = api_client.get(url, params={"exclure_doublons": exclure_doublons})
@@ -1376,24 +1388,28 @@ def test_list_structures_deduplicate_flag_equal(api_client, url):
         date_maj="2020-01-01",
         source="src_1",
         id="first",
-        cluster_best_duplicate="src_2-second",
+        cluster_id="cluster_1",
+        is_best_duplicate=False,
     )
     factories.StructureFactory(
         date_maj="2024-01-01",  # the latest update
         source="src_2",
         id="second",
-        cluster_best_duplicate="src_2-second",
+        cluster_id="cluster_1",
+        is_best_duplicate=True,
     )
     factories.StructureFactory(
         date_maj="2008-01-01",
         source="src_3",
         id="third",
-        cluster_best_duplicate="src_2-second",
+        cluster_id="cluster_1",
+        is_best_duplicate=False,
     )
     factories.StructureFactory(
         source="src_3",
         id="fourth",
-        cluster_best_duplicate=None,
+        cluster_id=None,
+        is_best_duplicate=None,
     )
 
     response = api_client.get(url, params={"exclure_doublons": True})
@@ -1410,24 +1426,28 @@ def test_search_services_deduplicate_flag(api_client, url):
         date_maj="2020-01-01",
         source="src_1",
         id="first",
-        cluster_best_duplicate="src_2-second",
+        cluster_id="cluster_1",
+        is_best_duplicate=False,
     )
     s2 = factories.StructureFactory(
         date_maj="2024-01-01",  # the latest update
         source="src_2",
         id="second",
-        cluster_best_duplicate="src_2-second",
+        cluster_id="cluster_1",
+        is_best_duplicate=True,
     )
     s3 = factories.StructureFactory(
         date_maj="2008-01-01",
         source="src_3",
         id="third",
-        cluster_best_duplicate="src_2-second",
+        cluster_id="cluster_1",
+        is_best_duplicate=False,
     )
     s4 = factories.StructureFactory(
         source="src_3",
         id="fourth",
-        cluster_best_duplicate=None,
+        cluster_id=None,
+        is_best_duplicate=None,
     )
 
     factories.ServiceFactory(
