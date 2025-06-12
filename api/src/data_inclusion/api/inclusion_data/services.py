@@ -103,7 +103,9 @@ class ServiceLayer[
         thematiques: list[Thematique] | None = None,
         deduplicate: bool | None = False,
     ) -> list:
-        query = sqla.select(models.Structure)
+        query = sqla.select(models.Structure).options(
+            orm.selectinload(models.Structure.doublons)
+        )
         query = self.filter_restricted(query, request)
 
         if self.schema is v1:
@@ -148,9 +150,8 @@ class ServiceLayer[
         if deduplicate:
             query = query.filter(
                 sqla.or_(
-                    models.Structure.cluster_best_duplicate.is_(None),
-                    models.Structure._di_surrogate_id
-                    == models.Structure.cluster_best_duplicate,
+                    models.Structure._cluster_id.is_(None),
+                    models.Structure._is_best_duplicate.is_(True),
                 )
             )
 
@@ -167,6 +168,7 @@ class ServiceLayer[
         query = (
             sqla.select(models.Structure)
             .options(orm.selectinload(models.Structure.services))
+            .options(orm.selectinload(models.Structure.doublons))
             .filter_by(source=source)
             .filter_by(id=id_)
         )
@@ -493,9 +495,8 @@ class ServiceLayer[
         if deduplicate:
             query = query.filter(
                 sqla.or_(
-                    models.Structure.cluster_best_duplicate.is_(None),
-                    models.Service._di_structure_surrogate_id
-                    == models.Structure.cluster_best_duplicate,
+                    models.Structure._cluster_id.is_(None),
+                    models.Structure._is_best_duplicate.is_(True),
                 )
             )
 

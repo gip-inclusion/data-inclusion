@@ -1,7 +1,7 @@
 from datetime import date
 
 import sqlalchemy as sqla
-from sqlalchemy import Computed
+from sqlalchemy import Computed, orm
 from sqlalchemy.dialects.postgresql import TSVECTOR
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
@@ -29,6 +29,8 @@ class Structure(HasAddress, Base):
     _di_surrogate_id: Mapped[str] = mapped_column(primary_key=True)
     _is_valid_v0: Mapped[bool]
     _is_valid_v1: Mapped[bool]
+    _is_best_duplicate: Mapped[bool | None]
+    _cluster_id: Mapped[str | None]
 
     # structure data
     accessibilite: Mapped[str | None]
@@ -53,24 +55,27 @@ class Structure(HasAddress, Base):
 
     score_qualite: Mapped[float]
 
-    # Those should be self-refs: sqla.ForeignKey("api__structures._di_surrogate_id")
-    # Unfortunately the current version of load_inclusion_data does not support
-    # self-references as the "best duplicates" should be inserted first. See to
-    # add this extra validation in a future revamp of load_inclusion_data.
-    cluster_best_duplicate: Mapped[str | None]
-
-    doublons: Mapped[list[dict] | None]
-
     services: Mapped[list["Service"]] = relationship(back_populates="structure")
     commune_: Mapped[Commune] = relationship(back_populates="structures")
 
     __table_args__ = (
         sqla.Index(None, "source"),
-        sqla.Index(None, "cluster_best_duplicate"),
+        sqla.Index(None, "_cluster_id"),
     )
 
     def __repr__(self) -> str:
         return f"<Structure(source={self.source}, id={self.id}, nom={self.nom})>"
+
+
+Structure.doublons = relationship(
+    Structure,
+    primaryjoin=sqla.and_(
+        orm.foreign(Structure._cluster_id) == orm.remote(Structure._cluster_id),
+        orm.foreign(Structure._di_surrogate_id)
+        != orm.remote(Structure._di_surrogate_id),
+    ),
+    uselist=True,
+)
 
 
 class Service(HasAddress, Base):
