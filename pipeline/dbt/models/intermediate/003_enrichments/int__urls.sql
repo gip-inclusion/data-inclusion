@@ -11,7 +11,7 @@ WITH urls AS (
 
 next_batch AS (
     SELECT
-        CAST('{{ run_started_at }}' AS TIMESTAMP) AS "last_checked_at",
+        CAST('{{ run_started_at }}' AS TIMESTAMP)                             AS "last_checked_at",
         urls.url,
         {% if is_incremental() %}
             COALESCE({{ this }}.attempt_count, 0) AS attempt_count
@@ -29,7 +29,7 @@ next_batch AS (
     -- alphabetic order can dramatically improve performance in the best cases.
     ORDER BY urls.url
     -- we can optionnally run a very large batch resolution
-    LIMIT {{ var("check_urls_batch_size", 1000) }}
+    LIMIT 1000
 ),
 
 resolved_batch AS (

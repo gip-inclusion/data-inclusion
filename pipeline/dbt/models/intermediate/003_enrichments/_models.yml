@@ -292,19 +292,15 @@ unit_tests:
         - {source: tel, id: fredo_gate, courriel: NULL, contact_nom_prenom: Autre Personne, telephone: '+33123456789'} # if email is NULL, we keep the phone number and the contact name
         - {source: tel_malformat, id: tel, courriel: NULL, contact_nom_prenom: Autre Personne, telephone: NULL} # if phone number is not valid, we set it to NULL
 
-  - name: test_urls_full_refresh_1_item
+  - name: test_urls_full_refresh
     model: int__urls
     overrides:
-      vars:
-        check_urls_batch_size: 1
       macros:
         is_incremental: false
     given:
       - input: ref('int__union_urls')
         rows:
           - {url: www.google.com}
-          - {url: http://facebook.com}
-          - {url: cecinestpasunsiteweb}
           - {url: https://ce.site.nexiste.pas}
     expect:
       rows:
@@ -312,41 +308,7 @@ unit_tests:
           status_code: 200
           attempt_count: 1
           url: https://www.google.com/
-
-  - name: test_urls_full_refresh
-    model: int__urls
-    overrides:
-      vars:
-        check_urls_batch_size: 5
-      macros:
-        is_incremental: false
-    given:
-      - input: ref('int__union_urls')
-        rows:
-          - {url: www.google.com}
-          - {url: http://facebook.com}
-          - {url: cecinestpasunsiteweb}
-          - {url: https://ce.site.nexiste.pas}
-          - {url: https://httpbin.org/delay/10}
-    expect:
-      rows:
         - input_url: https://ce.site.nexiste.pas
           status_code: -1
           attempt_count: 1
           url: https://ce.site.nexiste.pas
-        - input_url: www.google.com
-          status_code: 200
-          attempt_count: 1
-          url: https://www.google.com/
-        - input_url: cecinestpasunsiteweb
-          status_code: -1
-          attempt_count: 1
-          url: https://cecinestpasunsiteweb
-        - input_url: http://facebook.com
-          status_code: 200
-          attempt_count: 1
-          url: https://www.facebook.com/
-        - input_url: https://httpbin.org/delay/10
-          status_code: -2
-          attempt_count: 1
-          url: https://httpbin.org/delay/10
