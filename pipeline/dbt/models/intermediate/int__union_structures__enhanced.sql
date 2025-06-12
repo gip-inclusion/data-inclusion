@@ -24,17 +24,20 @@ valid_structures AS (
                     "nom",
                     "telephone",
                     "site_web",
+                    "accessibilite",
                 ]
             )
         }},
         processings.format_phone_number(structures.telephone) AS "telephone",
-        valid_site_web.url                                    AS "site_web",
+        valid_site_web_1.url                                  AS "site_web",
+        valid_site_web_2.url                                  AS "accessibilite",
         CASE
             WHEN LENGTH(structures.nom) <= 150 THEN structures.nom
             ELSE LEFT(structures.nom, 149) || '…'
         END                                                   AS "nom"
     FROM structures
-    LEFT JOIN valid_site_web ON structures.site_web = valid_site_web.input_url
+    LEFT JOIN valid_site_web AS valid_site_web_1 ON structures.site_web = valid_site_web.input_url
+    LEFT JOIN valid_site_web AS valid_site_web_2 ON structures.accessibilite = valid_site_web.input_url
     LEFT JOIN
         LATERAL
         LIST_STRUCTURE_ERRORS(
