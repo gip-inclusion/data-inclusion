@@ -170,11 +170,11 @@ final AS (
         CASE
             WHEN ARRAY_LENGTH(fredo_structures.courriel, 1) > 0 THEN fredo_structures.courriel[1]
         END                                                                                   AS "courriel",
-        ARRAY[(
+        ARRAY_REMOVE(ARRAY[(
             SELECT di_types_by_fredo_services.di_type
             FROM di_types_by_fredo_services
             WHERE fredo_services.value = di_types_by_fredo_services.service_fredo
-        )]                                                                                    AS "types",
+        )], NULL)                                                                             AS "types",
         (
             SELECT REPLACE((UPPER(LEFT(di_types_by_fredo_services.service_fredo, 1)) || SUBSTRING(di_types_by_fredo_services.service_fredo FROM 2)), '/', 'et')
             FROM di_types_by_fredo_services
