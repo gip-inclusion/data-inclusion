@@ -1,4 +1,3 @@
-import json
 import logging
 from pathlib import Path
 
@@ -99,46 +98,15 @@ def prepare_dataset(
         .fillna(0.0)
     )
 
-    clusters_df = structures_df[structures_df["cluster_id"].notna()]
-    cluster_groups = {
-        key: group.to_dict(orient="records")
-        for key, group in clusters_df.groupby("cluster_id")
-    }
-
-    def get_doublons(row):
-        all_ids = cluster_groups.get(row["cluster_id"], [])
-        return [
-            json.loads(v0.Structure(**d).model_dump_json())
-            for d in all_ids
-            if d["_di_surrogate_id"] != row["_di_surrogate_id"]
-        ]
-
     structures_df = structures_df.assign(
-        doublons=structures_df.apply(get_doublons, axis=1)
-    )
-
-    clusters_df = (
-        structures_df[structures_df["cluster_id"].notna()]
-        .sort_values(
-            ["cluster_id", "score_qualite", "date_maj"],
-            ascending=[True, False, False],
-        )
-        .groupby("cluster_id")
-        .first()
-        .reset_index()
-    )
-
-    cluster_master_mapping = dict(
-        zip(
-            clusters_df["cluster_id"],
-            clusters_df["_di_surrogate_id"],
-        )
-    )
-
-    structures_df = structures_df.assign(
-        cluster_best_duplicate=structures_df["cluster_id"]
-        .map(cluster_master_mapping)
-        .replace([np.nan], [None])
+        _is_best_duplicate=pd.Series(
+            structures_df.index.isin(
+                structures_df.sort_values("date_maj", ascending=False)
+                .sort_values("score_qualite")
+                .groupby("_cluster_id")["score_qualite"]
+                .idxmax()
+            )
+        ).where(structures_df["_cluster_id"].notna(), other=None)
     )
 
     return structures_df, services_df

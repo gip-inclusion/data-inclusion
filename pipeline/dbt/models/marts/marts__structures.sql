@@ -27,7 +27,7 @@ final AS (
                 ]
             )
         }},
-        doublons.cluster_id                               AS "cluster_id",
+        doublons.cluster_id                               AS "_cluster_id",
         courriels_personnels.courriel IS NOT NULL         AS "_has_pii",
         structures.source NOT IN ('soliguide', 'agefiph') AS "_in_opendata",
         NOT EXISTS (
