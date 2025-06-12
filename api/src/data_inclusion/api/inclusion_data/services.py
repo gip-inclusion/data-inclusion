@@ -5,7 +5,7 @@ import logging
 from collections import defaultdict
 from datetime import date
 from pathlib import Path
-from typing import ClassVar
+from typing import Literal
 
 import geoalchemy2
 import sqlalchemy as sqla
@@ -22,20 +22,20 @@ from data_inclusion.api.decoupage_administratif.constants import (
 )
 from data_inclusion.api.decoupage_administratif.models import Commune
 from data_inclusion.api.inclusion_data import models
-from data_inclusion.api.utils.schema_utils import SchemaV0, SchemaV1
+from data_inclusion.schema import v0, v1
 
 logger = logging.getLogger(__name__)
 
 
 class ServiceLayer[
-    Thematique: SchemaV0.Thematique | SchemaV1.Thematique,
-    Frais: SchemaV0.Frais | SchemaV1.Frais,
-    Profil: SchemaV0.Profil | SchemaV1.Profil,
-    TypologieService: SchemaV0.TypologieService | SchemaV1.TypologieService,
-    TypologieStructure: SchemaV0.TypologieStructure | SchemaV1.TypologieStructure,
-    LabelNational: SchemaV0.LabelNational | SchemaV1.LabelNational,
-    ModeAccueil: SchemaV0.ModeAccueil | SchemaV1.ModeAccueil,
-    CodeCommune: SchemaV0.CodeCommune | SchemaV1.CodeCommune,
+    Thematique: v0.Thematique | v1.Thematique,
+    Frais: v0.Frais | v1.Frais,
+    Profil: v0.Profil | v1.Profil,
+    TypologieService: v0.TypologieService | v1.TypologieService,
+    TypologieStructure: v0.TypologieStructure | v1.TypologieStructure,
+    LabelNational: v0.LabelNational | v1.LabelNational,
+    ModeAccueil: v0.ModeAccueil | v1.ModeAccueil,
+    CodeCommune: v0.CodeCommune | v1.CodeCommune,
 ](abc.ABC):
     """Service layer for managing structures and services.
 
@@ -50,13 +50,16 @@ class ServiceLayer[
 
     The `schema` attribute is used internally to access actual schema values.
     It can also be used to do things depending on the schema in use.
-    For instance using `isinstance(self.schema, SchemaV0)`.
+    For instance using `if self.schema is v0`.
 
     The generic parameters are used to type the methods of this class, and provide
     type safety in consuming code and in methods implementations.
     """
 
-    schema: ClassVar[SchemaV0 | SchemaV1]
+    schema_version: Literal["v0"] | Literal["v1"]
+
+    def __init__(self) -> None:
+        self.schema = v0 if self.schema_version == "v0" else v1
 
     @functools.cache
     def get_thematiques_by_group(self) -> dict[str, list[str]]:
@@ -100,8 +103,15 @@ class ServiceLayer[
         thematiques: list[Thematique] | None = None,
         deduplicate: bool | None = False,
     ) -> list:
-        query = sqla.select(models.Structure)
+        query = sqla.select(models.Structure).options(
+            orm.selectinload(models.Structure.doublons)
+        )
         query = self.filter_restricted(query, request)
+
+        if self.schema is v1:
+            query = query.filter(models.Structure._is_valid_v1)
+        else:
+            query = query.filter(models.Structure._is_valid_v0)
 
         if sources is not None:
             query = query.filter(
@@ -140,9 +150,8 @@ class ServiceLayer[
         if deduplicate:
             query = query.filter(
                 sqla.or_(
-                    models.Structure.cluster_best_duplicate.is_(None),
-                    models.Structure._di_surrogate_id
-                    == models.Structure.cluster_best_duplicate,
+                    models.Structure._cluster_id.is_(None),
+                    models.Structure._is_best_duplicate.is_(True),
                 )
             )
 
@@ -156,12 +165,20 @@ class ServiceLayer[
         source: str,
         id_: str,
     ) -> models.Structure:
-        structure_instance = db_session.scalars(
+        query = (
             sqla.select(models.Structure)
             .options(orm.selectinload(models.Structure.services))
+            .options(orm.selectinload(models.Structure.doublons))
             .filter_by(source=source)
             .filter_by(id=id_)
-        ).first()
+        )
+
+        if self.schema is v1:
+            query = query.filter(models.Structure._is_valid_v1)
+        else:
+            query = query.filter(models.Structure._is_valid_v0)
+
+        structure_instance = db_session.scalars(query).first()
 
         if structure_instance is None:
             raise fastapi.HTTPException(status_code=404)
@@ -309,6 +326,13 @@ class ServiceLayer[
         )
         query = self.filter_restricted(query, request)
 
+        if self.schema is v1:
+            query = query.filter(models.Structure._is_valid_v1)
+            query = query.filter(models.Service._is_valid_v1)
+        else:
+            query = query.filter(models.Structure._is_valid_v0)
+            query = query.filter(models.Service._is_valid_v0)
+
         if departement is not None:
             query = query.filter(models.Service.code_insee.startswith(departement.code))
 
@@ -361,6 +385,13 @@ class ServiceLayer[
             .options(orm.contains_eager(models.Service.structure))
         )
         query = self.filter_restricted(query, request)
+
+        if self.schema is v1:
+            query = query.filter(models.Structure._is_valid_v1)
+            query = query.filter(models.Service._is_valid_v1)
+        else:
+            query = query.filter(models.Structure._is_valid_v0)
+            query = query.filter(models.Service._is_valid_v0)
 
         if commune_instance is not None:
             # filter by zone de diffusion
@@ -464,9 +495,8 @@ class ServiceLayer[
         if deduplicate:
             query = query.filter(
                 sqla.or_(
-                    models.Structure.cluster_best_duplicate.is_(None),
-                    models.Service._di_structure_surrogate_id
-                    == models.Structure.cluster_best_duplicate,
+                    models.Structure._cluster_id.is_(None),
+                    models.Structure._is_best_duplicate.is_(True),
                 )
             )
 
@@ -488,12 +518,21 @@ class ServiceLayer[
         source: str,
         id_: str,
     ) -> models.Service:
-        service_instance = db_session.scalars(
+        query = (
             sqla.select(models.Service)
-            .options(orm.selectinload(models.Service.structure))
-            .filter_by(source=source)
-            .filter_by(id=id_)
-        ).first()
+            .join(models.Structure)
+            .filter(models.Service.source == source)
+            .filter(models.Service.id == id_)
+        )
+
+        if self.schema is v1:
+            query = query.filter(models.Structure._is_valid_v1)
+            query = query.filter(models.Service._is_valid_v1)
+        else:
+            query = query.filter(models.Structure._is_valid_v0)
+            query = query.filter(models.Service._is_valid_v0)
+
+        service_instance = db_session.scalars(query).first()
 
         if service_instance is None:
             raise fastapi.HTTPException(status_code=404)
@@ -503,43 +542,43 @@ class ServiceLayer[
 
 class ServiceLayerV0(
     ServiceLayer[
-        SchemaV0.Thematique,
-        SchemaV0.Frais,
-        SchemaV0.Profil,
-        SchemaV0.TypologieService,
-        SchemaV0.TypologieStructure,
-        SchemaV0.LabelNational,
-        SchemaV0.ModeAccueil,
-        SchemaV0.CodeCommune,
+        v0.Thematique,
+        v0.Frais,
+        v0.Profil,
+        v0.TypologieService,
+        v0.TypologieStructure,
+        v0.LabelNational,
+        v0.ModeAccueil,
+        v0.CodeCommune,
     ]
 ):
-    schema = SchemaV0()
+    schema_version = "v0"
 
 
 class ServiceLayerV1(
     ServiceLayer[
-        SchemaV1.Thematique,
-        SchemaV1.Frais,
-        SchemaV1.Profil,
-        SchemaV1.TypologieService,
-        SchemaV1.TypologieStructure,
-        SchemaV1.LabelNational,
-        SchemaV1.ModeAccueil,
-        SchemaV1.CodeCommune,
+        v1.Thematique,
+        v1.Frais,
+        v1.Profil,
+        v1.TypologieService,
+        v1.TypologieStructure,
+        v1.LabelNational,
+        v1.ModeAccueil,
+        v1.CodeCommune,
     ]
 ):
-    schema = SchemaV1()
+    schema_version = "v1"
 
     def list_structures(
         self,
         request: fastapi.Request,
         db_session: orm.Session,
         sources: list[str] | None = None,
-        typologie: SchemaV1.TypologieStructure | None = None,
-        label_national: SchemaV1.LabelNational | None = None,
+        typologie: v1.TypologieStructure | None = None,
+        label_national: v1.LabelNational | None = None,
         departement: Departement | None = None,
         region: Region | None = None,
-        commune_code: SchemaV1.CodeCommune | None = None,
+        commune_code: v1.CodeCommune | None = None,
         deduplicate: bool | None = False,
     ) -> list:
         # structures does not have thematiques in v1

@@ -1,7 +1,7 @@
 from datetime import date
 
 import sqlalchemy as sqla
-from sqlalchemy import Computed
+from sqlalchemy import Computed, orm
 from sqlalchemy.dialects.postgresql import TSVECTOR
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
@@ -12,27 +12,36 @@ from data_inclusion.api.decoupage_administratif.models import Commune
 # query valid data coming from the data pipeline.
 
 
-class Structure(Base):
+class HasAddress:
+    adresse: Mapped[str | None]
+    complement_adresse: Mapped[str | None]
+    code_insee: Mapped[str | None] = mapped_column(
+        sqla.ForeignKey(Commune.code, ondelete="CASCADE")
+    )
+    code_postal: Mapped[str | None]
+    commune: Mapped[str | None]
+    longitude: Mapped[float | None]
+    latitude: Mapped[float | None]
+
+
+class Structure(HasAddress, Base):
     # internal metadata
     _di_surrogate_id: Mapped[str] = mapped_column(primary_key=True)
+    _is_valid_v0: Mapped[bool]
+    _is_valid_v1: Mapped[bool]
+    _is_best_duplicate: Mapped[bool | None]
+    _cluster_id: Mapped[str | None]
 
     # structure data
     accessibilite: Mapped[str | None]
-    adresse: Mapped[str | None]
     antenne: Mapped[bool | None] = mapped_column(default=False)
-    code_insee: Mapped[str | None] = mapped_column(sqla.ForeignKey(Commune.code))
-    code_postal: Mapped[str | None]
-    commune: Mapped[str | None]
-    complement_adresse: Mapped[str | None]
     courriel: Mapped[str | None]
     date_maj: Mapped[date | None]
     horaires_ouverture: Mapped[str | None]
     id: Mapped[str]
     labels_autres: Mapped[list[str] | None]
     labels_nationaux: Mapped[list[str] | None]
-    latitude: Mapped[float | None]
     lien_source: Mapped[str | None]
-    longitude: Mapped[float | None]
     nom: Mapped[str]
     presentation_detail: Mapped[str | None]
     presentation_resume: Mapped[str | None]
@@ -46,40 +55,40 @@ class Structure(Base):
 
     score_qualite: Mapped[float]
 
-    # Those should be self-refs: sqla.ForeignKey("api__structures._di_surrogate_id")
-    # Unfortunately the current version of load_inclusion_data does not support
-    # self-references as the "best duplicates" should be inserted first. See to
-    # add this extra validation in a future revamp of load_inclusion_data.
-    cluster_best_duplicate: Mapped[str | None]
-
-    doublons: Mapped[list[dict] | None]
-
     services: Mapped[list["Service"]] = relationship(back_populates="structure")
     commune_: Mapped[Commune] = relationship(back_populates="structures")
 
     __table_args__ = (
         sqla.Index(None, "source"),
-        sqla.Index(None, "cluster_best_duplicate"),
+        sqla.Index(None, "_cluster_id"),
     )
 
     def __repr__(self) -> str:
         return f"<Structure(source={self.source}, id={self.id}, nom={self.nom})>"
 
 
-class Service(Base):
+Structure.doublons = relationship(
+    Structure,
+    primaryjoin=sqla.and_(
+        orm.foreign(Structure._cluster_id) == orm.remote(Structure._cluster_id),
+        orm.foreign(Structure._di_surrogate_id)
+        != orm.remote(Structure._di_surrogate_id),
+    ),
+    uselist=True,
+)
+
+
+class Service(HasAddress, Base):
     # internal metadata
     _di_surrogate_id: Mapped[str] = mapped_column(primary_key=True)
     _di_structure_surrogate_id: Mapped[str] = mapped_column(
-        sqla.ForeignKey(Structure._di_surrogate_id)
+        sqla.ForeignKey(Structure._di_surrogate_id, ondelete="CASCADE")
     )
     structure: Mapped[Structure] = relationship(back_populates="services")
+    _is_valid_v0: Mapped[bool]
+    _is_valid_v1: Mapped[bool]
 
     # service data
-    adresse: Mapped[str | None]
-    code_insee: Mapped[str | None] = mapped_column(sqla.ForeignKey(Commune.code))
-    code_postal: Mapped[str | None]
-    commune: Mapped[str | None]
-    complement_adresse: Mapped[str | None]
     contact_nom_prenom: Mapped[str | None]
     contact_public: Mapped[bool | None] = mapped_column(default=False)
     courriel: Mapped[str | None]
@@ -92,9 +101,7 @@ class Service(Base):
     frais: Mapped[list[str] | None]
     id: Mapped[str]
     justificatifs: Mapped[list[str] | None]
-    latitude: Mapped[float | None]
     lien_source: Mapped[str | None]
-    longitude: Mapped[float | None]
     modes_accueil: Mapped[list[str] | None]
     modes_orientation_accompagnateur_autres: Mapped[str | None]
     modes_orientation_accompagnateur: Mapped[list[str] | None]
@@ -131,6 +138,8 @@ class Service(Base):
     zone_diffusion_nom: Mapped[str | None]
     zone_diffusion_type: Mapped[str | None]
     score_qualite: Mapped[float]
+    volume_horaire_hebdomadaire: Mapped[float | None]
+    nombre_semaines: Mapped[int | None]
 
     commune_: Mapped[Commune] = relationship(back_populates="services")
 
@@ -141,9 +150,7 @@ class Service(Base):
         sqla.Index(None, "thematiques", postgresql_using="gin"),
         sqla.Index(
             "ix_api__services__geography",
-            sqla.text(
-                "CAST(ST_MakePoint(longitude, latitude) AS geography(geometry, 4326))"
-            ),
+            sqla.text("ST_MakePoint(longitude, latitude)::geography(geometry, 4326)"),
             postgresql_using="gist",
         ),
     )

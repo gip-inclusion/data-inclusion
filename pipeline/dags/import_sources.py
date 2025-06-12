@@ -1,25 +1,25 @@
 import pendulum
 
-import airflow
-from airflow.operators import empty, python
+from airflow.decorators import dag, task
+from airflow.operators import empty
 from airflow.utils.task_group import TaskGroup
 
 from dag_utils import date, sentry, sources
-from dag_utils.dbt import dbt_operator_factory
 from dag_utils.virtualenvs import PYTHON_BIN_PATH
 
 
-def extract_from_source_to_datalake_bucket(source_id, stream_id, run_id, logical_date):
-    import logging
-
+@task.external_python(
+    python=str(PYTHON_BIN_PATH),
+    retries=2,
+)
+def extract(source_id, stream_id, run_id, logical_date):
     from dag_utils import s3, sources
 
-    logger = logging.getLogger(__name__)
     source = sources.SOURCES_CONFIGS[source_id]
     stream = source["streams"][stream_id]
     url = stream["url"]
 
-    logger.info("Fetching file from url=%s", url)
+    print(f"Fetching file from url={url}")
 
     s3_file_path = s3.source_file_path(
         source_id=source_id,
@@ -38,16 +38,22 @@ def extract_from_source_to_datalake_bucket(source_id, stream_id, run_id, logical
     )
 
 
-def load_from_s3_to_data_warehouse(source_id, stream_id, run_id, logical_date):
-    import logging
+@task.external_python(python=str(PYTHON_BIN_PATH))
+def create_schema(source_id):
+    from dag_utils import pg
 
+    schema_name = source_id.replace("-", "_")
+    pg.create_schema(schema_name)
+
+
+@task.external_python(python=str(PYTHON_BIN_PATH))
+def load(source_id, stream_id, run_id, logical_date):
     import pandas as pd
     import sqlalchemy as sqla
     from sqlalchemy.dialects.postgresql import JSONB
 
     from dag_utils import pg, s3, sources
 
-    logger = logging.getLogger(__name__)
     source = sources.SOURCES_CONFIGS[source_id]
     stream = source["streams"][stream_id]
     url = stream["url"]
@@ -62,7 +68,7 @@ def load_from_s3_to_data_warehouse(source_id, stream_id, run_id, logical_date):
     # FIXME(vperron) : Re-load the file as a dataframe. This seems a bit unefficient.
     tmp_file_path = s3.download_file(s3_file_path)
 
-    logger.info("Downloading file s3_path=%s tmp_path=%s", s3_file_path, tmp_file_path)
+    print(f"Downloading file from s3_path={s3_file_path} to tmp_path={tmp_file_path}")
 
     read_fn = sources.get_reader(source_id, stream_id)
     df = read_fn(path=tmp_file_path)
@@ -77,8 +83,6 @@ def load_from_s3_to_data_warehouse(source_id, stream_id, run_id, logical_date):
 
     schema_name = source_id.replace("-", "_")
     table_name = stream_id.replace("-", "_")
-
-    pg.create_schema(schema_name)
 
     with pg.connect_begin() as conn:
         df.to_sql(
@@ -117,7 +121,7 @@ for source_id, source_config in sources.SOURCES_CONFIGS.items():
     model_name = source_id.replace("-", "_")
     dag_id = f"import_{model_name}"
 
-    with airflow.DAG(
+    @dag(
         dag_id=dag_id,
         start_date=pendulum.datetime(2022, 1, 1, tz=date.TIME_ZONE),
         default_args=sentry.notify_failure_args(),
@@ -125,44 +129,19 @@ for source_id, source_config in sources.SOURCES_CONFIGS.items():
         catchup=False,
         tags=["source"],
         user_defined_macros={"local_ds": date.local_date_str},
-    ) as dag:
+    )
+    def _dag():
         start = empty.EmptyOperator(task_id="start")
         end = empty.EmptyOperator(task_id="end")
-
-        dbt_snapshot_source = dbt_operator_factory(
-            task_id="dbt_snapshot_source",
-            command="snapshot",
-            select=f"sources.{model_name}",
-        )
+        create_schema_task = create_schema(source_id=source_id)
 
         for stream_id in source_config["streams"]:
             with TaskGroup(group_id=stream_id) as stream_task_group:
-                extract = python.ExternalPythonOperator(
-                    task_id="extract",
-                    python=str(PYTHON_BIN_PATH),
-                    python_callable=extract_from_source_to_datalake_bucket,
-                    retries=2,
-                    op_kwargs={
-                        "source_id": source_id,
-                        "stream_id": stream_id,
-                    },
-                )
-                load = python.ExternalPythonOperator(
-                    task_id="load",
-                    python=str(PYTHON_BIN_PATH),
-                    python_callable=load_from_s3_to_data_warehouse,
-                    op_kwargs={
-                        "source_id": source_id,
-                        "stream_id": stream_id,
-                    },
+                (
+                    extract(source_id=source_id, stream_id=stream_id)
+                    >> load(source_id=source_id, stream_id=stream_id)
                 )
 
-                start >> extract >> load
+            start >> create_schema_task >> stream_task_group >> end
 
-            # FIXME(vperron) : didn't Valentin say that snapshots aren't actually used ?
-            if source_config["snapshot"]:
-                stream_task_group >> dbt_snapshot_source >> end
-            else:
-                stream_task_group >> end
-
-    globals()[dag_id] = dag
+    globals()[dag_id] = _dag()

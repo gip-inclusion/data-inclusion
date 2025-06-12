@@ -13,8 +13,21 @@ class StructureFactory(factory.alchemy.SQLAlchemyModelFactory):
     class Meta:
         model = models.Structure
         sqlalchemy_session_persistence = "commit"
+        # attributes starting with an underscore ignored by default
+        # the recommended way is to use the `rename` dict
+        rename = {
+            "di_surrogate_id": "_di_surrogate_id",
+            "is_valid_v0": "_is_valid_v0",
+            "is_valid_v1": "_is_valid_v1",
+            "is_best_duplicate": "_is_best_duplicate",
+            "cluster_id": "_cluster_id",
+        }
 
-    _di_surrogate_id = factory.LazyAttribute(lambda o: f"{o.source}-{o.id}")
+    di_surrogate_id = factory.LazyAttribute(lambda o: f"{o.source}-{o.id}")
+    is_valid_v0 = True
+    is_valid_v1 = True
+    is_best_duplicate = None
+    cluster_id = None
 
     id = factory.Faker("slug", locale="fr_FR")
     siret = factory.LazyFunction(lambda: fake.siret().replace(" ", ""))
@@ -57,16 +70,25 @@ class StructureFactory(factory.alchemy.SQLAlchemyModelFactory):
         getter=lambda v: [v.value],
     )
     score_qualite = 0.0
-    doublons = []
 
 
 class ServiceFactory(factory.alchemy.SQLAlchemyModelFactory):
     class Meta:
         model = models.Service
         sqlalchemy_session_persistence = "commit"
+        # attributes starting with an underscore ignored by default
+        # the recommended way is to use the `rename` dict
+        rename = {
+            "di_surrogate_id": "_di_surrogate_id",
+            "di_structure_surrogate_id": "_di_structure_surrogate_id",
+            "is_valid_v0": "_is_valid_v0",
+            "is_valid_v1": "_is_valid_v1",
+        }
 
-    _di_surrogate_id = factory.Faker("uuid4")
-    _di_structure_surrogate_id = factory.Faker("uuid4")
+    di_surrogate_id = factory.LazyAttribute(lambda o: f"{o.source}-{o.id}")
+    di_structure_surrogate_id = factory.SelfAttribute("structure._di_surrogate_id")
+    is_valid_v0 = True
+    is_valid_v1 = True
 
     structure = factory.SubFactory(
         StructureFactory,
@@ -159,5 +181,6 @@ class ServiceFactory(factory.alchemy.SQLAlchemyModelFactory):
     zone_diffusion_type = None
     zone_diffusion_code = None
     zone_diffusion_nom = None
-
+    nombre_semaines = 1
+    volume_horaire_hebdomadaire = 1
     score_qualite = 0.5
