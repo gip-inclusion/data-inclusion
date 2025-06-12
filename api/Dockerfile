@@ -8,8 +8,8 @@ ENV PYTHONDONTWRITEBYTECODE=1
 
 WORKDIR /srv
 
-RUN apt-get update -y
-RUN apt-get install -y --no-install-recommends \
+RUN apt-get update \
+    && apt-get install -y --no-install-recommends \
     binutils \
     build-essential \
     libpq-dev \
@@ -45,7 +45,6 @@ ENV PYTHONDONTWRITEBYTECODE=1
 WORKDIR /srv
 
 RUN apt-get update \
-    && apt-get upgrade -y \
     && apt-get install -y --no-install-recommends \
     curl libpq-dev \
     && apt-get autoremove --purge -y \
