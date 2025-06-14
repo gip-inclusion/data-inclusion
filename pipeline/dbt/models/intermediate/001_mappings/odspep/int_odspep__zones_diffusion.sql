@@ -30,26 +30,6 @@ communes AS (
     FROM {{ ref('stg_odspep__communes') }}
 ),
 
-bassins AS (
-    SELECT
-        id_res,
-        code_bassin_bas                    AS "code",
-        'bassin'                           AS "type",
-        NULL                               AS "libelle",
-        CONCAT('bassin_', code_bassin_bas) AS "unique_code"
-    FROM {{ ref('stg_odspep__bassins') }}
-),
-
-dir_territoriale_ofii AS (
-    SELECT
-        id_res,
-        code_dit                  AS "code",
-        'dt_ofii'                 AS "type",
-        NULL                      AS "libelle",
-        CONCAT('ofii_', code_dit) AS "unique_code"
-    FROM {{ ref('stg_odspep__dir_territoriale_ofii') }}
-),
-
 final AS (
 
     SELECT * FROM regions
@@ -57,10 +37,6 @@ final AS (
     SELECT * FROM departements
     UNION
     SELECT * FROM communes
-    UNION
-    SELECT * FROM bassins
-    UNION
-    SELECT * FROM dir_territoriale_ofii
 )
 
 SELECT * FROM final
