@@ -120,7 +120,6 @@ final AS (
         END                                                           AS "profils",
         profils.traduction                                            AS "profils_precisions",
         CAST(NULL AS TEXT [])                                         AS "pre_requis",
-        TRUE                                                          AS "cumulable",
         CAST(NULL AS TEXT [])                                         AS "justificatifs",
         CAST(NULL AS DATE)                                            AS "date_creation",
         CAST(NULL AS DATE)                                            AS "date_suspension",

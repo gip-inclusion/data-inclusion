@@ -27,7 +27,6 @@ final AS (
         NULL                                                                                                        AS "profils_precisions",
         structure_id                                                                                                AS "structure_id",
         _di_source_id                                                                                               AS "source",
-        TRUE                                                                                                        AS "cumulable",
         NULL                                                                                                        AS "formulaire_en_ligne",
         service_commun__calendrier__jours_horaires_text                                                             AS "recurrence",
         CAST(NULL AS DATE)                                                                                          AS "date_creation",

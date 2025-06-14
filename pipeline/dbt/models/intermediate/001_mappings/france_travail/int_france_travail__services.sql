@@ -25,7 +25,6 @@ final AS (
         structures.id                                    AS "structure_id",
         structures.id                                    AS "adresse_id",
         structures.courriel                              AS "courriel",
-        services.cumulable                               AS "cumulable",
         TRUE                                             AS "contact_public",
         NULL                                             AS "contact_nom_prenom",
         structures.date_maj                              AS "date_maj",

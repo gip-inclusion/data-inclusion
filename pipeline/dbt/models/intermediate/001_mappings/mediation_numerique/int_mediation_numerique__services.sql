@@ -44,7 +44,6 @@ final AS (
         NULL                                                                                           AS "lien_source",
         'departement'                                                                                  AS "zone_diffusion_type",
         CAST(NULL AS TEXT [])                                                                          AS "pre_requis",
-        CAST(NULL AS BOOLEAN)                                                                          AS "cumulable",
         CAST(NULL AS TEXT [])                                                                          AS "justificatifs",
         CAST(NULL AS DATE)                                                                             AS "date_suspension",
         CAST(structures.date_maj AS DATE)                                                              AS "date_maj",
