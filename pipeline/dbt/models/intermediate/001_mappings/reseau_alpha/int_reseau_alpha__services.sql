@@ -18,7 +18,6 @@ final AS (
         NULL                                                                   AS "zone_diffusion_code",
         NULL                                                                   AS "zone_diffusion_nom",  -- FIXME
         'departement'                                                          AS "zone_diffusion_type",
-        TRUE                                                                   AS "cumulable",
         formations.url                                                         AS "lien_source",
         formations.id                                                          AS "id",
         formations.content__date_maj                                           AS "date_maj",
