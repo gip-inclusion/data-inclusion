@@ -20,7 +20,6 @@ final AS (
         NULL                  AS "typologie",
         content__date_maj     AS "date_maj",
         'structure--' || id   AS "adresse_id",
-        CAST(NULL AS BOOLEAN) AS "antenne",
         CAST(NULL AS TEXT []) AS "labels_autres",
         CAST(NULL AS TEXT []) AS "labels_nationaux",
         CAST(NULL AS TEXT []) AS "thematiques"

@@ -34,7 +34,6 @@ class Structure(HasAddress, Base):
 
     # structure data
     accessibilite: Mapped[str | None]
-    antenne: Mapped[bool | None] = mapped_column(default=False)
     courriel: Mapped[str | None]
     date_maj: Mapped[date | None]
     horaires_ouverture: Mapped[str | None]

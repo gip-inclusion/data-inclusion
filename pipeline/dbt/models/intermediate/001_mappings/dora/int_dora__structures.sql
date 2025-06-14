@@ -17,7 +17,6 @@ final AS (
     SELECT
         structures.accessibilite          AS "accessibilite",
         structures.id                     AS "adresse_id",
-        structures.antenne                AS "antenne",
         structures.courriel               AS "courriel",
         CAST(structures.date_maj AS DATE) AS "date_maj",
         structures.horaires_ouverture     AS "horaires_ouverture",
