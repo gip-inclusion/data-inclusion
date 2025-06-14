@@ -127,7 +127,6 @@ class ServiceFactory(factory.alchemy.SQLAlchemyModelFactory):
     )
     profils_precisions = factory.Faker("text", max_nb_chars=20, locale="fr_FR")
     pre_requis = []
-    cumulable = False
     justificatifs = []
     formulaire_en_ligne = None
     commune = factory.Faker("city", locale="fr_FR")

@@ -111,7 +111,6 @@ final AS (
         NULL                                                         AS "modes_orientation_beneficiaire_autres",
         CAST(NULL AS TEXT [])                                        AS "justificatifs",
         CAST(NULL AS TEXT [])                                        AS "pre_requis",
-        CAST(NULL AS BOOLEAN)                                        AS "cumulable",
         CAST(NULL AS DATE)                                           AS "date_suspension",
         'https://www.agefiph.fr' || services.attributes__path__alias AS "lien_source",
         CAST(services.attributes__created AS DATE)                   AS "date_creation",

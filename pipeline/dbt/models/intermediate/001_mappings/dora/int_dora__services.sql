@@ -18,7 +18,6 @@ final AS (
     SELECT
         services.id                                        AS "adresse_id",
         services.contact_public                            AS "contact_public",
-        services.cumulable                                 AS "cumulable",
         CAST(services.date_creation AS DATE)               AS "date_creation",
         CAST(services.date_maj AS DATE)                    AS "date_maj",
         CAST(services.date_suspension AS DATE)             AS "date_suspension",
