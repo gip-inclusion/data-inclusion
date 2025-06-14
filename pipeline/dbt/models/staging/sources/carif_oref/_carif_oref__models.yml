@@ -87,7 +87,7 @@ models:
               values: [0, 1, 2]
       - name: modalites_recrutement
         data_tests:
-          - dbt_utils.at_least_one
+          - dbt_utils.not_constant
           - dbt_utils.not_empty_string
       - name: prise_en_charge_frais_possible
         data_tests:
@@ -96,7 +96,7 @@ models:
               values: [true, false]
       - name: prix_total_ttc
         data_tests:
-          - dbt_utils.at_least_one
+          - dbt_utils.not_constant
       - name: url_action
         data_tests:
           - dbt_utils.not_null_proportion:
@@ -258,14 +258,14 @@ models:
           - dbt_utils.not_empty_string
       - name: web
         data_tests:
-          - dbt_utils.at_least_one
+          - dbt_utils.not_constant
       - name: telfixe
         data_tests:
           - dbt_utils.not_null_proportion:
               at_least: 0.5
       - name: portable
         data_tests:
-          - dbt_utils.at_least_one
+          - dbt_utils.not_constant
       - name: hash_adresse
         data_tests:
           - relationships:

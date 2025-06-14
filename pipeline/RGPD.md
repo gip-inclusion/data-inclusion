@@ -22,7 +22,7 @@ A noter que les contacts enregistrés dans Brevo contiennent a minima:
 - un ensemble d'attributs, dont la date d'opposition RGPD (remplie par Osiris)
 
 ### Traitements de données
-Chaque jour le DAG `main` se chargera de créer la table `int__union_contacts__enhanced` qui relie courriels venant
+Chaque jour le DAG `main` se chargera de créer la table `int__contacts` qui relie courriels venant
 de nos sources de données, et courriels connus de Brevo (avec succès de l'envoi ou non, date d'opposition...)
 
 ### Notification

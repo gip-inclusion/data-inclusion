@@ -3,8 +3,6 @@ import sqlalchemy as sqla
 
 from data_inclusion.api.analytics import models
 
-from ... import factories
-
 DUNKERQUE = {"code_insee": "59183", "latitude": 51.0361, "longitude": 2.3770}
 HAZEBROUCK = {"code_insee": "59295", "latitude": 50.7262, "longitude": 2.5387}
 
@@ -36,9 +34,15 @@ def test_ignore_event_if_resource_not_found(api_client, db_session, url, model):
 )
 @pytest.mark.with_token
 def test_consult_structure_event_saved(
-    api_client, db_session, url, schema_version, user_agent, num_events
+    api_client,
+    db_session,
+    url,
+    schema_version,
+    user_agent,
+    num_events,
+    structure_factory,
 ):
-    structure = factories.StructureFactory(source="foo", id="1")
+    structure = structure_factory(source="foo", id="1")
     url = f"{url}/{structure.source}/{structure.id}"
 
     response = api_client.get(
@@ -76,9 +80,9 @@ def test_consult_structure_event_saved(
 )
 @pytest.mark.with_token
 def test_consult_service_event_saved(
-    api_client, db_session, url, schema_version, user_agent, num_events
+    api_client, db_session, url, schema_version, user_agent, num_events, service_factory
 ):
-    service = factories.ServiceFactory(source="foo", id="1", score_qualite=0.8)
+    service = service_factory(source="foo", id="1", score_qualite=0.8)
     url = f"{url}/{service.source}/{service.id}"
 
     response = api_client.get(
@@ -250,12 +254,12 @@ def test_search_services_event_saved(api_client, db_session, url, schema_version
 @pytest.mark.parametrize("path", ["/search/services"])
 @pytest.mark.with_token
 def test_search_services_event_saved_with_results(
-    api_client, db_session, url, schema_version
+    api_client, db_session, url, schema_version, service_factory
 ):
     number_of_results_to_saved = 10
 
     for _ in range(number_of_results_to_saved + 1):
-        factories.ServiceFactory()
+        service_factory()
 
     response = api_client.get(url)
 
@@ -286,10 +290,10 @@ def test_search_services_event_saved_with_results(
 @pytest.mark.parametrize("path", ["/search/services"])
 @pytest.mark.with_token
 def test_search_services_event_only_first_page_saved(
-    api_client, db_session, url, schema_version
+    api_client, db_session, url, schema_version, service_factory
 ):
-    factories.ServiceFactory()
-    factories.ServiceFactory()
+    service_factory()
+    service_factory()
 
     first_response = api_client.get(url, params={"size": 1, "page": 1})
     api_client.get("/api/v0/search/services", params={"size": 1, "page": 2})

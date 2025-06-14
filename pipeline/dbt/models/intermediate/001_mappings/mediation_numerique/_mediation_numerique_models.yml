@@ -1,0 +1,80 @@
+version: 2
+
+models:
+  - name: int_mediation_numerique__adresses
+    data_tests:
+      - dbt_utils.unique_combination_of_columns:
+          combination_of_columns:
+            - source
+            - id
+      - check_adresse:
+          schema_version: v0
+          config:
+            severity: warn
+      - check_adresse:
+          schema_version: v1
+          config:
+            severity: warn
+    columns:
+      - name: id
+        data_tests:
+          - not_null
+          - dbt_utils.not_empty_string
+
+  - name: int_mediation_numerique__services
+    data_tests:
+      - dbt_utils.unique_combination_of_columns:
+          combination_of_columns:
+            - source
+            - id
+      - check_service:
+          schema_version: v0
+          config:
+            severity: warn
+      - check_service:
+          schema_version: v1
+          config:
+            severity: warn
+    columns:
+      - name: id
+        data_tests:
+          - not_null
+          - dbt_utils.not_empty_string
+      - name: structure_id
+        data_tests:
+          - not_null
+          - relationships:
+              to: ref('int_mediation_numerique__structures')
+              field: id
+      - name: adresse_id
+        data_tests:
+          - not_null
+          - relationships:
+              to: ref('int_mediation_numerique__adresses')
+              field: id
+
+  - name: int_mediation_numerique__structures
+    data_tests:
+      - dbt_utils.unique_combination_of_columns:
+          combination_of_columns:
+            - source
+            - id
+      - check_structure:
+          schema_version: v0
+          config:
+            severity: warn
+      - check_structure:
+          schema_version: v1
+          config:
+            severity: warn
+    columns:
+      - name: id
+        data_tests:
+          - not_null
+          - dbt_utils.not_empty_string
+      - name: adresse_id
+        data_tests:
+          - not_null
+          - relationships:
+              to: ref('int_mediation_numerique__adresses')
+              field: id
