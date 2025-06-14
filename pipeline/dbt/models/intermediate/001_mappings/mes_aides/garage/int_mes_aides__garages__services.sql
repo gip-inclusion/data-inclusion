@@ -16,7 +16,6 @@ final AS (
     SELECT
         garages.id                                                                                  AS "adresse_id",
         TRUE                                                                                        AS "contact_public",
-        TRUE                                                                                        AS "cumulable",
         garages.cree_le                                                                             AS "date_creation",
         garages.modifie_le                                                                          AS "date_maj",
         CAST(NULL AS DATE)                                                                          AS "date_suspension",

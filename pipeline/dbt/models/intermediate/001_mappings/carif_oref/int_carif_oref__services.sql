@@ -98,7 +98,6 @@ final AS (
         actions.info_public_vise                        AS "profils_precisions",
         organismes_formateurs.numero                    AS "structure_id",
         'carif-oref'                                    AS "source",
-        TRUE                                            AS "cumulable",
         NULL                                            AS "formulaire_en_ligne",
         NULL                                            AS "recurrence",
         CAST(NULL AS DATE)                              AS "date_creation",

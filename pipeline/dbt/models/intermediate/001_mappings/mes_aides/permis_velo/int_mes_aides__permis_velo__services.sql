@@ -147,7 +147,6 @@ final AS (
     SELECT
         permis_velo.id                                                     AS "adresse_id",
         TRUE                                                               AS "contact_public",
-        TRUE                                                               AS "cumulable",
         permis_velo.creee_le                                               AS "date_creation",
         permis_velo.modifiee_le                                            AS "date_maj",
         CAST(NULL AS DATE)                                                 AS "date_suspension",

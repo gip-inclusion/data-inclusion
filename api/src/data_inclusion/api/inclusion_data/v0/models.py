@@ -91,7 +91,6 @@ class Service(HasAddress, Base):
     contact_nom_prenom: Mapped[str | None]
     contact_public: Mapped[bool | None] = mapped_column(default=False)
     courriel: Mapped[str | None]
-    cumulable: Mapped[bool | None] = mapped_column(default=False)
     date_creation: Mapped[date | None]
     date_maj: Mapped[date | None]
     date_suspension: Mapped[date | None]
