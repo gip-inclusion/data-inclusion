@@ -3,8 +3,8 @@ from datetime import date
 import factory
 import faker
 
-from data_inclusion.api.inclusion_data import models
-from data_inclusion.schema import v0 as di_schema
+from data_inclusion.api.inclusion_data.v0 import models
+from data_inclusion.schema import v0
 
 fake = faker.Faker("fr_FR")
 
@@ -17,15 +17,11 @@ class StructureFactory(factory.alchemy.SQLAlchemyModelFactory):
         # the recommended way is to use the `rename` dict
         rename = {
             "di_surrogate_id": "_di_surrogate_id",
-            "is_valid_v0": "_is_valid_v0",
-            "is_valid_v1": "_is_valid_v1",
             "is_best_duplicate": "_is_best_duplicate",
             "cluster_id": "_cluster_id",
         }
 
     di_surrogate_id = factory.LazyAttribute(lambda o: f"{o.source}-{o.id}")
-    is_valid_v0 = True
-    is_valid_v1 = True
     is_best_duplicate = None
     cluster_id = None
 
@@ -41,9 +37,9 @@ class StructureFactory(factory.alchemy.SQLAlchemyModelFactory):
     latitude = factory.Faker("latitude")
     typologie = factory.Iterator(
         [
-            di_schema.TypologieStructure.ACI,
-            di_schema.TypologieStructure.MUNI,
-            di_schema.TypologieStructure.FT,
+            v0.TypologieStructure.ACI,
+            v0.TypologieStructure.MUNI,
+            v0.TypologieStructure.FT,
         ],
         getter=lambda v: v.value,
     )
@@ -63,9 +59,9 @@ class StructureFactory(factory.alchemy.SQLAlchemyModelFactory):
     labels_autres = ["Nièvre médiation numérique"]
     thematiques = factory.Iterator(
         [
-            di_schema.Thematique.CHOISIR_UN_METIER,
-            di_schema.Thematique.CREATION_ACTIVITE,
-            di_schema.Thematique.MOBILITE,
+            v0.Thematique.CHOISIR_UN_METIER,
+            v0.Thematique.CREATION_ACTIVITE,
+            v0.Thematique.MOBILITE,
         ],
         getter=lambda v: [v.value],
     )
@@ -81,14 +77,10 @@ class ServiceFactory(factory.alchemy.SQLAlchemyModelFactory):
         rename = {
             "di_surrogate_id": "_di_surrogate_id",
             "di_structure_surrogate_id": "_di_structure_surrogate_id",
-            "is_valid_v0": "_is_valid_v0",
-            "is_valid_v1": "_is_valid_v1",
         }
 
     di_surrogate_id = factory.LazyAttribute(lambda o: f"{o.source}-{o.id}")
     di_structure_surrogate_id = factory.SelfAttribute("structure._di_surrogate_id")
-    is_valid_v0 = True
-    is_valid_v1 = True
 
     structure = factory.SubFactory(
         StructureFactory,
@@ -103,23 +95,23 @@ class ServiceFactory(factory.alchemy.SQLAlchemyModelFactory):
     presentation_detail = factory.Faker("text", max_nb_chars=20, locale="fr_FR")
     types = factory.Iterator(
         [
-            di_schema.TypologieService.FORMATION,
-            di_schema.TypologieService.NUMÉRIQUE,
+            v0.TypologieService.FORMATION,
+            v0.TypologieService.NUMÉRIQUE,
         ],
         getter=lambda v: [v.value],
     )
     thematiques = factory.Iterator(
         [
-            di_schema.Thematique.CHOISIR_UN_METIER,
-            di_schema.Thematique.CREATION_ACTIVITE,
-            di_schema.Thematique.MOBILITE,
+            v0.Thematique.CHOISIR_UN_METIER,
+            v0.Thematique.CREATION_ACTIVITE,
+            v0.Thematique.MOBILITE,
         ],
         getter=lambda v: [v.value],
     )
     prise_rdv = factory.Faker("url", locale="fr_FR")
     frais = factory.Iterator(
         [
-            di_schema.Frais.GRATUIT,
+            v0.Frais.GRATUIT,
         ],
         getter=lambda v: [v.value],
     )
@@ -127,9 +119,9 @@ class ServiceFactory(factory.alchemy.SQLAlchemyModelFactory):
     page_web = factory.Faker("url", locale="fr_FR")
     profils = factory.Iterator(
         [
-            di_schema.Profil.FEMMES,
-            di_schema.Profil.JEUNES_16_26,
-            di_schema.Profil.SENIORS_65,
+            v0.Profil.FEMMES,
+            v0.Profil.JEUNES_16_26,
+            v0.Profil.SENIORS_65,
         ],
         getter=lambda v: [v.value],
     )
@@ -156,24 +148,24 @@ class ServiceFactory(factory.alchemy.SQLAlchemyModelFactory):
     date_maj = factory.LazyFunction(lambda: date(2023, 1, 1))
     modes_accueil = factory.Iterator(
         [
-            di_schema.ModeAccueil.A_DISTANCE,
-            di_schema.ModeAccueil.EN_PRESENTIEL,
-            di_schema.ModeAccueil.EN_PRESENTIEL,
+            v0.ModeAccueil.A_DISTANCE,
+            v0.ModeAccueil.EN_PRESENTIEL,
+            v0.ModeAccueil.EN_PRESENTIEL,
         ],
         getter=lambda v: [v.value],
     )
     modes_orientation_accompagnateur = factory.Iterator(
         [
-            di_schema.ModeOrientationAccompagnateur.TELEPHONER,
-            di_schema.ModeOrientationAccompagnateur.ENVOYER_UN_MAIL,
+            v0.ModeOrientationAccompagnateur.TELEPHONER,
+            v0.ModeOrientationAccompagnateur.ENVOYER_UN_MAIL,
         ],
         getter=lambda v: [v.value],
     )
     modes_orientation_accompagnateur_autres = None
     modes_orientation_beneficiaire = factory.Iterator(
         [
-            di_schema.ModeOrientationBeneficiaire.TELEPHONER,
-            di_schema.ModeOrientationBeneficiaire.SE_PRESENTER,
+            v0.ModeOrientationBeneficiaire.TELEPHONER,
+            v0.ModeOrientationBeneficiaire.SE_PRESENTER,
         ],
         getter=lambda v: [v.value],
     )

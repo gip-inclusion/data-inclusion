@@ -160,8 +160,10 @@ def db_session(db_connection):
         bind=db_connection, join_transaction_mode="create_savepoint"
     )
 
-    factories.StructureFactory._meta.sqlalchemy_session = session
-    factories.ServiceFactory._meta.sqlalchemy_session = session
+    factories.v0.StructureFactory._meta.sqlalchemy_session = session
+    factories.v1.StructureFactory._meta.sqlalchemy_session = session
+    factories.v0.ServiceFactory._meta.sqlalchemy_session = session
+    factories.v1.ServiceFactory._meta.sqlalchemy_session = session
 
     yield session
 

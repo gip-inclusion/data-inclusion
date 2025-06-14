@@ -2,68 +2,76 @@ import numpy as np
 import pandas as pd
 import pytest
 
-from data_inclusion.api.inclusion_data import commands, models
+from data_inclusion.api.inclusion_data import commands
+from data_inclusion.api.inclusion_data.v0 import models as v0_models
+from data_inclusion.schema import v0, v1
+
+
+@pytest.fixture
+def schema(schema_version):
+    if schema_version == "v0":
+        return v0
+    elif schema_version == "v1":
+        return v1
+
+
+structure_data_1 = {
+    "_di_surrogate_id": "dora-1",
+    "source": "dora",
+    "id": "1",
+    "code_insee": "59350",
+    "nom": "Chez Dora",
+    "date_maj": "not-a-date",
+}
+
+structure_data_2 = {
+    "_di_surrogate_id": "dora-1",
+    "source": "dora",
+    "id": "1",
+    "code_insee": "59350",
+    "nom": "Chez Dora",
+    "date_maj": "2025-01-01",
+    "thematiques": ["not-a-thematique"],
+}
+
+structure_data_3 = {
+    "_di_surrogate_id": "dora-1",
+    "source": "dora",
+    "id": "1",
+    "code_insee": "not-a-code-insee",
+    "nom": "Chez Dora",
+    "date_maj": "2025-01-01",
+}
 
 
 @pytest.mark.parametrize(
-    ("structure_data", "is_valid_v0", "is_valid_v1"),
+    ("structure_data", "schema_version", "is_valid"),
     [
-        (
-            {
-                "_di_surrogate_id": "dora-1",
-                "source": "dora",
-                "id": "1",
-                "code_insee": "59350",
-                "nom": "Chez Dora",
-                "date_maj": "not-a-date",
-            },
-            False,
-            False,
-        ),
-        (
-            {
-                "_di_surrogate_id": "dora-1",
-                "source": "dora",
-                "id": "1",
-                "code_insee": "59350",
-                "nom": "Chez Dora",
-                "date_maj": "2025-01-01",
-                "thematiques": ["not-a-thematique"],
-            },
-            False,  # v0 should consider thematiques invalid
-            True,  # v1 should ignore thematiques
-        ),
-        (
-            {
-                "_di_surrogate_id": "dora-1",
-                "source": "dora",
-                "id": "1",
-                "code_insee": "not-a-code-insee",
-                "nom": "Chez Dora",
-                "date_maj": "2025-01-01",
-            },
-            False,
-            False,
-        ),
+        (structure_data_1, "v0", False),
+        (structure_data_1, "v1", False),
+        (structure_data_2, "v0", False),
+        (structure_data_2, "v1", True),
+        (structure_data_3, "v0", False),
+        (structure_data_3, "v1", False),
     ],
 )
-def test_validate_dataset(db_session, structure_data, is_valid_v0, is_valid_v1):
+def test_validate_dataset(db_session, structure_data, schema, is_valid):
     input_structures_df = pd.DataFrame(data=[structure_data]).replace({np.nan: None})
 
     output_structures_df, _ = commands.validate_dataset(
         db_session=db_session,
         structures_df=input_structures_df,
         services_df=pd.DataFrame(),
+        structure_schema=schema.Structure,
+        service_schema=schema.Service,
     )
 
-    assert len(output_structures_df) == len(input_structures_df)
-    assert output_structures_df.iloc[0]._is_valid_v0 == is_valid_v0
-    assert output_structures_df.iloc[0]._is_valid_v1 == is_valid_v1
+    assert len(output_structures_df) == (1 if is_valid else 0)
 
 
 def test_prepare_dataset_doublons():
     structures_df = pd.DataFrame(
-        {c.name: None for c in models.Structure.__table__.columns}
+        {c.name: None for c in v0_models.Structure.__table__.columns}
         | {
             "_di_surrogate_id": ["s1", "s2", "s3"],
             "id": ["id1", "id2", "id3"],
@@ -75,7 +83,7 @@ def test_prepare_dataset_doublons():
     )
 
     services_df = pd.DataFrame(
-        {c.name: None for c in models.Service.__table__.columns}
+        {c.name: None for c in v0_models.Service.__table__.columns}
         | {
             "_di_surrogate_id": ["sv1", "sv2", "sv3"],
             "_di_structure_surrogate_id": ["s1", "s1", "s2"],
@@ -104,7 +112,7 @@ def test_prepare_dataset_doublons():
 
 def test_prepare_dataset_doublons_date_maj():
     structures_df = pd.DataFrame(
-        {c.name: None for c in models.Structure.__table__.columns}
+        {c.name: None for c in v0_models.Structure.__table__.columns}
         | {
             "_di_surrogate_id": ["s1", "s2", "s3"],
             "id": ["id1", "id2", "id3"],
@@ -116,7 +124,7 @@ def test_prepare_dataset_doublons_date_maj():
     )
 
     services_df = pd.DataFrame(
-        {c.name: None for c in models.Service.__table__.columns}
+        {c.name: None for c in v0_models.Service.__table__.columns}
         | {
             "_di_surrogate_id": ["sv1"],
             "_di_structure_surrogate_id": ["s1"],

@@ -8,7 +8,7 @@ import fastapi
 
 from data_inclusion.api.config import settings
 from data_inclusion.api.core import db
-from data_inclusion.api.inclusion_data import models
+from data_inclusion.api.inclusion_data.dependencies import get_service_model
 
 logger = logging.getLogger(__name__)
 
@@ -43,6 +43,7 @@ def notify_soliguide_dependency(
     ],
     background_tasks: fastapi.BackgroundTasks,
     db_session=fastapi.Depends(db.get_session),
+    service_model=fastapi.Depends(get_service_model),
 ):
     if source != "soliguide":
         return
@@ -57,9 +58,9 @@ def notify_soliguide_dependency(
             place_id = id
         case "retrieve_service_endpoint":
             service_instance = db_session.scalar(
-                sqla.select(models.Service)
-                .filter(models.Service.source == "soliguide")
-                .filter(models.Service.id == id)
+                sqla.select(service_model)
+                .filter(service_model.source == "soliguide")
+                .filter(service_model.id == id)
             )
 
             if service_instance is None:

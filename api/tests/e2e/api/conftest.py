@@ -9,8 +9,26 @@ def url(schema_version, path):
 
 
 @pytest.fixture
-def factory(path):
-    if "services" in path:
-        return factories.ServiceFactory
-    elif "structures" in path:
-        return factories.StructureFactory
+def structure_factory(schema_version):
+    return (
+        factories.v0.StructureFactory
+        if schema_version == "v0"
+        else factories.v1.StructureFactory
+    )
+
+
+@pytest.fixture
+def service_factory(schema_version):
+    return (
+        factories.v0.ServiceFactory
+        if schema_version == "v0"
+        else factories.v1.ServiceFactory
+    )
+
+
+@pytest.fixture
+def factory(path, structure_factory, service_factory):
+    if "structures" in path:
+        return structure_factory
+    elif "services" in path:
+        return service_factory

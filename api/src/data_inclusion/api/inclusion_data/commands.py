@@ -9,7 +9,9 @@ import sqlalchemy as sqla
 from sqlalchemy import orm
 
 from data_inclusion.api.config import settings
-from data_inclusion.api.inclusion_data import models
+from data_inclusion.api.decoupage_administratif.models import Commune
+from data_inclusion.api.inclusion_data.v0 import models as v0_models
+from data_inclusion.api.inclusion_data.v1 import models as v1_models
 from data_inclusion.schema import v0, v1
 
 logger = logging.getLogger(__name__)
@@ -24,14 +26,11 @@ def validate_dataset(
     db_session,
     structures_df: pd.DataFrame,
     services_df: pd.DataFrame,
+    structure_schema: pydantic.BaseModel,
+    service_schema: pydantic.BaseModel,
 ) -> tuple[pd.DataFrame, pd.DataFrame]:
-    """Run validation on the dataset.
-
-    Validate each dataframe against both versions of the schema (v0 and v1).
-    Add `_is_valid_v0` and `_is_valid_v1` columns to the dataframes.
-    Remove invalid `code_insee` values that are not present in the database.
-    """
-    city_codes = db_session.scalars(sqla.select(models.Commune.code)).all()
+    """Run validation on the dataset."""
+    city_codes = db_session.scalars(sqla.select(Commune.code)).all()
 
     def validate_data(model_schema, data):
         errors = []
@@ -51,32 +50,25 @@ def validate_dataset(
 
         return errors
 
-    def remove_invalid_code_insee(df):
-        return df.assign(
-            code_insee=df["code_insee"].mask(
-                cond=df["code_insee"].apply(
-                    lambda c: c is not None or c not in city_codes
-                ),
-                other=None,
-            )
-        )
-
     def is_valid(df, model_schema):
         return df.apply(lambda d: len(validate_data(model_schema, d)) == 0, axis=1)
 
     if not structures_df.empty:
-        structures_df = structures_df.assign(
-            _is_valid_v0=is_valid(structures_df, v0.Structure)
-        )
-        structures_df = structures_df.assign(
-            _is_valid_v1=is_valid(structures_df, v1.Structure)
-        )
-        structures_df = remove_invalid_code_insee(structures_df)
+        structures_df = structures_df.loc[is_valid(structures_df, structure_schema)]
+        structures_df = structures_df.loc[
+            structures_df["code_insee"].apply(lambda c: c is None or c in city_codes)
+        ]
 
     if not services_df.empty:
-        services_df = services_df.assign(_is_valid_v0=is_valid(services_df, v0.Service))
-        services_df = services_df.assign(_is_valid_v1=is_valid(services_df, v1.Service))
-        services_df = remove_invalid_code_insee(services_df)
+        services_df = services_df.loc[is_valid(services_df, service_schema)]
+        services_df = services_df.loc[
+            services_df["code_insee"].apply(lambda c: c is None or c in city_codes)
+        ]
+        services_df = services_df.loc[
+            services_df["_di_structure_surrogate_id"].isin(
+                structures_df["_di_surrogate_id"]
+            )
+        ]
 
     return structures_df, services_df
 
@@ -146,9 +138,12 @@ def load_dataset(
     db_session: orm.Session,
     structures_df: pd.DataFrame,
     services_df: pd.DataFrame,
+    structure_model,
+    service_model,
 ):
-    load_df_to_table(db_session, structures_df, models.Structure)
-    load_df_to_table(db_session, services_df, models.Service)
+    load_df_to_table(db_session, structures_df, structure_model)
+    load_df_to_table(db_session, services_df, service_model)
+
     db_session.commit()
 
 
@@ -167,36 +162,55 @@ def load_inclusion_data(
     db_session,
     path: Path,
 ):
-    structures_df, services_df = [
-        pd.read_parquet(path / filename).replace({np.nan: None})
-        for filename in ("structures.parquet", "services.parquet")
-    ]
+    for (
+        schema_version,
+        structure_model,
+        service_model,
+        structure_schema,
+        service_schema,
+    ) in [
+        ("v0", v0_models.Structure, v0_models.Service, v0.Structure, v0.Service),
+        ("v1", v1_models.Structure, v1_models.Service, v1.Structure, v1.Service),
+    ]:
+        structures_df, services_df = [
+            pd.read_parquet(path / filename).replace({np.nan: None})
+            for filename in ("structures.parquet", "services.parquet")
+        ]
 
-    logger.info("Validating data...")
-    structures_df, services_df = validate_dataset(
-        db_session=db_session,
-        structures_df=structures_df,
-        services_df=services_df,
-    )
+        logger.info("Validating data...")
+        structures_df, services_df = validate_dataset(
+            db_session=db_session,
+            structures_df=structures_df,
+            services_df=services_df,
+            structure_schema=structure_schema,
+            service_schema=service_schema,
+        )
 
-    logger.info("Preparing data...")
-    structures_df, services_df = prepare_dataset(
-        structures_df=structures_df,
-        services_df=services_df,
-    )
+        services_df = services_df.drop(columns="score_qualite", errors="ignore")
+        services_df = services_df.rename(
+            columns={f"score_qualite_{schema_version}": "score_qualite"}
+        )
 
-    logger.info("Loading data...")
-    load_dataset(
-        db_session=db_session,
-        structures_df=structures_df,
-        services_df=services_df,
-    )
+        logger.info("Preparing data...")
+        structures_df, services_df = prepare_dataset(
+            structures_df=structures_df,
+            services_df=services_df,
+        )
 
-    logger.info("Vacuuming...")
-    with (
-        db_session.get_bind()
-        .engine.connect()
-        .execution_options(isolation_level="AUTOCOMMIT") as connection
-    ):
-        for model in (models.Structure, models.Service):
-            connection.execute(sqla.text(f"VACUUM ANALYZE {model.__tablename__}"))
+        logger.info("Loading data...")
+        load_dataset(
+            db_session=db_session,
+            structures_df=structures_df,
+            services_df=services_df,
+            structure_model=structure_model,
+            service_model=service_model,
+        )
+
+        logger.info("Vacuuming...")
+        with (
+            db_session.get_bind()
+            .engine.connect()
+            .execution_options(isolation_level="AUTOCOMMIT") as connection
+        ):
+            for model in (structure_model, service_model):
+                connection.execute(sqla.text(f"VACUUM ANALYZE {model.__tablename__}"))
