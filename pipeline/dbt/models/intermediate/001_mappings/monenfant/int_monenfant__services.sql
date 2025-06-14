@@ -29,8 +29,6 @@ final AS (
         _di_source_id                                                                                               AS "source",
         NULL                                                                                                        AS "formulaire_en_ligne",
         service_commun__calendrier__jours_horaires_text                                                             AS "recurrence",
-        CAST(NULL AS DATE)                                                                                          AS "date_creation",
-        CAST(NULL AS DATE)                                                                                          AS "date_suspension",
         coordonnees__telephone                                                                                      AS "telephone",
         coordonnees__adresse_mail                                                                                   AS "courriel",
         FALSE                                                                                                       AS "contact_public",

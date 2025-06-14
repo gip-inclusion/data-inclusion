@@ -18,9 +18,7 @@ final AS (
     SELECT
         services.id                                        AS "adresse_id",
         services.contact_public                            AS "contact_public",
-        CAST(services.date_creation AS DATE)               AS "date_creation",
         CAST(services.date_maj AS DATE)                    AS "date_maj",
-        CAST(services.date_suspension AS DATE)             AS "date_suspension",
         services.formulaire_en_ligne                       AS "formulaire_en_ligne",
         services.frais_autres                              AS "frais_autres",
         services.id                                        AS "id",

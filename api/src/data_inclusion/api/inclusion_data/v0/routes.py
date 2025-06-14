@@ -183,7 +183,6 @@ def list_services_endpoint(
         modes_accueil=modes_accueil,
         types=types,
         score_qualite_minimum=score_qualite_minimum,
-        include_outdated=inclure_suspendus,
     )
     background_tasks.add_task(
         save_list_services_event,
@@ -198,7 +197,6 @@ def list_services_endpoint(
         profils=profils,
         modes_accueil=modes_accueil,
         types=types,
-        inclure_suspendus=inclure_suspendus,
         recherche_public=recherche_public,
         score_qualite_minimum=score_qualite_minimum,
     )
@@ -257,7 +255,7 @@ def search_services_endpoint(
     recherche_public: filters.RecherchePublicFilter = None,
     types: filters.ServiceTypesFilter[schema.TypologieService] = None,
     score_qualite_minimum: filters.ScoreQualiteMinimumFilter = None,
-    inclure_suspendus: filters.SuspendusFilter = False,
+    inclure_suspendus: filters.SuspendusFilter = None,
     exclure_doublons: filters.ExclureDoublonsServicesFilter = False,
 ):
     """
@@ -314,7 +312,6 @@ def search_services_endpoint(
         types=types,
         search_point=search_point,
         score_qualite_minimum=score_qualite_minimum,
-        include_outdated=inclure_suspendus,
         deduplicate=exclure_doublons,
     )
 
@@ -332,7 +329,6 @@ def search_services_endpoint(
         modes_accueil=modes_accueil,
         profils=profils,
         types=types,
-        inclure_suspendus=inclure_suspendus,
         recherche_public=recherche_public,
         score_qualite_minimum=score_qualite_minimum,
         exclure_doublons=exclure_doublons,

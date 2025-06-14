@@ -130,8 +130,6 @@ class ServiceFactory(factory.alchemy.SQLAlchemyModelFactory):
     longitude = factory.Faker("longitude")
     latitude = factory.Faker("latitude")
     recurrence = None
-    date_creation = factory.LazyFunction(lambda: date(2022, 1, 1))
-    date_suspension = factory.LazyFunction(lambda: date(2054, 1, 1))
     lien_source = factory.LazyAttribute(lambda o: f"https://{o.source}.fr/{o.id}")
     telephone = "0102030405"
     courriel = factory.Faker("email", locale="fr_FR")

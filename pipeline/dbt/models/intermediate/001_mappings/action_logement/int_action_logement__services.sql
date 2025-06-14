@@ -15,7 +15,6 @@ final AS (
         TRUE                                             AS "contact_public",
         NULL                                             AS "contact_nom_prenom",
         structures.date_maj                              AS "date_maj",
-        structures.date_maj                              AS "date_creation",
         services.formulaire_en_ligne                     AS "formulaire_en_ligne",
         services.frais_autres                            AS "frais_autres",
         services.justificatifs                           AS "justificatifs",
@@ -41,7 +40,6 @@ final AS (
         'departement'                                    AS "zone_diffusion_type",
         NULL                                             AS "zone_diffusion_code",
         NULL                                             AS "zone_diffusion_nom",
-        CAST(NULL AS DATE)                               AS "date_suspension",
         structures.id || '-' || services.id              AS "id"
     FROM services
     CROSS JOIN structures
