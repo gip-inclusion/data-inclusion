@@ -1,7 +1,7 @@
 """refactor dedup data
 
 Revision ID: 81ed832cc0e5
-Revises: bd947d8fa595
+Revises: b1739bed686e
 Create Date: 2025-06-12 09:52:22.854674
 
 """
@@ -12,7 +12,7 @@ from sqlalchemy.dialects import postgresql
 
 # revision identifiers, used by Alembic.
 revision = "81ed832cc0e5"
-down_revision = "bd947d8fa595"
+down_revision = "b1739bed686e"
 branch_labels = None
 depends_on = None
 

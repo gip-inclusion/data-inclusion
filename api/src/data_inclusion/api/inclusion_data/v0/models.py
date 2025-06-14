@@ -27,8 +27,6 @@ class HasAddress:
 class Structure(HasAddress, Base):
     # internal metadata
     _di_surrogate_id: Mapped[str] = mapped_column(primary_key=True)
-    _is_valid_v0: Mapped[bool]
-    _is_valid_v1: Mapped[bool]
     _is_best_duplicate: Mapped[bool | None]
     _cluster_id: Mapped[str | None]
 
@@ -55,8 +53,10 @@ class Structure(HasAddress, Base):
 
     score_qualite: Mapped[float]
 
-    services: Mapped[list["Service"]] = relationship(back_populates="structure")
-    commune_: Mapped[Commune] = relationship(back_populates="structures")
+    services: Mapped[list["v0.models.Service"]] = relationship(  # noqa: F821
+        back_populates="structure"
+    )
+    commune_: Mapped[Commune] = relationship(back_populates="structures_v0")
 
     __table_args__ = (
         sqla.Index(None, "source"),
@@ -85,8 +85,6 @@ class Service(HasAddress, Base):
         sqla.ForeignKey(Structure._di_surrogate_id, ondelete="CASCADE")
     )
     structure: Mapped[Structure] = relationship(back_populates="services")
-    _is_valid_v0: Mapped[bool]
-    _is_valid_v1: Mapped[bool]
 
     # service data
     contact_nom_prenom: Mapped[str | None]
@@ -139,7 +137,7 @@ class Service(HasAddress, Base):
     zone_diffusion_type: Mapped[str | None]
     score_qualite: Mapped[float]
 
-    commune_: Mapped[Commune] = relationship(back_populates="services")
+    commune_: Mapped[Commune] = relationship(back_populates="services_v0")
 
     __table_args__ = (
         sqla.Index(None, "_di_structure_surrogate_id"),
@@ -159,5 +157,5 @@ class Service(HasAddress, Base):
         return f"<Service(source={self.source}, id={self.id}, nom={self.nom})>"
 
 
-Commune.services = relationship(Service, back_populates="commune_")
-Commune.structures = relationship(Structure, back_populates="commune_")
+Commune.services_v0 = relationship(Service, back_populates="commune_")
+Commune.structures_v0 = relationship(Structure, back_populates="commune_")
