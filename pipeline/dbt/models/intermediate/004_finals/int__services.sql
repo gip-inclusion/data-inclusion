@@ -71,7 +71,6 @@ zones_diffusion AS (
 SELECT
     services._di_surrogate_id                        AS "_di_surrogate_id",
     services._di_structure_surrogate_id              AS "_di_structure_surrogate_id",
-    services.contact_public                          AS "contact_public",
     services.formulaire_en_ligne                     AS "formulaire_en_ligne",
     services.frais_autres                            AS "frais_autres",
     services.justificatifs                           AS "justificatifs",
