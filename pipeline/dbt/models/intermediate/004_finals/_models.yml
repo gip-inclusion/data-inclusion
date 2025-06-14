@@ -1,0 +1,124 @@
+version: 2
+
+models:
+  - name: int__erreurs_validation
+    columns:
+      - name: _di_surrogate_id
+        data_tests:
+          - not_null
+          - relationships:
+              to: ref('int__structures')
+              field: _di_surrogate_id
+              config:
+                where: resource_type = 'structure'
+          - relationships:
+              to: ref('int__services')
+              field: _di_surrogate_id
+              config:
+                where: resource_type = 'service'
+      - name: source
+        data_tests:
+          - not_null
+          - dbt_utils.not_empty_string
+      - name: id
+        data_tests:
+          - not_null
+          - dbt_utils.not_empty_string
+      - name: field
+        data_tests:
+          - not_null
+          - dbt_utils.not_empty_string
+      - name: value
+      - name: schema_version
+        data_tests:
+          - not_null
+          - accepted_values:
+              values:
+                - v0
+                - v1
+      - name: resource_type
+        data_tests:
+          - not_null
+          - accepted_values:
+              values:
+                - service
+                - structure
+
+  - name: int__services
+    columns:
+      - name: zone_diffusion_code
+        data_tests:
+          - not_null:
+              config:
+                severity: warn
+          - dbt_utils.not_empty_string
+          - dbt_utils.not_constant
+          - dbt_utils.expression_is_true:
+              expression: "!~ '^(751|693|132)'"
+              config:
+                severity: warn
+          - relationships:
+              to: ref('stg_decoupage_administratif__regions')
+              field: code
+              where: "zone_diffusion_type = 'region'"
+            # TODO(vmttn): prevent false codes from being propagated downstream
+            # and set back severity to error
+              config:
+                severity: warn
+          - relationships:
+              to: ref('stg_decoupage_administratif__departements')
+              field: code
+              where: "zone_diffusion_type = 'departement'"
+              config:
+                severity: warn
+          - relationships:
+              to: ref('stg_decoupage_administratif__epcis')
+              field: code
+              where: "zone_diffusion_type = 'epci'"
+              config:
+                severity: warn
+          - relationships:
+              to: ref('stg_decoupage_administratif__communes')
+              field: code
+              where: "zone_diffusion_type = 'commune'"
+              config:
+                severity: warn
+
+  - name: int__structures
+
+  - name: int__criteres_qualite
+    description: |
+      Quality criteria scorings for services from all sources.
+      Each row holds a single criterion score for a service.
+      For a given service, there is as many rows as defined criteria.
+      A null score means the criterion is not applicable to the service.
+      Scoring is done by data-inclusion-schema scoring api in PL/Python.
+    columns:
+      - name: service_id
+        data_tests:
+          - not_null
+          - relationships:
+              to: ref('int__union_services')
+              field: _di_surrogate_id
+      - name: nom_critere
+        description: Name of the criterion.
+        data_tests:
+          - not_null
+          - dbt_utils.not_empty_string
+      - name: score_critere
+        description: |
+          Score for the given criterion and the given service, between 0 and 1.
+      - name: score_ligne
+        data_tests:
+          - not_null
+          - dbt_utils.not_constant
+          - dbt_utils.accepted_range:
+              min_value: 0
+              max_value: 1
+      - name: schema_version
+        data_tests:
+          - not_null
+          - accepted_values:
+              values:
+                - v0
+                - v1

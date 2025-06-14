@@ -245,6 +245,8 @@ cryptography==42.0.8
     #   -c airflow/constraints.txt
     #   apache-airflow
     #   paramiko
+data-inclusion-schema==1.0.0a1
+    # via -r dev/../tasks/python/requirements.in
 dateparser==1.2.1
     # via htmldate
 deprecated==1.2.18
@@ -274,6 +276,7 @@ email-validator==2.2.0
     # via
     #   -c airflow/constraints.txt
     #   flask-appbuilder
+    #   pydantic
 et-xmlfile==2.0.0
     # via
     #   -c airflow/constraints.txt
@@ -637,6 +640,7 @@ pendulum==3.0.0
     # via
     #   -c airflow/constraints.txt
     #   apache-airflow
+    #   data-inclusion-schema
 platformdirs==4.3.6
     # via
     #   -c airflow/constraints.txt
@@ -699,6 +703,7 @@ pycparser==2.22
 pydantic==2.10.6
     # via
     #   -c airflow/constraints.txt
+    #   data-inclusion-schema
     #   pyairtable
 pydantic-core==2.27.2
     # via

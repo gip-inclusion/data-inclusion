@@ -1,5 +1,5 @@
 # serializer version: 1
-# name: test_list_services_all[/services-v0]
+# name: test_list_services_all[/services-v0-instances0]
   '''
   {
     "items": [
@@ -10,12 +10,12 @@
         "commune": "Sainte Gabriel",
         "complement_adresse": null,
         "contact_nom_prenom": "Thibaut de Michaud",
-        "contact_public": false,
+        "contact_public": null,
         "courriel": "michelgerard@example.net",
-        "cumulable": false,
-        "date_creation": "2022-01-01",
+        "cumulable": null,
+        "date_creation": null,
         "date_maj": "2023-01-01",
-        "date_suspension": "2054-01-01",
+        "date_suspension": null,
         "formulaire_en_ligne": null,
         "frais": [
           "gratuit"
@@ -24,7 +24,7 @@
         "id": "be-water-scene-wind",
         "justificatifs": [],
         "latitude": -77.857573,
-        "lien_source": "https://dora.fr/be-water-scene-wind",
+        "lien_source": null,
         "longitude": -62.54684,
         "modes_accueil": [
           "a-distance"
@@ -70,7 +70,7 @@
   }
   '''
 # ---
-# name: test_list_services_all[/services-v1]
+# name: test_list_services_all[/services-v1-instances1]
   '''
   {
     "items": [
@@ -81,12 +81,12 @@
         "commune": "Sainte Gabriel",
         "complement_adresse": null,
         "contact_nom_prenom": "Thibaut de Michaud",
-        "contact_public": false,
+        "contact_public": null,
         "courriel": "michelgerard@example.net",
-        "cumulable": false,
-        "date_creation": "2022-01-01",
+        "cumulable": null,
+        "date_creation": null,
         "date_maj": "2023-01-01",
-        "date_suspension": "2054-01-01",
+        "date_suspension": null,
         "formulaire_en_ligne": null,
         "frais": [
           "gratuit"
@@ -95,7 +95,7 @@
         "id": "be-water-scene-wind",
         "justificatifs": [],
         "latitude": -77.857573,
-        "lien_source": "https://dora.fr/be-water-scene-wind",
+        "lien_source": null,
         "longitude": -62.54684,
         "modes_accueil": [
           "a-distance"
@@ -141,14 +141,14 @@
   }
   '''
 # ---
-# name: test_list_structures_all[/structures-v0]
+# name: test_list_structures_all[/structures-v0-instance0]
   '''
   {
     "items": [
       {
         "accessibilite": "https://acceslibre.beta.gouv.fr/app/kitchen-amount/",
         "adresse": "49, avenue de Pichon",
-        "antenne": false,
+        "antenne": null,
         "code_insee": "59350",
         "code_postal": "46873",
         "commune": "Sainte CharlotteBourg",
@@ -163,7 +163,7 @@
         ],
         "labels_nationaux": [],
         "latitude": -20.074628,
-        "lien_source": "https://dora.fr/kitchen-amount",
+        "lien_source": null,
         "longitude": 99.899603,
         "nom": "Perrin",
         "presentation_detail": "Or personne jambe.",
@@ -187,7 +187,7 @@
   }
   '''
 # ---
-# name: test_list_structures_all[/structures-v1]
+# name: test_list_structures_all[/structures-v1-instance1]
   '''
   {
     "items": [
@@ -208,7 +208,7 @@
         ],
         "labels_nationaux": [],
         "latitude": -20.074628,
-        "lien_source": "https://dora.fr/kitchen-amount",
+        "lien_source": null,
         "longitude": 99.899603,
         "nom": "Perrin",
         "presentation_detail": "Or personne jambe.",

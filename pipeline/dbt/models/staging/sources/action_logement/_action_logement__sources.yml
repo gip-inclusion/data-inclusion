@@ -1,0 +1,14 @@
+version: 2
+
+sources:
+  - name: action_logement
+    schema: action_logement
+    meta:
+      is_provider: true
+    tables:
+      - name: structures
+        meta:
+          kind: structure
+      - name: services
+        meta:
+          kind: service

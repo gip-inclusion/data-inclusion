@@ -759,6 +759,9 @@
             "lien_source": {
               "anyOf": [
                 {
+                  "format": "uri",
+                  "maxLength": 2083,
+                  "minLength": 1,
                   "type": "string"
                 },
                 {
@@ -1614,6 +1617,9 @@
             "lien_source": {
               "anyOf": [
                 {
+                  "format": "uri",
+                  "maxLength": 2083,
+                  "minLength": 1,
                   "type": "string"
                 },
                 {
@@ -1974,6 +1980,9 @@
             "lien_source": {
               "anyOf": [
                 {
+                  "format": "uri",
+                  "maxLength": 2083,
+                  "minLength": 1,
                   "type": "string"
                 },
                 {
@@ -2480,6 +2489,9 @@
             "lien_source": {
               "anyOf": [
                 {
+                  "format": "uri",
+                  "maxLength": 2083,
+                  "minLength": 1,
                   "type": "string"
                 },
                 {
@@ -2819,6 +2831,9 @@
             "lien_source": {
               "anyOf": [
                 {
+                  "format": "uri",
+                  "maxLength": 2083,
+                  "minLength": 1,
                   "type": "string"
                 },
                 {
@@ -3154,6 +3169,9 @@
             "lien_source": {
               "anyOf": [
                 {
+                  "format": "uri",
+                  "maxLength": 2083,
+                  "minLength": 1,
                   "type": "string"
                 },
                 {
@@ -3485,6 +3503,9 @@
             "lien_source": {
               "anyOf": [
                 {
+                  "format": "uri",
+                  "maxLength": 2083,
+                  "minLength": 1,
                   "type": "string"
                 },
                 {
@@ -3980,6 +4001,9 @@
             "lien_source": {
               "anyOf": [
                 {
+                  "format": "uri",
+                  "maxLength": 2083,
+                  "minLength": 1,
                   "type": "string"
                 },
                 {
@@ -4279,6 +4303,9 @@
             "lien_source": {
               "anyOf": [
                 {
+                  "format": "uri",
+                  "maxLength": 2083,
+                  "minLength": 1,
                   "type": "string"
                 },
                 {
@@ -5698,18 +5725,6 @@
               }
             },
             {
-              "description": "Inclure les services ayant une date de suspension dépassée.\n                Ils sont exclus par défaut.\n            ",
-              "in": "query",
-              "name": "inclure_suspendus",
-              "required": false,
-              "schema": {
-                "default": false,
-                "description": "Inclure les services ayant une date de suspension dépassée.\n                Ils sont exclus par défaut.\n            ",
-                "title": "Inclure Suspendus",
-                "type": "boolean"
-              }
-            },
-            {
               "description": "[BETA] Mode qui ne retourne, parmi les services attachés à des structures en doublon, que ceux attachés à la structure la plus qualitative (voir [documentation](https://gip-inclusion.notion.site/Syst-me-de-d-duplication-des-donn-es-17d5f321b60480f99f6cf65522a83c8b?pvs=4)).",
               "in": "query",
               "name": "exclure_doublons",
@@ -5940,18 +5955,6 @@
                 "description": "[BETA] Score de qualité minimum.\n                Les résultats renvoyés ont un score de qualité supérieur ou égal à ce\n                score. (voir [documentation](https://gip-inclusion.notion.site/Conception-du-score-de-qualit-17b5f321b60480a1b79bf4a17b4567dd?pvs=4))",
                 "title": "Score Qualite Minimum",
                 "type": "number"
-              }
-            },
-            {
-              "description": "Inclure les services ayant une date de suspension dépassée.\n                Ils sont exclus par défaut.\n            ",
-              "in": "query",
-              "name": "inclure_suspendus",
-              "required": false,
-              "schema": {
-                "default": false,
-                "description": "Inclure les services ayant une date de suspension dépassée.\n                Ils sont exclus par défaut.\n            ",
-                "title": "Inclure Suspendus",
-                "type": "boolean"
               }
             },
             {
@@ -6701,18 +6704,6 @@
               }
             },
             {
-              "description": "Inclure les services ayant une date de suspension dépassée.\n                Ils sont exclus par défaut.\n            ",
-              "in": "query",
-              "name": "inclure_suspendus",
-              "required": false,
-              "schema": {
-                "default": false,
-                "description": "Inclure les services ayant une date de suspension dépassée.\n                Ils sont exclus par défaut.\n            ",
-                "title": "Inclure Suspendus",
-                "type": "boolean"
-              }
-            },
-            {
               "description": "[BETA] Mode qui ne retourne, parmi les services attachés à des structures en doublon, que ceux attachés à la structure la plus qualitative (voir [documentation](https://gip-inclusion.notion.site/Syst-me-de-d-duplication-des-donn-es-17d5f321b60480f99f6cf65522a83c8b?pvs=4)).",
               "in": "query",
               "name": "exclure_doublons",
@@ -6943,18 +6934,6 @@
                 "description": "[BETA] Score de qualité minimum.\n                Les résultats renvoyés ont un score de qualité supérieur ou égal à ce\n                score. (voir [documentation](https://gip-inclusion.notion.site/Conception-du-score-de-qualit-17b5f321b60480a1b79bf4a17b4567dd?pvs=4))",
                 "title": "Score Qualite Minimum",
                 "type": "number"
-              }
-            },
-            {
-              "description": "Inclure les services ayant une date de suspension dépassée.\n                Ils sont exclus par défaut.\n            ",
-              "in": "query",
-              "name": "inclure_suspendus",
-              "required": false,
-              "schema": {
-                "default": false,
-                "description": "Inclure les services ayant une date de suspension dépassée.\n                Ils sont exclus par défaut.\n            ",
-                "title": "Inclure Suspendus",
-                "type": "boolean"
               }
             },
             {
