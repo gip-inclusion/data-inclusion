@@ -18,7 +18,6 @@ WITH services AS (
             ],
             column_override={
                 "contact_public": "BOOLEAN",
-                "cumulable": "BOOLEAN",
                 "date_creation": "DATE",
                 "date_maj": "DATE",
                 "date_suspension": "DATE",

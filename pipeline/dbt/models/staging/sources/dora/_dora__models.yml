@@ -36,11 +36,6 @@ models:
         data_tests:
           - dbt_utils.not_constant
           - dbt_utils.not_empty_string
-      - name: cumulable
-        data_tests:
-          - not_null
-          - accepted_values:
-              values: [true, false]
       - name: date_creation
         data_tests:
           - not_null:
