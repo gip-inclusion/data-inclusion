@@ -12,7 +12,6 @@ final AS (
     SELECT
         lieux.lieu_id                                                 AS "id",
         lieux.lieu_id                                                 AS "adresse_id",
-        NULL::BOOLEAN                                                 AS "antenne",
         NULL                                                          AS "rna",
         'soliguide'                                                   AS "source",
         NULL                                                          AS "accessibilite",

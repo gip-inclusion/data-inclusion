@@ -6,7 +6,6 @@ final AS (
     SELECT
         id                              AS "id",
         id                              AS "adresse_id",
-        antenne                         AS "antenne",
         _di_source_id                   AS "source",
         labels_nationaux                AS "labels_nationaux",
         labels_autres                   AS "labels_autres",

@@ -36,10 +36,8 @@ final AS (
         {{ truncate_text("presentation_detail") }} AS "presentation_detail",
         CAST(date_maj AS DATE)                                                                                       AS "date_maj",
         _di_source_id                                                                                                AS "source",
-        labels_autres                                                                                                AS "labels_autres",
-        CAST(NULL AS BOOLEAN)                                                                                        AS "antenne"
+        labels_autres                                                                                                AS "labels_autres"
     FROM structures
 )
-
 
 SELECT * FROM final

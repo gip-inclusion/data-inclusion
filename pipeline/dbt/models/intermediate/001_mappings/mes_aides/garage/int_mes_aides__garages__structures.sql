@@ -7,7 +7,6 @@ final AS (
         garages.id                                             AS "id",
         garages.id                                             AS "adresse_id",
         garages.siret                                          AS "siret",
-        CAST(NULL AS BOOLEAN)                                  AS "antenne",
         NULL                                                   AS "rna",
         garages.nom                                            AS "nom",
         SUBSTRING(garages.telephone FROM '\+?\d[\d\.\-\s]*\d') AS "telephone",
