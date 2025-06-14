@@ -25,7 +25,6 @@ final AS (
         permis_velo.id                                                     AS "id",
         permis_velo.id                                                     AS "adresse_id",
         permis_velo.siret                                                  AS "siret",
-        CAST(NULL AS BOOLEAN)                                              AS "antenne",
         NULL                                                               AS "rna",
         permis_velo.nom_organisme                                          AS "nom",
         SUBSTRING(permis_velo.contact_telephone FROM '\+?\d[\d\.\-\s]*\d') AS "telephone",

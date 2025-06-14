@@ -5,7 +5,6 @@ WITH structures AS (
 SELECT
     NULL                                                                                         AS "accessibilite",
     structures.id                                                                                AS "adresse_id",
-    FALSE                                                                                        AS "antenne",
     structures.attributes__field_courriel                                                        AS "courriel",
     structures.attributes__field_texte_brut_long                                                 AS "horaires_ouverture",
     structures.id                                                                                AS "id",

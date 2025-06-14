@@ -148,7 +148,7 @@
       {
         "accessibilite": "https://acceslibre.beta.gouv.fr/app/kitchen-amount/",
         "adresse": "49, avenue de Pichon",
-        "antenne": false,
+        "antenne": null,
         "code_insee": "59350",
         "code_postal": "46873",
         "commune": "Sainte CharlotteBourg",

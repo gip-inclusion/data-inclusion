@@ -7,7 +7,6 @@ final AS (
         structure_id                                                               AS "id",
         structure_id                                                               AS "adresse_id",
         NULL                                                                       AS "siret",
-        CAST(NULL AS BOOLEAN)                                                      AS "antenne",
         NULL                                                                       AS "rna",
         structure_name                                                             AS "nom",
         coordonnees__telephone                                                     AS "telephone",
