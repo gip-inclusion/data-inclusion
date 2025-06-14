@@ -21,7 +21,8 @@ from data_inclusion.api.decoupage_administratif.constants import (
     Region,
 )
 from data_inclusion.api.decoupage_administratif.models import Commune
-from data_inclusion.api.inclusion_data import models
+from data_inclusion.api.inclusion_data.v0 import models as v0_models
+from data_inclusion.api.inclusion_data.v1 import models as v1_models
 from data_inclusion.schema import v0, v1
 
 logger = logging.getLogger(__name__)
@@ -60,6 +61,7 @@ class ServiceLayer[
 
     def __init__(self) -> None:
         self.schema = v0 if self.schema_version == "v0" else v1
+        self.models = v0_models if self.schema_version == "v0" else v1_models
 
     @functools.cache
     def get_thematiques_by_group(self) -> dict[str, list[str]]:
@@ -82,9 +84,9 @@ class ServiceLayer[
         ):
             query = query.filter(
                 sqla.or_(
-                    models.Structure.source != "soliguide",
-                    models.Structure.code_insee.startswith("59"),  # Nord
-                    models.Structure.code_insee.startswith("67"),  # Bas-Rhin
+                    self.models.Structure.source != "soliguide",
+                    self.models.Structure.code_insee.startswith("59"),  # Nord
+                    self.models.Structure.code_insee.startswith("67"),  # Bas-Rhin
                 )
             )
 
@@ -103,19 +105,14 @@ class ServiceLayer[
         thematiques: list[Thematique] | None = None,
         deduplicate: bool | None = False,
     ) -> list:
-        query = sqla.select(models.Structure).options(
-            orm.selectinload(models.Structure.doublons)
+        query = sqla.select(self.models.Structure).options(
+            orm.selectinload(self.models.Structure.doublons)
         )
         query = self.filter_restricted(query, request)
 
-        if self.schema is v1:
-            query = query.filter(models.Structure._is_valid_v1)
-        else:
-            query = query.filter(models.Structure._is_valid_v0)
-
         if sources is not None:
             query = query.filter(
-                models.Structure.source == sqla.any_(sqla.literal(sources))
+                self.models.Structure.source == sqla.any_(sqla.literal(sources))
             )
 
         if commune_code is not None:
@@ -123,7 +120,7 @@ class ServiceLayer[
 
         if departement is not None:
             query = query.filter(
-                models.Structure.code_insee.startswith(departement.code)
+                self.models.Structure.code_insee.startswith(departement.code)
             )
 
         if typologie is not None:
@@ -131,18 +128,20 @@ class ServiceLayer[
 
         if region is not None:
             query = query.join(Commune).options(
-                orm.contains_eager(models.Structure.commune_)
+                orm.contains_eager(self.models.Structure.commune_)
             )
             query = query.filter(Commune.region == region.code)
 
         if label_national is not None:
             query = query.filter(
-                models.Structure.labels_nationaux.contains([label_national.value])
+                self.models.Structure.labels_nationaux.contains([label_national.value])
             )
 
         if thematiques is not None:
             query = query.filter(
-                sqla.text("api__structures.thematiques && :thematiques").bindparams(
+                sqla.text(
+                    f"{self.models.Structure.__tablename__}.thematiques && :thematiques"
+                ).bindparams(
                     thematiques=self.get_sub_thematiques(thematiques=thematiques),
                 )
             )
@@ -150,12 +149,12 @@ class ServiceLayer[
         if deduplicate:
             query = query.filter(
                 sqla.or_(
-                    models.Structure._cluster_id.is_(None),
-                    models.Structure._is_best_duplicate.is_(True),
+                    self.models.Structure._cluster_id.is_(None),
+                    self.models.Structure._is_best_duplicate.is_(True),
                 )
             )
 
-        query = query.order_by(models.Structure._di_surrogate_id)
+        query = query.order_by(self.models.Structure._di_surrogate_id)
 
         return paginate(db_session, query)
 
@@ -164,19 +163,14 @@ class ServiceLayer[
         db_session: orm.Session,
         source: str,
         id_: str,
-    ) -> models.Structure:
+    ):
         query = (
-            sqla.select(models.Structure)
-            .options(orm.selectinload(models.Structure.services))
-            .options(orm.selectinload(models.Structure.doublons))
+            sqla.select(self.models.Structure)
+            .options(orm.selectinload(self.models.Structure.services))
+            .options(orm.selectinload(self.models.Structure.doublons))
             .filter_by(source=source)
             .filter_by(id=id_)
         )
-
-        if self.schema is v1:
-            query = query.filter(models.Structure._is_valid_v1)
-        else:
-            query = query.filter(models.Structure._is_valid_v0)
 
         structure_instance = db_session.scalars(query).first()
 
@@ -215,21 +209,23 @@ class ServiceLayer[
 
         if sources is not None:
             query = query.filter(
-                models.Service.source == sqla.any_(sqla.literal(sources))
+                self.models.Service.source == sqla.any_(sqla.literal(sources))
             )
 
         if thematiques is not None:
             query = query.filter(
-                sqla.text("api__services.thematiques && :thematiques").bindparams(
+                sqla.text(
+                    f"{self.models.Service.__tablename__}.thematiques && :thematiques"
+                ).bindparams(
                     thematiques=self.get_sub_thematiques(thematiques=thematiques),
                 )
             )
 
         if frais is not None:
-            filter_stmt = """\
+            filter_stmt = f"""\
             EXISTS(
                 SELECT
-                FROM unnest(api__services.frais) frais
+                FROM unnest({self.models.Service.__tablename__}.frais) frais
                 WHERE frais = ANY(:frais)
             )
             """
@@ -238,10 +234,10 @@ class ServiceLayer[
             )
 
         if profils is not None:
-            filter_stmt = """\
+            filter_stmt = f"""\
             EXISTS(
                 SELECT
-                FROM unnest(api__services.profils) profils
+                FROM unnest({self.models.Service.__tablename__}.profils) profils
                 WHERE profils = ANY(:profils)
             )
             """
@@ -250,13 +246,13 @@ class ServiceLayer[
             )
 
         if modes_accueil is not None:
-            filter_stmt = """\
+            filter_stmt = f"""\
             EXISTS(
                 SELECT
-                FROM unnest(api__services.modes_accueil) modes_accueil
+                FROM unnest({self.models.Service.__tablename__}.modes_accueil) modes_accueil
                 WHERE modes_accueil = ANY(:modes_accueil)
             )
-            """
+            """  # noqa: E501
             query = query.filter(
                 sqla.text(filter_stmt).bindparams(
                     modes_accueil=[m.value for m in modes_accueil]
@@ -264,10 +260,10 @@ class ServiceLayer[
             )
 
         if types is not None:
-            filter_stmt = """\
+            filter_stmt = f"""\
             EXISTS(
                 SELECT
-                FROM unnest(api__services.types) types
+                FROM unnest({self.models.Service.__tablename__}.types) types
                 WHERE types = ANY(:types)
             )
             """
@@ -276,13 +272,15 @@ class ServiceLayer[
             )
 
         if score_qualite_minimum is not None:
-            query = query.filter(models.Service.score_qualite >= score_qualite_minimum)
+            query = query.filter(
+                self.models.Service.score_qualite >= score_qualite_minimum
+            )
 
         if not include_outdated:
             query = query.filter(
                 sqla.or_(
-                    models.Service.date_suspension.is_(None),
-                    models.Service.date_suspension >= date.today(),
+                    self.models.Service.date_suspension.is_(None),
+                    self.models.Service.date_suspension >= date.today(),
                 )
             )
 
@@ -291,12 +289,12 @@ class ServiceLayer[
             profils_only = [p.strip() for p in profils_only]
             query = query.filter(
                 or_(
-                    models.Service.searchable_index_profils.bool_op("@@")(
+                    self.models.Service.searchable_index_profils.bool_op("@@")(
                         func.to_tsquery("french_di", " | ".join(profils_only))
                     ),
-                    models.Service.searchable_index_profils_precisions.bool_op("@@")(
-                        func.websearch_to_tsquery("french_di", profils_search)
-                    ),
+                    self.models.Service.searchable_index_profils_precisions.bool_op(
+                        "@@"
+                    )(func.websearch_to_tsquery("french_di", profils_search)),
                 )
             )
 
@@ -320,30 +318,25 @@ class ServiceLayer[
         include_outdated: bool | None = False,
     ):
         query = (
-            sqla.select(models.Service)
-            .join(models.Structure)
-            .options(orm.contains_eager(models.Service.structure))
+            sqla.select(self.models.Service)
+            .join(self.models.Structure)
+            .options(orm.contains_eager(self.models.Service.structure))
         )
         query = self.filter_restricted(query, request)
 
-        if self.schema is v1:
-            query = query.filter(models.Structure._is_valid_v1)
-            query = query.filter(models.Service._is_valid_v1)
-        else:
-            query = query.filter(models.Structure._is_valid_v0)
-            query = query.filter(models.Service._is_valid_v0)
-
         if departement is not None:
-            query = query.filter(models.Service.code_insee.startswith(departement.code))
+            query = query.filter(
+                self.models.Service.code_insee.startswith(departement.code)
+            )
 
         if region is not None:
             query = query.join(Commune).options(
-                orm.contains_eager(models.Service.commune_)
+                orm.contains_eager(self.models.Service.commune_)
             )
             query = query.filter(Commune.region == region.code)
 
         if code_commune is not None:
-            query = query.filter(models.Service.code_insee == code_commune)
+            query = query.filter(self.models.Service.code_insee == code_commune)
 
         query = self.filter_services(
             query=query,
@@ -358,7 +351,7 @@ class ServiceLayer[
             include_outdated=include_outdated,
         )
 
-        query = query.order_by(models.Service._di_surrogate_id)
+        query = query.order_by(self.models.Service._di_surrogate_id)
 
         return paginate(db_session, query, unique=False)
 
@@ -380,55 +373,50 @@ class ServiceLayer[
         deduplicate: bool | None = False,
     ):
         query = (
-            sqla.select(models.Service)
-            .join(models.Structure)
-            .options(orm.contains_eager(models.Service.structure))
+            sqla.select(self.models.Service)
+            .join(self.models.Structure)
+            .options(orm.contains_eager(self.models.Service.structure))
         )
         query = self.filter_restricted(query, request)
-
-        if self.schema is v1:
-            query = query.filter(models.Structure._is_valid_v1)
-            query = query.filter(models.Service._is_valid_v1)
-        else:
-            query = query.filter(models.Structure._is_valid_v0)
-            query = query.filter(models.Service._is_valid_v0)
 
         if commune_instance is not None:
             # filter by zone de diffusion
             query = query.filter(
                 sqla.or_(
-                    models.Service.zone_diffusion_type.is_(None),
-                    models.Service.zone_diffusion_type
+                    self.models.Service.zone_diffusion_type.is_(None),
+                    self.models.Service.zone_diffusion_type
                     == self.schema.ZoneDiffusionType.PAYS.value,
                     sqla.and_(
-                        models.Service.zone_diffusion_type
+                        self.models.Service.zone_diffusion_type
                         == self.schema.ZoneDiffusionType.COMMUNE.value,
-                        models.Service.zone_diffusion_code == commune_instance.code,
+                        self.models.Service.zone_diffusion_code
+                        == commune_instance.code,
                     ),
                     sqla.and_(
-                        models.Service.zone_diffusion_type
+                        self.models.Service.zone_diffusion_type
                         == self.schema.ZoneDiffusionType.EPCI.value,
                         sqla.literal(commune_instance.siren_epci).contains(
-                            models.Service.zone_diffusion_code
+                            self.models.Service.zone_diffusion_code
                         ),
                     ),
                     sqla.and_(
-                        models.Service.zone_diffusion_type
+                        self.models.Service.zone_diffusion_type
                         == self.schema.ZoneDiffusionType.DEPARTEMENT.value,
-                        models.Service.zone_diffusion_code
+                        self.models.Service.zone_diffusion_code
                         == commune_instance.departement,
                     ),
                     sqla.and_(
-                        models.Service.zone_diffusion_type
+                        self.models.Service.zone_diffusion_type
                         == self.schema.ZoneDiffusionType.REGION.value,
-                        models.Service.zone_diffusion_code == commune_instance.region,
+                        self.models.Service.zone_diffusion_code
+                        == commune_instance.region,
                     ),
                 )
             )
 
             src_geometry = sqla.cast(
                 geoalchemy2.functions.ST_MakePoint(
-                    models.Service.longitude, models.Service.latitude
+                    self.models.Service.longitude, self.models.Service.latitude
                 ),
                 geoalchemy2.Geography(geometry_type="GEOMETRY", srid=4326),
             )
@@ -447,7 +435,7 @@ class ServiceLayer[
                         50_000,  # meters
                     ),
                     # or `a-distance`
-                    models.Service.modes_accueil.contains(
+                    self.models.Service.modes_accueil.contains(
                         sqla.literal([self.schema.ModeAccueil.A_DISTANCE.value])
                     ),
                 )
@@ -458,7 +446,7 @@ class ServiceLayer[
                 (
                     sqla.case(
                         (
-                            models.Service.modes_accueil.contains(
+                            self.models.Service.modes_accueil.contains(
                                 sqla.literal(
                                     [self.schema.ModeAccueil.EN_PRESENTIEL.value]
                                 )
@@ -495,14 +483,14 @@ class ServiceLayer[
         if deduplicate:
             query = query.filter(
                 sqla.or_(
-                    models.Structure._cluster_id.is_(None),
-                    models.Structure._is_best_duplicate.is_(True),
+                    self.models.Structure._cluster_id.is_(None),
+                    self.models.Structure._is_best_duplicate.is_(True),
                 )
             )
 
         query = query.order_by(
             sqla.column("distance").nulls_last(),
-            models.Service._di_surrogate_id,
+            self.models.Service._di_surrogate_id,
         )
 
         def _items_to_mappings(items: list) -> list[dict]:
@@ -517,20 +505,13 @@ class ServiceLayer[
         db_session: orm.Session,
         source: str,
         id_: str,
-    ) -> models.Service:
+    ):
         query = (
-            sqla.select(models.Service)
-            .join(models.Structure)
-            .filter(models.Service.source == source)
-            .filter(models.Service.id == id_)
+            sqla.select(self.models.Service)
+            .join(self.models.Structure)
+            .filter(self.models.Service.source == source)
+            .filter(self.models.Service.id == id_)
         )
-
-        if self.schema is v1:
-            query = query.filter(models.Structure._is_valid_v1)
-            query = query.filter(models.Service._is_valid_v1)
-        else:
-            query = query.filter(models.Structure._is_valid_v0)
-            query = query.filter(models.Service._is_valid_v0)
 
         service_instance = db_session.scalars(query).first()
 
