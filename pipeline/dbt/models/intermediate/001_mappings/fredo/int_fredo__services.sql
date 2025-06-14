@@ -152,8 +152,6 @@ final AS (
         CAST(UUID(MD5(fredo_structures.id || COALESCE(fredo_services.value, ''))) AS TEXT)    AS "id",
         CAST(NULL AS TEXT [])                                                                 AS "pre_requis",
         CAST(NULL AS TEXT [])                                                                 AS "justificatifs",
-        CAST(NULL AS DATE)                                                                    AS "date_creation",
-        CAST(NULL AS DATE)                                                                    AS "date_suspension",
         CAST(NULL AS BOOLEAN)                                                                 AS "contact_public",
         CASE
             WHEN

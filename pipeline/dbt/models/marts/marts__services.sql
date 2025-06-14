@@ -60,7 +60,9 @@ final AS (
 
         -- the following fields will be removed in v1
         -- for now they are kept for compatibility, but without any value
-        CAST(NULL AS BOOLEAN)                           AS "cumulable"
+        CAST(NULL AS BOOLEAN)                           AS "cumulable",
+        CAST(NULL AS DATE)                              AS "date_creation",
+        CAST(NULL AS DATE)                              AS "date_suspension"
     FROM services
     LEFT JOIN courriels_personnels ON services.courriel = courriels_personnels.courriel
     LEFT JOIN scores ON services._di_surrogate_id = scores.service_id
