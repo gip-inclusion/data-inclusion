@@ -36,7 +36,6 @@ final AS (
         NULL                                                                                           AS "recurrence",
         structures.telephone                                                                           AS "telephone",
         structures.courriel                                                                            AS "courriel",
-        TRUE                                                                                           AS "contact_public",
         NULL                                                                                           AS "contact_nom_prenom",
         NULL                                                                                           AS "zone_diffusion_nom",
         NULL                                                                                           AS "modes_orientation_accompagnateur_autres",
