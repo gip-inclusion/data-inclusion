@@ -50,7 +50,6 @@ class StructureFactory(factory.alchemy.SQLAlchemyModelFactory):
     presentation_detail = factory.Faker("text", max_nb_chars=30, locale="fr_FR")
     source = factory.Iterator(["dora", "emplois-de-linclusion"])
     date_maj = factory.LazyFunction(lambda: date(2023, 1, 1))
-    lien_source = factory.LazyAttribute(lambda o: f"https://{o.source}.fr/{o.id}")
     horaires_ouverture = 'Mo-Fr 10:00-20:00 "sur rendez-vous"; PH off'
     accessibilite = factory.LazyAttribute(
         lambda o: f"https://acceslibre.beta.gouv.fr/app/{o.id}/"
@@ -130,7 +129,6 @@ class ServiceFactory(factory.alchemy.SQLAlchemyModelFactory):
     longitude = factory.Faker("longitude")
     latitude = factory.Faker("latitude")
     recurrence = None
-    lien_source = factory.LazyAttribute(lambda o: f"https://{o.source}.fr/{o.id}")
     telephone = "0102030405"
     courriel = factory.Faker("email", locale="fr_FR")
     contact_nom_prenom = factory.Faker("name", locale="fr_FR")
