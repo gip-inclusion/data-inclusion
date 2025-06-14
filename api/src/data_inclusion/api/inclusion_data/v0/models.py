@@ -89,7 +89,6 @@ class Service(HasAddress, Base):
 
     # service data
     contact_nom_prenom: Mapped[str | None]
-    contact_public: Mapped[bool | None] = mapped_column(default=False)
     courriel: Mapped[str | None]
     date_maj: Mapped[date | None]
     formulaire_en_ligne: Mapped[str | None]

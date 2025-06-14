@@ -4,7 +4,6 @@ WITH formations AS (
 
 final AS (
     SELECT
-        TRUE                                                                   AS "contact_public",
         formations.content__contact_inscription__contact                       AS "contact_nom_prenom",
         formations.content__contact_inscription__courriel                      AS "courriel",
         formations.content__inscription__informations_en_ligne                 AS "formulaire_en_ligne",
