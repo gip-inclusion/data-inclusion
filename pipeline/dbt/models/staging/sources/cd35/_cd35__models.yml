@@ -27,9 +27,6 @@ models:
         data_tests:
           - dbt_utils.not_constant
           - dbt_utils.not_empty_string
-      - name: date_creation
-        data_tests:
-          - dbt_utils.not_constant
       - name: date_maj
         data_tests:
           - dbt_utils.not_constant

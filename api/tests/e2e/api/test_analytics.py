@@ -124,7 +124,6 @@ def test_list_services_event_saved(api_client, db_session, url, schema_version):
         "profils": ["adultes"],
         "modes_accueil": ["a-distance"],
         "types": ["accompagnement"],
-        "inclure_suspendus": 1,
         "recherche_public": "test",
         "score_qualite_minimum": 0.5,
     }
@@ -151,7 +150,6 @@ def test_list_services_event_saved(api_client, db_session, url, schema_version):
     assert event.profils == query_param["profils"]
     assert event.modes_accueil == query_param["modes_accueil"]
     assert event.types == query_param["types"]
-    assert event.inclure_suspendus == query_param["inclure_suspendus"]
     assert event.recherche_public == query_param["recherche_public"]
     assert event.score_qualite_minimum == query_param["score_qualite_minimum"]
 
@@ -211,7 +209,6 @@ def test_search_services_event_saved(api_client, db_session, url, schema_version
         "profils_precisions": "test",
         "modes_accueil": ["a-distance"],
         "types": ["accompagnement"],
-        "inclure_suspendus": True,
         "lat": 45.0,
         "lon": 5.0,
         "exclure_doublons": True,
@@ -244,7 +241,6 @@ def test_search_services_event_saved(api_client, db_session, url, schema_version
     assert event.profils == query_param["profils"]
     assert event.modes_accueil == query_param["modes_accueil"]
     assert event.types == query_param["types"]
-    assert event.inclure_suspendus == query_param["inclure_suspendus"]
     assert event.recherche_public == query_param["recherche_public"]
     assert event.score_qualite_minimum == query_param["score_qualite_minimum"]
     assert event.exclure_doublons == query_param["exclure_doublons"]

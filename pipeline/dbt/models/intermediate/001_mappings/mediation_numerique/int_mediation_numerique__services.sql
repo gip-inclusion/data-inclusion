@@ -45,9 +45,7 @@ final AS (
         'departement'                                                                                  AS "zone_diffusion_type",
         CAST(NULL AS TEXT [])                                                                          AS "pre_requis",
         CAST(NULL AS TEXT [])                                                                          AS "justificatifs",
-        CAST(NULL AS DATE)                                                                             AS "date_suspension",
         CAST(structures.date_maj AS DATE)                                                              AS "date_maj",
-        CAST(NULL AS DATE)                                                                             AS "date_creation",
         CASE
             WHEN structures.code_insee LIKE '97%' THEN LEFT(structures.code_insee, 3)
             ELSE LEFT(structures.code_insee, 2)

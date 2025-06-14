@@ -147,9 +147,7 @@ final AS (
     SELECT
         permis_velo.id                                                     AS "adresse_id",
         TRUE                                                               AS "contact_public",
-        permis_velo.creee_le                                               AS "date_creation",
         permis_velo.modifiee_le                                            AS "date_maj",
-        CAST(NULL AS DATE)                                                 AS "date_suspension",
         permis_velo.formulaire_url                                         AS "formulaire_en_ligne",
         mes_aides_natures.frais_autres                                     AS "frais_autres",
         permis_velo.id                                                     AS "id",

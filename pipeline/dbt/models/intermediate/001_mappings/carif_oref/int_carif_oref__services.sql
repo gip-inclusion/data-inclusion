@@ -100,8 +100,6 @@ final AS (
         'carif-oref'                                    AS "source",
         NULL                                            AS "formulaire_en_ligne",
         NULL                                            AS "recurrence",
-        CAST(NULL AS DATE)                              AS "date_creation",
-        CAST(NULL AS DATE)                              AS "date_suspension",
         COALESCE(
             coordonnees_organisme_formateur.telfixe[1],
             coordonnees_organisme_formateur.portable[1],

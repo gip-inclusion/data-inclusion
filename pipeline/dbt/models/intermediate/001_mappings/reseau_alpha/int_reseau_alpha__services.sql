@@ -55,8 +55,6 @@ final AS (
         'service--' || formations.id                                           AS "adresse_id",
         CAST(NULL AS TEXT [])                                                  AS "justificatifs",
         CAST(NULL AS TEXT [])                                                  AS "pre_requis",
-        CAST(NULL AS DATE)                                                     AS "date_suspension",
-        CAST(NULL AS DATE)                                                     AS "date_creation",
         ARRAY_REMOVE(
             ARRAY[
                 'apprendre-francais--suivre-formation',

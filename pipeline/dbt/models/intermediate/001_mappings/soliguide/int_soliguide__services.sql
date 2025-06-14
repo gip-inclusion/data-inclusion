@@ -121,8 +121,6 @@ final AS (
         profils.traduction                                            AS "profils_precisions",
         CAST(NULL AS TEXT [])                                         AS "pre_requis",
         CAST(NULL AS TEXT [])                                         AS "justificatifs",
-        CAST(NULL AS DATE)                                            AS "date_creation",
-        CAST(NULL AS DATE)                                            AS "date_suspension",
         filtered_phones.phone_number                                  AS "telephone",
         lieux.entity_mail                                             AS "courriel",
         CAST(NULL AS BOOLEAN)                                         AS "contact_public",
