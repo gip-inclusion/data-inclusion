@@ -15,7 +15,6 @@ service_types_by_garage AS (
 final AS (
     SELECT
         garages.id                                                                                  AS "adresse_id",
-        TRUE                                                                                        AS "contact_public",
         garages.modifie_le                                                                          AS "date_maj",
         NULL                                                                                        AS "formulaire_en_ligne",
         '{{ check_structure_str }}'                                    AS "frais_autres",

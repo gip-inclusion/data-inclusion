@@ -27,11 +27,6 @@ models:
         data_tests:
           - dbt_utils.not_constant
           - dbt_utils.not_empty_string
-      - name: contact_public
-        data_tests:
-          - not_null
-          - accepted_values:
-              values: [true, false]
       - name: courriel
         data_tests:
           - dbt_utils.not_constant

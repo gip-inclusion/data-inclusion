@@ -17,7 +17,6 @@ WITH services AS (
                 ref('int_soliguide__services'),
             ],
             column_override={
-                "contact_public": "BOOLEAN",
                 "date_maj": "DATE",
                 "frais": "TEXT[]",
                 "justificatifs": "TEXT[]",
