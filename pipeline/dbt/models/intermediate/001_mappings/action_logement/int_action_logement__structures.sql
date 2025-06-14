@@ -6,7 +6,6 @@ final AS (
     SELECT
         accessibilite          AS "accessibilite",
         id                     AS "adresse_id",
-        antenne                AS "antenne",
         courriel               AS "courriel",
         horaires_ouverture     AS "horaires_ouverture",
         id                     AS "id",

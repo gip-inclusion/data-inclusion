@@ -179,11 +179,6 @@ models:
                 severity: warn
           - dbt_utils.not_constant
           - dbt_utils.not_empty_string
-      - name: antenne
-        data_tests:
-          - not_null
-          - accepted_values:
-              values: [true, false]
       - name: code_insee
         data_tests:
           - dbt_utils.not_constant

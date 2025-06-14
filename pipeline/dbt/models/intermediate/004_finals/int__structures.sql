@@ -17,7 +17,6 @@ valid_site_web AS (
 SELECT
     structures._di_surrogate_id                           AS "_di_surrogate_id",
     structures.accessibilite                              AS "accessibilite",
-    structures.antenne                                    AS "antenne",
     structures.courriel                                   AS "courriel",
     structures.horaires_ouverture                         AS "horaires_ouverture",
     structures.id                                         AS "id",
