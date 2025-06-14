@@ -30,7 +30,6 @@ final AS (
         structures_offres.missionlocale_id                                        AS "adresse_id",
         structures_offres.missionlocale_id                                        AS "structure_id",
         structures.email                                                          AS "courriel",
-        CAST(NULL AS BOOLEAN)                                                     AS "contact_public",
         NULL                                                                      AS "contact_nom_prenom",
         CAST(offres.date_maj AS DATE)                                             AS "date_maj",
         NULL                                                                      AS "formulaire_en_ligne",

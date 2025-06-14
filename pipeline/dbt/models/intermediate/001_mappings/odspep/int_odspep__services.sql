@@ -31,7 +31,6 @@ final AS (
         NULL                                            AS "lien_source",
         NULL                                            AS "telephone",
         NULL                                            AS "courriel",
-        CAST(NULL AS BOOLEAN)                           AS "contact_public",
         NULL                                            AS "contact_nom_prenom",
         date_derniere_modif                             AS "date_maj",
         CAST(NULL AS TEXT [])                           AS "modes_accueil",

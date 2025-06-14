@@ -79,7 +79,6 @@ di_thematique_by_agefiph_thematique AS (
 final AS (
     SELECT
         structures.id                                                AS "adresse_id",
-        TRUE                                                         AS "contact_public",
         NULL                                                         AS "contact_nom_prenom",
         CASE
             WHEN services.attributes__field_lien_aide_uri IS NULL THEN structures.courriel

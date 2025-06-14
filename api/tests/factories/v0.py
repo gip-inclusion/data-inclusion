@@ -140,7 +140,6 @@ class ServiceFactory(factory.alchemy.SQLAlchemyModelFactory):
     lien_source = factory.LazyAttribute(lambda o: f"https://{o.source}.fr/{o.id}")
     telephone = "0102030405"
     courriel = factory.Faker("email", locale="fr_FR")
-    contact_public = None
     contact_nom_prenom = factory.Faker("name", locale="fr_FR")
     date_maj = factory.LazyFunction(lambda: date(2023, 1, 1))
     modes_accueil = factory.Iterator(
