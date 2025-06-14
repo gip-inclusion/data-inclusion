@@ -109,7 +109,7 @@ models:
           - accepted_values:
               values: [true, false]
 
-  - name: stg_monenfant__creches__communes_desservies
+  - name: stg_monenfant__communes_desservies
     description: >
       Creches can be available to residents of several communes.
       If this is the case, communes are stored here and take precedence over the commune field
