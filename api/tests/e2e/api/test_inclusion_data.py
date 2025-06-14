@@ -1,5 +1,4 @@
 import json
-from datetime import date, timedelta
 from unittest.mock import ANY
 
 import pytest
@@ -264,9 +263,7 @@ def test_list_services_unauthenticated(api_client, schema_version):
                     contact_nom_prenom="Thibaut de Michaud",
                     contact_public=False,
                     courriel="michelgerard@example.net",
-                    date_creation="2022-01-01",
                     date_maj="2023-01-01",
-                    date_suspension="2054-01-01",
                     formulaire_en_ligne=None,
                     frais_autres="Camarade il.",
                     frais=["gratuit"],
@@ -343,9 +340,7 @@ def test_list_services_unauthenticated(api_client, schema_version):
                     contact_nom_prenom="Thibaut de Michaud",
                     contact_public=False,
                     courriel="michelgerard@example.net",
-                    date_creation="2022-01-01",
                     date_maj="2023-01-01",
-                    date_suspension="2054-01-01",
                     formulaire_en_ligne=None,
                     frais_autres="Camarade il.",
                     frais=["gratuit"],
@@ -766,32 +761,11 @@ def test_can_filter_services_by_frais(api_client, url, service_factory):
 
 
 @pytest.mark.with_token
-@pytest.mark.parametrize("schema_version", ["v0", "v1"])
+@pytest.mark.parametrize("schema_version", ["v0"])
 @pytest.mark.parametrize("path", ["/services", "/search/services"])
-def test_can_filter_services_with_an_outdated_suspension_date(
-    api_client, url, service_factory
-):
-    service_1 = service_factory(date_suspension=None)
-    service_2 = service_factory(date_suspension=date.today())
-    service_factory(date_suspension=date.today() - timedelta(days=1))
-
-    # exclude outdated services by default
+def test_can_provide_deprecated_inclure_suspendus_query_param(api_client, url):
     response = api_client.get(url)
-
     assert response.status_code == 200
-    resp_data = response.json()
-    assert_paginated_response_data(resp_data, total=2)
-    assert {d["id"] for d in list_resources_data(resp_data)} == {
-        service_1.id,
-        service_2.id,
-    }
-
-    # include outdated services with query parameter
-    response = api_client.get(url, params={"inclure_suspendus": True})
-
-    assert response.status_code == 200
-    resp_data = response.json()
-    assert_paginated_response_data(resp_data, total=3)
 
 
 @pytest.mark.with_token

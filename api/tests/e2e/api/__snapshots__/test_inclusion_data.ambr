@@ -13,9 +13,9 @@
         "contact_public": false,
         "courriel": "michelgerard@example.net",
         "cumulable": null,
-        "date_creation": "2022-01-01",
+        "date_creation": null,
         "date_maj": "2023-01-01",
-        "date_suspension": "2054-01-01",
+        "date_suspension": null,
         "formulaire_en_ligne": null,
         "frais": [
           "gratuit"
@@ -84,9 +84,9 @@
         "contact_public": false,
         "courriel": "michelgerard@example.net",
         "cumulable": null,
-        "date_creation": "2022-01-01",
+        "date_creation": null,
         "date_maj": "2023-01-01",
-        "date_suspension": "2054-01-01",
+        "date_suspension": null,
         "formulaire_en_ligne": null,
         "frais": [
           "gratuit"
