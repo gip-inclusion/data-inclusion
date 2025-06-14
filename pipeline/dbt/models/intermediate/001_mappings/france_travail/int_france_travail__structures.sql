@@ -4,7 +4,6 @@ WITH agences AS (
 
 final AS (
     SELECT
-        FALSE                          AS "antenne",
         NULL::TEXT []                  AS "labels_autres",
         NULL::TEXT []                  AS "thematiques",
         horaires_open_street_map       AS "horaires_ouverture",

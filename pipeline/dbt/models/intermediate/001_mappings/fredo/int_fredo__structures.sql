@@ -58,7 +58,6 @@ final AS (
         structures.site_web                       AS "site_web",
         LEFT(structures.presentation_resume, 280) AS "presentation_resume",
         structures.presentation_resume            AS "presentation_detail",
-        CAST(NULL AS BOOLEAN)                     AS "antenne",
         NULL                                      AS "lien_source",
         structures.horaires_ouverture             AS "horaires_ouverture",
         NULL                                      AS "accessibilite",

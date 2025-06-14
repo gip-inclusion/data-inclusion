@@ -43,7 +43,11 @@ final AS (
             WHERE
                 erreurs._di_surrogate_id = structures._di_surrogate_id
                 AND erreurs.schema_version = 'v1'
-        )                                                 AS "_is_valid_v1"
+        )                                                 AS "_is_valid_v1",
+
+        -- the following fields will be removed in v1
+        -- for now they are kept for compatibility, but without any value
+        CAST(NULL AS BOOLEAN)                             AS "antenne"
     FROM structures
     LEFT JOIN doublons ON structures._di_surrogate_id = doublons.structure_id
     LEFT JOIN courriels_personnels ON structures.courriel = courriels_personnels.courriel
