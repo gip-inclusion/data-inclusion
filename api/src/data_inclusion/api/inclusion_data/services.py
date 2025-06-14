@@ -3,7 +3,6 @@ import functools
 import json
 import logging
 from collections import defaultdict
-from datetime import date
 from pathlib import Path
 from typing import Literal
 
@@ -203,7 +202,6 @@ class ServiceLayer[
         modes_accueil: list[ModeAccueil] | None = None,
         types: list[TypologieService] | None = None,
         score_qualite_minimum: float | None = None,
-        include_outdated: bool | None = False,
     ) -> sqla.Select:
         """Common filters for services."""
 
@@ -276,14 +274,6 @@ class ServiceLayer[
                 self.models.Service.score_qualite >= score_qualite_minimum
             )
 
-        if not include_outdated:
-            query = query.filter(
-                sqla.or_(
-                    self.models.Service.date_suspension.is_(None),
-                    self.models.Service.date_suspension >= date.today(),
-                )
-            )
-
         if profils_search is not None:
             profils_only = profils_search.split(" ")
             profils_only = [p.strip() for p in profils_only]
@@ -315,7 +305,6 @@ class ServiceLayer[
         modes_accueil: list[ModeAccueil] | None = None,
         types: list[TypologieService] | None = None,
         score_qualite_minimum: float | None = None,
-        include_outdated: bool | None = False,
     ):
         query = (
             sqla.select(self.models.Service)
@@ -348,7 +337,6 @@ class ServiceLayer[
             modes_accueil=modes_accueil,
             types=types,
             score_qualite_minimum=score_qualite_minimum,
-            include_outdated=include_outdated,
         )
 
         query = query.order_by(self.models.Service._di_surrogate_id)
@@ -369,7 +357,6 @@ class ServiceLayer[
         types: list[TypologieService] | None = None,
         search_point: str | None = None,
         score_qualite_minimum: float | None = None,
-        include_outdated: bool | None = False,
         deduplicate: bool | None = False,
     ):
         query = (
@@ -477,7 +464,6 @@ class ServiceLayer[
             modes_accueil=modes_accueil,
             types=types,
             score_qualite_minimum=score_qualite_minimum,
-            include_outdated=include_outdated,
         )
 
         if deduplicate:

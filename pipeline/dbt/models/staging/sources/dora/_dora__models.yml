@@ -36,12 +36,6 @@ models:
         data_tests:
           - dbt_utils.not_constant
           - dbt_utils.not_empty_string
-      - name: date_creation
-        data_tests:
-          - not_null:
-              config:
-                severity: warn
-          - dbt_utils.not_constant
       - name: date_maj
         data_tests:
           - not_null
@@ -49,9 +43,6 @@ models:
               min_value: "now() - interval '2 years'"
               config:
                 severity: warn
-      - name: date_suspension
-        data_tests:
-          - dbt_utils.not_constant
       - name: formulaire_en_ligne
         data_tests:
           - dbt_utils.not_constant
