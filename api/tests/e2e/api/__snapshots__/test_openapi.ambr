@@ -759,6 +759,9 @@
             "lien_source": {
               "anyOf": [
                 {
+                  "format": "uri",
+                  "maxLength": 2083,
+                  "minLength": 1,
                   "type": "string"
                 },
                 {
@@ -1614,6 +1617,9 @@
             "lien_source": {
               "anyOf": [
                 {
+                  "format": "uri",
+                  "maxLength": 2083,
+                  "minLength": 1,
                   "type": "string"
                 },
                 {
@@ -1974,6 +1980,9 @@
             "lien_source": {
               "anyOf": [
                 {
+                  "format": "uri",
+                  "maxLength": 2083,
+                  "minLength": 1,
                   "type": "string"
                 },
                 {
@@ -2480,6 +2489,9 @@
             "lien_source": {
               "anyOf": [
                 {
+                  "format": "uri",
+                  "maxLength": 2083,
+                  "minLength": 1,
                   "type": "string"
                 },
                 {
@@ -2819,6 +2831,9 @@
             "lien_source": {
               "anyOf": [
                 {
+                  "format": "uri",
+                  "maxLength": 2083,
+                  "minLength": 1,
                   "type": "string"
                 },
                 {
@@ -3154,6 +3169,9 @@
             "lien_source": {
               "anyOf": [
                 {
+                  "format": "uri",
+                  "maxLength": 2083,
+                  "minLength": 1,
                   "type": "string"
                 },
                 {
@@ -3485,6 +3503,9 @@
             "lien_source": {
               "anyOf": [
                 {
+                  "format": "uri",
+                  "maxLength": 2083,
+                  "minLength": 1,
                   "type": "string"
                 },
                 {
@@ -3980,6 +4001,9 @@
             "lien_source": {
               "anyOf": [
                 {
+                  "format": "uri",
+                  "maxLength": 2083,
+                  "minLength": 1,
                   "type": "string"
                 },
                 {
@@ -4279,6 +4303,9 @@
             "lien_source": {
               "anyOf": [
                 {
+                  "format": "uri",
+                  "maxLength": 2083,
+                  "minLength": 1,
                   "type": "string"
                 },
                 {

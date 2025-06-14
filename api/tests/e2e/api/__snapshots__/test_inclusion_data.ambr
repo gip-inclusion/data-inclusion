@@ -24,7 +24,7 @@
         "id": "be-water-scene-wind",
         "justificatifs": [],
         "latitude": -77.857573,
-        "lien_source": "https://dora.fr/be-water-scene-wind",
+        "lien_source": null,
         "longitude": -62.54684,
         "modes_accueil": [
           "a-distance"
@@ -95,7 +95,7 @@
         "id": "be-water-scene-wind",
         "justificatifs": [],
         "latitude": -77.857573,
-        "lien_source": "https://dora.fr/be-water-scene-wind",
+        "lien_source": null,
         "longitude": -62.54684,
         "modes_accueil": [
           "a-distance"
@@ -163,7 +163,7 @@
         ],
         "labels_nationaux": [],
         "latitude": -20.074628,
-        "lien_source": "https://dora.fr/kitchen-amount",
+        "lien_source": null,
         "longitude": 99.899603,
         "nom": "Perrin",
         "presentation_detail": "Or personne jambe.",
@@ -208,7 +208,7 @@
         ],
         "labels_nationaux": [],
         "latitude": -20.074628,
-        "lien_source": "https://dora.fr/kitchen-amount",
+        "lien_source": null,
         "longitude": 99.899603,
         "nom": "Perrin",
         "presentation_detail": "Or personne jambe.",
