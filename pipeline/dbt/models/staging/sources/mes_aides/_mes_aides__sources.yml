@@ -1,0 +1,14 @@
+version: 2
+
+sources:
+  - name: mes_aides
+    schema: mes_aides
+    meta:
+      is_provider: true
+    tables:
+      - name: garages
+        meta:
+          kind: structure
+      - name: permis_velo
+        meta:
+          kind: structure

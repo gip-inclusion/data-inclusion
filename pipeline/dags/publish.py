@@ -1,17 +1,14 @@
 import pendulum
 
-import airflow
-from airflow.operators import empty, python
+from airflow.decorators import dag, task
+from airflow.operators import empty
 
 from dag_utils.virtualenvs import PYTHON_BIN_PATH
 
-default_args = {}
 
-
-def _publish_to_datagouv():
+@task.external_python(python=str(PYTHON_BIN_PATH))
+def publish_to_datagouv():
     import io
-    import itertools
-    import logging
     import tempfile
 
     import geopandas as gpd
@@ -20,9 +17,9 @@ def _publish_to_datagouv():
     from airflow.models import Variable
     from airflow.providers.postgres.hooks import postgres
 
-    from dag_utils.sources import datagouv, utils
+    from data_inclusion.schema import v0
 
-    logger = logging.getLogger(__name__)
+    from dag_utils.sources import datagouv
 
     pg_hook = postgres.PostgresHook(postgres_conn_id="pg")
 
@@ -65,53 +62,56 @@ def _publish_to_datagouv():
         "geojson": to_geojson,
     }
 
-    # 1. fetch data
-    structures_df = pg_hook.get_pandas_df(
-        sql="SELECT * FROM public_opendata.opendata_structures",
-    )
-    utils.log_df_info(structures_df, logger)
+    for resource in ["structures", "services"]:
+        df = pg_hook.get_pandas_df(
+            sql=f"SELECT * FROM public_marts.marts__{resource}",
+        )
 
-    services_df = pg_hook.get_pandas_df(
-        sql="SELECT * FROM public_opendata.opendata_services",
-    )
-    utils.log_df_info(services_df, logger)
+        # remove closed sources
+        df = df.loc[df["_in_opendata"]]
+        df = df.drop(columns="_in_opendata")
 
-    for kind, format in itertools.product(
-        ["structures", "services"],
-        ["csv", "json", "xlsx", "geojson"],
-    ):
-        df = structures_df if kind == "structures" else services_df
+        # remove pii
+        df = df.assign(courriel=df["courriel"].mask(df["_has_pii"], None))
+        df = df.assign(telephone=df["telephone"].mask(df["_has_pii"], None))
+        df = df.drop(columns="_has_pii")
 
-        with io.BytesIO() as buf:
-            # 2. serialize data
-            to_buf_fn_by_format[format](df, buf)
+        # remove invalid rows
+        df = df.loc[~df["_is_valid_v0"]]
 
-            # 3. upload
-            datagouv_client.upload_dataset_resource(
-                dataset_id=DATAGOUV_DI_DATASET_ID,
-                resource_id=DATAGOUV_DI_RESOURCE_IDS[kind][format],
-                buf=buf,
-                filename=f"{kind}-inclusion-{date_str}.{format}",
-            )
+        # keep only the columns we want to publish
+        if resource == "structures":
+            df = df[list(v0.Structure.model_fields.keys()) + ["_di_surrogate_id"]]
+        elif resource == "services":
+            df = df[
+                list(v0.Service.model_fields.keys())
+                + ["_di_surrogate_id", "_di_structure_surrogate_id"]
+            ]
+
+        df.info()
+
+        for format in ["csv", "json", "xlsx", "geojson"]:
+            with io.BytesIO() as buf:
+                to_buf_fn_by_format[format](df, buf)
+                datagouv_client.upload_dataset_resource(
+                    dataset_id=DATAGOUV_DI_DATASET_ID,
+                    resource_id=DATAGOUV_DI_RESOURCE_IDS[resource][format],
+                    buf=buf,
+                    filename=f"{resource}-inclusion-{date_str}.{format}",
+                )
 
 
 EVERY_MONDAY_AT_2PM = "0 14 * * 1"
 
-with airflow.DAG(
-    dag_id="publish",
+
+@dag(
     description="Publish the consolidated dataset to datagouv",
     start_date=pendulum.datetime(2022, 1, 1),
-    default_args=default_args,
     schedule=EVERY_MONDAY_AT_2PM,
     catchup=False,
-) as dag:
+)
+def publish():
     start = empty.EmptyOperator(task_id="start")
     end = empty.EmptyOperator(task_id="end")
 
-    publish_to_datagouv = python.ExternalPythonOperator(
-        task_id="publish",
-        python=str(PYTHON_BIN_PATH),
-        python_callable=_publish_to_datagouv,
-    )
-
-    start >> publish_to_datagouv >> end
+    start >> publish_to_datagouv() >> end

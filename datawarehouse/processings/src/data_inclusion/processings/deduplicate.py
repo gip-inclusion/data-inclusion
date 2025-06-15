@@ -18,7 +18,6 @@ logger = logging.getLogger(__name__)
 class DeduplicateInput:
     _di_surrogate_id: str
     adresse: str
-    antenne: bool
     code_insee: str
     code_postal: str
     commune: str
@@ -64,9 +63,6 @@ def deduplicate(data: list[DeduplicateInput]) -> pd.DataFrame:
 
     # exclude structures with long surrogate_id (mednum...)
     df = df.loc[df["_di_surrogate_id"].str.len() <= 256]
-
-    # ignore antennes
-    df = df.loc[df["antenne"] != True]  # noqa: E712
 
     # ignore structures with no city code (no address, no geolocation)
     df = df.loc[df["code_insee"].notnull()]
