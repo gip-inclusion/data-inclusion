@@ -26,7 +26,6 @@ from . import (
 SOURCES_CONFIGS = {
     "dora": {
         "schedule": "@daily",
-        "snapshot": True,
         "extractor": dora.extract,
         "streams": {
             "structures": {
@@ -43,7 +42,6 @@ SOURCES_CONFIGS = {
     },
     "mes-aides": {
         "schedule": "@daily",
-        "snapshot": True,
         "extractor": mes_aides.extract,
         "streams": {
             "garages": {
@@ -58,20 +56,8 @@ SOURCES_CONFIGS = {
             },
         },
     },
-    "finess": {
-        "schedule": "@daily",
-        "snapshot": True,
-        "reader": lambda path: utils.read_csv(path, sep=","),
-        "streams": {
-            "etablissements": {
-                "filename": "etablissements.xlsx",
-                "url": Variable.get("FINESS_FILE_URL", None),
-            },
-        },
-    },
     "fredo": {
         "schedule": "@daily",
-        "snapshot": True,
         "extractor": fredo.extract,
         "streams": {
             "structures": {
@@ -83,7 +69,6 @@ SOURCES_CONFIGS = {
     },
     "cd35": {
         "schedule": "@daily",
-        "snapshot": True,
         "extractor": cd35.extract,
         "streams": {
             "organisations": {
@@ -94,7 +79,6 @@ SOURCES_CONFIGS = {
     },
     "emplois-de-linclusion": {
         "schedule": "@daily",
-        "snapshot": True,
         "streams": {
             "organisations": {
                 "filename": "organisations.json",
@@ -106,7 +90,6 @@ SOURCES_CONFIGS = {
     },
     "un-jeune-une-solution": {
         "schedule": "@daily",
-        "snapshot": True,
         "extractor": un_jeune_une_solution.extract,
         "streams": {
             "benefits": {
@@ -121,7 +104,6 @@ SOURCES_CONFIGS = {
     },
     "annuaire-du-service-public": {
         "schedule": "@daily",
-        "snapshot": True,
         "reader": annuaire_du_service_public.read,
         "streams": {
             "etablissements": {
@@ -132,7 +114,6 @@ SOURCES_CONFIGS = {
     },
     "mediation-numerique": {
         "schedule": "@daily",
-        "snapshot": False,
         "extractor": mediation_numerique.extract,
         "streams": {
             "structures": {
@@ -147,7 +128,6 @@ SOURCES_CONFIGS = {
     },
     "soliguide": {
         "schedule": "@hourly",
-        "snapshot": True,
         "extractor": soliguide.extract,
         "reader": soliguide.read,
         "streams": {
@@ -160,7 +140,6 @@ SOURCES_CONFIGS = {
     },
     "reseau-alpha": {
         "schedule": "@once",
-        "snapshot": False,
         "streams": {
             "structures": {
                 "filename": "structures.tar.gz",
@@ -179,7 +158,6 @@ SOURCES_CONFIGS = {
     "agefiph": {
         "schedule": "@daily",
         "extractor": agefiph.extract,
-        "snapshot": True,
         "streams": {
             "services": {
                 "filename": "services.json",
@@ -194,7 +172,6 @@ SOURCES_CONFIGS = {
     },
     "france-travail": {
         "schedule": "@daily",
-        "snapshot": False,
         "streams": {
             "agences": {
                 "filename": "agences.json",
@@ -213,7 +190,6 @@ SOURCES_CONFIGS = {
     },
     "action-logement": {
         "schedule": "@daily",
-        "snapshot": True,
         "reader": lambda path: utils.read_csv(path, sep=","),
         "streams": {
             "services": {
@@ -229,7 +205,6 @@ SOURCES_CONFIGS = {
     "carif-oref": {
         # file updated by carif oref every sunday at 6:25am
         "schedule": "@weekly",
-        "snapshot": True,
         "extractor": carif_oref.extract,
         "reader": carif_oref.read,
         "streams": {
@@ -243,7 +218,6 @@ SOURCES_CONFIGS = {
     "monenfant": {},
     "mission-locale": {
         "schedule": "@daily",
-        "snapshot": True,
         "extractor": mission_locale.extract,
         "streams": {
             "offres": {

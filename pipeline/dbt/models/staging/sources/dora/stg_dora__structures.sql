@@ -5,7 +5,6 @@ WITH source AS (
 final AS (
     SELECT
         _di_source_id                                                              AS "_di_source_id",
-        CAST((data ->> 'antenne') AS BOOLEAN)                                      AS "antenne",
         CAST((data ->> 'date_maj') AS TIMESTAMP WITH TIME ZONE)                    AS "date_maj",
         ARRAY(SELECT * FROM JSONB_ARRAY_ELEMENTS_TEXT(data -> 'labels_autres'))    AS "labels_autres",
         ARRAY(SELECT * FROM JSONB_ARRAY_ELEMENTS_TEXT(data -> 'labels_nationaux')) AS "labels_nationaux",

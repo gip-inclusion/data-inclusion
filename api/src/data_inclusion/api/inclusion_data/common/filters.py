@@ -85,11 +85,7 @@ ProfilsFilter = Annotated[
 
 SuspendusFilter = Annotated[
     Optional[bool],
-    fastapi.Query(
-        description="""Inclure les services ayant une date de suspension dépassée.
-                Ils sont exclus par défaut.
-            """
-    ),
+    fastapi.Query(include_in_schema=False),
 ]
 
 

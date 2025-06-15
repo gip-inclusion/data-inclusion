@@ -5,7 +5,6 @@ WITH source AS (
 final AS (
     SELECT
         _di_source_id                                                                       AS "_di_source_id",
-        (data ->> 'antenne')::BOOLEAN                                                       AS "antenne",
         ARRAY(SELECT * FROM JSONB_ARRAY_ELEMENTS_TEXT(data -> 'thematiques'))::TEXT []      AS "thematiques",
         ARRAY(SELECT * FROM JSONB_ARRAY_ELEMENTS_TEXT(data -> 'labels_autres'))::TEXT []    AS "labels_autres",
         ARRAY(SELECT * FROM JSONB_ARRAY_ELEMENTS_TEXT(data -> 'labels_nationaux'))::TEXT [] AS "labels_nationaux",
