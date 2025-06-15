@@ -22,6 +22,7 @@ def dataset_path(structures_df, services_df, tmpdir):
                     {
                         "_di_surrogate_id": "foo-1",
                         "_cluster_id": None,
+                        "description": None,
                         **v0.Structure(
                             source="foo",
                             id="1",
@@ -39,6 +40,7 @@ def dataset_path(structures_df, services_df, tmpdir):
                         "_di_surrogate_id": "foo-1",
                         "score_qualite_v0": 0.8,
                         "score_qualite_v1": 0.8,
+                        "description": None,
                         **v0.Service(
                             source="foo",
                             id="1",
