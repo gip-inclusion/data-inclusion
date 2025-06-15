@@ -46,8 +46,7 @@ class StructureFactory(factory.alchemy.SQLAlchemyModelFactory):
     telephone = "0102030405"
     courriel = factory.Faker("email", locale="fr_FR")
     site_web = factory.Faker("url", locale="fr_FR")
-    presentation_resume = factory.Faker("text", max_nb_chars=20, locale="fr_FR")
-    presentation_detail = factory.Faker("text", max_nb_chars=30, locale="fr_FR")
+    description = factory.Faker("sentence", nb_words=100, locale="fr_FR")
     source = factory.Iterator(["dora", "emplois-de-linclusion"])
     date_maj = factory.LazyFunction(lambda: date(2023, 1, 1))
     horaires_ouverture = 'Mo-Fr 10:00-20:00 "sur rendez-vous"; PH off'
@@ -83,8 +82,7 @@ class ServiceFactory(factory.alchemy.SQLAlchemyModelFactory):
     structure_id = factory.SelfAttribute("structure.id")
     source = factory.Iterator(["dora", "emplois-de-linclusion"])
     nom = factory.Faker("company", locale="fr_FR")
-    presentation_resume = factory.Faker("text", max_nb_chars=20, locale="fr_FR")
-    presentation_detail = factory.Faker("text", max_nb_chars=20, locale="fr_FR")
+    description = factory.Faker("sentence", nb_words=100, locale="fr_FR")
     types = factory.Iterator(
         [
             v1.TypologieService.FORMATION,
