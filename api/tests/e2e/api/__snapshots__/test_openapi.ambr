@@ -3107,6 +3107,16 @@
               "title": "Date de dernière modification",
               "type": "string"
             },
+            "description": {
+              "description": "Description de la structure.\n\nEntre 50 et 2000 caractères.",
+              "examples": [
+                "L’association 3027 offre un accès gratuit aux arts, à la culture et\n                au sport pour toutes et tous sans distinction et en priorité aux\n                personnes en situation de précarité et d’isolement."
+              ],
+              "maxLength": 2000,
+              "minLength": 50,
+              "title": "Description",
+              "type": "string"
+            },
             "horaires_ouverture": {
               "anyOf": [
                 {
@@ -3184,29 +3194,6 @@
               "title": "Nom",
               "type": "string"
             },
-            "presentation_detail": {
-              "anyOf": [
-                {
-                  "type": "string"
-                },
-                {
-                  "type": "null"
-                }
-              ],
-              "title": "Presentation Detail"
-            },
-            "presentation_resume": {
-              "anyOf": [
-                {
-                  "maxLength": 280,
-                  "type": "string"
-                },
-                {
-                  "type": "null"
-                }
-              ],
-              "title": "Presentation Resume"
-            },
             "siret": {
               "anyOf": [
                 {
@@ -3265,6 +3252,7 @@
           "required": [
             "id",
             "nom",
+            "description",
             "source",
             "date_maj"
           ],
@@ -3368,6 +3356,16 @@
               ],
               "format": "date",
               "title": "Date de dernière modification",
+              "type": "string"
+            },
+            "description": {
+              "description": "Description du service.\n\nEntre 50 et 2000 caractères.\n\nCe champ est pris en compte dans le calcul du score de qualité.",
+              "examples": [
+                "Cet atelier-conseil vous permet d’identifier les compétences à\n                développer pour atteindre vos objectifs d’évolution professionnelle et à\n                découvrir les différentes modalités de formation.\n\n                Durée d’une journée et inscription via votre espace France Travail."
+              ],
+              "maxLength": 2000,
+              "minLength": 50,
+              "title": "Description",
               "type": "string"
             },
             "formulaire_en_ligne": {
@@ -3573,29 +3571,6 @@
                 }
               ],
               "title": "Pre Requis"
-            },
-            "presentation_detail": {
-              "anyOf": [
-                {
-                  "type": "string"
-                },
-                {
-                  "type": "null"
-                }
-              ],
-              "title": "Presentation Detail"
-            },
-            "presentation_resume": {
-              "anyOf": [
-                {
-                  "maxLength": 280,
-                  "type": "string"
-                },
-                {
-                  "type": "null"
-                }
-              ],
-              "title": "Presentation Resume"
             },
             "prise_rdv": {
               "anyOf": [
@@ -3772,6 +3747,7 @@
             "structure_id",
             "source",
             "nom",
+            "description",
             "date_maj",
             "score_qualite",
             "structure"
@@ -3878,6 +3854,16 @@
               "title": "Date de dernière modification",
               "type": "string"
             },
+            "description": {
+              "description": "Description de la structure.\n\nEntre 50 et 2000 caractères.",
+              "examples": [
+                "L’association 3027 offre un accès gratuit aux arts, à la culture et\n                au sport pour toutes et tous sans distinction et en priorité aux\n                personnes en situation de précarité et d’isolement."
+              ],
+              "maxLength": 2000,
+              "minLength": 50,
+              "title": "Description",
+              "type": "string"
+            },
             "doublons": {
               "description": "Doublons connus de la structure",
               "items": {
@@ -3963,29 +3949,6 @@
               "title": "Nom",
               "type": "string"
             },
-            "presentation_detail": {
-              "anyOf": [
-                {
-                  "type": "string"
-                },
-                {
-                  "type": "null"
-                }
-              ],
-              "title": "Presentation Detail"
-            },
-            "presentation_resume": {
-              "anyOf": [
-                {
-                  "maxLength": 280,
-                  "type": "string"
-                },
-                {
-                  "type": "null"
-                }
-              ],
-              "title": "Presentation Resume"
-            },
             "score_qualite": {
               "description": "[BETA] Score de qualité de la structure. Défini comme la moyenne\ndes scores de qualité des services associés à la structure, ou 0\nsi aucun service n'est associé.\n",
               "maximum": 1.0,
@@ -4058,6 +4021,7 @@
           "required": [
             "id",
             "nom",
+            "description",
             "source",
             "date_maj",
             "score_qualite",
@@ -4166,6 +4130,16 @@
               "title": "Date de dernière modification",
               "type": "string"
             },
+            "description": {
+              "description": "Description de la structure.\n\nEntre 50 et 2000 caractères.",
+              "examples": [
+                "L’association 3027 offre un accès gratuit aux arts, à la culture et\n                au sport pour toutes et tous sans distinction et en priorité aux\n                personnes en situation de précarité et d’isolement."
+              ],
+              "maxLength": 2000,
+              "minLength": 50,
+              "title": "Description",
+              "type": "string"
+            },
             "doublons": {
               "description": "Identifiants (source, id) des doublons connus de la structure",
               "items": {
@@ -4251,29 +4225,6 @@
               "title": "Nom",
               "type": "string"
             },
-            "presentation_detail": {
-              "anyOf": [
-                {
-                  "type": "string"
-                },
-                {
-                  "type": "null"
-                }
-              ],
-              "title": "Presentation Detail"
-            },
-            "presentation_resume": {
-              "anyOf": [
-                {
-                  "maxLength": 280,
-                  "type": "string"
-                },
-                {
-                  "type": "null"
-                }
-              ],
-              "title": "Presentation Resume"
-            },
             "score_qualite": {
               "description": "[BETA] Score de qualité de la structure. Défini comme la moyenne\ndes scores de qualité des services associés à la structure, ou 0\nsi aucun service n'est associé.\n",
               "maximum": 1.0,
@@ -4339,6 +4290,7 @@
           "required": [
             "id",
             "nom",
+            "description",
             "source",
             "date_maj",
             "score_qualite",
@@ -4444,6 +4396,16 @@
               ],
               "format": "date",
               "title": "Date de dernière modification",
+              "type": "string"
+            },
+            "description": {
+              "description": "Description du service.\n\nEntre 50 et 2000 caractères.\n\nCe champ est pris en compte dans le calcul du score de qualité.",
+              "examples": [
+                "Cet atelier-conseil vous permet d’identifier les compétences à\n                développer pour atteindre vos objectifs d’évolution professionnelle et à\n                découvrir les différentes modalités de formation.\n\n                Durée d’une journée et inscription via votre espace France Travail."
+              ],
+              "maxLength": 2000,
+              "minLength": 50,
+              "title": "Description",
               "type": "string"
             },
             "formulaire_en_ligne": {
@@ -4650,29 +4612,6 @@
               ],
               "title": "Pre Requis"
             },
-            "presentation_detail": {
-              "anyOf": [
-                {
-                  "type": "string"
-                },
-                {
-                  "type": "null"
-                }
-              ],
-              "title": "Presentation Detail"
-            },
-            "presentation_resume": {
-              "anyOf": [
-                {
-                  "maxLength": 280,
-                  "type": "string"
-                },
-                {
-                  "type": "null"
-                }
-              ],
-              "title": "Presentation Resume"
-            },
             "prise_rdv": {
               "anyOf": [
                 {
@@ -4845,6 +4784,7 @@
             "structure_id",
             "source",
             "nom",
+            "description",
             "date_maj",
             "score_qualite"
           ],
@@ -5705,6 +5645,16 @@
               "title": "Date de dernière modification",
               "type": "string"
             },
+            "description": {
+              "description": "Description de la structure.\n\nEntre 50 et 2000 caractères.",
+              "examples": [
+                "L’association 3027 offre un accès gratuit aux arts, à la culture et\n                au sport pour toutes et tous sans distinction et en priorité aux\n                personnes en situation de précarité et d’isolement."
+              ],
+              "maxLength": 2000,
+              "minLength": 50,
+              "title": "Description",
+              "type": "string"
+            },
             "horaires_ouverture": {
               "anyOf": [
                 {
@@ -5782,29 +5732,6 @@
               "title": "Nom",
               "type": "string"
             },
-            "presentation_detail": {
-              "anyOf": [
-                {
-                  "type": "string"
-                },
-                {
-                  "type": "null"
-                }
-              ],
-              "title": "Presentation Detail"
-            },
-            "presentation_resume": {
-              "anyOf": [
-                {
-                  "maxLength": 280,
-                  "type": "string"
-                },
-                {
-                  "type": "null"
-                }
-              ],
-              "title": "Presentation Resume"
-            },
             "siret": {
               "anyOf": [
                 {
@@ -5866,6 +5793,7 @@
           "required": [
             "id",
             "nom",
+            "description",
             "source",
             "date_maj"
           ],

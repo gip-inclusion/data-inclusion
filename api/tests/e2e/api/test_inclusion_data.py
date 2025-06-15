@@ -86,8 +86,8 @@ def test_list_structures_unauthenticated(api_client, schema_version):
                 latitude=-20.074628,
                 longitude=99.899603,
                 nom="Perrin",
-                presentation_detail="Or personne jambe.",
-                presentation_resume="Image voie battre.",
+                description="""Lorem ipsum dolor sit amet, consectetur adipiscing elit,
+                sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.""",
                 rna="W242194892",
                 score_qualite=0.7,
                 siret="76475938700658",
@@ -315,8 +315,9 @@ def test_list_services_unauthenticated(api_client, schema_version):
                     latitude=-20.074628,
                     longitude=99.899603,
                     nom="Perrin",
-                    presentation_detail="Or personne jambe.",
-                    presentation_resume="Image voie battre.",
+                    description="""Lorem ipsum dolor sit amet, consectetur adipiscing
+                    elit, sed do eiusmod tempor incididunt ut labore et dolore magna
+                    aliqua.""",
                     rna="W242194892",
                     score_qualite=0.3,
                     siret="76475938700658",
@@ -351,8 +352,9 @@ def test_list_services_unauthenticated(api_client, schema_version):
                     nom="Munoz",
                     page_web="http://aubert.net/",
                     pre_requis=[],
-                    presentation_detail="Épaule élever un.",
-                    presentation_resume="Puissant fine.",
+                    description="""Lorem ipsum dolor sit amet, consectetur adipiscing
+                    elit, sed do eiusmod tempor incididunt ut labore et dolore magna
+                    aliqua.""",
                     prise_rdv="https://teixeira.fr/",
                     profils=["femmes"],
                     profils_precisions="Femme en situation d'insertion",

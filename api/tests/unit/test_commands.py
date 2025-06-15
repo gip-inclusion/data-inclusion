@@ -22,6 +22,7 @@ structure_data_1 = {
     "code_insee": "59350",
     "nom": "Chez Dora",
     "date_maj": "not-a-date",
+    "description": "." * 100,
 }
 
 structure_data_2 = {
@@ -32,6 +33,7 @@ structure_data_2 = {
     "nom": "Chez Dora",
     "date_maj": "2025-01-01",
     "thematiques": ["not-a-thematique"],
+    "description": "." * 100,
 }
 
 structure_data_3 = {
@@ -41,6 +43,7 @@ structure_data_3 = {
     "code_insee": "not-a-code-insee",
     "nom": "Chez Dora",
     "date_maj": "2025-01-01",
+    "description": "." * 100,
 }
 
 
