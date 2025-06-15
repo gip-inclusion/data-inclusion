@@ -26,6 +26,10 @@ source IS NOT NULL
 nom IS NOT NULL AND LENGTH(nom) <= 150 AND LENGTH(nom) >= 3 AND nom !~ '(?<!etc)\.$'
 {% endmacro %}
 
+{% macro check_nombre_semaines() %}
+nombre_semaines IS NULL OR nombre_semaines > 0
+{% endmacro %}
+
 {% macro check_presentation_resume() %}
 presentation_resume IS NULL OR LENGTH(presentation_resume) <= 280
 {% endmacro %}
@@ -71,6 +75,10 @@ modes_orientation_accompagnateur IS NULL OR modes_orientation_accompagnateur <@ 
 modes_orientation_beneficiaire IS NULL OR modes_orientation_beneficiaire <@ ARRAY(SELECT m.value FROM {{ ref('modes_orientation_beneficiaire') }} AS m)
 {% endmacro %}
 
+{% macro check_volume_horaire_hebdomadaire() %}
+volume_horaire_hebdomadaire IS NULL OR volume_horaire_hebdomadaire >= 0
+{% endmacro %}
+
 {% macro check_zone_diffusion_code() %}
 zone_diffusion_code IS NULL OR zone_diffusion_code ~ '^(\d{9}|\w{5}|\w{2,3}|\d{2})$'
 {% endmacro %}
@@ -112,6 +120,7 @@ code_insee IS NULL OR code_insee ~ '^.{5}$'
         ('id', check_id()),
         ("source", check_source()),
         ("nom", check_nom()),
+        ("nombre_semaines", check_nombre_semaines()),
         ("presentation_resume", check_presentation_resume()),
         ("telephone", check_telephone()),
         ("courriel", check_courriel()),
@@ -125,6 +134,7 @@ code_insee IS NULL OR code_insee ~ '^.{5}$'
         ("modes_accueil", check_modes_accueil()),
         ("modes_orientation_accompagnateur", check_modes_orientation_accompagnateur()),
         ("modes_orientation_beneficiaire", check_modes_orientation_beneficiaire()),
+        ("volume_horaire_hebdomadaire", check_volume_horaire_hebdomadaire()),
         ("zone_diffusion_code", check_zone_diffusion_code()),
         ("zone_diffusion_type", check_zone_diffusion_type())
 ] %}

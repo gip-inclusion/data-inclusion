@@ -96,6 +96,8 @@ SELECT
     services.types                                   AS "types",
     services.frais                                   AS "frais",
     services.page_web                                AS "page_web",
+    services.nombre_semaines                         AS "nombre_semaines",
+    services.volume_horaire_hebdomadaire             AS "volume_horaire_hebdomadaire",
     zones_diffusion.zone_diffusion_code              AS "zone_diffusion_code",
     zones_diffusion.zone_diffusion_nom               AS "zone_diffusion_nom",
     contacts.contact_nom_prenom                      AS "contact_nom_prenom",
