@@ -36,6 +36,8 @@ final AS (
         services.types                                   AS "types",
         structures.telephone                             AS "telephone",
         services.frais                                   AS "frais",
+        CAST(NULL AS FLOAT)                              AS "volume_horaire_hebdomadaire",
+        CAST(NULL AS INT)                                AS "nombre_semaines",
         'departement'                                    AS "zone_diffusion_type",
         NULL                                             AS "zone_diffusion_code",
         NULL                                             AS "zone_diffusion_nom",

@@ -193,6 +193,8 @@ final AS (
             ELSE LEFT(formations.objectif_formation, 279) || '…'
         END                                             AS "presentation_resume",
         formations.objectif_formation                   AS "presentation_detail",
+        CAST(NULL AS FLOAT)                             AS "volume_horaire_hebdomadaire",
+        CAST(NULL AS INT)                               AS "nombre_semaines",
         COALESCE(
             actions.url_action[1],
             coordonnees_organisme_formateur.web[1],
