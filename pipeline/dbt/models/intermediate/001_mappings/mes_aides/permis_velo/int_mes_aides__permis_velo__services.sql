@@ -187,6 +187,8 @@ final AS (
         permis_velo.id                                                     AS "structure_id",
         thematiques.thematiques                                            AS "thematiques",
         transformed_types.transformed_types                                AS "types",
+        CAST(NULL AS FLOAT)                                                AS "volume_horaire_hebdomadaire",
+        CAST(NULL AS INT)                                                  AS "nombre_semaines",
         CASE
             WHEN zone_diffusion.zone_di = 'commune' THEN zone_code.code
             WHEN zone_diffusion.zone_di = 'epci' THEN zone_code.code_epci

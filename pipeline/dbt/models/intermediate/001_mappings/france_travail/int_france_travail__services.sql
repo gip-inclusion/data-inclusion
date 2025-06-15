@@ -52,6 +52,8 @@ final AS (
         structures.code_insee                            AS "zone_diffusion_code",
         structures.commune                               AS "zone_diffusion_nom",
         NULL                                             AS "page_web",
+        CAST(NULL AS FLOAT)                              AS "volume_horaire_hebdomadaire",
+        CAST(NULL AS INT)                                AS "nombre_semaines",
         structures.id || '-' || services.id              AS "id"
     FROM services
     CROSS JOIN structures_with_commune AS structures

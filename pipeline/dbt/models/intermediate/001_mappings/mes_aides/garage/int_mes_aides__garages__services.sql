@@ -85,6 +85,8 @@ final AS (
         END                                                                                         AS "zone_diffusion_code",
         NULL                                                                                        AS "zone_diffusion_nom",
         'departement'                                                                               AS "zone_diffusion_type",
+        CAST(NULL AS FLOAT)                                                                         AS "volume_horaire_hebdomadaire",
+        CAST(NULL AS INT)                                                                           AS "nombre_semaines",
         garages.criteres_eligibilite                                                                AS "pre_requis",
         NULL                                                                                        AS "contact_nom_prenom",
         garages.email                                                                               AS "courriel",

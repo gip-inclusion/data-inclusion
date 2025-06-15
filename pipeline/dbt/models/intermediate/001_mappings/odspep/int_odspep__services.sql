@@ -41,6 +41,8 @@ final AS (
         zone_diffusion_code                             AS "zone_diffusion_code",
         zone_diffusion_type                             AS "zone_diffusion_type",
         zone_diffusion_libelle                          AS "zone_diffusion_nom",
+        CAST(NULL AS FLOAT)                             AS "volume_horaire_hebdomadaire",
+        CAST(NULL AS INT)                               AS "nombre_semaines",
         id_res                                          AS "structure_id",
         CAST(NULL AS TEXT [])                           AS "profils",
         NULL                                            AS "profils_precisions",

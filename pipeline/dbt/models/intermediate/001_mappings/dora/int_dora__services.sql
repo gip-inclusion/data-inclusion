@@ -61,6 +61,8 @@ final AS (
         services.contact_nom_prenom                        AS "contact_nom_prenom",
         services.courriel                                  AS "courriel",
         services.telephone                                 AS "telephone",
+        services.temps_passe_duree_hebdomadaire            AS "volume_horaire_hebdomadaire",
+        services.temps_passe_semaines                      AS "nombre_semaines",
         CASE
             WHEN services.frais IS NULL THEN NULL
             ELSE ARRAY[services.frais]
