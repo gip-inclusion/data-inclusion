@@ -1,6 +1,5 @@
 WITH source AS (
-    {{ stg_source_header('dora', 'services') }}
-),
+    {{ stg_source_header('dora', 'services') }}),
 
 structures AS (
     SELECT * FROM {{ ref('stg_dora__structures') }}
@@ -12,6 +11,8 @@ services AS (
         CAST((data ->> 'date_maj') AS TIMESTAMP WITH TIME ZONE)                                             AS "date_maj",
         CAST((data ->> 'latitude') AS FLOAT)                                                                AS "latitude",
         CAST((data ->> 'longitude') AS FLOAT)                                                               AS "longitude",
+        CAST(CAST((data ->> 'temps_passe_semaines') AS FLOAT) AS INT)                                       AS "temps_passe_semaines",
+        CAST((data ->> 'temps_passe_duree_hebdomadaire') AS FLOAT)                                          AS "temps_passe_duree_hebdomadaire",
         ARRAY(SELECT * FROM JSONB_ARRAY_ELEMENTS_TEXT(data -> 'modes_accueil'))                             AS "modes_accueil",
         ARRAY(SELECT * FROM JSONB_ARRAY_ELEMENTS_TEXT(data -> 'profils'))                                   AS "profils",
         ARRAY(SELECT * FROM JSONB_ARRAY_ELEMENTS_TEXT(data -> 'thematiques'))                               AS "thematiques",

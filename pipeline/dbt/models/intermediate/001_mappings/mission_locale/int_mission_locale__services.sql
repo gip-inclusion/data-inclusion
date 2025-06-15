@@ -61,7 +61,9 @@ final AS (
         CASE WHEN offres.frais IS NOT NULL THEN ARRAY[offres.frais] END           AS "frais",
         offres.perimetre_offre                                                    AS "zone_diffusion_type",
         NULL                                                                      AS "zone_diffusion_code",
-        NULL                                                                      AS "zone_diffusion_nom"
+        NULL                                                                      AS "zone_diffusion_nom",
+        CAST(NULL AS FLOAT)                                                       AS "volume_horaire_hebdomadaire",
+        CAST(NULL AS INT)                                                         AS "nombre_semaines"
     FROM structures_offres
     INNER JOIN offres
         ON structures_offres.offre_id = offres.id_offre

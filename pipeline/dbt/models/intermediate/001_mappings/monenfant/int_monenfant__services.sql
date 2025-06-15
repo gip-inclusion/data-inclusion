@@ -36,6 +36,8 @@ final AS (
         'commune'                                                                                                   AS "zone_diffusion_type",
         NULL                                                                                                        AS "zone_diffusion_code",
         NULL                                                                                                        AS "zone_diffusion_nom",
+        CAST(NULL AS FLOAT)                                                                                         AS "volume_horaire_hebdomadaire",
+        CAST(NULL AS INT)                                                                                           AS "nombre_semaines",
         CAST(NULL AS TEXT [])                                                                                       AS "modes_orientation_accompagnateur", -- will be overridden after geocoding
         NULL                                                                                                        AS "modes_orientation_accompagnateur_autres", -- will be overridden after geocoding
         CAST(NULL AS TEXT [])                                                                                       AS "modes_orientation_beneficiaire",
