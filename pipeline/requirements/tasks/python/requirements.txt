@@ -228,7 +228,7 @@ cryptography==42.0.8
     #   -c airflow/constraints.txt
     #   apache-airflow
     #   paramiko
-data-inclusion-schema==1.0.0a2
+data-inclusion-schema==1.0.0a5
     # via -r tasks/python/requirements.in
 dateparser==1.2.1
     # via htmldate

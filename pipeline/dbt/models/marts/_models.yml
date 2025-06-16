@@ -46,6 +46,8 @@ models:
         data_type: text
       - name: presentation_detail
         data_type: text
+      - name: description
+        data_type: text
       - name: source
         data_type: text
         constraints:
@@ -161,6 +163,8 @@ models:
       - name: presentation_resume
         data_type: text
       - name: presentation_detail
+        data_type: text
+      - name: description
         data_type: text
       - name: types
         data_type: text[]
