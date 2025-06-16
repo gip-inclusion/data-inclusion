@@ -85,6 +85,11 @@ SELECT
     services.date_maj                                AS "date_maj",
     services.id                                      AS "id",
     services.presentation_detail                     AS "presentation_detail",
+    CASE
+        WHEN LENGTH(services.presentation_detail) >= 2000
+            THEN LEFT(services.presentation_detail, 1999) || '…'
+        ELSE COALESCE(services.presentation_detail, services.presentation_resume)
+    END                                              AS "description",
     services.thematiques                             AS "thematiques",
     services.modes_accueil                           AS "modes_accueil",
     services.modes_orientation_accompagnateur        AS "modes_orientation_accompagnateur",
