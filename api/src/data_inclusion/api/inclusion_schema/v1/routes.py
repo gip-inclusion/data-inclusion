@@ -23,7 +23,7 @@ for name, model, summary in [
         v1.ModeOrientationBeneficiaire,
         "Récupérer le référentiel des modes d'orientation du bénéficiaire",
     ),
-    ("profils", v1.Profil, "Récupérer le référentiel des profils de publics"),
+    ("publics", v1.Public, "Récupérer le référentiel des publics"),
     ("thematiques", v1.Thematique, "Récupérer le référentiel des thématiques"),
     (
         "typologies-services",

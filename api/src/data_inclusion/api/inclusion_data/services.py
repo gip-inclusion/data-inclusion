@@ -30,7 +30,7 @@ logger = logging.getLogger(__name__)
 class ServiceLayer[
     Thematique: v0.Thematique | v1.Thematique,
     Frais: v0.Frais | v1.Frais,
-    Profil: v0.Profil | v1.Profil,
+    Profil: v0.Profil | v1.Public,
     TypologieService: v0.TypologieService | v1.TypologieService,
     TypologieStructure: v0.TypologieStructure | v1.TypologieStructure,
     LabelNational: v0.LabelNational | v1.LabelNational,
@@ -506,7 +506,7 @@ class ServiceLayerV1(
     ServiceLayer[
         v1.Thematique,
         v1.Frais,
-        v1.Profil,
+        v1.Public,
         v1.TypologieService,
         v1.TypologieStructure,
         v1.LabelNational,
@@ -515,6 +515,75 @@ class ServiceLayerV1(
     ]
 ):
     schema_version = "v1"
+
+    # NOTE(vperron) : I decided to override the `filter_services` method entirely
+    # as it introduces way less "magic" than having N mini methods, one for every field
+    # that gets overriden.
+    def filter_services(
+        self,
+        query: sqla.Select,
+        sources: list[str] | None = None,
+        thematiques: list[v1.Thematique] | None = None,
+        frais: list[v1.Frais] | None = None,
+        profils: list[v1.Public] | None = None,
+        profils_search: str | None = None,
+        modes_accueil: list[v1.ModeAccueil] | None = None,
+        types: list[v1.TypologieService] | None = None,
+        score_qualite_minimum: float | None = None,
+    ) -> sqla.Select:
+        if sources is not None:
+            query = query.filter(
+                self.models.Service.source == sqla.any_(sqla.literal(sources))
+            )
+
+        if thematiques is not None:
+            query = query.filter(
+                sqla.text(
+                    f"{self.models.Service.__tablename__}.thematiques && :thematiques"
+                ).bindparams(
+                    thematiques=self.get_sub_thematiques(thematiques=thematiques),
+                )
+            )
+
+        if frais is not None:
+            self._filter_array_field(query, self.models.Service, "frais", frais)
+
+        if profils is not None:
+            query = self._filter_array_field(
+                query, self.models.Service, "publics", profils
+            )
+
+        if modes_accueil is not None:
+            query = self._filter_array_field(
+                query,
+                self.models.Service,
+                "modes_accueil",
+                modes_accueil,
+            )
+
+        if types is not None:
+            query = self._filter_array_field(query, self.models.Service, "types", types)
+
+        if score_qualite_minimum is not None:
+            query = query.filter(
+                self.models.Service.score_qualite >= score_qualite_minimum
+            )
+
+        if profils_search is not None:
+            publics_only = profils_search.split(" ")
+            publics_only = [p.strip() for p in publics_only]
+            query = query.filter(
+                or_(
+                    self.models.Service.searchable_index_publics.bool_op("@@")(
+                        func.to_tsquery("french_di", " | ".join(publics_only))
+                    ),
+                    self.models.Service.searchable_index_publics_precisions.bool_op(
+                        "@@"
+                    )(func.websearch_to_tsquery("french_di", profils_search)),
+                )
+            )
+
+        return query
 
     def list_structures(
         self,

@@ -113,7 +113,9 @@ def test_consult_service_event_saved(
 @pytest.mark.parametrize("schema_version", ["v0", "v1"])
 @pytest.mark.parametrize("path", ["/services"])
 @pytest.mark.with_token
-def test_list_services_event_saved(api_client, db_session, url, schema_version):
+def test_list_services_event_saved(
+    api_client, db_session, url, schema_version, publics_param
+):
     query_param = {
         "sources": ["foo"],
         "thematiques": ["acces-aux-droits-et-citoyennete"],
@@ -121,7 +123,7 @@ def test_list_services_event_saved(api_client, db_session, url, schema_version):
         "code_region": "84",
         "code_commune": "26400",
         "frais": ["gratuit"],
-        "profils": ["adultes"],
+        publics_param: ["etudiants"],
         "modes_accueil": ["a-distance"],
         "types": ["accompagnement"],
         "recherche_public": "test",
@@ -147,7 +149,7 @@ def test_list_services_event_saved(api_client, db_session, url, schema_version):
     assert event.code_region == query_param["code_region"]
     assert event.code_commune == query_param["code_commune"]
     assert event.frais == query_param["frais"]
-    assert event.profils == query_param["profils"]
+    assert event.profils == query_param[publics_param]
     assert event.modes_accueil == query_param["modes_accueil"]
     assert event.types == query_param["types"]
     assert event.recherche_public == query_param["recherche_public"]
@@ -198,15 +200,17 @@ def test_list_structures_event_saved(api_client, db_session, url, schema_version
 @pytest.mark.parametrize("schema_version", ["v0", "v1"])
 @pytest.mark.parametrize("path", ["/search/services"])
 @pytest.mark.with_token
-def test_search_services_event_saved(api_client, db_session, url, schema_version):
+def test_search_services_event_saved(
+    api_client, db_session, url, schema_version, publics_param
+):
     query_param = {
         "sources": ["foo"],
         "thematiques": ["acces-aux-droits-et-citoyennete"],
         "code_commune": HAZEBROUCK["code_insee"],
         "code_insee": DUNKERQUE["code_insee"],
         "frais": ["gratuit"],
-        "profils": ["adultes"],
-        "profils_precisions": "test",
+        publics_param: ["etudiants"],
+        f"{publics_param}_precisions": "test",
         "modes_accueil": ["a-distance"],
         "types": ["accompagnement"],
         "lat": 45.0,
@@ -238,7 +242,7 @@ def test_search_services_event_saved(api_client, db_session, url, schema_version
     assert event.lat == query_param["lat"]
     assert event.lon == query_param["lon"]
     assert event.frais == query_param["frais"]
-    assert event.profils == query_param["profils"]
+    assert event.profils == query_param[publics_param]
     assert event.modes_accueil == query_param["modes_accueil"]
     assert event.types == query_param["types"]
     assert event.recherche_public == query_param["recherche_public"]
