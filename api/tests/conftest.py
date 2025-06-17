@@ -160,8 +160,10 @@ def db_session(db_connection):
         bind=db_connection, join_transaction_mode="create_savepoint"
     )
 
-    factories.StructureFactory._meta.sqlalchemy_session = session
-    factories.ServiceFactory._meta.sqlalchemy_session = session
+    factories.v0.StructureFactory._meta.sqlalchemy_session = session
+    factories.v1.StructureFactory._meta.sqlalchemy_session = session
+    factories.v0.ServiceFactory._meta.sqlalchemy_session = session
+    factories.v1.ServiceFactory._meta.sqlalchemy_session = session
 
     yield session
 
@@ -174,5 +176,14 @@ def predictable_sequences():
     import factory.random
 
     factory.random.reseed_random(0)
-    factories.ServiceFactory.reset_sequence()
-    factories.StructureFactory.reset_sequence()
+
+
+@pytest.fixture
+def cli_runner(db_session):
+    from click.testing import CliRunner
+
+    class CustomRunner(CliRunner):
+        def invoke(self, *args, **kwargs):
+            return super().invoke(*args, **kwargs, obj=db_session)
+
+    yield CustomRunner()
