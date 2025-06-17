@@ -60,6 +60,8 @@ models:
         data_type: text
       - name: horaires_ouverture
         data_type: text
+      - name: horaires_accueil
+        data_type: text
       - name: accessibilite
         data_type: text
       - name: labels_nationaux
@@ -215,6 +217,8 @@ models:
       - name: latitude
         data_type: float
       - name: recurrence
+        data_type: text
+      - name: horaires_accueil
         data_type: text
       - name: date_creation
         data_type: date
