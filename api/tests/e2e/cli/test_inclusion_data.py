@@ -23,6 +23,7 @@ def dataset_path(structures_df, services_df, tmpdir):
                         "_di_surrogate_id": "foo-1",
                         "_cluster_id": None,
                         "description": None,
+                        "horaires_accueil": "Mon-Fri 9:00-17:00",
                         **v0.Structure(
                             source="foo",
                             id="1",
@@ -46,6 +47,7 @@ def dataset_path(structures_df, services_df, tmpdir):
                         "description": None,
                         "frais_v1": "payant",
                         "frais_precisions": "100 balles et un mars",
+                        "horaires_accueil": "Mon-Fri 9:00-17:00",
                         "lien_mobilisation": None,
                         "mobilisable_par": None,
                         "mobilisation_precisions": None,

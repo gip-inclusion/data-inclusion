@@ -133,6 +133,7 @@ SELECT
     services.prise_rdv                                                                                        AS "prise_rdv",
     COALESCE(valid_prise_rdv.url, valid_formulaire_en_ligne.url, valid_page_web.url)                          AS "lien_mobilisation",
     services.recurrence                                                                                       AS "recurrence",
+    services.recurrence                                                                                       AS "horaires_accueil",
     services.source                                                                                           AS "source",
     services.structure_id                                                                                     AS "structure_id",
     services.zone_diffusion_type                                                                              AS "zone_diffusion_type",
