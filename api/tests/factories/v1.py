@@ -105,15 +105,15 @@ class ServiceFactory(factory.alchemy.SQLAlchemyModelFactory):
         getter=lambda v: [v.value],
     )
     frais_autres = factory.Faker("text", max_nb_chars=20, locale="fr_FR")
-    profils = factory.Iterator(
+    publics = factory.Iterator(
         [
-            v1.Profil.FEMMES,
-            v1.Profil.JEUNES_16_26,
-            v1.Profil.SENIORS_65,
+            v1.Public.FEMMES,
+            v1.Public.JEUNES,
+            v1.Public.SENIORS,
         ],
         getter=lambda v: [v.value],
     )
-    profils_precisions = factory.Faker("text", max_nb_chars=20, locale="fr_FR")
+    publics_precisions = factory.Faker("text", max_nb_chars=20, locale="fr_FR")
     pre_requis = []
     justificatifs = []
     commune = factory.Faker("city", locale="fr_FR")

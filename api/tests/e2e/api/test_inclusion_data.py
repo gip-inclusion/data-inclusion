@@ -353,8 +353,8 @@ def test_list_services_unauthenticated(api_client, schema_version):
                     description="""Lorem ipsum dolor sit amet, consectetur adipiscing
                     elit, sed do eiusmod tempor incididunt ut labore et dolore magna
                     aliqua.""",
-                    profils=["femmes"],
-                    profils_precisions="Femme en situation d'insertion",
+                    publics=["femmes"],
+                    publics_precisions="Femme en situation d'insertion",
                     recurrence=None,
                     score_qualite=0.5,
                     source="dora",
@@ -402,10 +402,12 @@ def test_list_services_all(api_client, db_session, url, snapshot, instances):
 )
 @pytest.mark.with_token
 def test_can_filter_resources_by_profils_precisions(
-    api_client, profils_precisions, input, found, url, service_factory
+    api_client, profils_precisions, input, found, url, service_factory, publics_param
 ):
-    resource = service_factory(profils=None, profils_precisions=profils_precisions)
-    service_factory(profils=None, profils_precisions="tests")
+    resource = service_factory(
+        **{publics_param: None, f"{publics_param}_precisions": profils_precisions}
+    )
+    service_factory(**{publics_param: None, f"{publics_param}_precisions": "tests"})
 
     response = api_client.get(url, params={"recherche_public": input})
 
@@ -418,7 +420,7 @@ def test_can_filter_resources_by_profils_precisions(
         assert_paginated_response_data(resp_data, total=0)
 
 
-@pytest.mark.parametrize("schema_version", ["v0", "v1"])
+@pytest.mark.parametrize("schema_version", ["v0"])
 @pytest.mark.parametrize("path", ["/services", "/search/services"])
 @pytest.mark.parametrize(
     "profils,input,found",
@@ -434,11 +436,46 @@ def test_can_filter_resources_by_profils_precisions(
     ],
 )
 @pytest.mark.with_token
-def test_can_filter_resources_by_profils_precisions_with_only_profils_data(
-    api_client, profils, input, found, url, service_factory
+def test_can_filter_resources_by_profils_precisions_with_only_profils_data_v0(
+    api_client, profils, input, found, url
 ):
-    resource = service_factory(profils=profils, profils_precisions="")
-    service_factory(profils=[v0.Profil.RETRAITES], profils_precisions="")
+    resource = v0_factories.ServiceFactory(profils=profils, profils_precisions="")
+    v0_factories.ServiceFactory(
+        profils=[v0.Profil.ETUDIANTS.value], profils_precisions=""
+    )
+
+    response = api_client.get(url, params={"recherche_public": input})
+
+    assert response.status_code == 200
+    resp_data = response.json()
+    if found:
+        assert_paginated_response_data(resp_data, total=1)
+        assert list_resources_data(resp_data)[0]["id"] in [resource.id]
+    else:
+        assert_paginated_response_data(resp_data, total=0)
+
+
+@pytest.mark.parametrize("schema_version", ["v1"])
+@pytest.mark.parametrize("path", ["/services", "/search/services"])
+@pytest.mark.parametrize(
+    "profils,input,found",
+    [
+        ([v1.Public.FEMMES.value], "femme", True),
+        ([v1.Public.JEUNES.value], "jeune", True),
+        ([v1.Public.FEMMES.value], "jeune", False),
+        (
+            [v1.Public.PERSONNES_EN_SITUATION_DE_HANDICAP.value],
+            "handicap jeune difficulte",
+            True,
+        ),
+    ],
+)
+@pytest.mark.with_token
+def test_can_filter_resources_by_profils_precisions_with_only_profils_data_v1(
+    api_client, profils, input, found, url
+):
+    resource = v1_factories.ServiceFactory(publics=profils, publics_precisions="")
+    v1_factories.ServiceFactory(publics=[v1.Public.ETUDIANTS], publics_precisions="")
 
     response = api_client.get(url, params={"recherche_public": input})
 
@@ -629,19 +666,24 @@ def test_can_filter_services_by_profils(
     api_client,
     url,
     service_factory,
+    publics_param,
 ):
-    service_1 = service_factory(profils=[v0.Profil.FEMMES.value])
-    service_2 = service_factory(profils=[v0.Profil.JEUNES_16_26.value])
-    service_factory(profils=[v0.Profil.ADULTES.value])
-    service_factory(profils=[])
-    service_factory(profils=None)
+    # In this test, as in several others, we use common values between v0.Profil and
+    # v1.Public to avoid duplicating the test altogether/making even more parameters.
+    service_1 = service_factory(**{publics_param: [v0.Profil.FEMMES.value]})
+    service_2 = service_factory(**{publics_param: [v0.Profil.JEUNES.value]})
+    service_factory(
+        **{publics_param: [v0.Profil.PERSONNES_EN_SITUATION_DE_HANDICAP.value]}
+    )
+    service_factory(**{publics_param: []})
+    service_factory(**{publics_param: None})
 
     response = api_client.get(
         url,
         params={
-            "profils": [
+            publics_param: [
                 v0.Profil.FEMMES.value,
-                v0.Profil.JEUNES_16_26.value,
+                v0.Profil.JEUNES.value,
             ],
         },
     )
@@ -657,7 +699,7 @@ def test_can_filter_services_by_profils(
     response = api_client.get(
         url,
         params={
-            "profils": v0.Profil.BENEFICIAIRES_RSA.value,
+            publics_param: v0.Profil.ETUDIANTS.value,
         },
     )
     assert_paginated_response_data(response.json(), total=0)

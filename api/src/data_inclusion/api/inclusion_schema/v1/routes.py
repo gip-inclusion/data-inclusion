@@ -23,7 +23,7 @@ for name, model, summary in [
         v1.PersonneMobilisatrice,
         "Récupérer le référentiel des personnes mobilisatrices",
     ),
-    ("profils", v1.Profil, "Récupérer le référentiel des profils de publics"),
+    ("publics", v1.Public, "Récupérer le référentiel des publics"),
     ("thematiques", v1.Thematique, "Récupérer le référentiel des thématiques"),
     (
         "typologies-services",
