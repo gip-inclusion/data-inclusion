@@ -59,6 +59,7 @@ final AS (
         )                                                                                           AS "presentation_resume",
         NULL                                                                                        AS "presentation_detail",
         NULL                                                                                        AS "prise_rdv",
+        NULL                                                                                        AS "lien_mobilisation",
         CAST(NULL AS TEXT [])                                                                       AS "profils",
         LEFT(garages.criteres_eligibilite_raw, 500)                                                 AS "profils_precisions",
         NULL                                                                                        AS "recurrence",

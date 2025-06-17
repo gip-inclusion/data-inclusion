@@ -47,6 +47,7 @@ final AS (
             ELSE LEFT(services.presentation_resume, 279) || '…'
         END                                              AS "presentation_resume",
         services.prise_rdv                               AS "prise_rdv",
+        NULL                                             AS "lien_mobilisation",
         services.profils                                 AS "profils",
         NULL                                             AS "profils_precisions",
         services.pre_requis                              AS "pre_requis",

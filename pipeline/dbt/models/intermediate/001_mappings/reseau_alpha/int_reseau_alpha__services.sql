@@ -10,6 +10,7 @@ final AS (
         NULL                                                                   AS "frais_autres",
         formations.nom                                                         AS "nom",
         NULL                                                                   AS "prise_rdv",
+        NULL                                                                   AS "lien_mobilisation",
         formations.content__lieux_et_horaires_formation__horaires              AS "recurrence",
         formations._di_source_id                                               AS "source",
         formations.structure_id                                                AS "structure_id",

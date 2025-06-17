@@ -220,6 +220,8 @@ models:
         data_type: text
       - name: date_maj
         data_type: date
+      - name: lien_mobilisation
+        data_type: text
       - name: mobilisable_par
         data_type: text[]
       - name: mobilisation_precisions

@@ -66,17 +66,25 @@ zones_diffusion AS (
         ON services._di_adresse_surrogate_id = adresses._di_surrogate_id
     LEFT JOIN departements
         ON adresses.code_departement = departements.code
+),
+
+valid_site_web AS (
+    SELECT
+        input_url,
+        "url"
+    FROM {{ ref('int__urls') }}
+    WHERE status_code > 0
 )
 
 SELECT
     services._di_surrogate_id                                                                                 AS "_di_surrogate_id",
     services._di_structure_surrogate_id                                                                       AS "_di_structure_surrogate_id",
-    services.contact_public                                                                                   AS "contact_public",
     services.formulaire_en_ligne                                                                              AS "formulaire_en_ligne",
     services.frais_autres                                                                                     AS "frais_autres",
     services.justificatifs                                                                                    AS "justificatifs",
     services.presentation_resume                                                                              AS "presentation_resume",
     services.prise_rdv                                                                                        AS "prise_rdv",
+    COALESCE(valid_prise_rdv.url, valid_formulaire_en_ligne.url, valid_page_web.url)                          AS "lien_mobilisation",
     services.recurrence                                                                                       AS "recurrence",
     services.source                                                                                           AS "source",
     services.structure_id                                                                                     AS "structure_id",
@@ -173,3 +181,9 @@ LEFT JOIN contacts
     ON services._di_surrogate_id = contacts._di_surrogate_id
 LEFT JOIN adresses_with_code_departement AS adresses
     ON services._di_adresse_surrogate_id = adresses._di_surrogate_id
+LEFT JOIN valid_site_web AS valid_prise_rdv
+    ON services.prise_rdv = valid_prise_rdv.input_url
+LEFT JOIN valid_site_web AS valid_formulaire_en_ligne
+    ON services.formulaire_en_ligne = valid_formulaire_en_ligne.input_url
+LEFT JOIN valid_site_web AS valid_page_web
+    ON services.page_web = valid_page_web.input_url

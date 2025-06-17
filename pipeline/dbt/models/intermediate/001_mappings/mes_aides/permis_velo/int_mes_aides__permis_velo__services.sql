@@ -183,6 +183,7 @@ final AS (
         || COALESCE(E'\n\n' || permis_velo.bon_a_savoir, '')
         || COALESCE(E'\n\n' || permis_velo.modalite_versement, '')         AS "presentation_detail",
         NULL                                                               AS "prise_rdv",
+        NULL                                                               AS "lien_mobilisation",
         CAST(NULL AS TEXT [])                                              AS "profils",
         LEFT(permis_velo.autres_conditions, 500)                           AS "profils_precisions",
         NULL                                                               AS "recurrence",

@@ -26,6 +26,7 @@ final AS (
         structures.id                                                                                  AS "adresse_id",
         services.nom                                                                                   AS "nom",
         services.prise_rdv                                                                             AS "prise_rdv",
+        NULL                                                                                           AS "lien_mobilisation",
         services.frais                                                                                 AS "frais",
         services.profils                                                                               AS "profils",
         NULL                                                                                           AS "profils_precisions",

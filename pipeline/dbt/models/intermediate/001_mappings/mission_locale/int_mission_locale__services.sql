@@ -49,6 +49,7 @@ final AS (
         offres.presentation                                                       AS "presentation_detail",
         offres.presentation                                                       AS "presentation_resume",
         NULL                                                                      AS "prise_rdv",
+        NULL                                                                      AS "lien_mobilisation",
         ARRAY(
             SELECT mapping_profils.profil_di
             FROM offres__liste_des_profils

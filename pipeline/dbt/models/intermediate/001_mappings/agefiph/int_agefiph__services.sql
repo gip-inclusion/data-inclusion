@@ -95,6 +95,7 @@ final AS (
             ELSE LEFT(services.attributes__field_solution_detail__processed, 279) || '…'
         END                                                          AS "presentation_resume",
         NULL                                                         AS "prise_rdv",
+        NULL                                                         AS "lien_mobilisation",
         NULL                                                         AS "recurrence",
         services._di_source_id                                       AS "source",
         structures.id                                                AS "structure_id",
