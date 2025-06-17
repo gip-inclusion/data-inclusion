@@ -423,7 +423,7 @@ requires-dist = [
     { name = "certifi", specifier = ">=2025.1.31" },
     { name = "click", specifier = ">=8.1.8" },
     { name = "cryptography", specifier = ">=44.0.2" },
-    { name = "data-inclusion-schema", git = "https://github.com/gip-inclusion/data-inclusion-schema.git?rev=vmttn%2Ffeat%2Fv1-description" },
+    { name = "data-inclusion-schema", git = "https://github.com/gip-inclusion/data-inclusion-schema.git?rev=da8dfe11b3768843cdd9cfafcf4a27848acab69a" },
     { name = "fastapi", specifier = ">=0.115.12" },
     { name = "fastapi-pagination", specifier = ">=0.12.34" },
     { name = "furl", specifier = ">=2.1.4" },
@@ -470,7 +470,7 @@ test = [
 [[package]]
 name = "data-inclusion-schema"
 version = "1.0.0a2"
-source = { git = "https://github.com/gip-inclusion/data-inclusion-schema.git?rev=vmttn%2Ffeat%2Fv1-description#84b7dde0f59ed138d78757c61afab48833ffcdad" }
+source = { git = "https://github.com/gip-inclusion/data-inclusion-schema.git?rev=da8dfe11b3768843cdd9cfafcf4a27848acab69a#da8dfe11b3768843cdd9cfafcf4a27848acab69a" }
 dependencies = [
     { name = "pendulum" },
     { name = "pydantic", extra = ["email"] },

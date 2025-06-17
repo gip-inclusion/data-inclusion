@@ -13,7 +13,7 @@ dependencies = [
     "certifi>=2025.1.31",
     "click>=8.1.8",
     "cryptography>=44.0.2",
-    "data-inclusion-schema@git+https://github.com/gip-inclusion/data-inclusion-schema.git@84b7dde0f59ed138d78757c61afab48833ffcdad",
+    "data-inclusion-schema@git+https://github.com/gip-inclusion/data-inclusion-schema.git@da8dfe11b3768843cdd9cfafcf4a27848acab69a",
     "fastapi>=0.115.12",
     "fastapi-pagination>=0.12.34",
     "furl>=2.1.4",
@@ -101,4 +101,4 @@ markers = '''
 testpaths = "tests"
 
 [tool.uv.sources]
-data-inclusion-schema = { git = "https://github.com/gip-inclusion/data-inclusion-schema.git", rev = "vmttn/feat/v1-description" }
+data-inclusion-schema = { git = "https://github.com/gip-inclusion/data-inclusion-schema.git", rev = "da8dfe11b3768843cdd9cfafcf4a27848acab69a" }
