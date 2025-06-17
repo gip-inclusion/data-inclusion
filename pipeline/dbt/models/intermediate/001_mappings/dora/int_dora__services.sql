@@ -40,6 +40,7 @@ final AS (
         services.presentation_resume                       AS "presentation_resume",
         services.presentation_detail                       AS "presentation_detail",
         services.prise_rdv                                 AS "prise_rdv",
+        NULL                                               AS "lien_mobilisation",
         CAST(ARRAY(
             SELECT di_profil_by_dora_profil.di_profil
             FROM di_profil_by_dora_profil

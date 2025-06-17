@@ -31,6 +31,7 @@ final AS (
         services.presentation_detail                     AS "presentation_detail",
         services.presentation_resume                     AS "presentation_resume",
         services.prise_rdv                               AS "prise_rdv",
+        NULL                                             AS "lien_mobilisation",
         services.profils                                 AS "profils",
         NULL                                             AS "profils_precisions",
         services.pre_requis                              AS "pre_requis",

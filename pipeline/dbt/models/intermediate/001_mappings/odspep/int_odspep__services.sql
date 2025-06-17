@@ -22,6 +22,7 @@ final AS (
         'odspep'                                        AS "source",
         CAST(NULL AS TEXT [])                           AS "types",
         NULL                                            AS "prise_rdv",
+        NULL                                            AS "lien_mobilisation",
         CAST(NULL AS TEXT [])                           AS "frais",
         NULL                                            AS "frais_autres",
         CAST(NULL AS TEXT [])                           AS "pre_requis",

@@ -112,6 +112,7 @@ final AS (
             ELSE ARRAY[mapping_types.di_type]
         END                                               AS "types",
         NULL                                              AS "prise_rdv",
+        NULL                                              AS "lien_mobilisation",
         CASE
             WHEN lieux.publics__accueil IN (0, 1) THEN ARRAY_APPEND(profils.profils, 'tous-publics')
             ELSE profils.profils
@@ -121,7 +122,6 @@ final AS (
         CAST(NULL AS TEXT [])                             AS "justificatifs",
         filtered_phones.phone_number                      AS "telephone",
         lieux.entity_mail                                 AS "courriel",
-        CAST(NULL AS BOOLEAN)                             AS "contact_public",
         NULL                                              AS "contact_nom_prenom",
         open_services.updated_at                          AS "date_maj",
         NULL                                              AS "page_web",

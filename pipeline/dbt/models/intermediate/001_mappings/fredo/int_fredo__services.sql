@@ -136,6 +136,7 @@ final AS (
         fredo_structures.id                                                                   AS "adresse_id",
         thematiques.thematiques                                                               AS "thematiques",
         NULL                                                                                  AS "prise_rdv",
+        NULL                                                                                  AS "lien_mobilisation",
         fredo_structures.site_web                                                             AS "page_web",
         profils.profils                                                                       AS "profils",
         LEFT(profils.profils_precisions, 500)                                                 AS "profils_precisions",

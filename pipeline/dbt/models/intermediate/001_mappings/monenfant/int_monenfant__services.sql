@@ -22,6 +22,7 @@ final AS (
         structure_id                                                                                                AS "id",
         structure_id                                                                                                AS "adresse_id",
         NULL                                                                                                        AS "prise_rdv",
+        NULL                                                                                                        AS "lien_mobilisation",
         description__modalites_tarifaires                                                                           AS "frais_autres",
         ARRAY['familles-enfants']                                                                                   AS "profils",
         NULL                                                                                                        AS "profils_precisions",
