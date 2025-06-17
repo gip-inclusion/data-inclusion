@@ -83,6 +83,15 @@ ProfilsFilter = Annotated[
     ),
 ]
 
+PublicsFilter = Annotated[
+    Optional[list[S]],
+    fastapi.Query(
+        description="""Une liste de publics.
+                Chaque résultat renvoyé a (au moins) un public dans cette liste.
+            """
+    ),
+]
+
 SuspendusFilter = Annotated[
     Optional[bool],
     fastapi.Query(include_in_schema=False),
