@@ -3,6 +3,10 @@ WITH final AS (
     FROM {{ ref('int__union_structures') }}
     WHERE site_web IS NOT NULL
     UNION
+    SELECT DISTINCT accessibilite AS "url"
+    FROM {{ ref('int__union_structures') }}
+    WHERE accessibilite IS NOT NULL
+    UNION
     SELECT DISTINCT prise_rdv AS "url"
     FROM {{ ref('int__union_services') }}
     WHERE prise_rdv IS NOT NULL
