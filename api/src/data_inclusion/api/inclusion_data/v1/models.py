@@ -36,7 +36,9 @@ class Structure(HasAddress, Base):
     accessibilite_lieu: Mapped[str | None] = mapped_column("accessibilite")
     courriel: Mapped[str | None]
     date_maj: Mapped[date | None]
-    horaires_ouverture: Mapped[str | None]
+    # FIXME(vperron) : for now this is not validated against OSM opening hours format
+    # see https://pypi.org/project/opening-hours-py/ when we stop using pl/Python
+    horaires_accueil: Mapped[str | None]
     id: Mapped[str]
     labels_autres: Mapped[list[str] | None]
     labels_nationaux: Mapped[list[str] | None]
@@ -95,7 +97,7 @@ class Service(HasAddress, Base):
     frais_precisions: Mapped[str | None]
     # FIXME(vperron) : for now this is not validated against OSM opening hours format
     # see https://pypi.org/project/opening-hours-py/ when we stop using pl/Python
-    horaires_accueil: Mapped[str | None] = mapped_column("recurrence")
+    horaires_accueil: Mapped[str | None]
     id: Mapped[str]
     modes_accueil: Mapped[list[str] | None]
     modes_mobilisation: Mapped[list[str] | None]
