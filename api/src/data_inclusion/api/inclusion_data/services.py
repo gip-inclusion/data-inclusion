@@ -191,6 +191,19 @@ class ServiceLayer[
                 all_thematiques.update(group)
         return list(all_thematiques)
 
+    def _filter_array_field(self, query, model, field_name, values):
+        filter_stmt = f"""\
+        EXISTS(
+            SELECT
+            FROM unnest({model.__tablename__}.{field_name}) {field_name}
+            WHERE {field_name} = ANY(:{field_name})
+        )
+        """
+        query = query.filter(
+            sqla.text(filter_stmt).bindparams(**{field_name: [f.value for f in values]})
+        )
+        return query
+
     def filter_services(
         self,
         query: sqla.Select,
@@ -203,8 +216,6 @@ class ServiceLayer[
         types: list[TypologieService] | None = None,
         score_qualite_minimum: float | None = None,
     ) -> sqla.Select:
-        """Common filters for services."""
-
         if sources is not None:
             query = query.filter(
                 self.models.Service.source == sqla.any_(sqla.literal(sources))
@@ -220,54 +231,23 @@ class ServiceLayer[
             )
 
         if frais is not None:
-            filter_stmt = f"""\
-            EXISTS(
-                SELECT
-                FROM unnest({self.models.Service.__tablename__}.frais) frais
-                WHERE frais = ANY(:frais)
-            )
-            """
-            query = query.filter(
-                sqla.text(filter_stmt).bindparams(frais=[f.value for f in frais])
-            )
+            query = self._filter_array_field(query, self.models.Service, "frais", frais)
 
         if profils is not None:
-            filter_stmt = f"""\
-            EXISTS(
-                SELECT
-                FROM unnest({self.models.Service.__tablename__}.profils) profils
-                WHERE profils = ANY(:profils)
-            )
-            """
-            query = query.filter(
-                sqla.text(filter_stmt).bindparams(profils=[p.value for p in profils])
+            query = self._filter_array_field(
+                query, self.models.Service, "profils", profils
             )
 
         if modes_accueil is not None:
-            filter_stmt = f"""\
-            EXISTS(
-                SELECT
-                FROM unnest({self.models.Service.__tablename__}.modes_accueil) modes_accueil
-                WHERE modes_accueil = ANY(:modes_accueil)
-            )
-            """  # noqa: E501
-            query = query.filter(
-                sqla.text(filter_stmt).bindparams(
-                    modes_accueil=[m.value for m in modes_accueil]
-                )
+            query = self._filter_array_field(
+                query,
+                self.models.Service,
+                "modes_accueil",
+                modes_accueil,
             )
 
         if types is not None:
-            filter_stmt = f"""\
-            EXISTS(
-                SELECT
-                FROM unnest({self.models.Service.__tablename__}.types) types
-                WHERE types = ANY(:types)
-            )
-            """
-            query = query.filter(
-                sqla.text(filter_stmt).bindparams(types=[t.value for t in types])
-            )
+            query = self._filter_array_field(query, self.models.Service, "types", types)
 
         if score_qualite_minimum is not None:
             query = query.filter(
