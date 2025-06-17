@@ -70,7 +70,7 @@ def test_list_structures_unauthenticated(api_client, schema_version):
             "v1",
             models_v1.Structure(
                 _di_surrogate_id="04cfed4d-d3f7-4f9f-ad97-64bb6bbd7c96",
-                accessibilite="https://acceslibre.beta.gouv.fr/app/kitchen-amount/",
+                accessibilite_lieu="https://acceslibre.beta.gouv.fr/app/kitchen-amount/",
                 adresse="49, avenue de Pichon",
                 code_insee="59350",
                 code_postal="46873",
@@ -300,7 +300,7 @@ def test_list_services_unauthenticated(api_client, schema_version):
             [
                 models_v1.Structure(
                     _di_surrogate_id="04cfed4d-d3f7-4f9f-ad97-64bb6bbd7c96",
-                    accessibilite="https://acceslibre.beta.gouv.fr/app/kitchen-amount/",
+                    accessibilite_lieu="https://acceslibre.beta.gouv.fr/app/kitchen-amount/",
                     adresse="49, avenue de Pichon",
                     code_insee="59350",
                     code_postal="46873",

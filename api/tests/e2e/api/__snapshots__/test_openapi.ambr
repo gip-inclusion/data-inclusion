@@ -3010,16 +3010,23 @@
         },
         "data_inclusion__api__inclusion_data__v1__schemas__BaseStructure": {
           "properties": {
-            "accessibilite": {
+            "accessibilite_lieu": {
               "anyOf": [
                 {
+                  "format": "uri",
+                  "maxLength": 2083,
+                  "minLength": 1,
                   "type": "string"
                 },
                 {
                   "type": "null"
                 }
               ],
-              "title": "Accessibilite"
+              "description": "Lien pour connaître le niveau d’accessibilité de la structure si elle accueille du public.\n\nSi la source ne nous fournit pas de lien, nous tentons de récupérer automatiquement les informations sur Acceslibre, la plateforme collaborative de l’accessibilité.",
+              "examples": [
+                "https://acceslibre.beta.gouv.fr/app/17-la-greve-sur-mignon/a/mairie/erp/mairie-la-greve-sur-mignon/"
+              ],
+              "title": "Accessibilité du lieu"
             },
             "adresse": {
               "anyOf": [
@@ -3757,16 +3764,23 @@
         },
         "data_inclusion__api__inclusion_data__v1__schemas__DetailedStructure": {
           "properties": {
-            "accessibilite": {
+            "accessibilite_lieu": {
               "anyOf": [
                 {
+                  "format": "uri",
+                  "maxLength": 2083,
+                  "minLength": 1,
                   "type": "string"
                 },
                 {
                   "type": "null"
                 }
               ],
-              "title": "Accessibilite"
+              "description": "Lien pour connaître le niveau d’accessibilité de la structure si elle accueille du public.\n\nSi la source ne nous fournit pas de lien, nous tentons de récupérer automatiquement les informations sur Acceslibre, la plateforme collaborative de l’accessibilité.",
+              "examples": [
+                "https://acceslibre.beta.gouv.fr/app/17-la-greve-sur-mignon/a/mairie/erp/mairie-la-greve-sur-mignon/"
+              ],
+              "title": "Accessibilité du lieu"
             },
             "adresse": {
               "anyOf": [
@@ -4033,16 +4047,23 @@
         },
         "data_inclusion__api__inclusion_data__v1__schemas__ListedStructure": {
           "properties": {
-            "accessibilite": {
+            "accessibilite_lieu": {
               "anyOf": [
                 {
+                  "format": "uri",
+                  "maxLength": 2083,
+                  "minLength": 1,
                   "type": "string"
                 },
                 {
                   "type": "null"
                 }
               ],
-              "title": "Accessibilite"
+              "description": "Lien pour connaître le niveau d’accessibilité de la structure si elle accueille du public.\n\nSi la source ne nous fournit pas de lien, nous tentons de récupérer automatiquement les informations sur Acceslibre, la plateforme collaborative de l’accessibilité.",
+              "examples": [
+                "https://acceslibre.beta.gouv.fr/app/17-la-greve-sur-mignon/a/mairie/erp/mairie-la-greve-sur-mignon/"
+              ],
+              "title": "Accessibilité du lieu"
             },
             "adresse": {
               "anyOf": [
@@ -5545,7 +5566,7 @@
         },
         "data_inclusion__schema__v1__structures__Structure": {
           "properties": {
-            "accessibilite": {
+            "accessibilite_lieu": {
               "anyOf": [
                 {
                   "format": "uri",
@@ -5557,7 +5578,11 @@
                   "type": "null"
                 }
               ],
-              "title": "Accessibilite"
+              "description": "Lien pour connaître le niveau d’accessibilité de la structure si elle accueille du public.\n\nSi la source ne nous fournit pas de lien, nous tentons de récupérer automatiquement les informations sur Acceslibre, la plateforme collaborative de l’accessibilité.",
+              "examples": [
+                "https://acceslibre.beta.gouv.fr/app/17-la-greve-sur-mignon/a/mairie/erp/mairie-la-greve-sur-mignon/"
+              ],
+              "title": "Accessibilité du lieu"
             },
             "adresse": {
               "anyOf": [

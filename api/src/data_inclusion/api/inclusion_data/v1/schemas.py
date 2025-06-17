@@ -36,7 +36,6 @@ class BaseStructure(schema.Structure):
 
     # Dont use pydantic's `HttpUrl`, because it would likely trigger validation errors
     site_web: str | None = None
-    accessibilite: str | None = None
 
 
 class DetailedService(Service):

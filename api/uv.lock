@@ -470,7 +470,7 @@ test = [
 [[package]]
 name = "data-inclusion-schema"
 version = "1.0.0a2"
-source = { git = "https://github.com/gip-inclusion/data-inclusion-schema.git?rev=vmttn%2Ffeat%2Fv1-description#9f088933c264290f92cff626512e2b7ca23ed444" }
+source = { git = "https://github.com/gip-inclusion/data-inclusion-schema.git?rev=vmttn%2Ffeat%2Fv1-description#84b7dde0f59ed138d78757c61afab48833ffcdad" }
 dependencies = [
     { name = "pendulum" },
     { name = "pydantic", extra = ["email"] },
