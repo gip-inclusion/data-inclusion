@@ -9,6 +9,13 @@ def url(schema_version, path):
 
 
 @pytest.fixture
+def publics_param(schema_version):
+    if schema_version == "v0":
+        return "profils"
+    return "publics"
+
+
+@pytest.fixture
 def structure_factory(schema_version):
     return (
         factories.v0.StructureFactory

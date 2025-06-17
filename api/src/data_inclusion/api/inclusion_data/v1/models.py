@@ -102,20 +102,20 @@ class Service(HasAddress, Base):
     nom: Mapped[str]
     pre_requis: Mapped[list[str] | None]
     description: Mapped[str | None]
-    profils: Mapped[list[str] | None]
-    profils_precisions: Mapped[str | None]
+    publics: Mapped[list[str] | None]
+    publics_precisions: Mapped[str | None]
     # generate_profils_precisions is a function that generates
-    # a TSVECTOR from profils_precisions and profils
+    # a TSVECTOR from publics_precisions and publics.
     # cf: 20250107_172223_c947102bb23f_add_profils_autres_field_in_service.py
-    searchable_index_profils_precisions: Mapped[str | None] = mapped_column(
+    searchable_index_publics_precisions: Mapped[str | None] = mapped_column(
         TSVECTOR,
         Computed(
-            "generate_profils_precisions(profils_precisions, profils)", persisted=True
+            "generate_profils_precisions(publics_precisions, publics)", persisted=True
         ),
     )
-    searchable_index_profils: Mapped[str | None] = mapped_column(
+    searchable_index_publics: Mapped[str | None] = mapped_column(
         TSVECTOR,
-        Computed("generate_profils(profils)", persisted=True),
+        Computed("generate_profils(publics)", persisted=True),
     )
     recurrence: Mapped[str | None]
     source: Mapped[str]
@@ -142,8 +142,8 @@ class Service(HasAddress, Base):
             sqla.text("ST_MakePoint(longitude, latitude)::geography(geometry, 4326)"),
             postgresql_using="gist",
         ),
-        sqla.Index(None, "searchable_index_profils", postgresql_using="gin"),
-        sqla.Index(None, "searchable_index_profils_precisions", postgresql_using="gin"),
+        sqla.Index(None, "searchable_index_publics", postgresql_using="gin"),
+        sqla.Index(None, "searchable_index_publics_precisions", postgresql_using="gin"),
     )
 
     def __repr__(self) -> str:
