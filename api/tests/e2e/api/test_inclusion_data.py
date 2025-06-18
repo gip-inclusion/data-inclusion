@@ -7,7 +7,9 @@ from data_inclusion.api.decoupage_administratif.constants import RegionEnum
 from data_inclusion.api.inclusion_data.v0 import models as models_v0
 from data_inclusion.api.inclusion_data.v1 import models as models_v1
 from data_inclusion.api.utils import soliguide
-from data_inclusion.schema import v0
+from data_inclusion.schema import v0, v1
+
+from ...factories import v0 as v0_factories, v1 as v1_factories
 
 DUNKERQUE = {"code_insee": "59183", "latitude": 51.0361, "longitude": 2.3770}
 HAZEBROUCK = {"code_insee": "59295", "latitude": 50.7262, "longitude": 2.5387}
@@ -337,8 +339,8 @@ def test_list_services_unauthenticated(api_client, schema_version):
                     contact_nom_prenom="Thibaut de Michaud",
                     courriel="michelgerard@example.net",
                     date_maj="2023-01-01",
-                    frais_autres="Camarade il.",
-                    frais=["gratuit"],
+                    frais_precisions="Camarade il.",
+                    frais="gratuit",
                     id="be-water-scene-wind",
                     justificatifs=[],
                     latitude=-77.857573,
@@ -763,12 +765,12 @@ def test_list_services_by_score_qualite(api_client, url, service_factory):
 
 
 @pytest.mark.with_token
-@pytest.mark.parametrize("schema_version", ["v0", "v1"])
+@pytest.mark.parametrize("schema_version", ["v0"])
 @pytest.mark.parametrize("path", ["/services", "/search/services"])
-def test_can_filter_services_by_frais(api_client, url, service_factory):
-    service_1 = service_factory(frais=[v0.Frais.GRATUIT.value])
-    service_2 = service_factory(frais=[v0.Frais.ADHESION.value])
-    service_factory(frais=[v0.Frais.PASS_NUMERIQUE.value])
+def test_can_filter_services_by_frais_v0(api_client, url):
+    service_1 = v0_factories.ServiceFactory(frais=[v0.Frais.GRATUIT.value])
+    service_2 = v0_factories.ServiceFactory(frais=[v0.Frais.ADHESION.value])
+    v0_factories.ServiceFactory(frais=[v0.Frais.PASS_NUMERIQUE.value])
 
     response = api_client.get(
         url,
@@ -795,6 +797,30 @@ def test_can_filter_services_by_frais(api_client, url, service_factory):
         },
     )
     assert_paginated_response_data(response.json(), total=0)
+
+
+@pytest.mark.with_token
+@pytest.mark.parametrize("schema_version", ["v1"])
+@pytest.mark.parametrize("path", ["/services", "/search/services"])
+def test_can_filter_services_by_frais_v1(api_client, url):
+    service_1 = v1_factories.ServiceFactory(frais=v1.Frais.GRATUIT.value)
+    v1_factories.ServiceFactory(frais=v1.Frais.PAYANT.value)
+
+    response = api_client.get(
+        url,
+        params={
+            "frais": [
+                v0.Frais.GRATUIT.value,
+            ],
+        },
+    )
+
+    assert response.status_code == 200
+    resp_data = response.json()
+    assert_paginated_response_data(resp_data, total=1)
+    assert {d["id"] for d in list_resources_data(resp_data)} == {
+        service_1.id,
+    }
 
 
 @pytest.mark.with_token

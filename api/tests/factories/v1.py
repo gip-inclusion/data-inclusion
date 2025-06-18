@@ -98,13 +98,8 @@ class ServiceFactory(factory.alchemy.SQLAlchemyModelFactory):
         ],
         getter=lambda v: [v.value],
     )
-    frais = factory.Iterator(
-        [
-            v1.Frais.GRATUIT,
-        ],
-        getter=lambda v: [v.value],
-    )
-    frais_autres = factory.Faker("text", max_nb_chars=20, locale="fr_FR")
+    frais = factory.Iterator([v1.Frais.GRATUIT, v1.Frais.PAYANT])
+    frais_precisions = factory.Faker("text", max_nb_chars=20, locale="fr_FR")
     publics = factory.Iterator(
         [
             v1.Public.FEMMES,
