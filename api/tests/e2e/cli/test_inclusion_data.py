@@ -41,6 +41,8 @@ def dataset_path(structures_df, services_df, tmpdir):
                         "score_qualite_v0": 0.8,
                         "score_qualite_v1": 0.8,
                         "description": None,
+                        "frais_v1": "payant",
+                        "frais_precisions": "100 balles et un mars",
                         "lien_mobilisation": None,
                         "mobilisable_par": None,
                         "mobilisation_precisions": None,

@@ -546,7 +546,9 @@ class ServiceLayerV1(
             )
 
         if frais is not None:
-            self._filter_array_field(query, self.models.Service, "frais", frais)
+            query = query.filter(
+                self.models.Service.frais == sqla.any_(sqla.literal(frais))
+            )
 
         if profils is not None:
             query = self._filter_array_field(
