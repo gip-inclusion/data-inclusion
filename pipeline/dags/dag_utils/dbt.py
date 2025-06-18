@@ -26,7 +26,7 @@ def dbt_operator_factory(
     if dbt_vars is not None:
         dbt_vars = json.dumps(dbt_vars)
         dbt_args += f" --vars '{dbt_vars}'"
-    if Variable.get("ENVIRONMENT", None) == "prod":
+    if command in ["build", "test"] and Variable.get("ENVIRONMENT", None) == "prod":
         dbt_args += " --exclude-resource-type unit_test"
 
     return bash.BashOperator(
