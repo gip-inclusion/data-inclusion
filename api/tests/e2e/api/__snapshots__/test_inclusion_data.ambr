@@ -82,17 +82,16 @@
         "code_postal": "92950",
         "commune": "Sainte Gabriel",
         "complement_adresse": null,
+        "conditions_acces": null,
         "contact_nom_prenom": "Thibaut de Michaud",
         "courriel": "michelgerard@example.net",
         "date_maj": "2023-01-01",
         "description": "Lorem ipsum dolor sit amet, consectetur adipiscing\n                    elit, sed do eiusmod tempor incididunt ut labore et dolore magna\n                    aliqua.",
         "formulaire_en_ligne": null,
-        "frais": [
-          "gratuit"
-        ],
-        "frais_autres": "Camarade il.",
+        "frais": "gratuit",
+        "frais_precisions": "Camarade il.",
+        "horaires_accueil": null,
         "id": "be-water-scene-wind",
-        "justificatifs": [],
         "latitude": -77.857573,
         "longitude": -62.54684,
         "modes_accueil": [
@@ -109,12 +108,11 @@
         "nom": "Munoz",
         "nombre_semaines": 1,
         "page_web": "http://aubert.net/",
-        "pre_requis": [],
         "prise_rdv": "https://teixeira.fr/",
-        "profils": [
+        "publics": [
           "femmes"
         ],
-        "profils_precisions": "Femme en situation d'insertion",
+        "publics_precisions": "Femme en situation d'insertion",
         "score_qualite": 0.5,
         "source": "dora",
         "structure_id": "much-mention",
@@ -126,9 +124,7 @@
           "formation"
         ],
         "volume_horaire_hebdomadaire": 1.0,
-        "zone_diffusion_code": null,
-        "zone_diffusion_nom": null,
-        "zone_diffusion_type": null
+        "zone_eligibilite": null
       }
     ],
     "page": 1,
@@ -199,7 +195,7 @@
         "date_maj": "2023-01-01",
         "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit,\n                sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
         "doublons": [],
-        "horaires_ouverture": "Mo-Fr 10:00-20:00 \"sur rendez-vous\"; PH off",
+        "horaires_accueil": "Mo-Fr 10:00-20:00 \"sur rendez-vous\"; PH off",
         "id": "lot-kitchen-amount",
         "labels_autres": [
           "Nièvre médiation numérique"
