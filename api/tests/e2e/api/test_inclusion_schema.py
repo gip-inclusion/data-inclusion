@@ -20,23 +20,43 @@ def model(schema_version, framework):
             "modes-accueil": "ModeAccueil",
             "modes-orientation-accompagnateur": "ModeOrientationAccompagnateur",
             "modes-orientation-beneficiaire": "ModeOrientationBeneficiaire",
+            "modes-mobilisation": "ModeMobilisation",
+            "personnes-mobilisatrice": "PersonneMobilisatrice",
         }[framework],
     )
 
 
-@pytest.mark.parametrize("schema_version", ["v0", "v1"])
 @pytest.mark.parametrize(
-    "framework",
+    ("framework", "schema_version"),
     [
-        "labels-nationaux",
-        "thematiques",
-        "typologies-services",
-        "frais",
-        "profils",
-        "typologies-structures",
-        "modes-accueil",
-        "modes-orientation-accompagnateur",
-        "modes-orientation-beneficiaire",
+        *[
+            (framework, "v0")
+            for framework in [
+                "labels-nationaux",
+                "thematiques",
+                "typologies-services",
+                "frais",
+                "profils",
+                "typologies-structures",
+                "modes-accueil",
+                "modes-orientation-accompagnateur",
+                "modes-orientation-beneficiaire",
+            ]
+        ],
+        *[
+            (framework, "v1")
+            for framework in [
+                "labels-nationaux",
+                "thematiques",
+                "typologies-services",
+                "frais",
+                "profils",
+                "typologies-structures",
+                "modes-accueil",
+                "modes-mobilisation",
+                "personnes-mobilisatrice",
+            ]
+        ],
     ],
 )
 @pytest.mark.with_token
