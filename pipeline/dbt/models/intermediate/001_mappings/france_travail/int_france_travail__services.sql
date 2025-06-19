@@ -38,7 +38,11 @@ final AS (
         services.modes_orientation_beneficiaire_autres   AS "modes_orientation_beneficiaire_autres",
         services.nom                                     AS "nom",
         services.presentation_detail                     AS "presentation_detail",
-        services.presentation_resume                     AS "presentation_resume",
+        CASE
+            WHEN LENGTH(services.presentation_resume) <= 280
+                THEN services.presentation_resume
+            ELSE LEFT(services.presentation_resume, 279) || '…'
+        END                                              AS "presentation_resume",
         services.prise_rdv                               AS "prise_rdv",
         services.profils                                 AS "profils",
         NULL                                             AS "profils_precisions",
