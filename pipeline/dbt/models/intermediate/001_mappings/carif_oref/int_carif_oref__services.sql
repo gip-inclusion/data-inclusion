@@ -93,6 +93,7 @@ final AS (
             coordonnees_organisme_formateur.hash_adresse
         )                                               AS "adresse_id",
         NULL                                            AS "prise_rdv",
+        NULL                                            AS "lien_mobilisation",
         actions.detail_conditions_prise_en_charge       AS "frais_autres",
         profils.profils                                 AS "profils",
         actions.info_public_vise                        AS "profils_precisions",
@@ -166,6 +167,9 @@ final AS (
             NULL
         )                                               AS "modes_orientation_beneficiaire",
         NULL                                            AS "modes_orientation_beneficiaire_autres",
+        CAST(NULL AS TEXT [])                           AS "modes_mobilisation",
+        CAST(NULL AS TEXT [])                           AS "mobilisable_par",
+        NULL                                            AS "mobilisation_precisions",
         ARRAY[actions.conditions_specifiques]           AS "pre_requis",
         CAST(NULL AS TEXT [])                           AS "justificatifs",
         formations.intitule_formation                   AS "nom",

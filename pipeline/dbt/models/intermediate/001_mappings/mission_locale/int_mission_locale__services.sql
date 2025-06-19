@@ -40,12 +40,16 @@ final AS (
         CAST(NULL AS TEXT [])                                                     AS "modes_orientation_accompagnateur",
         NULL                                                                      AS "modes_orientation_accompagnateur_autres",
         ARRAY[offres.modes_orientation_beneficiaire]                              AS "modes_orientation_beneficiaire",
+        CAST(NULL AS TEXT [])                                                     AS "modes_mobilisation",
+        CAST(NULL AS TEXT [])                                                     AS "mobilisable_par",
+        NULL                                                                      AS "mobilisation_precisions",
         NULL                                                                      AS "modes_orientation_beneficiaire_autres",
         offres.nom_dora                                                           AS "nom",
         NULL                                                                      AS "page_web",
         offres.presentation                                                       AS "presentation_detail",
         offres.presentation                                                       AS "presentation_resume",
         NULL                                                                      AS "prise_rdv",
+        NULL                                                                      AS "lien_mobilisation",
         ARRAY(
             SELECT mapping_profils.profil_di
             FROM offres__liste_des_profils

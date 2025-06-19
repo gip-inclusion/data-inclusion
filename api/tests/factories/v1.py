@@ -46,8 +46,7 @@ class StructureFactory(factory.alchemy.SQLAlchemyModelFactory):
     telephone = "0102030405"
     courriel = factory.Faker("email", locale="fr_FR")
     site_web = factory.Faker("url", locale="fr_FR")
-    presentation_resume = factory.Faker("text", max_nb_chars=20, locale="fr_FR")
-    presentation_detail = factory.Faker("text", max_nb_chars=30, locale="fr_FR")
+    description = factory.Faker("sentence", nb_words=100, locale="fr_FR")
     source = factory.Iterator(["dora", "emplois-de-linclusion"])
     date_maj = factory.LazyFunction(lambda: date(2023, 1, 1))
     horaires_ouverture = 'Mo-Fr 10:00-20:00 "sur rendez-vous"; PH off'
@@ -83,8 +82,7 @@ class ServiceFactory(factory.alchemy.SQLAlchemyModelFactory):
     structure_id = factory.SelfAttribute("structure.id")
     source = factory.Iterator(["dora", "emplois-de-linclusion"])
     nom = factory.Faker("company", locale="fr_FR")
-    presentation_resume = factory.Faker("text", max_nb_chars=20, locale="fr_FR")
-    presentation_detail = factory.Faker("text", max_nb_chars=20, locale="fr_FR")
+    description = factory.Faker("sentence", nb_words=100, locale="fr_FR")
     types = factory.Iterator(
         [
             v1.TypologieService.FORMATION,
@@ -100,7 +98,6 @@ class ServiceFactory(factory.alchemy.SQLAlchemyModelFactory):
         ],
         getter=lambda v: [v.value],
     )
-    prise_rdv = factory.Faker("url", locale="fr_FR")
     frais = factory.Iterator(
         [
             v1.Frais.GRATUIT,
@@ -108,7 +105,6 @@ class ServiceFactory(factory.alchemy.SQLAlchemyModelFactory):
         getter=lambda v: [v.value],
     )
     frais_autres = factory.Faker("text", max_nb_chars=20, locale="fr_FR")
-    page_web = factory.Faker("url", locale="fr_FR")
     profils = factory.Iterator(
         [
             v1.Profil.FEMMES,
@@ -120,7 +116,6 @@ class ServiceFactory(factory.alchemy.SQLAlchemyModelFactory):
     profils_precisions = factory.Faker("text", max_nb_chars=20, locale="fr_FR")
     pre_requis = []
     justificatifs = []
-    formulaire_en_ligne = None
     commune = factory.Faker("city", locale="fr_FR")
     code_postal = factory.Faker("postcode")
     code_insee = "59350"
@@ -141,22 +136,10 @@ class ServiceFactory(factory.alchemy.SQLAlchemyModelFactory):
         ],
         getter=lambda v: [v.value],
     )
-    modes_orientation_accompagnateur = factory.Iterator(
-        [
-            v1.ModeOrientationAccompagnateur.TELEPHONER,
-            v1.ModeOrientationAccompagnateur.ENVOYER_UN_MAIL,
-        ],
-        getter=lambda v: [v.value],
-    )
-    modes_orientation_accompagnateur_autres = None
-    modes_orientation_beneficiaire = factory.Iterator(
-        [
-            v1.ModeOrientationBeneficiaire.TELEPHONER,
-            v1.ModeOrientationBeneficiaire.SE_PRESENTER,
-        ],
-        getter=lambda v: [v.value],
-    )
-    modes_orientation_beneficiaire_autres = None
+    lien_mobilisation = None
+    modes_mobilisation = None
+    mobilisation_precisions = None
+    mobilisable_par = None
     zone_diffusion_type = None
     zone_diffusion_code = None
     zone_diffusion_nom = None

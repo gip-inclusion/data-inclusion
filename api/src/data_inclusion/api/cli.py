@@ -49,7 +49,11 @@ def get_path(value) -> Path:
     if value is not None and Path(value).exists():
         return Path(value).absolute()
 
-    s3fs_client = s3fs.S3FileSystem()
+    s3fs_client = s3fs.S3FileSystem(
+        endpoint_url=settings.AWS_ENDPOINT_URL,
+        key=settings.AWS_ACCESS_KEY_ID,
+        secret=settings.AWS_SECRET_ACCESS_KEY,
+    )
 
     if value is None:
         value = str(Path(settings.DATALAKE_BUCKET_NAME) / "data" / "marts")

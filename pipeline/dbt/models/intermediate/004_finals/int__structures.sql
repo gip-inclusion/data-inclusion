@@ -23,6 +23,11 @@ SELECT
     structures.labels_autres                              AS "labels_autres",
     structures.labels_nationaux                           AS "labels_nationaux",
     structures.lien_source                                AS "lien_source",
+    CASE
+        WHEN LENGTH(structures.presentation_detail) >= 2000
+            THEN LEFT(structures.presentation_detail, 1999) || '…'
+        ELSE COALESCE(structures.presentation_detail, structures.presentation_resume)
+    END                                                   AS "description",
     structures.presentation_detail                        AS "presentation_detail",
     structures.presentation_resume                        AS "presentation_resume",
     structures.rna                                        AS "rna",

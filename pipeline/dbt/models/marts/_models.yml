@@ -46,6 +46,8 @@ models:
         data_type: text
       - name: presentation_detail
         data_type: text
+      - name: description
+        data_type: text
       - name: source
         data_type: text
         constraints:
@@ -162,6 +164,8 @@ models:
         data_type: text
       - name: presentation_detail
         data_type: text
+      - name: description
+        data_type: text
       - name: types
         data_type: text[]
       - name: thematiques
@@ -216,7 +220,15 @@ models:
         data_type: text
       - name: date_maj
         data_type: date
+      - name: lien_mobilisation
+        data_type: text
+      - name: mobilisable_par
+        data_type: text[]
+      - name: mobilisation_precisions
+        data_type: text
       - name: modes_accueil
+        data_type: text[]
+      - name: modes_mobilisation
         data_type: text[]
       - name: modes_orientation_accompagnateur
         data_type: text[]

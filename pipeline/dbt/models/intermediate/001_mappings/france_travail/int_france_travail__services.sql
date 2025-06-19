@@ -36,6 +36,9 @@ final AS (
         services.modes_orientation_accompagnateur_autres AS "modes_orientation_accompagnateur_autres",
         services.modes_orientation_beneficiaire          AS "modes_orientation_beneficiaire",
         services.modes_orientation_beneficiaire_autres   AS "modes_orientation_beneficiaire_autres",
+        CAST(NULL AS TEXT [])                            AS "modes_mobilisation",
+        CAST(NULL AS TEXT [])                            AS "mobilisable_par",
+        NULL                                             AS "mobilisation_precisions",
         services.nom                                     AS "nom",
         services.presentation_detail                     AS "presentation_detail",
         CASE
@@ -44,6 +47,7 @@ final AS (
             ELSE LEFT(services.presentation_resume, 279) || '…'
         END                                              AS "presentation_resume",
         services.prise_rdv                               AS "prise_rdv",
+        NULL                                             AS "lien_mobilisation",
         services.profils                                 AS "profils",
         NULL                                             AS "profils_precisions",
         services.pre_requis                              AS "pre_requis",
