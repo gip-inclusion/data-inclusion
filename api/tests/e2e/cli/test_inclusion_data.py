@@ -39,8 +39,14 @@ def dataset_path(structures_df, services_df, tmpdir):
                         "_di_structure_surrogate_id": "foo-1",
                         "_di_surrogate_id": "foo-1",
                         "score_qualite_v0": 0.8,
+                        # NOTE(vperron): I like that we gradually add the v1 fields
+                        # here and keep the **v0.Service below to attest the presence
+                        # of the v0 fields.
                         "score_qualite_v1": 0.8,
                         "description": None,
+                        "frais_precisions": "100 balles et un mars",
+                        "publics": ["adultes"],
+                        "publics_precisions": "adultes en bonne santé",
                         **v0.Service(
                             source="foo",
                             id="1",
