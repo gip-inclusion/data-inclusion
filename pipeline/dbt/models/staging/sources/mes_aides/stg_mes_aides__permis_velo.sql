@@ -17,7 +17,7 @@ final AS (
         data #>> '{fields,Zone géographique}'                                AS "zone_geographique",
         data #>> '{fields,Démarches}'                                        AS "demarche",
         data #>> '{fields,"Modalité et versement"}'                          AS "modalite_versement",
-        data #>> '{fields,SIRET}'                                            AS "siret",
+        REPLACE(data #>> '{fields,SIRET}', ' ', '')                          AS "siret",
         data #>> '{fields,Slug Organisme}'                                   AS "slug_organisme",
         data #>> '{fields,Site}'                                             AS "site",
         data #>> '{fields,Nom Organisme}'                                    AS "nom_organisme",
