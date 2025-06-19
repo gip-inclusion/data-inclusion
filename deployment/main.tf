@@ -212,7 +212,9 @@ locals {
           "s3" : {
             "bucket_name" : "${scaleway_object_bucket.main.name}",
           }
-        }
+        },
+        # FIXME(vmttn): https://gip-inclusion.slack.com/archives/C088XSD8VNV/p1750322121003849
+        "config_kwargs" : { "request_checksum_calculation" : "when_required" }
       }
     }
   )
