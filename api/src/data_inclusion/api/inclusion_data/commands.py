@@ -120,6 +120,7 @@ def load_df_to_table(
         for c in sorted(model.__table__.columns, key=lambda c: c.name)
         # ignore server computed columns
         if c.server_default is None
+        and c.name not in ["cluster_best_duplicate", "doublons"]
     ]
 
     df = df.sort_values(by="_di_surrogate_id", ascending=True)

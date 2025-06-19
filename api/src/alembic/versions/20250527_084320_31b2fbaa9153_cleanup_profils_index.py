@@ -1,7 +1,7 @@
 """cleanup_profils_index
 
 Revision ID: 31b2fbaa9153
-Revises: 5c4953edb6bc
+Revises: 8fb6fcb65868
 Create Date: 2025-05-27 08:43:20.039264
 
 """
@@ -10,7 +10,7 @@ from alembic import op
 
 # revision identifiers, used by Alembic.
 revision = "31b2fbaa9153"
-down_revision = "5c4953edb6bc"
+down_revision = "8fb6fcb65868"
 branch_labels = None
 depends_on = None
 
@@ -21,14 +21,9 @@ def upgrade() -> None:
     op.execute("""
         DROP INDEX IF EXISTS ix_api__services_searchable_index_profils;
         DROP INDEX IF EXISTS ix_api__services_searchable_index_profils_precisions;
-        ALTER TABLE api__services DROP COLUMN searchable_index_profils;
-        ALTER TABLE api__services DROP COLUMN searchable_index_profils_precisions;
-        DROP FUNCTION IF EXISTS generate_profils;
-        DROP FUNCTION IF EXISTS generate_profils_precisions;
-        DROP FUNCTION IF EXISTS generate_profils_searchable;
     """)
     op.execute("""
-        CREATE FUNCTION generate_profils(
+        CREATE OR REPLACE FUNCTION generate_profils(
             profils TEXT[]
         )
         RETURNS TSVECTOR AS $$
@@ -41,7 +36,7 @@ def upgrade() -> None:
         $$ LANGUAGE plpgsql IMMUTABLE;
     """)
     op.execute("""
-        CREATE FUNCTION generate_profils_precisions(
+        CREATE OR REPLACE FUNCTION generate_profils_precisions(
             profils_precisions TEXT,
             profils TEXT[]
         )
@@ -56,16 +51,6 @@ def upgrade() -> None:
         END;
         $$ LANGUAGE plpgsql IMMUTABLE;
     """)
-    op.execute("""
-        ALTER TABLE api__services
-        ADD COLUMN searchable_index_profils TSVECTOR
-            GENERATED ALWAYS AS (generate_profils(profils)) STORED;
-    """)
-    op.execute("""
-        ALTER TABLE api__services
-        ADD COLUMN searchable_index_profils_precisions TSVECTOR
-            GENERATED ALWAYS AS (generate_profils_precisions(profils_precisions, profils)) STORED;
-    """)  # noqa: E501
     op.create_index(
         op.f("ix_api__services__searchable_index_profils"),
         "api__services",

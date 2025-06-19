@@ -15,9 +15,7 @@ from data_inclusion.api.decoupage_administratif.models import Commune
 class HasAddress:
     adresse: Mapped[str | None]
     complement_adresse: Mapped[str | None]
-    code_insee: Mapped[str | None] = mapped_column(
-        sqla.ForeignKey(Commune.code, ondelete="CASCADE")
-    )
+    code_insee: Mapped[str | None] = mapped_column(sqla.ForeignKey(Commune.code))
     code_postal: Mapped[str | None]
     commune: Mapped[str | None]
     longitude: Mapped[float | None]
@@ -58,8 +56,12 @@ class Structure(HasAddress, Base):
     )
     commune_: Mapped[Commune] = relationship(back_populates="structures_v0")
 
+    cluster_best_duplicate: Mapped[str | None] = mapped_column(deferred=True)
+    doublons: Mapped[list[dict] | None] = mapped_column(deferred=True)
+
     __table_args__ = (
         sqla.Index(None, "source"),
+        sqla.Index(None, "cluster_best_duplicate"),
         sqla.Index(None, "_cluster_id"),
     )
 
@@ -82,7 +84,7 @@ class Service(HasAddress, Base):
     # internal metadata
     _di_surrogate_id: Mapped[str] = mapped_column(primary_key=True)
     _di_structure_surrogate_id: Mapped[str] = mapped_column(
-        sqla.ForeignKey(Structure._di_surrogate_id, ondelete="CASCADE")
+        sqla.ForeignKey(Structure._di_surrogate_id)
     )
     structure: Mapped[Structure] = relationship(back_populates="services")
 
