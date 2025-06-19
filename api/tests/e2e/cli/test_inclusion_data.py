@@ -41,6 +41,10 @@ def dataset_path(structures_df, services_df, tmpdir):
                         "score_qualite_v0": 0.8,
                         "score_qualite_v1": 0.8,
                         "description": None,
+                        "lien_mobilisation": None,
+                        "mobilisable_par": None,
+                        "mobilisation_precisions": None,
+                        "modes_mobilisation": None,
                         **v0.Service(
                             source="foo",
                             id="1",

@@ -86,7 +86,6 @@
         "courriel": "michelgerard@example.net",
         "date_maj": "2023-01-01",
         "description": "Lorem ipsum dolor sit amet, consectetur adipiscing\n                    elit, sed do eiusmod tempor incididunt ut labore et dolore magna\n                    aliqua.",
-        "formulaire_en_ligne": null,
         "frais": [
           "gratuit"
         ],
@@ -94,23 +93,21 @@
         "id": "be-water-scene-wind",
         "justificatifs": [],
         "latitude": -77.857573,
+        "lien_mobilisation": "https://teixeira.fr/",
         "longitude": -62.54684,
+        "mobilisable_par": [
+          "usagers"
+        ],
+        "mobilisation_precisions": null,
         "modes_accueil": [
           "a-distance"
         ],
-        "modes_orientation_accompagnateur": [
+        "modes_mobilisation": [
           "telephoner"
         ],
-        "modes_orientation_accompagnateur_autres": null,
-        "modes_orientation_beneficiaire": [
-          "telephoner"
-        ],
-        "modes_orientation_beneficiaire_autres": null,
         "nom": "Munoz",
         "nombre_semaines": 1,
-        "page_web": "http://aubert.net/",
         "pre_requis": [],
-        "prise_rdv": "https://teixeira.fr/",
         "profils": [
           "femmes"
         ],

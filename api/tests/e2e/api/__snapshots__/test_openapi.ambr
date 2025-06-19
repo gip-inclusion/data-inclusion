@@ -371,6 +371,16 @@
           "title": "ModeAccueil",
           "type": "string"
         },
+        "ModeMobilisation": {
+          "enum": [
+            "envoyer-un-courriel",
+            "se-presenter",
+            "telephoner",
+            "utiliser-lien-mobilisation"
+          ],
+          "title": "ModeMobilisation",
+          "type": "string"
+        },
         "ModeOrientationAccompagnateur": {
           "enum": [
             "completer-le-formulaire-dadhesion",
@@ -393,6 +403,14 @@
             "autre"
           ],
           "title": "ModeOrientationBeneficiaire",
+          "type": "string"
+        },
+        "PersonneMobilisatrice": {
+          "enum": [
+            "usagers",
+            "professionnels"
+          ],
+          "title": "PersonneMobilisatrice",
           "type": "string"
         },
         "Profil": {
@@ -3368,17 +3386,6 @@
               "title": "Description",
               "type": "string"
             },
-            "formulaire_en_ligne": {
-              "anyOf": [
-                {
-                  "type": "string"
-                },
-                {
-                  "type": "null"
-                }
-              ],
-              "title": "Formulaire En Ligne"
-            },
             "frais": {
               "anyOf": [
                 {
@@ -3435,6 +3442,24 @@
               ],
               "title": "Latitude"
             },
+            "lien_mobilisation": {
+              "anyOf": [
+                {
+                  "format": "uri",
+                  "maxLength": 2083,
+                  "minLength": 1,
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Lien pour accéder ou mobiliser l’offre de service.",
+              "examples": [
+                "https://www.actionlogement.fr/demande-cfi"
+              ],
+              "title": "Lien Mobilisation"
+            },
             "longitude": {
               "anyOf": [
                 {
@@ -3445,6 +3470,46 @@
                 }
               ],
               "title": "Longitude"
+            },
+            "mobilisable_par": {
+              "anyOf": [
+                {
+                  "items": {
+                    "$ref": "#/components/schemas/PersonneMobilisatrice"
+                  },
+                  "minItems": 1,
+                  "type": "array",
+                  "uniqueItems": true
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Indique qui peut mobiliser le service : usagers, professionnels ou les deux.",
+              "examples": [
+                [
+                  "professionnels"
+                ],
+                [
+                  "usagers"
+                ]
+              ],
+              "title": "Mobilisable Par"
+            },
+            "mobilisation_precisions": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Précisions sur les modes de mobilisation du service.",
+              "examples": [
+                "La demande est à faire depuis l’espace personnel\n                du demandeur d’emploi, rubrique « mes aides »,\n                formulaire spécifique « Aide à la mobilité »."
+              ],
+              "title": "Mobilisation Precisions"
             },
             "modes_accueil": {
               "anyOf": [
@@ -3461,12 +3526,13 @@
               ],
               "title": "Modes Accueil"
             },
-            "modes_orientation_accompagnateur": {
+            "modes_mobilisation": {
               "anyOf": [
                 {
                   "items": {
-                    "$ref": "#/components/schemas/ModeOrientationAccompagnateur"
+                    "$ref": "#/components/schemas/ModeMobilisation"
                   },
+                  "minItems": 1,
                   "type": "array",
                   "uniqueItems": true
                 },
@@ -3474,44 +3540,11 @@
                   "type": "null"
                 }
               ],
-              "title": "Modes Orientation Accompagnateur"
-            },
-            "modes_orientation_accompagnateur_autres": {
-              "anyOf": [
-                {
-                  "type": "string"
-                },
-                {
-                  "type": "null"
-                }
+              "description": "Modes de mobilisation de l’offre de service. Les valeurs proviennent d’un référentiel disponible sur notre documentation.",
+              "examples": [
+                "envoyer-un-courriel"
               ],
-              "title": "Modes Orientation Accompagnateur Autres"
-            },
-            "modes_orientation_beneficiaire": {
-              "anyOf": [
-                {
-                  "items": {
-                    "$ref": "#/components/schemas/ModeOrientationBeneficiaire"
-                  },
-                  "type": "array",
-                  "uniqueItems": true
-                },
-                {
-                  "type": "null"
-                }
-              ],
-              "title": "Modes Orientation Beneficiaire"
-            },
-            "modes_orientation_beneficiaire_autres": {
-              "anyOf": [
-                {
-                  "type": "string"
-                },
-                {
-                  "type": "null"
-                }
-              ],
-              "title": "Modes Orientation Beneficiaire Autres"
+              "title": "Modes Mobilisation"
             },
             "nom": {
               "description": "Nom du service.\n\nChaîne de caractères entre 3 et 150 caractères, ne se terminant pas par un point.",
@@ -3539,24 +3572,6 @@
               ],
               "title": "Nombre Semaines"
             },
-            "page_web": {
-              "anyOf": [
-                {
-                  "format": "uri",
-                  "maxLength": 2083,
-                  "minLength": 1,
-                  "type": "string"
-                },
-                {
-                  "type": "null"
-                }
-              ],
-              "description": "Lien vers une page web dédiée au service sur le site web de la structure. Ce champ n’est pas destiné à recevoir un lien vers le site d’un producteur de donnée.",
-              "examples": [
-                "https://insersol.fr/biclou-atelier-reparation-participatif-solidaire/"
-              ],
-              "title": "Page Web"
-            },
             "pre_requis": {
               "anyOf": [
                 {
@@ -3571,17 +3586,6 @@
                 }
               ],
               "title": "Pre Requis"
-            },
-            "prise_rdv": {
-              "anyOf": [
-                {
-                  "type": "string"
-                },
-                {
-                  "type": "null"
-                }
-              ],
-              "title": "Prise Rdv"
             },
             "profils": {
               "anyOf": [
@@ -4408,17 +4412,6 @@
               "title": "Description",
               "type": "string"
             },
-            "formulaire_en_ligne": {
-              "anyOf": [
-                {
-                  "type": "string"
-                },
-                {
-                  "type": "null"
-                }
-              ],
-              "title": "Formulaire En Ligne"
-            },
             "frais": {
               "anyOf": [
                 {
@@ -4475,6 +4468,24 @@
               ],
               "title": "Latitude"
             },
+            "lien_mobilisation": {
+              "anyOf": [
+                {
+                  "format": "uri",
+                  "maxLength": 2083,
+                  "minLength": 1,
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Lien pour accéder ou mobiliser l’offre de service.",
+              "examples": [
+                "https://www.actionlogement.fr/demande-cfi"
+              ],
+              "title": "Lien Mobilisation"
+            },
             "longitude": {
               "anyOf": [
                 {
@@ -4485,6 +4496,46 @@
                 }
               ],
               "title": "Longitude"
+            },
+            "mobilisable_par": {
+              "anyOf": [
+                {
+                  "items": {
+                    "$ref": "#/components/schemas/PersonneMobilisatrice"
+                  },
+                  "minItems": 1,
+                  "type": "array",
+                  "uniqueItems": true
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Indique qui peut mobiliser le service : usagers, professionnels ou les deux.",
+              "examples": [
+                [
+                  "professionnels"
+                ],
+                [
+                  "usagers"
+                ]
+              ],
+              "title": "Mobilisable Par"
+            },
+            "mobilisation_precisions": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Précisions sur les modes de mobilisation du service.",
+              "examples": [
+                "La demande est à faire depuis l’espace personnel\n                du demandeur d’emploi, rubrique « mes aides »,\n                formulaire spécifique « Aide à la mobilité »."
+              ],
+              "title": "Mobilisation Precisions"
             },
             "modes_accueil": {
               "anyOf": [
@@ -4501,12 +4552,13 @@
               ],
               "title": "Modes Accueil"
             },
-            "modes_orientation_accompagnateur": {
+            "modes_mobilisation": {
               "anyOf": [
                 {
                   "items": {
-                    "$ref": "#/components/schemas/ModeOrientationAccompagnateur"
+                    "$ref": "#/components/schemas/ModeMobilisation"
                   },
+                  "minItems": 1,
                   "type": "array",
                   "uniqueItems": true
                 },
@@ -4514,44 +4566,11 @@
                   "type": "null"
                 }
               ],
-              "title": "Modes Orientation Accompagnateur"
-            },
-            "modes_orientation_accompagnateur_autres": {
-              "anyOf": [
-                {
-                  "type": "string"
-                },
-                {
-                  "type": "null"
-                }
+              "description": "Modes de mobilisation de l’offre de service. Les valeurs proviennent d’un référentiel disponible sur notre documentation.",
+              "examples": [
+                "envoyer-un-courriel"
               ],
-              "title": "Modes Orientation Accompagnateur Autres"
-            },
-            "modes_orientation_beneficiaire": {
-              "anyOf": [
-                {
-                  "items": {
-                    "$ref": "#/components/schemas/ModeOrientationBeneficiaire"
-                  },
-                  "type": "array",
-                  "uniqueItems": true
-                },
-                {
-                  "type": "null"
-                }
-              ],
-              "title": "Modes Orientation Beneficiaire"
-            },
-            "modes_orientation_beneficiaire_autres": {
-              "anyOf": [
-                {
-                  "type": "string"
-                },
-                {
-                  "type": "null"
-                }
-              ],
-              "title": "Modes Orientation Beneficiaire Autres"
+              "title": "Modes Mobilisation"
             },
             "nom": {
               "description": "Nom du service.\n\nChaîne de caractères entre 3 et 150 caractères, ne se terminant pas par un point.",
@@ -4579,24 +4598,6 @@
               ],
               "title": "Nombre Semaines"
             },
-            "page_web": {
-              "anyOf": [
-                {
-                  "format": "uri",
-                  "maxLength": 2083,
-                  "minLength": 1,
-                  "type": "string"
-                },
-                {
-                  "type": "null"
-                }
-              ],
-              "description": "Lien vers une page web dédiée au service sur le site web de la structure. Ce champ n’est pas destiné à recevoir un lien vers le site d’un producteur de donnée.",
-              "examples": [
-                "https://insersol.fr/biclou-atelier-reparation-participatif-solidaire/"
-              ],
-              "title": "Page Web"
-            },
             "pre_requis": {
               "anyOf": [
                 {
@@ -4611,17 +4612,6 @@
                 }
               ],
               "title": "Pre Requis"
-            },
-            "prise_rdv": {
-              "anyOf": [
-                {
-                  "type": "string"
-                },
-                {
-                  "type": "null"
-                }
-              ],
-              "title": "Prise Rdv"
             },
             "profils": {
               "anyOf": [
@@ -6874,9 +6864,9 @@
           ]
         }
       },
-      "/api/v1/doc/modes-orientation-accompagnateur": {
+      "/api/v1/doc/modes-mobilisation": {
         "get": {
-          "operationId": "as_dict_list_api_v1_doc_modes_orientation_accompagnateur_get",
+          "operationId": "as_dict_list_api_v1_doc_modes_mobilisation_get",
           "responses": {
             "200": {
               "content": {
@@ -6885,7 +6875,7 @@
                     "items": {
                       "$ref": "#/components/schemas/FrameworkValue"
                     },
-                    "title": "Response As Dict List Api V1 Doc Modes Orientation Accompagnateur Get",
+                    "title": "Response As Dict List Api V1 Doc Modes Mobilisation Get",
                     "type": "array"
                   }
                 }
@@ -6893,15 +6883,15 @@
               "description": "Successful Response"
             }
           },
-          "summary": "Récupérer le référentiel des modes d'orientation de l'accompagnateur",
+          "summary": "Récupérer le référentiel des modes de mobilisation",
           "tags": [
             "v1 | Documentation"
           ]
         }
       },
-      "/api/v1/doc/modes-orientation-beneficiaire": {
+      "/api/v1/doc/personnes-mobilisatrice": {
         "get": {
-          "operationId": "as_dict_list_api_v1_doc_modes_orientation_beneficiaire_get",
+          "operationId": "as_dict_list_api_v1_doc_personnes_mobilisatrice_get",
           "responses": {
             "200": {
               "content": {
@@ -6910,7 +6900,7 @@
                     "items": {
                       "$ref": "#/components/schemas/FrameworkValue"
                     },
-                    "title": "Response As Dict List Api V1 Doc Modes Orientation Beneficiaire Get",
+                    "title": "Response As Dict List Api V1 Doc Personnes Mobilisatrice Get",
                     "type": "array"
                   }
                 }
@@ -6918,7 +6908,7 @@
               "description": "Successful Response"
             }
           },
-          "summary": "Récupérer le référentiel des modes d'orientation du bénéficiaire",
+          "summary": "Récupérer le référentiel des personnes mobilisatrices",
           "tags": [
             "v1 | Documentation"
           ]
