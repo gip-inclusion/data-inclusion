@@ -218,17 +218,6 @@
           "title": "DepartementSlugEnum",
           "type": "string"
         },
-        "Frais": {
-          "enum": [
-            "gratuit",
-            "gratuit-sous-conditions",
-            "payant",
-            "adhesion",
-            "pass-numerique"
-          ],
-          "title": "Frais",
-          "type": "string"
-        },
         "FrameworkValue": {
           "description": "Schema for members of a domain taxonomy",
           "properties": {
@@ -273,6 +262,7 @@
           "type": "object"
         },
         "LabelNational": {
+          "description": "Labels nationaux",
           "enum": [
             "60000-rebonds",
             "action-logement",
@@ -364,6 +354,7 @@
           "type": "string"
         },
         "ModeAccueil": {
+          "description": "Modes d’accueil",
           "enum": [
             "a-distance",
             "en-presentiel"
@@ -372,6 +363,7 @@
           "type": "string"
         },
         "ModeMobilisation": {
+          "description": "Modes de mobilisation",
           "enum": [
             "envoyer-un-courriel",
             "se-presenter",
@@ -382,6 +374,7 @@
           "type": "string"
         },
         "ModeOrientationAccompagnateur": {
+          "description": "Modes d’orientation accompagnateur",
           "enum": [
             "completer-le-formulaire-dadhesion",
             "envoyer-un-mail",
@@ -394,6 +387,7 @@
           "type": "string"
         },
         "ModeOrientationBeneficiaire": {
+          "description": "Modes d’orientation bénéficiaire",
           "enum": [
             "completer-le-formulaire-dadhesion",
             "envoyer-un-mail",
@@ -406,6 +400,7 @@
           "type": "string"
         },
         "PersonneMobilisatrice": {
+          "description": "Personnes mobilisatrices",
           "enum": [
             "usagers",
             "professionnels"
@@ -414,6 +409,7 @@
           "type": "string"
         },
         "Profil": {
+          "description": "Profils",
           "enum": [
             "adultes",
             "alternants",
@@ -445,6 +441,26 @@
             "personnes-en-situation-durgence"
           ],
           "title": "Profil",
+          "type": "string"
+        },
+        "Public": {
+          "description": "Publics",
+          "enum": [
+            "actifs",
+            "beneficiaires-des-minimas-sociaux",
+            "demandeurs-emploi",
+            "etudiants",
+            "familles",
+            "femmes",
+            "jeunes",
+            "personnes-en-situation-de-handicap",
+            "personnes-en-situation-durgence",
+            "personnes-en-situation-juridique-specifique",
+            "personnes-exilees",
+            "residents-qpv-frr",
+            "seniors"
+          ],
+          "title": "Public",
           "type": "string"
         },
         "RegionCodeEnum": {
@@ -544,6 +560,7 @@
           "type": "object"
         },
         "Thematique": {
+          "description": "Thématiques",
           "enum": [
             "acces-aux-droits-et-citoyennete",
             "acces-aux-droits-et-citoyennete--accompagnement-dans-les-demarches-administratives",
@@ -699,6 +716,7 @@
           "type": "string"
         },
         "TypologieService": {
+          "description": "Typologies de services",
           "enum": [
             "accompagnement",
             "accueil",
@@ -716,6 +734,7 @@
           "type": "string"
         },
         "TypologieStructure": {
+          "description": "Typologies de structures",
           "enum": [
             "ACI",
             "ACIPHC",
@@ -846,6 +865,7 @@
           "type": "object"
         },
         "ZoneDiffusionType": {
+          "description": "Types de zones de diffusion",
           "enum": [
             "commune",
             "epci",
@@ -1333,7 +1353,7 @@
               "anyOf": [
                 {
                   "items": {
-                    "$ref": "#/components/schemas/Frais"
+                    "$ref": "#/components/schemas/data_inclusion__schema__v0__frais__Frais"
                   },
                   "type": "array",
                   "uniqueItems": true
@@ -2588,7 +2608,7 @@
               "anyOf": [
                 {
                   "items": {
-                    "$ref": "#/components/schemas/Frais"
+                    "$ref": "#/components/schemas/data_inclusion__schema__v0__frais__Frais"
                   },
                   "type": "array",
                   "uniqueItems": true
@@ -3040,7 +3060,7 @@
                   "type": "null"
                 }
               ],
-              "description": "Lien pour connaître le niveau d’accessibilité de la structure si elle accueille du public.\n\nSi la source ne nous fournit pas de lien, nous tentons de récupérer automatiquement les informations sur Acceslibre, la plateforme collaborative de l’accessibilité.",
+              "description": "Lien la page Accesslibre référençant le niveau d’accessibilité du lieu de réalisation du service.\n\nDevrait être un lien vers [Accesslibre](https://acceslibre.beta.gouv.fr/).",
               "examples": [
                 "https://acceslibre.beta.gouv.fr/app/17-la-greve-sur-mignon/a/mairie/erp/mairie-la-greve-sur-mignon/"
               ],
@@ -3135,14 +3155,14 @@
             "description": {
               "description": "Description de la structure.\n\nEntre 50 et 2000 caractères.",
               "examples": [
-                "L’association 3027 offre un accès gratuit aux arts, à la culture et\n                au sport pour toutes et tous sans distinction et en priorité aux\n                personnes en situation de précarité et d’isolement."
+                "L’association 3027 offre un accès gratuit aux arts, à la culture et au sport pour toutes et tous sans distinction et en priorité aux personnes en situation de précarité et d’isolement."
               ],
               "maxLength": 2000,
               "minLength": 50,
               "title": "Description",
               "type": "string"
             },
-            "horaires_ouverture": {
+            "horaires_accueil": {
               "anyOf": [
                 {
                   "type": "string"
@@ -3151,7 +3171,11 @@
                   "type": "null"
                 }
               ],
-              "title": "Horaires Ouverture"
+              "description": "Horaires d’accueil du public par la structure.\n\nUn service peut avoir un horaire d’accueil différent. Se référer aux horaires des services.\n\nDoit être au format OpenStreetMap Opening Hours.\n\n[Spécification du format OSM Opening Hours](https://wiki.openstreetmap.org/wiki/FR:Key:opening_hours).\n\n[Outil d’aide à la saisie](https://projets.pavie.info/yohours/).",
+              "examples": [
+                "Mo-Fr 08:30-12:30; PH off"
+              ],
+              "title": "Horaires d’accueil du public"
             },
             "id": {
               "title": "Id",
@@ -3278,10 +3302,10 @@
             }
           },
           "required": [
+            "source",
             "id",
             "nom",
             "description",
-            "source",
             "date_maj"
           ],
           "title": "BaseStructure",
@@ -3350,6 +3374,21 @@
               ],
               "title": "Complement Adresse"
             },
+            "conditions_acces": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Conditions d’accès au service.\n\nIl peut s’agir de prérequis ou de justificatifs à présenter.",
+              "examples": [
+                "Maîtrise de la langue française à l’oral et à l’écrit"
+              ],
+              "title": "Conditions d’accès"
+            },
             "contact_nom_prenom": {
               "anyOf": [
                 {
@@ -3389,7 +3428,7 @@
             "description": {
               "description": "Description du service.\n\nEntre 50 et 2000 caractères.\n\nCe champ est pris en compte dans le calcul du score de qualité.",
               "examples": [
-                "Cet atelier-conseil vous permet d’identifier les compétences à\n                développer pour atteindre vos objectifs d’évolution professionnelle et à\n                découvrir les différentes modalités de formation.\n\n                Durée d’une journée et inscription via votre espace France Travail."
+                "Cet atelier-conseil vous permet d’identifier les compétences à développer pour atteindre vos objectifs d’évolution professionnelle et à découvrir les différentes modalités de formation.  Durée d’une journée et inscription via votre espace France Travail."
               ],
               "maxLength": 2000,
               "minLength": 50,
@@ -3399,19 +3438,19 @@
             "frais": {
               "anyOf": [
                 {
-                  "items": {
-                    "$ref": "#/components/schemas/Frais"
-                  },
-                  "type": "array",
-                  "uniqueItems": true
+                  "$ref": "#/components/schemas/data_inclusion__schema__v1__frais__Frais"
                 },
                 {
                   "type": "null"
                 }
               ],
-              "title": "Frais"
+              "description": "Indique si l’accès au service est payant ou gratuit.\n\nSi le service comporte des frais, ceux-ci devraient être précisés dans le champ `frais_precisions`.",
+              "examples": [
+                "gratuit",
+                "payant"
+              ]
             },
-            "frais_autres": {
+            "frais_precisions": {
               "anyOf": [
                 {
                   "type": "string"
@@ -3420,26 +3459,31 @@
                   "type": "null"
                 }
               ],
-              "title": "Frais Autres"
+              "description": "Précisions sur les éventuels frais pour accéder au service.",
+              "examples": [
+                "10€ pour l’adhésion annuelle",
+                "Tarif réduit pour les bénéficiaires du RSA"
+              ],
+              "title": "Précisions sur les frais"
             },
-            "id": {
-              "title": "Id",
-              "type": "string"
-            },
-            "justificatifs": {
+            "horaires_accueil": {
               "anyOf": [
                 {
-                  "items": {
-                    "type": "string"
-                  },
-                  "type": "array",
-                  "uniqueItems": true
+                  "type": "string"
                 },
                 {
                   "type": "null"
                 }
               ],
-              "title": "Justificatifs"
+              "description": "Horaires d’accueil du public pour ce service.\n\nSi le champ n’est pas renseigné, les horaires d’accueil de la structure peuvent être utilisés.\n\nDoit être au format OpenStreetMap Opening Hours.\n\n[Spécification du format OSM Opening Hours](https://wiki.openstreetmap.org/wiki/FR:Key:opening_hours).\n\n[Outil d’aide à la saisie](https://projets.pavie.info/yohours/).",
+              "examples": [
+                "Mo-Fr 08:30-12:30; PH off"
+              ],
+              "title": "Horaires d’accueil du public"
+            },
+            "id": {
+              "title": "Id",
+              "type": "string"
             },
             "latitude": {
               "anyOf": [
@@ -3517,7 +3561,7 @@
               ],
               "description": "Précisions sur les modes de mobilisation du service.",
               "examples": [
-                "La demande est à faire depuis l’espace personnel\n                du demandeur d’emploi, rubrique « mes aides »,\n                formulaire spécifique « Aide à la mobilité »."
+                "La demande est à faire depuis l’espace personnel du demandeur d’emploi, rubrique « mes aides », formulaire spécifique « Aide à la mobilité »."
               ],
               "title": "Mobilisation Precisions"
             },
@@ -3582,12 +3626,13 @@
               ],
               "title": "Nombre Semaines"
             },
-            "pre_requis": {
+            "publics": {
               "anyOf": [
                 {
                   "items": {
-                    "type": "string"
+                    "$ref": "#/components/schemas/Public"
                   },
+                  "minItems": 1,
                   "type": "array",
                   "uniqueItems": true
                 },
@@ -3595,24 +3640,14 @@
                   "type": "null"
                 }
               ],
-              "title": "Pre Requis"
-            },
-            "profils": {
-              "anyOf": [
-                {
-                  "items": {
-                    "$ref": "#/components/schemas/Profil"
-                  },
-                  "type": "array",
-                  "uniqueItems": true
-                },
-                {
-                  "type": "null"
-                }
+              "description": "Publics visés par le service.\n\nDes informations complémentaires peuvent être précisées dans le champ `publics_precisions`.",
+              "examples": [
+                "femmes",
+                "residents-qpv-frr"
               ],
-              "title": "Profils"
+              "title": "Publics"
             },
-            "profils_precisions": {
+            "publics_precisions": {
               "anyOf": [
                 {
                   "type": "string"
@@ -3621,7 +3656,11 @@
                   "type": "null"
                 }
               ],
-              "title": "Profils Precisions"
+              "description": "Précisions sur les publics visés par le service.",
+              "examples": [
+                "Le jeune entre 15 et 18 ans."
+              ],
+              "title": "Précisions sur les publics"
             },
             "score_qualite": {
               "description": "Score de qualité du service, défini et calculé par data·inclusion.\n",
@@ -3702,64 +3741,83 @@
               ],
               "title": "Volume Horaire Hebdomadaire"
             },
-            "zone_diffusion_code": {
+            "zone_eligibilite": {
               "anyOf": [
                 {
-                  "maxLength": 5,
-                  "minLength": 5,
-                  "pattern": "^\\w{5}$",
-                  "type": "string"
-                },
-                {
-                  "maxLength": 9,
-                  "minLength": 9,
-                  "pattern": "^\\d{9}$",
-                  "type": "string"
-                },
-                {
-                  "maxLength": 3,
-                  "minLength": 2,
-                  "pattern": "^\\w{2,3}$",
-                  "type": "string"
-                },
-                {
-                  "maxLength": 2,
-                  "minLength": 2,
-                  "pattern": "^\\d{2}$",
-                  "type": "string"
+                  "items": {
+                    "anyOf": [
+                      {
+                        "maxLength": 5,
+                        "minLength": 5,
+                        "pattern": "^\\w{5}$",
+                        "type": "string"
+                      },
+                      {
+                        "maxLength": 9,
+                        "minLength": 9,
+                        "pattern": "^\\d{9}$",
+                        "type": "string"
+                      },
+                      {
+                        "maxLength": 3,
+                        "minLength": 2,
+                        "pattern": "^\\w{2,3}$",
+                        "type": "string"
+                      },
+                      {
+                        "maxLength": 2,
+                        "minLength": 2,
+                        "pattern": "^\\d{2}$",
+                        "type": "string"
+                      },
+                      {
+                        "maxLength": 5,
+                        "minLength": 5,
+                        "pattern": "^99[0-5]\\d{2}$",
+                        "type": "string"
+                      },
+                      {
+                        "const": "france",
+                        "type": "string"
+                      },
+                      {
+                        "const": "99100",
+                        "type": "string"
+                      }
+                    ]
+                  },
+                  "minItems": 1,
+                  "type": "array"
                 },
                 {
                   "type": "null"
                 }
               ],
-              "title": "Zone Diffusion Code"
-            },
-            "zone_diffusion_nom": {
-              "anyOf": [
-                {
-                  "type": "string"
-                },
-                {
-                  "type": "null"
-                }
+              "description": "Zone géographique d’éligibilité du service.\n\nContient une liste de codes issus du Code Officiel Géographique maintenu par l’INSEE.\n\nChaque code dans cette liste peut être un code commune, un code département, un code EPCI ou un code pays.\n\nSi le service est éligible à l’ensemble d’une région, lister les codes des departements de cette région.\n\nSi le service est éligible sur l’ensemble du territoire national, utiliser le code `france` (France) ou le code pays `99100`.\n\ndata·inclusion vérifie la validité des codes fournis. Les codes invalides sont supprimés de la liste.\n\n[Le Code Officiel Géographique de l’INSEE](https://www.insee.fr/fr/information/2560452).\n\n[Outil de recherche des codes](https://www.insee.fr/fr/recherche/recherche-geographique).",
+              "examples": [
+                [
+                  "france"
+                ],
+                [
+                  "2A",
+                  "2B"
+                ],
+                [
+                  "200093201"
+                ],
+                [
+                  "2A",
+                  "2B",
+                  "200093201"
+                ]
               ],
-              "title": "Zone Diffusion Nom"
-            },
-            "zone_diffusion_type": {
-              "anyOf": [
-                {
-                  "$ref": "#/components/schemas/ZoneDiffusionType"
-                },
-                {
-                  "type": "null"
-                }
-              ]
+              "title": "Zone d’éligibilité"
             }
           },
           "required": [
-            "id",
-            "structure_id",
             "source",
+            "structure_id",
+            "id",
             "nom",
             "description",
             "date_maj",
@@ -3783,7 +3841,7 @@
                   "type": "null"
                 }
               ],
-              "description": "Lien pour connaître le niveau d’accessibilité de la structure si elle accueille du public.\n\nSi la source ne nous fournit pas de lien, nous tentons de récupérer automatiquement les informations sur Acceslibre, la plateforme collaborative de l’accessibilité.",
+              "description": "Lien la page Accesslibre référençant le niveau d’accessibilité du lieu de réalisation du service.\n\nDevrait être un lien vers [Accesslibre](https://acceslibre.beta.gouv.fr/).",
               "examples": [
                 "https://acceslibre.beta.gouv.fr/app/17-la-greve-sur-mignon/a/mairie/erp/mairie-la-greve-sur-mignon/"
               ],
@@ -3878,7 +3936,7 @@
             "description": {
               "description": "Description de la structure.\n\nEntre 50 et 2000 caractères.",
               "examples": [
-                "L’association 3027 offre un accès gratuit aux arts, à la culture et\n                au sport pour toutes et tous sans distinction et en priorité aux\n                personnes en situation de précarité et d’isolement."
+                "L’association 3027 offre un accès gratuit aux arts, à la culture et au sport pour toutes et tous sans distinction et en priorité aux personnes en situation de précarité et d’isolement."
               ],
               "maxLength": 2000,
               "minLength": 50,
@@ -3893,7 +3951,7 @@
               "title": "Doublons",
               "type": "array"
             },
-            "horaires_ouverture": {
+            "horaires_accueil": {
               "anyOf": [
                 {
                   "type": "string"
@@ -3902,7 +3960,11 @@
                   "type": "null"
                 }
               ],
-              "title": "Horaires Ouverture"
+              "description": "Horaires d’accueil du public par la structure.\n\nUn service peut avoir un horaire d’accueil différent. Se référer aux horaires des services.\n\nDoit être au format OpenStreetMap Opening Hours.\n\n[Spécification du format OSM Opening Hours](https://wiki.openstreetmap.org/wiki/FR:Key:opening_hours).\n\n[Outil d’aide à la saisie](https://projets.pavie.info/yohours/).",
+              "examples": [
+                "Mo-Fr 08:30-12:30; PH off"
+              ],
+              "title": "Horaires d’accueil du public"
             },
             "id": {
               "title": "Id",
@@ -4043,10 +4105,10 @@
             }
           },
           "required": [
+            "source",
             "id",
             "nom",
             "description",
-            "source",
             "date_maj",
             "score_qualite",
             "doublons",
@@ -4069,7 +4131,7 @@
                   "type": "null"
                 }
               ],
-              "description": "Lien pour connaître le niveau d’accessibilité de la structure si elle accueille du public.\n\nSi la source ne nous fournit pas de lien, nous tentons de récupérer automatiquement les informations sur Acceslibre, la plateforme collaborative de l’accessibilité.",
+              "description": "Lien la page Accesslibre référençant le niveau d’accessibilité du lieu de réalisation du service.\n\nDevrait être un lien vers [Accesslibre](https://acceslibre.beta.gouv.fr/).",
               "examples": [
                 "https://acceslibre.beta.gouv.fr/app/17-la-greve-sur-mignon/a/mairie/erp/mairie-la-greve-sur-mignon/"
               ],
@@ -4164,7 +4226,7 @@
             "description": {
               "description": "Description de la structure.\n\nEntre 50 et 2000 caractères.",
               "examples": [
-                "L’association 3027 offre un accès gratuit aux arts, à la culture et\n                au sport pour toutes et tous sans distinction et en priorité aux\n                personnes en situation de précarité et d’isolement."
+                "L’association 3027 offre un accès gratuit aux arts, à la culture et au sport pour toutes et tous sans distinction et en priorité aux personnes en situation de précarité et d’isolement."
               ],
               "maxLength": 2000,
               "minLength": 50,
@@ -4179,7 +4241,7 @@
               "title": "Doublons",
               "type": "array"
             },
-            "horaires_ouverture": {
+            "horaires_accueil": {
               "anyOf": [
                 {
                   "type": "string"
@@ -4188,7 +4250,11 @@
                   "type": "null"
                 }
               ],
-              "title": "Horaires Ouverture"
+              "description": "Horaires d’accueil du public par la structure.\n\nUn service peut avoir un horaire d’accueil différent. Se référer aux horaires des services.\n\nDoit être au format OpenStreetMap Opening Hours.\n\n[Spécification du format OSM Opening Hours](https://wiki.openstreetmap.org/wiki/FR:Key:opening_hours).\n\n[Outil d’aide à la saisie](https://projets.pavie.info/yohours/).",
+              "examples": [
+                "Mo-Fr 08:30-12:30; PH off"
+              ],
+              "title": "Horaires d’accueil du public"
             },
             "id": {
               "title": "Id",
@@ -4322,10 +4388,10 @@
             }
           },
           "required": [
+            "source",
             "id",
             "nom",
             "description",
-            "source",
             "date_maj",
             "score_qualite",
             "doublons"
@@ -4396,6 +4462,21 @@
               ],
               "title": "Complement Adresse"
             },
+            "conditions_acces": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Conditions d’accès au service.\n\nIl peut s’agir de prérequis ou de justificatifs à présenter.",
+              "examples": [
+                "Maîtrise de la langue française à l’oral et à l’écrit"
+              ],
+              "title": "Conditions d’accès"
+            },
             "contact_nom_prenom": {
               "anyOf": [
                 {
@@ -4435,7 +4516,7 @@
             "description": {
               "description": "Description du service.\n\nEntre 50 et 2000 caractères.\n\nCe champ est pris en compte dans le calcul du score de qualité.",
               "examples": [
-                "Cet atelier-conseil vous permet d’identifier les compétences à\n                développer pour atteindre vos objectifs d’évolution professionnelle et à\n                découvrir les différentes modalités de formation.\n\n                Durée d’une journée et inscription via votre espace France Travail."
+                "Cet atelier-conseil vous permet d’identifier les compétences à développer pour atteindre vos objectifs d’évolution professionnelle et à découvrir les différentes modalités de formation.  Durée d’une journée et inscription via votre espace France Travail."
               ],
               "maxLength": 2000,
               "minLength": 50,
@@ -4445,19 +4526,19 @@
             "frais": {
               "anyOf": [
                 {
-                  "items": {
-                    "$ref": "#/components/schemas/Frais"
-                  },
-                  "type": "array",
-                  "uniqueItems": true
+                  "$ref": "#/components/schemas/data_inclusion__schema__v1__frais__Frais"
                 },
                 {
                   "type": "null"
                 }
               ],
-              "title": "Frais"
+              "description": "Indique si l’accès au service est payant ou gratuit.\n\nSi le service comporte des frais, ceux-ci devraient être précisés dans le champ `frais_precisions`.",
+              "examples": [
+                "gratuit",
+                "payant"
+              ]
             },
-            "frais_autres": {
+            "frais_precisions": {
               "anyOf": [
                 {
                   "type": "string"
@@ -4466,26 +4547,31 @@
                   "type": "null"
                 }
               ],
-              "title": "Frais Autres"
+              "description": "Précisions sur les éventuels frais pour accéder au service.",
+              "examples": [
+                "10€ pour l’adhésion annuelle",
+                "Tarif réduit pour les bénéficiaires du RSA"
+              ],
+              "title": "Précisions sur les frais"
             },
-            "id": {
-              "title": "Id",
-              "type": "string"
-            },
-            "justificatifs": {
+            "horaires_accueil": {
               "anyOf": [
                 {
-                  "items": {
-                    "type": "string"
-                  },
-                  "type": "array",
-                  "uniqueItems": true
+                  "type": "string"
                 },
                 {
                   "type": "null"
                 }
               ],
-              "title": "Justificatifs"
+              "description": "Horaires d’accueil du public pour ce service.\n\nSi le champ n’est pas renseigné, les horaires d’accueil de la structure peuvent être utilisés.\n\nDoit être au format OpenStreetMap Opening Hours.\n\n[Spécification du format OSM Opening Hours](https://wiki.openstreetmap.org/wiki/FR:Key:opening_hours).\n\n[Outil d’aide à la saisie](https://projets.pavie.info/yohours/).",
+              "examples": [
+                "Mo-Fr 08:30-12:30; PH off"
+              ],
+              "title": "Horaires d’accueil du public"
+            },
+            "id": {
+              "title": "Id",
+              "type": "string"
             },
             "latitude": {
               "anyOf": [
@@ -4563,7 +4649,7 @@
               ],
               "description": "Précisions sur les modes de mobilisation du service.",
               "examples": [
-                "La demande est à faire depuis l’espace personnel\n                du demandeur d’emploi, rubrique « mes aides »,\n                formulaire spécifique « Aide à la mobilité »."
+                "La demande est à faire depuis l’espace personnel du demandeur d’emploi, rubrique « mes aides », formulaire spécifique « Aide à la mobilité »."
               ],
               "title": "Mobilisation Precisions"
             },
@@ -4628,12 +4714,13 @@
               ],
               "title": "Nombre Semaines"
             },
-            "pre_requis": {
+            "publics": {
               "anyOf": [
                 {
                   "items": {
-                    "type": "string"
+                    "$ref": "#/components/schemas/Public"
                   },
+                  "minItems": 1,
                   "type": "array",
                   "uniqueItems": true
                 },
@@ -4641,24 +4728,14 @@
                   "type": "null"
                 }
               ],
-              "title": "Pre Requis"
-            },
-            "profils": {
-              "anyOf": [
-                {
-                  "items": {
-                    "$ref": "#/components/schemas/Profil"
-                  },
-                  "type": "array",
-                  "uniqueItems": true
-                },
-                {
-                  "type": "null"
-                }
+              "description": "Publics visés par le service.\n\nDes informations complémentaires peuvent être précisées dans le champ `publics_precisions`.",
+              "examples": [
+                "femmes",
+                "residents-qpv-frr"
               ],
-              "title": "Profils"
+              "title": "Publics"
             },
-            "profils_precisions": {
+            "publics_precisions": {
               "anyOf": [
                 {
                   "type": "string"
@@ -4667,7 +4744,11 @@
                   "type": "null"
                 }
               ],
-              "title": "Profils Precisions"
+              "description": "Précisions sur les publics visés par le service.",
+              "examples": [
+                "Le jeune entre 15 et 18 ans."
+              ],
+              "title": "Précisions sur les publics"
             },
             "score_qualite": {
               "description": "Score de qualité du service, défini et calculé par data·inclusion.\n",
@@ -4745,64 +4826,83 @@
               ],
               "title": "Volume Horaire Hebdomadaire"
             },
-            "zone_diffusion_code": {
+            "zone_eligibilite": {
               "anyOf": [
                 {
-                  "maxLength": 5,
-                  "minLength": 5,
-                  "pattern": "^\\w{5}$",
-                  "type": "string"
-                },
-                {
-                  "maxLength": 9,
-                  "minLength": 9,
-                  "pattern": "^\\d{9}$",
-                  "type": "string"
-                },
-                {
-                  "maxLength": 3,
-                  "minLength": 2,
-                  "pattern": "^\\w{2,3}$",
-                  "type": "string"
-                },
-                {
-                  "maxLength": 2,
-                  "minLength": 2,
-                  "pattern": "^\\d{2}$",
-                  "type": "string"
+                  "items": {
+                    "anyOf": [
+                      {
+                        "maxLength": 5,
+                        "minLength": 5,
+                        "pattern": "^\\w{5}$",
+                        "type": "string"
+                      },
+                      {
+                        "maxLength": 9,
+                        "minLength": 9,
+                        "pattern": "^\\d{9}$",
+                        "type": "string"
+                      },
+                      {
+                        "maxLength": 3,
+                        "minLength": 2,
+                        "pattern": "^\\w{2,3}$",
+                        "type": "string"
+                      },
+                      {
+                        "maxLength": 2,
+                        "minLength": 2,
+                        "pattern": "^\\d{2}$",
+                        "type": "string"
+                      },
+                      {
+                        "maxLength": 5,
+                        "minLength": 5,
+                        "pattern": "^99[0-5]\\d{2}$",
+                        "type": "string"
+                      },
+                      {
+                        "const": "france",
+                        "type": "string"
+                      },
+                      {
+                        "const": "99100",
+                        "type": "string"
+                      }
+                    ]
+                  },
+                  "minItems": 1,
+                  "type": "array"
                 },
                 {
                   "type": "null"
                 }
               ],
-              "title": "Zone Diffusion Code"
-            },
-            "zone_diffusion_nom": {
-              "anyOf": [
-                {
-                  "type": "string"
-                },
-                {
-                  "type": "null"
-                }
+              "description": "Zone géographique d’éligibilité du service.\n\nContient une liste de codes issus du Code Officiel Géographique maintenu par l’INSEE.\n\nChaque code dans cette liste peut être un code commune, un code département, un code EPCI ou un code pays.\n\nSi le service est éligible à l’ensemble d’une région, lister les codes des departements de cette région.\n\nSi le service est éligible sur l’ensemble du territoire national, utiliser le code `france` (France) ou le code pays `99100`.\n\ndata·inclusion vérifie la validité des codes fournis. Les codes invalides sont supprimés de la liste.\n\n[Le Code Officiel Géographique de l’INSEE](https://www.insee.fr/fr/information/2560452).\n\n[Outil de recherche des codes](https://www.insee.fr/fr/recherche/recherche-geographique).",
+              "examples": [
+                [
+                  "france"
+                ],
+                [
+                  "2A",
+                  "2B"
+                ],
+                [
+                  "200093201"
+                ],
+                [
+                  "2A",
+                  "2B",
+                  "200093201"
+                ]
               ],
-              "title": "Zone Diffusion Nom"
-            },
-            "zone_diffusion_type": {
-              "anyOf": [
-                {
-                  "$ref": "#/components/schemas/ZoneDiffusionType"
-                },
-                {
-                  "type": "null"
-                }
-              ]
+              "title": "Zone d’éligibilité"
             }
           },
           "required": [
-            "id",
-            "structure_id",
             "source",
+            "structure_id",
+            "id",
             "nom",
             "description",
             "date_maj",
@@ -4894,7 +4994,6 @@
           },
           "required": [
             "items",
-            "total",
             "page",
             "size"
           ],
@@ -4961,7 +5060,6 @@
           },
           "required": [
             "items",
-            "total",
             "page",
             "size"
           ],
@@ -5028,7 +5126,6 @@
           },
           "required": [
             "items",
-            "total",
             "page",
             "size"
           ],
@@ -5095,7 +5192,6 @@
           },
           "required": [
             "items",
-            "total",
             "page",
             "size"
           ],
@@ -5162,7 +5258,6 @@
           },
           "required": [
             "items",
-            "total",
             "page",
             "size"
           ],
@@ -5229,12 +5324,23 @@
           },
           "required": [
             "items",
-            "total",
             "page",
             "size"
           ],
           "title": "CustomizedPage[Service]",
           "type": "object"
+        },
+        "data_inclusion__schema__v0__frais__Frais": {
+          "description": "Frais",
+          "enum": [
+            "gratuit",
+            "gratuit-sous-conditions",
+            "payant",
+            "adhesion",
+            "pass-numerique"
+          ],
+          "title": "Frais",
+          "type": "string"
         },
         "data_inclusion__schema__v0__structures__Structure": {
           "properties": {
@@ -5563,6 +5669,15 @@
           "title": "Structure",
           "type": "object"
         },
+        "data_inclusion__schema__v1__frais__Frais": {
+          "description": "Frais",
+          "enum": [
+            "gratuit",
+            "payant"
+          ],
+          "title": "Frais",
+          "type": "string"
+        },
         "data_inclusion__schema__v1__structures__Structure": {
           "properties": {
             "accessibilite_lieu": {
@@ -5577,7 +5692,7 @@
                   "type": "null"
                 }
               ],
-              "description": "Lien pour connaître le niveau d’accessibilité de la structure si elle accueille du public.\n\nSi la source ne nous fournit pas de lien, nous tentons de récupérer automatiquement les informations sur Acceslibre, la plateforme collaborative de l’accessibilité.",
+              "description": "Lien la page Accesslibre référençant le niveau d’accessibilité du lieu de réalisation du service.\n\nDevrait être un lien vers [Accesslibre](https://acceslibre.beta.gouv.fr/).",
               "examples": [
                 "https://acceslibre.beta.gouv.fr/app/17-la-greve-sur-mignon/a/mairie/erp/mairie-la-greve-sur-mignon/"
               ],
@@ -5672,14 +5787,14 @@
             "description": {
               "description": "Description de la structure.\n\nEntre 50 et 2000 caractères.",
               "examples": [
-                "L’association 3027 offre un accès gratuit aux arts, à la culture et\n                au sport pour toutes et tous sans distinction et en priorité aux\n                personnes en situation de précarité et d’isolement."
+                "L’association 3027 offre un accès gratuit aux arts, à la culture et au sport pour toutes et tous sans distinction et en priorité aux personnes en situation de précarité et d’isolement."
               ],
               "maxLength": 2000,
               "minLength": 50,
               "title": "Description",
               "type": "string"
             },
-            "horaires_ouverture": {
+            "horaires_accueil": {
               "anyOf": [
                 {
                   "type": "string"
@@ -5688,7 +5803,11 @@
                   "type": "null"
                 }
               ],
-              "title": "Horaires Ouverture"
+              "description": "Horaires d’accueil du public par la structure.\n\nUn service peut avoir un horaire d’accueil différent. Se référer aux horaires des services.\n\nDoit être au format OpenStreetMap Opening Hours.\n\n[Spécification du format OSM Opening Hours](https://wiki.openstreetmap.org/wiki/FR:Key:opening_hours).\n\n[Outil d’aide à la saisie](https://projets.pavie.info/yohours/).",
+              "examples": [
+                "Mo-Fr 08:30-12:30; PH off"
+              ],
+              "title": "Horaires d’accueil du public"
             },
             "id": {
               "title": "Id",
@@ -5815,10 +5934,10 @@
             }
           },
           "required": [
+            "source",
             "id",
             "nom",
             "description",
-            "source",
             "date_maj"
           ],
           "title": "Structure",
@@ -6146,7 +6265,7 @@
               "schema": {
                 "description": "Une liste de frais.\n                Chaque résultat renvoyé a (au moins) un frais dans cette liste.",
                 "items": {
-                  "$ref": "#/components/schemas/Frais"
+                  "$ref": "#/components/schemas/data_inclusion__schema__v0__frais__Frais"
                 },
                 "title": "Frais",
                 "type": "array"
@@ -6379,7 +6498,7 @@
               "schema": {
                 "description": "Une liste de frais.\n                Chaque résultat renvoyé a (au moins) un frais dans cette liste.",
                 "items": {
-                  "$ref": "#/components/schemas/Frais"
+                  "$ref": "#/components/schemas/data_inclusion__schema__v0__frais__Frais"
                 },
                 "title": "Frais",
                 "type": "array"
@@ -6948,9 +7067,9 @@
           ]
         }
       },
-      "/api/v1/doc/profils": {
+      "/api/v1/doc/publics": {
         "get": {
-          "operationId": "as_dict_list_api_v1_doc_profils_get",
+          "operationId": "as_dict_list_api_v1_doc_publics_get",
           "responses": {
             "200": {
               "content": {
@@ -6959,7 +7078,7 @@
                     "items": {
                       "$ref": "#/components/schemas/FrameworkValue"
                     },
-                    "title": "Response As Dict List Api V1 Doc Profils Get",
+                    "title": "Response As Dict List Api V1 Doc Publics Get",
                     "type": "array"
                   }
                 }
@@ -6967,7 +7086,7 @@
               "description": "Successful Response"
             }
           },
-          "summary": "Récupérer le référentiel des profils de publics",
+          "summary": "Récupérer le référentiel des publics",
           "tags": [
             "v1 | Documentation"
           ]
@@ -7125,7 +7244,7 @@
               "schema": {
                 "description": "Une liste de frais.\n                Chaque résultat renvoyé a (au moins) un frais dans cette liste.",
                 "items": {
-                  "$ref": "#/components/schemas/Frais"
+                  "$ref": "#/components/schemas/data_inclusion__schema__v1__frais__Frais"
                 },
                 "title": "Frais",
                 "type": "array"
@@ -7146,16 +7265,16 @@
               }
             },
             {
-              "description": "Une liste de profils.\n                Chaque résultat renvoyé a (au moins) un profil dans cette liste.\n            ",
+              "description": "Une liste de publics.\n                Chaque résultat renvoyé a (au moins) un public dans cette liste.\n            ",
               "in": "query",
-              "name": "profils",
+              "name": "publics",
               "required": false,
               "schema": {
-                "description": "Une liste de profils.\n                Chaque résultat renvoyé a (au moins) un profil dans cette liste.\n            ",
+                "description": "Une liste de publics.\n                Chaque résultat renvoyé a (au moins) un public dans cette liste.\n            ",
                 "items": {
-                  "$ref": "#/components/schemas/Profil"
+                  "$ref": "#/components/schemas/Public"
                 },
-                "title": "Profils",
+                "title": "Publics",
                 "type": "array"
               }
             },
@@ -7358,7 +7477,7 @@
               "schema": {
                 "description": "Une liste de frais.\n                Chaque résultat renvoyé a (au moins) un frais dans cette liste.",
                 "items": {
-                  "$ref": "#/components/schemas/Frais"
+                  "$ref": "#/components/schemas/data_inclusion__schema__v1__frais__Frais"
                 },
                 "title": "Frais",
                 "type": "array"
@@ -7367,14 +7486,14 @@
             {
               "description": "Une liste de profils.\n                Chaque résultat renvoyé a (au moins) un profil dans cette liste.\n            ",
               "in": "query",
-              "name": "profils",
+              "name": "publics",
               "required": false,
               "schema": {
                 "description": "Une liste de profils.\n                Chaque résultat renvoyé a (au moins) un profil dans cette liste.\n            ",
                 "items": {
-                  "$ref": "#/components/schemas/Profil"
+                  "$ref": "#/components/schemas/Public"
                 },
-                "title": "Profils",
+                "title": "Publics",
                 "type": "array"
               }
             },
