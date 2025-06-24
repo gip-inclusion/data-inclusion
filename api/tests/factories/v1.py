@@ -50,7 +50,7 @@ class StructureFactory(factory.alchemy.SQLAlchemyModelFactory):
     source = factory.Iterator(["dora", "emplois-de-linclusion"])
     date_maj = factory.LazyFunction(lambda: date(2023, 1, 1))
     horaires_ouverture = 'Mo-Fr 10:00-20:00 "sur rendez-vous"; PH off'
-    accessibilite = factory.LazyAttribute(
+    accessibilite_lieu = factory.LazyAttribute(
         lambda o: f"https://acceslibre.beta.gouv.fr/app/{o.id}/"
     )
     labels_nationaux = []

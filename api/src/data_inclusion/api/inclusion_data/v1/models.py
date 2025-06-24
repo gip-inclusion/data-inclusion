@@ -33,7 +33,7 @@ class Structure(HasAddress, Base):
     _cluster_id: Mapped[str | None]
 
     # structure data
-    accessibilite: Mapped[str | None]
+    accessibilite_lieu: Mapped[str | None] = mapped_column("accessibilite")
     courriel: Mapped[str | None]
     date_maj: Mapped[date | None]
     horaires_ouverture: Mapped[str | None]
