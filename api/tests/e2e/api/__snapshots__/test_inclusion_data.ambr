@@ -186,7 +186,7 @@
   {
     "items": [
       {
-        "accessibilite": "https://acceslibre.beta.gouv.fr/app/kitchen-amount/",
+        "accessibilite_lieu": "https://acceslibre.beta.gouv.fr/app/kitchen-amount/",
         "adresse": "49, avenue de Pichon",
         "code_insee": "59350",
         "code_postal": "46873",
