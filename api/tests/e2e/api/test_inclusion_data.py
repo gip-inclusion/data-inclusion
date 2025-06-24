@@ -4,6 +4,7 @@ from unittest.mock import ANY
 import pytest
 
 from data_inclusion.api.decoupage_administratif.constants import RegionEnum
+from data_inclusion.api.inclusion_data import services
 from data_inclusion.api.inclusion_data.v0 import models as models_v0
 from data_inclusion.api.inclusion_data.v1 import models as models_v1
 from data_inclusion.api.utils import soliguide
@@ -364,9 +365,7 @@ def test_list_services_unauthenticated(api_client, schema_version):
                     telephone="0102030405",
                     thematiques=["choisir-un-metier"],
                     types=["formation"],
-                    zone_diffusion_code=None,
-                    zone_diffusion_nom=None,
-                    zone_diffusion_type=None,
+                    zone_eligibilite=None,
                     volume_horaire_hebdomadaire=1,
                     nombre_semaines=1,
                 ),
@@ -1065,10 +1064,10 @@ def test_search_services_with_code_commune_too_far(api_client, url, service_fact
     assert resp_data["detail"] == "The `lat` and `lon` must be simultaneously filled."
 
 
-@pytest.mark.parametrize("schema_version", ["v0", "v1"])
+@pytest.mark.parametrize("schema_version", ["v0"])
 @pytest.mark.parametrize("path", ["/search/services"])
 @pytest.mark.with_token
-def test_search_services_with_zone_diffusion_pays(api_client, url, service_factory):
+def test_search_services_with_zone_diffusion_pays_v0(api_client, url, service_factory):
     service_1 = service_factory(
         commune="Dunkerque",
         code_insee=DUNKERQUE["code_insee"],
@@ -1093,10 +1092,38 @@ def test_search_services_with_zone_diffusion_pays(api_client, url, service_facto
     assert resp_data["items"][0]["service"]["id"] == service_1.id
 
 
-@pytest.mark.parametrize("schema_version", ["v0", "v1"])
+@pytest.mark.parametrize("schema_version", ["v1"])
 @pytest.mark.parametrize("path", ["/search/services"])
 @pytest.mark.with_token
-def test_search_services_with_zone_diffusion_commune(api_client, url, service_factory):
+def test_search_services_with_zone_diffusion_pays(api_client, url, service_factory):
+    service_1 = service_factory(
+        commune="Dunkerque",
+        code_insee=DUNKERQUE["code_insee"],
+        latitude=51.034368,
+        longitude=2.376776,
+        modes_accueil=[v0.ModeAccueil.A_DISTANCE.value],
+        zone_eligibilite=[services.CODE_INSEE_FRANCE],
+    )
+
+    response = api_client.get(
+        url,
+        params={
+            "code_commune": MAUBEUGE["code_insee"],  # Maubeuge
+        },
+    )
+
+    assert response.status_code == 200
+    resp_data = response.json()
+    assert_paginated_response_data(resp_data, total=1)
+    assert resp_data["items"][0]["service"]["id"] == service_1.id
+
+
+@pytest.mark.parametrize("schema_version", ["v0"])
+@pytest.mark.parametrize("path", ["/search/services"])
+@pytest.mark.with_token
+def test_search_services_with_zone_diffusion_commune_v0(
+    api_client, url, service_factory
+):
     service_1 = service_factory(
         commune="Dunkerque",
         code_insee=DUNKERQUE["code_insee"],
@@ -1131,10 +1158,45 @@ def test_search_services_with_zone_diffusion_commune(api_client, url, service_fa
     assert resp_data["items"][0]["service"]["id"] == service_1.id
 
 
-@pytest.mark.parametrize("schema_version", ["v0", "v1"])
+@pytest.mark.parametrize("schema_version", ["v1"])
 @pytest.mark.parametrize("path", ["/search/services"])
 @pytest.mark.with_token
-def test_search_services_with_zone_diffusion_epci(api_client, url, service_factory):
+def test_search_services_with_zone_diffusion_commune(api_client, url, service_factory):
+    service_1 = service_factory(
+        commune="Dunkerque",
+        code_insee=DUNKERQUE["code_insee"],
+        latitude=51.034368,
+        longitude=2.376776,
+        modes_accueil=[v0.ModeAccueil.EN_PRESENTIEL.value],
+        zone_eligibilite=[DUNKERQUE["code_insee"]],
+    )
+
+    service_factory(
+        commune="Lille",
+        code_insee=LILLE["code_insee"],
+        latitude=50.633333,
+        longitude=3.066667,
+        modes_accueil=[v0.ModeAccueil.EN_PRESENTIEL.value],
+        zone_eligibilite=[LILLE["code_insee"]],
+    )
+
+    response = api_client.get(
+        url,
+        params={
+            "code_commune": DUNKERQUE["code_insee"],  # Dunkerque
+        },
+    )
+
+    assert response.status_code == 200
+    resp_data = response.json()
+    assert_paginated_response_data(resp_data, total=1)
+    assert resp_data["items"][0]["service"]["id"] == service_1.id
+
+
+@pytest.mark.parametrize("schema_version", ["v0"])
+@pytest.mark.parametrize("path", ["/search/services"])
+@pytest.mark.with_token
+def test_search_services_with_zone_diffusion_epci_v0(api_client, url, service_factory):
     service_1 = service_factory(
         commune="Dunkerque",
         code_insee=DUNKERQUE["code_insee"],
@@ -1169,10 +1231,44 @@ def test_search_services_with_zone_diffusion_epci(api_client, url, service_facto
     assert resp_data["items"][0]["service"]["id"] == service_1.id
 
 
-@pytest.mark.parametrize("schema_version", ["v0", "v1"])
+@pytest.mark.parametrize("schema_version", ["v1"])
 @pytest.mark.parametrize("path", ["/search/services"])
 @pytest.mark.with_token
-def test_search_services_with_zone_diffusion_departement(
+def test_search_services_with_zone_diffusion_epci(api_client, url, service_factory):
+    service_1 = service_factory(
+        commune="Dunkerque",
+        code_insee=DUNKERQUE["code_insee"],
+        latitude=51.034368,
+        longitude=2.376776,
+        modes_accueil=[v0.ModeAccueil.EN_PRESENTIEL.value],
+        zone_eligibilite=["245900428"],  # CU de Dunkerque
+    )
+    service_factory(
+        commune="Lille",
+        code_insee=LILLE["code_insee"],
+        latitude=50.633333,
+        longitude=3.066667,
+        modes_accueil=[v0.ModeAccueil.EN_PRESENTIEL.value],
+        zone_eligibilite=["200093201"],  # Métropole Européenne de Lille
+    )
+
+    response = api_client.get(
+        url,
+        params={
+            "code_commune": DUNKERQUE["code_insee"],  # Dunkerque
+        },
+    )
+
+    assert response.status_code == 200
+    resp_data = response.json()
+    assert_paginated_response_data(resp_data, total=1)
+    assert resp_data["items"][0]["service"]["id"] == service_1.id
+
+
+@pytest.mark.parametrize("schema_version", ["v0"])
+@pytest.mark.parametrize("path", ["/search/services"])
+@pytest.mark.with_token
+def test_search_services_with_zone_diffusion_departement_v0(
     api_client, url, service_factory
 ):
     service_1 = service_factory(
@@ -1209,10 +1305,48 @@ def test_search_services_with_zone_diffusion_departement(
     assert resp_data["items"][0]["service"]["id"] == service_1.id
 
 
-@pytest.mark.parametrize("schema_version", ["v0", "v1"])
+@pytest.mark.parametrize("schema_version", ["v1"])
 @pytest.mark.parametrize("path", ["/search/services"])
 @pytest.mark.with_token
-def test_search_services_with_zone_diffusion_region(api_client, url, service_factory):
+def test_search_services_with_zone_diffusion_departement(
+    api_client, url, service_factory
+):
+    service_1 = service_factory(
+        commune="Dunkerque",
+        code_insee=DUNKERQUE["code_insee"],
+        latitude=51.034368,
+        longitude=2.376776,
+        modes_accueil=[v0.ModeAccueil.EN_PRESENTIEL.value],
+        zone_eligibilite=["59"],  # Nord
+    )
+    service_factory(
+        commune="Lille",
+        code_insee=LILLE["code_insee"],
+        latitude=50.633333,
+        longitude=3.066667,
+        modes_accueil=[v0.ModeAccueil.EN_PRESENTIEL.value],
+        zone_eligibilite=["62"],  # Pas-de-Calais
+    )
+
+    response = api_client.get(
+        url,
+        params={
+            "code_commune": DUNKERQUE["code_insee"],  # Dunkerque
+        },
+    )
+
+    assert response.status_code == 200
+    resp_data = response.json()
+    assert_paginated_response_data(resp_data, total=1)
+    assert resp_data["items"][0]["service"]["id"] == service_1.id
+
+
+@pytest.mark.parametrize("schema_version", ["v0"])
+@pytest.mark.parametrize("path", ["/search/services"])
+@pytest.mark.with_token
+def test_search_services_with_zone_diffusion_region_v0(
+    api_client, url, service_factory
+):
     service_1 = service_factory(
         commune="Dunkerque",
         code_insee=DUNKERQUE["code_insee"],
@@ -1232,6 +1366,40 @@ def test_search_services_with_zone_diffusion_region(api_client, url, service_fac
         zone_diffusion_type=v0.ZoneDiffusionType.REGION.value,
         zone_diffusion_code="44",
         zone_diffusion_nom="Grand Est",
+    )
+
+    response = api_client.get(
+        url,
+        params={
+            "code_commune": DUNKERQUE["code_insee"],  # Dunkerque
+        },
+    )
+
+    assert response.status_code == 200
+    resp_data = response.json()
+    assert_paginated_response_data(resp_data, total=1)
+    assert resp_data["items"][0]["service"]["id"] == service_1.id
+
+
+@pytest.mark.parametrize("schema_version", ["v1"])
+@pytest.mark.parametrize("path", ["/search/services"])
+@pytest.mark.with_token
+def test_search_services_with_zone_diffusion_region(api_client, url, service_factory):
+    service_1 = service_factory(
+        commune="Dunkerque",
+        code_insee=DUNKERQUE["code_insee"],
+        latitude=51.034368,
+        longitude=2.376776,
+        modes_accueil=[v0.ModeAccueil.EN_PRESENTIEL.value],
+        zone_eligibilite=["59"],  # Nord
+    )
+    service_factory(
+        commune="Maubeuge",
+        code_insee=MAUBEUGE["code_insee"],
+        latitude=50.277500,
+        longitude=3.973400,
+        modes_accueil=[v0.ModeAccueil.EN_PRESENTIEL.value],
+        zone_eligibilite=["44"],  # Grand Est
     )
 
     response = api_client.get(

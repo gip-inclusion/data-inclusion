@@ -26,6 +26,8 @@ from data_inclusion.schema import v0, v1
 
 logger = logging.getLogger(__name__)
 
+CODE_INSEE_FRANCE = "99100"
+
 
 class ServiceLayer[
     Thematique: v0.Thematique | v1.Thematique,
@@ -204,6 +206,40 @@ class ServiceLayer[
         )
         return query
 
+    def _filter_zone(
+        self, commune_instance: Commune, query: sqla.Select
+    ) -> sqla.Select:
+        return query.filter(
+            sqla.or_(
+                self.models.Service.zone_diffusion_type.is_(None),
+                self.models.Service.zone_diffusion_type
+                == self.schema.ZoneDiffusionType.PAYS.value,
+                sqla.and_(
+                    self.models.Service.zone_diffusion_type
+                    == self.schema.ZoneDiffusionType.COMMUNE.value,
+                    self.models.Service.zone_diffusion_code == commune_instance.code,
+                ),
+                sqla.and_(
+                    self.models.Service.zone_diffusion_type
+                    == self.schema.ZoneDiffusionType.EPCI.value,
+                    sqla.literal(commune_instance.siren_epci).contains(
+                        self.models.Service.zone_diffusion_code
+                    ),
+                ),
+                sqla.and_(
+                    self.models.Service.zone_diffusion_type
+                    == self.schema.ZoneDiffusionType.DEPARTEMENT.value,
+                    self.models.Service.zone_diffusion_code
+                    == commune_instance.departement,
+                ),
+                sqla.and_(
+                    self.models.Service.zone_diffusion_type
+                    == self.schema.ZoneDiffusionType.REGION.value,
+                    self.models.Service.zone_diffusion_code == commune_instance.region,
+                ),
+            )
+        )
+
     def filter_services(
         self,
         query: sqla.Select,
@@ -347,39 +383,7 @@ class ServiceLayer[
         query = self.filter_restricted(query, request)
 
         if commune_instance is not None:
-            # filter by zone de diffusion
-            query = query.filter(
-                sqla.or_(
-                    self.models.Service.zone_diffusion_type.is_(None),
-                    self.models.Service.zone_diffusion_type
-                    == self.schema.ZoneDiffusionType.PAYS.value,
-                    sqla.and_(
-                        self.models.Service.zone_diffusion_type
-                        == self.schema.ZoneDiffusionType.COMMUNE.value,
-                        self.models.Service.zone_diffusion_code
-                        == commune_instance.code,
-                    ),
-                    sqla.and_(
-                        self.models.Service.zone_diffusion_type
-                        == self.schema.ZoneDiffusionType.EPCI.value,
-                        sqla.literal(commune_instance.siren_epci).contains(
-                            self.models.Service.zone_diffusion_code
-                        ),
-                    ),
-                    sqla.and_(
-                        self.models.Service.zone_diffusion_type
-                        == self.schema.ZoneDiffusionType.DEPARTEMENT.value,
-                        self.models.Service.zone_diffusion_code
-                        == commune_instance.departement,
-                    ),
-                    sqla.and_(
-                        self.models.Service.zone_diffusion_type
-                        == self.schema.ZoneDiffusionType.REGION.value,
-                        self.models.Service.zone_diffusion_code
-                        == commune_instance.region,
-                    ),
-                )
-            )
+            query = self._filter_zone(commune_instance, query)
 
             src_geometry = sqla.cast(
                 geoalchemy2.functions.ST_MakePoint(
@@ -586,6 +590,25 @@ class ServiceLayerV1(
             )
 
         return query
+
+    def _filter_zone(
+        self, commune_instance: Commune, query: sqla.Select
+    ) -> sqla.Select:
+        return query.filter(
+            sqla.or_(
+                self.models.Service.zone_eligibilite.is_(None),
+                self.models.Service.zone_eligibilite.op("&&")(
+                    sqla.literal(
+                        [
+                            commune_instance.code,
+                            commune_instance.departement,
+                            commune_instance.siren_epci,
+                            CODE_INSEE_FRANCE,
+                        ]
+                    )
+                ),
+            )
+        )
 
     def list_structures(
         self,
