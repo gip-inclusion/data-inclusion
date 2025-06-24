@@ -135,9 +135,7 @@ class ServiceFactory(factory.alchemy.SQLAlchemyModelFactory):
     modes_mobilisation = None
     mobilisation_precisions = None
     mobilisable_par = None
-    zone_diffusion_type = None
-    zone_diffusion_code = None
-    zone_diffusion_nom = None
+    zone_eligibilite = None
     nombre_semaines = 1
     volume_horaire_hebdomadaire = 1
     score_qualite = 0.5

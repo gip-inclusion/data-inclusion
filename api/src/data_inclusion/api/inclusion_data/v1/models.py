@@ -123,11 +123,10 @@ class Service(HasAddress, Base):
     telephone: Mapped[str | None]
     thematiques: Mapped[list[str] | None]
     types: Mapped[list[str] | None]
-    zone_diffusion_code: Mapped[str | None]
-    zone_diffusion_nom: Mapped[str | None]
-    zone_diffusion_type: Mapped[str | None]
     score_qualite: Mapped[float]
     volume_horaire_hebdomadaire: Mapped[float | None]
+    zone_eligibilite: Mapped[list[str] | None]
+    description: Mapped[str | None]
     nombre_semaines: Mapped[int | None]
 
     commune_: Mapped[Commune] = relationship(back_populates="services_v1")
