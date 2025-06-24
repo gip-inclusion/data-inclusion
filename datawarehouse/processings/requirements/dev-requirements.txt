@@ -26,7 +26,7 @@ charset-normalizer==3.4.2
     # via requests
 colorama==0.4.6
     # via tox
-data-inclusion-schema==1.0.0a5
+data-inclusion-schema==1.0.0a6
     # via data-inclusion-processings (pyproject.toml)
 datetime-distance==0.1.3
     # via dedupe-variable-datetime

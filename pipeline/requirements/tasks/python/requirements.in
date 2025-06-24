@@ -5,7 +5,7 @@ sentry-sdk
 
 2captcha-python
 beautifulsoup4
-data-inclusion-schema==1.0.0a5
+data-inclusion-schema==1.0.0a6
 furl
 GeoAlchemy2
 geopandas
