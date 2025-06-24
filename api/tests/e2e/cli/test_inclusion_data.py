@@ -52,6 +52,7 @@ def dataset_path(structures_df, services_df, tmpdir):
                         "publics": ["adultes"],
                         "publics_precisions": "adultes en bonne santé",
                         "score_qualite_v1": 0.8,
+                        "zone_eligibilite": None,
                         **v0.Service(
                             source="foo",
                             id="1",
