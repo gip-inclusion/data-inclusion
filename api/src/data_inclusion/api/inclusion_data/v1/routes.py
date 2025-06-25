@@ -157,7 +157,7 @@ def list_services_endpoint(
     publics: filters.ProfilsFilter[schema.Public] = None,
     recherche_public: filters.RecherchePublicFilter = None,
     modes_accueil: filters.ModesAccueilFilter[schema.ModeAccueil] = None,
-    types: filters.ServiceTypesFilter[schema.TypologieService] = None,
+    types: filters.ServiceTypesFilter[schema.TypeService] = None,
     score_qualite_minimum: filters.ScoreQualiteMinimumFilter = None,
 ):
     region = get_region_by_code_or_slug(code=code_region, slug=slug_region)
@@ -249,7 +249,7 @@ def search_services_endpoint(
     modes_accueil: filters.ModesAccueilFilter[schema.ModeAccueil] = None,
     publics: filters.PublicsFilter[schema.Public] = None,
     recherche_public: filters.RecherchePublicFilter = None,
-    types: filters.ServiceTypesFilter[schema.TypologieService] = None,
+    types: filters.ServiceTypesFilter[schema.TypeService] = None,
     score_qualite_minimum: filters.ScoreQualiteMinimumFilter = None,
     exclure_doublons: filters.ExclureDoublonsServicesFilter = False,
 ):

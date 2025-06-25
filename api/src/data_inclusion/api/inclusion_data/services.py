@@ -33,7 +33,7 @@ class ServiceLayer[
     Thematique: v0.Thematique | v1.Thematique,
     Frais: v0.Frais | v1.Frais,
     Profil: v0.Profil | v1.Public,
-    TypologieService: v0.TypologieService | v1.TypologieService,
+    TypeService: v0.TypologieService | v1.TypeService,
     TypologieStructure: v0.TypologieStructure | v1.TypologieStructure,
     LabelNational: v0.LabelNational | v1.LabelNational,
     ModeAccueil: v0.ModeAccueil | v1.ModeAccueil,
@@ -249,7 +249,7 @@ class ServiceLayer[
         profils: list[Profil] | None = None,
         profils_search: str | None = None,
         modes_accueil: list[ModeAccueil] | None = None,
-        types: list[TypologieService] | None = None,
+        types: list[TypeService] | None = None,
         score_qualite_minimum: float | None = None,
     ) -> sqla.Select:
         if sources is not None:
@@ -319,7 +319,7 @@ class ServiceLayer[
         profils: list[Profil] | None = None,
         recherche_public: str | None = None,
         modes_accueil: list[ModeAccueil] | None = None,
-        types: list[TypologieService] | None = None,
+        types: list[TypeService] | None = None,
         score_qualite_minimum: float | None = None,
     ):
         query = (
@@ -370,7 +370,7 @@ class ServiceLayer[
         modes_accueil: list[ModeAccueil] | None = None,
         profils: list[Profil] | None = None,
         profils_search: str | None = None,
-        types: list[TypologieService] | None = None,
+        types: list[TypeService] | None = None,
         search_point: str | None = None,
         score_qualite_minimum: float | None = None,
         deduplicate: bool | None = False,
@@ -511,7 +511,7 @@ class ServiceLayerV1(
         v1.Thematique,
         v1.Frais,
         v1.Public,
-        v1.TypologieService,
+        v1.TypeService,
         v1.TypologieStructure,
         v1.LabelNational,
         v1.ModeAccueil,
@@ -532,7 +532,7 @@ class ServiceLayerV1(
         profils: list[v1.Public] | None = None,
         profils_search: str | None = None,
         modes_accueil: list[v1.ModeAccueil] | None = None,
-        types: list[v1.TypologieService] | None = None,
+        types: list[v1.TypeService] | None = None,
         score_qualite_minimum: float | None = None,
     ) -> sqla.Select:
         if sources is not None:
@@ -568,7 +568,9 @@ class ServiceLayerV1(
             )
 
         if types is not None:
-            query = self._filter_array_field(query, self.models.Service, "types", types)
+            query = query.filter(
+                self.models.Service.type == sqla.any_(sqla.literal(types))
+            )
 
         if score_qualite_minimum is not None:
             query = query.filter(

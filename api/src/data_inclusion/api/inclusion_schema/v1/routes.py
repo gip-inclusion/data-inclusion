@@ -26,9 +26,9 @@ for name, model, summary in [
     ("publics", v1.Public, "Récupérer le référentiel des publics"),
     ("thematiques", v1.Thematique, "Récupérer le référentiel des thématiques"),
     (
-        "typologies-services",
-        v1.TypologieService,
-        "Récupérer le référentiel des typologies de services",
+        "types-services",
+        v1.TypeService,
+        "Récupérer le référentiel des types de services",
     ),
     (
         "typologies-structures",

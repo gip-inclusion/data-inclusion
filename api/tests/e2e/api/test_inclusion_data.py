@@ -363,7 +363,7 @@ def test_list_services_unauthenticated(api_client, schema_version):
                     structure_id="much-mention",
                     telephone="0102030405",
                     thematiques=["choisir-un-metier"],
-                    types=["formation"],
+                    type="formation",
                     zone_eligibilite=None,
                     volume_horaire_hebdomadaire=1,
                     nombre_semaines=1,
@@ -706,9 +706,9 @@ def test_can_filter_services_by_profils(
 
 
 @pytest.mark.with_token
-@pytest.mark.parametrize("schema_version", ["v0", "v1"])
+@pytest.mark.parametrize("schema_version", ["v0"])
 @pytest.mark.parametrize("path", ["/services", "/search/services"])
-def test_list_services_by_types(api_client, url, service_factory):
+def test_list_services_by_types_v0(api_client, url, service_factory):
     service_1 = service_factory(types=[v0.TypologieService.ACCUEIL.value])
     service_2 = service_factory(types=[v0.TypologieService.ACCOMPAGNEMENT.value])
     service_factory(types=[v0.TypologieService.AIDE_FINANCIERE.value])
@@ -735,6 +735,41 @@ def test_list_services_by_types(api_client, url, service_factory):
         url,
         params={
             "types": v0.TypologieService.ATELIER.value,
+        },
+    )
+    assert_paginated_response_data(response.json(), total=0)
+
+
+@pytest.mark.with_token
+@pytest.mark.parametrize("schema_version", ["v1"])
+@pytest.mark.parametrize("path", ["/services", "/search/services"])
+def test_list_services_by_types(api_client, url, service_factory):
+    service_1 = service_factory(type=v1.TypeService.INFORMATION.value)
+    service_2 = service_factory(type=v1.TypeService.ACCOMPAGNEMENT.value)
+    service_factory(type=v1.TypeService.AIDE_FINANCIERE.value)
+
+    response = api_client.get(
+        url,
+        params={
+            "types": [
+                v1.TypeService.INFORMATION.value,
+                v1.TypeService.ACCOMPAGNEMENT.value,
+            ],
+        },
+    )
+
+    assert response.status_code == 200
+    resp_data = response.json()
+    assert_paginated_response_data(resp_data, total=2)
+    assert {d["id"] for d in list_resources_data(resp_data)} == {
+        service_1.id,
+        service_2.id,
+    }
+
+    response = api_client.get(
+        url,
+        params={
+            "types": v1.TypeService.ATELIER.value,
         },
     )
     assert_paginated_response_data(response.json(), total=0)
