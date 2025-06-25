@@ -87,20 +87,19 @@ class Service(HasAddress, Base):
     structure: Mapped[Structure] = relationship(back_populates="services")
 
     # service data
+    conditions_acces: Mapped[str | None]
     contact_nom_prenom: Mapped[str | None]
     courriel: Mapped[str | None]
     date_maj: Mapped[date | None]
     frais: Mapped[str | None]
     frais_precisions: Mapped[str | None]
     id: Mapped[str]
-    justificatifs: Mapped[list[str] | None]
     modes_accueil: Mapped[list[str] | None]
     modes_mobilisation: Mapped[list[str] | None]
     mobilisation_precisions: Mapped[str | None]
     mobilisable_par: Mapped[list[str] | None]
     lien_mobilisation: Mapped[str | None]
     nom: Mapped[str]
-    pre_requis: Mapped[list[str] | None]
     description: Mapped[str | None]
     publics: Mapped[list[str] | None]
     publics_precisions: Mapped[str | None]

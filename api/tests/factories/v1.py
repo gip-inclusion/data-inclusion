@@ -109,11 +109,10 @@ class ServiceFactory(factory.alchemy.SQLAlchemyModelFactory):
         getter=lambda v: [v.value],
     )
     publics_precisions = factory.Faker("text", max_nb_chars=20, locale="fr_FR")
-    pre_requis = []
-    justificatifs = []
     commune = factory.Faker("city", locale="fr_FR")
     code_postal = factory.Faker("postcode")
     code_insee = "59350"
+    conditions_acces = factory.Faker("text", max_nb_chars=20, locale="fr_FR")
     adresse = factory.Faker("street_address", locale="fr_FR")
     complement_adresse = None
     longitude = factory.Faker("longitude")

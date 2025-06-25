@@ -42,6 +42,7 @@ def dataset_path(structures_df, services_df, tmpdir):
                         # NOTE(vperron): I like that we gradually add the v1 fields
                         # here and keep the **v0.Service below to attest the presence
                         # of the v0 fields.
+                        "conditions_acces": "Etre plutôt grand",
                         "description": None,
                         "frais_v1": "payant",
                         "frais_precisions": "100 balles et un mars",

@@ -82,7 +82,7 @@
         "code_postal": "92950",
         "commune": "Sainte Gabriel",
         "complement_adresse": null,
-        "conditions_acces": null,
+        "conditions_acces": "Savoir lire et écrire",
         "contact_nom_prenom": "Thibaut de Michaud",
         "courriel": "michelgerard@example.net",
         "date_maj": "2023-01-01",
