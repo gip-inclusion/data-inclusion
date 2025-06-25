@@ -121,7 +121,7 @@ class Service(HasAddress, Base):
     structure_id: Mapped[str]
     telephone: Mapped[str | None]
     thematiques: Mapped[list[str] | None]
-    types: Mapped[list[str] | None]
+    type: Mapped[str | None]
     score_qualite: Mapped[float]
     volume_horaire_hebdomadaire: Mapped[float | None]
     zone_eligibilite: Mapped[list[str] | None]

@@ -83,12 +83,12 @@ class ServiceFactory(factory.alchemy.SQLAlchemyModelFactory):
     source = factory.Iterator(["dora", "emplois-de-linclusion"])
     nom = factory.Faker("company", locale="fr_FR")
     description = factory.Faker("sentence", nb_words=100, locale="fr_FR")
-    types = factory.Iterator(
+    type = factory.Iterator(
         [
-            v1.TypologieService.FORMATION,
-            v1.TypologieService.NUMÉRIQUE,
+            v1.TypeService.FORMATION,
+            v1.TypeService.ACCOMPAGNEMENT,
+            v1.TypeService.INFORMATION,
         ],
-        getter=lambda v: [v.value],
     )
     thematiques = factory.Iterator(
         [

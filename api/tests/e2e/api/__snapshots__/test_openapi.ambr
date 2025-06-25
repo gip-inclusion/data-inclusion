@@ -715,6 +715,20 @@
           "title": "Thematique",
           "type": "string"
         },
+        "TypeService": {
+          "description": "Types de services",
+          "enum": [
+            "accompagnement",
+            "aide-financiere",
+            "aide-materielle",
+            "atelier",
+            "financement",
+            "formation",
+            "information"
+          ],
+          "title": "TypeService",
+          "type": "string"
+        },
         "TypologieService": {
           "description": "Typologies de services",
           "enum": [
@@ -3594,7 +3608,7 @@
                   "type": "null"
                 }
               ],
-              "description": "Modes de mobilisation de l’offre de service. Les valeurs proviennent d’un référentiel disponible sur notre documentation.",
+              "description": "Modes de mobilisation de l’offre de service.",
               "examples": [
                 "envoyer-un-courriel"
               ],
@@ -3710,20 +3724,15 @@
               ],
               "title": "Thematiques"
             },
-            "types": {
+            "type": {
               "anyOf": [
                 {
-                  "items": {
-                    "$ref": "#/components/schemas/TypologieService"
-                  },
-                  "type": "array",
-                  "uniqueItems": true
+                  "$ref": "#/components/schemas/TypeService"
                 },
                 {
                   "type": "null"
                 }
-              ],
-              "title": "Types"
+              ]
             },
             "volume_horaire_hebdomadaire": {
               "anyOf": [
@@ -4682,7 +4691,7 @@
                   "type": "null"
                 }
               ],
-              "description": "Modes de mobilisation de l’offre de service. Les valeurs proviennent d’un référentiel disponible sur notre documentation.",
+              "description": "Modes de mobilisation de l’offre de service.",
               "examples": [
                 "envoyer-un-courriel"
               ],
@@ -4795,20 +4804,15 @@
               ],
               "title": "Thematiques"
             },
-            "types": {
+            "type": {
               "anyOf": [
                 {
-                  "items": {
-                    "$ref": "#/components/schemas/TypologieService"
-                  },
-                  "type": "array",
-                  "uniqueItems": true
+                  "$ref": "#/components/schemas/TypeService"
                 },
                 {
                   "type": "null"
                 }
-              ],
-              "title": "Types"
+              ]
             },
             "volume_horaire_hebdomadaire": {
               "anyOf": [
@@ -7117,9 +7121,9 @@
           ]
         }
       },
-      "/api/v1/doc/typologies-services": {
+      "/api/v1/doc/types-services": {
         "get": {
-          "operationId": "as_dict_list_api_v1_doc_typologies_services_get",
+          "operationId": "as_dict_list_api_v1_doc_types_services_get",
           "responses": {
             "200": {
               "content": {
@@ -7128,7 +7132,7 @@
                     "items": {
                       "$ref": "#/components/schemas/FrameworkValue"
                     },
-                    "title": "Response As Dict List Api V1 Doc Typologies Services Get",
+                    "title": "Response As Dict List Api V1 Doc Types Services Get",
                     "type": "array"
                   }
                 }
@@ -7136,7 +7140,7 @@
               "description": "Successful Response"
             }
           },
-          "summary": "Récupérer le référentiel des typologies de services",
+          "summary": "Récupérer le référentiel des types de services",
           "tags": [
             "v1 | Documentation"
           ]
@@ -7297,7 +7301,7 @@
               "schema": {
                 "description": "Une liste de typologies de service.\n                Chaque résultat renvoyé a (au moins) une typologie dans cette liste.",
                 "items": {
-                  "$ref": "#/components/schemas/TypologieService"
+                  "$ref": "#/components/schemas/TypeService"
                 },
                 "title": "Types",
                 "type": "array"
@@ -7530,7 +7534,7 @@
               "schema": {
                 "description": "Une liste de typologies de service.\n                Chaque résultat renvoyé a (au moins) une typologie dans cette liste.",
                 "items": {
-                  "$ref": "#/components/schemas/TypologieService"
+                  "$ref": "#/components/schemas/TypeService"
                 },
                 "title": "Types",
                 "type": "array"

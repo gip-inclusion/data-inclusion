@@ -25,7 +25,7 @@ MODELS_MAPPING_V1 = {
     "personnes-mobilisatrice": v1.PersonneMobilisatrice,
     "publics": v1.Public,
     "thematiques": v1.Thematique,
-    "typologies-services": v1.TypologieService,
+    "types-services": v1.TypeService,
     "typologies-structures": v1.TypologieStructure,
 }
 
@@ -68,7 +68,7 @@ def test_list_collections_v0(api_client, collection):
         "personnes-mobilisatrice",
         "publics",
         "thematiques",
-        "typologies-services",
+        "types-services",
         "typologies-structures",
     ],
 )

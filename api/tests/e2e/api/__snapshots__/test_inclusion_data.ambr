@@ -117,9 +117,7 @@
         "thematiques": [
           "choisir-un-metier"
         ],
-        "types": [
-          "formation"
-        ],
+        "type": "formation",
         "volume_horaire_hebdomadaire": 1.0,
         "zone_eligibilite": null
       }
