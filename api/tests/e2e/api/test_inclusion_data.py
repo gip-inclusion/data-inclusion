@@ -337,13 +337,13 @@ def test_list_services_unauthenticated(api_client, schema_version):
                     code_postal="92950",
                     commune="Sainte Gabriel",
                     complement_adresse=None,
+                    conditions_acces="Savoir lire et écrire",
                     contact_nom_prenom="Thibaut de Michaud",
                     courriel="michelgerard@example.net",
                     date_maj="2023-01-01",
                     frais_precisions="Camarade il.",
                     frais="gratuit",
                     id="be-water-scene-wind",
-                    justificatifs=[],
                     latitude=-77.857573,
                     longitude=-62.54684,
                     modes_accueil=["a-distance"],
@@ -352,7 +352,6 @@ def test_list_services_unauthenticated(api_client, schema_version):
                     mobilisable_par=["usagers"],
                     lien_mobilisation="https://teixeira.fr/",
                     nom="Munoz",
-                    pre_requis=[],
                     description="""Lorem ipsum dolor sit amet, consectetur adipiscing
                     elit, sed do eiusmod tempor incididunt ut labore et dolore magna
                     aliqua.""",
