@@ -715,6 +715,19 @@
           "title": "Thematique",
           "type": "string"
         },
+        "TypeService": {
+          "description": "Types de services",
+          "enum": [
+            "accompagnement",
+            "aide-financiere",
+            "aide-materielle",
+            "atelier",
+            "formation",
+            "information"
+          ],
+          "title": "TypeService",
+          "type": "string"
+        },
         "TypologieService": {
           "description": "Typologies de services",
           "enum": [
@@ -3060,7 +3073,7 @@
                   "type": "null"
                 }
               ],
-              "description": "Lien la page Accesslibre référençant le niveau d’accessibilité du lieu de réalisation du service.\n\nDevrait être un lien vers [Accesslibre](https://acceslibre.beta.gouv.fr/).",
+              "description": "Lien vers la page Accesslibre référençant le niveau d’accessibilité de la structure.\n\nLe format attendu est donc un lien vers [Accesslibre](https://acceslibre.beta.gouv.fr/).",
               "examples": [
                 "https://acceslibre.beta.gouv.fr/app/17-la-greve-sur-mignon/a/mairie/erp/mairie-la-greve-sur-mignon/"
               ],
@@ -3475,7 +3488,7 @@
                   "type": "null"
                 }
               ],
-              "description": "Horaires d’accueil du public pour ce service.\n\nSi le champ n’est pas renseigné, les horaires d’accueil de la structure peuvent être utilisés.\n\nDoit être au format OpenStreetMap Opening Hours.\n\n[Spécification du format OSM Opening Hours](https://wiki.openstreetmap.org/wiki/FR:Key:opening_hours).\n\n[Outil d’aide à la saisie](https://projets.pavie.info/yohours/).",
+              "description": "Horaires d’accueil du public pour ce service.\n\nSi le champ n’est pas renseigné, les horaires d’accueil de la structure peuvent être utilisés.\n\nDoit être au format [OpenStreetMap Opening Hours](https://wiki.openstreetmap.org/wiki/FR:Key:opening_hours).\n\n[Outil d’aide à la saisie](https://projets.pavie.info/yohours/).",
               "examples": [
                 "Mo-Fr 08:30-12:30; PH off"
               ],
@@ -3594,7 +3607,7 @@
                   "type": "null"
                 }
               ],
-              "description": "Modes de mobilisation de l’offre de service. Les valeurs proviennent d’un référentiel disponible sur notre documentation.",
+              "description": "Modes de mobilisation de l’offre de service.",
               "examples": [
                 "envoyer-un-courriel"
               ],
@@ -3710,20 +3723,19 @@
               ],
               "title": "Thematiques"
             },
-            "types": {
+            "type": {
               "anyOf": [
                 {
-                  "items": {
-                    "$ref": "#/components/schemas/TypologieService"
-                  },
-                  "type": "array",
-                  "uniqueItems": true
+                  "$ref": "#/components/schemas/TypeService"
                 },
                 {
                   "type": "null"
                 }
               ],
-              "title": "Types"
+              "description": "Type de service.\n\nLes valeurs proviennent d’un référentiel disponible sur notre documentation.",
+              "examples": [
+                "accompagnement"
+              ]
             },
             "volume_horaire_hebdomadaire": {
               "anyOf": [
@@ -3753,21 +3765,15 @@
                         "type": "string"
                       },
                       {
-                        "maxLength": 9,
-                        "minLength": 9,
-                        "pattern": "^\\d{9}$",
-                        "type": "string"
-                      },
-                      {
                         "maxLength": 3,
                         "minLength": 2,
                         "pattern": "^\\w{2,3}$",
                         "type": "string"
                       },
                       {
-                        "maxLength": 2,
-                        "minLength": 2,
-                        "pattern": "^\\d{2}$",
+                        "maxLength": 9,
+                        "minLength": 9,
+                        "pattern": "^\\d{9}$",
                         "type": "string"
                       },
                       {
@@ -3793,10 +3799,10 @@
                   "type": "null"
                 }
               ],
-              "description": "Zone géographique d’éligibilité du service.\n\nContient une liste de codes issus du Code Officiel Géographique maintenu par l’INSEE.\n\nChaque code dans cette liste peut être un code commune, un code département, un code EPCI ou un code pays.\n\nSi le service est éligible à l’ensemble d’une région, lister les codes des departements de cette région.\n\nSi le service est éligible sur l’ensemble du territoire national, utiliser le code `france` (France) ou le code pays `99100`.\n\ndata·inclusion vérifie la validité des codes fournis. Les codes invalides sont supprimés de la liste.\n\n[Le Code Officiel Géographique de l’INSEE](https://www.insee.fr/fr/information/2560452).\n\n[Outil de recherche des codes](https://www.insee.fr/fr/recherche/recherche-geographique).",
+              "description": "Zone géographique d’éligibilité du service.\n\nContient une liste de codes issus du [Code Officiel Géographique](https://www.insee.fr/fr/information/2560452) maintenu par l’INSEE.\n\nChaque code dans cette liste peut être un code commune, un code département, un code EPCI ou un code pays.\n\nSi le service est éligible à l’ensemble d’une région, lister les codes des departements de cette région.\n\nSi le service est éligible sur l’ensemble du territoire national, utiliser le code `france` (France) ou le code pays `99100`.\n\ndata·inclusion vérifie la validité des codes fournis. Les codes invalides sont supprimés de la liste.\n\n[Le Code Officiel Géographique de l’INSEE]().",
               "examples": [
                 [
-                  "france"
+                  "75056"
                 ],
                 [
                   "2A",
@@ -3809,6 +3815,9 @@
                   "2A",
                   "2B",
                   "200093201"
+                ],
+                [
+                  "france"
                 ]
               ],
               "title": "Zone d’éligibilité"
@@ -3841,7 +3850,7 @@
                   "type": "null"
                 }
               ],
-              "description": "Lien la page Accesslibre référençant le niveau d’accessibilité du lieu de réalisation du service.\n\nDevrait être un lien vers [Accesslibre](https://acceslibre.beta.gouv.fr/).",
+              "description": "Lien vers la page Accesslibre référençant le niveau d’accessibilité de la structure.\n\nLe format attendu est donc un lien vers [Accesslibre](https://acceslibre.beta.gouv.fr/).",
               "examples": [
                 "https://acceslibre.beta.gouv.fr/app/17-la-greve-sur-mignon/a/mairie/erp/mairie-la-greve-sur-mignon/"
               ],
@@ -4131,7 +4140,7 @@
                   "type": "null"
                 }
               ],
-              "description": "Lien la page Accesslibre référençant le niveau d’accessibilité du lieu de réalisation du service.\n\nDevrait être un lien vers [Accesslibre](https://acceslibre.beta.gouv.fr/).",
+              "description": "Lien vers la page Accesslibre référençant le niveau d’accessibilité de la structure.\n\nLe format attendu est donc un lien vers [Accesslibre](https://acceslibre.beta.gouv.fr/).",
               "examples": [
                 "https://acceslibre.beta.gouv.fr/app/17-la-greve-sur-mignon/a/mairie/erp/mairie-la-greve-sur-mignon/"
               ],
@@ -4563,7 +4572,7 @@
                   "type": "null"
                 }
               ],
-              "description": "Horaires d’accueil du public pour ce service.\n\nSi le champ n’est pas renseigné, les horaires d’accueil de la structure peuvent être utilisés.\n\nDoit être au format OpenStreetMap Opening Hours.\n\n[Spécification du format OSM Opening Hours](https://wiki.openstreetmap.org/wiki/FR:Key:opening_hours).\n\n[Outil d’aide à la saisie](https://projets.pavie.info/yohours/).",
+              "description": "Horaires d’accueil du public pour ce service.\n\nSi le champ n’est pas renseigné, les horaires d’accueil de la structure peuvent être utilisés.\n\nDoit être au format [OpenStreetMap Opening Hours](https://wiki.openstreetmap.org/wiki/FR:Key:opening_hours).\n\n[Outil d’aide à la saisie](https://projets.pavie.info/yohours/).",
               "examples": [
                 "Mo-Fr 08:30-12:30; PH off"
               ],
@@ -4682,7 +4691,7 @@
                   "type": "null"
                 }
               ],
-              "description": "Modes de mobilisation de l’offre de service. Les valeurs proviennent d’un référentiel disponible sur notre documentation.",
+              "description": "Modes de mobilisation de l’offre de service.",
               "examples": [
                 "envoyer-un-courriel"
               ],
@@ -4795,20 +4804,19 @@
               ],
               "title": "Thematiques"
             },
-            "types": {
+            "type": {
               "anyOf": [
                 {
-                  "items": {
-                    "$ref": "#/components/schemas/TypologieService"
-                  },
-                  "type": "array",
-                  "uniqueItems": true
+                  "$ref": "#/components/schemas/TypeService"
                 },
                 {
                   "type": "null"
                 }
               ],
-              "title": "Types"
+              "description": "Type de service.\n\nLes valeurs proviennent d’un référentiel disponible sur notre documentation.",
+              "examples": [
+                "accompagnement"
+              ]
             },
             "volume_horaire_hebdomadaire": {
               "anyOf": [
@@ -4838,21 +4846,15 @@
                         "type": "string"
                       },
                       {
-                        "maxLength": 9,
-                        "minLength": 9,
-                        "pattern": "^\\d{9}$",
-                        "type": "string"
-                      },
-                      {
                         "maxLength": 3,
                         "minLength": 2,
                         "pattern": "^\\w{2,3}$",
                         "type": "string"
                       },
                       {
-                        "maxLength": 2,
-                        "minLength": 2,
-                        "pattern": "^\\d{2}$",
+                        "maxLength": 9,
+                        "minLength": 9,
+                        "pattern": "^\\d{9}$",
                         "type": "string"
                       },
                       {
@@ -4878,10 +4880,10 @@
                   "type": "null"
                 }
               ],
-              "description": "Zone géographique d’éligibilité du service.\n\nContient une liste de codes issus du Code Officiel Géographique maintenu par l’INSEE.\n\nChaque code dans cette liste peut être un code commune, un code département, un code EPCI ou un code pays.\n\nSi le service est éligible à l’ensemble d’une région, lister les codes des departements de cette région.\n\nSi le service est éligible sur l’ensemble du territoire national, utiliser le code `france` (France) ou le code pays `99100`.\n\ndata·inclusion vérifie la validité des codes fournis. Les codes invalides sont supprimés de la liste.\n\n[Le Code Officiel Géographique de l’INSEE](https://www.insee.fr/fr/information/2560452).\n\n[Outil de recherche des codes](https://www.insee.fr/fr/recherche/recherche-geographique).",
+              "description": "Zone géographique d’éligibilité du service.\n\nContient une liste de codes issus du [Code Officiel Géographique](https://www.insee.fr/fr/information/2560452) maintenu par l’INSEE.\n\nChaque code dans cette liste peut être un code commune, un code département, un code EPCI ou un code pays.\n\nSi le service est éligible à l’ensemble d’une région, lister les codes des departements de cette région.\n\nSi le service est éligible sur l’ensemble du territoire national, utiliser le code `france` (France) ou le code pays `99100`.\n\ndata·inclusion vérifie la validité des codes fournis. Les codes invalides sont supprimés de la liste.\n\n[Le Code Officiel Géographique de l’INSEE]().",
               "examples": [
                 [
-                  "france"
+                  "75056"
                 ],
                 [
                   "2A",
@@ -4894,6 +4896,9 @@
                   "2A",
                   "2B",
                   "200093201"
+                ],
+                [
+                  "france"
                 ]
               ],
               "title": "Zone d’éligibilité"
@@ -5692,7 +5697,7 @@
                   "type": "null"
                 }
               ],
-              "description": "Lien la page Accesslibre référençant le niveau d’accessibilité du lieu de réalisation du service.\n\nDevrait être un lien vers [Accesslibre](https://acceslibre.beta.gouv.fr/).",
+              "description": "Lien vers la page Accesslibre référençant le niveau d’accessibilité de la structure.\n\nLe format attendu est donc un lien vers [Accesslibre](https://acceslibre.beta.gouv.fr/).",
               "examples": [
                 "https://acceslibre.beta.gouv.fr/app/17-la-greve-sur-mignon/a/mairie/erp/mairie-la-greve-sur-mignon/"
               ],
@@ -7117,9 +7122,9 @@
           ]
         }
       },
-      "/api/v1/doc/typologies-services": {
+      "/api/v1/doc/types-services": {
         "get": {
-          "operationId": "as_dict_list_api_v1_doc_typologies_services_get",
+          "operationId": "as_dict_list_api_v1_doc_types_services_get",
           "responses": {
             "200": {
               "content": {
@@ -7128,7 +7133,7 @@
                     "items": {
                       "$ref": "#/components/schemas/FrameworkValue"
                     },
-                    "title": "Response As Dict List Api V1 Doc Typologies Services Get",
+                    "title": "Response As Dict List Api V1 Doc Types Services Get",
                     "type": "array"
                   }
                 }
@@ -7136,7 +7141,7 @@
               "description": "Successful Response"
             }
           },
-          "summary": "Récupérer le référentiel des typologies de services",
+          "summary": "Récupérer le référentiel des types de services",
           "tags": [
             "v1 | Documentation"
           ]
@@ -7297,7 +7302,7 @@
               "schema": {
                 "description": "Une liste de typologies de service.\n                Chaque résultat renvoyé a (au moins) une typologie dans cette liste.",
                 "items": {
-                  "$ref": "#/components/schemas/TypologieService"
+                  "$ref": "#/components/schemas/TypeService"
                 },
                 "title": "Types",
                 "type": "array"
@@ -7530,7 +7535,7 @@
               "schema": {
                 "description": "Une liste de typologies de service.\n                Chaque résultat renvoyé a (au moins) une typologie dans cette liste.",
                 "items": {
-                  "$ref": "#/components/schemas/TypologieService"
+                  "$ref": "#/components/schemas/TypeService"
                 },
                 "title": "Types",
                 "type": "array"
