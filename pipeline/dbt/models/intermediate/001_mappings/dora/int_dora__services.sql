@@ -47,7 +47,8 @@ final AS (
             WHERE di_profil_by_dora_profil.dora_profil = ANY(services.profils)
         ) AS TEXT [])                                      AS "profils",
         LEFT(ARRAY_TO_STRING(services.profils, ', '), 500) AS "profils_precisions",
-        services.recurrence                                AS "recurrence",
+        /* We decided against using dora's recurrence field in the new horaires_accueil field. */
+        NULL                                               AS "recurrence",
         services._di_source_id                             AS "source",
         services.structure_id                              AS "structure_id",
         /* Dora made some changes to the thematics which add '--autre' in some cases.
