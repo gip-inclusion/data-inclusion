@@ -134,6 +134,9 @@ final AS (
         open_services.lieu_id                             AS "structure_id",
         ARRAY[mapping_thematiques.thematique]             AS "thematiques",
         ARRAY['en-presentiel']                            AS "modes_accueil",
+        CAST(NULL AS TEXT [])                             AS "modes_mobilisation",
+        CAST(NULL AS TEXT [])                             AS "mobilisable_par",
+        NULL                                              AS "mobilisation_precisions",
         categories.label                                  AS "nom",
         'https://soliguide.fr/fr/fiche/' || lieux.seo_url AS "lien_source",
         CASE
