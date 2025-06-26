@@ -93,6 +93,9 @@ class Service(HasAddress, Base):
     date_maj: Mapped[date | None]
     frais: Mapped[str | None]
     frais_precisions: Mapped[str | None]
+    # FIXME(vperron) : for now this is not validated against OSM opening hours format
+    # see https://pypi.org/project/opening-hours-py/ when we stop using pl/Python
+    horaires_accueil: Mapped[str | None] = mapped_column("recurrence")
     id: Mapped[str]
     modes_accueil: Mapped[list[str] | None]
     modes_mobilisation: Mapped[list[str] | None]
@@ -116,7 +119,6 @@ class Service(HasAddress, Base):
         TSVECTOR,
         Computed("generate_profils(publics)", persisted=True),
     )
-    recurrence: Mapped[str | None]
     source: Mapped[str]
     structure_id: Mapped[str]
     telephone: Mapped[str | None]
