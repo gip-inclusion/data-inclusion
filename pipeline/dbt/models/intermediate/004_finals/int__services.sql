@@ -2,6 +2,25 @@ WITH services AS (
     SELECT * FROM {{ ref('int__union_services') }}
 ),
 
+map_frais AS (SELECT * FROM {{ ref('_map_frais') }}),
+
+unnested_frais AS (
+    SELECT
+        services._di_surrogate_id,
+        UNNEST(services.frais) AS frais
+    FROM services
+),
+
+frais AS (
+    SELECT
+        unnested_frais._di_surrogate_id,
+        ARRAY_AGG(DISTINCT map_frais.frais_v1) AS frais
+    FROM unnested_frais
+    INNER JOIN map_frais ON unnested_frais.frais = map_frais.frais_v0
+    WHERE map_frais.frais_v1 IS NOT NULL
+    GROUP BY unnested_frais._di_surrogate_id
+),
+
 map_publics AS (SELECT * FROM {{ ref('_map_publics') }}),
 
 unnested_profils AS (
@@ -183,6 +202,11 @@ SELECT
     services.profils_precisions                                                                               AS "publics_precisions",
     services.types                                                                                            AS "types",
     services.frais                                                                                            AS "frais",
+    CASE
+        WHEN frais.frais && ARRAY['payant'] THEN 'payant'
+        WHEN frais.frais && ARRAY['gratuit'] THEN 'gratuit'
+    END                                                                                                       AS "frais_v1",
+    NULLIF(services.frais_autres, '')                                                                         AS "frais_precisions",
     services.page_web                                                                                         AS "page_web",
     services.nombre_semaines                                                                                  AS "nombre_semaines",
     services.volume_horaire_hebdomadaire                                                                      AS "volume_horaire_hebdomadaire",
@@ -217,3 +241,5 @@ LEFT JOIN valid_site_web AS valid_page_web
     ON services.page_web = valid_page_web.input_url
 LEFT JOIN publics
     ON services._di_surrogate_id = publics._di_surrogate_id
+LEFT JOIN frais
+    ON services._di_surrogate_id = frais._di_surrogate_id
