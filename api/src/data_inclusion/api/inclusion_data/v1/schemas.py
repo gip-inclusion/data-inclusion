@@ -15,10 +15,6 @@ class Source(BaseModel):
 class Service(schema.Service):
     model_config = ConfigDict(from_attributes=True, populate_by_name=True)
 
-    # Dont use pydantic's `HttpUrl`, because it would likely trigger validation errors
-    prise_rdv: str | None = None
-    formulaire_en_ligne: str | None = None
-
     score_qualite: Annotated[
         float,
         Field(
@@ -33,10 +29,6 @@ class Service(schema.Service):
 
 class BaseStructure(schema.Structure):
     model_config = ConfigDict(from_attributes=True, populate_by_name=True)
-
-    # Dont use pydantic's `HttpUrl`, because it would likely trigger validation errors
-    site_web: str | None = None
-    accessibilite: str | None = None
 
 
 class DetailedService(Service):

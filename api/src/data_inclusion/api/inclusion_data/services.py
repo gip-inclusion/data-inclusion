@@ -26,12 +26,14 @@ from data_inclusion.schema import v0, v1
 
 logger = logging.getLogger(__name__)
 
+CODE_INSEE_FRANCE = "99100"
+
 
 class ServiceLayer[
     Thematique: v0.Thematique | v1.Thematique,
     Frais: v0.Frais | v1.Frais,
-    Profil: v0.Profil | v1.Profil,
-    TypologieService: v0.TypologieService | v1.TypologieService,
+    Profil: v0.Profil | v1.Public,
+    TypeService: v0.TypologieService | v1.TypeService,
     TypologieStructure: v0.TypologieStructure | v1.TypologieStructure,
     LabelNational: v0.LabelNational | v1.LabelNational,
     ModeAccueil: v0.ModeAccueil | v1.ModeAccueil,
@@ -191,6 +193,53 @@ class ServiceLayer[
                 all_thematiques.update(group)
         return list(all_thematiques)
 
+    def _filter_array_field(self, query, model, field_name, values):
+        filter_stmt = f"""\
+        EXISTS(
+            SELECT
+            FROM unnest({model.__tablename__}.{field_name}) {field_name}
+            WHERE {field_name} = ANY(:{field_name})
+        )
+        """
+        query = query.filter(
+            sqla.text(filter_stmt).bindparams(**{field_name: [f.value for f in values]})
+        )
+        return query
+
+    def _filter_zone(
+        self, commune_instance: Commune, query: sqla.Select
+    ) -> sqla.Select:
+        return query.filter(
+            sqla.or_(
+                self.models.Service.zone_diffusion_type.is_(None),
+                self.models.Service.zone_diffusion_type
+                == self.schema.ZoneDiffusionType.PAYS.value,
+                sqla.and_(
+                    self.models.Service.zone_diffusion_type
+                    == self.schema.ZoneDiffusionType.COMMUNE.value,
+                    self.models.Service.zone_diffusion_code == commune_instance.code,
+                ),
+                sqla.and_(
+                    self.models.Service.zone_diffusion_type
+                    == self.schema.ZoneDiffusionType.EPCI.value,
+                    sqla.literal(commune_instance.siren_epci).contains(
+                        self.models.Service.zone_diffusion_code
+                    ),
+                ),
+                sqla.and_(
+                    self.models.Service.zone_diffusion_type
+                    == self.schema.ZoneDiffusionType.DEPARTEMENT.value,
+                    self.models.Service.zone_diffusion_code
+                    == commune_instance.departement,
+                ),
+                sqla.and_(
+                    self.models.Service.zone_diffusion_type
+                    == self.schema.ZoneDiffusionType.REGION.value,
+                    self.models.Service.zone_diffusion_code == commune_instance.region,
+                ),
+            )
+        )
+
     def filter_services(
         self,
         query: sqla.Select,
@@ -200,11 +249,9 @@ class ServiceLayer[
         profils: list[Profil] | None = None,
         profils_search: str | None = None,
         modes_accueil: list[ModeAccueil] | None = None,
-        types: list[TypologieService] | None = None,
+        types: list[TypeService] | None = None,
         score_qualite_minimum: float | None = None,
     ) -> sqla.Select:
-        """Common filters for services."""
-
         if sources is not None:
             query = query.filter(
                 self.models.Service.source == sqla.any_(sqla.literal(sources))
@@ -220,54 +267,23 @@ class ServiceLayer[
             )
 
         if frais is not None:
-            filter_stmt = f"""\
-            EXISTS(
-                SELECT
-                FROM unnest({self.models.Service.__tablename__}.frais) frais
-                WHERE frais = ANY(:frais)
-            )
-            """
-            query = query.filter(
-                sqla.text(filter_stmt).bindparams(frais=[f.value for f in frais])
-            )
+            query = self._filter_array_field(query, self.models.Service, "frais", frais)
 
         if profils is not None:
-            filter_stmt = f"""\
-            EXISTS(
-                SELECT
-                FROM unnest({self.models.Service.__tablename__}.profils) profils
-                WHERE profils = ANY(:profils)
-            )
-            """
-            query = query.filter(
-                sqla.text(filter_stmt).bindparams(profils=[p.value for p in profils])
+            query = self._filter_array_field(
+                query, self.models.Service, "profils", profils
             )
 
         if modes_accueil is not None:
-            filter_stmt = f"""\
-            EXISTS(
-                SELECT
-                FROM unnest({self.models.Service.__tablename__}.modes_accueil) modes_accueil
-                WHERE modes_accueil = ANY(:modes_accueil)
-            )
-            """  # noqa: E501
-            query = query.filter(
-                sqla.text(filter_stmt).bindparams(
-                    modes_accueil=[m.value for m in modes_accueil]
-                )
+            query = self._filter_array_field(
+                query,
+                self.models.Service,
+                "modes_accueil",
+                modes_accueil,
             )
 
         if types is not None:
-            filter_stmt = f"""\
-            EXISTS(
-                SELECT
-                FROM unnest({self.models.Service.__tablename__}.types) types
-                WHERE types = ANY(:types)
-            )
-            """
-            query = query.filter(
-                sqla.text(filter_stmt).bindparams(types=[t.value for t in types])
-            )
+            query = self._filter_array_field(query, self.models.Service, "types", types)
 
         if score_qualite_minimum is not None:
             query = query.filter(
@@ -303,7 +319,7 @@ class ServiceLayer[
         profils: list[Profil] | None = None,
         recherche_public: str | None = None,
         modes_accueil: list[ModeAccueil] | None = None,
-        types: list[TypologieService] | None = None,
+        types: list[TypeService] | None = None,
         score_qualite_minimum: float | None = None,
     ):
         query = (
@@ -354,7 +370,7 @@ class ServiceLayer[
         modes_accueil: list[ModeAccueil] | None = None,
         profils: list[Profil] | None = None,
         profils_search: str | None = None,
-        types: list[TypologieService] | None = None,
+        types: list[TypeService] | None = None,
         search_point: str | None = None,
         score_qualite_minimum: float | None = None,
         deduplicate: bool | None = False,
@@ -367,39 +383,7 @@ class ServiceLayer[
         query = self.filter_restricted(query, request)
 
         if commune_instance is not None:
-            # filter by zone de diffusion
-            query = query.filter(
-                sqla.or_(
-                    self.models.Service.zone_diffusion_type.is_(None),
-                    self.models.Service.zone_diffusion_type
-                    == self.schema.ZoneDiffusionType.PAYS.value,
-                    sqla.and_(
-                        self.models.Service.zone_diffusion_type
-                        == self.schema.ZoneDiffusionType.COMMUNE.value,
-                        self.models.Service.zone_diffusion_code
-                        == commune_instance.code,
-                    ),
-                    sqla.and_(
-                        self.models.Service.zone_diffusion_type
-                        == self.schema.ZoneDiffusionType.EPCI.value,
-                        sqla.literal(commune_instance.siren_epci).contains(
-                            self.models.Service.zone_diffusion_code
-                        ),
-                    ),
-                    sqla.and_(
-                        self.models.Service.zone_diffusion_type
-                        == self.schema.ZoneDiffusionType.DEPARTEMENT.value,
-                        self.models.Service.zone_diffusion_code
-                        == commune_instance.departement,
-                    ),
-                    sqla.and_(
-                        self.models.Service.zone_diffusion_type
-                        == self.schema.ZoneDiffusionType.REGION.value,
-                        self.models.Service.zone_diffusion_code
-                        == commune_instance.region,
-                    ),
-                )
-            )
+            query = self._filter_zone(commune_instance, query)
 
             src_geometry = sqla.cast(
                 geoalchemy2.functions.ST_MakePoint(
@@ -526,8 +510,8 @@ class ServiceLayerV1(
     ServiceLayer[
         v1.Thematique,
         v1.Frais,
-        v1.Profil,
-        v1.TypologieService,
+        v1.Public,
+        v1.TypeService,
         v1.TypologieStructure,
         v1.LabelNational,
         v1.ModeAccueil,
@@ -535,6 +519,99 @@ class ServiceLayerV1(
     ]
 ):
     schema_version = "v1"
+
+    # NOTE(vperron) : I decided to override the `filter_services` method entirely
+    # as it introduces way less "magic" than having N mini methods, one for every field
+    # that gets overriden.
+    def filter_services(
+        self,
+        query: sqla.Select,
+        sources: list[str] | None = None,
+        thematiques: list[v1.Thematique] | None = None,
+        frais: list[v1.Frais] | None = None,
+        profils: list[v1.Public] | None = None,
+        profils_search: str | None = None,
+        modes_accueil: list[v1.ModeAccueil] | None = None,
+        types: list[v1.TypeService] | None = None,
+        score_qualite_minimum: float | None = None,
+    ) -> sqla.Select:
+        if sources is not None:
+            query = query.filter(
+                self.models.Service.source == sqla.any_(sqla.literal(sources))
+            )
+
+        if thematiques is not None:
+            query = query.filter(
+                sqla.text(
+                    f"{self.models.Service.__tablename__}.thematiques && :thematiques"
+                ).bindparams(
+                    thematiques=self.get_sub_thematiques(thematiques=thematiques),
+                )
+            )
+
+        if frais is not None:
+            query = query.filter(
+                self.models.Service.frais == sqla.any_(sqla.literal(frais))
+            )
+
+        if profils is not None:
+            query = self._filter_array_field(
+                query, self.models.Service, "publics", profils
+            )
+
+        if modes_accueil is not None:
+            query = self._filter_array_field(
+                query,
+                self.models.Service,
+                "modes_accueil",
+                modes_accueil,
+            )
+
+        if types is not None:
+            query = query.filter(
+                self.models.Service.type == sqla.any_(sqla.literal(types))
+            )
+
+        if score_qualite_minimum is not None:
+            query = query.filter(
+                self.models.Service.score_qualite >= score_qualite_minimum
+            )
+
+        if profils_search is not None:
+            publics_only = profils_search.split(" ")
+            publics_only = [p.strip() for p in publics_only]
+            query = query.filter(
+                or_(
+                    self.models.Service.searchable_index_publics.bool_op("@@")(
+                        func.to_tsquery("french_di", " | ".join(publics_only))
+                    ),
+                    self.models.Service.searchable_index_publics_precisions.bool_op(
+                        "@@"
+                    )(func.websearch_to_tsquery("french_di", profils_search)),
+                )
+            )
+
+        return query
+
+    def _filter_zone(
+        self, commune_instance: Commune, query: sqla.Select
+    ) -> sqla.Select:
+        return query.filter(
+            sqla.or_(
+                self.models.Service.zone_eligibilite.is_(None),
+                self.models.Service.zone_eligibilite.op("&&")(
+                    sqla.literal(
+                        [
+                            commune_instance.code,
+                            commune_instance.departement,
+                            commune_instance.region,
+                            commune_instance.siren_epci,
+                            CODE_INSEE_FRANCE,
+                        ]
+                    )
+                ),
+            )
+        )
 
     def list_structures(
         self,

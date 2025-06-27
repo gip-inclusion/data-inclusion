@@ -15,7 +15,7 @@ dependencies = [
     "requests~=2.31",
     "sib-api-v3-sdk",
     "unidecode",
-    "data-inclusion-schema==1.0.0a1",
+    "data-inclusion-schema@git+https://github.com/gip-inclusion/data-inclusion-schema.git@a2766eb20e337a59ee5f636ac6cc95304a0ad544"
 ]
 
 [project.optional-dependencies]

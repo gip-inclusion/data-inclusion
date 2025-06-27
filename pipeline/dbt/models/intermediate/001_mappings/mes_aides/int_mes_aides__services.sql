@@ -1,3 +1,4 @@
+WITH services AS (
 {{
     dbt_utils.union_relations(
         relations=[
@@ -10,6 +11,8 @@
             "modes_accueil": "TEXT[]",
             "modes_orientation_accompagnateur": "TEXT[]",
             "modes_orientation_beneficiaire": "TEXT[]",
+            "modes_mobilisation": "TEXT[]",
+            "mobilisable_par": "TEXT[]",
             "pre_requis": "TEXT[]",
             "profils": "TEXT[]",
             "thematiques": "TEXT[]",
@@ -18,3 +21,13 @@
         source_column_name=None
     )
 }}
+),
+
+final AS (
+    SELECT
+        NULLIF(ARRAY_TO_STRING(services.pre_requis || services.justificatifs, '\n'), '') AS "conditions_acces",
+        *
+    FROM services
+)
+
+SELECT * FROM final

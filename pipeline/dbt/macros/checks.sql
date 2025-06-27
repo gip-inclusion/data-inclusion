@@ -34,6 +34,10 @@ nombre_semaines IS NULL OR nombre_semaines > 0
 presentation_resume IS NULL OR LENGTH(presentation_resume) <= 280
 {% endmacro %}
 
+{% macro check_description() %}
+description IS NOT NULL AND LENGTH(description) >= 50 AND LENGTH(description) <= 2000
+{% endmacro %}
+
 {% macro check_types() %}
 types IS NULL OR types <@ ARRAY(SELECT t.value FROM {{ ref('typologies_de_services') }} AS t)
 {% endmacro %}
@@ -58,6 +62,10 @@ profils IS NULL OR profils <@ ARRAY(SELECT p.value FROM {{ ref('profils') }} AS 
 profils_precisions IS NULL OR LENGTH(profils_precisions) <= 500
 {% endmacro %}
 
+{% macro check_conditions_acces() %}
+profils_precisions IS NULL OR LENGTH(profils_precisions) <= 500
+{% endmacro %}
+
 {% macro check_courriel() %}
 {# RFC 5322 #}
 courriel IS NULL OR courriel ~ '^[a-zA-Z0-9!#$%&''*+/=?^_`{|}~-]+[a-zA-Z0-9.!#$%&''*+/=?^_`{|}~-]*@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)+$'
@@ -73,6 +81,14 @@ modes_orientation_accompagnateur IS NULL OR modes_orientation_accompagnateur <@ 
 
 {% macro check_modes_orientation_beneficiaire() %}
 modes_orientation_beneficiaire IS NULL OR modes_orientation_beneficiaire <@ ARRAY(SELECT m.value FROM {{ ref('modes_orientation_beneficiaire') }} AS m)
+{% endmacro %}
+
+{% macro check_mobilisable_par() %}
+mobilisable_par IS NULL OR mobilisable_par <@ ARRAY(SELECT m.value FROM {{ ref('mobilisable_par') }} AS m)
+{% endmacro %}
+
+{% macro check_modes_mobilisation() %}
+modes_mobilisation IS NULL OR modes_mobilisation <@ ARRAY(SELECT m.value FROM {{ ref('modes_mobilisation') }} AS m)
 {% endmacro %}
 
 {% macro check_volume_horaire_hebdomadaire() %}
@@ -139,9 +155,15 @@ code_insee IS NULL OR code_insee ~ '^.{5}$'
         ("zone_diffusion_type", check_zone_diffusion_type())
 ] %}
 {% if schema_version == 'v0' %}
-{% set checks = checks + [] %}
+{% set checks = checks + [
+        ("presentation_resume", check_presentation_resume()),
+] %}
 {% elif schema_version == 'v1' %}
-{% set checks = checks + [] %}
+{% set checks = checks + [
+        ("conditions_acces", check_conditions_acces()),
+        ("mobilisable_par", check_mobilisable_par()),
+        ("modes_mobilisation", check_modes_mobilisation()),
+] %}
 {% endif %}
 
 {{ select_errors(model, checks, 'service', schema_version) }}
@@ -152,7 +174,6 @@ code_insee IS NULL OR code_insee ~ '^.{5}$'
         ('id', check_id()),
         ("source", check_source()),
         ("nom", check_nom()),
-        ("presentation_resume", check_presentation_resume()),
         ("telephone", check_telephone()),
         ("courriel", check_courriel()),
         ("date_maj", check_date_maj()),
@@ -164,9 +185,11 @@ code_insee IS NULL OR code_insee ~ '^.{5}$'
 {% if schema_version == 'v0' %}
 {% set checks = checks + [
         ("thematiques", check_thematiques()),
+        ("presentation_resume", check_presentation_resume()),
 ] %}
 {% elif schema_version == 'v1' %}
-{% set checks = checks + [] %}
+{% set checks = checks + [
+] %}
 {% endif %}
 
 {{ select_errors(model, checks, 'structure', schema_version) }}

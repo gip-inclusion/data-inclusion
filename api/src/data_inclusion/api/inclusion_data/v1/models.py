@@ -33,16 +33,17 @@ class Structure(HasAddress, Base):
     _cluster_id: Mapped[str | None]
 
     # structure data
-    accessibilite: Mapped[str | None]
+    accessibilite_lieu: Mapped[str | None] = mapped_column("accessibilite")
     courriel: Mapped[str | None]
     date_maj: Mapped[date | None]
-    horaires_ouverture: Mapped[str | None]
+    # FIXME(vperron) : for now this is not validated against OSM opening hours format
+    # see https://pypi.org/project/opening-hours-py/ when we stop using pl/Python
+    horaires_accueil: Mapped[str | None]
     id: Mapped[str]
     labels_autres: Mapped[list[str] | None]
     labels_nationaux: Mapped[list[str] | None]
     nom: Mapped[str]
-    presentation_detail: Mapped[str | None]
-    presentation_resume: Mapped[str | None]
+    description: Mapped[str | None]
     rna: Mapped[str | None]
     siret: Mapped[str | None]
     site_web: Mapped[str | None]
@@ -88,51 +89,47 @@ class Service(HasAddress, Base):
     structure: Mapped[Structure] = relationship(back_populates="services")
 
     # service data
+    conditions_acces: Mapped[str | None]
     contact_nom_prenom: Mapped[str | None]
     courriel: Mapped[str | None]
     date_maj: Mapped[date | None]
-    formulaire_en_ligne: Mapped[str | None]
-    frais_autres: Mapped[str | None]
-    frais: Mapped[list[str] | None]
+    frais: Mapped[str | None]
+    frais_precisions: Mapped[str | None]
+    # FIXME(vperron) : for now this is not validated against OSM opening hours format
+    # see https://pypi.org/project/opening-hours-py/ when we stop using pl/Python
+    horaires_accueil: Mapped[str | None]
     id: Mapped[str]
-    justificatifs: Mapped[list[str] | None]
     modes_accueil: Mapped[list[str] | None]
-    modes_orientation_accompagnateur_autres: Mapped[str | None]
-    modes_orientation_accompagnateur: Mapped[list[str] | None]
-    modes_orientation_beneficiaire_autres: Mapped[str | None]
-    modes_orientation_beneficiaire: Mapped[list[str] | None]
+    modes_mobilisation: Mapped[list[str] | None]
+    mobilisation_precisions: Mapped[str | None]
+    mobilisable_par: Mapped[list[str] | None]
+    lien_mobilisation: Mapped[str | None]
     nom: Mapped[str]
-    page_web: Mapped[str | None]
-    pre_requis: Mapped[list[str] | None]
-    presentation_detail: Mapped[str | None]
-    presentation_resume: Mapped[str | None]
-    prise_rdv: Mapped[str | None]
-    profils: Mapped[list[str] | None]
-    profils_precisions: Mapped[str | None]
+    description: Mapped[str | None]
+    publics: Mapped[list[str] | None]
+    publics_precisions: Mapped[str | None]
     # generate_profils_precisions is a function that generates
-    # a TSVECTOR from profils_precisions and profils
+    # a TSVECTOR from publics_precisions and publics.
     # cf: 20250107_172223_c947102bb23f_add_profils_autres_field_in_service.py
-    searchable_index_profils_precisions: Mapped[str | None] = mapped_column(
+    searchable_index_publics_precisions: Mapped[str | None] = mapped_column(
         TSVECTOR,
         Computed(
-            "generate_profils_precisions(profils_precisions, profils)", persisted=True
+            "generate_profils_precisions(publics_precisions, publics)", persisted=True
         ),
     )
-    searchable_index_profils: Mapped[str | None] = mapped_column(
+    searchable_index_publics: Mapped[str | None] = mapped_column(
         TSVECTOR,
-        Computed("generate_profils(profils)", persisted=True),
+        Computed("generate_profils(publics)", persisted=True),
     )
-    recurrence: Mapped[str | None]
     source: Mapped[str]
     structure_id: Mapped[str]
     telephone: Mapped[str | None]
     thematiques: Mapped[list[str] | None]
-    types: Mapped[list[str] | None]
-    zone_diffusion_code: Mapped[str | None]
-    zone_diffusion_nom: Mapped[str | None]
-    zone_diffusion_type: Mapped[str | None]
+    type: Mapped[str | None]
     score_qualite: Mapped[float]
     volume_horaire_hebdomadaire: Mapped[float | None]
+    zone_eligibilite: Mapped[list[str] | None]
+    description: Mapped[str | None]
     nombre_semaines: Mapped[int | None]
 
     commune_: Mapped[Commune] = relationship(back_populates="services_v1")
@@ -147,8 +144,8 @@ class Service(HasAddress, Base):
             sqla.text("ST_MakePoint(longitude, latitude)::geography(geometry, 4326)"),
             postgresql_using="gist",
         ),
-        sqla.Index(None, "searchable_index_profils", postgresql_using="gin"),
-        sqla.Index(None, "searchable_index_profils_precisions", postgresql_using="gin"),
+        sqla.Index(None, "searchable_index_publics", postgresql_using="gin"),
+        sqla.Index(None, "searchable_index_publics_precisions", postgresql_using="gin"),
     )
 
     def __repr__(self) -> str:

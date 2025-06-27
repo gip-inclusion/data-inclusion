@@ -46,12 +46,11 @@ class StructureFactory(factory.alchemy.SQLAlchemyModelFactory):
     telephone = "0102030405"
     courriel = factory.Faker("email", locale="fr_FR")
     site_web = factory.Faker("url", locale="fr_FR")
-    presentation_resume = factory.Faker("text", max_nb_chars=20, locale="fr_FR")
-    presentation_detail = factory.Faker("text", max_nb_chars=30, locale="fr_FR")
+    description = factory.Faker("sentence", nb_words=100, locale="fr_FR")
     source = factory.Iterator(["dora", "emplois-de-linclusion"])
     date_maj = factory.LazyFunction(lambda: date(2023, 1, 1))
-    horaires_ouverture = 'Mo-Fr 10:00-20:00 "sur rendez-vous"; PH off'
-    accessibilite = factory.LazyAttribute(
+    horaires_accueil = "Mo-Fr 10:00-20:00"
+    accessibilite_lieu = factory.LazyAttribute(
         lambda o: f"https://acceslibre.beta.gouv.fr/app/{o.id}/"
     )
     labels_nationaux = []
@@ -83,14 +82,13 @@ class ServiceFactory(factory.alchemy.SQLAlchemyModelFactory):
     structure_id = factory.SelfAttribute("structure.id")
     source = factory.Iterator(["dora", "emplois-de-linclusion"])
     nom = factory.Faker("company", locale="fr_FR")
-    presentation_resume = factory.Faker("text", max_nb_chars=20, locale="fr_FR")
-    presentation_detail = factory.Faker("text", max_nb_chars=20, locale="fr_FR")
-    types = factory.Iterator(
+    description = factory.Faker("sentence", nb_words=100, locale="fr_FR")
+    type = factory.Iterator(
         [
-            v1.TypologieService.FORMATION,
-            v1.TypologieService.NUMÉRIQUE,
+            v1.TypeService.FORMATION,
+            v1.TypeService.ACCOMPAGNEMENT,
+            v1.TypeService.INFORMATION,
         ],
-        getter=lambda v: [v.value],
     )
     thematiques = factory.Iterator(
         [
@@ -100,35 +98,26 @@ class ServiceFactory(factory.alchemy.SQLAlchemyModelFactory):
         ],
         getter=lambda v: [v.value],
     )
-    prise_rdv = factory.Faker("url", locale="fr_FR")
-    frais = factory.Iterator(
+    frais = factory.Iterator([v1.Frais.GRATUIT, v1.Frais.PAYANT])
+    frais_precisions = factory.Faker("text", max_nb_chars=20, locale="fr_FR")
+    horaires_accueil = "Mo-Fr 10:00-20:00"
+    publics = factory.Iterator(
         [
-            v1.Frais.GRATUIT,
+            v1.Public.FEMMES,
+            v1.Public.JEUNES,
+            v1.Public.SENIORS,
         ],
         getter=lambda v: [v.value],
     )
-    frais_autres = factory.Faker("text", max_nb_chars=20, locale="fr_FR")
-    page_web = factory.Faker("url", locale="fr_FR")
-    profils = factory.Iterator(
-        [
-            v1.Profil.FEMMES,
-            v1.Profil.JEUNES_16_26,
-            v1.Profil.SENIORS_65,
-        ],
-        getter=lambda v: [v.value],
-    )
-    profils_precisions = factory.Faker("text", max_nb_chars=20, locale="fr_FR")
-    pre_requis = []
-    justificatifs = []
-    formulaire_en_ligne = None
+    publics_precisions = factory.Faker("text", max_nb_chars=20, locale="fr_FR")
     commune = factory.Faker("city", locale="fr_FR")
     code_postal = factory.Faker("postcode")
     code_insee = "59350"
+    conditions_acces = factory.Faker("text", max_nb_chars=20, locale="fr_FR")
     adresse = factory.Faker("street_address", locale="fr_FR")
     complement_adresse = None
     longitude = factory.Faker("longitude")
     latitude = factory.Faker("latitude")
-    recurrence = None
     telephone = "0102030405"
     courriel = factory.Faker("email", locale="fr_FR")
     contact_nom_prenom = factory.Faker("name", locale="fr_FR")
@@ -141,25 +130,11 @@ class ServiceFactory(factory.alchemy.SQLAlchemyModelFactory):
         ],
         getter=lambda v: [v.value],
     )
-    modes_orientation_accompagnateur = factory.Iterator(
-        [
-            v1.ModeOrientationAccompagnateur.TELEPHONER,
-            v1.ModeOrientationAccompagnateur.ENVOYER_UN_MAIL,
-        ],
-        getter=lambda v: [v.value],
-    )
-    modes_orientation_accompagnateur_autres = None
-    modes_orientation_beneficiaire = factory.Iterator(
-        [
-            v1.ModeOrientationBeneficiaire.TELEPHONER,
-            v1.ModeOrientationBeneficiaire.SE_PRESENTER,
-        ],
-        getter=lambda v: [v.value],
-    )
-    modes_orientation_beneficiaire_autres = None
-    zone_diffusion_type = None
-    zone_diffusion_code = None
-    zone_diffusion_nom = None
+    lien_mobilisation = None
+    modes_mobilisation = None
+    mobilisation_precisions = None
+    mobilisable_par = None
+    zone_eligibilite = None
     nombre_semaines = 1
     volume_horaire_hebdomadaire = 1
     score_qualite = 0.5

@@ -102,7 +102,6 @@ open_services AS (
 ),
 
 -- TODO(vmttn): clean up modes_orientation_* with dbt macros ?
-
 final AS (
     SELECT
         open_services.id                                  AS "id",
@@ -113,6 +112,7 @@ final AS (
             ELSE ARRAY[mapping_types.di_type]
         END                                               AS "types",
         NULL                                              AS "prise_rdv",
+        NULL                                              AS "lien_mobilisation",
         CASE
             WHEN lieux.publics__accueil IN (0, 1) THEN ARRAY_APPEND(profils.profils, 'tous-publics')
             ELSE profils.profils
@@ -120,9 +120,9 @@ final AS (
         profils.traduction                                AS "profils_precisions",
         CAST(NULL AS TEXT [])                             AS "pre_requis",
         CAST(NULL AS TEXT [])                             AS "justificatifs",
+        NULL                                              AS "conditions_acces",
         filtered_phones.phone_number                      AS "telephone",
         lieux.entity_mail                                 AS "courriel",
-        CAST(NULL AS BOOLEAN)                             AS "contact_public",
         NULL                                              AS "contact_nom_prenom",
         open_services.updated_at                          AS "date_maj",
         NULL                                              AS "page_web",
@@ -135,6 +135,9 @@ final AS (
         open_services.lieu_id                             AS "structure_id",
         ARRAY[mapping_thematiques.thematique]             AS "thematiques",
         ARRAY['en-presentiel']                            AS "modes_accueil",
+        CAST(NULL AS TEXT [])                             AS "modes_mobilisation",
+        CAST(NULL AS TEXT [])                             AS "mobilisable_par",
+        NULL                                              AS "mobilisation_precisions",
         categories.label                                  AS "nom",
         'https://soliguide.fr/fr/fiche/' || lieux.seo_url AS "lien_source",
         CASE
