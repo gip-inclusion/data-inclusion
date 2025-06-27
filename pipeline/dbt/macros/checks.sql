@@ -156,7 +156,6 @@ code_insee IS NULL OR code_insee ~ '^.{5}$'
 ] %}
 {% elif schema_version == 'v1' %}
 {% set checks = checks + [
-        ("description", check_description()),
         ("mobilisable_par", check_mobilisable_par()),
         ("modes_mobilisation", check_modes_mobilisation()),
 ] %}
@@ -185,7 +184,6 @@ code_insee IS NULL OR code_insee ~ '^.{5}$'
 ] %}
 {% elif schema_version == 'v1' %}
 {% set checks = checks + [
-        ("description", check_description()),
 ] %}
 {% endif %}
 
