@@ -160,6 +160,8 @@ models:
         data_type: text
       - name: page_web
         data_type: text
+      - name: conditions_acces
+        data_type: text
       - name: presentation_resume
         data_type: text
       - name: presentation_detail

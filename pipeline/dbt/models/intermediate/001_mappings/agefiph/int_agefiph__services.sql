@@ -97,6 +97,7 @@ final AS (
         NULL                                                         AS "prise_rdv",
         NULL                                                         AS "lien_mobilisation",
         NULL                                                         AS "recurrence",
+        NULL                                                         AS "conditions_acces",
         services._di_source_id                                       AS "source",
         structures.id                                                AS "structure_id",
         CASE

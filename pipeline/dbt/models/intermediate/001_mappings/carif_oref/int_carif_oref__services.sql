@@ -172,6 +172,7 @@ final AS (
         NULL                                            AS "mobilisation_precisions",
         ARRAY[actions.conditions_specifiques]           AS "pre_requis",
         CAST(NULL AS TEXT [])                           AS "justificatifs",
+        NULLIF(actions.conditions_specifiques, '')      AS "conditions_acces",
         formations.intitule_formation                   AS "nom",
         ARRAY[
             CASE

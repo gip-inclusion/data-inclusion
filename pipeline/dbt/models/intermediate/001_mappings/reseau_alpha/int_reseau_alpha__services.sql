@@ -55,6 +55,7 @@ final AS (
         'service--' || formations.id                                           AS "adresse_id",
         CAST(NULL AS TEXT [])                                                  AS "justificatifs",
         CAST(NULL AS TEXT [])                                                  AS "pre_requis",
+        NULL                                                                   AS "conditions_acces",
         CAST(NULL AS FLOAT)                                                    AS "volume_horaire_hebdomadaire",
         CAST(NULL AS INT)                                                      AS "nombre_semaines",
         ARRAY_REMOVE(

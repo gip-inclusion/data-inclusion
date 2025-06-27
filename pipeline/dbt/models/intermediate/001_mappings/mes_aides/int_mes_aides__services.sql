@@ -1,3 +1,4 @@
+WITH services AS (
 {{
     dbt_utils.union_relations(
         relations=[
@@ -20,3 +21,13 @@
         source_column_name=None
     )
 }}
+),
+
+final AS (
+    SELECT
+        NULLIF(ARRAY_TO_STRING(services.pre_requis || services.justificatifs, '\n'), '') AS "conditions_acces",
+        *
+    FROM services
+)
+
+SELECT * FROM final
