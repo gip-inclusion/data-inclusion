@@ -110,6 +110,13 @@ SELECT
     services.zone_diffusion_type                                                                              AS "zone_diffusion_type",
     services.pre_requis                                                                                       AS "pre_requis",
     services.lien_source                                                                                      AS "lien_source",
+    CASE
+        WHEN services.profils && ARRAY['locataires']
+            THEN 'Le bénéficiaire doit être locataire.' || COALESCE('\n' || NULLIF(services.conditions_acces, ''), '')
+        WHEN services.profils && ARRAY['proprietaires']
+            THEN 'Le bénéficiaire doit être propriétaire.' || COALESCE('\n' || NULLIF(services.conditions_acces, ''), '')
+        ELSE services.conditions_acces
+    END                                                                                                       AS "conditions_acces",
     services.date_maj                                                                                         AS "date_maj",
     services.id                                                                                               AS "id",
     services.presentation_detail                                                                              AS "presentation_detail",
