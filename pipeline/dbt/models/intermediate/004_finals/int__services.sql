@@ -124,7 +124,7 @@ SELECT
     services.modes_orientation_accompagnateur_autres                                                          AS "modes_orientation_accompagnateur_autres",
     services.modes_orientation_beneficiaire                                                                   AS "modes_orientation_beneficiaire",
     services.modes_orientation_beneficiaire_autres                                                            AS "modes_orientation_beneficiaire_autres",
-    ARRAY(
+    NULLIF(ARRAY(
         -- Mapping https://www.notion.so/gip-inclusion/24610bd08f8a412c83c09f6b36a1a44f?v=34cdd4c049e44f49aec060657c72c9b0&p=1fa5f321b604805a9ba5d0c7c2386dc2&pm=s
         SELECT x FROM
             UNNEST(ARRAY[
@@ -160,15 +160,15 @@ SELECT
                 END
             ]) AS x
         WHERE x IS NOT NULL
-    )                                                                                                         AS "modes_mobilisation",
-    ARRAY(
+    ), '{}')                                                                                                  AS "modes_mobilisation",
+    NULLIF(ARRAY(
         SELECT x FROM
             UNNEST(ARRAY[
                 CASE WHEN ARRAY_LENGTH(services.modes_orientation_beneficiaire, 1) > 0 THEN 'usagers' END,
                 CASE WHEN ARRAY_LENGTH(services.modes_orientation_accompagnateur, 1) > 0 THEN 'professionnels' END
             ]) AS x
         WHERE x IS NOT NULL
-    )                                                                                                         AS "mobilisable_par",
+    ), '{}')                                                                                                  AS "mobilisable_par",
     services.modes_orientation_beneficiaire_autres || ' ' || services.modes_orientation_accompagnateur_autres AS "mobilisation_precisions",
     services.profils                                                                                          AS "profils",
     services.profils_precisions                                                                               AS "profils_precisions",
