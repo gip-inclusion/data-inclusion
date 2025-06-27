@@ -170,6 +170,8 @@ models:
         data_type: text
       - name: types
         data_type: text[]
+      - name: type
+        data_type: text
       - name: thematiques
         data_type: text[]
       - name: prise_rdv
