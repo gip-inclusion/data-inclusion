@@ -62,6 +62,10 @@ profils IS NULL OR profils <@ ARRAY(SELECT p.value FROM {{ ref('profils') }} AS 
 profils_precisions IS NULL OR LENGTH(profils_precisions) <= 500
 {% endmacro %}
 
+{% macro check_conditions_acces() %}
+profils_precisions IS NULL OR LENGTH(profils_precisions) <= 500
+{% endmacro %}
+
 {% macro check_courriel() %}
 {# RFC 5322 #}
 courriel IS NULL OR courriel ~ '^[a-zA-Z0-9!#$%&''*+/=?^_`{|}~-]+[a-zA-Z0-9.!#$%&''*+/=?^_`{|}~-]*@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)+$'
@@ -156,6 +160,7 @@ code_insee IS NULL OR code_insee ~ '^.{5}$'
 ] %}
 {% elif schema_version == 'v1' %}
 {% set checks = checks + [
+        ("conditions_acces", check_conditions_acces()),
         ("mobilisable_par", check_mobilisable_par()),
         ("modes_mobilisation", check_modes_mobilisation()),
 ] %}

@@ -48,6 +48,7 @@ final AS (
         NULL                                                                                                        AS "mobilisation_precisions",
         CAST(NULL AS TEXT [])                                                                                       AS "pre_requis",
         CAST(NULL AS TEXT [])                                                                                       AS "justificatifs",
+        NULL                                                                                                        AS "conditions_acces",
         CASE WHEN service_commun__avip THEN 'Crèche À Vocation d’Insertion Professionnelle' ELSE structure_name END AS "nom",
         ARRAY['payant']                                                                                             AS "frais",
         ARRAY['famille--garde-denfants']                                                                            AS "thematiques",

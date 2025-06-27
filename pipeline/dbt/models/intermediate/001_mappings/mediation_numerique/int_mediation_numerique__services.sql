@@ -45,6 +45,7 @@ final AS (
         'departement'                                                                                  AS "zone_diffusion_type",
         CAST(NULL AS TEXT [])                                                                          AS "pre_requis",
         CAST(NULL AS TEXT [])                                                                          AS "justificatifs",
+        NULL                                                                                           AS "conditions_acces",
         CAST(structures.date_maj AS DATE)                                                              AS "date_maj",
         CAST(NULL AS FLOAT)                                                                            AS "volume_horaire_hebdomadaire",
         CAST(NULL AS INT)                                                                              AS "nombre_semaines",

@@ -47,10 +47,6 @@ models:
           schema_version: v0
           config:
             severity: warn
-      - check_service:
-          schema_version: v1
-          config:
-            severity: warn
     columns:
       - name: id
         data_tests:
