@@ -242,7 +242,9 @@ SELECT
     zones_diffusion.zone_diffusion_code                                                                       AS "zone_diffusion_code",
     zones_diffusion.zone_diffusion_nom                                                                        AS "zone_diffusion_nom",
     CASE
-        WHEN zones_diffusion.zone_diffusion_type = 'commune' THEN ARRAY[adresses.code_insee]
+        WHEN
+            zones_diffusion.zone_diffusion_type = 'commune'
+            AND adresses.code_insee IS NOT NULL THEN ARRAY[adresses.code_insee]
         -- we have a small exception here since  the EPCI are better coded than the communes
         -- probably because one of our sources is better informed about the EPCIs.
         -- I still map the values here as we might very probably migrate our code to pure

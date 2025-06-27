@@ -38,15 +38,25 @@ def validate_dataset(
         try:
             model_schema(**data)
         except pydantic.ValidationError as exc:
-            errors += exc.errors()
+            errors += [{"id": data["_di_surrogate_id"], **err} for err in exc.errors()]
 
         if data["code_insee"] is not None and data["code_insee"] not in city_codes:
-            errors += [{"loc": ("code_insee",), "input": data["code_insee"]}]
+            errors += [
+                {
+                    "id": data["_di_surrogate_id"],
+                    "loc": ("code_insee",),
+                    "input": data["code_insee"],
+                }
+            ]
 
         for error in errors:
             model = model_schema.__name__
-            key, value = ".".join(map(str, error["loc"])), error["input"]
-            logger.warning(f"{model:20} {key=:20} {value=}")
+            id, key, value = (
+                error["id"][:50],
+                ".".join(map(str, error["loc"])),
+                error["input"],
+            )
+            logger.warning(f"{model:10} {id=:52} {key=:20} {value=}")
 
         return errors
 
@@ -178,7 +188,11 @@ def load_inclusion_data(
             for filename in ("structures.parquet", "services.parquet")
         ]
 
-        logger.info("Validating data...")
+        if schema_version == "v1":
+            services_df = services_df.drop(columns="frais", errors="ignore")
+            services_df = services_df.rename(columns={"frais_v1": "frais"})
+
+        logger.info(f"{schema_version=} Validating data...")
         structures_df, services_df = validate_dataset(
             db_session=db_session,
             structures_df=structures_df,
@@ -191,14 +205,17 @@ def load_inclusion_data(
         services_df = services_df.rename(
             columns={f"score_qualite_{schema_version}": "score_qualite"}
         )
+        services_df["score_qualite"] = pd.to_numeric(
+            services_df["score_qualite"], errors="raise"
+        )
 
-        logger.info("Preparing data...")
+        logger.info(f"{schema_version=} Preparing data...")
         structures_df, services_df = prepare_dataset(
             structures_df=structures_df,
             services_df=services_df,
         )
 
-        logger.info("Loading data...")
+        logger.info(f"{schema_version=} Loading data...")
         load_dataset(
             db_session=db_session,
             structures_df=structures_df,
