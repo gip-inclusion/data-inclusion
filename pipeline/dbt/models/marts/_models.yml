@@ -182,6 +182,10 @@ models:
         data_type: text
       - name: pre_requis
         data_type: text[]
+      - name: publics
+        data_type: text[]
+      - name: publics_precisions
+        data_type: text
       - name: cumulable
         data_type: boolean
       - name: justificatifs
@@ -357,6 +361,23 @@ models:
           - type: not_null
 
   - name: marts__services_profils
+    config:
+      indexes:
+        - columns: ['value']
+    columns:
+      - name: service_surrogate_id
+        data_type: text
+        constraints:
+          - type: not_null
+          - type: foreign_key
+            to: ref('marts__services')
+            to_columns: [_di_surrogate_id]
+      - name: value
+        data_type: text
+        constraints:
+          - type: not_null
+
+  - name: marts__services_publics
     config:
       indexes:
         - columns: ['value']
