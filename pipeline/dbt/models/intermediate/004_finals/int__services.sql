@@ -2,6 +2,25 @@ WITH services AS (
     SELECT * FROM {{ ref('int__union_services') }}
 ),
 
+map_publics AS (SELECT * FROM {{ ref('_map_publics') }}),
+
+unnested_profils AS (
+    SELECT
+        services._di_surrogate_id,
+        UNNEST(services.profils) AS profil
+    FROM services
+),
+
+publics AS (
+    SELECT
+        unnested_profils._di_surrogate_id,
+        ARRAY_AGG(DISTINCT map_publics.public) AS publics
+    FROM unnested_profils
+    INNER JOIN map_publics ON unnested_profils.profil = map_publics.profil
+    WHERE map_publics.public IS NOT NULL
+    GROUP BY unnested_profils._di_surrogate_id
+),
+
 structures AS (
     SELECT * FROM {{ ref('int__structures') }}
 ),
@@ -153,6 +172,8 @@ SELECT
     services.modes_orientation_beneficiaire_autres || ' ' || services.modes_orientation_accompagnateur_autres AS "mobilisation_precisions",
     services.profils                                                                                          AS "profils",
     services.profils_precisions                                                                               AS "profils_precisions",
+    publics.publics                                                                                           AS "publics",
+    services.profils_precisions                                                                               AS "publics_precisions",
     services.types                                                                                            AS "types",
     services.frais                                                                                            AS "frais",
     services.page_web                                                                                         AS "page_web",
@@ -187,3 +208,5 @@ LEFT JOIN valid_site_web AS valid_formulaire_en_ligne
     ON services.formulaire_en_ligne = valid_formulaire_en_ligne.input_url
 LEFT JOIN valid_site_web AS valid_page_web
     ON services.page_web = valid_page_web.input_url
+LEFT JOIN publics
+    ON services._di_surrogate_id = publics._di_surrogate_id
