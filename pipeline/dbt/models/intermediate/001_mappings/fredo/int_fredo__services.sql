@@ -156,6 +156,7 @@ final AS (
         CAST(UUID(MD5(fredo_structures.id || COALESCE(fredo_services.value, ''))) AS TEXT)    AS "id",
         CAST(NULL AS TEXT [])                                                                 AS "pre_requis",
         CAST(NULL AS TEXT [])                                                                 AS "justificatifs",
+        NULL                                                                                  AS "conditions_acces",
         CAST(NULL AS FLOAT)                                                                   AS "volume_horaire_hebdomadaire",
         CAST(NULL AS INT)                                                                     AS "nombre_semaines",
         CASE

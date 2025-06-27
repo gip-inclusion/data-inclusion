@@ -120,6 +120,7 @@ final AS (
         profils.traduction                                AS "profils_precisions",
         CAST(NULL AS TEXT [])                             AS "pre_requis",
         CAST(NULL AS TEXT [])                             AS "justificatifs",
+        NULL                                              AS "conditions_acces",
         filtered_phones.phone_number                      AS "telephone",
         lieux.entity_mail                                 AS "courriel",
         NULL                                              AS "contact_nom_prenom",

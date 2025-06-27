@@ -27,6 +27,7 @@ final AS (
         NULL                                            AS "frais_autres",
         CAST(NULL AS TEXT [])                           AS "pre_requis",
         CAST(NULL AS TEXT [])                           AS "justificatifs",
+        NULL                                            AS "conditions_acces",
         NULL                                            AS "formulaire_en_ligne",
         NULL                                            AS "recurrence",
         NULL                                            AS "lien_source",
