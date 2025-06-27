@@ -201,6 +201,26 @@ SELECT
     publics.publics                                                                                           AS "publics",
     services.profils_precisions                                                                               AS "publics_precisions",
     services.types                                                                                            AS "types",
+    CASE
+        WHEN
+            services.types && ARRAY['aide-financiere']
+            OR services.types && ARRAY['financement']
+            THEN 'aide-financiere'
+        WHEN
+            services.types && ARRAY['autonomie']
+            OR services.types && ARRAY['aide-materielle']
+            THEN 'aide-materielle'
+        WHEN services.types && ARRAY['formation'] THEN 'formation'
+        WHEN
+            services.types && ARRAY['atelier']
+            OR services.types && ARRAY['numerique']
+            THEN 'atelier'
+        WHEN services.types && ARRAY['accompagnement'] THEN 'accompagnement'
+        WHEN
+            services.types && ARRAY['accueil']
+            OR services.types && ARRAY['information']
+            THEN 'information'
+    END                                                                                                       AS "type",
     services.frais                                                                                            AS "frais",
     CASE
         WHEN frais.frais && ARRAY['payant'] THEN 'payant'
