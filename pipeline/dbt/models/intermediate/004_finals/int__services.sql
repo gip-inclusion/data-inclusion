@@ -239,15 +239,23 @@ SELECT
     zones_diffusion.zone_diffusion_code                                                                       AS "zone_diffusion_code",
     zones_diffusion.zone_diffusion_nom                                                                        AS "zone_diffusion_nom",
     CASE
-        WHEN zones_diffusion.zone_diffusion_type = 'commune' THEN ARRAY[adresses.code_insee]
+        WHEN
+            zones_diffusion.zone_diffusion_type = 'commune'
+            AND adresses.code_insee IS NOT NULL THEN ARRAY[adresses.code_insee]
         -- we have a small exception here since  the EPCI are better coded than the communes
         -- probably because one of our sources is better informed about the EPCIs.
         -- I still map the values here as we might very probably migrate our code to pure
         -- Python someday and that day, maybe we'll have to redo the mappings anyhow, probably
         -- in v1 only.
-        WHEN zones_diffusion.zone_diffusion_type = 'epci' THEN ARRAY[zones_diffusion.zone_diffusion_code]
-        WHEN zones_diffusion.zone_diffusion_type = 'departement' THEN ARRAY[adresses.code_departement]
-        WHEN zones_diffusion.zone_diffusion_type = 'region' THEN ARRAY[adresses.code_region]
+        WHEN
+            zones_diffusion.zone_diffusion_type = 'epci'
+            AND zones_diffusion.zone_diffusion_code IS NOT NULL THEN ARRAY[zones_diffusion.zone_diffusion_code]
+        WHEN
+            zones_diffusion.zone_diffusion_type = 'departement'
+            AND adresses.code_departement IS NOT NULL THEN ARRAY[adresses.code_departement]
+        WHEN
+            zones_diffusion.zone_diffusion_type = 'region'
+            AND adresses.code_region IS NOT NULL THEN ARRAY[adresses.code_region]
         WHEN zones_diffusion.zone_diffusion_type = 'pays' THEN ARRAY['france']  -- legerement mieux que le code 99100 qui est France métro + Corse
     END                                                                                                       AS "zone_eligibilite",
     contacts.contact_nom_prenom                                                                               AS "contact_nom_prenom",
