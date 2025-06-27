@@ -178,6 +178,10 @@ models:
         data_type: text[]
       - name: frais_autres
         data_type: text
+      - name: frais_v1
+        data_type: text
+      - name: frais_precisions
+        data_type: text
       - name: profils
         data_type: text[]
       - name: profils_precisions
