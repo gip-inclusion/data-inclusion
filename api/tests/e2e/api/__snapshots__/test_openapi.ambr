@@ -3184,7 +3184,7 @@
                   "type": "null"
                 }
               ],
-              "description": "Horaires d’accueil du public par la structure.\n\nUn service peut avoir un horaire d’accueil différent. Se référer aux horaires des services.\n\nDoit être au format OpenStreetMap Opening Hours.\n\n[Spécification du format OSM Opening Hours](https://wiki.openstreetmap.org/wiki/FR:Key:opening_hours).\n\n[Outil d’aide à la saisie](https://projets.pavie.info/yohours/).",
+              "description": "Horaires d’accueil du public par la structure.\n\nUn service peut avoir un horaire d’accueil différent. Se référer aux horaires des services.\n\nDoit être au format [OpenStreetMap Opening Hours](https://wiki.openstreetmap.org/wiki/FR:Key:opening_hours).\n\n[Outil d’aide à la saisie](https://projets.pavie.info/yohours/).",
               "examples": [
                 "Mo-Fr 08:30-12:30; PH off"
               ],
@@ -3732,7 +3732,7 @@
                   "type": "null"
                 }
               ],
-              "description": "Type de service.\n\nLes valeurs proviennent d’un référentiel disponible sur notre documentation.",
+              "description": "Type de service.",
               "examples": [
                 "accompagnement"
               ]
@@ -3799,7 +3799,7 @@
                   "type": "null"
                 }
               ],
-              "description": "Zone géographique d’éligibilité du service.\n\nContient une liste de codes issus du [Code Officiel Géographique](https://www.insee.fr/fr/information/2560452) maintenu par l’INSEE.\n\nChaque code dans cette liste peut être un code commune, un code département, un code EPCI ou un code pays.\n\nSi le service est éligible à l’ensemble d’une région, lister les codes des departements de cette région.\n\nSi le service est éligible sur l’ensemble du territoire national, utiliser le code `france` (France) ou le code pays `99100`.\n\ndata·inclusion vérifie la validité des codes fournis. Les codes invalides sont supprimés de la liste.\n\n[Le Code Officiel Géographique de l’INSEE]().",
+              "description": "Zone géographique d’éligibilité du service.\n\nContient une liste de codes issus du [Code Officiel Géographique](https://www.insee.fr/fr/information/2560452) maintenu par l’INSEE.\n\nChaque code dans cette liste peut être un code commune, un code département, un code EPCI ou un code pays.\n\nSi le service est éligible à l’ensemble d’une région, lister les codes des departements de cette région.\n\nSi le service est éligible sur l’ensemble du territoire national, utiliser le code `france` (France) ou le code pays `99100`.\n\ndata·inclusion vérifie la validité des codes fournis. Les codes invalides sont supprimés de la liste.\n\n[Outil de recherche des codes](https://www.insee.fr/fr/recherche/recherche-geographique)",
               "examples": [
                 [
                   "75056"
@@ -3969,7 +3969,7 @@
                   "type": "null"
                 }
               ],
-              "description": "Horaires d’accueil du public par la structure.\n\nUn service peut avoir un horaire d’accueil différent. Se référer aux horaires des services.\n\nDoit être au format OpenStreetMap Opening Hours.\n\n[Spécification du format OSM Opening Hours](https://wiki.openstreetmap.org/wiki/FR:Key:opening_hours).\n\n[Outil d’aide à la saisie](https://projets.pavie.info/yohours/).",
+              "description": "Horaires d’accueil du public par la structure.\n\nUn service peut avoir un horaire d’accueil différent. Se référer aux horaires des services.\n\nDoit être au format [OpenStreetMap Opening Hours](https://wiki.openstreetmap.org/wiki/FR:Key:opening_hours).\n\n[Outil d’aide à la saisie](https://projets.pavie.info/yohours/).",
               "examples": [
                 "Mo-Fr 08:30-12:30; PH off"
               ],
@@ -4259,7 +4259,7 @@
                   "type": "null"
                 }
               ],
-              "description": "Horaires d’accueil du public par la structure.\n\nUn service peut avoir un horaire d’accueil différent. Se référer aux horaires des services.\n\nDoit être au format OpenStreetMap Opening Hours.\n\n[Spécification du format OSM Opening Hours](https://wiki.openstreetmap.org/wiki/FR:Key:opening_hours).\n\n[Outil d’aide à la saisie](https://projets.pavie.info/yohours/).",
+              "description": "Horaires d’accueil du public par la structure.\n\nUn service peut avoir un horaire d’accueil différent. Se référer aux horaires des services.\n\nDoit être au format [OpenStreetMap Opening Hours](https://wiki.openstreetmap.org/wiki/FR:Key:opening_hours).\n\n[Outil d’aide à la saisie](https://projets.pavie.info/yohours/).",
               "examples": [
                 "Mo-Fr 08:30-12:30; PH off"
               ],
@@ -4813,7 +4813,7 @@
                   "type": "null"
                 }
               ],
-              "description": "Type de service.\n\nLes valeurs proviennent d’un référentiel disponible sur notre documentation.",
+              "description": "Type de service.",
               "examples": [
                 "accompagnement"
               ]
@@ -4880,7 +4880,7 @@
                   "type": "null"
                 }
               ],
-              "description": "Zone géographique d’éligibilité du service.\n\nContient une liste de codes issus du [Code Officiel Géographique](https://www.insee.fr/fr/information/2560452) maintenu par l’INSEE.\n\nChaque code dans cette liste peut être un code commune, un code département, un code EPCI ou un code pays.\n\nSi le service est éligible à l’ensemble d’une région, lister les codes des departements de cette région.\n\nSi le service est éligible sur l’ensemble du territoire national, utiliser le code `france` (France) ou le code pays `99100`.\n\ndata·inclusion vérifie la validité des codes fournis. Les codes invalides sont supprimés de la liste.\n\n[Le Code Officiel Géographique de l’INSEE]().",
+              "description": "Zone géographique d’éligibilité du service.\n\nContient une liste de codes issus du [Code Officiel Géographique](https://www.insee.fr/fr/information/2560452) maintenu par l’INSEE.\n\nChaque code dans cette liste peut être un code commune, un code département, un code EPCI ou un code pays.\n\nSi le service est éligible à l’ensemble d’une région, lister les codes des departements de cette région.\n\nSi le service est éligible sur l’ensemble du territoire national, utiliser le code `france` (France) ou le code pays `99100`.\n\ndata·inclusion vérifie la validité des codes fournis. Les codes invalides sont supprimés de la liste.\n\n[Outil de recherche des codes](https://www.insee.fr/fr/recherche/recherche-geographique)",
               "examples": [
                 [
                   "75056"
@@ -5808,7 +5808,7 @@
                   "type": "null"
                 }
               ],
-              "description": "Horaires d’accueil du public par la structure.\n\nUn service peut avoir un horaire d’accueil différent. Se référer aux horaires des services.\n\nDoit être au format OpenStreetMap Opening Hours.\n\n[Spécification du format OSM Opening Hours](https://wiki.openstreetmap.org/wiki/FR:Key:opening_hours).\n\n[Outil d’aide à la saisie](https://projets.pavie.info/yohours/).",
+              "description": "Horaires d’accueil du public par la structure.\n\nUn service peut avoir un horaire d’accueil différent. Se référer aux horaires des services.\n\nDoit être au format [OpenStreetMap Opening Hours](https://wiki.openstreetmap.org/wiki/FR:Key:opening_hours).\n\n[Outil d’aide à la saisie](https://projets.pavie.info/yohours/).",
               "examples": [
                 "Mo-Fr 08:30-12:30; PH off"
               ],
