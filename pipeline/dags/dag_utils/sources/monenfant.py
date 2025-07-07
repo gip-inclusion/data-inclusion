@@ -187,7 +187,7 @@ def extract_structure(structure_id: str) -> dict:
     access_token = response.json()["access_token"]
 
     response = httpx.get(
-        f"https://monenfant.fr/api/monenfantmodedegardefront/v1/modedegarde/details/{structure_id}",
+        f"https://monenfant.fr/api/monenfantmodedegardefront/v1/modedegarde/EAJE/{structure_id}",
         headers={"Authorization": f"Bearer {access_token}"},
     )
     response.raise_for_status()
