@@ -1,4 +1,4 @@
-apache-airflow[amazon,postgres,sentry,ssh]==2.10.5
+apache-airflow[amazon,postgres,sentry,ssh]==2.11.0
 
 pytest
 requests-mock
