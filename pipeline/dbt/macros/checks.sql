@@ -38,20 +38,20 @@ presentation_resume IS NULL OR LENGTH(presentation_resume) <= 280
 description IS NOT NULL AND LENGTH(description) >= 50 AND LENGTH(description) <= 2000
 {% endmacro %}
 
-{% macro check_types() %}
-types IS NULL OR types <@ ARRAY(SELECT t.value FROM {{ ref('typologies_de_services') }} AS t)
+{% macro check_types(schema_version) %}
+types IS NULL OR types <@ ARRAY(SELECT t.value FROM {{ ref('typologies_de_services' if schema_version == 'v0' else 'types_de_services_v1') }} AS t)
 {% endmacro %}
 
 {% macro check_telephone() %}
 telephone IS NULL OR processings.format_phone_number(telephone) IS NOT NULL
 {% endmacro %}
 
-{% macro check_thematiques() %}
-thematiques IS NULL OR thematiques <@ ARRAY(SELECT t.value FROM {{ ref('thematiques') }} AS t)
+{% macro check_thematiques(schema_version) %}
+thematiques IS NULL OR thematiques <@ ARRAY(SELECT t.value FROM {{ ref('thematiques' if schema_version == 'v0' else 'thematiques_v1') }} AS t)
 {% endmacro %}
 
-{% macro check_frais() %}
-frais IS NULL OR frais <@ ARRAY(SELECT f.value FROM {{ ref('frais') }} AS f)
+{% macro check_frais(schema_version) %}
+frais IS NULL OR frais <@ ARRAY(SELECT f.value FROM {{ ref('frais' if schema_version == 'v0' else 'frais_v1') }} AS f)
 {% endmacro %}
 
 {% macro check_profils() %}
@@ -71,8 +71,8 @@ profils_precisions IS NULL OR LENGTH(profils_precisions) <= 500
 courriel IS NULL OR courriel ~ '^[a-zA-Z0-9!#$%&''*+/=?^_`{|}~-]+[a-zA-Z0-9.!#$%&''*+/=?^_`{|}~-]*@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)+$'
 {% endmacro %}
 
-{% macro check_modes_accueil() %}
-modes_accueil IS NULL OR modes_accueil <@ ARRAY(SELECT m.value FROM {{ ref('modes_accueil') }} AS m)
+{% macro check_modes_accueil(schema_version) %}
+modes_accueil IS NULL OR modes_accueil <@ ARRAY(SELECT m.value FROM {{ ref('modes_accueil' if schema_version == 'v0' else 'modes_accueil_v1') }} AS m)
 {% endmacro %}
 
 {% macro check_modes_orientation_accompagnateur() %}
@@ -84,11 +84,11 @@ modes_orientation_beneficiaire IS NULL OR modes_orientation_beneficiaire <@ ARRA
 {% endmacro %}
 
 {% macro check_mobilisable_par() %}
-mobilisable_par IS NULL OR mobilisable_par <@ ARRAY(SELECT m.value FROM {{ ref('mobilisable_par') }} AS m)
+mobilisable_par IS NULL OR mobilisable_par <@ ARRAY(SELECT m.value FROM {{ ref('personne_mobilisatrice_v1') }} AS m)
 {% endmacro %}
 
 {% macro check_modes_mobilisation() %}
-modes_mobilisation IS NULL OR modes_mobilisation <@ ARRAY(SELECT m.value FROM {{ ref('modes_mobilisation') }} AS m)
+modes_mobilisation IS NULL OR modes_mobilisation <@ ARRAY(SELECT m.value FROM {{ ref('modes_mobilisation_v1') }} AS m)
 {% endmacro %}
 
 {% macro check_volume_horaire_hebdomadaire() %}
@@ -137,32 +137,32 @@ code_insee IS NULL OR code_insee ~ '^.{5}$'
         ("source", check_source()),
         ("nom", check_nom()),
         ("nombre_semaines", check_nombre_semaines()),
-        ("presentation_resume", check_presentation_resume()),
         ("telephone", check_telephone()),
         ("courriel", check_courriel()),
         ("date_maj", check_date_maj()),
         ('structure_id', check_structure_id()),
-        ("types", check_types()),
-        ("thematiques", check_thematiques()),
-        ("frais", check_frais()),
-        ("profils", check_profils()),
-        ("profils_precisions", check_profils_precisions()),
-        ("modes_accueil", check_modes_accueil()),
-        ("modes_orientation_accompagnateur", check_modes_orientation_accompagnateur()),
-        ("modes_orientation_beneficiaire", check_modes_orientation_beneficiaire()),
-        ("volume_horaire_hebdomadaire", check_volume_horaire_hebdomadaire()),
-        ("zone_diffusion_code", check_zone_diffusion_code()),
-        ("zone_diffusion_type", check_zone_diffusion_type())
+        ("types", check_types(schema_version)),
+        ("thematiques", check_thematiques(schema_version)),
+        ("frais", check_frais(schema_version)),
+        ("modes_accueil", check_modes_accueil(schema_version)),
 ] %}
 {% if schema_version == 'v0' %}
 {% set checks = checks + [
+        ("modes_orientation_accompagnateur", check_modes_orientation_accompagnateur()),
+        ("modes_orientation_beneficiaire", check_modes_orientation_beneficiaire()),
         ("presentation_resume", check_presentation_resume()),
+        ("profils", check_profils()),
+        ("profils_precisions", check_profils_precisions()),
+        ("volume_horaire_hebdomadaire", check_volume_horaire_hebdomadaire()),
+        ("zone_diffusion_code", check_zone_diffusion_code()),
+        ("zone_diffusion_type", check_zone_diffusion_type())
 ] %}
 {% elif schema_version == 'v1' %}
 {% set checks = checks + [
         ("conditions_acces", check_conditions_acces()),
         ("mobilisable_par", check_mobilisable_par()),
         ("modes_mobilisation", check_modes_mobilisation()),
+        ("description", check_description()),
 ] %}
 {% endif %}
 
@@ -189,6 +189,7 @@ code_insee IS NULL OR code_insee ~ '^.{5}$'
 ] %}
 {% elif schema_version == 'v1' %}
 {% set checks = checks + [
+        ("description", check_description()),
 ] %}
 {% endif %}
 
