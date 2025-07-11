@@ -64,6 +64,7 @@ profils AS (
         ('prison', 'personne sortant de prison', 'sortants-de-detention'),
         ('student', 'étudiant', 'etudiants'),
         ('ukraine', 'ukraine', 'personnes-de-nationalite-etrangere')
+        -- ('mentalHealth', NULL, NULL)
     ) AS di_mapping (category, traduction, profils) ON publics.value = di_mapping.category
     GROUP BY
         publics.lieu_id
