@@ -62,6 +62,10 @@ profils IS NULL OR profils <@ ARRAY(SELECT p.value FROM {{ ref('profils') }} AS 
 profils_precisions IS NULL OR LENGTH(profils_precisions) <= 500
 {% endmacro %}
 
+{% macro check_publics() %}
+publics IS NULL OR publics <@ ARRAY(SELECT p.value FROM {{ ref('publics_v1') }} AS p)
+{% endmacro %}
+
 {% macro check_conditions_acces() %}
 profils_precisions IS NULL OR LENGTH(profils_precisions) <= 500
 {% endmacro %}
@@ -101,6 +105,10 @@ zone_diffusion_code IS NULL OR zone_diffusion_code ~ '^(\d{9}|\w{5}|\w{2,3}|\d{2
 
 {% macro check_zone_diffusion_type() %}
 zone_diffusion_type IS NULL OR zone_diffusion_type IN (SELECT t.value FROM {{ ref('zones_de_diffusion_types') }} AS t)
+{% endmacro %}
+
+{% macro check_zone_eligibilite() %}
+zone_eligibilite IS NULL OR FALSE <> ALL(SELECT x.code ~ '^(\d{9}|\w{5}|\w{2,3}|99[0-5]\d{2}|france)$' FROM UNNEST(zone_eligibilite) AS x(code))
 {% endmacro %}
 
 {% macro check_date_maj() %}
@@ -163,6 +171,8 @@ code_insee IS NULL OR code_insee ~ '^.{5}$'
         ("mobilisable_par", check_mobilisable_par()),
         ("modes_mobilisation", check_modes_mobilisation()),
         ("description", check_description()),
+        ("publics", check_publics()),
+        ("zone_eligibilite", check_zone_eligibilite()),
 ] %}
 {% endif %}
 
