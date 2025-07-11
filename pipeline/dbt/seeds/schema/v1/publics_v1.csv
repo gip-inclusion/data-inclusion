@@ -1,0 +1,14 @@
+value,label,description
+actifs,Actifs,"Toute personne ayant un emploi, qu’il soit salarié, libéral ou à son compte"
+beneficiaires-des-minimas-sociaux,Bénéficiaires des minimas sociaux,"Personnes touchant des aides financières telles que RSA, SMIC, allocations familiales, bourses, etc"
+demandeurs-emploi,Demandeurs d’emploi,Demandeurs d’emploi de tout type
+etudiants,Étudiants,Étudiants
+familles,Familles,"Familles, parents, enfants, etc"
+femmes,Femmes,"Femmes isolées, victimes de violence, etc"
+jeunes,Jeunes,"Jeunes au sens large, jeunes adultes, adolescents, etc"
+personnes-en-situation-de-handicap,Personnes en situation de handicap,Personnes en situation de handicap de tout type
+personnes-en-situation-durgence,Personnes en situation d’urgence,"SDF, victimes de violence, grande précarité, etc"
+personnes-en-situation-juridique-specifique,Personnes en situation juridique spécifique,"Personnes sortant de détention, détenus ou autre statut juridique spécifique"
+personnes-exilees,Personnes exilées,"Réfugiés, demandeurs d’asile, personnes immigrées, etc"
+residents-qpv-frr,Résidents en QPV ou FRR,Personnes résidentes en zone Quartier Prioritaire de la Ville ou France Ruralités Revitalisation (anciennement ZRR)
+seniors,Séniors,"Personnes âgées, retraités, etc"
