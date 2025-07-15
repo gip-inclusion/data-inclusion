@@ -3,8 +3,7 @@ from pathlib import Path
 from typing import Literal
 
 from airflow import configuration
-from airflow.decorators import task
-from airflow.models import Variable
+from airflow.sdk import Variable, task
 
 AIRFLOW_HOME = Path(configuration.get_airflow_home())
 DBT_PROJECT_PATH = AIRFLOW_HOME / "dbt"

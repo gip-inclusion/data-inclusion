@@ -4,7 +4,7 @@ ifeq ($(filter upgrade,$(MAKECMDGOALS)),upgrade)
 PIP_COMPILE += --upgrade
 endif
 
-AIRFLOW_VERSION := 2.11.0
+AIRFLOW_VERSION := 3.0.4
 PYTHON_VERSION := 3.12
 
 .PHONY: all airflow tasks dev upgrade

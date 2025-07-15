@@ -1,8 +1,4 @@
-apache-airflow==2.*
-apache-airflow-providers-postgres
-apache-airflow-providers-amazon
-apache-airflow-providers-ssh
-sentry-sdk
+apache-airflow[amazon,fab,postgres,sentry,ssh,standard]==3.0.4
 
 2captcha-python
 beautifulsoup4

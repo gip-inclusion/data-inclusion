@@ -273,7 +273,7 @@ resource "terraform_data" "up" {
     AIRFLOW__CORE__FERNET_KEY='${var.airflow__core__fernet_key}'
     AIRFLOW__SENTRY__SENTRY_DSN='${var.airflow__sentry__sentry_dsn}'
     AIRFLOW__SENTRY__RELEASE='${var.stack_version}'
-    AIRFLOW__WEBSERVER__BASE_URL='https://${local.airflow_hostname}'
+    AIRFLOW__API__BASE_URL='https://${local.airflow_hostname}'
 
     # Airflow connections
     AIRFLOW_CONN_MATTERMOST='${var.airflow_conn_mattermost}'
