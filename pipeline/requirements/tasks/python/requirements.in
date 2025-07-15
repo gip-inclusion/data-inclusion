@@ -1,6 +1,7 @@
 apache-airflow-providers-postgres
 apache-airflow-providers-amazon
 apache-airflow-providers-ssh
+apache-airflow-providers-standard
 sentry-sdk
 
 2captcha-python
