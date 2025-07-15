@@ -123,6 +123,8 @@ def load_df_to_table(
 
     Does not commit the transaction, caller must do it.
     """
+    db_session.execute(sqla.delete(model))
+
     columns_list = [
         c
         for c in sorted(model.__table__.columns, key=lambda c: c.name)
@@ -150,8 +152,6 @@ def load_dataset(
     structure_model,
     service_model,
 ):
-    db_session.execute(sqla.delete(service_model))
-    db_session.execute(sqla.delete(structure_model))
     load_df_to_table(db_session, structures_df, structure_model)
     load_df_to_table(db_session, services_df, service_model)
 
