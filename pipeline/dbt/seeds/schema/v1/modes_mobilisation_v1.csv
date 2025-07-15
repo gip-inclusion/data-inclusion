@@ -1,0 +1,5 @@
+value,label,description
+envoyer-un-courriel,Envoyer un courriel,"Envoyer un courriel à l’adresse électronique associée au service, ou à défaut, à la structure."
+se-presenter,Se présenter,"Se présenter directement à l’adresse associée au service ou, à défaut, à la structure."
+telephoner,Téléphoner,"Téléphoner au numéro associé au service, ou à défaut, à la structure."
+utiliser-lien-mobilisation,Utiliser le lien de mobilisation,Utiliser le lien de mobilisation du service.
