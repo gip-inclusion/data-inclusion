@@ -7,10 +7,10 @@ x-airflow-common:
 
   environment:
     &airflow-common-environment
+    AIRFLOW__CORE__AUTH_MANAGER: airflow.providers.fab.auth_manager.fab_auth_manager.FabAuthManager
     AIRFLOW__CORE__DEFAULT_TIMEZONE: Europe/Paris
     AIRFLOW__CORE__EXECUTOR: LocalExecutor
     AIRFLOW__CORE__FERNET_KEY: ${AIRFLOW__CORE__FERNET_KEY}
-    AIRFLOW__CORE__LOAD_DEFAULT_CONNECTIONS: 'false'
     AIRFLOW__CORE__LOAD_EXAMPLES: 'false'
     AIRFLOW__CORE__MAX_MAP_LENGTH: 2048
     AIRFLOW__CORE__PARALLELISM: 4
@@ -21,7 +21,8 @@ x-airflow-common:
     AIRFLOW__SENTRY__SENTRY_ON: 'true'
     AIRFLOW__SENTRY__TRACES_SAMPLE_RATE: 1.0
     AIRFLOW__SENTRY__BEFORE_SEND: data_inclusion.pipeline.common.sentry.before_send
-    AIRFLOW__WEBSERVER__BASE_URL: ${AIRFLOW__WEBSERVER__BASE_URL}
+    AIRFLOW__API__BASE_URL: ${AIRFLOW__API__BASE_URL}
+    AIRFLOW__API_AUTH__JWT_SECRET: ${AIRFLOW__API_AUTH__JWT_SECRET}  # TODO: pass
 
     # Connections
     AIRFLOW_CONN_MATTERMOST: ${AIRFLOW_CONN_MATTERMOST}
@@ -79,13 +80,13 @@ services:
       _AIRFLOW_WWW_USER_USERNAME: airflow
       _AIRFLOW_WWW_USER_PASSWORD: ${AIRFLOW_WWW_USER_PASSWORD}
 
-  airflow-webserver:
+  airflow-apiserver:
     <<: *airflow-common
     image: ghcr.io/gip-inclusion/data-inclusion-pipeline:${STACK_VERSION}
-    command: webserver
+    command: api-server
     restart: always
     healthcheck:
-      test: ["CMD", "curl", "--fail", "http://localhost:8080/health"]
+      test: ["CMD", "curl", "--fail", "http://localhost:8080/api/v2/version"]
       interval: 30s
       timeout: 10s
       retries: 5
@@ -113,9 +114,27 @@ services:
           "CMD-SHELL",
           'airflow jobs check --job-type SchedulerJob --hostname "$${HOSTNAME}"'
         ]
-      interval: 10s
+      interval: 30s
       timeout: 10s
       retries: 5
+      start_period: 30s
+    depends_on:
+      <<: *airflow-common-depends-on
+      airflow-init:
+        condition: service_completed_successfully
+
+  airflow-dag-processor:
+    <<: *airflow-common
+    build:
+      context: pipeline
+    command: dag-processor
+    healthcheck:
+      test: ["CMD-SHELL", 'airflow jobs check --job-type DagProcessorJob --hostname "$${HOSTNAME}"']
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 30s
+    restart: no
     depends_on:
       <<: *airflow-common-depends-on
       airflow-init:

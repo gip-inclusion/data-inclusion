@@ -1,7 +1,6 @@
 import pendulum
 
-from airflow.decorators import dag, task
-from airflow.models.baseoperator import chain
+from airflow.sdk import chain, dag, task
 from airflow.utils.trigger_rule import TriggerRule
 
 from data_inclusion.pipeline.common import dags, dbt, tasks
@@ -16,12 +15,12 @@ def import_data():
     import subprocess
     import tempfile
 
-    from airflow.models import Connection
     from airflow.providers.ssh.hooks import ssh
+    from airflow.sdk import Connection
 
     ssh_hook = ssh.SSHHook(ssh_conn_id="ssh_api")
-    pg_dwh_conn = Connection.get_connection_from_secrets(conn_id="pg")
-    pg_api_conn = Connection.get_connection_from_secrets(conn_id="pg_api")
+    pg_dwh_conn = Connection.get(conn_id="pg")
+    pg_api_conn = Connection.get(conn_id="pg_api")
 
     print("Tunnel creation...")
 

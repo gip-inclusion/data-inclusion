@@ -1,4 +1,4 @@
-from airflow.decorators import dag, task
+from airflow.sdk import dag, task
 
 from data_inclusion.pipeline.common import dags, tasks
 
@@ -11,8 +11,8 @@ def publish_to_datagouv():
     import geopandas as gpd
     import pendulum
 
-    from airflow.models import Variable
     from airflow.providers.postgres.hooks import postgres
+    from airflow.sdk import Variable
 
     from data_inclusion.pipeline.sources import datagouv
     from data_inclusion.schema import v0
