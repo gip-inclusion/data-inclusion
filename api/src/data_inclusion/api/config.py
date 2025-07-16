@@ -18,8 +18,8 @@ class Settings(BaseSettings):
     SOLIGUIDE_API_URL: str = "https://api.soliguide.fr"
     SOLIGUIDE_API_TOKEN: str | None = None
 
-    DEFAULT_PAGE_SIZE: int = 500
-    MAX_PAGE_SIZE: int = 1000
+    DEFAULT_PAGE_SIZE: int = 5_000
+    MAX_PAGE_SIZE: int = 10_000
 
     DATALAKE_BUCKET_NAME: str | None = None
 
