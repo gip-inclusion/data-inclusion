@@ -3,6 +3,8 @@ from typing import Annotated, TypeVar
 from pydantic.json_schema import SkipJsonSchema
 
 import fastapi
+from fastapi_pagination import set_params
+from fastapi_pagination.cursor import CursorParams
 
 from data_inclusion.api import auth
 from data_inclusion.api.analytics.services import (
@@ -36,6 +38,15 @@ router = fastapi.APIRouter(tags=["v0 | Données"])
 # for optional enum query parameters.
 T = TypeVar("T")
 Optional = T | SkipJsonSchema[None]
+
+
+class LargeCursorParams(CursorParams):
+    size: int = fastapi.Query(
+        default=settings.DEFAULT_PAGE_SIZE,
+        ge=1,
+        le=settings.MAX_PAGE_SIZE,
+        description="Page size",
+    )
 
 
 service_layer = services.ServiceLayerV0()
@@ -167,6 +178,13 @@ def list_services_endpoint(
     region = get_region_by_code_or_slug(code=code_region, slug=slug_region)
     departement = get_departement_by_code_or_slug(
         code=code_departement, slug=slug_departement
+    )
+
+    set_params(
+        LargeCursorParams(
+            size=request.query_params.get("size", settings.DEFAULT_PAGE_SIZE),
+            cursor=request.query_params.get("cursor"),
+        ),
     )
 
     services_listed = service_layer.list_services(
