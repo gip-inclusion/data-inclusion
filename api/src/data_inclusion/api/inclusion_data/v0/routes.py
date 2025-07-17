@@ -3,7 +3,7 @@ from typing import Annotated, TypeVar
 from pydantic.json_schema import SkipJsonSchema
 
 import fastapi
-from fastapi_pagination import set_params
+from fastapi.responses import StreamingResponse
 from fastapi_pagination.cursor import CursorParams
 
 from data_inclusion.api import auth
@@ -152,6 +152,7 @@ def list_sources_endpoint(
 
 @router.get(
     "/services",
+    response_class=StreamingResponse,
     response_model=pagination.BigPage[schemas.Service],
     summary="Lister les services consolidés",
     dependencies=[auth.authenticated_dependency] if settings.TOKEN_ENABLED else [],
@@ -180,14 +181,7 @@ def list_services_endpoint(
         code=code_departement, slug=slug_departement
     )
 
-    set_params(
-        LargeCursorParams(
-            size=request.query_params.get("size", settings.DEFAULT_PAGE_SIZE),
-            cursor=request.query_params.get("cursor"),
-        ),
-    )
-
-    services_listed = service_layer.list_services(
+    query = service_layer.list_services(
         request=request,
         db_session=db_session,
         sources=sources,
@@ -202,6 +196,15 @@ def list_services_endpoint(
         types=types,
         score_qualite_minimum=score_qualite_minimum,
     )
+
+    def generate_data():
+        for partition in db_session.execute(
+            query, execution_options={"stream_results": True, "max_row_buffer": 10000}
+        ):
+            for row in partition:
+                obj = schemas.Service.model_validate(row)
+                yield obj.model_dump_json(exclude_none=True) + "\n"
+
     background_tasks.add_task(
         save_list_services_event,
         request=request,
@@ -218,7 +221,8 @@ def list_services_endpoint(
         recherche_public=recherche_public,
         score_qualite_minimum=score_qualite_minimum,
     )
-    return services_listed
+
+    return StreamingResponse(generate_data(), media_type="text/plain")
 
 
 @router.get(
