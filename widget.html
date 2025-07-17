@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>data⋅inclusion widget</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <script defer src="https://cdnjs.cloudflare.com/ajax/libs/alpinejs/3.13.3/cdn.min.js"></script>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f8f9fa;
+        }
+
+        .search-container {
+            position: relative;
+            max-width: 500px;
+            margin: 0 auto;
+        }
+
+        .autocomplete-dropdown {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            right: 0;
+            background: white;
+            border: 1px solid #ddd;
+            border-top: none;
+            border-radius: 0 0 4px 4px;
+            max-height: 200px;
+            overflow-y: auto;
+            z-index: 1000;
+        }
+
+        .autocomplete-item {
+            padding: 10px 15px;
+            cursor: pointer;
+            border-bottom: 1px solid #eee;
+        }
+
+        .autocomplete-item:hover,
+        .autocomplete-item.active {
+            background-color: #f8f9fa;
+        }
+
+        .autocomplete-item:last-child {
+            border-bottom: none;
+        }
+
+        .loading-spinner {
+            text-align: center;
+            padding: 20px;
+        }
+
+        .search-section {
+            margin-top: 30px;
+        }
+
+        .result-card {
+            transition: transform 0.2s ease-in-out;
+            height: 100%;
+            cursor: pointer;
+        }
+
+        .result-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+
+        .source-badge {
+            font-size: 0.6em;
+        }
+
+        .no-results {
+            text-align: center;
+            padding: 40px;
+            color: #6c757d;
+        }
+    </style>
+</head>
+<body>
+    <div class="container py-4" x-data="state" x-init="init()">
+
+        <div class="row">
+            <div class="col-12">
+                <div x-show="results.length == 0" class="loading-spinner">
+                    <div class="spinner-border text-primary" role="status">
+                        <span class="visually-hidden">Chargement...</span>
+                    </div>
+                    <p class="mt-2">Recherche en cours pour le code <span x-text="cityCode"></span>...</p>
+                </div>
+            </div>
+        </div>
+
+        <div x-show="results.length > 0" class="search-section">
+            <div class="row">
+                <span class="col-12">
+                    <h4 class="mb-3"><strong x-text="results.length"></strong> résultats trouvés</h4>
+                </span>
+            </div>
+
+            <div class="row">
+                <template x-for="result in results" :key="result.service.id">
+                    <div class="col-lg-4 col-md-6 col-sm-12 gy-4">
+                        <div class="card result-card shadow-sm">
+                            <div class="card-body" @click="viewDetails(result)">
+                                <h5 class="card-title" x-text="result.service.nom"></h5>
+                                <p class="card-text" x-text="result.service.description"></p>
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <p class="source-badge" x-text="formatDistance(result.distance)"></p>
+                                    <p class="badge bg-primary source-badge" x-text="result.service.source"></p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </template>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+    <script>
+        const BASE_URL = 'http://127.0.0.1:8000/api/v0';
+
+        async function searchDI(cityCode) {
+            const searchData = {
+                code_commune: cityCode,
+                score_qualite_minimum: 0.8,
+                exclure_doublons: true,
+                inclure_suspendus: false,
+            };
+
+            const response = await fetch(`${BASE_URL}/search/services?${new URLSearchParams(searchData)}`)
+            if (!response.ok) {
+                throw new Error('Search failed');
+            }
+            const data = await response.json();
+            // only keep items that have a distance (arbitrary rule, this is a sample widget !)
+            return data.items.filter(item => !!item.distance);
+        }
+
+        const state = {
+            cityCode: '',
+            results: [],
+            formatDistance(distance) {
+                return `${distance} km`;
+            },
+            async init () {
+                const urlParams = new URLSearchParams(window.location.search);
+                const cityCode = urlParams.get('query');
+                this.cityCode = cityCode || '75056';  // default to Paris
+
+                // the token should also be retrieved in thesame fashion
+                // ideally there should be a parameter that identifies widget queries ?
+                this.results = await searchDI(cityCode)
+            }
+        }
+    </script>
+</body>
+</html>
