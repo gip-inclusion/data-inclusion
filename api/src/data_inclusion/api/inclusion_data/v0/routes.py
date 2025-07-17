@@ -1,5 +1,6 @@
 from typing import Annotated, TypeVar
 
+import sqlalchemy as sqla
 from pydantic.json_schema import SkipJsonSchema
 
 import fastapi
@@ -137,6 +138,26 @@ def list_sources_endpoint(
     request: fastapi.Request,
 ):
     return service_layer.list_sources(request=request)
+
+
+@router.get(
+    "/communes",
+    response_model=list[schemas.Commune],
+    summary="Lister les communes",
+    dependencies=[auth.authenticated_dependency] if settings.TOKEN_ENABLED else [],
+)
+def list_communes_endpoint(
+    request: fastapi.Request,
+    db_session=fastapi.Depends(db.get_session),
+    q: Annotated[
+        Optional[str],
+        fastapi.Query(description="Le nom d'une ville à rechercher."),
+    ] = None,
+):
+    query = sqla.select(Commune).order_by(Commune.code)
+    if q:
+        query = query.where(Commune.nom.ilike(f"%{q}%"))
+    return db_session.execute(query).scalars().all()
 
 
 @router.get(
