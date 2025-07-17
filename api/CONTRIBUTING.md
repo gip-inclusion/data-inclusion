@@ -61,7 +61,7 @@ uv run pytest
 ## Running the benchmark
 
 ```bash
-uv run locust --headless -u 3 -t 60s -H http://127.0.0.1:8001
+uv run locust --headless --users 1 --run-time 120s -H http://127.0.0.1:8001
 ```
 
 ## Managing the app requirements

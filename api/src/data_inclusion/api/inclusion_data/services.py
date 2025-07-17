@@ -356,8 +356,7 @@ class ServiceLayer[
         )
 
         query = query.order_by(self.models.Service._di_surrogate_id)
-
-        return paginate(db_session, query, unique=False)
+        return query
 
     def search_services(
         self,
