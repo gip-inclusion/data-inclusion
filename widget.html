@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>data⋅inclusion widget</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <script defer src="https://cdnjs.cloudflare.com/ajax/libs/alpinejs/3.13.3/cdn.min.js"></script>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f8f9fa;
+        }
+
+        .search-container {
+            position: relative;
+            max-width: 500px;
+            margin: 0 auto;
+        }
+
+        .autocomplete-dropdown {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            right: 0;
+            background: white;
+            border: 1px solid #ddd;
+            border-top: none;
+            border-radius: 0 0 4px 4px;
+            max-height: 200px;
+            overflow-y: auto;
+            z-index: 1000;
+        }
+
+        .autocomplete-item {
+            padding: 10px 15px;
+            cursor: pointer;
+            border-bottom: 1px solid #eee;
+        }
+
+        .autocomplete-item:hover,
+        .autocomplete-item.active {
+            background-color: #f8f9fa;
+        }
+
+        .autocomplete-item:last-child {
+            border-bottom: none;
+        }
+
+        .loading-spinner {
+            text-align: center;
+            padding: 20px;
+        }
+
+        .search-section {
+            margin-top: 30px;
+        }
+
+        .result-card {
+            transition: transform 0.2s ease-in-out;
+            height: 100%;
+            cursor: pointer;
+        }
+
+        .result-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+
+        .source-badge {
+            font-size: 0.6em;
+        }
+
+        .no-results {
+            text-align: center;
+            padding: 40px;
+            color: #6c757d;
+        }
+    </style>
+</head>
+<body>
+    <div class="container py-4"
+         x-data="initWidget()"
+         @click.away="showDropdown = false">
+
+        <div class="row">
+            <div class="col-12">
+
+                <div class="search-container">
+                    <div class="input-group mb-3">
+                        <span class="input-group-text">
+                            <i class="fas fa-search"></i>
+                        </span>
+                        <input
+                            type="text"
+                            x-model="cityQuery"
+                            @input.debounce.300ms="handleInput()"
+                            @keydown="handleKeyDown($event)"
+                            class="form-control form-control-lg"
+                            placeholder="Paris, Lyon, Marseille..."
+                            autocomplete="off"
+                        >
+                    </div>
+
+                    <div x-show="showDropdown && cities.length > 0"
+                         class="autocomplete-dropdown">
+                        <template x-for="(city, index) in cities" :key="city.name || city">
+                            <div class="autocomplete-item"
+                                 :class="{ 'active': currentSelection === index }"
+                                 @click="selectCity(city)">
+                                <i class="fas fa-map-marker-alt text-muted me-2"></i>
+                                <span x-text="city.nom || city"></span>
+                                <small x-show="city.code"
+                                       class="text-muted ms-2"
+                                       x-text="city.code ? `(INSEE: ${city.code})` : ''"></small>
+                            </div>
+                        </template>
+                    </div>
+                </div>
+
+                <div x-show="isLoading" class="loading-spinner">
+                    <div class="spinner-border text-primary" role="status">
+                        <span class="visually-hidden">Chargement...</span>
+                    </div>
+                    <p class="mt-2">Recherche en cours...</p>
+                </div>
+            </div>
+        </div>
+
+        <div x-show="showResults && results.length > 0" class="search-section">
+            <div class="row">
+                <span class="col-12">
+                    <h4 class="mb-3"><strong x-text="results.length"></strong> résultats trouvés</h4>
+                </span>
+            </div>
+
+            <div class="row">
+                <template x-for="result in results" :key="result.service.id">
+                    <div class="col-lg-4 col-md-6 col-sm-12">
+                        <div class="card result-card shadow-sm">
+                            <div class="card-body" @click="viewDetails(result)">
+                                <h5 class="card-title" x-text="result.service.nom"></h5>
+                                <p class="card-text" x-text="result.service.description"></p>
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <p class="source-badge" x-text="formatDistance(result.distance)"></p>
+                                    <p class="badge bg-primary source-badge" x-text="result.service.source"></p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </template>
+            </div>
+        </div>
+
+        <div x-show="showNoResults" class="no-results">
+            <i class="fas fa-search text-muted" style="font-size: 3rem;"></i>
+            <h5 class="mt-3">Aucun résultat</h5>
+            <p>Essayez de rechercher une autre ville.</p>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+    <script>
+        const BASE_URL = 'http://127.0.0.1:8000/api/v0';
+
+        const state = {
+            cityQuery: '',
+            cities: [],
+            selectedCity: null,
+            results: [],
+            currentSelection: -1,
+            showDropdown: false,
+            isLoading: false,
+            showResults: false,
+            showNoResults: false,
+
+            searchParams: {
+                score_qualite_minimum: 0.8,
+                exclure_doublons: true,
+                inclure_suspendus: false,
+            },
+
+            async handleInput() {
+                if (this.cityQuery.length < 2) {
+                    this.showDropdown = false;
+                    this.cities = [];
+                    return;
+                }
+
+                await this.fetchCities(this.cityQuery);
+            },
+
+            handleKeyDown(event) {
+                if (!this.showDropdown || this.cities.length === 0) return;
+
+                switch(event.key) {
+                    case 'ArrowDown':
+                        event.preventDefault();
+                        this.currentSelection = Math.min(this.currentSelection + 1, this.cities.length - 1);
+                        break;
+                    case 'ArrowUp':
+                        event.preventDefault();
+                        this.currentSelection = Math.max(this.currentSelection - 1, -1);
+                        break;
+                    case 'Enter':
+                        event.preventDefault();
+                        if (this.currentSelection >= 0) {
+                            this.selectCity(this.cities[this.currentSelection]);
+                        }
+                        break;
+                    case 'Escape':
+                        this.showDropdown = false;
+                        this.currentSelection = -1;
+                        break;
+                }
+            },
+
+            async fetchCities(query) {
+                const response = await fetch(`${BASE_URL}/communes?q=${encodeURIComponent(query)}`);
+
+                if (!response.ok) {
+                    throw new Error('Failed to fetch cities');
+                }
+
+                const data = await response.json();
+                this.cities = data.cities || data;
+                this.showDropdown = true;
+                this.currentSelection = -1;
+            },
+
+            selectCity(city) {
+                this.cityQuery = city.nom || city;
+                this.selectedCity = city;
+                this.showDropdown = false;
+                this.currentSelection = -1;
+                this.searchWithCity(city);
+            },
+
+            async searchWithCity(city) {
+                this.isLoading = true;
+                this.showResults = false;
+                this.showNoResults = false;
+
+                const searchData = {
+                    code_commune: city.code,
+                    ...this.searchParams,
+                };
+
+                try {
+                    const response = await fetch(`${BASE_URL}/search/services?${new URLSearchParams(searchData)}`)
+
+                    if (!response.ok) {
+                        throw new Error('Search failed');
+                    }
+
+                    const data = await response.json();
+                    this.results = data.items.filter(item => !!item.distance);
+                    this.displayResults();
+                } finally {
+                    this.isLoading = false;
+                }
+
+            },
+
+            displayResults() {
+                if (!this.results || this.results.length === 0) {
+                    this.showNoResults = true;
+                    this.showResults = false;
+                } else {
+                    this.showResults = true;
+                    this.showNoResults = false;
+                }
+            },
+
+            viewDetails(result) {
+                // Handle view details action
+                console.log('View details for:', result);
+                // You can implement modal, navigation, or other actions here
+                alert(`View details for: ${result.title}`);
+            },
+
+            formatDistance(distance) {
+                return `${distance} km`;
+            }
+        }
+
+        function initWidget() {
+            return state;
+        }
+
+    </script>
+</body>
+</html>
