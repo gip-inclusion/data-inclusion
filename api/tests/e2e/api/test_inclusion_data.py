@@ -3,8 +3,8 @@ from unittest.mock import ANY
 
 import pytest
 
+from data_inclusion.api.decoupage_administratif import constants
 from data_inclusion.api.decoupage_administratif.constants import RegionEnum
-from data_inclusion.api.inclusion_data import services
 from data_inclusion.api.inclusion_data.v0 import models as models_v0
 from data_inclusion.api.inclusion_data.v1 import models as models_v1
 from data_inclusion.api.utils import soliguide
@@ -385,10 +385,10 @@ def test_list_services_all(api_client, db_session, url, snapshot, instances):
     )
 
 
-@pytest.mark.parametrize("schema_version", ["v0", "v1"])
+@pytest.mark.parametrize("schema_version", ["v0"])
 @pytest.mark.parametrize("path", ["/services", "/search/services"])
 @pytest.mark.parametrize(
-    "profils_precisions,input,found",
+    ("profils_precisions", "input", "found"),
     [
         ("jeunes moins de 18 ans", "jeunes", True),
         ("jeune moins de 18 ans", "jeunes", True),
@@ -402,12 +402,43 @@ def test_list_services_all(api_client, db_session, url, snapshot, instances):
 )
 @pytest.mark.with_token
 def test_can_filter_resources_by_profils_precisions(
-    api_client, profils_precisions, input, found, url, service_factory, publics_param
+    api_client, profils_precisions, input, found, url, service_factory
 ):
-    resource = service_factory(
-        **{publics_param: None, f"{publics_param}_precisions": profils_precisions}
-    )
-    service_factory(**{publics_param: None, f"{publics_param}_precisions": "tests"})
+    resource = service_factory(profils=None, profils_precisions=profils_precisions)
+    service_factory(profils=None, profils_precisions="tests")
+
+    response = api_client.get(url, params={"recherche_public": input})
+
+    assert response.status_code == 200
+    resp_data = response.json()
+    if found:
+        assert_paginated_response_data(resp_data, total=1)
+        assert list_resources_data(resp_data)[0]["id"] in [resource.id]
+    else:
+        assert_paginated_response_data(resp_data, total=0)
+
+
+@pytest.mark.parametrize("schema_version", ["v1"])
+@pytest.mark.parametrize("path", ["/services", "/search/services"])
+@pytest.mark.parametrize(
+    ("publics_precisions", "input", "found"),
+    [
+        ("jeunes moins de 18 ans", "jeunes", True),
+        ("jeune moins de 18 ans", "jeunes", True),
+        ("jeunes et personne age", "vieux", False),
+        ("jeunes et personne age", "personne OR vieux", True),
+        ("jeunes et personne age", "personne jeune", True),
+        ("jeunes et personne age", "jeunes -personne", False),
+        ("jeunes et personne age", '"personne jeune"', False),
+        ("jeunes et personne agee", "âgée", True),
+    ],
+)
+@pytest.mark.with_token
+def test_can_filter_resources_by_publics_precisions(
+    api_client, publics_precisions, input, found, url, service_factory
+):
+    resource = service_factory(publics=None, publics_precisions=publics_precisions)
+    service_factory(publics=None, publics_precisions="tests")
 
     response = api_client.get(url, params={"recherche_public": input})
 
@@ -660,28 +691,19 @@ def test_can_filter_resources_by_code_commune(
 
 
 @pytest.mark.with_token
-@pytest.mark.parametrize("schema_version", ["v0", "v1"])
+@pytest.mark.parametrize("schema_version", ["v0"])
 @pytest.mark.parametrize("path", ["/services", "/search/services"])
-def test_can_filter_services_by_profils(
-    api_client,
-    url,
-    service_factory,
-    publics_param,
-):
-    # In this test, as in several others, we use common values between v0.Profil and
-    # v1.Public to avoid duplicating the test altogether/making even more parameters.
-    service_1 = service_factory(**{publics_param: [v0.Profil.FEMMES.value]})
-    service_2 = service_factory(**{publics_param: [v0.Profil.JEUNES.value]})
-    service_factory(
-        **{publics_param: [v0.Profil.PERSONNES_EN_SITUATION_DE_HANDICAP.value]}
-    )
-    service_factory(**{publics_param: []})
-    service_factory(**{publics_param: None})
+def test_can_filter_services_by_profils(api_client, url, service_factory):
+    service_1 = service_factory(profils=[v0.Profil.FEMMES.value])
+    service_2 = service_factory(profils=[v0.Profil.JEUNES.value])
+    service_factory(profils=[v0.Profil.PERSONNES_EN_SITUATION_DE_HANDICAP.value])
+    service_factory(profils=[])
+    service_factory(profils=None)
 
     response = api_client.get(
         url,
         params={
-            publics_param: [
+            "profils": [
                 v0.Profil.FEMMES.value,
                 v0.Profil.JEUNES.value,
             ],
@@ -699,7 +721,44 @@ def test_can_filter_services_by_profils(
     response = api_client.get(
         url,
         params={
-            publics_param: v0.Profil.ETUDIANTS.value,
+            "profils": v0.Profil.ETUDIANTS.value,
+        },
+    )
+    assert_paginated_response_data(response.json(), total=0)
+
+
+@pytest.mark.with_token
+@pytest.mark.parametrize("schema_version", ["v1"])
+@pytest.mark.parametrize("path", ["/services", "/search/services"])
+def test_can_filter_services_by_publics(api_client, url, service_factory):
+    service_1 = service_factory(publics=[v1.Public.FEMMES.value])
+    service_2 = service_factory(publics=[v1.Public.JEUNES.value])
+    service_factory(publics=[v1.Public.PERSONNES_EN_SITUATION_DE_HANDICAP.value])
+    service_factory(publics=[])
+    service_factory(publics=None)
+
+    response = api_client.get(
+        url,
+        params={
+            "publics": [
+                v1.Public.FEMMES.value,
+                v1.Public.JEUNES.value,
+            ],
+        },
+    )
+
+    assert response.status_code == 200
+    resp_data = response.json()
+    assert_paginated_response_data(resp_data, total=2)
+    assert {d["id"] for d in list_resources_data(resp_data)} == {
+        service_1.id,
+        service_2.id,
+    }
+
+    response = api_client.get(
+        url,
+        params={
+            "publics": v1.Public.ETUDIANTS.value,
         },
     )
     assert_paginated_response_data(response.json(), total=0)
@@ -1128,15 +1187,21 @@ def test_search_services_with_zone_diffusion_pays_v0(api_client, url, service_fa
 
 @pytest.mark.parametrize("schema_version", ["v1"])
 @pytest.mark.parametrize("path", ["/search/services"])
+@pytest.mark.parametrize(
+    "zone_eligibilite",
+    [constants.PaysEnum.FRANCE.value.code, constants.PaysEnum.FRANCE.value.slug],
+)
 @pytest.mark.with_token
-def test_search_services_with_zone_diffusion_pays(api_client, url, service_factory):
+def test_search_services_with_zone_diffusion_pays(
+    api_client, url, service_factory, zone_eligibilite
+):
     service_1 = service_factory(
         commune="Dunkerque",
         code_insee=DUNKERQUE["code_insee"],
         latitude=51.034368,
         longitude=2.376776,
         modes_accueil=[v0.ModeAccueil.A_DISTANCE.value],
-        zone_eligibilite=[services.CODE_INSEE_FRANCE],
+        zone_eligibilite=[zone_eligibilite],
     )
 
     response = api_client.get(

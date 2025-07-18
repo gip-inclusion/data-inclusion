@@ -17,7 +17,6 @@ dependencies = [
     "cryptography>=44.0.2",
     "data-inclusion-schema==1.0.0b1",
     "fastapi>=0.115.12",
-    "fastapi-pagination>=0.12.34",
     "furl>=2.1.4",
     "geoalchemy2>=0.17.1",
     "geopandas>=1.0.1",

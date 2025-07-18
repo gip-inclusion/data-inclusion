@@ -8,6 +8,16 @@ from enum import Enum
 
 
 @dataclass(frozen=True)
+class Pays:
+    slug: str
+    code: str
+
+
+class PaysEnum(Enum):
+    FRANCE = Pays("france", "99100")
+
+
+@dataclass(frozen=True)
 class Departement:
     slug: str
     code: str

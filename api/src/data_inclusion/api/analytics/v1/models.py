@@ -4,25 +4,29 @@ from data_inclusion.api.core import db
 
 
 class ConsultStructureEvent(db.Base):
+    __tablename__ = "api__consult_structure_events_v1"
+
     id: Mapped[db.uuid_pk]
     created_at: Mapped[db.timestamp]
     user: Mapped[str]
     structure_id: Mapped[str]
     source: Mapped[str]
-    schema_version: Mapped[str]
 
 
 class ConsultServiceEvent(db.Base):
+    __tablename__ = "api__consult_service_events_v1"
+
     id: Mapped[db.uuid_pk]
     created_at: Mapped[db.timestamp]
     user: Mapped[str]
     service_id: Mapped[str]
     source: Mapped[str]
     score_qualite: Mapped[float | None]
-    schema_version: Mapped[str]
 
 
 class ListServicesEvent(db.Base):
+    __tablename__ = "api__list_services_events_v1"
+
     id: Mapped[db.uuid_pk]
     created_at: Mapped[db.timestamp]
     user: Mapped[str]
@@ -32,15 +36,16 @@ class ListServicesEvent(db.Base):
     code_region: Mapped[str | None]
     code_commune: Mapped[str | None]
     frais: Mapped[list[str] | None]
-    profils: Mapped[list[str] | None]
+    publics: Mapped[list[str] | None]
     modes_accueil: Mapped[list[str] | None]
     types: Mapped[list[str] | None]
     recherche_public: Mapped[str | None]
     score_qualite_minimum: Mapped[float | None]
-    schema_version: Mapped[str]
 
 
 class ListStructuresEvent(db.Base):
+    __tablename__ = "api__list_structures_events_v1"
+
     id: Mapped[db.uuid_pk]
     created_at: Mapped[db.timestamp]
     user: Mapped[str]
@@ -50,12 +55,12 @@ class ListStructuresEvent(db.Base):
     code_departement: Mapped[str | None]
     code_region: Mapped[str | None]
     code_commune: Mapped[str | None]
-    thematiques: Mapped[list[str] | None]
     exclure_doublons: Mapped[bool | None]
-    schema_version: Mapped[str]
 
 
 class SearchServicesEvent(db.Base):
+    __tablename__ = "api__search_services_events_v1"
+
     id: Mapped[db.uuid_pk]
     created_at: Mapped[db.timestamp]
     user: Mapped[str]
@@ -68,9 +73,8 @@ class SearchServicesEvent(db.Base):
     thematiques: Mapped[list[str] | None]
     frais: Mapped[list[str] | None]
     modes_accueil: Mapped[list[str] | None]
-    profils: Mapped[list[str] | None]
+    publics: Mapped[list[str] | None]
     types: Mapped[list[str] | None]
     recherche_public: Mapped[str | None]
     score_qualite_minimum: Mapped[float | None]
     exclure_doublons: Mapped[bool | None]
-    schema_version: Mapped[str]
