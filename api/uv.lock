@@ -379,7 +379,6 @@ dependencies = [
     { name = "cryptography" },
     { name = "data-inclusion-schema" },
     { name = "fastapi" },
-    { name = "fastapi-pagination" },
     { name = "furl" },
     { name = "geoalchemy2" },
     { name = "geopandas" },
@@ -429,7 +428,6 @@ requires-dist = [
     { name = "cryptography", specifier = ">=44.0.2" },
     { name = "data-inclusion-schema", specifier = "==1.0.0b1" },
     { name = "fastapi", specifier = ">=0.115.12" },
-    { name = "fastapi-pagination", specifier = ">=0.12.34" },
     { name = "furl", specifier = ">=2.1.4" },
     { name = "geoalchemy2", specifier = ">=0.17.1" },
     { name = "geopandas", specifier = ">=1.0.1" },
@@ -570,20 +568,6 @@ dependencies = [
 sdist = { url = "https://files.pythonhosted.org/packages/ac/e6/c228493e929eeb2b9e61806a63e78c3c0bec4e22ddee99f321ffba4fa64a/fastapi_debug_toolbar-0.6.3.tar.gz", hash = "sha256:15ff6828f9432c786af39f23a2d814ef2af516964b5a9a856444de135a78b2af", size = 26929, upload-time = "2024-05-04T17:03:13.095Z" }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/a7/09/b01c8c60d608e93faa257a9a3fc9a9739c70c9ac926edfbbe92baebbf33b/fastapi_debug_toolbar-0.6.3-py3-none-any.whl", hash = "sha256:077b5ffeb10426c49387ef090cf307a316d5c71c69bbffe270d9898d2554429e", size = 42904, upload-time = "2024-05-04T17:03:11.585Z" },
-]
-
-[[package]]
-name = "fastapi-pagination"
-version = "0.13.2"
-source = { registry = "https://pypi.org/simple" }
-dependencies = [
-    { name = "fastapi" },
-    { name = "pydantic" },
-    { name = "typing-extensions" },
-]
-sdist = { url = "https://files.pythonhosted.org/packages/19/25/fc3c9ed9d99df279acdbf57da1a3a91ffceae9c087882cbe8a9cb1229b1e/fastapi_pagination-0.13.2.tar.gz", hash = "sha256:5e76f129aef706601b86114428ca3ff68715bfa3929bf4df8c7ed27561d7f661", size = 550389, upload-time = "2025-06-07T09:30:44.319Z" }
-wheels = [
-    { url = "https://files.pythonhosted.org/packages/d9/cb/cf2f10d4620b31a77705226c7292f39b4a191cef3485ea42561fc2e157d9/fastapi_pagination-0.13.2-py3-none-any.whl", hash = "sha256:d2ec66ffda5cd9c1d665521f3916b16ebbb15d5010a945449292540ef70c4d9a", size = 50404, upload-time = "2025-06-07T09:30:42.218Z" },
 ]
 
 [[package]]

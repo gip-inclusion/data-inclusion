@@ -34,6 +34,16 @@ class SoliguideAPIClient:
         return self.client.get(f"/place/{place_id}").json()
 
 
+def is_allowed_user(request: fastapi.Request) -> bool:
+    if not request.user.is_authenticated:
+        return False
+
+    if not request.user.username.startswith("dora-"):
+        return False
+
+    return True
+
+
 def notify_soliguide_dependency(
     request: fastapi.Request,
     source: Annotated[str, fastapi.Path()],

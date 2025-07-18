@@ -1,18 +1,20 @@
 import pytest
 import sqlalchemy as sqla
 
-from data_inclusion.api.analytics import models
+from data_inclusion.api.analytics.v0 import models as v0
+from data_inclusion.api.analytics.v1 import models as v1
 
 DUNKERQUE = {"code_insee": "59183", "latitude": 51.0361, "longitude": 2.3770}
 HAZEBROUCK = {"code_insee": "59295", "latitude": 50.7262, "longitude": 2.5387}
 
 
-@pytest.mark.parametrize("schema_version", ["v0", "v1"])
 @pytest.mark.parametrize(
-    ("path", "model"),
+    ("schema_version", "path", "model"),
     [
-        ("/structures/foo/bar", models.ConsultStructureEvent),
-        ("/services/foo/bar", models.ConsultServiceEvent),
+        ("v0", "/structures/foo/bar", v0.ConsultStructureEvent),
+        ("v0", "/services/foo/bar", v0.ConsultServiceEvent),
+        ("v1", "/structures/foo/bar", v1.ConsultStructureEvent),
+        ("v1", "/services/foo/bar", v1.ConsultServiceEvent),
     ],
 )
 @pytest.mark.with_token
@@ -23,8 +25,13 @@ def test_ignore_event_if_resource_not_found(api_client, db_session, url, model):
     assert db_session.scalar(sqla.select(sqla.func.count()).select_from(model)) == 0
 
 
-@pytest.mark.parametrize("schema_version", ["v0", "v1"])
-@pytest.mark.parametrize("path", ["/structures"])
+@pytest.mark.parametrize(
+    ("schema_version", "path", "model"),
+    [
+        ("v0", "/structures", v0.ConsultStructureEvent),
+        ("v1", "/structures", v1.ConsultStructureEvent),
+    ],
+)
 @pytest.mark.parametrize(
     ("user_agent", "num_events"),
     [
@@ -37,10 +44,10 @@ def test_consult_structure_event_saved(
     api_client,
     db_session,
     url,
-    schema_version,
     user_agent,
     num_events,
     structure_factory,
+    model,
 ):
     structure = structure_factory(source="foo", id="1")
     url = f"{url}/{structure.source}/{structure.id}"
@@ -54,23 +61,24 @@ def test_consult_structure_event_saved(
 
     assert response.status_code == 200
     assert (
-        db_session.scalar(
-            sqla.select(sqla.func.count())
-            .select_from(models.ConsultStructureEvent)
-            .filter_by(schema_version=schema_version)
-        )
+        db_session.scalar(sqla.select(sqla.func.count()).select_from(model))
         == num_events
     )
 
-    event = db_session.scalars(sqla.select(models.ConsultStructureEvent)).first()
+    event = db_session.scalars(sqla.select(model)).first()
     if event:
         assert event.user == "some_user"
         assert event.structure_id == structure.id
         assert event.source == structure.source
 
 
-@pytest.mark.parametrize("schema_version", ["v0", "v1"])
-@pytest.mark.parametrize("path", ["/services"])
+@pytest.mark.parametrize(
+    ("schema_version", "path", "model"),
+    [
+        ("v0", "/services", v0.ConsultServiceEvent),
+        ("v1", "/services", v1.ConsultServiceEvent),
+    ],
+)
 @pytest.mark.parametrize(
     ("user_agent", "num_events"),
     [
@@ -80,7 +88,13 @@ def test_consult_structure_event_saved(
 )
 @pytest.mark.with_token
 def test_consult_service_event_saved(
-    api_client, db_session, url, schema_version, user_agent, num_events, service_factory
+    api_client,
+    db_session,
+    url,
+    user_agent,
+    num_events,
+    service_factory,
+    model,
 ):
     service = service_factory(source="foo", id="1", score_qualite=0.8)
     url = f"{url}/{service.source}/{service.id}"
@@ -94,15 +108,11 @@ def test_consult_service_event_saved(
 
     assert response.status_code == 200
     assert (
-        db_session.scalar(
-            sqla.select(sqla.func.count())
-            .select_from(models.ConsultServiceEvent)
-            .filter_by(schema_version=schema_version)
-        )
+        db_session.scalar(sqla.select(sqla.func.count()).select_from(model))
         == num_events
     )
 
-    event = db_session.scalars(sqla.select(models.ConsultServiceEvent)).first()
+    event = db_session.scalars(sqla.select(model)).first()
     if event:
         assert event.user == "some_user"
         assert event.service_id == service.id
@@ -110,12 +120,15 @@ def test_consult_service_event_saved(
         assert event.score_qualite == service.score_qualite
 
 
-@pytest.mark.parametrize("schema_version", ["v0", "v1"])
-@pytest.mark.parametrize("path", ["/services"])
+@pytest.mark.parametrize(
+    ("schema_version", "path", "model"),
+    [
+        ("v0", "/services", v0.ListServicesEvent),
+        ("v1", "/services", v1.ListServicesEvent),
+    ],
+)
 @pytest.mark.with_token
-def test_list_services_event_saved(
-    api_client, db_session, url, schema_version, publics_param
-):
+def test_list_services_event_saved(api_client, db_session, url, schema_version, model):
     query_param = {
         "sources": ["foo"],
         "thematiques": ["acces-aux-droits-et-citoyennete"],
@@ -123,25 +136,24 @@ def test_list_services_event_saved(
         "code_region": "84",
         "code_commune": "26400",
         "frais": ["gratuit"],
-        publics_param: ["etudiants"],
         "modes_accueil": ["a-distance"],
         "types": ["accompagnement"],
         "recherche_public": "test",
         "score_qualite_minimum": 0.5,
     }
+    if schema_version == "v0":
+        query_param["profils"] = ["etudiants"]
+        query_param["profils_precisions"] = "test"
+    elif schema_version == "v1":
+        query_param["publics"] = ["etudiants"]
+        query_param["publics_precisions"] = "test"
+
     response = api_client.get(url, params=query_param)
 
     assert response.status_code == 200
-    assert (
-        db_session.scalar(
-            sqla.select(sqla.func.count())
-            .select_from(models.ListServicesEvent)
-            .filter_by(schema_version=schema_version)
-        )
-        == 1
-    )
+    assert db_session.scalar(sqla.select(sqla.func.count()).select_from(model)) == 1
 
-    event = db_session.scalars(sqla.select(models.ListServicesEvent)).first()
+    event = db_session.scalars(sqla.select(model)).first()
     assert event.user == "some_user"
     assert event.sources == query_param["sources"]
     assert event.thematiques == query_param["thematiques"]
@@ -149,17 +161,27 @@ def test_list_services_event_saved(
     assert event.code_region == query_param["code_region"]
     assert event.code_commune == query_param["code_commune"]
     assert event.frais == query_param["frais"]
-    assert event.profils == query_param[publics_param]
     assert event.modes_accueil == query_param["modes_accueil"]
     assert event.types == query_param["types"]
     assert event.recherche_public == query_param["recherche_public"]
     assert event.score_qualite_minimum == query_param["score_qualite_minimum"]
+    if schema_version == "v0":
+        assert event.profils == query_param["profils"]
+    elif schema_version == "v1":
+        assert event.publics == query_param["publics"]
 
 
-@pytest.mark.parametrize("schema_version", ["v0", "v1"])
-@pytest.mark.parametrize("path", ["/structures"])
+@pytest.mark.parametrize(
+    ("schema_version", "path", "model"),
+    [
+        ("v0", "/structures", v0.ListStructuresEvent),
+        ("v1", "/structures", v1.ListStructuresEvent),
+    ],
+)
 @pytest.mark.with_token
-def test_list_structures_event_saved(api_client, db_session, url, schema_version):
+def test_list_structures_event_saved(
+    api_client, db_session, url, schema_version, model
+):
     query_param = {
         "sources": ["foo"],
         "code_departement": "26",
@@ -175,16 +197,9 @@ def test_list_structures_event_saved(api_client, db_session, url, schema_version
     response = api_client.get(url, params=query_param)
 
     assert response.status_code == 200
-    assert (
-        db_session.scalar(
-            sqla.select(sqla.func.count())
-            .select_from(models.ListStructuresEvent)
-            .filter_by(schema_version=schema_version)
-        )
-        == 1
-    )
+    assert db_session.scalar(sqla.select(sqla.func.count()).select_from(model)) == 1
 
-    event = db_session.scalars(sqla.select(models.ListStructuresEvent)).first()
+    event = db_session.scalars(sqla.select(model)).first()
     assert event.user == "some_user"
     assert event.sources == query_param["sources"]
     assert event.code_departement == query_param["code_departement"]
@@ -197,11 +212,16 @@ def test_list_structures_event_saved(api_client, db_session, url, schema_version
         assert event.thematiques == query_param["thematiques"]
 
 
-@pytest.mark.parametrize("schema_version", ["v0", "v1"])
-@pytest.mark.parametrize("path", ["/search/services"])
+@pytest.mark.parametrize(
+    ("schema_version", "path", "model"),
+    [
+        ("v0", "/search/services", v0.SearchServicesEvent),
+        ("v1", "/search/services", v1.SearchServicesEvent),
+    ],
+)
 @pytest.mark.with_token
 def test_search_services_event_saved(
-    api_client, db_session, url, schema_version, publics_param
+    api_client, db_session, url, schema_version, model
 ):
     query_param = {
         "sources": ["foo"],
@@ -209,8 +229,6 @@ def test_search_services_event_saved(
         "code_commune": HAZEBROUCK["code_insee"],
         "code_insee": DUNKERQUE["code_insee"],
         "frais": ["gratuit"],
-        publics_param: ["etudiants"],
-        f"{publics_param}_precisions": "test",
         "modes_accueil": ["a-distance"],
         "types": ["accompagnement"],
         "lat": 45.0,
@@ -219,19 +237,19 @@ def test_search_services_event_saved(
         "recherche_public": "test",
         "score_qualite_minimum": 0.5,
     }
+    if schema_version == "v0":
+        query_param["profils"] = ["etudiants"]
+        query_param["profils_precisions"] = "test"
+    elif schema_version == "v1":
+        query_param["publics"] = ["etudiants"]
+        query_param["publics_precisions"] = "test"
+
     response = api_client.get(url, params=query_param)
 
     assert response.status_code == 200
-    assert (
-        db_session.scalar(
-            sqla.select(sqla.func.count())
-            .select_from(models.SearchServicesEvent)
-            .filter_by(schema_version=schema_version)
-        )
-        == 1
-    )
+    assert db_session.scalar(sqla.select(sqla.func.count()).select_from(model)) == 1
 
-    event = db_session.scalars(sqla.select(models.SearchServicesEvent)).first()
+    event = db_session.scalars(sqla.select(model)).first()
 
     assert event.user == "some_user"
     assert len(event.first_services) == 0
@@ -242,19 +260,27 @@ def test_search_services_event_saved(
     assert event.lat == query_param["lat"]
     assert event.lon == query_param["lon"]
     assert event.frais == query_param["frais"]
-    assert event.profils == query_param[publics_param]
     assert event.modes_accueil == query_param["modes_accueil"]
     assert event.types == query_param["types"]
     assert event.recherche_public == query_param["recherche_public"]
     assert event.score_qualite_minimum == query_param["score_qualite_minimum"]
     assert event.exclure_doublons == query_param["exclure_doublons"]
+    if schema_version == "v0":
+        assert event.profils == query_param["profils"]
+    elif schema_version == "v1":
+        assert event.publics == query_param["publics"]
 
 
-@pytest.mark.parametrize("schema_version", ["v0", "v1"])
-@pytest.mark.parametrize("path", ["/search/services"])
+@pytest.mark.parametrize(
+    ("schema_version", "path", "model"),
+    [
+        ("v0", "/search/services", v0.SearchServicesEvent),
+        ("v1", "/search/services", v1.SearchServicesEvent),
+    ],
+)
 @pytest.mark.with_token
 def test_search_services_event_saved_with_results(
-    api_client, db_session, url, schema_version, service_factory
+    api_client, db_session, url, service_factory, model
 ):
     number_of_results_to_saved = 10
 
@@ -264,16 +290,9 @@ def test_search_services_event_saved_with_results(
     response = api_client.get(url)
 
     assert response.status_code == 200
-    assert (
-        db_session.scalar(
-            sqla.select(sqla.func.count())
-            .select_from(models.SearchServicesEvent)
-            .filter_by(schema_version=schema_version)
-        )
-        == 1
-    )
+    assert db_session.scalar(sqla.select(sqla.func.count()).select_from(model)) == 1
 
-    event = db_session.scalars(sqla.select(models.SearchServicesEvent)).first()
+    event = db_session.scalars(sqla.select(model)).first()
     assert event.user == "some_user"
     assert event.first_services == [
         {
@@ -286,28 +305,26 @@ def test_search_services_event_saved_with_results(
     assert event.total_services == response.json()["total"]
 
 
-@pytest.mark.parametrize("schema_version", ["v0", "v1"])
-@pytest.mark.parametrize("path", ["/search/services"])
+@pytest.mark.parametrize(
+    ("schema_version", "path", "model"),
+    [
+        ("v0", "/search/services", v0.SearchServicesEvent),
+        ("v1", "/search/services", v1.SearchServicesEvent),
+    ],
+)
 @pytest.mark.with_token
 def test_search_services_event_only_first_page_saved(
-    api_client, db_session, url, schema_version, service_factory
+    api_client, db_session, url, service_factory, model
 ):
     service_factory()
     service_factory()
 
     first_response = api_client.get(url, params={"size": 1, "page": 1})
-    api_client.get("/api/v0/search/services", params={"size": 1, "page": 2})
+    api_client.get(url, params={"size": 1, "page": 2})
 
-    assert (
-        db_session.scalar(
-            sqla.select(sqla.func.count())
-            .select_from(models.SearchServicesEvent)
-            .filter_by(schema_version=schema_version)
-        )
-        == 1
-    )
+    assert db_session.scalar(sqla.select(sqla.func.count()).select_from(model)) == 1
 
-    event = db_session.scalars(sqla.select(models.SearchServicesEvent)).first()
+    event = db_session.scalars(sqla.select(model)).first()
     assert event.first_services == [
         {
             "id": item["service"]["id"],

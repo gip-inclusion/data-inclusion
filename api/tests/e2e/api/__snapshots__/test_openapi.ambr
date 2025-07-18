@@ -511,6 +511,42 @@
           "title": "RegionSlugEnum",
           "type": "string"
         },
+        "RetrieveServiceParams": {
+          "properties": {
+            "id": {
+              "title": "Id",
+              "type": "string"
+            },
+            "source": {
+              "title": "Source",
+              "type": "string"
+            }
+          },
+          "required": [
+            "source",
+            "id"
+          ],
+          "title": "RetrieveServiceParams",
+          "type": "object"
+        },
+        "RetrieveStructureParams": {
+          "properties": {
+            "id": {
+              "title": "Id",
+              "type": "string"
+            },
+            "source": {
+              "title": "Source",
+              "type": "string"
+            }
+          },
+          "required": [
+            "source",
+            "id"
+          ],
+          "title": "RetrieveStructureParams",
+          "type": "object"
+        },
         "Source": {
           "properties": {
             "description": {
@@ -4939,7 +4975,7 @@
           "title": "ServiceSearchResult",
           "type": "object"
         },
-        "data_inclusion__api__utils__pagination__CustomizedPage_ListedStructure___1": {
+        "data_inclusion__api__utils__pagination__Page_ListedStructure___1": {
           "properties": {
             "items": {
               "items": {
@@ -4949,63 +4985,33 @@
               "type": "array"
             },
             "page": {
-              "anyOf": [
-                {
-                  "minimum": 1.0,
-                  "type": "integer"
-                },
-                {
-                  "type": "null"
-                }
-              ],
-              "title": "Page"
+              "title": "Page",
+              "type": "integer"
             },
             "pages": {
-              "anyOf": [
-                {
-                  "minimum": 0.0,
-                  "type": "integer"
-                },
-                {
-                  "type": "null"
-                }
-              ],
-              "title": "Pages"
+              "title": "Pages",
+              "type": "integer"
             },
             "size": {
-              "anyOf": [
-                {
-                  "minimum": 1.0,
-                  "type": "integer"
-                },
-                {
-                  "type": "null"
-                }
-              ],
-              "title": "Size"
+              "title": "Size",
+              "type": "integer"
             },
             "total": {
-              "anyOf": [
-                {
-                  "minimum": 0.0,
-                  "type": "integer"
-                },
-                {
-                  "type": "null"
-                }
-              ],
-              "title": "Total"
+              "title": "Total",
+              "type": "integer"
             }
           },
           "required": [
             "items",
+            "total",
             "page",
-            "size"
+            "size",
+            "pages"
           ],
-          "title": "CustomizedPage[ListedStructure]",
+          "title": "Page[ListedStructure]",
           "type": "object"
         },
-        "data_inclusion__api__utils__pagination__CustomizedPage_ListedStructure___2": {
+        "data_inclusion__api__utils__pagination__Page_ListedStructure___2": {
           "properties": {
             "items": {
               "items": {
@@ -5015,63 +5021,33 @@
               "type": "array"
             },
             "page": {
-              "anyOf": [
-                {
-                  "minimum": 1.0,
-                  "type": "integer"
-                },
-                {
-                  "type": "null"
-                }
-              ],
-              "title": "Page"
+              "title": "Page",
+              "type": "integer"
             },
             "pages": {
-              "anyOf": [
-                {
-                  "minimum": 0.0,
-                  "type": "integer"
-                },
-                {
-                  "type": "null"
-                }
-              ],
-              "title": "Pages"
+              "title": "Pages",
+              "type": "integer"
             },
             "size": {
-              "anyOf": [
-                {
-                  "minimum": 1.0,
-                  "type": "integer"
-                },
-                {
-                  "type": "null"
-                }
-              ],
-              "title": "Size"
+              "title": "Size",
+              "type": "integer"
             },
             "total": {
-              "anyOf": [
-                {
-                  "minimum": 0.0,
-                  "type": "integer"
-                },
-                {
-                  "type": "null"
-                }
-              ],
-              "title": "Total"
+              "title": "Total",
+              "type": "integer"
             }
           },
           "required": [
             "items",
+            "total",
             "page",
-            "size"
+            "size",
+            "pages"
           ],
-          "title": "CustomizedPage[ListedStructure]",
+          "title": "Page[ListedStructure]",
           "type": "object"
         },
-        "data_inclusion__api__utils__pagination__CustomizedPage_ServiceSearchResult___1": {
+        "data_inclusion__api__utils__pagination__Page_ServiceSearchResult___1": {
           "properties": {
             "items": {
               "items": {
@@ -5081,63 +5057,33 @@
               "type": "array"
             },
             "page": {
-              "anyOf": [
-                {
-                  "minimum": 1.0,
-                  "type": "integer"
-                },
-                {
-                  "type": "null"
-                }
-              ],
-              "title": "Page"
+              "title": "Page",
+              "type": "integer"
             },
             "pages": {
-              "anyOf": [
-                {
-                  "minimum": 0.0,
-                  "type": "integer"
-                },
-                {
-                  "type": "null"
-                }
-              ],
-              "title": "Pages"
+              "title": "Pages",
+              "type": "integer"
             },
             "size": {
-              "anyOf": [
-                {
-                  "minimum": 1.0,
-                  "type": "integer"
-                },
-                {
-                  "type": "null"
-                }
-              ],
-              "title": "Size"
+              "title": "Size",
+              "type": "integer"
             },
             "total": {
-              "anyOf": [
-                {
-                  "minimum": 0.0,
-                  "type": "integer"
-                },
-                {
-                  "type": "null"
-                }
-              ],
-              "title": "Total"
+              "title": "Total",
+              "type": "integer"
             }
           },
           "required": [
             "items",
+            "total",
             "page",
-            "size"
+            "size",
+            "pages"
           ],
-          "title": "CustomizedPage[ServiceSearchResult]",
+          "title": "Page[ServiceSearchResult]",
           "type": "object"
         },
-        "data_inclusion__api__utils__pagination__CustomizedPage_ServiceSearchResult___2": {
+        "data_inclusion__api__utils__pagination__Page_ServiceSearchResult___2": {
           "properties": {
             "items": {
               "items": {
@@ -5147,63 +5093,33 @@
               "type": "array"
             },
             "page": {
-              "anyOf": [
-                {
-                  "minimum": 1.0,
-                  "type": "integer"
-                },
-                {
-                  "type": "null"
-                }
-              ],
-              "title": "Page"
+              "title": "Page",
+              "type": "integer"
             },
             "pages": {
-              "anyOf": [
-                {
-                  "minimum": 0.0,
-                  "type": "integer"
-                },
-                {
-                  "type": "null"
-                }
-              ],
-              "title": "Pages"
+              "title": "Pages",
+              "type": "integer"
             },
             "size": {
-              "anyOf": [
-                {
-                  "minimum": 1.0,
-                  "type": "integer"
-                },
-                {
-                  "type": "null"
-                }
-              ],
-              "title": "Size"
+              "title": "Size",
+              "type": "integer"
             },
             "total": {
-              "anyOf": [
-                {
-                  "minimum": 0.0,
-                  "type": "integer"
-                },
-                {
-                  "type": "null"
-                }
-              ],
-              "title": "Total"
+              "title": "Total",
+              "type": "integer"
             }
           },
           "required": [
             "items",
+            "total",
             "page",
-            "size"
+            "size",
+            "pages"
           ],
-          "title": "CustomizedPage[ServiceSearchResult]",
+          "title": "Page[ServiceSearchResult]",
           "type": "object"
         },
-        "data_inclusion__api__utils__pagination__CustomizedPage_Service___1": {
+        "data_inclusion__api__utils__pagination__Page_Service___1": {
           "properties": {
             "items": {
               "items": {
@@ -5213,63 +5129,33 @@
               "type": "array"
             },
             "page": {
-              "anyOf": [
-                {
-                  "minimum": 1.0,
-                  "type": "integer"
-                },
-                {
-                  "type": "null"
-                }
-              ],
-              "title": "Page"
+              "title": "Page",
+              "type": "integer"
             },
             "pages": {
-              "anyOf": [
-                {
-                  "minimum": 0.0,
-                  "type": "integer"
-                },
-                {
-                  "type": "null"
-                }
-              ],
-              "title": "Pages"
+              "title": "Pages",
+              "type": "integer"
             },
             "size": {
-              "anyOf": [
-                {
-                  "minimum": 1.0,
-                  "type": "integer"
-                },
-                {
-                  "type": "null"
-                }
-              ],
-              "title": "Size"
+              "title": "Size",
+              "type": "integer"
             },
             "total": {
-              "anyOf": [
-                {
-                  "minimum": 0.0,
-                  "type": "integer"
-                },
-                {
-                  "type": "null"
-                }
-              ],
-              "title": "Total"
+              "title": "Total",
+              "type": "integer"
             }
           },
           "required": [
             "items",
+            "total",
             "page",
-            "size"
+            "size",
+            "pages"
           ],
-          "title": "CustomizedPage[Service]",
+          "title": "Page[Service]",
           "type": "object"
         },
-        "data_inclusion__api__utils__pagination__CustomizedPage_Service___2": {
+        "data_inclusion__api__utils__pagination__Page_Service___2": {
           "properties": {
             "items": {
               "items": {
@@ -5279,60 +5165,30 @@
               "type": "array"
             },
             "page": {
-              "anyOf": [
-                {
-                  "minimum": 1.0,
-                  "type": "integer"
-                },
-                {
-                  "type": "null"
-                }
-              ],
-              "title": "Page"
+              "title": "Page",
+              "type": "integer"
             },
             "pages": {
-              "anyOf": [
-                {
-                  "minimum": 0.0,
-                  "type": "integer"
-                },
-                {
-                  "type": "null"
-                }
-              ],
-              "title": "Pages"
+              "title": "Pages",
+              "type": "integer"
             },
             "size": {
-              "anyOf": [
-                {
-                  "minimum": 1.0,
-                  "type": "integer"
-                },
-                {
-                  "type": "null"
-                }
-              ],
-              "title": "Size"
+              "title": "Size",
+              "type": "integer"
             },
             "total": {
-              "anyOf": [
-                {
-                  "minimum": 0.0,
-                  "type": "integer"
-                },
-                {
-                  "type": "null"
-                }
-              ],
-              "title": "Total"
+              "title": "Total",
+              "type": "integer"
             }
           },
           "required": [
             "items",
+            "total",
             "page",
-            "size"
+            "size",
+            "pages"
           ],
-          "title": "CustomizedPage[Service]",
+          "title": "Page[Service]",
           "type": "object"
         },
         "data_inclusion__schema__v0__frais__Frais": {
@@ -6199,160 +6055,6 @@
           "operationId": "search_services_endpoint_api_v0_search_services_get",
           "parameters": [
             {
-              "description": "Une liste d'identifiants de source.\n                La liste des identifiants de source est disponible sur le endpoint\n                dédié. Les résultats seront limités aux sources spécifiées.\n            ",
-              "in": "query",
-              "name": "sources",
-              "required": false,
-              "schema": {
-                "description": "Une liste d'identifiants de source.\n                La liste des identifiants de source est disponible sur le endpoint\n                dédié. Les résultats seront limités aux sources spécifiées.\n            ",
-                "items": {
-                  "type": "string"
-                },
-                "title": "Sources",
-                "type": "array"
-              }
-            },
-            {
-              "description": "Code insee de la commune considérée.\n                Si fourni, les résultats inclus également les services proches de\n                cette commune. Les résultats sont triés par ordre de distance\n                croissante.\n            ",
-              "in": "query",
-              "name": "code_commune",
-              "required": false,
-              "schema": {
-                "description": "Code insee de la commune considérée.\n                Si fourni, les résultats inclus également les services proches de\n                cette commune. Les résultats sont triés par ordre de distance\n                croissante.\n            ",
-                "maxLength": 5,
-                "minLength": 5,
-                "pattern": "^\\w{5}$",
-                "title": "Code Commune",
-                "type": "string"
-              }
-            },
-            {
-              "description": "Latitude du point de recherche.\n                Nécessite également de fournir `lon`.\n                Les résultats sont triés par ordre de distance croissante à ce point.\n            ",
-              "in": "query",
-              "name": "lat",
-              "required": false,
-              "schema": {
-                "description": "Latitude du point de recherche.\n                Nécessite également de fournir `lon`.\n                Les résultats sont triés par ordre de distance croissante à ce point.\n            ",
-                "title": "Lat",
-                "type": "number"
-              }
-            },
-            {
-              "description": "Longitude du point de recherche.\n                Nécessite également de fournir `lat`.\n                Les résultats sont triés par ordre de distance croissante à ce point.\n            ",
-              "in": "query",
-              "name": "lon",
-              "required": false,
-              "schema": {
-                "description": "Longitude du point de recherche.\n                Nécessite également de fournir `lat`.\n                Les résultats sont triés par ordre de distance croissante à ce point.\n            ",
-                "title": "Lon",
-                "type": "number"
-              }
-            },
-            {
-              "description": "Une liste de thématique.\n                Chaque résultat renvoyé a (au moins) une thématique dans cette liste.",
-              "in": "query",
-              "name": "thematiques",
-              "required": false,
-              "schema": {
-                "description": "Une liste de thématique.\n                Chaque résultat renvoyé a (au moins) une thématique dans cette liste.",
-                "items": {
-                  "$ref": "#/components/schemas/Thematique"
-                },
-                "title": "Thematiques",
-                "type": "array"
-              }
-            },
-            {
-              "description": "Une liste de frais.\n                Chaque résultat renvoyé a (au moins) un frais dans cette liste.",
-              "in": "query",
-              "name": "frais",
-              "required": false,
-              "schema": {
-                "description": "Une liste de frais.\n                Chaque résultat renvoyé a (au moins) un frais dans cette liste.",
-                "items": {
-                  "$ref": "#/components/schemas/data_inclusion__schema__v0__frais__Frais"
-                },
-                "title": "Frais",
-                "type": "array"
-              }
-            },
-            {
-              "description": "Une liste de modes d'accueil.\n                Chaque résultat renvoyé a (au moins) un mode d'accueil dans cette liste.\n            ",
-              "in": "query",
-              "name": "modes_accueil",
-              "required": false,
-              "schema": {
-                "description": "Une liste de modes d'accueil.\n                Chaque résultat renvoyé a (au moins) un mode d'accueil dans cette liste.\n            ",
-                "items": {
-                  "$ref": "#/components/schemas/ModeAccueil"
-                },
-                "title": "Modes Accueil",
-                "type": "array"
-              }
-            },
-            {
-              "description": "Une liste de profils.\n                Chaque résultat renvoyé a (au moins) un profil dans cette liste.\n            ",
-              "in": "query",
-              "name": "profils",
-              "required": false,
-              "schema": {
-                "description": "Une liste de profils.\n                Chaque résultat renvoyé a (au moins) un profil dans cette liste.\n            ",
-                "items": {
-                  "$ref": "#/components/schemas/Profil"
-                },
-                "title": "Profils",
-                "type": "array"
-              }
-            },
-            {
-              "description": "Une recherche en texte intégral parmi toutes\n              les valeurs \"publics\" que nous collectons chez nos producteurs de données.\n            ",
-              "in": "query",
-              "name": "recherche_public",
-              "required": false,
-              "schema": {
-                "description": "Une recherche en texte intégral parmi toutes\n              les valeurs \"publics\" que nous collectons chez nos producteurs de données.\n            ",
-                "title": "Recherche Public",
-                "type": "string"
-              }
-            },
-            {
-              "description": "Une liste de typologies de service.\n                Chaque résultat renvoyé a (au moins) une typologie dans cette liste.",
-              "in": "query",
-              "name": "types",
-              "required": false,
-              "schema": {
-                "description": "Une liste de typologies de service.\n                Chaque résultat renvoyé a (au moins) une typologie dans cette liste.",
-                "items": {
-                  "$ref": "#/components/schemas/TypologieService"
-                },
-                "title": "Types",
-                "type": "array"
-              }
-            },
-            {
-              "description": "[BETA] Score de qualité minimum.\n                Les résultats renvoyés ont un score de qualité supérieur ou égal à ce\n                score. (voir [documentation](https://gip-inclusion.notion.site/Conception-du-score-de-qualit-17b5f321b60480a1b79bf4a17b4567dd?pvs=4))",
-              "in": "query",
-              "name": "score_qualite_minimum",
-              "required": false,
-              "schema": {
-                "description": "[BETA] Score de qualité minimum.\n                Les résultats renvoyés ont un score de qualité supérieur ou égal à ce\n                score. (voir [documentation](https://gip-inclusion.notion.site/Conception-du-score-de-qualit-17b5f321b60480a1b79bf4a17b4567dd?pvs=4))",
-                "title": "Score Qualite Minimum",
-                "type": "number"
-              }
-            },
-            {
-              "description": "[BETA] Mode qui ne retourne, parmi les services attachés à des structures en doublon, que ceux attachés à la structure la plus qualitative (voir [documentation](https://gip-inclusion.notion.site/Syst-me-de-d-duplication-des-donn-es-17d5f321b60480f99f6cf65522a83c8b?pvs=4)).",
-              "in": "query",
-              "name": "exclure_doublons",
-              "required": false,
-              "schema": {
-                "default": false,
-                "description": "[BETA] Mode qui ne retourne, parmi les services attachés à des structures en doublon, que ceux attachés à la structure la plus qualitative (voir [documentation](https://gip-inclusion.notion.site/Syst-me-de-d-duplication-des-donn-es-17d5f321b60480f99f6cf65522a83c8b?pvs=4)).",
-                "title": "Exclure Doublons",
-                "type": "boolean"
-              }
-            },
-            {
               "description": "Page number",
               "in": "query",
               "name": "page",
@@ -6378,6 +6080,283 @@
                 "title": "Size",
                 "type": "integer"
               }
+            },
+            {
+              "description": "Une liste d'identifiants de source.\n                La liste des identifiants de source est disponible sur le endpoint\n                dédié. Les résultats seront limités aux sources spécifiées.\n            ",
+              "in": "query",
+              "name": "sources",
+              "required": false,
+              "schema": {
+                "anyOf": [
+                  {
+                    "items": {
+                      "type": "string"
+                    },
+                    "type": "array"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "description": "Une liste d'identifiants de source.\n                La liste des identifiants de source est disponible sur le endpoint\n                dédié. Les résultats seront limités aux sources spécifiées.\n            ",
+                "title": "Sources"
+              }
+            },
+            {
+              "description": "Code insee de la commune considérée.\n                Si fourni, les résultats inclus également les services proches de\n                cette commune. Les résultats sont triés par ordre de distance\n                croissante.\n            ",
+              "in": "query",
+              "name": "code_commune",
+              "required": false,
+              "schema": {
+                "anyOf": [
+                  {
+                    "maxLength": 5,
+                    "minLength": 5,
+                    "pattern": "^\\w{5}$",
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "description": "Code insee de la commune considérée.\n                Si fourni, les résultats inclus également les services proches de\n                cette commune. Les résultats sont triés par ordre de distance\n                croissante.\n            ",
+                "title": "Code Commune"
+              }
+            },
+            {
+              "deprecated": true,
+              "description": "Deprecated, use `code_commune` instead.",
+              "in": "query",
+              "name": "code_insee",
+              "required": false,
+              "schema": {
+                "anyOf": [
+                  {
+                    "maxLength": 5,
+                    "minLength": 5,
+                    "pattern": "^\\w{5}$",
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "deprecated": true,
+                "description": "Deprecated, use `code_commune` instead.",
+                "title": "Code Insee"
+              }
+            },
+            {
+              "description": "Latitude du point de recherche.\n                Nécessite également de fournir `lon`.\n                Les résultats sont triés par ordre de distance croissante à ce point.\n            ",
+              "in": "query",
+              "name": "lat",
+              "required": false,
+              "schema": {
+                "anyOf": [
+                  {
+                    "type": "number"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "description": "Latitude du point de recherche.\n                Nécessite également de fournir `lon`.\n                Les résultats sont triés par ordre de distance croissante à ce point.\n            ",
+                "title": "Lat"
+              }
+            },
+            {
+              "description": "Longitude du point de recherche.\n                Nécessite également de fournir `lat`.\n                Les résultats sont triés par ordre de distance croissante à ce point.\n            ",
+              "in": "query",
+              "name": "lon",
+              "required": false,
+              "schema": {
+                "anyOf": [
+                  {
+                    "type": "number"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "description": "Longitude du point de recherche.\n                Nécessite également de fournir `lat`.\n                Les résultats sont triés par ordre de distance croissante à ce point.\n            ",
+                "title": "Lon"
+              }
+            },
+            {
+              "description": "Une liste de thématique.\n                Chaque résultat renvoyé a (au moins) une thématique dans cette liste.",
+              "in": "query",
+              "name": "thematiques",
+              "required": false,
+              "schema": {
+                "anyOf": [
+                  {
+                    "items": {
+                      "$ref": "#/components/schemas/Thematique"
+                    },
+                    "type": "array"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "description": "Une liste de thématique.\n                Chaque résultat renvoyé a (au moins) une thématique dans cette liste.",
+                "title": "Thematiques"
+              }
+            },
+            {
+              "description": "Une liste de frais.\n                Chaque résultat renvoyé a (au moins) un frais dans cette liste.",
+              "in": "query",
+              "name": "frais",
+              "required": false,
+              "schema": {
+                "anyOf": [
+                  {
+                    "items": {
+                      "$ref": "#/components/schemas/data_inclusion__schema__v0__frais__Frais"
+                    },
+                    "type": "array"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "description": "Une liste de frais.\n                Chaque résultat renvoyé a (au moins) un frais dans cette liste.",
+                "title": "Frais"
+              }
+            },
+            {
+              "description": "Une liste de modes d'accueil.\n                Chaque résultat renvoyé a (au moins) un mode d'accueil dans cette liste.\n            ",
+              "in": "query",
+              "name": "modes_accueil",
+              "required": false,
+              "schema": {
+                "anyOf": [
+                  {
+                    "items": {
+                      "$ref": "#/components/schemas/ModeAccueil"
+                    },
+                    "type": "array"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "description": "Une liste de modes d'accueil.\n                Chaque résultat renvoyé a (au moins) un mode d'accueil dans cette liste.\n            ",
+                "title": "Modes Accueil"
+              }
+            },
+            {
+              "description": "Une liste de profils.\n                Chaque résultat renvoyé a (au moins) un profil dans cette liste.\n            ",
+              "in": "query",
+              "name": "profils",
+              "required": false,
+              "schema": {
+                "anyOf": [
+                  {
+                    "items": {
+                      "$ref": "#/components/schemas/Profil"
+                    },
+                    "type": "array"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "description": "Une liste de profils.\n                Chaque résultat renvoyé a (au moins) un profil dans cette liste.\n            ",
+                "title": "Profils"
+              }
+            },
+            {
+              "description": "Une recherche en texte intégral parmi toutes\n              les valeurs \"publics\" que nous collectons chez nos producteurs de données.\n            ",
+              "in": "query",
+              "name": "recherche_public",
+              "required": false,
+              "schema": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "description": "Une recherche en texte intégral parmi toutes\n              les valeurs \"publics\" que nous collectons chez nos producteurs de données.\n            ",
+                "title": "Recherche Public"
+              }
+            },
+            {
+              "description": "Une liste de typologies de service.\n                Chaque résultat renvoyé a (au moins) une typologie dans cette liste.",
+              "in": "query",
+              "name": "types",
+              "required": false,
+              "schema": {
+                "anyOf": [
+                  {
+                    "items": {
+                      "$ref": "#/components/schemas/TypologieService"
+                    },
+                    "type": "array"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "description": "Une liste de typologies de service.\n                Chaque résultat renvoyé a (au moins) une typologie dans cette liste.",
+                "title": "Types"
+              }
+            },
+            {
+              "description": "[BETA] Score de qualité minimum.\n                Les résultats renvoyés ont un score de qualité supérieur ou égal à ce\n                score. (voir [documentation](https://gip-inclusion.notion.site/Conception-du-score-de-qualit-17b5f321b60480a1b79bf4a17b4567dd?pvs=4))",
+              "in": "query",
+              "name": "score_qualite_minimum",
+              "required": false,
+              "schema": {
+                "anyOf": [
+                  {
+                    "type": "number"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "description": "[BETA] Score de qualité minimum.\n                Les résultats renvoyés ont un score de qualité supérieur ou égal à ce\n                score. (voir [documentation](https://gip-inclusion.notion.site/Conception-du-score-de-qualit-17b5f321b60480a1b79bf4a17b4567dd?pvs=4))",
+                "title": "Score Qualite Minimum"
+              }
+            },
+            {
+              "in": "query",
+              "name": "inclure_suspendus",
+              "required": false,
+              "schema": {
+                "anyOf": [
+                  {
+                    "type": "boolean"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "title": "Inclure Suspendus"
+              }
+            },
+            {
+              "description": "[BETA] Mode qui ne retourne, parmi les services attachés à des structures en doublon, que ceux attachés à la structure la plus qualitative (voir [documentation](https://gip-inclusion.notion.site/Syst-me-de-d-duplication-des-donn-es-17d5f321b60480f99f6cf65522a83c8b?pvs=4)).",
+              "in": "query",
+              "name": "exclure_doublons",
+              "required": false,
+              "schema": {
+                "anyOf": [
+                  {
+                    "type": "boolean"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": false,
+                "description": "[BETA] Mode qui ne retourne, parmi les services attachés à des structures en doublon, que ceux attachés à la structure la plus qualitative (voir [documentation](https://gip-inclusion.notion.site/Syst-me-de-d-duplication-des-donn-es-17d5f321b60480f99f6cf65522a83c8b?pvs=4)).",
+                "title": "Exclure Doublons"
+              }
             }
           ],
           "responses": {
@@ -6385,7 +6364,7 @@
               "content": {
                 "application/json": {
                   "schema": {
-                    "$ref": "#/components/schemas/data_inclusion__api__utils__pagination__CustomizedPage_ServiceSearchResult___1"
+                    "$ref": "#/components/schemas/data_inclusion__api__utils__pagination__Page_ServiceSearchResult___1"
                   }
                 }
               },
@@ -6418,162 +6397,6 @@
           "operationId": "list_services_endpoint_api_v0_services_get",
           "parameters": [
             {
-              "description": "Une liste d'identifiants de source.\n                La liste des identifiants de source est disponible sur le endpoint\n                dédié. Les résultats seront limités aux sources spécifiées.\n            ",
-              "in": "query",
-              "name": "sources",
-              "required": false,
-              "schema": {
-                "description": "Une liste d'identifiants de source.\n                La liste des identifiants de source est disponible sur le endpoint\n                dédié. Les résultats seront limités aux sources spécifiées.\n            ",
-                "items": {
-                  "type": "string"
-                },
-                "title": "Sources",
-                "type": "array"
-              }
-            },
-            {
-              "description": "Une liste de thématique.\n                Chaque résultat renvoyé a (au moins) une thématique dans cette liste.",
-              "in": "query",
-              "name": "thematiques",
-              "required": false,
-              "schema": {
-                "description": "Une liste de thématique.\n                Chaque résultat renvoyé a (au moins) une thématique dans cette liste.",
-                "items": {
-                  "$ref": "#/components/schemas/Thematique"
-                },
-                "title": "Thematiques",
-                "type": "array"
-              }
-            },
-            {
-              "description": "Code insee géographique d'une région.",
-              "in": "query",
-              "name": "code_region",
-              "required": false,
-              "schema": {
-                "$ref": "#/components/schemas/RegionCodeEnum",
-                "description": "Code insee géographique d'une région."
-              }
-            },
-            {
-              "in": "query",
-              "name": "slug_region",
-              "required": false,
-              "schema": {
-                "$ref": "#/components/schemas/RegionSlugEnum"
-              }
-            },
-            {
-              "description": "Code insee géographique d'un département.",
-              "in": "query",
-              "name": "code_departement",
-              "required": false,
-              "schema": {
-                "$ref": "#/components/schemas/DepartementCodeEnum",
-                "description": "Code insee géographique d'un département."
-              }
-            },
-            {
-              "in": "query",
-              "name": "slug_departement",
-              "required": false,
-              "schema": {
-                "$ref": "#/components/schemas/DepartementSlugEnum"
-              }
-            },
-            {
-              "description": "Code insee géographique d'une commune.",
-              "in": "query",
-              "name": "code_commune",
-              "required": false,
-              "schema": {
-                "description": "Code insee géographique d'une commune.",
-                "maxLength": 5,
-                "minLength": 5,
-                "pattern": "^\\w{5}$",
-                "title": "Code Commune",
-                "type": "string"
-              }
-            },
-            {
-              "description": "Une liste de frais.\n                Chaque résultat renvoyé a (au moins) un frais dans cette liste.",
-              "in": "query",
-              "name": "frais",
-              "required": false,
-              "schema": {
-                "description": "Une liste de frais.\n                Chaque résultat renvoyé a (au moins) un frais dans cette liste.",
-                "items": {
-                  "$ref": "#/components/schemas/data_inclusion__schema__v0__frais__Frais"
-                },
-                "title": "Frais",
-                "type": "array"
-              }
-            },
-            {
-              "description": "Une liste de profils.\n                Chaque résultat renvoyé a (au moins) un profil dans cette liste.\n            ",
-              "in": "query",
-              "name": "profils",
-              "required": false,
-              "schema": {
-                "description": "Une liste de profils.\n                Chaque résultat renvoyé a (au moins) un profil dans cette liste.\n            ",
-                "items": {
-                  "$ref": "#/components/schemas/Profil"
-                },
-                "title": "Profils",
-                "type": "array"
-              }
-            },
-            {
-              "description": "Une recherche en texte intégral parmi toutes\n              les valeurs \"publics\" que nous collectons chez nos producteurs de données.\n            ",
-              "in": "query",
-              "name": "recherche_public",
-              "required": false,
-              "schema": {
-                "description": "Une recherche en texte intégral parmi toutes\n              les valeurs \"publics\" que nous collectons chez nos producteurs de données.\n            ",
-                "title": "Recherche Public",
-                "type": "string"
-              }
-            },
-            {
-              "description": "Une liste de modes d'accueil.\n                Chaque résultat renvoyé a (au moins) un mode d'accueil dans cette liste.\n            ",
-              "in": "query",
-              "name": "modes_accueil",
-              "required": false,
-              "schema": {
-                "description": "Une liste de modes d'accueil.\n                Chaque résultat renvoyé a (au moins) un mode d'accueil dans cette liste.\n            ",
-                "items": {
-                  "$ref": "#/components/schemas/ModeAccueil"
-                },
-                "title": "Modes Accueil",
-                "type": "array"
-              }
-            },
-            {
-              "description": "Une liste de typologies de service.\n                Chaque résultat renvoyé a (au moins) une typologie dans cette liste.",
-              "in": "query",
-              "name": "types",
-              "required": false,
-              "schema": {
-                "description": "Une liste de typologies de service.\n                Chaque résultat renvoyé a (au moins) une typologie dans cette liste.",
-                "items": {
-                  "$ref": "#/components/schemas/TypologieService"
-                },
-                "title": "Types",
-                "type": "array"
-              }
-            },
-            {
-              "description": "[BETA] Score de qualité minimum.\n                Les résultats renvoyés ont un score de qualité supérieur ou égal à ce\n                score. (voir [documentation](https://gip-inclusion.notion.site/Conception-du-score-de-qualit-17b5f321b60480a1b79bf4a17b4567dd?pvs=4))",
-              "in": "query",
-              "name": "score_qualite_minimum",
-              "required": false,
-              "schema": {
-                "description": "[BETA] Score de qualité minimum.\n                Les résultats renvoyés ont un score de qualité supérieur ou égal à ce\n                score. (voir [documentation](https://gip-inclusion.notion.site/Conception-du-score-de-qualit-17b5f321b60480a1b79bf4a17b4567dd?pvs=4))",
-                "title": "Score Qualite Minimum",
-                "type": "number"
-              }
-            },
-            {
               "description": "Page number",
               "in": "query",
               "name": "page",
@@ -6599,6 +6422,274 @@
                 "title": "Size",
                 "type": "integer"
               }
+            },
+            {
+              "description": "Une liste d'identifiants de source.\n                La liste des identifiants de source est disponible sur le endpoint\n                dédié. Les résultats seront limités aux sources spécifiées.\n            ",
+              "in": "query",
+              "name": "sources",
+              "required": false,
+              "schema": {
+                "anyOf": [
+                  {
+                    "items": {
+                      "type": "string"
+                    },
+                    "type": "array"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "description": "Une liste d'identifiants de source.\n                La liste des identifiants de source est disponible sur le endpoint\n                dédié. Les résultats seront limités aux sources spécifiées.\n            ",
+                "title": "Sources"
+              }
+            },
+            {
+              "description": "Une liste de thématique.\n                Chaque résultat renvoyé a (au moins) une thématique dans cette liste.",
+              "in": "query",
+              "name": "thematiques",
+              "required": false,
+              "schema": {
+                "anyOf": [
+                  {
+                    "items": {
+                      "$ref": "#/components/schemas/Thematique"
+                    },
+                    "type": "array"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "description": "Une liste de thématique.\n                Chaque résultat renvoyé a (au moins) une thématique dans cette liste.",
+                "title": "Thematiques"
+              }
+            },
+            {
+              "description": "Code insee géographique d'une région.",
+              "in": "query",
+              "name": "code_region",
+              "required": false,
+              "schema": {
+                "anyOf": [
+                  {
+                    "$ref": "#/components/schemas/RegionCodeEnum"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "description": "Code insee géographique d'une région.",
+                "title": "Code Region"
+              }
+            },
+            {
+              "in": "query",
+              "name": "slug_region",
+              "required": false,
+              "schema": {
+                "anyOf": [
+                  {
+                    "$ref": "#/components/schemas/RegionSlugEnum"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "title": "Slug Region"
+              }
+            },
+            {
+              "description": "Code insee géographique d'un département.",
+              "in": "query",
+              "name": "code_departement",
+              "required": false,
+              "schema": {
+                "anyOf": [
+                  {
+                    "$ref": "#/components/schemas/DepartementCodeEnum"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "description": "Code insee géographique d'un département.",
+                "title": "Code Departement"
+              }
+            },
+            {
+              "in": "query",
+              "name": "slug_departement",
+              "required": false,
+              "schema": {
+                "anyOf": [
+                  {
+                    "$ref": "#/components/schemas/DepartementSlugEnum"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "title": "Slug Departement"
+              }
+            },
+            {
+              "description": "Code insee géographique d'une commune.",
+              "in": "query",
+              "name": "code_commune",
+              "required": false,
+              "schema": {
+                "anyOf": [
+                  {
+                    "maxLength": 5,
+                    "minLength": 5,
+                    "pattern": "^\\w{5}$",
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "description": "Code insee géographique d'une commune.",
+                "title": "Code Commune"
+              }
+            },
+            {
+              "description": "Une liste de frais.\n                Chaque résultat renvoyé a (au moins) un frais dans cette liste.",
+              "in": "query",
+              "name": "frais",
+              "required": false,
+              "schema": {
+                "anyOf": [
+                  {
+                    "items": {
+                      "$ref": "#/components/schemas/data_inclusion__schema__v0__frais__Frais"
+                    },
+                    "type": "array"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "description": "Une liste de frais.\n                Chaque résultat renvoyé a (au moins) un frais dans cette liste.",
+                "title": "Frais"
+              }
+            },
+            {
+              "description": "Une liste de profils.\n                Chaque résultat renvoyé a (au moins) un profil dans cette liste.\n            ",
+              "in": "query",
+              "name": "profils",
+              "required": false,
+              "schema": {
+                "anyOf": [
+                  {
+                    "items": {
+                      "$ref": "#/components/schemas/Profil"
+                    },
+                    "type": "array"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "description": "Une liste de profils.\n                Chaque résultat renvoyé a (au moins) un profil dans cette liste.\n            ",
+                "title": "Profils"
+              }
+            },
+            {
+              "description": "Une recherche en texte intégral parmi toutes\n              les valeurs \"publics\" que nous collectons chez nos producteurs de données.\n            ",
+              "in": "query",
+              "name": "recherche_public",
+              "required": false,
+              "schema": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "description": "Une recherche en texte intégral parmi toutes\n              les valeurs \"publics\" que nous collectons chez nos producteurs de données.\n            ",
+                "title": "Recherche Public"
+              }
+            },
+            {
+              "description": "Une liste de modes d'accueil.\n                Chaque résultat renvoyé a (au moins) un mode d'accueil dans cette liste.\n            ",
+              "in": "query",
+              "name": "modes_accueil",
+              "required": false,
+              "schema": {
+                "anyOf": [
+                  {
+                    "items": {
+                      "$ref": "#/components/schemas/ModeAccueil"
+                    },
+                    "type": "array"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "description": "Une liste de modes d'accueil.\n                Chaque résultat renvoyé a (au moins) un mode d'accueil dans cette liste.\n            ",
+                "title": "Modes Accueil"
+              }
+            },
+            {
+              "description": "Une liste de typologies de service.\n                Chaque résultat renvoyé a (au moins) une typologie dans cette liste.",
+              "in": "query",
+              "name": "types",
+              "required": false,
+              "schema": {
+                "anyOf": [
+                  {
+                    "items": {
+                      "$ref": "#/components/schemas/TypologieService"
+                    },
+                    "type": "array"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "description": "Une liste de typologies de service.\n                Chaque résultat renvoyé a (au moins) une typologie dans cette liste.",
+                "title": "Types"
+              }
+            },
+            {
+              "description": "[BETA] Score de qualité minimum.\n                Les résultats renvoyés ont un score de qualité supérieur ou égal à ce\n                score. (voir [documentation](https://gip-inclusion.notion.site/Conception-du-score-de-qualit-17b5f321b60480a1b79bf4a17b4567dd?pvs=4))",
+              "in": "query",
+              "name": "score_qualite_minimum",
+              "required": false,
+              "schema": {
+                "anyOf": [
+                  {
+                    "type": "number"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "description": "[BETA] Score de qualité minimum.\n                Les résultats renvoyés ont un score de qualité supérieur ou égal à ce\n                score. (voir [documentation](https://gip-inclusion.notion.site/Conception-du-score-de-qualit-17b5f321b60480a1b79bf4a17b4567dd?pvs=4))",
+                "title": "Score Qualite Minimum"
+              }
+            },
+            {
+              "in": "query",
+              "name": "inclure_suspendus",
+              "required": false,
+              "schema": {
+                "anyOf": [
+                  {
+                    "type": "boolean"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": false,
+                "title": "Inclure Suspendus"
+              }
             }
           ],
           "responses": {
@@ -6606,7 +6697,7 @@
               "content": {
                 "application/json": {
                   "schema": {
-                    "$ref": "#/components/schemas/data_inclusion__api__utils__pagination__CustomizedPage_Service___1"
+                    "$ref": "#/components/schemas/data_inclusion__api__utils__pagination__Page_Service___1"
                   }
                 }
               },
@@ -6638,6 +6729,14 @@
         "get": {
           "operationId": "retrieve_service_endpoint_api_v0_services__source___id__get",
           "parameters": [
+            {
+              "in": "path",
+              "name": "params",
+              "required": true,
+              "schema": {
+                "$ref": "#/components/schemas/RetrieveServiceParams"
+              }
+            },
             {
               "in": "path",
               "name": "source",
@@ -6725,112 +6824,6 @@
           "operationId": "list_structures_endpoint_api_v0_structures_get",
           "parameters": [
             {
-              "description": "Une liste d'identifiants de source.\n                La liste des identifiants de source est disponible sur le endpoint\n                dédié. Les résultats seront limités aux sources spécifiées.\n            ",
-              "in": "query",
-              "name": "sources",
-              "required": false,
-              "schema": {
-                "description": "Une liste d'identifiants de source.\n                La liste des identifiants de source est disponible sur le endpoint\n                dédié. Les résultats seront limités aux sources spécifiées.\n            ",
-                "items": {
-                  "type": "string"
-                },
-                "title": "Sources",
-                "type": "array"
-              }
-            },
-            {
-              "in": "query",
-              "name": "typologie",
-              "required": false,
-              "schema": {
-                "$ref": "#/components/schemas/TypologieStructure"
-              }
-            },
-            {
-              "in": "query",
-              "name": "label_national",
-              "required": false,
-              "schema": {
-                "$ref": "#/components/schemas/LabelNational"
-              }
-            },
-            {
-              "description": "Une liste de thématique.\n                Chaque résultat renvoyé a (au moins) une thématique dans cette liste.",
-              "in": "query",
-              "name": "thematiques",
-              "required": false,
-              "schema": {
-                "description": "Une liste de thématique.\n                Chaque résultat renvoyé a (au moins) une thématique dans cette liste.",
-                "items": {
-                  "$ref": "#/components/schemas/Thematique"
-                },
-                "title": "Thematiques",
-                "type": "array"
-              }
-            },
-            {
-              "description": "Code insee géographique d'une région.",
-              "in": "query",
-              "name": "code_region",
-              "required": false,
-              "schema": {
-                "$ref": "#/components/schemas/RegionCodeEnum",
-                "description": "Code insee géographique d'une région."
-              }
-            },
-            {
-              "in": "query",
-              "name": "slug_region",
-              "required": false,
-              "schema": {
-                "$ref": "#/components/schemas/RegionSlugEnum"
-              }
-            },
-            {
-              "description": "Code insee géographique d'un département.",
-              "in": "query",
-              "name": "code_departement",
-              "required": false,
-              "schema": {
-                "$ref": "#/components/schemas/DepartementCodeEnum",
-                "description": "Code insee géographique d'un département."
-              }
-            },
-            {
-              "in": "query",
-              "name": "slug_departement",
-              "required": false,
-              "schema": {
-                "$ref": "#/components/schemas/DepartementSlugEnum"
-              }
-            },
-            {
-              "description": "Code insee géographique d'une commune.",
-              "in": "query",
-              "name": "code_commune",
-              "required": false,
-              "schema": {
-                "description": "Code insee géographique d'une commune.",
-                "maxLength": 5,
-                "minLength": 5,
-                "pattern": "^\\w{5}$",
-                "title": "Code Commune",
-                "type": "string"
-              }
-            },
-            {
-              "description": "[BETA] Mode qui ne retourne parmi les structures en doublon, que celles ayant les services les plus qualitatifs (voir [documentation](https://gip-inclusion.notion.site/Syst-me-de-d-duplication-des-donn-es-17d5f321b60480f99f6cf65522a83c8b?pvs=4)).",
-              "in": "query",
-              "name": "exclure_doublons",
-              "required": false,
-              "schema": {
-                "default": false,
-                "description": "[BETA] Mode qui ne retourne parmi les structures en doublon, que celles ayant les services les plus qualitatifs (voir [documentation](https://gip-inclusion.notion.site/Syst-me-de-d-duplication-des-donn-es-17d5f321b60480f99f6cf65522a83c8b?pvs=4)).",
-                "title": "Exclure Doublons",
-                "type": "boolean"
-              }
-            },
-            {
               "description": "Page number",
               "in": "query",
               "name": "page",
@@ -6856,6 +6849,206 @@
                 "title": "Size",
                 "type": "integer"
               }
+            },
+            {
+              "description": "Une liste d'identifiants de source.\n                La liste des identifiants de source est disponible sur le endpoint\n                dédié. Les résultats seront limités aux sources spécifiées.\n            ",
+              "in": "query",
+              "name": "sources",
+              "required": false,
+              "schema": {
+                "anyOf": [
+                  {
+                    "items": {
+                      "type": "string"
+                    },
+                    "type": "array"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "description": "Une liste d'identifiants de source.\n                La liste des identifiants de source est disponible sur le endpoint\n                dédié. Les résultats seront limités aux sources spécifiées.\n            ",
+                "title": "Sources"
+              }
+            },
+            {
+              "deprecated": true,
+              "in": "query",
+              "name": "id",
+              "required": false,
+              "schema": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "deprecated": true,
+                "title": "Id"
+              }
+            },
+            {
+              "in": "query",
+              "name": "typologie",
+              "required": false,
+              "schema": {
+                "anyOf": [
+                  {
+                    "$ref": "#/components/schemas/TypologieStructure"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "title": "Typologie"
+              }
+            },
+            {
+              "in": "query",
+              "name": "label_national",
+              "required": false,
+              "schema": {
+                "anyOf": [
+                  {
+                    "$ref": "#/components/schemas/LabelNational"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "title": "Label National"
+              }
+            },
+            {
+              "description": "Une liste de thématique.\n                Chaque résultat renvoyé a (au moins) une thématique dans cette liste.",
+              "in": "query",
+              "name": "thematiques",
+              "required": false,
+              "schema": {
+                "anyOf": [
+                  {
+                    "items": {
+                      "$ref": "#/components/schemas/Thematique"
+                    },
+                    "type": "array"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "description": "Une liste de thématique.\n                Chaque résultat renvoyé a (au moins) une thématique dans cette liste.",
+                "title": "Thematiques"
+              }
+            },
+            {
+              "description": "Code insee géographique d'une région.",
+              "in": "query",
+              "name": "code_region",
+              "required": false,
+              "schema": {
+                "anyOf": [
+                  {
+                    "$ref": "#/components/schemas/RegionCodeEnum"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "description": "Code insee géographique d'une région.",
+                "title": "Code Region"
+              }
+            },
+            {
+              "in": "query",
+              "name": "slug_region",
+              "required": false,
+              "schema": {
+                "anyOf": [
+                  {
+                    "$ref": "#/components/schemas/RegionSlugEnum"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "title": "Slug Region"
+              }
+            },
+            {
+              "description": "Code insee géographique d'un département.",
+              "in": "query",
+              "name": "code_departement",
+              "required": false,
+              "schema": {
+                "anyOf": [
+                  {
+                    "$ref": "#/components/schemas/DepartementCodeEnum"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "description": "Code insee géographique d'un département.",
+                "title": "Code Departement"
+              }
+            },
+            {
+              "in": "query",
+              "name": "slug_departement",
+              "required": false,
+              "schema": {
+                "anyOf": [
+                  {
+                    "$ref": "#/components/schemas/DepartementSlugEnum"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "title": "Slug Departement"
+              }
+            },
+            {
+              "description": "Code insee géographique d'une commune.",
+              "in": "query",
+              "name": "code_commune",
+              "required": false,
+              "schema": {
+                "anyOf": [
+                  {
+                    "maxLength": 5,
+                    "minLength": 5,
+                    "pattern": "^\\w{5}$",
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "description": "Code insee géographique d'une commune.",
+                "title": "Code Commune"
+              }
+            },
+            {
+              "description": "[BETA] Mode qui ne retourne parmi les structures en doublon, que celles ayant les services les plus qualitatifs (voir [documentation](https://gip-inclusion.notion.site/Syst-me-de-d-duplication-des-donn-es-17d5f321b60480f99f6cf65522a83c8b?pvs=4)).",
+              "in": "query",
+              "name": "exclure_doublons",
+              "required": false,
+              "schema": {
+                "anyOf": [
+                  {
+                    "type": "boolean"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": false,
+                "description": "[BETA] Mode qui ne retourne parmi les structures en doublon, que celles ayant les services les plus qualitatifs (voir [documentation](https://gip-inclusion.notion.site/Syst-me-de-d-duplication-des-donn-es-17d5f321b60480f99f6cf65522a83c8b?pvs=4)).",
+                "title": "Exclure Doublons"
+              }
             }
           ],
           "responses": {
@@ -6863,7 +7056,7 @@
               "content": {
                 "application/json": {
                   "schema": {
-                    "$ref": "#/components/schemas/data_inclusion__api__utils__pagination__CustomizedPage_ListedStructure___1"
+                    "$ref": "#/components/schemas/data_inclusion__api__utils__pagination__Page_ListedStructure___1"
                   }
                 }
               },
@@ -6895,6 +7088,14 @@
         "get": {
           "operationId": "retrieve_structure_endpoint_api_v0_structures__source___id__get",
           "parameters": [
+            {
+              "in": "path",
+              "name": "params",
+              "required": true,
+              "schema": {
+                "$ref": "#/components/schemas/RetrieveStructureParams"
+              }
+            },
             {
               "in": "path",
               "name": "source",
@@ -7178,160 +7379,6 @@
           "operationId": "search_services_endpoint_api_v1_search_services_get",
           "parameters": [
             {
-              "description": "Une liste d'identifiants de source.\n                La liste des identifiants de source est disponible sur le endpoint\n                dédié. Les résultats seront limités aux sources spécifiées.\n            ",
-              "in": "query",
-              "name": "sources",
-              "required": false,
-              "schema": {
-                "description": "Une liste d'identifiants de source.\n                La liste des identifiants de source est disponible sur le endpoint\n                dédié. Les résultats seront limités aux sources spécifiées.\n            ",
-                "items": {
-                  "type": "string"
-                },
-                "title": "Sources",
-                "type": "array"
-              }
-            },
-            {
-              "description": "Code insee de la commune considérée.\n                Si fourni, les résultats inclus également les services proches de\n                cette commune. Les résultats sont triés par ordre de distance\n                croissante.\n            ",
-              "in": "query",
-              "name": "code_commune",
-              "required": false,
-              "schema": {
-                "description": "Code insee de la commune considérée.\n                Si fourni, les résultats inclus également les services proches de\n                cette commune. Les résultats sont triés par ordre de distance\n                croissante.\n            ",
-                "maxLength": 5,
-                "minLength": 5,
-                "pattern": "^\\w{5}$",
-                "title": "Code Commune",
-                "type": "string"
-              }
-            },
-            {
-              "description": "Latitude du point de recherche.\n                Nécessite également de fournir `lon`.\n                Les résultats sont triés par ordre de distance croissante à ce point.\n            ",
-              "in": "query",
-              "name": "lat",
-              "required": false,
-              "schema": {
-                "description": "Latitude du point de recherche.\n                Nécessite également de fournir `lon`.\n                Les résultats sont triés par ordre de distance croissante à ce point.\n            ",
-                "title": "Lat",
-                "type": "number"
-              }
-            },
-            {
-              "description": "Longitude du point de recherche.\n                Nécessite également de fournir `lat`.\n                Les résultats sont triés par ordre de distance croissante à ce point.\n            ",
-              "in": "query",
-              "name": "lon",
-              "required": false,
-              "schema": {
-                "description": "Longitude du point de recherche.\n                Nécessite également de fournir `lat`.\n                Les résultats sont triés par ordre de distance croissante à ce point.\n            ",
-                "title": "Lon",
-                "type": "number"
-              }
-            },
-            {
-              "description": "Une liste de thématique.\n                Chaque résultat renvoyé a (au moins) une thématique dans cette liste.",
-              "in": "query",
-              "name": "thematiques",
-              "required": false,
-              "schema": {
-                "description": "Une liste de thématique.\n                Chaque résultat renvoyé a (au moins) une thématique dans cette liste.",
-                "items": {
-                  "$ref": "#/components/schemas/Thematique"
-                },
-                "title": "Thematiques",
-                "type": "array"
-              }
-            },
-            {
-              "description": "Une liste de frais.\n                Chaque résultat renvoyé a (au moins) un frais dans cette liste.",
-              "in": "query",
-              "name": "frais",
-              "required": false,
-              "schema": {
-                "description": "Une liste de frais.\n                Chaque résultat renvoyé a (au moins) un frais dans cette liste.",
-                "items": {
-                  "$ref": "#/components/schemas/data_inclusion__schema__v1__frais__Frais"
-                },
-                "title": "Frais",
-                "type": "array"
-              }
-            },
-            {
-              "description": "Une liste de modes d'accueil.\n                Chaque résultat renvoyé a (au moins) un mode d'accueil dans cette liste.\n            ",
-              "in": "query",
-              "name": "modes_accueil",
-              "required": false,
-              "schema": {
-                "description": "Une liste de modes d'accueil.\n                Chaque résultat renvoyé a (au moins) un mode d'accueil dans cette liste.\n            ",
-                "items": {
-                  "$ref": "#/components/schemas/ModeAccueil"
-                },
-                "title": "Modes Accueil",
-                "type": "array"
-              }
-            },
-            {
-              "description": "Une liste de publics.\n                Chaque résultat renvoyé a (au moins) un public dans cette liste.\n            ",
-              "in": "query",
-              "name": "publics",
-              "required": false,
-              "schema": {
-                "description": "Une liste de publics.\n                Chaque résultat renvoyé a (au moins) un public dans cette liste.\n            ",
-                "items": {
-                  "$ref": "#/components/schemas/Public"
-                },
-                "title": "Publics",
-                "type": "array"
-              }
-            },
-            {
-              "description": "Une recherche en texte intégral parmi toutes\n              les valeurs \"publics\" que nous collectons chez nos producteurs de données.\n            ",
-              "in": "query",
-              "name": "recherche_public",
-              "required": false,
-              "schema": {
-                "description": "Une recherche en texte intégral parmi toutes\n              les valeurs \"publics\" que nous collectons chez nos producteurs de données.\n            ",
-                "title": "Recherche Public",
-                "type": "string"
-              }
-            },
-            {
-              "description": "Une liste de typologies de service.\n                Chaque résultat renvoyé a (au moins) une typologie dans cette liste.",
-              "in": "query",
-              "name": "types",
-              "required": false,
-              "schema": {
-                "description": "Une liste de typologies de service.\n                Chaque résultat renvoyé a (au moins) une typologie dans cette liste.",
-                "items": {
-                  "$ref": "#/components/schemas/TypeService"
-                },
-                "title": "Types",
-                "type": "array"
-              }
-            },
-            {
-              "description": "[BETA] Score de qualité minimum.\n                Les résultats renvoyés ont un score de qualité supérieur ou égal à ce\n                score. (voir [documentation](https://gip-inclusion.notion.site/Conception-du-score-de-qualit-17b5f321b60480a1b79bf4a17b4567dd?pvs=4))",
-              "in": "query",
-              "name": "score_qualite_minimum",
-              "required": false,
-              "schema": {
-                "description": "[BETA] Score de qualité minimum.\n                Les résultats renvoyés ont un score de qualité supérieur ou égal à ce\n                score. (voir [documentation](https://gip-inclusion.notion.site/Conception-du-score-de-qualit-17b5f321b60480a1b79bf4a17b4567dd?pvs=4))",
-                "title": "Score Qualite Minimum",
-                "type": "number"
-              }
-            },
-            {
-              "description": "[BETA] Mode qui ne retourne, parmi les services attachés à des structures en doublon, que ceux attachés à la structure la plus qualitative (voir [documentation](https://gip-inclusion.notion.site/Syst-me-de-d-duplication-des-donn-es-17d5f321b60480f99f6cf65522a83c8b?pvs=4)).",
-              "in": "query",
-              "name": "exclure_doublons",
-              "required": false,
-              "schema": {
-                "default": false,
-                "description": "[BETA] Mode qui ne retourne, parmi les services attachés à des structures en doublon, que ceux attachés à la structure la plus qualitative (voir [documentation](https://gip-inclusion.notion.site/Syst-me-de-d-duplication-des-donn-es-17d5f321b60480f99f6cf65522a83c8b?pvs=4)).",
-                "title": "Exclure Doublons",
-                "type": "boolean"
-              }
-            },
-            {
               "description": "Page number",
               "in": "query",
               "name": "page",
@@ -7357,6 +7404,244 @@
                 "title": "Size",
                 "type": "integer"
               }
+            },
+            {
+              "description": "Une liste d'identifiants de source.\n                La liste des identifiants de source est disponible sur le endpoint\n                dédié. Les résultats seront limités aux sources spécifiées.\n            ",
+              "in": "query",
+              "name": "sources",
+              "required": false,
+              "schema": {
+                "anyOf": [
+                  {
+                    "items": {
+                      "type": "string"
+                    },
+                    "type": "array"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "description": "Une liste d'identifiants de source.\n                La liste des identifiants de source est disponible sur le endpoint\n                dédié. Les résultats seront limités aux sources spécifiées.\n            ",
+                "title": "Sources"
+              }
+            },
+            {
+              "description": "Code insee de la commune considérée.\n                Si fourni, les résultats inclus également les services proches de\n                cette commune. Les résultats sont triés par ordre de distance\n                croissante.\n            ",
+              "in": "query",
+              "name": "code_commune",
+              "required": false,
+              "schema": {
+                "anyOf": [
+                  {
+                    "maxLength": 5,
+                    "minLength": 5,
+                    "pattern": "^\\w{5}$",
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "description": "Code insee de la commune considérée.\n                Si fourni, les résultats inclus également les services proches de\n                cette commune. Les résultats sont triés par ordre de distance\n                croissante.\n            ",
+                "title": "Code Commune"
+              }
+            },
+            {
+              "description": "Latitude du point de recherche.\n                Nécessite également de fournir `lon`.\n                Les résultats sont triés par ordre de distance croissante à ce point.\n            ",
+              "in": "query",
+              "name": "lat",
+              "required": false,
+              "schema": {
+                "anyOf": [
+                  {
+                    "type": "number"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "description": "Latitude du point de recherche.\n                Nécessite également de fournir `lon`.\n                Les résultats sont triés par ordre de distance croissante à ce point.\n            ",
+                "title": "Lat"
+              }
+            },
+            {
+              "description": "Longitude du point de recherche.\n                Nécessite également de fournir `lat`.\n                Les résultats sont triés par ordre de distance croissante à ce point.\n            ",
+              "in": "query",
+              "name": "lon",
+              "required": false,
+              "schema": {
+                "anyOf": [
+                  {
+                    "type": "number"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "description": "Longitude du point de recherche.\n                Nécessite également de fournir `lat`.\n                Les résultats sont triés par ordre de distance croissante à ce point.\n            ",
+                "title": "Lon"
+              }
+            },
+            {
+              "description": "Une liste de thématique.\n                Chaque résultat renvoyé a (au moins) une thématique dans cette liste.",
+              "in": "query",
+              "name": "thematiques",
+              "required": false,
+              "schema": {
+                "anyOf": [
+                  {
+                    "items": {
+                      "$ref": "#/components/schemas/Thematique"
+                    },
+                    "type": "array"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "description": "Une liste de thématique.\n                Chaque résultat renvoyé a (au moins) une thématique dans cette liste.",
+                "title": "Thematiques"
+              }
+            },
+            {
+              "description": "Une liste de frais.\n                Chaque résultat renvoyé a (au moins) un frais dans cette liste.",
+              "in": "query",
+              "name": "frais",
+              "required": false,
+              "schema": {
+                "anyOf": [
+                  {
+                    "items": {
+                      "$ref": "#/components/schemas/data_inclusion__schema__v1__frais__Frais"
+                    },
+                    "type": "array"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "description": "Une liste de frais.\n                Chaque résultat renvoyé a (au moins) un frais dans cette liste.",
+                "title": "Frais"
+              }
+            },
+            {
+              "description": "Une liste de modes d'accueil.\n                Chaque résultat renvoyé a (au moins) un mode d'accueil dans cette liste.\n            ",
+              "in": "query",
+              "name": "modes_accueil",
+              "required": false,
+              "schema": {
+                "anyOf": [
+                  {
+                    "items": {
+                      "$ref": "#/components/schemas/ModeAccueil"
+                    },
+                    "type": "array"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "description": "Une liste de modes d'accueil.\n                Chaque résultat renvoyé a (au moins) un mode d'accueil dans cette liste.\n            ",
+                "title": "Modes Accueil"
+              }
+            },
+            {
+              "description": "Une liste de profils.\n                Chaque résultat renvoyé a (au moins) un profil dans cette liste.\n            ",
+              "in": "query",
+              "name": "publics",
+              "required": false,
+              "schema": {
+                "anyOf": [
+                  {
+                    "items": {
+                      "$ref": "#/components/schemas/Public"
+                    },
+                    "type": "array"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "description": "Une liste de profils.\n                Chaque résultat renvoyé a (au moins) un profil dans cette liste.\n            ",
+                "title": "Publics"
+              }
+            },
+            {
+              "description": "Une recherche en texte intégral parmi toutes\n              les valeurs \"publics\" que nous collectons chez nos producteurs de données.\n            ",
+              "in": "query",
+              "name": "recherche_public",
+              "required": false,
+              "schema": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "description": "Une recherche en texte intégral parmi toutes\n              les valeurs \"publics\" que nous collectons chez nos producteurs de données.\n            ",
+                "title": "Recherche Public"
+              }
+            },
+            {
+              "description": "Une liste de typologies de service.\n                Chaque résultat renvoyé a (au moins) une typologie dans cette liste.",
+              "in": "query",
+              "name": "types",
+              "required": false,
+              "schema": {
+                "anyOf": [
+                  {
+                    "items": {
+                      "$ref": "#/components/schemas/TypeService"
+                    },
+                    "type": "array"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "description": "Une liste de typologies de service.\n                Chaque résultat renvoyé a (au moins) une typologie dans cette liste.",
+                "title": "Types"
+              }
+            },
+            {
+              "description": "[BETA] Score de qualité minimum.\n                Les résultats renvoyés ont un score de qualité supérieur ou égal à ce\n                score. (voir [documentation](https://gip-inclusion.notion.site/Conception-du-score-de-qualit-17b5f321b60480a1b79bf4a17b4567dd?pvs=4))",
+              "in": "query",
+              "name": "score_qualite_minimum",
+              "required": false,
+              "schema": {
+                "anyOf": [
+                  {
+                    "type": "number"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "description": "[BETA] Score de qualité minimum.\n                Les résultats renvoyés ont un score de qualité supérieur ou égal à ce\n                score. (voir [documentation](https://gip-inclusion.notion.site/Conception-du-score-de-qualit-17b5f321b60480a1b79bf4a17b4567dd?pvs=4))",
+                "title": "Score Qualite Minimum"
+              }
+            },
+            {
+              "description": "[BETA] Mode qui ne retourne, parmi les services attachés à des structures en doublon, que ceux attachés à la structure la plus qualitative (voir [documentation](https://gip-inclusion.notion.site/Syst-me-de-d-duplication-des-donn-es-17d5f321b60480f99f6cf65522a83c8b?pvs=4)).",
+              "in": "query",
+              "name": "exclure_doublons",
+              "required": false,
+              "schema": {
+                "anyOf": [
+                  {
+                    "type": "boolean"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": false,
+                "description": "[BETA] Mode qui ne retourne, parmi les services attachés à des structures en doublon, que ceux attachés à la structure la plus qualitative (voir [documentation](https://gip-inclusion.notion.site/Syst-me-de-d-duplication-des-donn-es-17d5f321b60480f99f6cf65522a83c8b?pvs=4)).",
+                "title": "Exclure Doublons"
+              }
             }
           ],
           "responses": {
@@ -7364,7 +7649,7 @@
               "content": {
                 "application/json": {
                   "schema": {
-                    "$ref": "#/components/schemas/data_inclusion__api__utils__pagination__CustomizedPage_ServiceSearchResult___2"
+                    "$ref": "#/components/schemas/data_inclusion__api__utils__pagination__Page_ServiceSearchResult___2"
                   }
                 }
               },
@@ -7397,162 +7682,6 @@
           "operationId": "list_services_endpoint_api_v1_services_get",
           "parameters": [
             {
-              "description": "Une liste d'identifiants de source.\n                La liste des identifiants de source est disponible sur le endpoint\n                dédié. Les résultats seront limités aux sources spécifiées.\n            ",
-              "in": "query",
-              "name": "sources",
-              "required": false,
-              "schema": {
-                "description": "Une liste d'identifiants de source.\n                La liste des identifiants de source est disponible sur le endpoint\n                dédié. Les résultats seront limités aux sources spécifiées.\n            ",
-                "items": {
-                  "type": "string"
-                },
-                "title": "Sources",
-                "type": "array"
-              }
-            },
-            {
-              "description": "Une liste de thématique.\n                Chaque résultat renvoyé a (au moins) une thématique dans cette liste.",
-              "in": "query",
-              "name": "thematiques",
-              "required": false,
-              "schema": {
-                "description": "Une liste de thématique.\n                Chaque résultat renvoyé a (au moins) une thématique dans cette liste.",
-                "items": {
-                  "$ref": "#/components/schemas/Thematique"
-                },
-                "title": "Thematiques",
-                "type": "array"
-              }
-            },
-            {
-              "description": "Code insee géographique d'une région.",
-              "in": "query",
-              "name": "code_region",
-              "required": false,
-              "schema": {
-                "$ref": "#/components/schemas/RegionCodeEnum",
-                "description": "Code insee géographique d'une région."
-              }
-            },
-            {
-              "in": "query",
-              "name": "slug_region",
-              "required": false,
-              "schema": {
-                "$ref": "#/components/schemas/RegionSlugEnum"
-              }
-            },
-            {
-              "description": "Code insee géographique d'un département.",
-              "in": "query",
-              "name": "code_departement",
-              "required": false,
-              "schema": {
-                "$ref": "#/components/schemas/DepartementCodeEnum",
-                "description": "Code insee géographique d'un département."
-              }
-            },
-            {
-              "in": "query",
-              "name": "slug_departement",
-              "required": false,
-              "schema": {
-                "$ref": "#/components/schemas/DepartementSlugEnum"
-              }
-            },
-            {
-              "description": "Code insee géographique d'une commune.",
-              "in": "query",
-              "name": "code_commune",
-              "required": false,
-              "schema": {
-                "description": "Code insee géographique d'une commune.",
-                "maxLength": 5,
-                "minLength": 5,
-                "pattern": "^\\w{5}$",
-                "title": "Code Commune",
-                "type": "string"
-              }
-            },
-            {
-              "description": "Une liste de frais.\n                Chaque résultat renvoyé a (au moins) un frais dans cette liste.",
-              "in": "query",
-              "name": "frais",
-              "required": false,
-              "schema": {
-                "description": "Une liste de frais.\n                Chaque résultat renvoyé a (au moins) un frais dans cette liste.",
-                "items": {
-                  "$ref": "#/components/schemas/data_inclusion__schema__v1__frais__Frais"
-                },
-                "title": "Frais",
-                "type": "array"
-              }
-            },
-            {
-              "description": "Une liste de profils.\n                Chaque résultat renvoyé a (au moins) un profil dans cette liste.\n            ",
-              "in": "query",
-              "name": "publics",
-              "required": false,
-              "schema": {
-                "description": "Une liste de profils.\n                Chaque résultat renvoyé a (au moins) un profil dans cette liste.\n            ",
-                "items": {
-                  "$ref": "#/components/schemas/Public"
-                },
-                "title": "Publics",
-                "type": "array"
-              }
-            },
-            {
-              "description": "Une recherche en texte intégral parmi toutes\n              les valeurs \"publics\" que nous collectons chez nos producteurs de données.\n            ",
-              "in": "query",
-              "name": "recherche_public",
-              "required": false,
-              "schema": {
-                "description": "Une recherche en texte intégral parmi toutes\n              les valeurs \"publics\" que nous collectons chez nos producteurs de données.\n            ",
-                "title": "Recherche Public",
-                "type": "string"
-              }
-            },
-            {
-              "description": "Une liste de modes d'accueil.\n                Chaque résultat renvoyé a (au moins) un mode d'accueil dans cette liste.\n            ",
-              "in": "query",
-              "name": "modes_accueil",
-              "required": false,
-              "schema": {
-                "description": "Une liste de modes d'accueil.\n                Chaque résultat renvoyé a (au moins) un mode d'accueil dans cette liste.\n            ",
-                "items": {
-                  "$ref": "#/components/schemas/ModeAccueil"
-                },
-                "title": "Modes Accueil",
-                "type": "array"
-              }
-            },
-            {
-              "description": "Une liste de typologies de service.\n                Chaque résultat renvoyé a (au moins) une typologie dans cette liste.",
-              "in": "query",
-              "name": "types",
-              "required": false,
-              "schema": {
-                "description": "Une liste de typologies de service.\n                Chaque résultat renvoyé a (au moins) une typologie dans cette liste.",
-                "items": {
-                  "$ref": "#/components/schemas/TypeService"
-                },
-                "title": "Types",
-                "type": "array"
-              }
-            },
-            {
-              "description": "[BETA] Score de qualité minimum.\n                Les résultats renvoyés ont un score de qualité supérieur ou égal à ce\n                score. (voir [documentation](https://gip-inclusion.notion.site/Conception-du-score-de-qualit-17b5f321b60480a1b79bf4a17b4567dd?pvs=4))",
-              "in": "query",
-              "name": "score_qualite_minimum",
-              "required": false,
-              "schema": {
-                "description": "[BETA] Score de qualité minimum.\n                Les résultats renvoyés ont un score de qualité supérieur ou égal à ce\n                score. (voir [documentation](https://gip-inclusion.notion.site/Conception-du-score-de-qualit-17b5f321b60480a1b79bf4a17b4567dd?pvs=4))",
-                "title": "Score Qualite Minimum",
-                "type": "number"
-              }
-            },
-            {
               "description": "Page number",
               "in": "query",
               "name": "page",
@@ -7578,6 +7707,257 @@
                 "title": "Size",
                 "type": "integer"
               }
+            },
+            {
+              "description": "Une liste d'identifiants de source.\n                La liste des identifiants de source est disponible sur le endpoint\n                dédié. Les résultats seront limités aux sources spécifiées.\n            ",
+              "in": "query",
+              "name": "sources",
+              "required": false,
+              "schema": {
+                "anyOf": [
+                  {
+                    "items": {
+                      "type": "string"
+                    },
+                    "type": "array"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "description": "Une liste d'identifiants de source.\n                La liste des identifiants de source est disponible sur le endpoint\n                dédié. Les résultats seront limités aux sources spécifiées.\n            ",
+                "title": "Sources"
+              }
+            },
+            {
+              "description": "Une liste de thématique.\n                Chaque résultat renvoyé a (au moins) une thématique dans cette liste.",
+              "in": "query",
+              "name": "thematiques",
+              "required": false,
+              "schema": {
+                "anyOf": [
+                  {
+                    "items": {
+                      "$ref": "#/components/schemas/Thematique"
+                    },
+                    "type": "array"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "description": "Une liste de thématique.\n                Chaque résultat renvoyé a (au moins) une thématique dans cette liste.",
+                "title": "Thematiques"
+              }
+            },
+            {
+              "description": "Code insee géographique d'une région.",
+              "in": "query",
+              "name": "code_region",
+              "required": false,
+              "schema": {
+                "anyOf": [
+                  {
+                    "$ref": "#/components/schemas/RegionCodeEnum"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "description": "Code insee géographique d'une région.",
+                "title": "Code Region"
+              }
+            },
+            {
+              "in": "query",
+              "name": "slug_region",
+              "required": false,
+              "schema": {
+                "anyOf": [
+                  {
+                    "$ref": "#/components/schemas/RegionSlugEnum"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "title": "Slug Region"
+              }
+            },
+            {
+              "description": "Code insee géographique d'un département.",
+              "in": "query",
+              "name": "code_departement",
+              "required": false,
+              "schema": {
+                "anyOf": [
+                  {
+                    "$ref": "#/components/schemas/DepartementCodeEnum"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "description": "Code insee géographique d'un département.",
+                "title": "Code Departement"
+              }
+            },
+            {
+              "in": "query",
+              "name": "slug_departement",
+              "required": false,
+              "schema": {
+                "anyOf": [
+                  {
+                    "$ref": "#/components/schemas/DepartementSlugEnum"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "title": "Slug Departement"
+              }
+            },
+            {
+              "description": "Code insee géographique d'une commune.",
+              "in": "query",
+              "name": "code_commune",
+              "required": false,
+              "schema": {
+                "anyOf": [
+                  {
+                    "maxLength": 5,
+                    "minLength": 5,
+                    "pattern": "^\\w{5}$",
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "description": "Code insee géographique d'une commune.",
+                "title": "Code Commune"
+              }
+            },
+            {
+              "description": "Une liste de frais.\n                Chaque résultat renvoyé a (au moins) un frais dans cette liste.",
+              "in": "query",
+              "name": "frais",
+              "required": false,
+              "schema": {
+                "anyOf": [
+                  {
+                    "items": {
+                      "$ref": "#/components/schemas/data_inclusion__schema__v1__frais__Frais"
+                    },
+                    "type": "array"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "description": "Une liste de frais.\n                Chaque résultat renvoyé a (au moins) un frais dans cette liste.",
+                "title": "Frais"
+              }
+            },
+            {
+              "description": "Une liste de profils.\n                Chaque résultat renvoyé a (au moins) un profil dans cette liste.\n            ",
+              "in": "query",
+              "name": "publics",
+              "required": false,
+              "schema": {
+                "anyOf": [
+                  {
+                    "items": {
+                      "$ref": "#/components/schemas/Public"
+                    },
+                    "type": "array"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "description": "Une liste de profils.\n                Chaque résultat renvoyé a (au moins) un profil dans cette liste.\n            ",
+                "title": "Publics"
+              }
+            },
+            {
+              "description": "Une recherche en texte intégral parmi toutes\n              les valeurs \"publics\" que nous collectons chez nos producteurs de données.\n            ",
+              "in": "query",
+              "name": "recherche_public",
+              "required": false,
+              "schema": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "description": "Une recherche en texte intégral parmi toutes\n              les valeurs \"publics\" que nous collectons chez nos producteurs de données.\n            ",
+                "title": "Recherche Public"
+              }
+            },
+            {
+              "description": "Une liste de modes d'accueil.\n                Chaque résultat renvoyé a (au moins) un mode d'accueil dans cette liste.\n            ",
+              "in": "query",
+              "name": "modes_accueil",
+              "required": false,
+              "schema": {
+                "anyOf": [
+                  {
+                    "items": {
+                      "$ref": "#/components/schemas/ModeAccueil"
+                    },
+                    "type": "array"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "description": "Une liste de modes d'accueil.\n                Chaque résultat renvoyé a (au moins) un mode d'accueil dans cette liste.\n            ",
+                "title": "Modes Accueil"
+              }
+            },
+            {
+              "description": "Une liste de typologies de service.\n                Chaque résultat renvoyé a (au moins) une typologie dans cette liste.",
+              "in": "query",
+              "name": "types",
+              "required": false,
+              "schema": {
+                "anyOf": [
+                  {
+                    "items": {
+                      "$ref": "#/components/schemas/TypeService"
+                    },
+                    "type": "array"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "description": "Une liste de typologies de service.\n                Chaque résultat renvoyé a (au moins) une typologie dans cette liste.",
+                "title": "Types"
+              }
+            },
+            {
+              "description": "[BETA] Score de qualité minimum.\n                Les résultats renvoyés ont un score de qualité supérieur ou égal à ce\n                score. (voir [documentation](https://gip-inclusion.notion.site/Conception-du-score-de-qualit-17b5f321b60480a1b79bf4a17b4567dd?pvs=4))",
+              "in": "query",
+              "name": "score_qualite_minimum",
+              "required": false,
+              "schema": {
+                "anyOf": [
+                  {
+                    "type": "number"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "description": "[BETA] Score de qualité minimum.\n                Les résultats renvoyés ont un score de qualité supérieur ou égal à ce\n                score. (voir [documentation](https://gip-inclusion.notion.site/Conception-du-score-de-qualit-17b5f321b60480a1b79bf4a17b4567dd?pvs=4))",
+                "title": "Score Qualite Minimum"
+              }
             }
           ],
           "responses": {
@@ -7585,7 +7965,7 @@
               "content": {
                 "application/json": {
                   "schema": {
-                    "$ref": "#/components/schemas/data_inclusion__api__utils__pagination__CustomizedPage_Service___2"
+                    "$ref": "#/components/schemas/data_inclusion__api__utils__pagination__Page_Service___2"
                   }
                 }
               },
@@ -7617,6 +7997,14 @@
         "get": {
           "operationId": "retrieve_service_endpoint_api_v1_services__source___id__get",
           "parameters": [
+            {
+              "in": "path",
+              "name": "params",
+              "required": true,
+              "schema": {
+                "$ref": "#/components/schemas/RetrieveServiceParams"
+              }
+            },
             {
               "in": "path",
               "name": "source",
@@ -7704,98 +8092,6 @@
           "operationId": "list_structures_endpoint_api_v1_structures_get",
           "parameters": [
             {
-              "description": "Une liste d'identifiants de source.\n                La liste des identifiants de source est disponible sur le endpoint\n                dédié. Les résultats seront limités aux sources spécifiées.\n            ",
-              "in": "query",
-              "name": "sources",
-              "required": false,
-              "schema": {
-                "description": "Une liste d'identifiants de source.\n                La liste des identifiants de source est disponible sur le endpoint\n                dédié. Les résultats seront limités aux sources spécifiées.\n            ",
-                "items": {
-                  "type": "string"
-                },
-                "title": "Sources",
-                "type": "array"
-              }
-            },
-            {
-              "in": "query",
-              "name": "typologie",
-              "required": false,
-              "schema": {
-                "$ref": "#/components/schemas/TypologieStructure"
-              }
-            },
-            {
-              "in": "query",
-              "name": "label_national",
-              "required": false,
-              "schema": {
-                "$ref": "#/components/schemas/LabelNational"
-              }
-            },
-            {
-              "description": "Code insee géographique d'une région.",
-              "in": "query",
-              "name": "code_region",
-              "required": false,
-              "schema": {
-                "$ref": "#/components/schemas/RegionCodeEnum",
-                "description": "Code insee géographique d'une région."
-              }
-            },
-            {
-              "in": "query",
-              "name": "slug_region",
-              "required": false,
-              "schema": {
-                "$ref": "#/components/schemas/RegionSlugEnum"
-              }
-            },
-            {
-              "description": "Code insee géographique d'un département.",
-              "in": "query",
-              "name": "code_departement",
-              "required": false,
-              "schema": {
-                "$ref": "#/components/schemas/DepartementCodeEnum",
-                "description": "Code insee géographique d'un département."
-              }
-            },
-            {
-              "in": "query",
-              "name": "slug_departement",
-              "required": false,
-              "schema": {
-                "$ref": "#/components/schemas/DepartementSlugEnum"
-              }
-            },
-            {
-              "description": "Code insee géographique d'une commune.",
-              "in": "query",
-              "name": "code_commune",
-              "required": false,
-              "schema": {
-                "description": "Code insee géographique d'une commune.",
-                "maxLength": 5,
-                "minLength": 5,
-                "pattern": "^\\w{5}$",
-                "title": "Code Commune",
-                "type": "string"
-              }
-            },
-            {
-              "description": "[BETA] Mode qui ne retourne parmi les structures en doublon, que celles ayant les services les plus qualitatifs (voir [documentation](https://gip-inclusion.notion.site/Syst-me-de-d-duplication-des-donn-es-17d5f321b60480f99f6cf65522a83c8b?pvs=4)).",
-              "in": "query",
-              "name": "exclure_doublons",
-              "required": false,
-              "schema": {
-                "default": false,
-                "description": "[BETA] Mode qui ne retourne parmi les structures en doublon, que celles ayant les services les plus qualitatifs (voir [documentation](https://gip-inclusion.notion.site/Syst-me-de-d-duplication-des-donn-es-17d5f321b60480f99f6cf65522a83c8b?pvs=4)).",
-                "title": "Exclure Doublons",
-                "type": "boolean"
-              }
-            },
-            {
               "description": "Page number",
               "in": "query",
               "name": "page",
@@ -7821,6 +8117,167 @@
                 "title": "Size",
                 "type": "integer"
               }
+            },
+            {
+              "description": "Une liste d'identifiants de source.\n                La liste des identifiants de source est disponible sur le endpoint\n                dédié. Les résultats seront limités aux sources spécifiées.\n            ",
+              "in": "query",
+              "name": "sources",
+              "required": false,
+              "schema": {
+                "anyOf": [
+                  {
+                    "items": {
+                      "type": "string"
+                    },
+                    "type": "array"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "description": "Une liste d'identifiants de source.\n                La liste des identifiants de source est disponible sur le endpoint\n                dédié. Les résultats seront limités aux sources spécifiées.\n            ",
+                "title": "Sources"
+              }
+            },
+            {
+              "in": "query",
+              "name": "typologie",
+              "required": false,
+              "schema": {
+                "anyOf": [
+                  {
+                    "$ref": "#/components/schemas/TypologieStructure"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "title": "Typologie"
+              }
+            },
+            {
+              "in": "query",
+              "name": "label_national",
+              "required": false,
+              "schema": {
+                "anyOf": [
+                  {
+                    "$ref": "#/components/schemas/LabelNational"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "title": "Label National"
+              }
+            },
+            {
+              "description": "Code insee géographique d'une région.",
+              "in": "query",
+              "name": "code_region",
+              "required": false,
+              "schema": {
+                "anyOf": [
+                  {
+                    "$ref": "#/components/schemas/RegionCodeEnum"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "description": "Code insee géographique d'une région.",
+                "title": "Code Region"
+              }
+            },
+            {
+              "in": "query",
+              "name": "slug_region",
+              "required": false,
+              "schema": {
+                "anyOf": [
+                  {
+                    "$ref": "#/components/schemas/RegionSlugEnum"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "title": "Slug Region"
+              }
+            },
+            {
+              "description": "Code insee géographique d'un département.",
+              "in": "query",
+              "name": "code_departement",
+              "required": false,
+              "schema": {
+                "anyOf": [
+                  {
+                    "$ref": "#/components/schemas/DepartementCodeEnum"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "description": "Code insee géographique d'un département.",
+                "title": "Code Departement"
+              }
+            },
+            {
+              "in": "query",
+              "name": "slug_departement",
+              "required": false,
+              "schema": {
+                "anyOf": [
+                  {
+                    "$ref": "#/components/schemas/DepartementSlugEnum"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "title": "Slug Departement"
+              }
+            },
+            {
+              "description": "Code insee géographique d'une commune.",
+              "in": "query",
+              "name": "code_commune",
+              "required": false,
+              "schema": {
+                "anyOf": [
+                  {
+                    "maxLength": 5,
+                    "minLength": 5,
+                    "pattern": "^\\w{5}$",
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "description": "Code insee géographique d'une commune.",
+                "title": "Code Commune"
+              }
+            },
+            {
+              "description": "[BETA] Mode qui ne retourne parmi les structures en doublon, que celles ayant les services les plus qualitatifs (voir [documentation](https://gip-inclusion.notion.site/Syst-me-de-d-duplication-des-donn-es-17d5f321b60480f99f6cf65522a83c8b?pvs=4)).",
+              "in": "query",
+              "name": "exclure_doublons",
+              "required": false,
+              "schema": {
+                "anyOf": [
+                  {
+                    "type": "boolean"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": false,
+                "description": "[BETA] Mode qui ne retourne parmi les structures en doublon, que celles ayant les services les plus qualitatifs (voir [documentation](https://gip-inclusion.notion.site/Syst-me-de-d-duplication-des-donn-es-17d5f321b60480f99f6cf65522a83c8b?pvs=4)).",
+                "title": "Exclure Doublons"
+              }
             }
           ],
           "responses": {
@@ -7828,7 +8285,7 @@
               "content": {
                 "application/json": {
                   "schema": {
-                    "$ref": "#/components/schemas/data_inclusion__api__utils__pagination__CustomizedPage_ListedStructure___2"
+                    "$ref": "#/components/schemas/data_inclusion__api__utils__pagination__Page_ListedStructure___2"
                   }
                 }
               },
@@ -7860,6 +8317,14 @@
         "get": {
           "operationId": "retrieve_structure_endpoint_api_v1_structures__source___id__get",
           "parameters": [
+            {
+              "in": "path",
+              "name": "params",
+              "required": true,
+              "schema": {
+                "$ref": "#/components/schemas/RetrieveStructureParams"
+              }
+            },
             {
               "in": "path",
               "name": "source",
