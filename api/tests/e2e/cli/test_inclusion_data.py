@@ -24,6 +24,7 @@ def dataset_path(structures_df, services_df, tmpdir):
                         "_cluster_id": None,
                         "description": None,
                         "horaires_accueil": "Mon-Fri 9:00-17:00",
+                        "reseaux_porteurs": ["action-logement"],
                         **v0.Structure(
                             source="foo",
                             id="1",

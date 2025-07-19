@@ -192,19 +192,15 @@
         "doublons": [],
         "horaires_accueil": "Mo-Fr 10:00-20:00",
         "id": "lot-kitchen-amount",
-        "labels_autres": [
-          "Nièvre médiation numérique"
-        ],
-        "labels_nationaux": [],
         "latitude": -20.074628,
         "longitude": 99.899603,
         "nom": "Perrin",
+        "reseaux_porteurs": [],
         "score_qualite": 0.7,
         "siret": "76475938700658",
         "site_web": "https://www.le.net/",
         "source": "dora",
-        "telephone": "0102030405",
-        "typologie": "ACI"
+        "telephone": "0102030405"
       }
     ],
     "page": 1,

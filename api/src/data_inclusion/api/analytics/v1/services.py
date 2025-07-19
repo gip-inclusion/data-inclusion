@@ -30,8 +30,7 @@ def save_event(
             event = models.ListStructuresEvent(
                 user=user.username,
                 sources=params.sources,
-                typologie=params.typologie,
-                label_national=params.label_national,
+                reseaux_porteurs=params.reseaux_porteurs,
                 code_departement=params.departement.code
                 if params.departement
                 else None,
