@@ -19,8 +19,9 @@ from data_inclusion.schema import v1 as schema
 
 class ListStructuresQueryParams(pydantic.BaseModel, pagination.PaginationParamsMixin):
     sources: filters.SourcesFilter = None
-    typologie: Annotated[schema.TypologieStructure | None, pydantic.Field()] = None
-    label_national: Annotated[schema.LabelNational | None, pydantic.Field()] = None
+    reseaux_porteurs: Annotated[list[schema.ReseauPorteur] | None, pydantic.Field()] = (
+        None
+    )
     code_region: filters.CodeRegionFilter = None
     slug_region: Annotated[RegionSlugEnum | None, pydantic.Field()] = None
     code_departement: filters.CodeDepartementFilter = None

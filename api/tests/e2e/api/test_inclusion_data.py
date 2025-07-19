@@ -84,8 +84,7 @@ def test_list_structures_unauthenticated(api_client, schema_version):
                 doublons=[],
                 horaires_accueil="Mo-Fr 10:00-20:00",
                 id="lot-kitchen-amount",
-                labels_autres=["Nièvre médiation numérique"],
-                labels_nationaux=[],
+                reseaux_porteurs=[],
                 latitude=-20.074628,
                 longitude=99.899603,
                 nom="Perrin",
@@ -97,7 +96,6 @@ def test_list_structures_unauthenticated(api_client, schema_version):
                 site_web="https://www.le.net/",
                 source="dora",
                 telephone="0102030405",
-                typologie="ACI",
             ),
         ),
     ],
@@ -133,7 +131,7 @@ def assert_paginated_response_data(
     }
 
 
-@pytest.mark.parametrize("schema_version", ["v0", "v1"])
+@pytest.mark.parametrize("schema_version", ["v0"])
 @pytest.mark.with_token
 def test_list_structures_filter_by_typology(
     api_client,
@@ -158,7 +156,7 @@ def test_list_structures_filter_by_typology(
     assert_paginated_response_data(response.json(), total=0)
 
 
-@pytest.mark.parametrize("schema_version", ["v0", "v1"])
+@pytest.mark.parametrize("schema_version", ["v0"])
 @pytest.mark.with_token
 def test_list_structures_filter_by_label(
     api_client,
@@ -184,6 +182,35 @@ def test_list_structures_filter_by_label(
 
     response = api_client.get(
         url, params={"label_national": v0.LabelNational.AFPA.value}
+    )
+    assert_paginated_response_data(response.json(), total=0)
+
+
+@pytest.mark.parametrize("schema_version", ["v1"])
+@pytest.mark.with_token
+def test_list_structures_filter_by_reseaux_porteurs(
+    api_client,
+    schema_version,
+    structure_factory,
+):
+    structure_1 = structure_factory(
+        reseaux_porteurs=[v1.ReseauPorteur.FRANCE_TRAVAIL.value]
+    )
+    structure_factory(reseaux_porteurs=[v1.ReseauPorteur.MISSION_LOCALE.value])
+    structure_factory(reseaux_porteurs=[])
+    structure_factory(reseaux_porteurs=None)
+
+    url = f"/api/{schema_version}/structures/"
+    response = api_client.get(
+        url, params={"reseaux_porteurs": v1.ReseauPorteur.FRANCE_TRAVAIL.value}
+    )
+
+    resp_data = response.json()
+    assert_paginated_response_data(response.json(), total=1)
+    assert resp_data["items"][0]["id"] == structure_1.id
+
+    response = api_client.get(
+        url, params={"reseaux_porteurs": v1.ReseauPorteur.AFPA.value}
     )
     assert_paginated_response_data(response.json(), total=0)
 
@@ -313,8 +340,7 @@ def test_list_services_unauthenticated(api_client, schema_version):
                     date_maj="2023-01-01",
                     horaires_accueil="Mo-Fr 10:00-20:00",
                     id="lot-kitchen-amount",
-                    labels_autres=["Nièvre médiation numérique"],
-                    labels_nationaux=[],
+                    reseaux_porteurs=[],
                     latitude=-20.074628,
                     longitude=99.899603,
                     nom="Perrin",
@@ -327,7 +353,6 @@ def test_list_services_unauthenticated(api_client, schema_version):
                     site_web="https://www.le.net/",
                     source="dora",
                     telephone="0102030405",
-                    typologie="ACI",
                 ),
                 models_v1.Service(
                     _di_surrogate_id="eafdc798-18a6-446d-acda-7bc14ba83a39",

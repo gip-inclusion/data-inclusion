@@ -19,14 +19,13 @@ MODELS_MAPPING_V0 = {
 
 MODELS_MAPPING_V1 = {
     "frais": v1.Frais,
-    "labels-nationaux": v1.LabelNational,
+    "reseaux-porteurs": v1.ReseauPorteur,
     "modes-accueil": v1.ModeAccueil,
     "modes-mobilisation": v1.ModeMobilisation,
     "personnes-mobilisatrice": v1.PersonneMobilisatrice,
     "publics": v1.Public,
     "thematiques": v1.Thematique,
     "types-services": v1.TypeService,
-    "typologies-structures": v1.TypologieStructure,
 }
 
 
@@ -62,14 +61,13 @@ def test_list_collections_v0(api_client, collection):
     "collection",
     [
         "frais",
-        "labels-nationaux",
+        "reseaux-porteurs",
         "modes-accueil",
         "modes-mobilisation",
         "personnes-mobilisatrice",
         "publics",
         "thematiques",
         "types-services",
-        "typologies-structures",
     ],
 )
 @pytest.mark.with_token

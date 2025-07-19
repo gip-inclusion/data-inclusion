@@ -40,8 +40,7 @@ class Structure(HasAddress, Base):
     # see https://pypi.org/project/opening-hours-py/ when we stop using pl/Python
     horaires_accueil: Mapped[str | None]
     id: Mapped[str]
-    labels_autres: Mapped[list[str] | None]
-    labels_nationaux: Mapped[list[str] | None]
+    reseaux_porteurs: Mapped[list[str] | None]
     nom: Mapped[str]
     description: Mapped[str | None]
     rna: Mapped[str | None]
@@ -49,7 +48,6 @@ class Structure(HasAddress, Base):
     site_web: Mapped[str | None]
     source: Mapped[str]
     telephone: Mapped[str | None]
-    typologie: Mapped[str | None]
 
     score_qualite: Mapped[float]
 
