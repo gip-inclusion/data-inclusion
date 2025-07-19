@@ -511,7 +511,112 @@
           "title": "RegionSlugEnum",
           "type": "string"
         },
-        "RetrieveServiceParams": {
+        "ReseauPorteur": {
+          "description": "Réseaux porteurs",
+          "enum": [
+            "60000-rebonds",
+            "action-logement",
+            "adie",
+            "afpa",
+            "agefiph",
+            "aidants-connect",
+            "alliance-villes-emploi",
+            "anlci",
+            "apprentis-dauteuil",
+            "ase",
+            "banques-alimentaires",
+            "caarud",
+            "cada",
+            "caf",
+            "campus-connecte",
+            "cap-emploi-reseau-cheops",
+            "cava",
+            "chambres-consulaires",
+            "chantier-ecole",
+            "chrs",
+            "chu",
+            "cidff",
+            "cmp",
+            "cms",
+            "cnam",
+            "collectif-emploi",
+            "communes",
+            "coorace",
+            "conseillers-numeriques",
+            "cpam",
+            "cph",
+            "creches-avip",
+            "crepi",
+            "cresus",
+            "croix-rouge",
+            "csapa",
+            "departements",
+            "duo-for-a-job",
+            "ecoles-de-la-deuxieme-chance",
+            "egee",
+            "emmaus",
+            "epide",
+            "espaces-publics-numeriques",
+            "etcld",
+            "fabrique-de-territoire",
+            "face",
+            "fcsf",
+            "federation-professionnelle-femmes",
+            "federation-des-acteurs-de-la-solidarite",
+            "france-active",
+            "france-service",
+            "france-travail",
+            "french-tech",
+            "geiq",
+            "grandes-ecoles-du-numerique",
+            "huda",
+            "hup",
+            "inae",
+            "initiative-france",
+            "konexio",
+            "la-cravate-solidaire",
+            "la-poste",
+            "les-premieres",
+            "maisons-de-l-emploi",
+            "maisons-des-solidarites",
+            "mission-locale",
+            "mjc",
+            "mobin",
+            "msap",
+            "mutualite-sociale-agricole",
+            "nqt",
+            "pimms-mediation",
+            "pjj",
+            "plie",
+            "points-conseil-budget",
+            "points-justice",
+            "positive-planet",
+            "regions",
+            "reseau-app",
+            "reseau-bge",
+            "reseau-entreprendre",
+            "reseau-information-jeunesse",
+            "residences-fjt",
+            "ressourceries",
+            "restos-du-coeur",
+            "secours-populaire",
+            "siae",
+            "siao",
+            "simplon",
+            "singa",
+            "snc",
+            "spip",
+            "tous-tes-possibles",
+            "unaf",
+            "unccas",
+            "unea",
+            "unis-cite",
+            "wimoov"
+          ],
+          "title": "ReseauPorteur",
+          "type": "string"
+        },
+        "RetrieveServicePathParams": {
           "properties": {
             "id": {
               "title": "Id",
@@ -526,10 +631,10 @@
             "source",
             "id"
           ],
-          "title": "RetrieveServiceParams",
+          "title": "RetrieveServicePathParams",
           "type": "object"
         },
-        "RetrieveStructureParams": {
+        "RetrieveStructurePathParams": {
           "properties": {
             "id": {
               "title": "Id",
@@ -544,7 +649,7 @@
             "source",
             "id"
           ],
-          "title": "RetrieveStructureParams",
+          "title": "RetrieveStructurePathParams",
           "type": "object"
         },
         "Source": {
@@ -3230,36 +3335,6 @@
               "title": "Id",
               "type": "string"
             },
-            "labels_autres": {
-              "anyOf": [
-                {
-                  "items": {
-                    "type": "string"
-                  },
-                  "type": "array",
-                  "uniqueItems": true
-                },
-                {
-                  "type": "null"
-                }
-              ],
-              "title": "Labels Autres"
-            },
-            "labels_nationaux": {
-              "anyOf": [
-                {
-                  "items": {
-                    "$ref": "#/components/schemas/LabelNational"
-                  },
-                  "type": "array",
-                  "uniqueItems": true
-                },
-                {
-                  "type": "null"
-                }
-              ],
-              "title": "Labels Nationaux"
-            },
             "latitude": {
               "anyOf": [
                 {
@@ -3291,6 +3366,27 @@
               "minLength": 3,
               "title": "Nom",
               "type": "string"
+            },
+            "reseaux_porteurs": {
+              "anyOf": [
+                {
+                  "items": {
+                    "$ref": "#/components/schemas/ReseauPorteur"
+                  },
+                  "type": "array",
+                  "uniqueItems": true
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Réseaux, organisations ou administrations portant la structure.",
+              "examples": [
+                [
+                  "mission-locale"
+                ]
+              ],
+              "title": "Réseaux porteurs"
             },
             "siret": {
               "anyOf": [
@@ -3338,16 +3434,6 @@
                 "+33123456789"
               ],
               "title": "Téléphone"
-            },
-            "typologie": {
-              "anyOf": [
-                {
-                  "$ref": "#/components/schemas/TypologieStructure"
-                },
-                {
-                  "type": "null"
-                }
-              ]
             }
           },
           "required": [
@@ -3821,10 +3907,6 @@
                       {
                         "const": "france",
                         "type": "string"
-                      },
-                      {
-                        "const": "99100",
-                        "type": "string"
                       }
                     ]
                   },
@@ -4015,36 +4097,6 @@
               "title": "Id",
               "type": "string"
             },
-            "labels_autres": {
-              "anyOf": [
-                {
-                  "items": {
-                    "type": "string"
-                  },
-                  "type": "array",
-                  "uniqueItems": true
-                },
-                {
-                  "type": "null"
-                }
-              ],
-              "title": "Labels Autres"
-            },
-            "labels_nationaux": {
-              "anyOf": [
-                {
-                  "items": {
-                    "$ref": "#/components/schemas/LabelNational"
-                  },
-                  "type": "array",
-                  "uniqueItems": true
-                },
-                {
-                  "type": "null"
-                }
-              ],
-              "title": "Labels Nationaux"
-            },
             "latitude": {
               "anyOf": [
                 {
@@ -4076,6 +4128,27 @@
               "minLength": 3,
               "title": "Nom",
               "type": "string"
+            },
+            "reseaux_porteurs": {
+              "anyOf": [
+                {
+                  "items": {
+                    "$ref": "#/components/schemas/ReseauPorteur"
+                  },
+                  "type": "array",
+                  "uniqueItems": true
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Réseaux, organisations ou administrations portant la structure.",
+              "examples": [
+                [
+                  "mission-locale"
+                ]
+              ],
+              "title": "Réseaux porteurs"
             },
             "score_qualite": {
               "description": "[BETA] Score de qualité de la structure. Défini comme la moyenne\ndes scores de qualité des services associés à la structure, ou 0\nsi aucun service n'est associé.\n",
@@ -4137,16 +4210,6 @@
                 "+33123456789"
               ],
               "title": "Téléphone"
-            },
-            "typologie": {
-              "anyOf": [
-                {
-                  "$ref": "#/components/schemas/TypologieStructure"
-                },
-                {
-                  "type": "null"
-                }
-              ]
             }
           },
           "required": [
@@ -4305,36 +4368,6 @@
               "title": "Id",
               "type": "string"
             },
-            "labels_autres": {
-              "anyOf": [
-                {
-                  "items": {
-                    "type": "string"
-                  },
-                  "type": "array",
-                  "uniqueItems": true
-                },
-                {
-                  "type": "null"
-                }
-              ],
-              "title": "Labels Autres"
-            },
-            "labels_nationaux": {
-              "anyOf": [
-                {
-                  "items": {
-                    "$ref": "#/components/schemas/LabelNational"
-                  },
-                  "type": "array",
-                  "uniqueItems": true
-                },
-                {
-                  "type": "null"
-                }
-              ],
-              "title": "Labels Nationaux"
-            },
             "latitude": {
               "anyOf": [
                 {
@@ -4366,6 +4399,27 @@
               "minLength": 3,
               "title": "Nom",
               "type": "string"
+            },
+            "reseaux_porteurs": {
+              "anyOf": [
+                {
+                  "items": {
+                    "$ref": "#/components/schemas/ReseauPorteur"
+                  },
+                  "type": "array",
+                  "uniqueItems": true
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Réseaux, organisations ou administrations portant la structure.",
+              "examples": [
+                [
+                  "mission-locale"
+                ]
+              ],
+              "title": "Réseaux porteurs"
             },
             "score_qualite": {
               "description": "[BETA] Score de qualité de la structure. Défini comme la moyenne\ndes scores de qualité des services associés à la structure, ou 0\nsi aucun service n'est associé.\n",
@@ -4420,16 +4474,6 @@
                 "+33123456789"
               ],
               "title": "Téléphone"
-            },
-            "typologie": {
-              "anyOf": [
-                {
-                  "$ref": "#/components/schemas/TypologieStructure"
-                },
-                {
-                  "type": "null"
-                }
-              ]
             }
           },
           "required": [
@@ -4901,10 +4945,6 @@
                       },
                       {
                         "const": "france",
-                        "type": "string"
-                      },
-                      {
-                        "const": "99100",
                         "type": "string"
                       }
                     ]
@@ -5674,36 +5714,6 @@
               "title": "Id",
               "type": "string"
             },
-            "labels_autres": {
-              "anyOf": [
-                {
-                  "items": {
-                    "type": "string"
-                  },
-                  "type": "array",
-                  "uniqueItems": true
-                },
-                {
-                  "type": "null"
-                }
-              ],
-              "title": "Labels Autres"
-            },
-            "labels_nationaux": {
-              "anyOf": [
-                {
-                  "items": {
-                    "$ref": "#/components/schemas/LabelNational"
-                  },
-                  "type": "array",
-                  "uniqueItems": true
-                },
-                {
-                  "type": "null"
-                }
-              ],
-              "title": "Labels Nationaux"
-            },
             "latitude": {
               "anyOf": [
                 {
@@ -5735,6 +5745,27 @@
               "minLength": 3,
               "title": "Nom",
               "type": "string"
+            },
+            "reseaux_porteurs": {
+              "anyOf": [
+                {
+                  "items": {
+                    "$ref": "#/components/schemas/ReseauPorteur"
+                  },
+                  "type": "array",
+                  "uniqueItems": true
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Réseaux, organisations ou administrations portant la structure.",
+              "examples": [
+                [
+                  "mission-locale"
+                ]
+              ],
+              "title": "Réseaux porteurs"
             },
             "siret": {
               "anyOf": [
@@ -5782,16 +5813,6 @@
                 "+33123456789"
               ],
               "title": "Téléphone"
-            },
-            "typologie": {
-              "anyOf": [
-                {
-                  "$ref": "#/components/schemas/TypologieStructure"
-                },
-                {
-                  "type": "null"
-                }
-              ]
             }
           },
           "required": [
@@ -6734,7 +6755,7 @@
               "name": "params",
               "required": true,
               "schema": {
-                "$ref": "#/components/schemas/RetrieveServiceParams"
+                "$ref": "#/components/schemas/RetrieveServicePathParams"
               }
             },
             {
@@ -7093,7 +7114,7 @@
               "name": "params",
               "required": true,
               "schema": {
-                "$ref": "#/components/schemas/RetrieveStructureParams"
+                "$ref": "#/components/schemas/RetrieveStructurePathParams"
               }
             },
             {
@@ -7168,31 +7189,6 @@
             }
           },
           "summary": "Récupérer le référentiel des frais",
-          "tags": [
-            "v1 | Documentation"
-          ]
-        }
-      },
-      "/api/v1/doc/labels-nationaux": {
-        "get": {
-          "operationId": "as_dict_list_api_v1_doc_labels_nationaux_get",
-          "responses": {
-            "200": {
-              "content": {
-                "application/json": {
-                  "schema": {
-                    "items": {
-                      "$ref": "#/components/schemas/FrameworkValue"
-                    },
-                    "title": "Response As Dict List Api V1 Doc Labels Nationaux Get",
-                    "type": "array"
-                  }
-                }
-              },
-              "description": "Successful Response"
-            }
-          },
-          "summary": "Récupérer le référentiel des labels nationaux",
           "tags": [
             "v1 | Documentation"
           ]
@@ -7298,6 +7294,31 @@
           ]
         }
       },
+      "/api/v1/doc/reseaux-porteurs": {
+        "get": {
+          "operationId": "as_dict_list_api_v1_doc_reseaux_porteurs_get",
+          "responses": {
+            "200": {
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "items": {
+                      "$ref": "#/components/schemas/FrameworkValue"
+                    },
+                    "title": "Response As Dict List Api V1 Doc Reseaux Porteurs Get",
+                    "type": "array"
+                  }
+                }
+              },
+              "description": "Successful Response"
+            }
+          },
+          "summary": "Récupérer le référentiel des réseaux porteurs",
+          "tags": [
+            "v1 | Documentation"
+          ]
+        }
+      },
       "/api/v1/doc/thematiques": {
         "get": {
           "operationId": "as_dict_list_api_v1_doc_thematiques_get",
@@ -7343,31 +7364,6 @@
             }
           },
           "summary": "Récupérer le référentiel des types de services",
-          "tags": [
-            "v1 | Documentation"
-          ]
-        }
-      },
-      "/api/v1/doc/typologies-structures": {
-        "get": {
-          "operationId": "as_dict_list_api_v1_doc_typologies_structures_get",
-          "responses": {
-            "200": {
-              "content": {
-                "application/json": {
-                  "schema": {
-                    "items": {
-                      "$ref": "#/components/schemas/FrameworkValue"
-                    },
-                    "title": "Response As Dict List Api V1 Doc Typologies Structures Get",
-                    "type": "array"
-                  }
-                }
-              },
-              "description": "Successful Response"
-            }
-          },
-          "summary": "Récupérer le référentiel des typologies de structures",
           "tags": [
             "v1 | Documentation"
           ]
@@ -8002,7 +7998,7 @@
               "name": "params",
               "required": true,
               "schema": {
-                "$ref": "#/components/schemas/RetrieveServiceParams"
+                "$ref": "#/components/schemas/RetrieveServicePathParams"
               }
             },
             {
@@ -8141,34 +8137,21 @@
             },
             {
               "in": "query",
-              "name": "typologie",
+              "name": "reseaux_porteurs",
               "required": false,
               "schema": {
                 "anyOf": [
                   {
-                    "$ref": "#/components/schemas/TypologieStructure"
+                    "items": {
+                      "$ref": "#/components/schemas/ReseauPorteur"
+                    },
+                    "type": "array"
                   },
                   {
                     "type": "null"
                   }
                 ],
-                "title": "Typologie"
-              }
-            },
-            {
-              "in": "query",
-              "name": "label_national",
-              "required": false,
-              "schema": {
-                "anyOf": [
-                  {
-                    "$ref": "#/components/schemas/LabelNational"
-                  },
-                  {
-                    "type": "null"
-                  }
-                ],
-                "title": "Label National"
+                "title": "Reseaux Porteurs"
               }
             },
             {
@@ -8322,7 +8305,7 @@
               "name": "params",
               "required": true,
               "schema": {
-                "$ref": "#/components/schemas/RetrieveStructureParams"
+                "$ref": "#/components/schemas/RetrieveStructurePathParams"
               }
             },
             {

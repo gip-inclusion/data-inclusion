@@ -61,18 +61,18 @@ def list_structures_query(
             models.Structure.code_insee.startswith(params.departement.code)
         )
 
-    if params.typologie is not None:
-        query = query.filter_by(typologie=params.typologie.value)
-
     if params.region is not None:
         query = query.join(Commune).options(
             orm.contains_eager(models.Structure.commune_)
         )
         query = query.filter(Commune.region == params.region.code)
 
-    if params.label_national is not None:
-        query = query.filter(
-            models.Structure.labels_nationaux.contains([params.label_national.value])
+    if params.reseaux_porteurs is not None:
+        query = _filter_array_field(
+            query,
+            models.Structure,
+            "reseaux_porteurs",
+            params.reseaux_porteurs,
         )
 
     if params.exclure_doublons:

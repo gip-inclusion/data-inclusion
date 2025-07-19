@@ -472,7 +472,7 @@ test = [
 [[package]]
 name = "data-inclusion-schema"
 version = "1.0.0b1"
-source = { registry = "https://pypi.org/simple" }
+source = { git = "https://github.com/gip-inclusion/data-inclusion-schema.git?rev=vmttn%2Ffeat%2Fv1-reseau-porteur#ae7cd9c8a5cf6a78708c684cc7ae41fbfa923b07" }
 dependencies = [
     { name = "pendulum" },
     { name = "pydantic", extra = ["email"] },

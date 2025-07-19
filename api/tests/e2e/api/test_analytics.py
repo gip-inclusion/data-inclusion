@@ -187,13 +187,16 @@ def test_list_structures_event_saved(
         "code_departement": "26",
         "code_region": "84",
         "code_commune": "26400",
-        "typologie": "ACIPHC",
         "id": "1",
-        "label_national": "action-logement",
         "exclure_doublons": True,
     }
     if schema_version == "v0":
         query_param["thematiques"] = ["acces-aux-droits-et-citoyennete"]
+        query_param["label_national"] = "action-logement"
+        query_param["typologie"] = "ACIPHC"
+    elif schema_version == "v1":
+        query_param["reseaux_porteurs"] = ["action-logement"]
+
     response = api_client.get(url, params=query_param)
 
     assert response.status_code == 200
@@ -205,11 +208,13 @@ def test_list_structures_event_saved(
     assert event.code_departement == query_param["code_departement"]
     assert event.code_region == query_param["code_region"]
     assert event.code_commune == query_param["code_commune"]
-    assert event.typologie == query_param["typologie"]
-    assert event.label_national == query_param["label_national"]
     assert event.exclure_doublons == query_param["exclure_doublons"]
     if schema_version == "v0":
         assert event.thematiques == query_param["thematiques"]
+        assert event.label_national == query_param["label_national"]
+        assert event.typologie == query_param["typologie"]
+    elif schema_version == "v1":
+        assert event.reseaux_porteurs == query_param["reseaux_porteurs"]
 
 
 @pytest.mark.parametrize(
