@@ -12,6 +12,24 @@ valid_site_web AS (
         "url"
     FROM {{ ref('int__urls') }}
     WHERE status_code > 0
+),
+
+map_reseaux_labels AS (SELECT * FROM {{ ref('_map_reseaux_labels') }}),
+
+map_reseaux_typologie AS (SELECT * FROM {{ ref('_map_reseaux_typologie') }}),
+
+reseaux_porteurs AS (
+    SELECT
+        structures._di_surrogate_id,
+        ARRAY_REMOVE(ARRAY(
+            SELECT DISTINCT map_reseaux_labels.reseau_porteur
+            FROM UNNEST(structures.labels_nationaux) AS x (label_national)
+            LEFT JOIN map_reseaux_labels ON x.label_national = map_reseaux_labels.label_national
+            UNION
+            SELECT map_reseaux_typologie.reseau_porteur
+        ), NULL) AS reseaux_porteurs
+    FROM structures
+    LEFT JOIN map_reseaux_typologie ON structures.typologie = map_reseaux_typologie.typologie
 )
 
 SELECT
@@ -36,6 +54,7 @@ SELECT
     structures.typologie                                  AS "typologie",
     structures.date_maj                                   AS "date_maj",
     structures.thematiques                                AS "thematiques",
+    reseaux_porteurs.reseaux_porteurs                     AS "reseaux_porteurs",
     processings.format_phone_number(structures.telephone) AS "telephone",
     valid_site_web_1.url                                  AS "site_web",
     valid_site_web_2.url                                  AS "accessibilite",
@@ -53,4 +72,5 @@ SELECT
 FROM structures
 LEFT JOIN valid_site_web AS valid_site_web_1 ON structures.site_web = valid_site_web_1.input_url
 LEFT JOIN valid_site_web AS valid_site_web_2 ON structures.accessibilite = valid_site_web_2.input_url
+LEFT JOIN reseaux_porteurs ON structures._di_surrogate_id = reseaux_porteurs._di_surrogate_id
 LEFT JOIN adresses ON structures._di_adresse_surrogate_id = adresses._di_surrogate_id

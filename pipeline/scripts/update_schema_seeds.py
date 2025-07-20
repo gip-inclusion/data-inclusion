@@ -3,9 +3,12 @@
 # /// script
 # requires-python = ">=3.12"
 # dependencies = [
-#     "data-inclusion-schema==1.0.0b1",
+#     "data-inclusion-schema",
 #     "pandas",
 # ]
+#
+# [tool.uv.sources]
+# data-inclusion-schema = { git = "https://github.com/gip-inclusion/data-inclusion-schema.git", rev = "vmttn/feat/v1-reseau-porteur" }  # noqa: E501
 # ///
 
 """Generate dbt seeds in pipeline/seeds/schema"""
@@ -40,6 +43,7 @@ VERSIONS_REGISTRY = {
         "publics": v1.Public,
         "thematiques": v1.Thematique,
         "types_de_services": v1.TypeService,
+        "reseaux_porteurs": v1.ReseauPorteur,
     },
 }
 
