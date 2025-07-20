@@ -70,6 +70,8 @@ models:
         data_type: text[]
       - name: thematiques
         data_type: text[]
+      - name: reseaux_porteurs
+        data_type: text[]
       - name: _cluster_id
         data_type: text
       - name: _has_pii

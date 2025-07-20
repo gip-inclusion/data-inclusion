@@ -131,6 +131,10 @@ typologie IS NULL OR typologie IN (SELECT t.value FROM {{ ref('typologies_de_str
 labels_nationaux IS NULL OR labels_nationaux <@ ARRAY(SELECT l.value FROM {{ ref('labels_nationaux') }} AS l)
 {% endmacro %}
 
+{% macro check_reseaux_porteurs() %}
+reseaux_porteurs IS NULL OR reseaux_porteurs <@ ARRAY(SELECT r.value FROM {{ ref('reseaux_porteurs_v1') }} AS r)
+{% endmacro %}
+
 {% macro check_code_postal() %}
 code_postal IS NULL OR code_postal ~ '^\d{5}$'
 {% endmacro %}
@@ -189,17 +193,18 @@ code_insee IS NULL OR code_insee ~ '^.{5}$'
         ("date_maj", check_date_maj()),
         ("siret", check_siret()),
         ("rna", check_rna()),
-        ("typologie", check_typologie()),
-        ("labels_nationaux", check_labels_nationaux()),
 ] %}
 {% if schema_version == 'v0' %}
 {% set checks = checks + [
+        ("labels_nationaux", check_labels_nationaux()),
         ("thematiques", check_thematiques()),
         ("presentation_resume", check_presentation_resume()),
+        ("typologie", check_typologie()),
 ] %}
 {% elif schema_version == 'v1' %}
 {% set checks = checks + [
         ("description", check_description()),
+        ("reseaux_porteurs", check_reseaux_porteurs()),
 ] %}
 {% endif %}
 
