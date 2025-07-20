@@ -1,5 +1,4 @@
 {{ config(materialized='ephemeral') }}
--- Mapping https://www.notion.so/gip-inclusion/champs-li-s-service-publics-2005f321b60480668b7ee05f08c76f69
 SELECT
     x.profil,
     x.public

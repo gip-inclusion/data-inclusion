@@ -8144,18 +8144,21 @@
             },
             {
               "in": "query",
-              "name": "reseau_porteur",
+              "name": "reseaux_porteurs",
               "required": false,
               "schema": {
                 "anyOf": [
                   {
-                    "$ref": "#/components/schemas/ReseauPorteur"
+                    "items": {
+                      "$ref": "#/components/schemas/ReseauPorteur"
+                    },
+                    "type": "array"
                   },
                   {
                     "type": "null"
                   }
                 ],
-                "title": "Reseau Porteur"
+                "title": "Reseaux Porteurs"
               }
             },
             {
