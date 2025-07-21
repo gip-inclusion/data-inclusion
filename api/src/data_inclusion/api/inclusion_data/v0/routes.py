@@ -1,5 +1,6 @@
 from typing import Annotated, TypeVar
 
+import orjson
 from pydantic.json_schema import SkipJsonSchema
 
 import fastapi
@@ -148,6 +149,48 @@ def list_sources_endpoint(
     request: fastapi.Request,
 ):
     return service_layer.list_sources(request=request)
+
+
+async def generate_table_data_sql(
+    request: fastapi.Request,
+    db_session=fastapi.Depends(db.get_session),
+    service_layer=services.ServiceLayerV0(),
+):
+    query = service_layer.list_services(
+        request=request,
+        db_session=db_session,
+    )
+    for partition in db_session.execute(
+        query, execution_options={"stream_results": True}
+    ):
+        for row in partition:
+            data = {
+                column.name: getattr(row, column.name)
+                for column in row.__table__.columns
+            }
+            yield data
+
+
+@router.get("/stream")
+async def efficient_stream(
+    request: fastapi.Request, db_session=fastapi.Depends(db.get_session)
+):
+    async def batched_json_stream():
+        batch = []
+        batch_size = 100
+        async for row in generate_table_data_sql(
+            request=request, db_session=db_session
+        ):
+            batch.append(orjson.dumps(row).decode("utf-8"))
+
+            if len(batch) >= batch_size:
+                yield "\n".join(batch) + "\n"
+                batch = []
+
+        if batch:
+            yield "\n".join(batch) + "\n"
+
+    return StreamingResponse(batched_json_stream(), media_type="application/x-ndjson")
 
 
 @router.get(

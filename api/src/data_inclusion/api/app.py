@@ -6,6 +6,7 @@ import sentry_sdk
 import fastapi
 import fastapi_pagination
 from fastapi.middleware import cors, trustedhost
+from fastapi.middleware.gzip import GZipMiddleware
 
 from data_inclusion.api import auth, config
 from data_inclusion.api.auth.routes import router as auth_api_router
@@ -69,6 +70,7 @@ def create_app(settings: config.Settings) -> fastapi.FastAPI:
 
     if settings.ENV == "dev":
         setup_debug_toolbar_middleware(app)
+        app.add_middleware(GZipMiddleware)
 
     if settings.ENV in ["prod", "staging"]:
         app.add_middleware(
