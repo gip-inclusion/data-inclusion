@@ -1,6 +1,6 @@
 value,label,description
 commune,Commune,
-epci,Intercommunalité (EPCI),
-region,Région,
 departement,Département,
+epci,Intercommunalité (EPCI),
 pays,Pays,
+region,Région,

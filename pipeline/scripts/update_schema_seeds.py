@@ -60,4 +60,6 @@ if __name__ == "__main__":
             )
             if version_schema == "v1":
                 tablename = tablename + "_v1"
-            df.to_csv((OUTPUT_DIR / tablename).with_suffix(".csv"), index=False)
+            df.sort_values(by="value").to_csv(
+                (OUTPUT_DIR / tablename).with_suffix(".csv"), index=False
+            )
