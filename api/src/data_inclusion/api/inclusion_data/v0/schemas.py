@@ -12,6 +12,13 @@ class Source(BaseModel):
     description: str | None
 
 
+class Commune(BaseModel):
+    code: str
+    nom: str
+    departement: str
+    region: str
+
+
 class Service(schema.Service):
     model_config = ConfigDict(from_attributes=True, populate_by_name=True)
 
