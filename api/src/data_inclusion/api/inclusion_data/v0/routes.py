@@ -1,8 +1,11 @@
 from typing import Annotated, TypeVar
 
+import orjson
 from pydantic.json_schema import SkipJsonSchema
 
 import fastapi
+from fastapi.responses import StreamingResponse
+from fastapi_pagination.cursor import CursorParams
 
 from data_inclusion.api import auth
 from data_inclusion.api.analytics.services import (
@@ -36,6 +39,15 @@ router = fastapi.APIRouter(tags=["v0 | Données"])
 # for optional enum query parameters.
 T = TypeVar("T")
 Optional = T | SkipJsonSchema[None]
+
+
+class LargeCursorParams(CursorParams):
+    size: int = fastapi.Query(
+        default=settings.DEFAULT_PAGE_SIZE,
+        ge=1,
+        le=settings.MAX_PAGE_SIZE,
+        description="Page size",
+    )
 
 
 service_layer = services.ServiceLayerV0()
@@ -139,8 +151,51 @@ def list_sources_endpoint(
     return service_layer.list_sources(request=request)
 
 
+async def generate_table_data_sql(
+    request: fastapi.Request,
+    db_session=fastapi.Depends(db.get_session),
+    service_layer=services.ServiceLayerV0(),
+):
+    query = service_layer.list_services(
+        request=request,
+        db_session=db_session,
+    )
+    for partition in db_session.execute(
+        query, execution_options={"stream_results": True}
+    ):
+        for row in partition:
+            data = {
+                column.name: getattr(row, column.name)
+                for column in row.__table__.columns
+            }
+            yield data
+
+
+@router.get("/stream")
+async def efficient_stream(
+    request: fastapi.Request, db_session=fastapi.Depends(db.get_session)
+):
+    async def batched_json_stream():
+        batch = []
+        batch_size = 100
+        async for row in generate_table_data_sql(
+            request=request, db_session=db_session
+        ):
+            batch.append(orjson.dumps(row).decode("utf-8"))
+
+            if len(batch) >= batch_size:
+                yield "\n".join(batch) + "\n"
+                batch = []
+
+        if batch:
+            yield "\n".join(batch) + "\n"
+
+    return StreamingResponse(batched_json_stream(), media_type="application/x-ndjson")
+
+
 @router.get(
     "/services",
+    response_class=StreamingResponse,
     response_model=pagination.BigPage[schemas.Service],
     summary="Lister les services consolidés",
     dependencies=[auth.authenticated_dependency] if settings.TOKEN_ENABLED else [],
@@ -169,7 +224,7 @@ def list_services_endpoint(
         code=code_departement, slug=slug_departement
     )
 
-    services_listed = service_layer.list_services(
+    query = service_layer.list_services(
         request=request,
         db_session=db_session,
         sources=sources,
@@ -184,6 +239,15 @@ def list_services_endpoint(
         types=types,
         score_qualite_minimum=score_qualite_minimum,
     )
+
+    def generate_data():
+        for partition in db_session.execute(
+            query, execution_options={"stream_results": True, "max_row_buffer": 10000}
+        ):
+            for row in partition:
+                obj = schemas.Service.model_validate(row)
+                yield obj.model_dump_json(exclude_none=True) + "\n"
+
     background_tasks.add_task(
         save_list_services_event,
         request=request,
@@ -200,7 +264,8 @@ def list_services_endpoint(
         recherche_public=recherche_public,
         score_qualite_minimum=score_qualite_minimum,
     )
-    return services_listed
+
+    return StreamingResponse(generate_data(), media_type="text/plain")
 
 
 @router.get(
