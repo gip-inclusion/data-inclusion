@@ -44,9 +44,8 @@ def is_allowed_user(request: fastapi.Request) -> bool:
     return True
 
 
-def notify_soliguide_dependency(
+def _notify_soliguide_dependency(
     request: fastapi.Request,
-    source: Annotated[str, fastapi.Path()],
     id: Annotated[str, fastapi.Path()],
     soliguide_client: Annotated[
         SoliguideAPIClient, fastapi.Depends(SoliguideAPIClient)
@@ -55,9 +54,6 @@ def notify_soliguide_dependency(
     db_session=fastapi.Depends(db.get_session),
     service_model=fastapi.Depends(get_service_model),
 ):
-    if source != "soliguide":
-        return
-
     route = request.scope.get("route")
 
     if route is None:
@@ -82,3 +78,48 @@ def notify_soliguide_dependency(
 
     logger.info(f"Notifying soliguide for place_id={place_id}")
     background_tasks.add_task(soliguide_client.retrieve_place, place_id=place_id)
+
+
+def notify_soliguide_dependency_v0(
+    request: fastapi.Request,
+    id: Annotated[str, fastapi.Path()],
+    source: Annotated[str, fastapi.Path()],
+    soliguide_client: Annotated[
+        SoliguideAPIClient, fastapi.Depends(SoliguideAPIClient)
+    ],
+    background_tasks: fastapi.BackgroundTasks,
+    db_session=fastapi.Depends(db.get_session),
+    service_model=fastapi.Depends(get_service_model),
+):
+    if source != "soliguide":
+        return
+    _notify_soliguide_dependency(
+        request=request,
+        id=id,
+        soliguide_client=soliguide_client,
+        background_tasks=background_tasks,
+        db_session=db_session,
+        service_model=service_model,
+    )
+
+
+def notify_soliguide_dependency_v1(
+    request: fastapi.Request,
+    id: Annotated[str, fastapi.Path()],
+    soliguide_client: Annotated[
+        SoliguideAPIClient, fastapi.Depends(SoliguideAPIClient)
+    ],
+    background_tasks: fastapi.BackgroundTasks,
+    db_session=fastapi.Depends(db.get_session),
+    service_model=fastapi.Depends(get_service_model),
+):
+    if not id.startswith("soliguide--"):
+        return
+    _notify_soliguide_dependency(
+        request=request,
+        id=id,
+        soliguide_client=soliguide_client,
+        background_tasks=background_tasks,
+        db_session=db_session,
+        service_model=service_model,
+    )
