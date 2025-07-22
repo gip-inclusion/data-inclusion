@@ -3331,6 +3331,12 @@
               "title": "Horaires d’accueil du public"
             },
             "id": {
+              "description": "Identifiant unique de la structure, obtenu par une combinaison de l’identifiant producteur et de l’identifiant de la structure (fourni par le producteur).",
+              "examples": [
+                "emplois-de-linclusion--17",
+                "france-travail--ccas-provence-alpes-cote-dazur-2024-01-01",
+                "dora--AidantsConnect:2024-47BXY"
+              ],
               "title": "Id",
               "type": "string"
             },
@@ -3364,6 +3370,16 @@
               "maxLength": 150,
               "minLength": 3,
               "title": "Nom",
+              "type": "string"
+            },
+            "original_id": {
+              "description": "Identifiant de la structure, fourni par le producteur.",
+              "examples": [
+                "17",
+                "ccas-provence-alpes-cote-dazur-2024-01-01",
+                "AidantsConnect:2024-47BXY"
+              ],
+              "title": "ID original du service",
               "type": "string"
             },
             "reseaux_porteurs": {
@@ -3416,6 +3432,12 @@
               "title": "Site Web"
             },
             "source": {
+              "description": "Identifiant du producteur original de la donnée.",
+              "examples": [
+                "emplois-de-linclusion",
+                "france-travail",
+                "dora"
+              ],
               "title": "Source",
               "type": "string"
             },
@@ -3437,6 +3459,7 @@
           },
           "required": [
             "source",
+            "original_id",
             "id",
             "nom",
             "description",
@@ -3616,6 +3639,12 @@
               "title": "Horaires d’accueil du public"
             },
             "id": {
+              "description": "Identifiant unique du service, obtenu par une combinaison de l’identifiant du producteur et de l’identifiant du service (fourni par le producteur).",
+              "examples": [
+                "emplois-de-linclusion--17",
+                "france-travail--ccas-provence-alpes-cote-dazur-2024-01-01",
+                "dora--AidantsConnect:2024-47BXY"
+              ],
               "title": "Id",
               "type": "string"
             },
@@ -3760,6 +3789,16 @@
               ],
               "title": "Nombre Semaines"
             },
+            "original_id": {
+              "description": "Identifiant du service, fourni par le producteur.",
+              "examples": [
+                "17",
+                "ccas-provence-alpes-cote-dazur-2024-01-01",
+                "AidantsConnect:2024-47BXY"
+              ],
+              "title": "ID original du service",
+              "type": "string"
+            },
             "publics": {
               "anyOf": [
                 {
@@ -3804,6 +3843,12 @@
               "type": "number"
             },
             "source": {
+              "description": "Identifiant du producteur original de la donnée.",
+              "examples": [
+                "emplois-de-linclusion",
+                "france-travail",
+                "dora"
+              ],
               "title": "Source",
               "type": "string"
             },
@@ -3811,7 +3856,12 @@
               "$ref": "#/components/schemas/data_inclusion__api__inclusion_data__v1__schemas__BaseStructure"
             },
             "structure_id": {
-              "title": "Structure Id",
+              "description": "Identifiant unique de la structure rattachée au service.",
+              "examples": [
+                "dora--42",
+                "cd35--mjc-13-grandjour"
+              ],
+              "title": "ID structure",
               "type": "string"
             },
             "telephone": {
@@ -3946,6 +3996,7 @@
           },
           "required": [
             "source",
+            "original_id",
             "structure_id",
             "id",
             "nom",
@@ -4097,6 +4148,12 @@
               "title": "Horaires d’accueil du public"
             },
             "id": {
+              "description": "Identifiant unique de la structure, obtenu par une combinaison de l’identifiant producteur et de l’identifiant de la structure (fourni par le producteur).",
+              "examples": [
+                "emplois-de-linclusion--17",
+                "france-travail--ccas-provence-alpes-cote-dazur-2024-01-01",
+                "dora--AidantsConnect:2024-47BXY"
+              ],
               "title": "Id",
               "type": "string"
             },
@@ -4130,6 +4187,16 @@
               "maxLength": 150,
               "minLength": 3,
               "title": "Nom",
+              "type": "string"
+            },
+            "original_id": {
+              "description": "Identifiant de la structure, fourni par le producteur.",
+              "examples": [
+                "17",
+                "ccas-provence-alpes-cote-dazur-2024-01-01",
+                "AidantsConnect:2024-47BXY"
+              ],
+              "title": "ID original du service",
               "type": "string"
             },
             "reseaux_porteurs": {
@@ -4196,6 +4263,12 @@
               "title": "Site Web"
             },
             "source": {
+              "description": "Identifiant du producteur original de la donnée.",
+              "examples": [
+                "emplois-de-linclusion",
+                "france-travail",
+                "dora"
+              ],
               "title": "Source",
               "type": "string"
             },
@@ -4217,6 +4290,7 @@
           },
           "required": [
             "source",
+            "original_id",
             "id",
             "nom",
             "description",
@@ -4368,6 +4442,12 @@
               "title": "Horaires d’accueil du public"
             },
             "id": {
+              "description": "Identifiant unique de la structure, obtenu par une combinaison de l’identifiant producteur et de l’identifiant de la structure (fourni par le producteur).",
+              "examples": [
+                "emplois-de-linclusion--17",
+                "france-travail--ccas-provence-alpes-cote-dazur-2024-01-01",
+                "dora--AidantsConnect:2024-47BXY"
+              ],
               "title": "Id",
               "type": "string"
             },
@@ -4401,6 +4481,16 @@
               "maxLength": 150,
               "minLength": 3,
               "title": "Nom",
+              "type": "string"
+            },
+            "original_id": {
+              "description": "Identifiant de la structure, fourni par le producteur.",
+              "examples": [
+                "17",
+                "ccas-provence-alpes-cote-dazur-2024-01-01",
+                "AidantsConnect:2024-47BXY"
+              ],
+              "title": "ID original du service",
               "type": "string"
             },
             "reseaux_porteurs": {
@@ -4460,6 +4550,12 @@
               "title": "Site Web"
             },
             "source": {
+              "description": "Identifiant du producteur original de la donnée.",
+              "examples": [
+                "emplois-de-linclusion",
+                "france-travail",
+                "dora"
+              ],
               "title": "Source",
               "type": "string"
             },
@@ -4481,6 +4577,7 @@
           },
           "required": [
             "source",
+            "original_id",
             "id",
             "nom",
             "description",
@@ -4662,6 +4759,12 @@
               "title": "Horaires d’accueil du public"
             },
             "id": {
+              "description": "Identifiant unique du service, obtenu par une combinaison de l’identifiant du producteur et de l’identifiant du service (fourni par le producteur).",
+              "examples": [
+                "emplois-de-linclusion--17",
+                "france-travail--ccas-provence-alpes-cote-dazur-2024-01-01",
+                "dora--AidantsConnect:2024-47BXY"
+              ],
               "title": "Id",
               "type": "string"
             },
@@ -4806,6 +4909,16 @@
               ],
               "title": "Nombre Semaines"
             },
+            "original_id": {
+              "description": "Identifiant du service, fourni par le producteur.",
+              "examples": [
+                "17",
+                "ccas-provence-alpes-cote-dazur-2024-01-01",
+                "AidantsConnect:2024-47BXY"
+              ],
+              "title": "ID original du service",
+              "type": "string"
+            },
             "publics": {
               "anyOf": [
                 {
@@ -4850,11 +4963,22 @@
               "type": "number"
             },
             "source": {
+              "description": "Identifiant du producteur original de la donnée.",
+              "examples": [
+                "emplois-de-linclusion",
+                "france-travail",
+                "dora"
+              ],
               "title": "Source",
               "type": "string"
             },
             "structure_id": {
-              "title": "Structure Id",
+              "description": "Identifiant unique de la structure rattachée au service.",
+              "examples": [
+                "dora--42",
+                "cd35--mjc-13-grandjour"
+              ],
+              "title": "ID structure",
               "type": "string"
             },
             "telephone": {
@@ -4989,6 +5113,7 @@
           },
           "required": [
             "source",
+            "original_id",
             "structure_id",
             "id",
             "nom",
@@ -5718,6 +5843,12 @@
               "title": "Horaires d’accueil du public"
             },
             "id": {
+              "description": "Identifiant unique de la structure, obtenu par une combinaison de l’identifiant producteur et de l’identifiant de la structure (fourni par le producteur).",
+              "examples": [
+                "emplois-de-linclusion--17",
+                "france-travail--ccas-provence-alpes-cote-dazur-2024-01-01",
+                "dora--AidantsConnect:2024-47BXY"
+              ],
               "title": "Id",
               "type": "string"
             },
@@ -5751,6 +5882,16 @@
               "maxLength": 150,
               "minLength": 3,
               "title": "Nom",
+              "type": "string"
+            },
+            "original_id": {
+              "description": "Identifiant de la structure, fourni par le producteur.",
+              "examples": [
+                "17",
+                "ccas-provence-alpes-cote-dazur-2024-01-01",
+                "AidantsConnect:2024-47BXY"
+              ],
+              "title": "ID original du service",
               "type": "string"
             },
             "reseaux_porteurs": {
@@ -5803,6 +5944,12 @@
               "title": "Site Web"
             },
             "source": {
+              "description": "Identifiant du producteur original de la donnée.",
+              "examples": [
+                "emplois-de-linclusion",
+                "france-travail",
+                "dora"
+              ],
               "title": "Source",
               "type": "string"
             },
@@ -5824,6 +5971,7 @@
           },
           "required": [
             "source",
+            "original_id",
             "id",
             "nom",
             "description",

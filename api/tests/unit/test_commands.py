@@ -28,7 +28,8 @@ structure_data_1 = {
 structure_data_2 = {
     "_di_surrogate_id": "dora-1",
     "source": "dora",
-    "id": "1",
+    "id": "dora-1",
+    "original_id": "1",
     "code_insee": "59350",
     "nom": "Chez Dora",
     "date_maj": "2025-01-01",
