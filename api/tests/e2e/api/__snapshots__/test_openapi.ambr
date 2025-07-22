@@ -616,42 +616,6 @@
           "title": "ReseauPorteur",
           "type": "string"
         },
-        "RetrieveServicePathParams": {
-          "properties": {
-            "id": {
-              "title": "Id",
-              "type": "string"
-            },
-            "source": {
-              "title": "Source",
-              "type": "string"
-            }
-          },
-          "required": [
-            "source",
-            "id"
-          ],
-          "title": "RetrieveServicePathParams",
-          "type": "object"
-        },
-        "RetrieveStructurePathParams": {
-          "properties": {
-            "id": {
-              "title": "Id",
-              "type": "string"
-            },
-            "source": {
-              "title": "Source",
-              "type": "string"
-            }
-          },
-          "required": [
-            "source",
-            "id"
-          ],
-          "title": "RetrieveStructurePathParams",
-          "type": "object"
-        },
         "Source": {
           "properties": {
             "description": {
@@ -1029,6 +993,42 @@
           ],
           "title": "ZoneDiffusionType",
           "type": "string"
+        },
+        "data_inclusion__api__inclusion_data__v0__parameters__RetrieveServicePathParams": {
+          "properties": {
+            "id": {
+              "title": "Id",
+              "type": "string"
+            },
+            "source": {
+              "title": "Source",
+              "type": "string"
+            }
+          },
+          "required": [
+            "source",
+            "id"
+          ],
+          "title": "RetrieveServicePathParams",
+          "type": "object"
+        },
+        "data_inclusion__api__inclusion_data__v0__parameters__RetrieveStructurePathParams": {
+          "properties": {
+            "id": {
+              "title": "Id",
+              "type": "string"
+            },
+            "source": {
+              "title": "Source",
+              "type": "string"
+            }
+          },
+          "required": [
+            "source",
+            "id"
+          ],
+          "title": "RetrieveStructurePathParams",
+          "type": "object"
         },
         "data_inclusion__api__inclusion_data__v0__schemas__BaseStructure": {
           "properties": {
@@ -3200,6 +3200,32 @@
           "title": "ServiceSearchResult",
           "type": "object"
         },
+        "data_inclusion__api__inclusion_data__v1__parameters__RetrieveServicePathParams": {
+          "properties": {
+            "id": {
+              "title": "Id",
+              "type": "string"
+            }
+          },
+          "required": [
+            "id"
+          ],
+          "title": "RetrieveServicePathParams",
+          "type": "object"
+        },
+        "data_inclusion__api__inclusion_data__v1__parameters__RetrieveStructurePathParams": {
+          "properties": {
+            "id": {
+              "title": "Id",
+              "type": "string"
+            }
+          },
+          "required": [
+            "id"
+          ],
+          "title": "RetrieveStructurePathParams",
+          "type": "object"
+        },
         "data_inclusion__api__inclusion_data__v1__schemas__BaseStructure": {
           "properties": {
             "accessibilite_lieu": {
@@ -3332,6 +3358,12 @@
               "title": "Horaires d’accueil du public"
             },
             "id": {
+              "description": "Identifiant unique de la structure, obtenu par une combinaison de l’identifiant producteur et de l’identifiant de la structure (fourni par le producteur).",
+              "examples": [
+                "emplois-de-linclusion--17",
+                "france-travail--ccas-provence-alpes-cote-dazur-2024-01-01",
+                "dora--AidantsConnect:2024-47BXY"
+              ],
               "title": "Id",
               "type": "string"
             },
@@ -3417,6 +3449,12 @@
               "title": "Site Web"
             },
             "source": {
+              "description": "Identifiant du producteur original de la donnée.",
+              "examples": [
+                "emplois-de-linclusion",
+                "france-travail",
+                "dora"
+              ],
               "title": "Source",
               "type": "string"
             },
@@ -3617,6 +3655,12 @@
               "title": "Horaires d’accueil du public"
             },
             "id": {
+              "description": "Identifiant unique du service, obtenu par une combinaison de l’identifiant du producteur et de l’identifiant du service (fourni par le producteur).",
+              "examples": [
+                "emplois-de-linclusion--17",
+                "france-travail--ccas-provence-alpes-cote-dazur-2024-01-01",
+                "dora--AidantsConnect:2024-47BXY"
+              ],
               "title": "Id",
               "type": "string"
             },
@@ -3805,6 +3849,12 @@
               "type": "number"
             },
             "source": {
+              "description": "Identifiant du producteur original de la donnée.",
+              "examples": [
+                "emplois-de-linclusion",
+                "france-travail",
+                "dora"
+              ],
               "title": "Source",
               "type": "string"
             },
@@ -3812,7 +3862,12 @@
               "$ref": "#/components/schemas/data_inclusion__api__inclusion_data__v1__schemas__BaseStructure"
             },
             "structure_id": {
-              "title": "Structure Id",
+              "description": "Identifiant unique de la structure rattachée au service.",
+              "examples": [
+                "dora--42",
+                "cd35--mjc-13-grandjour"
+              ],
+              "title": "ID structure",
               "type": "string"
             },
             "telephone": {
@@ -4094,6 +4149,12 @@
               "title": "Horaires d’accueil du public"
             },
             "id": {
+              "description": "Identifiant unique de la structure, obtenu par une combinaison de l’identifiant producteur et de l’identifiant de la structure (fourni par le producteur).",
+              "examples": [
+                "emplois-de-linclusion--17",
+                "france-travail--ccas-provence-alpes-cote-dazur-2024-01-01",
+                "dora--AidantsConnect:2024-47BXY"
+              ],
               "title": "Id",
               "type": "string"
             },
@@ -4193,6 +4254,12 @@
               "title": "Site Web"
             },
             "source": {
+              "description": "Identifiant du producteur original de la donnée.",
+              "examples": [
+                "emplois-de-linclusion",
+                "france-travail",
+                "dora"
+              ],
               "title": "Source",
               "type": "string"
             },
@@ -4365,6 +4432,12 @@
               "title": "Horaires d’accueil du public"
             },
             "id": {
+              "description": "Identifiant unique de la structure, obtenu par une combinaison de l’identifiant producteur et de l’identifiant de la structure (fourni par le producteur).",
+              "examples": [
+                "emplois-de-linclusion--17",
+                "france-travail--ccas-provence-alpes-cote-dazur-2024-01-01",
+                "dora--AidantsConnect:2024-47BXY"
+              ],
               "title": "Id",
               "type": "string"
             },
@@ -4457,6 +4530,12 @@
               "title": "Site Web"
             },
             "source": {
+              "description": "Identifiant du producteur original de la donnée.",
+              "examples": [
+                "emplois-de-linclusion",
+                "france-travail",
+                "dora"
+              ],
               "title": "Source",
               "type": "string"
             },
@@ -4659,6 +4738,12 @@
               "title": "Horaires d’accueil du public"
             },
             "id": {
+              "description": "Identifiant unique du service, obtenu par une combinaison de l’identifiant du producteur et de l’identifiant du service (fourni par le producteur).",
+              "examples": [
+                "emplois-de-linclusion--17",
+                "france-travail--ccas-provence-alpes-cote-dazur-2024-01-01",
+                "dora--AidantsConnect:2024-47BXY"
+              ],
               "title": "Id",
               "type": "string"
             },
@@ -4847,11 +4932,22 @@
               "type": "number"
             },
             "source": {
+              "description": "Identifiant du producteur original de la donnée.",
+              "examples": [
+                "emplois-de-linclusion",
+                "france-travail",
+                "dora"
+              ],
               "title": "Source",
               "type": "string"
             },
             "structure_id": {
-              "title": "Structure Id",
+              "description": "Identifiant unique de la structure rattachée au service.",
+              "examples": [
+                "dora--42",
+                "cd35--mjc-13-grandjour"
+              ],
+              "title": "ID structure",
               "type": "string"
             },
             "telephone": {
@@ -5711,6 +5807,12 @@
               "title": "Horaires d’accueil du public"
             },
             "id": {
+              "description": "Identifiant unique de la structure, obtenu par une combinaison de l’identifiant producteur et de l’identifiant de la structure (fourni par le producteur).",
+              "examples": [
+                "emplois-de-linclusion--17",
+                "france-travail--ccas-provence-alpes-cote-dazur-2024-01-01",
+                "dora--AidantsConnect:2024-47BXY"
+              ],
               "title": "Id",
               "type": "string"
             },
@@ -5796,6 +5898,12 @@
               "title": "Site Web"
             },
             "source": {
+              "description": "Identifiant du producteur original de la donnée.",
+              "examples": [
+                "emplois-de-linclusion",
+                "france-travail",
+                "dora"
+              ],
               "title": "Source",
               "type": "string"
             },
@@ -6755,16 +6863,7 @@
               "name": "params",
               "required": true,
               "schema": {
-                "$ref": "#/components/schemas/RetrieveServicePathParams"
-              }
-            },
-            {
-              "in": "path",
-              "name": "source",
-              "required": true,
-              "schema": {
-                "title": "Source",
-                "type": "string"
+                "$ref": "#/components/schemas/data_inclusion__api__inclusion_data__v0__parameters__RetrieveServicePathParams"
               }
             },
             {
@@ -6773,6 +6872,15 @@
               "required": true,
               "schema": {
                 "title": "Id",
+                "type": "string"
+              }
+            },
+            {
+              "in": "path",
+              "name": "source",
+              "required": true,
+              "schema": {
+                "title": "Source",
                 "type": "string"
               }
             }
@@ -7114,16 +7222,7 @@
               "name": "params",
               "required": true,
               "schema": {
-                "$ref": "#/components/schemas/RetrieveStructurePathParams"
-              }
-            },
-            {
-              "in": "path",
-              "name": "source",
-              "required": true,
-              "schema": {
-                "title": "Source",
-                "type": "string"
+                "$ref": "#/components/schemas/data_inclusion__api__inclusion_data__v0__parameters__RetrieveStructurePathParams"
               }
             },
             {
@@ -7132,6 +7231,15 @@
               "required": true,
               "schema": {
                 "title": "Id",
+                "type": "string"
+              }
+            },
+            {
+              "in": "path",
+              "name": "source",
+              "required": true,
+              "schema": {
+                "title": "Source",
                 "type": "string"
               }
             }
@@ -7989,25 +8097,16 @@
           ]
         }
       },
-      "/api/v1/services/{source}/{id}": {
+      "/api/v1/services/{id}": {
         "get": {
-          "operationId": "retrieve_service_endpoint_api_v1_services__source___id__get",
+          "operationId": "retrieve_service_endpoint_api_v1_services__id__get",
           "parameters": [
             {
               "in": "path",
               "name": "params",
               "required": true,
               "schema": {
-                "$ref": "#/components/schemas/RetrieveServicePathParams"
-              }
-            },
-            {
-              "in": "path",
-              "name": "source",
-              "required": true,
-              "schema": {
-                "title": "Source",
-                "type": "string"
+                "$ref": "#/components/schemas/data_inclusion__api__inclusion_data__v1__parameters__RetrieveServicePathParams"
               }
             },
             {
@@ -8296,25 +8395,16 @@
           ]
         }
       },
-      "/api/v1/structures/{source}/{id}": {
+      "/api/v1/structures/{id}": {
         "get": {
-          "operationId": "retrieve_structure_endpoint_api_v1_structures__source___id__get",
+          "operationId": "retrieve_structure_endpoint_api_v1_structures__id__get",
           "parameters": [
             {
               "in": "path",
               "name": "params",
               "required": true,
               "schema": {
-                "$ref": "#/components/schemas/RetrieveStructurePathParams"
-              }
-            },
-            {
-              "in": "path",
-              "name": "source",
-              "required": true,
-              "schema": {
-                "title": "Source",
-                "type": "string"
+                "$ref": "#/components/schemas/data_inclusion__api__inclusion_data__v1__parameters__RetrieveStructurePathParams"
               }
             },
             {
