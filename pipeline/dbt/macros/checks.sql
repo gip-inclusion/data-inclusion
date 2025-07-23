@@ -116,7 +116,7 @@ date_maj IS NOT NULL
 {% endmacro %}
 
 {% macro check_siret() %}
-siret IS NULL OR siret ~ '^\d{14}$'
+siret IS NULL OR siret IN (SELECT siret FROM {{ ref('stg_insee__sirene_stock_etablissement') }} WHERE etat_administratif_etablissement = 'actif')
 {% endmacro %}
 
 {% macro check_rna() %}
