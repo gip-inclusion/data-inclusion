@@ -8,3 +8,53 @@ models:
           - unique
           - not_null
           - dbt_utils.not_empty_string
+
+  - name: stg_insee__sirene_etablissement_historique
+    columns:
+      - name: siret
+        description: |
+          Une entreprise est constituée d'autant d'établissements qu'il y a de lieux différents où elle exerce son activité.
+          L'établissement est fermé quand l'activité cesse dans l'établissement concerné ou lorsque l'établissement change d'adresse
+        data_tests:
+          - not_null
+          - dbt_utils.not_empty_string
+      - name: date_debut
+      - name: etat_administratif_etablissement
+        data_tests:
+          - accepted_values:
+              values: ['actif', 'fermé']
+      - name: changement_etat_administratif_etablissement
+        data_tests:
+          - not_null
+          - accepted_values:
+              values: [true, false]
+
+  - name: stg_insee__sirene_etablissement_succession
+    columns:
+      - name: siret_etablissement_predecesseur
+        data_tests:
+          - dbt_utils.not_empty_string
+      - name: siret_etablissement_successeur
+        data_tests:
+          - dbt_utils.not_empty_string
+      - name: continuite_economique
+        data_tests:
+          - not_null
+          - accepted_values:
+              values: [true, false]
+      - name: date_lien_succession
+        data_tests:
+          - not_null
+
+  - name: stg_insee__sirene_stock_etablissement
+    columns:
+      - name: siret
+        data_tests:
+          - unique
+          - not_null
+          - dbt_utils.not_empty_string
+      - name: etat_administratif_etablissement
+        data_tests:
+          - not_null
+          - accepted_values:
+              values: ['actif', 'fermé']

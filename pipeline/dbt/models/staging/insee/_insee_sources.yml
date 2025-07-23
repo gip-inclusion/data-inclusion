@@ -5,5 +5,9 @@ sources:
     schema: insee
     tables:
       - name: etat_civil_prenoms
+
+      # https://www.sirene.fr/static-resources/documentation/v_sommaire_311.htm
       - name: sirene_etablissement_historique
+      - name: sirene_stock_etablissement
       - name: sirene_etablissement_succession
+      - name: sirene_stock_unite_legale
