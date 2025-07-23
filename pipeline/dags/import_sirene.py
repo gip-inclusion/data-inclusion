@@ -8,6 +8,13 @@ from dag_utils.virtualenvs import PYTHON_BIN_PATH
 
 
 @task.external_python(python=str(PYTHON_BIN_PATH))
+def create_schema(name: str):
+    from dag_utils import pg
+
+    pg.create_schema(schema_name=name)
+
+
+@task.external_python(python=str(PYTHON_BIN_PATH))
 def import_stock_etablissement_historique():
     import pandas as pd
     import sqlalchemy as sqla
@@ -16,6 +23,7 @@ def import_stock_etablissement_historique():
 
     from dag_utils import pg
 
+    SCHEMA_NAME = "insee"
     TABLE_NAME = "sirene_etablissement_historique"
     reader = pd.read_csv(
         Variable.get("SIRENE_STOCK_ETAB_HIST_FILE_URL"),
@@ -36,7 +44,7 @@ def import_stock_etablissement_historique():
     with pg.connect_begin() as conn:
         for i, df_chunk in enumerate(reader):
             df_chunk.to_sql(
-                schema="insee",
+                schema=SCHEMA_NAME,
                 name=TABLE_NAME,
                 con=conn,
                 if_exists="replace" if i == 0 else "append",
@@ -45,7 +53,10 @@ def import_stock_etablissement_historique():
             )
 
         conn.execute(
-            f'CREATE INDEX sirene_etab_histo_siret_idx ON {TABLE_NAME} ("siret");'
+            f"""
+            CREATE INDEX sirene_etab_histo_siret_idx
+            ON {SCHEMA_NAME}.{TABLE_NAME} (siret);
+            """
         )
 
 
@@ -58,6 +69,7 @@ def import_stock_etablissement_liens_succession():
 
     from dag_utils import pg
 
+    SCHEMA_NAME = "insee"
     TABLE_NAME = "sirene_etablissement_succession"
     reader = pd.read_csv(
         Variable.get("SIRENE_STOCK_ETAB_LIENS_SUCCESSION_URL"),
@@ -91,8 +103,10 @@ def import_stock_etablissement_liens_succession():
             )
 
         conn.execute(
-            "CREATE INDEX sirene_etab_succession_siret_idx "
-            f'ON {TABLE_NAME} ("siretEtablissementPredecesseur");'
+            f"""
+            CREATE INDEX sirene_etab_succession_siret_idx
+            ON {SCHEMA_NAME}.{TABLE_NAME} ("siretEtablissementPredecesseur");
+            """
         )
 
 
@@ -104,6 +118,7 @@ def import_stock_unite_legale():
 
     from dag_utils import pg
 
+    SCHEMA_NAME = "insee"
     TABLE_NAME = "sirene_stock_unite_legale"
     reader = pd.read_csv(
         Variable.get("SIRENE_STOCK_UNITE_LEGALE_FILE_URL"),
@@ -138,7 +153,7 @@ def import_stock_unite_legale():
     with pg.connect_begin() as conn:
         for i, df_chunk in enumerate(reader):
             df_chunk.to_sql(
-                schema="insee",
+                schema=SCHEMA_NAME,
                 name=TABLE_NAME,
                 con=conn,
                 if_exists="replace" if i == 0 else "append",
@@ -146,28 +161,32 @@ def import_stock_unite_legale():
             )
 
         conn.execute(
-            "CREATE INDEX sirene_stock_unite_legale_siren_idx "
-            f'ON {TABLE_NAME} ("siren");'
+            f"""
+            CREATE INDEX sirene_stock_unite_legale_siren_idx
+            ON {SCHEMA_NAME}.{TABLE_NAME} (siren);
+            """
         )
 
         conn.execute(
-            "CREATE INDEX sirene_stock_unite_legale_cat_juridique_idx "
-            f'ON {TABLE_NAME} ("categorieJuridiqueUniteLegale");'
+            f"""
+            CREATE INDEX sirene_stock_unite_legale_cat_juridique_idx
+            ON {SCHEMA_NAME}.{TABLE_NAME} ("categorieJuridiqueUniteLegale");
+            """
         )
 
 
 @task.external_python(python=str(PYTHON_BIN_PATH))
-def import_stock_etablissement_geocode():
-    import geopandas
+def import_stock_etablissement():
     import pandas as pd
 
     from airflow.models import Variable
 
     from dag_utils import pg
 
-    TABLE_NAME = "sirene_etablissement_geocode"
+    SCHEMA_NAME = "insee"
+    TABLE_NAME = "sirene_stock_etablissement"
     reader = pd.read_csv(
-        Variable.get("SIRENE_STOCK_ETAB_GEOCODE_FILE_URL"),
+        Variable.get("SIRENE_STOCK_ETAB_FILE_URL"),
         usecols=[
             "activitePrincipaleEtablissement",
             "caractereEmployeurEtablissement",
@@ -200,15 +219,6 @@ def import_stock_etablissement_geocode():
             "typeVoie2Etablissement",
             "typeVoieEtablissement",
             "siret",
-            "longitude",
-            "latitude",
-            "geo_score",
-            "geo_type",
-            "geo_adresse",
-            "geo_id",
-            "geo_ligne",
-            "geo_l4",
-            "geo_l5",
         ],
         dtype={
             "activitePrincipaleEtablissement": str,
@@ -241,35 +251,16 @@ def import_stock_etablissement_geocode():
             "typeVoie2Etablissement": str,
             "typeVoieEtablissement": str,
             "siret": str,
-            "geo_type": str,
-            "geo_adresse": str,
-            "geo_id": str,
-            "geo_ligne": str,
-            "geo_l4": str,
-            "geo_l5": str,
         },
         chunksize=10000,
         encoding="utf-8",
+        compression="zip",
     )
 
     with pg.connect_begin() as conn:
-        for i, chunk in enumerate(reader):
-            # Add geometry from lon/lat
-            # Computing it now rather than later (unlike searchable fields),
-            # because it will likely be immutable (whereas searchable fields
-            # could need small adjustments that would not need full download
-            # and import)
-            df_chunk = geopandas.GeoDataFrame(
-                data=chunk,
-                geometry=geopandas.points_from_xy(
-                    chunk.longitude,
-                    chunk.latitude,
-                    crs="EPSG:4326",
-                ),
-            )
-
-            df_chunk.to_postgis(
-                schema="insee",
+        for i, df_chunk in enumerate(reader):
+            df_chunk.to_sql(
+                schema=SCHEMA_NAME,
                 name=TABLE_NAME,
                 con=conn,
                 if_exists="replace" if i == 0 else "append",
@@ -277,29 +268,33 @@ def import_stock_etablissement_geocode():
             )
 
         # Add primary key (i.e. create much needed indexes on siret column)
-        conn.execute(f"ALTER TABLE {TABLE_NAME} ADD PRIMARY KEY (siret);")
+        conn.execute(f"ALTER TABLE {SCHEMA_NAME}.{TABLE_NAME} ADD PRIMARY KEY (siret);")
 
-        # Index geometry column using the geography type cast (to be able to compute
-        # and compare in meters)
         conn.execute(
-            "CREATE INDEX sirene_etablissement_geocode_geom_idx "
-            f"ON {TABLE_NAME} USING gist((geometry::geography));"
+            f"""
+            CREATE INDEX import_stock_etablissement_code_commune_like
+            ON {SCHEMA_NAME}.{TABLE_NAME} (
+                "codeCommuneEtablissement" varchar_pattern_ops
+            );
+            """
         )
 
         conn.execute(
-            "CREATE INDEX sirene_etablissement_geocode_code_commune_like "
-            f'ON {TABLE_NAME} ("codeCommuneEtablissement" varchar_pattern_ops)'
+            f"""
+            CREATE INDEX import_stock_etablissement_commune_trgm_idx
+            ON {SCHEMA_NAME}.{TABLE_NAME} USING gin (
+                "libelleCommuneEtablissement" gin_trgm_ops
+            );
+            """
         )
 
-        conn.execute(
-            "CREATE INDEX sirene_etablissement_geocode_commune_trgm_idx "
-            f'ON {TABLE_NAME} USING gin ("libelleCommuneEtablissement" gin_trgm_ops)'
-        )
+
+EVERY_MONTH_ON_THE_10TH = "30 3 10 * *"
 
 
 @dag(
     start_date=pendulum.datetime(2022, 1, 1, tz=date.TIME_ZONE),
-    schedule=None,
+    schedule=EVERY_MONTH_ON_THE_10TH,
     catchup=False,
     concurrency=1,
 )
@@ -309,11 +304,15 @@ def import_sirene():
 
     (
         start
+        >> create_schema(name="sirene")
         >> [
             import_stock_etablissement_historique(),
             import_stock_etablissement_liens_succession(),
-            import_stock_etablissement_geocode(),
+            import_stock_etablissement(),
             import_stock_unite_legale(),
         ]
         >> end
     )
+
+
+import_sirene()
