@@ -47,7 +47,7 @@ dbt build --select models/marts
 * Required when the schema changes.
 
 ```bash
-python scripts/update_schema_seeds.py
+./scripts/update_schema_seeds.py
 ```
 
 ## Managing the pipeline requirements

@@ -83,7 +83,7 @@ def list_structures_query(
             )
         )
 
-    query = query.order_by(models.Structure._di_surrogate_id)
+    query = query.order_by(models.Structure.id)
 
     return query
 
@@ -227,7 +227,7 @@ def list_services_query(
 
     query = filter_services(query=query, params=params)
 
-    query = query.order_by(models.Service._di_surrogate_id)
+    query = query.order_by(models.Service.id)
 
     return query
 
@@ -327,7 +327,7 @@ def search_services_query(
 
     query = query.order_by(
         sqla.column("distance").nulls_last(),
-        models.Service._di_surrogate_id,
+        models.Service.id,
     )
 
     return query, ("service", "distance")

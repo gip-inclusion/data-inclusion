@@ -83,7 +83,8 @@ def test_list_structures_unauthenticated(api_client, schema_version):
                 date_maj="2023-01-01",
                 doublons=[],
                 horaires_accueil="Mo-Fr 10:00-20:00",
-                id="lot-kitchen-amount",
+                original_id="lot-kitchen-amount",
+                id="dora--lot-kitchen-amount",
                 reseaux_porteurs=[],
                 latitude=-20.074628,
                 longitude=99.899603,
@@ -339,7 +340,8 @@ def test_list_services_unauthenticated(api_client, schema_version):
                     courriel="levyalexandre@example.org",
                     date_maj="2023-01-01",
                     horaires_accueil="Mo-Fr 10:00-20:00",
-                    id="lot-kitchen-amount",
+                    id="dora--lot-kitchen-amount",
+                    original_id="lot-kitchen-amount",
                     reseaux_porteurs=[],
                     latitude=-20.074628,
                     longitude=99.899603,
@@ -369,7 +371,8 @@ def test_list_services_unauthenticated(api_client, schema_version):
                     frais_precisions="Camarade il.",
                     frais="gratuit",
                     horaires_accueil="Mo-Fr 10:00-20:00",
-                    id="be-water-scene-wind",
+                    id="dora--be-water-scene-wind",
+                    original_id="be-water-scene-wind",
                     latitude=-77.857573,
                     longitude=-62.54684,
                     modes_accueil=["a-distance"],
@@ -1909,7 +1912,7 @@ def test_search_services_deduplicate_flag(
     }
 
 
-@pytest.mark.parametrize("schema_version", ["v0", "v1"])
+@pytest.mark.parametrize("schema_version", ["v0"])
 @pytest.mark.parametrize("path", ["/search/services", "/services", "/structures"])
 @pytest.mark.with_token
 def test_ressources_ordered_by_surrogate_id(api_client, url, factory):
@@ -1928,4 +1931,35 @@ def test_ressources_ordered_by_surrogate_id(api_client, url, factory):
     items_data = response.json()["items"]
     assert [d["service"]["id"] if "search" in url else d["id"] for d in items_data] == [
         str(i) for i in range(10)
+    ]
+
+
+@pytest.mark.parametrize("schema_version", ["v1"])
+@pytest.mark.parametrize("path", ["/search/services", "/services", "/structures"])
+@pytest.mark.with_token
+def test_ressources_ordered_by_id(api_client, url, factory):
+    # Create 10 rows with ids in **reverse** order
+    for i in reversed(range(10)):
+        factory_kwargs = {
+            "original_id": str(i),
+            "source": str(i // 2),
+        }
+        if "search" in url:
+            factory_kwargs["modes_accueil"] = [v0.ModeAccueil.EN_PRESENTIEL]
+        factory(**factory_kwargs)
+
+    response = api_client.get(url)
+    assert response.status_code == 200
+    items_data = response.json()["items"]
+    assert [d["service"]["id"] if "search" in url else d["id"] for d in items_data] == [
+        "0--0",
+        "0--1",
+        "1--2",
+        "1--3",
+        "2--4",
+        "2--5",
+        "3--6",
+        "3--7",
+        "4--8",
+        "4--9",
     ]

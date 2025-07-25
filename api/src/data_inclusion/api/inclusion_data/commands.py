@@ -190,7 +190,16 @@ def load_inclusion_data(
 
         if schema_version == "v1":
             services_df = services_df.drop(columns="frais", errors="ignore")
-            services_df = services_df.rename(columns={"frais_v1": "frais"})
+            services_df = services_df.rename(
+                columns={"frais_v1": "frais", "id": "original_id"}
+            )
+            services_df = services_df.assign(
+                id=services_df["source"] + "--" + services_df["original_id"]
+            )
+            structures_df = structures_df.rename(columns={"id": "original_id"})
+            structures_df = structures_df.assign(
+                id=structures_df["source"] + "--" + structures_df["original_id"]
+            )
 
         logger.info(f"{schema_version=} Validating data...")
         structures_df, services_df = validate_dataset(
