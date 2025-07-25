@@ -22,6 +22,7 @@ WITH structures AS (
                 "thematiques": "TEXT[]",
                 "labels_nationaux": "TEXT[]",
                 "labels_autres": "TEXT[]",
+                "reseaux_porteurs": "TEXT[]",
             },
             source_column_name=None
         )

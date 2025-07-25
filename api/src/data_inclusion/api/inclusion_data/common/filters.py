@@ -1,55 +1,48 @@
 from typing import Annotated, TypeVar
 
-from pydantic.json_schema import SkipJsonSchema
-
-import fastapi
+import pydantic
 
 from data_inclusion.api.decoupage_administratif.constants import (
     DepartementCodeEnum,
     RegionCodeEnum,
 )
 
-# This ensures a dropdown is shown in the openapi doc
-# for optional enum query parameters.
-T = TypeVar("T")
-Optional = T | SkipJsonSchema[None]
-
 S = TypeVar("S")
 
 CodeCommuneFilter = Annotated[
-    Optional[S],
-    fastapi.Query(description="Code insee géographique d'une commune."),
+    S | None,
+    pydantic.Field(description="Code insee géographique d'une commune."),
 ]
 
 CodeDepartementFilter = Annotated[
-    Optional[DepartementCodeEnum],
-    fastapi.Query(description="Code insee géographique d'un département."),
+    DepartementCodeEnum | None,
+    pydantic.Field(description="Code insee géographique d'un département."),
 ]
 
 CodeRegionFilter = Annotated[
-    Optional[RegionCodeEnum],
-    fastapi.Query(description="Code insee géographique d'une région."),
+    RegionCodeEnum | None,
+    pydantic.Field(description="Code insee géographique d'une région."),
 ]
 
 ThematiquesFilter = Annotated[
-    Optional[list[S]],
-    fastapi.Query(
+    list[S] | None,
+    pydantic.Field(
         description="""Une liste de thématique.
                 Chaque résultat renvoyé a (au moins) une thématique dans cette liste."""
     ),
 ]
 
 FraisFilter = Annotated[
-    Optional[list[S]],
-    fastapi.Query(
+    list[S] | None,
+    pydantic.Field(
         description="""Une liste de frais.
                 Chaque résultat renvoyé a (au moins) un frais dans cette liste."""
     ),
 ]
 
 SourcesFilter = Annotated[
-    Optional[list[str]],
-    fastapi.Query(
+    list[str] | None,
+    pydantic.Field(
         description="""Une liste d'identifiants de source.
                 La liste des identifiants de source est disponible sur le endpoint
                 dédié. Les résultats seront limités aux sources spécifiées.
@@ -58,16 +51,16 @@ SourcesFilter = Annotated[
 ]
 
 ServiceTypesFilter = Annotated[
-    Optional[list[S]],
-    fastapi.Query(
+    list[S] | None,
+    pydantic.Field(
         description="""Une liste de typologies de service.
                 Chaque résultat renvoyé a (au moins) une typologie dans cette liste."""
     ),
 ]
 
 ModesAccueilFilter = Annotated[
-    Optional[list[S]],
-    fastapi.Query(
+    list[S] | None,
+    pydantic.Field(
         description="""Une liste de modes d'accueil.
                 Chaque résultat renvoyé a (au moins) un mode d'accueil dans cette liste.
             """
@@ -75,8 +68,8 @@ ModesAccueilFilter = Annotated[
 ]
 
 ProfilsFilter = Annotated[
-    Optional[list[S]],
-    fastapi.Query(
+    list[S] | None,
+    pydantic.Field(
         description="""Une liste de profils.
                 Chaque résultat renvoyé a (au moins) un profil dans cette liste.
             """
@@ -84,8 +77,8 @@ ProfilsFilter = Annotated[
 ]
 
 PublicsFilter = Annotated[
-    Optional[list[S]],
-    fastapi.Query(
+    list[S] | None,
+    pydantic.Field(
         description="""Une liste de publics.
                 Chaque résultat renvoyé a (au moins) un public dans cette liste.
             """
@@ -93,14 +86,14 @@ PublicsFilter = Annotated[
 ]
 
 SuspendusFilter = Annotated[
-    Optional[bool],
-    fastapi.Query(include_in_schema=False),
+    bool | None,
+    pydantic.Field(deprecated=False),
 ]
 
 
 ExclureDoublonsStructuresFilter = Annotated[
-    Optional[bool],
-    fastapi.Query(
+    bool | None,
+    pydantic.Field(
         description=(
             "[BETA] Mode qui ne retourne parmi les structures en doublon, que "
             "celles ayant les services les plus qualitatifs "
@@ -110,8 +103,8 @@ ExclureDoublonsStructuresFilter = Annotated[
 ]
 
 ExclureDoublonsServicesFilter = Annotated[
-    Optional[bool],
-    fastapi.Query(
+    bool | None,
+    pydantic.Field(
         description=(
             "[BETA] Mode qui ne retourne, parmi les services attachés à des "
             "structures en doublon, que ceux attachés à la structure la plus "
@@ -121,8 +114,8 @@ ExclureDoublonsServicesFilter = Annotated[
 ]
 
 RecherchePublicFilter = Annotated[
-    Optional[str],
-    fastapi.Query(
+    str | None,
+    pydantic.Field(
         description="""Une recherche en texte intégral parmi toutes
               les valeurs "publics" que nous collectons chez nos producteurs de données.
             """
@@ -130,8 +123,8 @@ RecherchePublicFilter = Annotated[
 ]
 
 ScoreQualiteMinimumFilter = Annotated[
-    Optional[float],
-    fastapi.Query(
+    float | None,
+    pydantic.Field(
         description="""[BETA] Score de qualité minimum.
                 Les résultats renvoyés ont un score de qualité supérieur ou égal à ce
                 score. (voir [documentation](https://gip-inclusion.notion.site/Conception-du-score-de-qualit-17b5f321b60480a1b79bf4a17b4567dd?pvs=4))"""
@@ -140,8 +133,8 @@ ScoreQualiteMinimumFilter = Annotated[
 
 
 SearchCodeCommuneFilter = Annotated[
-    Optional[S],
-    fastapi.Query(
+    S | None,
+    pydantic.Field(
         description="""Code insee de la commune considérée.
                 Si fourni, les résultats inclus également les services proches de
                 cette commune. Les résultats sont triés par ordre de distance
@@ -151,8 +144,8 @@ SearchCodeCommuneFilter = Annotated[
 ]
 
 SearchLatitudeFilter = Annotated[
-    Optional[float],
-    fastapi.Query(
+    float | None,
+    pydantic.Field(
         description="""Latitude du point de recherche.
                 Nécessite également de fournir `lon`.
                 Les résultats sont triés par ordre de distance croissante à ce point.
@@ -161,8 +154,8 @@ SearchLatitudeFilter = Annotated[
 ]
 
 SearchLongitudeFilter = Annotated[
-    Optional[float],
-    fastapi.Query(
+    float | None,
+    pydantic.Field(
         description="""Longitude du point de recherche.
                 Nécessite également de fournir `lat`.
                 Les résultats sont triés par ordre de distance croissante à ce point.

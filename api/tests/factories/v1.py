@@ -35,14 +35,6 @@ class StructureFactory(factory.alchemy.SQLAlchemyModelFactory):
     adresse = factory.Faker("street_address", locale="fr_FR")
     longitude = factory.Faker("longitude")
     latitude = factory.Faker("latitude")
-    typologie = factory.Iterator(
-        [
-            v1.TypologieStructure.ACI,
-            v1.TypologieStructure.MUNI,
-            v1.TypologieStructure.FT,
-        ],
-        getter=lambda v: v.value,
-    )
     telephone = "0102030405"
     courriel = factory.Faker("email", locale="fr_FR")
     site_web = factory.Faker("url", locale="fr_FR")
@@ -53,8 +45,7 @@ class StructureFactory(factory.alchemy.SQLAlchemyModelFactory):
     accessibilite_lieu = factory.LazyAttribute(
         lambda o: f"https://acceslibre.beta.gouv.fr/app/{o.id}/"
     )
-    labels_nationaux = []
-    labels_autres = ["Nièvre médiation numérique"]
+    reseaux_porteurs = []
 
     score_qualite = 0.0
 

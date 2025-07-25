@@ -9,7 +9,6 @@ class ConsultStructureEvent(db.Base):
     user: Mapped[str]
     structure_id: Mapped[str]
     source: Mapped[str]
-    schema_version: Mapped[str]
 
 
 class ConsultServiceEvent(db.Base):
@@ -19,7 +18,6 @@ class ConsultServiceEvent(db.Base):
     service_id: Mapped[str]
     source: Mapped[str]
     score_qualite: Mapped[float | None]
-    schema_version: Mapped[str]
 
 
 class ListServicesEvent(db.Base):
@@ -37,7 +35,6 @@ class ListServicesEvent(db.Base):
     types: Mapped[list[str] | None]
     recherche_public: Mapped[str | None]
     score_qualite_minimum: Mapped[float | None]
-    schema_version: Mapped[str]
 
 
 class ListStructuresEvent(db.Base):
@@ -52,7 +49,6 @@ class ListStructuresEvent(db.Base):
     code_commune: Mapped[str | None]
     thematiques: Mapped[list[str] | None]
     exclure_doublons: Mapped[bool | None]
-    schema_version: Mapped[str]
 
 
 class SearchServicesEvent(db.Base):
@@ -73,4 +69,3 @@ class SearchServicesEvent(db.Base):
     recherche_public: Mapped[str | None]
     score_qualite_minimum: Mapped[float | None]
     exclure_doublons: Mapped[bool | None]
-    schema_version: Mapped[str]
