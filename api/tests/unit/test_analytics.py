@@ -1,6 +1,6 @@
 import pytest
 
-from data_inclusion.api.analytics.services import is_bot
+from data_inclusion.api.analytics.helpers import is_bot
 
 
 @pytest.mark.parametrize(

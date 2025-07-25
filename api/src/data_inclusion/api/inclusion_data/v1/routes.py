@@ -1,99 +1,46 @@
-from typing import Annotated, TypeVar
-
-from pydantic.json_schema import SkipJsonSchema
+from typing import Annotated
 
 import fastapi
 
 from data_inclusion.api import auth
-from data_inclusion.api.analytics.services import (
-    save_consult_service_event,
-    save_consult_structure_event,
-    save_list_services_event,
-    save_list_structures_event,
-    save_search_services_event,
-)
+from data_inclusion.api.analytics.v1.services import save_event
 from data_inclusion.api.config import settings
 from data_inclusion.api.core import db
-from data_inclusion.api.decoupage_administratif.constants import (
-    DepartementSlugEnum,
-    RegionSlugEnum,
-)
 from data_inclusion.api.decoupage_administratif.models import Commune
-from data_inclusion.api.decoupage_administratif.utils import (
-    get_departement_by_code_or_slug,
-    get_region_by_code_or_slug,
-)
-from data_inclusion.api.inclusion_data import services
-from data_inclusion.api.inclusion_data.common import filters
-from data_inclusion.api.inclusion_data.v1 import schemas
+from data_inclusion.api.inclusion_data.v1 import parameters, schemas, services
 from data_inclusion.api.utils import pagination, soliguide
-from data_inclusion.schema import v1 as schema
 
 router = fastapi.APIRouter(tags=["v1 | Données"])
 
 
-# This ensures a dropdown is shown in the openapi doc
-# for optional enum query parameters.
-T = TypeVar("T")
-Optional = T | SkipJsonSchema[None]
-
-
-service_layer = services.ServiceLayerV1()
-
-
 @router.get(
     "/structures",
-    response_model=pagination.BigPage[schemas.ListedStructure],
+    response_model=pagination.Page[schemas.ListedStructure],
     summary="Lister les structures consolidées",
     dependencies=[auth.authenticated_dependency] if settings.TOKEN_ENABLED else [],
 )
 def list_structures_endpoint(
     request: fastapi.Request,
     background_tasks: fastapi.BackgroundTasks,
-    sources: filters.SourcesFilter = None,
-    id: Annotated[Optional[str], fastapi.Query(include_in_schema=False)] = None,
-    typologie: Annotated[Optional[schema.TypologieStructure], fastapi.Query()] = None,
-    label_national: Annotated[Optional[schema.LabelNational], fastapi.Query()] = None,
-    code_region: filters.CodeRegionFilter = None,
-    slug_region: Annotated[Optional[RegionSlugEnum], fastapi.Query()] = None,
-    code_departement: filters.CodeDepartementFilter = None,
-    slug_departement: Annotated[Optional[DepartementSlugEnum], fastapi.Query()] = None,
-    code_commune: filters.CodeCommuneFilter[schema.CodeCommune] = None,
-    exclure_doublons: filters.ExclureDoublonsStructuresFilter = False,
+    params: Annotated[parameters.ListStructuresQueryParams, fastapi.Query()],
     db_session=fastapi.Depends(db.get_session),
 ):
-    region = get_region_by_code_or_slug(code=code_region, slug=slug_region)
-
-    departement = get_departement_by_code_or_slug(
-        code=code_departement, slug=slug_departement
-    )
-
-    structures_list = service_layer.list_structures(
-        request=request,
+    page = pagination.paginate(
         db_session=db_session,
-        sources=sources,
-        typologie=typologie,
-        label_national=label_national,
-        departement=departement,
-        region=region,
-        commune_code=code_commune,
-        deduplicate=exclure_doublons,
+        query=services.list_structures_query(
+            params=params,
+            include_all_soliguide=soliguide.is_allowed_user(request),
+        ),
+        size=params.size,
+        page=params.page,
     )
-
     background_tasks.add_task(
-        save_list_structures_event,
+        save_event,
         request=request,
+        params=params,
         db_session=db_session,
-        sources=sources,
-        typologie=typologie,
-        label_national=label_national,
-        departement=departement,
-        region=region,
-        code_commune=code_commune,
-        exclure_doublons=exclure_doublons,
     )
-
-    return structures_list
+    return page
 
 
 @router.get(
@@ -103,22 +50,22 @@ def list_structures_endpoint(
     dependencies=[auth.authenticated_dependency] if settings.TOKEN_ENABLED else [],
 )
 def retrieve_structure_endpoint(
-    source: Annotated[str, fastapi.Path()],
-    id: Annotated[str, fastapi.Path()],
     request: fastapi.Request,
     background_tasks: fastapi.BackgroundTasks,
+    params: Annotated[parameters.RetrieveStructurePathParams, fastapi.Path()],
     db_session=fastapi.Depends(db.get_session),
     _=fastapi.Depends(soliguide.notify_soliguide_dependency),
 ):
-    structure = service_layer.retrieve_structure(
+    structure = services.retrieve_structure(
         db_session=db_session,
-        source=source,
-        id_=id,
+        params=params,
     )
+    if structure is None:
+        raise fastapi.HTTPException(status_code=404)
     background_tasks.add_task(
-        save_consult_structure_event,
+        save_event,
         request=request,
-        structure=structure,
+        params=params,
         db_session=db_session,
     )
     return structure
@@ -130,73 +77,38 @@ def retrieve_structure_endpoint(
     summary="Lister les sources consolidées",
     dependencies=[auth.authenticated_dependency] if settings.TOKEN_ENABLED else [],
 )
-def list_sources_endpoint(
-    request: fastapi.Request,
-):
-    return service_layer.list_sources(request=request)
+def list_sources_endpoint():
+    return services.list_sources()
 
 
 @router.get(
     "/services",
-    response_model=pagination.BigPage[schemas.Service],
+    response_model=pagination.Page[schemas.Service],
     summary="Lister les services consolidés",
     dependencies=[auth.authenticated_dependency] if settings.TOKEN_ENABLED else [],
 )
 def list_services_endpoint(
     request: fastapi.Request,
     background_tasks: fastapi.BackgroundTasks,
+    params: Annotated[parameters.ListServicesQueryParams, fastapi.Query()],
     db_session=fastapi.Depends(db.get_session),
-    sources: filters.SourcesFilter = None,
-    thematiques: filters.ThematiquesFilter[schema.Thematique] = None,
-    code_region: filters.CodeRegionFilter = None,
-    slug_region: Annotated[Optional[RegionSlugEnum], fastapi.Query()] = None,
-    code_departement: filters.CodeDepartementFilter = None,
-    slug_departement: Annotated[Optional[DepartementSlugEnum], fastapi.Query()] = None,
-    code_commune: filters.CodeCommuneFilter[schema.CodeCommune] = None,
-    frais: filters.FraisFilter[schema.Frais] = None,
-    publics: filters.ProfilsFilter[schema.Public] = None,
-    recherche_public: filters.RecherchePublicFilter = None,
-    modes_accueil: filters.ModesAccueilFilter[schema.ModeAccueil] = None,
-    types: filters.ServiceTypesFilter[schema.TypeService] = None,
-    score_qualite_minimum: filters.ScoreQualiteMinimumFilter = None,
 ):
-    region = get_region_by_code_or_slug(code=code_region, slug=slug_region)
-    departement = get_departement_by_code_or_slug(
-        code=code_departement, slug=slug_departement
-    )
-
-    services_listed = service_layer.list_services(
-        request=request,
+    page = pagination.paginate(
         db_session=db_session,
-        sources=sources,
-        thematiques=thematiques,
-        departement=departement,
-        region=region,
-        code_commune=code_commune,
-        frais=frais,
-        profils=publics,
-        recherche_public=recherche_public,
-        modes_accueil=modes_accueil,
-        types=types,
-        score_qualite_minimum=score_qualite_minimum,
+        query=services.list_services_query(
+            params=params,
+            include_all_soliguide=soliguide.is_allowed_user(request),
+        ),
+        size=params.size,
+        page=params.page,
     )
     background_tasks.add_task(
-        save_list_services_event,
+        save_event,
         request=request,
+        params=params,
         db_session=db_session,
-        sources=sources,
-        thematiques=thematiques,
-        departement=departement,
-        region=region,
-        code_commune=code_commune,
-        frais=frais,
-        profils=publics,
-        modes_accueil=modes_accueil,
-        types=types,
-        recherche_public=recherche_public,
-        score_qualite_minimum=score_qualite_minimum,
     )
-    return services_listed
+    return page
 
 
 @router.get(
@@ -207,51 +119,38 @@ def list_services_endpoint(
 )
 def retrieve_service_endpoint(
     request: fastapi.Request,
-    source: Annotated[str, fastapi.Path()],
-    id: Annotated[str, fastapi.Path()],
+    params: Annotated[parameters.RetrieveServicePathParams, fastapi.Path()],
     background_tasks: fastapi.BackgroundTasks,
     db_session=fastapi.Depends(db.get_session),
     _=fastapi.Depends(soliguide.notify_soliguide_dependency),
 ):
-    service = service_layer.retrieve_service(
-        db_session=db_session, source=source, id_=id
-    )
-
-    background_tasks.add_task(
-        save_consult_service_event,
-        request=request,
-        service=service,
+    service = services.retrieve_service(
         db_session=db_session,
+        params=params,
+    )
+    if service is None:
+        raise fastapi.HTTPException(status_code=404)
+    background_tasks.add_task(
+        save_event,
+        request=request,
+        params=params,
+        db_session=db_session,
+        score_qualite=service.score_qualite,
     )
     return service
 
 
 @router.get(
     "/search/services",
-    response_model=pagination.BigPage[schemas.ServiceSearchResult],
+    response_model=pagination.Page[schemas.ServiceSearchResult],
     summary="Rechercher des services",
     dependencies=[auth.authenticated_dependency] if settings.TOKEN_ENABLED else [],
 )
 def search_services_endpoint(
     request: fastapi.Request,
     background_tasks: fastapi.BackgroundTasks,
+    params: Annotated[parameters.SearchServicesQueryParams, fastapi.Query()],
     db_session=fastapi.Depends(db.get_session),
-    sources: filters.SourcesFilter = None,
-    code_commune: filters.SearchCodeCommuneFilter[schema.CodeCommune] = None,
-    code_insee: Annotated[
-        Optional[schema.CodeCommune],
-        fastapi.Query(include_in_schema=False),
-    ] = None,
-    lat: filters.SearchLatitudeFilter = None,
-    lon: filters.SearchLongitudeFilter = None,
-    thematiques: filters.ThematiquesFilter[schema.Thematique] = None,
-    frais: filters.FraisFilter[schema.Frais] = None,
-    modes_accueil: filters.ModesAccueilFilter[schema.ModeAccueil] = None,
-    publics: filters.PublicsFilter[schema.Public] = None,
-    recherche_public: filters.RecherchePublicFilter = None,
-    types: filters.ServiceTypesFilter[schema.TypeService] = None,
-    score_qualite_minimum: filters.ScoreQualiteMinimumFilter = None,
-    exclure_doublons: filters.ExclureDoublonsServicesFilter = False,
 ):
     """
     ## Rechercher des services
@@ -274,59 +173,35 @@ def search_services_endpoint(
     * les résultats sont triés par distance croissante.
     """
 
-    if code_commune is None and code_insee is not None:
-        code_commune = code_insee
-
     commune_instance = None
-    search_point = None
-    if code_commune is not None:
-        commune_instance = db_session.get(Commune, code_commune)
+    if params.code_commune is not None:
+        commune_instance = db_session.get(Commune, params.code_commune)
         if commune_instance is None:
             raise fastapi.HTTPException(
                 status_code=fastapi.status.HTTP_422_UNPROCESSABLE_ENTITY,
                 detail="This `code_commune` does not exist.",
             )
-        if lat and lon:
-            search_point = f"POINT({lon} {lat})"
-        elif lat or lon:
-            raise fastapi.HTTPException(
-                status_code=fastapi.status.HTTP_422_UNPROCESSABLE_ENTITY,
-                detail="The `lat` and `lon` must be simultaneously filled.",
-            )
 
-    results = service_layer.search_services(
-        request=request,
-        db_session=db_session,
-        sources=sources,
+    query, mapping = services.search_services_query(
+        params=params,
         commune_instance=commune_instance,
-        thematiques=thematiques,
-        frais=frais,
-        modes_accueil=modes_accueil,
-        profils=publics,
-        profils_search=recherche_public,
-        types=types,
-        search_point=search_point,
-        score_qualite_minimum=score_qualite_minimum,
-        deduplicate=exclure_doublons,
+        include_all_soliguide=soliguide.is_allowed_user(request),
+    )
+
+    page = pagination.paginate(
+        db_session=db_session,
+        query=query,
+        size=params.size,
+        page=params.page,
+        mapping=mapping,
     )
 
     background_tasks.add_task(
-        save_search_services_event,
+        save_event,
         request=request,
+        params=params,
         db_session=db_session,
-        results=results,
-        sources=sources,
-        code_commune=code_commune,
-        lat=lat,
-        lon=lon,
-        thematiques=thematiques,
-        frais=frais,
-        modes_accueil=modes_accueil,
-        profils=publics,
-        types=types,
-        recherche_public=recherche_public,
-        score_qualite_minimum=score_qualite_minimum,
-        exclure_doublons=exclure_doublons,
+        first_results_page=page,
     )
 
-    return results
+    return page

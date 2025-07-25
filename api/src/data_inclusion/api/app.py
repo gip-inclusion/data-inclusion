@@ -4,7 +4,6 @@ import jinja2
 import sentry_sdk
 
 import fastapi
-import fastapi_pagination
 from fastapi.middleware import cors, trustedhost
 
 from data_inclusion.api import auth, config
@@ -80,8 +79,6 @@ def create_app(settings: config.Settings) -> fastapi.FastAPI:
 
     app.include_router(v0_api_router)
     app.include_router(v1_api_router, include_in_schema=settings.ENV != "prod")
-
-    fastapi_pagination.add_pagination(app)
 
     @app.get("/robots.txt", include_in_schema=False)
     def get_robots_txt():

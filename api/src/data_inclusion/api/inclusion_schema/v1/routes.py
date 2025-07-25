@@ -7,11 +7,6 @@ router = fastapi.APIRouter(tags=["v1 | Documentation"])
 
 for name, model, summary in [
     ("frais", v1.Frais, "Récupérer le référentiel des frais"),
-    (
-        "labels-nationaux",
-        v1.LabelNational,
-        "Récupérer le référentiel des labels nationaux",
-    ),
     ("modes-accueil", v1.ModeAccueil, "Récupérer le référentiel des modes d'accueil"),
     (
         "modes-mobilisation",
@@ -24,16 +19,16 @@ for name, model, summary in [
         "Récupérer le référentiel des personnes mobilisatrices",
     ),
     ("publics", v1.Public, "Récupérer le référentiel des publics"),
+    (
+        "reseaux-porteurs",
+        v1.ReseauPorteur,
+        "Récupérer le référentiel des réseaux porteurs",
+    ),
     ("thematiques", v1.Thematique, "Récupérer le référentiel des thématiques"),
     (
         "types-services",
         v1.TypeService,
         "Récupérer le référentiel des types de services",
-    ),
-    (
-        "typologies-structures",
-        v1.TypologieStructure,
-        "Récupérer le référentiel des typologies de structures",
     ),
 ]:
     router.add_api_route(
