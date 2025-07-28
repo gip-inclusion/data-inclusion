@@ -309,11 +309,6 @@ resource "terraform_data" "up" {
   }
 
   provisioner "file" {
-    source      = "${path.root}/../pipeline/defaults.env"
-    destination = "${local.work_dir}/defaults.env"
-  }
-
-  provisioner "file" {
     source      = "${path.root}/systemd/system/"
     destination = "/etc/systemd/system"
   }
