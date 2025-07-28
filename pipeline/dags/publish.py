@@ -23,12 +23,23 @@ def publish_to_datagouv():
 
     pg_hook = postgres.PostgresHook(postgres_conn_id="pg")
 
-    DATAGOUV_API_URL = Variable.get("DATAGOUV_API_URL")
+    DATAGOUV_API_URL = "https://www.data.gouv.fr/api/"
     DATAGOUV_API_KEY = Variable.get("DATAGOUV_API_KEY")
-    DATAGOUV_DI_DATASET_ID = Variable.get("DATAGOUV_DI_DATASET_ID")
-    DATAGOUV_DI_RESOURCE_IDS = Variable.get(
-        "DATAGOUV_DI_RESOURCE_IDS", deserialize_json=True
-    )
+    DATAGOUV_DI_DATASET_ID = "6233723c2c1e4a54af2f6b2d"
+    DATAGOUV_DI_RESOURCE_IDS = {
+        "structures": {
+            "json": "4fc64287-e869-4550-8fb9-b1e0b7809ffa",
+            "csv": "fd4cb3ef-5c31-4c99-92fe-2cd8016c0ca5",
+            "xlsx": "fad88958-c9a7-4914-a9b8-89d1285c210a",
+            "geojson": "42d46a21-eeef-433c-b3c3-961e1c37bc93",
+        },
+        "services": {
+            "json": "0eac1faa-66f9-4e49-8fb3-f0721027d89f",
+            "csv": "5abc151a-5729-4055-b0a9-d5691276f461",
+            "xlsx": "de2eb57b-113d-48eb-95d2-59a69ba36eb1",
+            "geojson": "307529c0-dcc5-449a-a88d-9290a8a86a14",
+        },
+    }
 
     datagouv_client = datagouv.DataGouvClient(
         base_url=DATAGOUV_API_URL,
