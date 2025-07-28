@@ -56,7 +56,7 @@ def extract(
     from dag_utils import s3
     from dag_utils.sources import monenfant
 
-    os.environ["MONENFANT_BASE_URL"] = Variable.get("MONENFANT_BASE_URL")
+    os.environ["MONENFANT_BASE_URL"] = "https://monenfant.fr"
     os.environ["TWOCAPTCHA_API_KEY"] = Variable.get("TWOCAPTCHA_API_KEY")
 
     source_id = "monenfant"

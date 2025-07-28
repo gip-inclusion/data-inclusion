@@ -123,8 +123,6 @@ services:
       <<: *airflow-common-depends-on
       airflow-init:
         condition: service_completed_successfully
-    env_file:
-      - ./defaults.env
 
   datawarehouse:
     image: ghcr.io/gip-inclusion/data-inclusion-datawarehouse:${STACK_VERSION}
