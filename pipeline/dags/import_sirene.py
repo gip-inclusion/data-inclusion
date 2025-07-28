@@ -19,14 +19,14 @@ def import_stock_etablissement_historique():
     import pandas as pd
     import sqlalchemy as sqla
 
-    from airflow.models import Variable
-
     from dag_utils import pg
 
+    URL = "https://www.data.gouv.fr/api/1/datasets/r/88fbb6b4-0320-443e-b739-b4376a012c32"
     SCHEMA_NAME = "insee"
     TABLE_NAME = "sirene_etablissement_historique"
+
     reader = pd.read_csv(
-        Variable.get("SIRENE_STOCK_ETAB_HIST_FILE_URL"),
+        URL,
         usecols=[
             "siret",
             "dateDebut",
@@ -65,14 +65,14 @@ def import_stock_etablissement_liens_succession():
     import pandas as pd
     import sqlalchemy as sqla
 
-    from airflow.models import Variable
-
     from dag_utils import pg
 
+    URL = "https://www.data.gouv.fr/api/1/datasets/r/9c4d5d9c-4bbb-4b9c-837a-6155cb589e26"
     SCHEMA_NAME = "insee"
     TABLE_NAME = "sirene_etablissement_succession"
+
     reader = pd.read_csv(
-        Variable.get("SIRENE_STOCK_ETAB_LIENS_SUCCESSION_URL"),
+        URL,
         usecols=[
             "siretEtablissementPredecesseur",
             "siretEtablissementSuccesseur",
@@ -114,14 +114,14 @@ def import_stock_etablissement_liens_succession():
 def import_stock_unite_legale():
     import pandas as pd
 
-    from airflow.models import Variable
-
     from dag_utils import pg
 
+    URL = "https://www.data.gouv.fr/api/1/datasets/r/825f4199-cadd-486c-ac46-a65a8ea1a047"
     SCHEMA_NAME = "insee"
     TABLE_NAME = "sirene_stock_unite_legale"
+
     reader = pd.read_csv(
-        Variable.get("SIRENE_STOCK_UNITE_LEGALE_FILE_URL"),
+        URL,
         usecols=[
             "caractereEmployeurUniteLegale",
             "categorieEntreprise",
@@ -179,14 +179,16 @@ def import_stock_unite_legale():
 def import_stock_etablissement():
     import pandas as pd
 
-    from airflow.models import Variable
-
     from dag_utils import pg
 
+    URL = (
+        "https://www.data.gouv.fr/api/1/datasets/r/0651fb76-bcf3-4f6a-a38d-bc04fa708576"
+    )
     SCHEMA_NAME = "insee"
     TABLE_NAME = "sirene_stock_etablissement"
+
     reader = pd.read_csv(
-        Variable.get("SIRENE_STOCK_ETAB_FILE_URL"),
+        URL,
         usecols=[
             "activitePrincipaleEtablissement",
             "caractereEmployeurEtablissement",
