@@ -14,11 +14,11 @@ from dag_utils.virtualenvs import PYTHON_BIN_PATH
 def extract_and_load():
     import pandas as pd
 
-    from airflow.models import Variable
-
     from dag_utils import pg
 
-    df = pd.read_csv(Variable.get("INSEE_FIRSTNAME_FILE_URL"), sep=";")
+    url = "https://www.insee.fr/fr/statistiques/fichier/2540004/nat2021_csv.zip"
+
+    df = pd.read_csv(url, sep=";")
 
     schema = "insee"
     pg.create_schema(schema)
