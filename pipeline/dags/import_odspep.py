@@ -14,12 +14,11 @@ def import_dataset(
 ):
     import pandas as pd
 
-    from airflow.models import Variable
     from airflow.providers.amazon.aws.hooks import s3
 
     from dag_utils import pg
 
-    ODSPEP_S3_KEY_PREFIX = Variable.get("ODSPEP_S3_KEY_PREFIX")
+    ODSPEP_S3_KEY_PREFIX = "sources/odspep/2023-01-23/denormalized/Exports/"
 
     s3_hook = s3.S3Hook(aws_conn_id="s3")
 
