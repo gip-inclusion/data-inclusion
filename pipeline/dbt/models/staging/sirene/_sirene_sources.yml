@@ -1,0 +1,11 @@
+version: 2
+
+sources:
+  - name: sirene
+    schema: sirene
+    tables:
+      # https://www.sirene.fr/static-resources/documentation/v_sommaire_311.htm
+      - name: etablissement_historique
+      - name: stock_etablissement
+      - name: etablissement_succession
+      - name: stock_unite_legale
