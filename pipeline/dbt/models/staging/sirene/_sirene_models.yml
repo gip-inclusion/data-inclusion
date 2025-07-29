@@ -1,15 +1,7 @@
 version: 2
 
 models:
-  - name: stg_insee__prenoms
-    columns:
-      - name: prenom
-        data_tests:
-          - unique
-          - not_null
-          - dbt_utils.not_empty_string
-
-  - name: stg_insee__sirene_etablissement_historique
+  - name: stg_sirene__etablissement_historique
     columns:
       - name: siret
         description: |
@@ -29,7 +21,7 @@ models:
           - accepted_values:
               values: [true, false]
 
-  - name: stg_insee__sirene_etablissement_succession
+  - name: stg_sirene__etablissement_succession
     columns:
       - name: siret_etablissement_predecesseur
         data_tests:
@@ -46,7 +38,7 @@ models:
         data_tests:
           - not_null
 
-  - name: stg_insee__sirene_stock_etablissement
+  - name: stg_sirene__stock_etablissement
     columns:
       - name: siret
         data_tests:
