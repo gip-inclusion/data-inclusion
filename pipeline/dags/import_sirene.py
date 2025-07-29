@@ -3,7 +3,7 @@ import pendulum
 from airflow.decorators import dag, task
 from airflow.operators import empty
 
-from dag_utils import date
+from dag_utils import date, dbt
 from dag_utils.virtualenvs import PYTHON_BIN_PATH
 
 
@@ -22,8 +22,8 @@ def import_stock_etablissement_historique():
     from dag_utils import pg
 
     URL = "https://www.data.gouv.fr/api/1/datasets/r/88fbb6b4-0320-443e-b739-b4376a012c32"
-    SCHEMA_NAME = "insee"
-    TABLE_NAME = "sirene_etablissement_historique"
+    SCHEMA_NAME = "sirene"
+    TABLE_NAME = "etablissement_historique"
 
     reader = pd.read_csv(
         URL,
@@ -68,8 +68,8 @@ def import_stock_etablissement_liens_succession():
     from dag_utils import pg
 
     URL = "https://www.data.gouv.fr/api/1/datasets/r/9c4d5d9c-4bbb-4b9c-837a-6155cb589e26"
-    SCHEMA_NAME = "insee"
-    TABLE_NAME = "sirene_etablissement_succession"
+    SCHEMA_NAME = "sirene"
+    TABLE_NAME = "etablissement_succession"
 
     reader = pd.read_csv(
         URL,
@@ -94,7 +94,7 @@ def import_stock_etablissement_liens_succession():
     with pg.connect_begin() as conn:
         for i, df_chunk in enumerate(reader):
             df_chunk.to_sql(
-                schema="insee",
+                schema=SCHEMA_NAME,
                 name=TABLE_NAME,
                 con=conn,
                 if_exists="replace" if i == 0 else "append",
@@ -117,8 +117,8 @@ def import_stock_unite_legale():
     from dag_utils import pg
 
     URL = "https://www.data.gouv.fr/api/1/datasets/r/825f4199-cadd-486c-ac46-a65a8ea1a047"
-    SCHEMA_NAME = "insee"
-    TABLE_NAME = "sirene_stock_unite_legale"
+    SCHEMA_NAME = "sirene"
+    TABLE_NAME = "stock_unite_legale"
 
     reader = pd.read_csv(
         URL,
@@ -184,8 +184,8 @@ def import_stock_etablissement():
     URL = (
         "https://www.data.gouv.fr/api/1/datasets/r/0651fb76-bcf3-4f6a-a38d-bc04fa708576"
     )
-    SCHEMA_NAME = "insee"
-    TABLE_NAME = "sirene_stock_etablissement"
+    SCHEMA_NAME = "sirene"
+    TABLE_NAME = "stock_etablissement"
 
     reader = pd.read_csv(
         URL,
@@ -304,6 +304,12 @@ def import_sirene():
     start = empty.EmptyOperator(task_id="start")
     end = empty.EmptyOperator(task_id="end")
 
+    dbt_build_staging = dbt.dbt_operator_factory(
+        task_id="dbt_build_staging",
+        command="build",
+        select="path:models/staging/sirene",
+    )
+
     (
         start
         >> create_schema(name="sirene")
@@ -313,6 +319,7 @@ def import_sirene():
             import_stock_etablissement(),
             import_stock_unite_legale(),
         ]
+        >> dbt_build_staging
         >> end
     )
 
