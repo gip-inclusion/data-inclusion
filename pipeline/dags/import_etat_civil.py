@@ -11,12 +11,14 @@ from dag_utils.virtualenvs import PYTHON_BIN_PATH
     python=str(PYTHON_BIN_PATH),
     retries=2,
 )
-def extract_and_load():
+def import_prenoms():
     import pandas as pd
 
     from dag_utils import pg
 
-    url = "https://www.insee.fr/fr/statistiques/fichier/2540004/nat2021_csv.zip"
+    url = (
+        "https://www.insee.fr/fr/statistiques/fichier/8595130/prenoms-2024-nat_csv.zip"
+    )
 
     df = pd.read_csv(url, sep=";")
 
@@ -48,7 +50,7 @@ def import_etat_civil():
         select="path:models/staging/etat_civil",
     )
 
-    start >> extract_and_load() >> dbt_build_staging >> end
+    start >> import_prenoms() >> dbt_build_staging >> end
 
 
 import_etat_civil()
