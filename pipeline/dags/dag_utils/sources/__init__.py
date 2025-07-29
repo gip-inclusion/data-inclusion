@@ -194,11 +194,11 @@ SOURCES_CONFIGS = {
         "streams": {
             "services": {
                 "filename": "services.csv",
-                "url": "https://docs.google.com/spreadsheets/d/1aiZrTeBKaOwjeeJft-gsEerAOQ9miZB-MUCE_unjCGM/export?format=csv&gid=636818394",
+                "url": "https://docs.google.com/spreadsheets/d/1TJOXcGMCTSwEVf3fgArAnUS0BN6rdix2-LSyGTKnAhg/export?format=csv",
             },
             "structures": {
                 "filename": "structures.csv",
-                "url": "https://docs.google.com/spreadsheets/d/1aiZrTeBKaOwjeeJft-gsEerAOQ9miZB-MUCE_unjCGM/export?format=csv&gid=1318485024",
+                "url": "https://docs.google.com/spreadsheets/d/1TJOXcGMCTSwEVf3fgArAnUS0BN6rdix2-LSyGTKnAhg/export?format=csv",
             },
         },
     },
