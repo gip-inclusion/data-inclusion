@@ -4,26 +4,17 @@ WITH source AS (
 
 cleaned AS (
     SELECT
-        CASE CAST(sexe AS INT)
-            WHEN 1 THEN 'masculin'
-            WHEN 2 THEN 'feminin'
-        END                 AS "sexe",
-        LOWER(preusuel)     AS "prenom",
-        CAST(annais AS INT) AS "annee_naissance",
-        nombre
+        LOWER(prenom) AS "prenom",
+        valeur
     FROM source
-    WHERE preusuel != '_PRENOMS_RARES'
-),
-
-filtered AS (
-    SELECT prenom
-    FROM cleaned
-    WHERE
-        LENGTH(prenom) > 2
-        AND prenom !~* 'saint'
-    GROUP BY 1
-    HAVING SUM(nombre) > 100
-    ORDER BY 1 ASC
+    WHERE prenom != '_PRENOMS_RARES'
 )
 
-SELECT * FROM filtered
+SELECT prenom
+FROM cleaned
+WHERE
+    LENGTH(prenom) > 2
+    AND prenom !~* 'saint'
+GROUP BY 1
+HAVING SUM(valeur) > 100
+ORDER BY 1 ASC
