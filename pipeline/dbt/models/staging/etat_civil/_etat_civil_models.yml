@@ -1,0 +1,10 @@
+version: 2
+
+models:
+  - name: stg_etat_civil__prenoms
+    columns:
+      - name: prenom
+        data_tests:
+          - unique
+          - not_null
+          - dbt_utils.not_empty_string

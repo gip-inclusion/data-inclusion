@@ -1,5 +1,5 @@
 WITH source AS (
-    SELECT * FROM {{ source('insee', 'sirene_etablissement_succession') }}
+    SELECT * FROM {{ source('sirene', 'etablissement_succession') }}
 )
 
 SELECT
