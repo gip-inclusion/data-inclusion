@@ -188,7 +188,7 @@ models:
         data_tests:
           - not_null
           - relationships:
-              to: ref('stg_insee__sirene_stock_etablissement')
+              to: ref('stg_sirene__stock_etablissement')
               field: siret
               config:
                 where: "statut != 'inconnu'"
@@ -217,7 +217,7 @@ unit_tests:
           - {courriel: jean.valjean@wanadoo.fr}
           - {courriel: contact@arpejeha.com}
           - {courriel: savoirspoursensortirparis@orange.fr}
-      - input: ref('stg_insee__prenoms')
+      - input: ref('stg_etat_civil__prenoms')
         rows:
           - {prenom: jean}
     expect:

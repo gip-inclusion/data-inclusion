@@ -3,11 +3,11 @@ WITH RECURSIVE structures AS (
 ),
 
 etablissements AS (
-    SELECT * FROM {{ ref('stg_insee__sirene_etablissement_historique') }}
+    SELECT * FROM {{ ref('stg_sirene__etablissement_historique') }}
 ),
 
 successions AS (
-    SELECT * FROM {{ ref('stg_insee__sirene_etablissement_succession') }}
+    SELECT * FROM {{ ref('stg_sirene__etablissement_succession') }}
 ),
 
 filtered_etablissements AS (
