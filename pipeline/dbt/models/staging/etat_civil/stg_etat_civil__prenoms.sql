@@ -1,5 +1,5 @@
 WITH source AS (
-    SELECT * FROM {{ source('insee', 'etat_civil_prenoms') }}
+    SELECT * FROM {{ source('etat_civil', 'prenoms') }}
 ),
 
 cleaned AS (
