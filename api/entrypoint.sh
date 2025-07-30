@@ -16,4 +16,6 @@ export DATABASE_URL="${DATABASE_URL/postgres\:\/\//postgresql\:\/\/}"
 gunicorn data_inclusion.api.app:app \
     --workers 4 \
     --worker-class uvicorn.workers.UvicornWorker \
-    --access-logfile '-'
+    --access-logfile '-' \
+    --max-requests=1000 \
+    --max-requests-jitter=100
