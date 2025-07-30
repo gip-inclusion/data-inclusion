@@ -4,7 +4,7 @@ import jinja2
 import sentry_sdk
 
 import fastapi
-from fastapi.middleware import cors, trustedhost
+from fastapi.middleware import cors, gzip, trustedhost
 
 from data_inclusion.api import auth, config
 from data_inclusion.api.auth.routes import router as auth_api_router
@@ -57,6 +57,8 @@ def create_app(settings: config.Settings) -> fastapi.FastAPI:
         },
         dependencies=[auth.authenticate_dependency],
     )
+
+    app.add_middleware(gzip.GZipMiddleware)
 
     app.add_middleware(
         cors.CORSMiddleware,
