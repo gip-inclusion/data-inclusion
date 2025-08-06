@@ -8,16 +8,17 @@ from sqlalchemy import orm
 from data_inclusion.api.config import settings
 
 
-class PaginationParamsMixin:
-    page: Annotated[int, pydantic.Field(ge=1, description="Page number")] = 1
-    size: Annotated[
-        int,
-        pydantic.Field(
-            ge=1,
-            le=settings.MAX_PAGE_SIZE,
-            description="Page size",
-        ),
-    ] = settings.DEFAULT_PAGE_SIZE
+def get_pagination_params(
+    max_page_size: int = settings.MAX_PAGE_SIZE,
+    default_page_size: int = settings.DEFAULT_PAGE_SIZE,
+):
+    class PaginationParamsMixin:
+        page: Annotated[int, pydantic.Field(ge=1, description="Page number")] = 1
+        size: Annotated[
+            int, pydantic.Field(ge=1, le=max_page_size, description="Page size")
+        ] = default_page_size
+
+    return PaginationParamsMixin
 
 
 class Page[T](pydantic.BaseModel):

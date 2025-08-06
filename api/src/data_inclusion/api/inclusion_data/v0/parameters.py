@@ -17,7 +17,7 @@ from data_inclusion.api.utils import pagination
 from data_inclusion.schema import v0 as schema
 
 
-class ListStructuresQueryParams(pydantic.BaseModel, pagination.PaginationParamsMixin):
+class ListStructuresQueryParams(pydantic.BaseModel, pagination.get_pagination_params()):
     sources: filters.SourcesFilter = None
     id: Annotated[str | None, pydantic.Field(deprecated=True)] = None
     typologie: Annotated[schema.TypologieStructure | None, pydantic.Field()] = None
@@ -52,7 +52,7 @@ class RetrieveStructurePathParams(pydantic.BaseModel):
     id: Annotated[str, pydantic.Field()]
 
 
-class ListServicesQueryParams(pydantic.BaseModel, pagination.PaginationParamsMixin):
+class ListServicesQueryParams(pydantic.BaseModel, pagination.get_pagination_params()):
     sources: filters.SourcesFilter = None
     thematiques: filters.ThematiquesFilter[schema.Thematique] = None
     code_region: filters.CodeRegionFilter = None
@@ -90,7 +90,9 @@ class RetrieveServicePathParams(pydantic.BaseModel):
     id: Annotated[str, pydantic.Field()]
 
 
-class SearchServicesQueryParams(pydantic.BaseModel, pagination.PaginationParamsMixin):
+class SearchServicesQueryParams(
+    pydantic.BaseModel, pagination.get_pagination_params(default_page_size=500)
+):
     sources: filters.SourcesFilter = None
     code_commune: filters.SearchCodeCommuneFilter[schema.CodeCommune] = None
     code_insee: Annotated[

@@ -6096,7 +6096,7 @@
               "schema": {
                 "default": 500,
                 "description": "Page size",
-                "maximum": 1000,
+                "maximum": 10000,
                 "minimum": 1,
                 "title": "Size",
                 "type": "integer"
@@ -6436,9 +6436,9 @@
               "name": "size",
               "required": false,
               "schema": {
-                "default": 500,
+                "default": 5000,
                 "description": "Page size",
-                "maximum": 1000,
+                "maximum": 10000,
                 "minimum": 1,
                 "title": "Size",
                 "type": "integer"
@@ -6863,9 +6863,9 @@
               "name": "size",
               "required": false,
               "schema": {
-                "default": 500,
+                "default": 5000,
                 "description": "Page size",
-                "maximum": 1000,
+                "maximum": 10000,
                 "minimum": 1,
                 "title": "Size",
                 "type": "integer"
@@ -7393,9 +7393,9 @@
               "name": "size",
               "required": false,
               "schema": {
-                "default": 500,
+                "default": 5000,
                 "description": "Page size",
-                "maximum": 1000,
+                "maximum": 10000,
                 "minimum": 1,
                 "title": "Size",
                 "type": "integer"
@@ -7696,9 +7696,9 @@
               "name": "size",
               "required": false,
               "schema": {
-                "default": 500,
+                "default": 5000,
                 "description": "Page size",
-                "maximum": 1000,
+                "maximum": 10000,
                 "minimum": 1,
                 "title": "Size",
                 "type": "integer"
@@ -8106,9 +8106,9 @@
               "name": "size",
               "required": false,
               "schema": {
-                "default": 500,
+                "default": 5000,
                 "description": "Page size",
-                "maximum": 1000,
+                "maximum": 10000,
                 "minimum": 1,
                 "title": "Size",
                 "type": "integer"
