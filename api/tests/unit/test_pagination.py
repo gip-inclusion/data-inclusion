@@ -46,19 +46,25 @@ class Undefined:
         "expected_page",
         "expected_size",
         "expected_pages",
-        "expected_total",
     ),
     [
         # First page
-        (1000, 1, 10, 1, 10, 100, 1000),
+        (1000, 1, 10, 1, 10, 100),
         # Second page
-        (1000, 2, 10, 2, 10, 100, 1000),
+        (1000, 2, 10, 2, 10, 100),
         # Default page is 1
-        (1000, Undefined, 10, 1, 10, 100, 1000),
+        (1000, Undefined, 10, 1, 10, 100),
         # Size larger than total items
-        (100, 1, 1000, 1, 100, 1, 100),
+        (100, 1, 1000, 1, 100, 1),
         # Default size from config
-        (1000, 1, Undefined, 1, settings.DEFAULT_PAGE_SIZE, 2, 1000),
+        (
+            settings.DEFAULT_PAGE_SIZE + 1,
+            1,
+            Undefined,
+            1,
+            settings.DEFAULT_PAGE_SIZE,
+            2,
+        ),
     ],
 )
 def test_page_size_pagination(
@@ -69,14 +75,13 @@ def test_page_size_pagination(
     expected_page: int,
     expected_size: int,
     expected_pages: int,
-    expected_total: int,
 ):
     app = fastapi.FastAPI()
 
     class ItemOut(pydantic.BaseModel):
         id: int
 
-    class QueryParams(pydantic.BaseModel, pagination.PaginationParamsMixin):
+    class QueryParams(pydantic.BaseModel, pagination.get_pagination_params()):
         pass
 
     @app.get("/items/", response_model=pagination.Page[ItemOut])
@@ -111,6 +116,6 @@ def test_page_size_pagination(
             ],
             "page": expected_page,
             "size": expected_size,
-            "total": expected_total,
+            "total": items_count,
             "pages": expected_pages,
         }
