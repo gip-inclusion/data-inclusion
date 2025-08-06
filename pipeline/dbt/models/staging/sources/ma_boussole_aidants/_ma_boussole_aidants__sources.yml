@@ -1,0 +1,11 @@
+version: 2
+
+sources:
+  - name: ma_boussole_aidants
+    schema: ma_boussole_aidants
+    meta:
+      is_provider: true
+    tables:
+      - name: structures
+        meta:
+          kind: structure
