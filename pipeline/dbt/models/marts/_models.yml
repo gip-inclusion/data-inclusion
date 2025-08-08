@@ -90,6 +90,10 @@ models:
         data_type: boolean
         constraints:
           - type: not_null
+      - name: _is_closed
+        data_type: boolean
+        constraints:
+          - type: not_null
 
   - name: marts__structures_labels_nationaux
     config:

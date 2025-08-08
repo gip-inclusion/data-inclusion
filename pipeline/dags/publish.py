@@ -82,6 +82,11 @@ def publish_to_datagouv():
         df = df.loc[df["_in_opendata"]]
         df = df.drop(columns="_in_opendata")
 
+        # remove closed structures
+        if resource == "structures":
+            df = df.loc[~df["_is_closed"]]
+            df = df.drop(columns="_is_closed")
+
         # remove pii
         df = df.assign(courriel=df["courriel"].mask(df["_has_pii"], None))
         df = df.assign(telephone=df["telephone"].mask(df["_has_pii"], None))
