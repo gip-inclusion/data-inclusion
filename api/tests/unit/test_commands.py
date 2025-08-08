@@ -15,47 +15,31 @@ def schema(schema_version):
         return v1
 
 
-structure_data_1 = {
-    "_di_surrogate_id": "dora-1",
-    "source": "dora",
-    "id": "1",
-    "code_insee": "59350",
-    "nom": "Chez Dora",
-    "date_maj": "not-a-date",
-    "description": "." * 100,
-}
-
-structure_data_2 = {
-    "_di_surrogate_id": "dora-1",
-    "source": "dora",
-    "id": "1",
-    "code_insee": "59350",
-    "nom": "Chez Dora",
-    "date_maj": "2025-01-01",
-    "thematiques": ["not-a-thematique"],
-    "description": "." * 100,
-}
-
-structure_data_3 = {
-    "_di_surrogate_id": "dora-1",
-    "source": "dora",
-    "id": "1",
-    "code_insee": "not-a-code-insee",
-    "nom": "Chez Dora",
-    "date_maj": "2025-01-01",
-    "description": "." * 100,
-}
+def structure_data_factory(**kwargs):
+    return {
+        "_di_surrogate_id": "dora-1",
+        "source": "dora",
+        "id": "1",
+        "code_insee": "59350",
+        "nom": "Chez Dora",
+        "date_maj": "2025-01-01",
+        "description": "." * 100,
+        "_is_closed": False,
+    } | kwargs
 
 
 @pytest.mark.parametrize(
     ("structure_data", "schema_version", "is_valid"),
     [
-        (structure_data_1, "v0", False),
-        (structure_data_1, "v1", False),
-        (structure_data_2, "v0", False),
-        (structure_data_2, "v1", True),
-        (structure_data_3, "v0", False),
-        (structure_data_3, "v1", False),
+        (structure_data_factory(date_maj="not-a-date"), "v0", False),
+        (structure_data_factory(date_maj="not-a-date"), "v1", False),
+        (structure_data_factory(thematiques=["not-a-thematique"]), "v0", False),
+        # structure have no thematiques in v1, therefore it should be ignored
+        (structure_data_factory(thematiques=["not-a-thematique"]), "v1", True),
+        (structure_data_factory(code_insee="not-a-code-insee"), "v0", False),
+        (structure_data_factory(code_insee="not-a-code-insee"), "v1", False),
+        (structure_data_factory(_is_closed=True), "v0", False),
+        (structure_data_factory(_is_closed=True), "v1", False),
     ],
 )
 def test_validate_dataset(db_session, structure_data, schema, is_valid):

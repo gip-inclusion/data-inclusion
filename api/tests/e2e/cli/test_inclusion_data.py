@@ -22,6 +22,7 @@ def dataset_path(structures_df, services_df, tmpdir):
                     {
                         "_di_surrogate_id": "foo-1",
                         "_cluster_id": None,
+                        "_is_closed": False,
                         "description": None,
                         "horaires_accueil": "Mon-Fri 9:00-17:00",
                         "reseaux_porteurs": ["action-logement"],
