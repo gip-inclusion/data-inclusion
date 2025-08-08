@@ -11,22 +11,24 @@ from dag_utils.virtualenvs import PYTHON_BIN_PATH
     python=str(PYTHON_BIN_PATH),
     retries=2,
 )
-def extract_and_load():
+def import_prenoms():
     import pandas as pd
-
-    from airflow.models import Variable
 
     from dag_utils import pg
 
-    df = pd.read_csv(Variable.get("INSEE_FIRSTNAME_FILE_URL"), sep=";")
+    url = (
+        "https://www.insee.fr/fr/statistiques/fichier/8595130/prenoms-2024-nat_csv.zip"
+    )
 
-    schema = "insee"
+    df = pd.read_csv(url, sep=";")
+
+    schema = "etat_civil"
     pg.create_schema(schema)
 
     with pg.connect_begin() as conn:
         df.to_sql(
             schema=schema,
-            name="etat_civil_prenoms",
+            name="prenoms",
             con=conn,
             if_exists="replace",
             index=False,
@@ -38,17 +40,17 @@ def extract_and_load():
     schedule="@yearly",
     catchup=False,
 )
-def import_insee_prenoms():
+def import_etat_civil():
     start = empty.EmptyOperator(task_id="start")
     end = empty.EmptyOperator(task_id="end")
 
     dbt_build_staging = dbt.dbt_operator_factory(
         task_id="dbt_build_staging",
         command="build",
-        select="path:models/staging/insee",
+        select="path:models/staging/etat_civil",
     )
 
-    start >> extract_and_load() >> dbt_build_staging >> end
+    start >> import_prenoms() >> dbt_build_staging >> end
 
 
-import_insee_prenoms()
+import_etat_civil()

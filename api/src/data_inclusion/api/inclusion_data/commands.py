@@ -68,6 +68,7 @@ def validate_dataset(
         structures_df = structures_df.loc[
             structures_df["code_insee"].apply(lambda c: c is None or c in city_codes)
         ]
+        structures_df = structures_df.loc[~structures_df["_is_closed"]]
 
     if not services_df.empty:
         services_df = services_df.loc[is_valid(services_df, service_schema)]

@@ -15,6 +15,10 @@ erreurs AS (
     WHERE resource_type = 'structure'
 ),
 
+sirets AS (
+    SELECT * FROM {{ ref('int__sirets') }}
+),
+
 final AS (
     SELECT
         {{
@@ -27,30 +31,31 @@ final AS (
                 ]
             )
         }},
-        doublons.cluster_id                               AS "_cluster_id",
-        courriels_personnels.courriel IS NOT NULL         AS "_has_pii",
-        structures.source NOT IN ('soliguide', 'agefiph') AS "_in_opendata",
+        doublons.cluster_id                                                  AS "_cluster_id",
+        courriels_personnels.courriel IS NOT NULL                            AS "_has_pii",
+        structures.source NOT IN ('soliguide', 'agefiph')                    AS "_in_opendata",
         NOT EXISTS (
             SELECT
             FROM erreurs
             WHERE
                 erreurs._di_surrogate_id = structures._di_surrogate_id
                 AND erreurs.schema_version = 'v0'
-        )                                                 AS "_is_valid_v0",
+        )                                                                    AS "_is_valid_v0",
         NOT EXISTS (
             SELECT
             FROM erreurs
             WHERE
                 erreurs._di_surrogate_id = structures._di_surrogate_id
                 AND erreurs.schema_version = 'v1'
-        )                                                 AS "_is_valid_v1",
-
+        )                                                                    AS "_is_valid_v1",
+        sirets.statut IS NOT NULL AND sirets.statut = 'fermé-définitivement' AS "_is_closed",
         -- the following fields will be removed in v1
         -- for now they are kept for compatibility, but without any value
-        CAST(NULL AS BOOLEAN)                             AS "antenne"
+        CAST(NULL AS BOOLEAN)                                                AS "antenne"
     FROM structures
     LEFT JOIN doublons ON structures._di_surrogate_id = doublons.structure_id
     LEFT JOIN courriels_personnels ON structures.courriel = courriels_personnels.courriel
+    LEFT JOIN sirets ON structures._di_surrogate_id = sirets._di_surrogate_id
 )
 
 SELECT * FROM final
