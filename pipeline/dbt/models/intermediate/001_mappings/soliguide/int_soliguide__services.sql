@@ -107,7 +107,7 @@ final AS (
     SELECT
         open_services.id                                  AS "id",
         lieux.lieu_id                                     AS "adresse_id",
-        open_services._di_source_id                       AS "source",
+        'soliguide'                                       AS "source",
         CASE
             WHEN mapping_types.di_type IS NULL THEN NULL
             ELSE ARRAY[mapping_types.di_type]
