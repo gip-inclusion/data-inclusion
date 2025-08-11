@@ -111,7 +111,7 @@ services:
       _AIRFLOW_WWW_USER_PASSWORD: airflow
 
   minio:
-    image: minio/minio:RELEASE.2024-05-10T01-41-38Z
+    image: minio/minio:RELEASE.2025-07-23T15-54-02Z
     command: server /data
     restart: no
     ports:
@@ -125,7 +125,7 @@ services:
       - minio-data:/data
 
   minio-init:
-    image: minio/mc:RELEASE.2024-05-09T17-04-24Z
+    image: minio/mc:RELEASE.2025-07-21T05-28-08Z
     entrypoint: /bin/bash -c
     command:
       - |
