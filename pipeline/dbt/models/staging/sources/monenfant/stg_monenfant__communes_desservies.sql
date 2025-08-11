@@ -4,7 +4,6 @@ WITH source AS (
 
 communes_desservies AS (
     SELECT
-        source._di_source_id,
         NULLIF(TRIM(source.data ->> 'structureId'), '')             AS "structure_id",
         NULLIF(TRIM(communes_desservies.data ->> 'commune'), '')    AS "service_commun__communes_desservies__commune",
         NULLIF(TRIM(communes_desservies.data ->> 'codePostal'), '') AS "service_commun__communes_desservies__code_postal"

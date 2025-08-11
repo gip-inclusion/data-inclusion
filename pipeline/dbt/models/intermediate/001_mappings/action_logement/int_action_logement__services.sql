@@ -8,7 +8,7 @@ structures AS (
 
 final AS (
     SELECT
-        services._di_source_id                                    AS "source",
+        'action-logement'                                         AS "source",
         structures.id                                             AS "structure_id",
         structures.id                                             AS "adresse_id",
         structures.courriel                                       AS "courriel",

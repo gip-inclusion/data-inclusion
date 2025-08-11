@@ -8,7 +8,6 @@
     SELECT * FROM {{ source_model }}
 {% else %}
     SELECT
-        NULL                AS "_di_source_id",
         CAST(NULL AS JSONB) AS "data"
     WHERE FALSE
 {% endif %}

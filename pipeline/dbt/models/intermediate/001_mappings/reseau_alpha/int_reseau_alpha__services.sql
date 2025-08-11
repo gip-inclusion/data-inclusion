@@ -12,7 +12,7 @@ final AS (
         NULL                                                                   AS "prise_rdv",
         NULL                                                                   AS "lien_mobilisation",
         formations.content__lieux_et_horaires_formation__horaires              AS "recurrence",
-        formations._di_source_id                                               AS "source",
+        'reseau-alpha'                                                         AS "source",
         formations.structure_id                                                AS "structure_id",
         SPLIT_PART(formations.content__contact_inscription__telephone, '/', 1) AS "telephone",
         NULL                                                                   AS "zone_diffusion_code",

@@ -7,7 +7,7 @@ final AS (
         id                 AS "id",
         longitude          AS "longitude",
         latitude           AS "latitude",
-        _di_source_id      AS "source",
+        'action-logement'  AS "source",
         complement_adresse AS "complement_adresse",
         commune            AS "commune",
         adresse            AS "adresse",

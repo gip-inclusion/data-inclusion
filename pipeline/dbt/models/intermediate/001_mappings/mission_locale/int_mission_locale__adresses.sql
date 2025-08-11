@@ -12,7 +12,7 @@ final AS (
         complement_adresse_structure AS "complement_adresse",
         CAST(NULL AS FLOAT)          AS "longitude",
         CAST(NULL AS FLOAT)          AS "latitude",
-        _di_source_id                AS "source"
+        'mission-locale'                AS "source"
     FROM structures
 )
 
