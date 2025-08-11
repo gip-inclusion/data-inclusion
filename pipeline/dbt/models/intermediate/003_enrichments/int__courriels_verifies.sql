@@ -2,7 +2,7 @@ WITH contacts AS (
     SELECT DISTINCT RTRIM(UNACCENT(LOWER(courriel)), '.') AS courriel
     FROM {{ ref('int__union_contacts') }}
     WHERE
-        source NOT IN ('mon-enfant', 'reseau-alpha', 'soliguide')
+        source NOT IN ('monenfant', 'reseau-alpha', 'soliguide')
         AND courriel IS NOT NULL
 ),
 
