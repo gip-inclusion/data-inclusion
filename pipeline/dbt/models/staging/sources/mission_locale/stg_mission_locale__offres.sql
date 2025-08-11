@@ -4,7 +4,6 @@ WITH source AS (
 
 final AS (
     SELECT
-        source._di_source_id                                                           AS "_di_source_id",
         NULLIF(TRIM(source.data -> 'offres' ->> 'id_offre'), '')                       AS "id_offre",
         CAST((source.data -> 'offres' ->> 'date_maj') AS TIMESTAMP WITH TIME ZONE)     AS "date_maj",
         NULLIF(TRIM(source.data -> 'offres' ->> 'nom_dora'), '')                       AS "nom_dora",

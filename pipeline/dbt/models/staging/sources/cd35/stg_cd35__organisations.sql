@@ -4,7 +4,6 @@ WITH source AS (
 
 final AS (
     SELECT
-        _di_source_id                                                                               AS "_di_source_id",
         CAST((data ->> 'LATITUDE') AS FLOAT)                                                        AS "latitude",
         CAST((data ->> 'LONGITUDE') AS FLOAT)                                                       AS "longitude",
         data ->> 'ADRESSE'                                                                          AS "adresse",
