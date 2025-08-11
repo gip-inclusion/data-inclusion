@@ -6,7 +6,6 @@ WITH source AS (
 
 services AS (
     SELECT
-        source._di_source_id                                                                                              AS "_di_source_id",
         CAST(SUBSTRING(source.data ->> 'updatedAt' FROM '\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d{3}Z') AS DATE)           AS "updated_at",
         source.data ->> 'lieu_id'                                                                                         AS "lieu_id",
         services.data ->> 'serviceObjectId'                                                                               AS "id",

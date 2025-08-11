@@ -32,7 +32,7 @@ final AS (
         NULL                                                                                           AS "profils_precisions",
         services.structure_id                                                                          AS "structure_id",
         services.thematiques                                                                           AS "thematiques",
-        services._di_source_id                                                                         AS "source",
+        'mediation-numerique'                                                                          AS "source",
         NULL                                                                                           AS "formulaire_en_ligne",
         NULL                                                                                           AS "recurrence",
         structures.telephone                                                                           AS "telephone",

@@ -7,7 +7,6 @@ structures AS (
 
 services AS (
     SELECT
-        _di_source_id                                                                                       AS "_di_source_id",
         CAST((data ->> 'date_maj') AS TIMESTAMP WITH TIME ZONE)                                             AS "date_maj",
         CAST((data ->> 'latitude') AS FLOAT)                                                                AS "latitude",
         CAST((data ->> 'longitude') AS FLOAT)                                                               AS "longitude",

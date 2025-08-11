@@ -4,7 +4,6 @@ WITH source AS (
 
 lieux AS (
     SELECT
-        _di_source_id,
         CAST(SUBSTRING(data ->> 'updatedAt' FROM '\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d{3}Z') AS DATE) AS "updated_at",
         CAST(data #>> '{position,location,coordinates,0}' AS FLOAT)                                      AS "position__coordinates__x",
         CAST(data #>> '{position,location,coordinates,1}' AS FLOAT)                                      AS "position__coordinates__y",

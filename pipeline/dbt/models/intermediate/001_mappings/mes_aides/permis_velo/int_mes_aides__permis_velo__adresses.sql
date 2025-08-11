@@ -12,7 +12,7 @@ final AS (
         NULL                        AS "complement_adresse",
         NULL::FLOAT                 AS "longitude",
         NULL::FLOAT                 AS "latitude",
-        _di_source_id               AS "source"
+        'mes-aides'                 AS "source"
     FROM permis_velo
 )
 

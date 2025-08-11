@@ -4,15 +4,15 @@ WITH structures AS (
 
 final AS (
     SELECT
-        id            AS "id",
-        commune       AS "commune",
-        code_postal   AS "code_postal",
-        code_insee    AS "code_insee",
-        adresse       AS "adresse",
-        NULL          AS "complement_adresse",
-        longitude     AS "longitude",
-        latitude      AS "latitude",
-        _di_source_id AS "source"
+        id                    AS "id",
+        commune               AS "commune",
+        code_postal           AS "code_postal",
+        code_insee            AS "code_insee",
+        adresse               AS "adresse",
+        NULL                  AS "complement_adresse",
+        longitude             AS "longitude",
+        latitude              AS "latitude",
+        'mediation-numerique' AS "source"
     FROM structures
 )
 

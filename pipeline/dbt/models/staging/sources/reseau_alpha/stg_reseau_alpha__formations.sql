@@ -23,7 +23,6 @@ adresses AS (
 
 final AS (
     SELECT
-        source._di_source_id                                                     AS "_di_source_id",
         adresses.adresses__ville                                                 AS "adresses__ville",
         adresses.adresses__latitude                                              AS "adresses__latitude",
         adresses.adresses__longitude                                             AS "adresses__longitude",

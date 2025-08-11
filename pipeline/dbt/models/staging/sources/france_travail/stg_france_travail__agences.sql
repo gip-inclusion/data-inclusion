@@ -4,7 +4,6 @@ WITH source AS (
 
 final AS (
     SELECT
-        _di_source_id                                                                                                                                          AS "_di_source_id",
         CURRENT_DATE                                                                                                                                           AS "date_maj",
         CASE WHEN data ->> 'dispositifADEDA' = 'true' THEN 'https://www.francetravail.fr/actualites/a-laffiche/2022/adeda-un-dispositif-pour-mieux-a.html' END AS "accessibilite",
         CAST(data #>> '{adressePrincipale,gpsLat}' AS FLOAT)                                                                                                   AS "latitude",

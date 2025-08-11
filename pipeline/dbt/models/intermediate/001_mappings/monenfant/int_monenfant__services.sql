@@ -27,7 +27,7 @@ final AS (
         ARRAY['familles-enfants']                                                                                   AS "profils",
         NULL                                                                                                        AS "profils_precisions",
         structure_id                                                                                                AS "structure_id",
-        _di_source_id                                                                                               AS "source",
+        'monenfant'                                                                                                 AS "source",
         NULL                                                                                                        AS "formulaire_en_ligne",
         service_commun__calendrier__jours_horaires_text                                                             AS "recurrence",
         coordonnees__telephone                                                                                      AS "telephone",

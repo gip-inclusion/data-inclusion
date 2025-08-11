@@ -15,7 +15,7 @@ final AS (
         NULL                  AS "rna",
         NULL                  AS "siret",
         content__site_web     AS "site_web",
-        _di_source_id         AS "source",
+        'reseau-alpha'        AS "source",
         content__telephone    AS "telephone",
         NULL                  AS "typologie",
         content__date_maj     AS "date_maj",
