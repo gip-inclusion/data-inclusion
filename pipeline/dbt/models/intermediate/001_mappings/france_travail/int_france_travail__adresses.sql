@@ -11,7 +11,7 @@ final AS (
         agences.id                 AS "id",
         agences.longitude          AS "longitude",
         agences.latitude           AS "latitude",
-        agences._di_source_id      AS "source",
+        'france-travail'           AS "source",
         agences.complement_adresse AS "complement_adresse",
         agences.adresse            AS "adresse",
         agences.code_postal        AS "code_postal",

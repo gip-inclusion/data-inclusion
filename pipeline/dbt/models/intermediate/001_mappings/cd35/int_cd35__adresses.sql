@@ -12,7 +12,7 @@ final AS (
         complement_adresse AS "complement_adresse",
         longitude          AS "longitude",
         latitude           AS "latitude",
-        _di_source_id      AS "source"
+        'cd35'             AS "source"
     FROM organisations
 )
 

@@ -8,7 +8,7 @@ formations AS (
 
 structure_adresses AS (
     SELECT
-        _di_source_id               AS "source",
+        'reseau-alpha'              AS "source",
         adresses__longitude         AS "longitude",
         adresses__latitude          AS "latitude",
         content__complement_adresse AS "complement_adresse",
@@ -22,7 +22,7 @@ structure_adresses AS (
 
 formation_adresses AS (
     SELECT
-        _di_source_id                                 AS "source",
+        'reseau-alpha'                                AS "source",
         adresses__longitude                           AS "longitude",
         adresses__latitude                            AS "latitude",
         NULL                                          AS "complement_adresse",
