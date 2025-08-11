@@ -4,7 +4,6 @@ WITH source AS (
 
 final AS (
     SELECT
-        _di_source_id                                                                                                          AS "_di_source_id",
         data ->> 'id'                                                                                                          AS "id",
         CURRENT_DATE AT TIME ZONE 'Europe/Paris'                                                                               AS "date_maj",
         ARRAY_REMOVE(ARRAY(SELECT value FROM JSONB_EACH_TEXT(data) WHERE key ~* 'modes_accueil.\d+'), NULL)                    AS "modes_accueil",

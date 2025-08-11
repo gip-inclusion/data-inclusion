@@ -4,7 +4,7 @@ WITH structures AS (
 
 final AS (
     SELECT
-        _di_source_id           AS "source",
+        'mission-locale'        AS "source",
         id_structure            AS "id",
         siret                   AS "siret",
         NULL                    AS "rna",

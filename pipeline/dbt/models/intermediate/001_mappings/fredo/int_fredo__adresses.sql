@@ -13,7 +13,7 @@ final AS (
         CASE
             WHEN adresse IS NOT NULL OR adresse = 'La Réunion' THEN longitude
         END                           AS "longitude",
-        _di_source_id                 AS "source",
+        'fredo'                       AS "source",
         code_postal                   AS "code_postal",
         NULLIF(adresse, 'La Réunion') AS "adresse",
         NULL                          AS "complement_adresse"

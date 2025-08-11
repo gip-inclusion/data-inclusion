@@ -4,7 +4,6 @@ WITH source AS (
 
 final AS (
     SELECT
-        _di_source_id                                                              AS "_di_source_id",
         data ->> 'id'                                                              AS "id",
         NULLIF(TRIM(data ->> 'adresse'), '')                                       AS "adresse",
         NULLIF(TRIM(data ->> 'code_postal'), '')                                   AS "code_postal",

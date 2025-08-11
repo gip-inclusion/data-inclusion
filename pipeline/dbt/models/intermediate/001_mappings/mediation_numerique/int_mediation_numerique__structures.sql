@@ -35,7 +35,7 @@ final AS (
         presentation_resume                                                                                          AS "presentation_resume",
         {{ truncate_text("presentation_detail") }} AS "presentation_detail",
         CAST(date_maj AS DATE)                                                                                       AS "date_maj",
-        _di_source_id                                                                                                AS "source",
+        'mediation-numerique'                                                                                        AS "source",
         labels_autres                                                                                                AS "labels_autres"
     FROM structures
 )

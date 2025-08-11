@@ -4,7 +4,6 @@ WITH source AS (
 
 final AS (
     SELECT
-        _di_source_id                                                                                          AS "_di_source_id",
         TO_DATE(data ->> 'date_maj', 'DD/MM/YYYY')                                                             AS "date_maj",
         ARRAY_REMOVE(ARRAY(SELECT value FROM JSONB_EACH_TEXT(data) WHERE key ~* 'labels_autres.\d+'), NULL)    AS "labels_autres",
         ARRAY_REMOVE(ARRAY(SELECT value FROM JSONB_EACH_TEXT(data) WHERE key ~* 'labels_nationaux.\d+'), NULL) AS "labels_nationaux",

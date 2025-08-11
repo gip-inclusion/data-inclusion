@@ -9,7 +9,7 @@ final AS (
         NULL                     AS "code_insee",
         CAST(NULL AS FLOAT)      AS "longitude",
         CAST(NULL AS FLOAT)      AS "latitude",
-        _di_source_id            AS "source",
+        'monenfant'              AS "source",
         coordonnees__code_postal AS "code_postal",
         ARRAY_TO_STRING(
             ARRAY_REMOVE(

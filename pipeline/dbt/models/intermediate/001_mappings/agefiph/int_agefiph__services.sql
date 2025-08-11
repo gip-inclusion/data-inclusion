@@ -98,7 +98,7 @@ final AS (
         NULL                                                         AS "lien_mobilisation",
         NULL                                                         AS "recurrence",
         NULL                                                         AS "conditions_acces",
-        services._di_source_id                                       AS "source",
+        'agefiph'                                                    AS "source",
         structures.id                                                AS "structure_id",
         CASE
             WHEN services.attributes__field_lien_aide_uri IS NULL THEN structures.telephone

@@ -18,7 +18,7 @@ final AS (
         rna                    AS "rna",
         siret                  AS "siret",
         site_web               AS "site_web",
-        _di_source_id          AS "source",
+        'action-logement'      AS "source",
         telephone              AS "telephone",
         typologie              AS "typologie",
         CAST(date_maj AS DATE) AS "date_maj",
