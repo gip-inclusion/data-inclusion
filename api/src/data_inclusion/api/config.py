@@ -3,7 +3,7 @@ from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
 class Settings(BaseSettings):
-    model_config = SettingsConfigDict(env_file=".env")
+    model_config = SettingsConfigDict(env_file=".env", extra="ignore")
 
     ALLOWED_HOSTS: list[str] = ["api.data.inclusion.gouv.fr"]
     BASE_URL: str = "https://api.data.inclusion.gouv.fr"
