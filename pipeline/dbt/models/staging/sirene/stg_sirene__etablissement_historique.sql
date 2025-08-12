@@ -3,11 +3,11 @@ WITH source AS (
 )
 
 SELECT
-    siret                                      AS "siret",
-    "dateDebut"                                AS "date_debut",
+    siret                                                       AS "siret",
+    TO_DATE("dateDebut", 'YYYY-MM-DD')                          AS "date_debut",
     CASE "etatAdministratifEtablissement"
         WHEN 'A' THEN 'actif'
         WHEN 'F' THEN 'fermé'
-    END                                        AS "etat_administratif_etablissement",
-    "changementEtatAdministratifEtablissement" AS "changement_etat_administratif_etablissement"
+    END                                                         AS "etat_administratif_etablissement",
+    CAST("changementEtatAdministratifEtablissement" AS BOOLEAN) AS "changement_etat_administratif_etablissement"
 FROM source

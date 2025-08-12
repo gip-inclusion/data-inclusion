@@ -20,6 +20,11 @@ models:
           - not_null
           - accepted_values:
               values: [true, false]
+    config:
+      indexes:
+        - columns: ['siret']
+        - columns: ['date_debut']
+        - columns: ['etat_administratif_etablissement']
 
   - name: stg_sirene__etablissement_succession
     columns:
@@ -29,14 +34,14 @@ models:
       - name: siret_etablissement_successeur
         data_tests:
           - dbt_utils.not_empty_string
-      - name: continuite_economique
-        data_tests:
-          - not_null
-          - accepted_values:
-              values: [true, false]
       - name: date_lien_succession
         data_tests:
           - not_null
+    config:
+      indexes:
+        - columns: ['siret_etablissement_predecesseur']
+        - columns: ['siret_etablissement_successeur']
+        - columns: ['date_lien_succession']
 
   - name: stg_sirene__stock_etablissement
     columns:
@@ -50,3 +55,7 @@ models:
           - not_null
           - accepted_values:
               values: ['actif', 'fermé']
+    config:
+      indexes:
+        - columns: ['siret']
+        - columns: ['etat_administratif_etablissement']

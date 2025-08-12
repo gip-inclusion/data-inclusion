@@ -3,8 +3,7 @@ WITH source AS (
 )
 
 SELECT
-    "siretEtablissementPredecesseur" AS "siret_etablissement_predecesseur",
-    "siretEtablissementSuccesseur"   AS "siret_etablissement_successeur",
-    "dateLienSuccession"             AS "date_lien_succession",
-    "continuiteEconomique"           AS "continuite_economique"
+    "siretEtablissementPredecesseur"            AS "siret_etablissement_predecesseur",
+    "siretEtablissementSuccesseur"              AS "siret_etablissement_successeur",
+    TO_DATE("dateLienSuccession", 'YYYY-MM-DD') AS "date_lien_succession"
 FROM source
