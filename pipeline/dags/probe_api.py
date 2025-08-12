@@ -1,7 +1,6 @@
 import pendulum
 
 from airflow.decorators import dag, task
-from airflow.operators import empty
 
 from dag_utils.virtualenvs import PYTHON_BIN_PATH
 
@@ -103,9 +102,6 @@ EVERY_DAY_AT_7AM = "0 7 * * *"
     catchup=False,
 )
 def import_decoupage_administratif():
-    start = empty.EmptyOperator(task_id="start")
-    end = empty.EmptyOperator(task_id="end")
-
     today = pendulum.now().format("YYYY-MM-DD")
     yesterday = pendulum.now().subtract(days=1).format("YYYY-MM-DD")
 
@@ -116,10 +112,8 @@ def import_decoupage_administratif():
     ]
 
     (
-        start
-        >> store_probe_results(get_requests=requests, today=today)
+        store_probe_results(get_requests=requests, today=today)
         >> compare_results(get_requests=requests, today=today, yesterday=yesterday)
-        >> end
     )
 
 

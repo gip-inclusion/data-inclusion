@@ -1,7 +1,6 @@
 import pendulum
 
 from airflow.decorators import dag, task
-from airflow.operators import empty
 
 from dag_utils import date, dbt, sentry
 from dag_utils.virtualenvs import PYTHON_BIN_PATH
@@ -94,16 +93,13 @@ def extract_and_load():
     catchup=False,
 )
 def import_decoupage_administratif():
-    start = empty.EmptyOperator(task_id="start")
-    end = empty.EmptyOperator(task_id="end")
-
     dbt_build_staging = dbt.dbt_operator_factory(
         task_id="dbt_build_staging",
         command="build",
         select="path:models/staging/decoupage_administratif",
     )
 
-    start >> extract_and_load() >> dbt_build_staging >> end
+    extract_and_load() >> dbt_build_staging
 
 
 import_decoupage_administratif()
