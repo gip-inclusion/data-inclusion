@@ -1,7 +1,6 @@
 import pendulum
 
 from airflow.decorators import dag, task
-from airflow.operators import empty
 
 from dag_utils import sentry
 from dag_utils.virtualenvs import PYTHON_BIN_PATH
@@ -55,10 +54,4 @@ def send_rgpd_notice():
     catchup=False,
 )
 def notify_rgpd_contacts():
-    start = empty.EmptyOperator(task_id="start")
-    end = empty.EmptyOperator(task_id="end")
-
-    start >> send_rgpd_notice() >> end
-
-
-notify_rgpd_contacts()
+    send_rgpd_notice()

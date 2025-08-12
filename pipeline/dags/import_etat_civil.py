@@ -1,7 +1,6 @@
 import pendulum
 
 from airflow.decorators import dag, task
-from airflow.operators import empty
 
 from dag_utils import date, dbt
 from dag_utils.virtualenvs import PYTHON_BIN_PATH
@@ -41,16 +40,13 @@ def import_prenoms():
     catchup=False,
 )
 def import_etat_civil():
-    start = empty.EmptyOperator(task_id="start")
-    end = empty.EmptyOperator(task_id="end")
-
     dbt_build_staging = dbt.dbt_operator_factory(
         task_id="dbt_build_staging",
         command="build",
         select="path:models/staging/etat_civil",
     )
 
-    start >> import_prenoms() >> dbt_build_staging >> end
+    import_prenoms() >> dbt_build_staging
 
 
 import_etat_civil()
