@@ -1,7 +1,6 @@
 import pendulum
 
 from airflow.decorators import dag, task
-from airflow.operators import empty
 
 from dag_utils import date, sentry
 from dag_utils.virtualenvs import PYTHON_BIN_PATH
@@ -57,10 +56,7 @@ def import_dataset(
     tags=["source"],
 )
 def import_odspep():
-    start = empty.EmptyOperator(task_id="start")
-    end = empty.EmptyOperator(task_id="end")
-
-    start >> import_dataset() >> end
+    import_dataset()
 
 
 import_odspep()

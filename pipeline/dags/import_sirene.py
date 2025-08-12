@@ -1,7 +1,6 @@
 import pendulum
 
 from airflow.decorators import dag, task
-from airflow.operators import empty
 
 from dag_utils import date, dbt
 from dag_utils.virtualenvs import PYTHON_BIN_PATH
@@ -301,9 +300,6 @@ EVERY_MONTH_ON_THE_10TH = "30 3 10 * *"
     concurrency=1,
 )
 def import_sirene():
-    start = empty.EmptyOperator(task_id="start")
-    end = empty.EmptyOperator(task_id="end")
-
     dbt_build_staging = dbt.dbt_operator_factory(
         task_id="dbt_build_staging",
         command="build",
@@ -311,8 +307,7 @@ def import_sirene():
     )
 
     (
-        start
-        >> create_schema(name="sirene")
+        create_schema(name="sirene")
         >> [
             import_stock_etablissement_historique(),
             import_stock_etablissement_liens_succession(),
@@ -320,7 +315,6 @@ def import_sirene():
             import_stock_unite_legale(),
         ]
         >> dbt_build_staging
-        >> end
     )
 
 

@@ -1,7 +1,6 @@
 import pendulum
 
 from airflow.decorators import dag, task
-from airflow.operators import empty
 from airflow.utils.task_group import TaskGroup
 
 from dag_utils import date, sentry, sources
@@ -131,8 +130,6 @@ for source_id, source_config in sources.SOURCES_CONFIGS.items():
         user_defined_macros={"local_ds": date.local_date_str},
     )
     def _dag():
-        start = empty.EmptyOperator(task_id="start")
-        end = empty.EmptyOperator(task_id="end")
         create_schema_task = create_schema(source_id=source_id)
 
         for stream_id in source_config["streams"]:
@@ -142,6 +139,6 @@ for source_id, source_config in sources.SOURCES_CONFIGS.items():
                     >> load(source_id=source_id, stream_id=stream_id)
                 )
 
-            start >> create_schema_task >> stream_task_group >> end
+            create_schema_task >> stream_task_group
 
     globals()[dag_id] = _dag()

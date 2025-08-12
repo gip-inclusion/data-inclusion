@@ -1,7 +1,6 @@
 import pendulum
 
 from airflow.decorators import dag, task
-from airflow.operators import empty
 
 from dag_utils.virtualenvs import PYTHON_BIN_PATH
 
@@ -127,10 +126,4 @@ EVERY_MONDAY_AT_2PM = "0 14 * * 1"
     catchup=False,
 )
 def publish():
-    start = empty.EmptyOperator(task_id="start")
-    end = empty.EmptyOperator(task_id="end")
-
-    start >> publish_to_datagouv() >> end
-
-
-publish()
+    publish_to_datagouv()
