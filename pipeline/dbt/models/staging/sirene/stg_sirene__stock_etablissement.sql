@@ -3,9 +3,9 @@ WITH source AS (
 )
 
 SELECT
-    siret AS "siret",
+    LPAD(siret, 14, '0') AS "siret",
     CASE "etatAdministratifEtablissement"
         WHEN 'A' THEN 'actif'
         WHEN 'F' THEN 'fermé'
-    END   AS "etat_administratif_etablissement"
+    END                  AS "etat_administratif_etablissement"
 FROM source
