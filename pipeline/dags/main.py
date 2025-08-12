@@ -1,7 +1,6 @@
 import pendulum
 
 from airflow.decorators import dag, task
-from airflow.operators import empty
 from airflow.utils.task_group import TaskGroup
 from airflow.utils.trigger_rule import TriggerRule
 
@@ -102,9 +101,6 @@ def get_staging_tasks():
     concurrency=4,
 )
 def main():
-    start = empty.EmptyOperator(task_id="start")
-    end = empty.EmptyOperator(task_id="end")
-
     dbt_seed = dbt_operator_factory(
         task_id="dbt_seed",
         command="seed",
@@ -153,8 +149,7 @@ def main():
     )
 
     (
-        start
-        >> dbt_seed
+        dbt_seed
         >> dbt_create_udfs
         >> get_staging_tasks()
         >> dbt_build_intermediate_unions
@@ -164,7 +159,6 @@ def main():
         >> dbt_build_marts
         >> dbt_snapshot_deduplicate_stats
         >> export_dataset()
-        >> end
     )
 
 
