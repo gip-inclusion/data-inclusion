@@ -1,4 +1,5 @@
 import pendulum
+from common import tasks
 
 from airflow.decorators import dag, task
 from airflow.utils.task_group import TaskGroup
@@ -38,15 +39,7 @@ def extract(source_id, stream_id, run_id, logical_date):
 
 
 @task.external_python(python=str(PYTHON_BIN_PATH))
-def create_schema(source_id):
-    from dag_utils import pg
-
-    schema_name = source_id.replace("-", "_")
-    pg.create_schema(schema_name)
-
-
-@task.external_python(python=str(PYTHON_BIN_PATH))
-def load(source_id, stream_id, run_id, logical_date):
+def load(schema_name, source_id, stream_id, run_id, logical_date):
     import pandas as pd
     import sqlalchemy as sqla
     from sqlalchemy.dialects.postgresql import JSONB
@@ -80,7 +73,6 @@ def load(source_id, stream_id, run_id, logical_date):
     df = df.assign(_di_stream_s3_key=s3_file_path)
     df = df.assign(_di_logical_date=logical_date)
 
-    schema_name = source_id.replace("-", "_")
     table_name = stream_id.replace("-", "_")
 
     with pg.connect_begin() as conn:
@@ -130,13 +122,18 @@ for source_id, source_config in sources.SOURCES_CONFIGS.items():
         user_defined_macros={"local_ds": date.local_date_str},
     )
     def _dag():
-        create_schema_task = create_schema(source_id=source_id)
+        schema_name = source_id.replace("-", "_")
+        create_schema_task = tasks.create_schema(name=schema_name)
 
         for stream_id in source_config["streams"]:
             with TaskGroup(group_id=stream_id) as stream_task_group:
                 (
                     extract(source_id=source_id, stream_id=stream_id)
-                    >> load(source_id=source_id, stream_id=stream_id)
+                    >> load(
+                        schema_name=schema_name,
+                        source_id=source_id,
+                        stream_id=stream_id,
+                    )
                 )
 
             create_schema_task >> stream_task_group
