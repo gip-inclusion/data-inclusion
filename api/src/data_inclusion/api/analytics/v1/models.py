@@ -10,7 +10,6 @@ class ConsultStructureEvent(db.Base):
     created_at: Mapped[db.timestamp]
     user: Mapped[str]
     structure_id: Mapped[str]
-    source: Mapped[str]
 
 
 class ConsultServiceEvent(db.Base):
@@ -20,7 +19,6 @@ class ConsultServiceEvent(db.Base):
     created_at: Mapped[db.timestamp]
     user: Mapped[str]
     service_id: Mapped[str]
-    source: Mapped[str]
     score_qualite: Mapped[float | None]
 
 
