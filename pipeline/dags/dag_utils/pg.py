@@ -19,17 +19,6 @@ def connect_begin():
             yield conn
 
 
-def create_schema(schema_name: str) -> None:
-    with connect_begin() as conn:
-        conn.execute(
-            f"""\
-            CREATE SCHEMA IF NOT EXISTS {schema_name};
-            GRANT USAGE ON SCHEMA {schema_name} TO PUBLIC;
-            ALTER DEFAULT PRIVILEGES IN SCHEMA {schema_name}
-            GRANT SELECT ON TABLES TO PUBLIC;"""
-        )
-
-
 def load_source_df(source_id: str, stream_id: str, df: pd.DataFrame) -> None:
     import sqlalchemy as sqla
     from sqlalchemy.dialects.postgresql import JSONB

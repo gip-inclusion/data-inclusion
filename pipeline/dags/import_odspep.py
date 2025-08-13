@@ -1,4 +1,5 @@
 import pendulum
+from common import tasks
 
 from airflow.decorators import dag, task
 
@@ -8,8 +9,9 @@ from dag_utils.virtualenvs import PYTHON_BIN_PATH
 
 @task.external_python(python=str(PYTHON_BIN_PATH))
 def import_dataset(
-    run_id: str,
-    logical_date,
+    schema: str,
+    run_id=None,
+    logical_date=None,
 ):
     import pandas as pd
 
@@ -20,8 +22,6 @@ def import_dataset(
     ODSPEP_S3_KEY_PREFIX = "sources/odspep/2023-01-23/denormalized/Exports/"
 
     s3_hook = s3.S3Hook(aws_conn_id="s3_sources")
-
-    pg.create_schema("odspep")
 
     for excel_file_name in s3_hook.list_keys(prefix=ODSPEP_S3_KEY_PREFIX):
         tmp_filename = s3_hook.download_file(key=excel_file_name)
@@ -42,7 +42,7 @@ def import_dataset(
             df.to_sql(
                 table_name,
                 con=conn,
-                schema="odspep",
+                schema=schema,
                 if_exists="replace",
                 index=False,
             )
@@ -56,7 +56,9 @@ def import_dataset(
     tags=["source"],
 )
 def import_odspep():
-    import_dataset()
+    schema = "odspep"
+
+    tasks.create_schema(name=schema) >> import_dataset(schema=schema)
 
 
 import_odspep()
