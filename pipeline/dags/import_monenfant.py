@@ -1,4 +1,5 @@
 import pendulum
+from common import tasks
 
 from airflow.decorators import dag, task
 
@@ -81,8 +82,9 @@ def extract(
     python=str(PYTHON_BIN_PATH),
 )
 def load(
-    run_id,
-    logical_date,
+    schema_name,
+    run_id=None,
+    logical_date=None,
 ):
     import pandas as pd
 
@@ -117,8 +119,7 @@ def load(
     df = df.assign(_di_stream_s3_key=s3_file_prefix)
     df = df.assign(_di_logical_date=logical_date)
 
-    pg.create_schema(source_id)
-    pg.load_source_df(source_id=source_id, stream_id=stream_id, df=df)
+    pg.load_source_df(source_id=schema_name, stream_id=stream_id, df=df)
 
 
 MAX_NUMBER_OF_CITIES = 2000
@@ -136,6 +137,8 @@ EXTRACT_TASK_CONCURRENCY = 2
     tags=["source"],
 )
 def import_monenfant():
+    source_id = "monenfant"
+
     # limit the extraction to the top cities in France
     # because searches on monenfant.fr are limited to a 30km radius around a city
     cities_list = list_cities(max_number_of_cities=MAX_NUMBER_OF_CITIES)
@@ -148,7 +151,8 @@ def import_monenfant():
             max_active_tis_per_dag=EXTRACT_TASK_CONCURRENCY,
             map_index_template="{{ task.op_kwargs.city_code }}",
         ).expand_kwargs(cities_list)
-        >> load()
+        >> tasks.create_schema(name=source_id)
+        >> load(schema_name=source_id)
     )
 
 

@@ -1,4 +1,5 @@
 import pendulum
+from common import tasks
 
 from airflow.decorators import dag, task
 
@@ -10,7 +11,7 @@ from dag_utils.virtualenvs import PYTHON_BIN_PATH
     python=str(PYTHON_BIN_PATH),
     retries=2,
 )
-def import_prenoms():
+def import_prenoms(schema: str):
     import pandas as pd
 
     from dag_utils import pg
@@ -20,9 +21,6 @@ def import_prenoms():
     )
 
     df = pd.read_csv(url, sep=";")
-
-    schema = "etat_civil"
-    pg.create_schema(schema)
 
     with pg.connect_begin() as conn:
         df.to_sql(
@@ -46,7 +44,13 @@ def import_etat_civil():
         select="path:models/staging/etat_civil",
     )
 
-    import_prenoms() >> dbt_build_staging
+    schema = "etat_civil"
+
+    (
+        tasks.create_schema(name=schema)
+        >> import_prenoms(schema=schema)
+        >> dbt_build_staging
+    )
 
 
 import_etat_civil()

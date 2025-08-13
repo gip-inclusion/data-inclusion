@@ -1,4 +1,5 @@
 import pendulum
+from common import tasks
 
 from airflow.decorators import dag, task
 
@@ -10,7 +11,7 @@ from dag_utils.virtualenvs import PYTHON_BIN_PATH
     python=str(PYTHON_BIN_PATH),
     retries=2,
 )
-def extract_and_load():
+def extract_and_load(schema: str):
     import pandas as pd
     import sqlalchemy as sqla
     from furl import furl
@@ -50,9 +51,6 @@ def extract_and_load():
     URL_BY_RESOURCE["arrondissements"] = (
         URL_BY_RESOURCE["communes"].copy().add({"type": "arrondissement-municipal"})
     )
-
-    schema = "decoupage_administratif"
-    pg.create_schema(schema)
 
     for resource, url in URL_BY_RESOURCE.items():
         print(f"Fetching resource={resource} from url={url}")
@@ -99,7 +97,13 @@ def import_decoupage_administratif():
         select="path:models/staging/decoupage_administratif",
     )
 
-    extract_and_load() >> dbt_build_staging
+    schema = "decoupage_administratif"
+
+    (
+        tasks.create_schema(name=schema)
+        >> extract_and_load(schema=schema)
+        >> dbt_build_staging
+    )
 
 
 import_decoupage_administratif()
