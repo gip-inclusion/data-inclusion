@@ -1,7 +1,8 @@
 import pendulum
-from common import tasks
+from common import helpers, tasks
 
 from airflow.decorators import dag, task
+from airflow.models.baseoperator import chain
 from airflow.utils.task_group import TaskGroup
 
 from dag_utils import date, sentry, sources
@@ -12,98 +13,63 @@ from dag_utils.virtualenvs import PYTHON_BIN_PATH
     python=str(PYTHON_BIN_PATH),
     retries=2,
 )
-def extract(source_id, stream_id, run_id, logical_date):
-    from dag_utils import s3, sources
+def extract(source_id, stream_id, to_s3_path):
+    import io
+
+    from airflow.providers.amazon.aws.hooks import s3
+
+    from dag_utils import sources
 
     source = sources.SOURCES_CONFIGS[source_id]
     stream = source["streams"][stream_id]
     url = stream["url"]
 
-    print(f"Fetching file from url={url}")
+    print(f"Using {url}")
 
-    s3_file_path = s3.source_file_path(
-        source_id=source_id,
-        filename=stream["filename"],
-        run_id=run_id,
-        logical_date=logical_date,
-    )
-
-    # FIXME(vperron) : Not a great fan of those "extractors" that accept ids
-    # and tokens, but it's not my main focus atm.
     extract_fn = sources.get_extractor(source_id, stream_id)
+    content = extract_fn(url=url, token=stream.get("token"), id=stream_id)
 
-    s3.store_content(
-        path=s3_file_path,
-        content=extract_fn(url=url, token=stream.get("token"), id=stream_id),
-    )
+    s3_hook = s3.S3Hook(aws_conn_id="s3")
+    with io.BytesIO(content) as buf:
+        s3_hook.load_file_obj(
+            key=to_s3_path,
+            file_obj=buf,
+            replace=True,
+        )
 
 
 @task.external_python(python=str(PYTHON_BIN_PATH))
-def load(schema_name, source_id, stream_id, run_id, logical_date):
-    import pandas as pd
-    import sqlalchemy as sqla
-    from sqlalchemy.dialects.postgresql import JSONB
+def load(schema_name: str, source_id, stream_id, from_s3_path):
+    import tempfile
+    from pathlib import Path
 
-    from dag_utils import pg, s3, sources
+    from common import pg
 
-    source = sources.SOURCES_CONFIGS[source_id]
-    stream = source["streams"][stream_id]
-    url = stream["url"]
+    from airflow.providers.amazon.aws.hooks import s3
+    from airflow.providers.postgres.hooks import postgres
 
-    s3_file_path = s3.source_file_path(
-        source_id=source_id,
-        filename=stream["filename"],
-        run_id=run_id,
-        logical_date=logical_date,
-    )
-
-    # FIXME(vperron) : Re-load the file as a dataframe. This seems a bit unefficient.
-    tmp_file_path = s3.download_file(s3_file_path)
-
-    print(f"Downloading file from s3_path={s3_file_path} to tmp_path={tmp_file_path}")
+    from dag_utils import sources
 
     read_fn = sources.get_reader(source_id, stream_id)
-    df = read_fn(path=tmp_file_path)
 
-    df = pd.DataFrame().assign(data=df.apply(lambda row: row.to_dict(), axis="columns"))
-    df = df.assign(_di_batch_id=run_id)
-    df = df.assign(_di_source_id=source_id)
-    df = df.assign(_di_stream_id=stream_id)
-    df = df.assign(_di_source_url=url)
-    df = df.assign(_di_stream_s3_key=s3_file_path)
-    df = df.assign(_di_logical_date=logical_date)
+    print(f"Using {from_s3_path}")
 
-    table_name = stream_id.replace("-", "_")
-
-    with pg.connect_begin() as conn:
-        df.to_sql(
-            f"{table_name}_tmp",
-            con=conn,
-            schema=schema_name,
-            if_exists="replace",
-            index=False,
-            dtype={
-                "data": JSONB,
-                "_di_logical_date": sqla.Date,
-            },
+    with tempfile.TemporaryDirectory() as tmpdir:
+        s3_hook = s3.S3Hook(aws_conn_id="s3")
+        tmp_file_path = Path(
+            s3_hook.download_file(
+                key=from_s3_path,
+                local_path=tmpdir,
+            )
         )
+        df = read_fn(path=tmp_file_path)
 
-        conn.execute(
-            f"""\
-            CREATE TABLE IF NOT EXISTS {schema_name}.{table_name} (
-                data              JSONB,
-                _di_batch_id      TEXT,
-                _di_source_id     TEXT,
-                _di_stream_id     TEXT,
-                _di_source_url    TEXT,
-                _di_stream_s3_key TEXT,
-                _di_logical_date  DATE
-            );
-            TRUNCATE {schema_name}.{table_name};
-            INSERT INTO {schema_name}.{table_name}
-            SELECT * FROM {schema_name}.{table_name}_tmp;
-            DROP TABLE {schema_name}.{table_name}_tmp;"""
-        )
+    pg.to_pg(
+        hook=postgres.PostgresHook(postgres_conn_id="pg"),
+        df=df,
+        schema_name=schema_name,
+        table_name=stream_id.replace("-", "_"),
+    )
 
 
 for source_id, source_config in sources.SOURCES_CONFIGS.items():
@@ -119,23 +85,31 @@ for source_id, source_config in sources.SOURCES_CONFIGS.items():
         schedule=source_config["schedule"],
         catchup=False,
         tags=["source"],
-        user_defined_macros={"local_ds": date.local_date_str},
     )
     def _dag():
+        base_s3_path = helpers.s3_file_path(source_id=source_id)
         schema_name = source_id.replace("-", "_")
+
         create_schema_task = tasks.create_schema(name=schema_name)
 
-        for stream_id in source_config["streams"]:
-            with TaskGroup(group_id=stream_id) as stream_task_group:
-                (
-                    extract(source_id=source_id, stream_id=stream_id)
-                    >> load(
+        for stream_id, stream in source_config["streams"].items():
+            s3_path = str(base_s3_path / stream["filename"])
+
+            with TaskGroup(group_id=stream_id) as tg:
+                chain(
+                    extract(
+                        source_id=source_id,
+                        stream_id=stream_id,
+                        to_s3_path=s3_path,
+                    ),
+                    load(
                         schema_name=schema_name,
                         source_id=source_id,
                         stream_id=stream_id,
-                    )
+                        from_s3_path=s3_path,
+                    ),
                 )
 
-            create_schema_task >> stream_task_group
+            chain(create_schema_task, tg)
 
     globals()[dag_id] = _dag()

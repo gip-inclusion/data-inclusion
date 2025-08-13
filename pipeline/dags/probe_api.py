@@ -1,6 +1,7 @@
 import pendulum
 
 from airflow.decorators import dag, task
+from airflow.models.baseoperator import chain
 
 from dag_utils.virtualenvs import PYTHON_BIN_PATH
 
@@ -9,14 +10,15 @@ from dag_utils.virtualenvs import PYTHON_BIN_PATH
     python=str(PYTHON_BIN_PATH),
 )
 def store_probe_results(get_requests: list[str], today: str) -> None:
+    import io
     import json
 
     import furl
     import requests
 
     from airflow.models import Variable
+    from airflow.providers.amazon.aws.hooks import s3
 
-    from dag_utils import s3
     from dag_utils.sources.utils import filename_from_url
 
     BASE_URI = "https://api.data.inclusion.gouv.fr"
@@ -24,6 +26,8 @@ def store_probe_results(get_requests: list[str], today: str) -> None:
     headers = {
         "Authorization": f"Bearer {token_probe}",
     }
+    s3_hook = s3.S3Hook(aws_conn_id="s3")
+
     for get_request in get_requests:
         url = furl.furl(f"{BASE_URI}/{get_request}")
         filename = filename_from_url(list(url.path.segments), url.query.params)
@@ -32,10 +36,14 @@ def store_probe_results(get_requests: list[str], today: str) -> None:
         response = requests.get(url.add({"size": 100}).url, headers=headers)
         response.raise_for_status()
         today_path = f"tests/{today}/{filename}"
-        s3.store_content(
-            today_path,
-            json.dumps(response.json(), indent=2).encode(),
-        )
+
+        content = json.dumps(response.json(), indent=2).encode()
+        with io.BytesIO(content) as buf:
+            s3_hook.load_file_obj(
+                key=today_path,
+                file_obj=buf,
+                replace=True,
+            )
 
 
 @task.external_python(
@@ -47,8 +55,11 @@ def compare_results(get_requests: list[str], today: str, yesterday: str) -> None
     import furl
     from botocore.exceptions import ClientError
 
-    from dag_utils import s3
+    from airflow.providers.amazon.aws.hooks import s3
+
     from dag_utils.sources.utils import filename_from_url
+
+    s3_hook = s3.S3Hook(aws_conn_id="s3")
 
     # 10% like the threshold for source stats alerts. Adjust if needed.
     error_margin = 0.1
@@ -61,16 +72,16 @@ def compare_results(get_requests: list[str], today: str, yesterday: str) -> None
         yesterday_path = f"tests/{yesterday}/{filename}"
 
         try:
-            tmp_filename_yesterday = s3.download_file(yesterday_path)
-            yesterday_data = json.load(tmp_filename_yesterday.open())
+            with open(s3_hook.download_file(key=yesterday_path)) as fp:
+                yesterday_data = json.load(fp)
         except ClientError as e:
             if e.response["Error"]["Code"] == "404":
                 print(f"No data from yesterday for path `{yesterday_path}`")
                 continue
             raise e
 
-        tmp_filename_today = s3.download_file(today_path)
-        today_dict = json.load(tmp_filename_today.open())
+        with open(s3_hook.download_file(key=today_path)) as fp:
+            today_dict = json.load(fp)
 
         n_today = today_dict["total"]
         n_yesterday = yesterday_data["total"]
@@ -111,9 +122,9 @@ def import_decoupage_administratif():
         "api/v0/structures?code_departement=08",
     ]
 
-    (
-        store_probe_results(get_requests=requests, today=today)
-        >> compare_results(get_requests=requests, today=today, yesterday=yesterday)
+    chain(
+        store_probe_results(get_requests=requests, today=today),
+        compare_results(get_requests=requests, today=today, yesterday=yesterday),
     )
 
 
