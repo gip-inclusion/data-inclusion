@@ -16,7 +16,9 @@ def extract_and_load(schema: str):
     import sqlalchemy as sqla
     from furl import furl
 
-    from dag_utils import pg
+    from airflow.providers.postgres.hooks import postgres
+
+    pg_hook = postgres.PostgresHook(postgres_conn_id="pg")
 
     base_url = furl("https://geo.api.gouv.fr")
     # the default zone parameter is inconsistent between resources
@@ -58,7 +60,7 @@ def extract_and_load(schema: str):
 
         fq_table_name = f"{schema}.{resource}"
         print(f"Loading to {fq_table_name}")
-        with pg.connect_begin() as conn:
+        with pg_hook.get_sqlalchemy_engine().begin() as conn:
             df.to_sql(
                 f"{resource}_tmp",
                 con=conn,
