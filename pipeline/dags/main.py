@@ -1,6 +1,7 @@
 import pendulum
 
 from airflow.decorators import dag, task
+from airflow.models.baseoperator import chain
 from airflow.utils.task_group import TaskGroup
 from airflow.utils.trigger_rule import TriggerRule
 
@@ -148,17 +149,17 @@ def main():
         select="deduplicate",
     )
 
-    (
-        dbt_seed
-        >> dbt_create_udfs
-        >> get_staging_tasks()
-        >> dbt_build_intermediate_unions
-        >> dbt_build_intermediate_enrichments
-        >> dbt_build_intermediate_finals
-        >> dbt_build_intermediate_deduplicate
-        >> dbt_build_marts
-        >> dbt_snapshot_deduplicate_stats
-        >> export_dataset()
+    chain(
+        dbt_seed,
+        dbt_create_udfs,
+        get_staging_tasks(),
+        dbt_build_intermediate_unions,
+        dbt_build_intermediate_enrichments,
+        dbt_build_intermediate_finals,
+        dbt_build_intermediate_deduplicate,
+        dbt_build_marts,
+        dbt_snapshot_deduplicate_stats,
+        export_dataset(),
     )
 
 

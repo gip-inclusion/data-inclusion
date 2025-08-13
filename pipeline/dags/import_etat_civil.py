@@ -2,6 +2,7 @@ import pendulum
 from common import tasks
 
 from airflow.decorators import dag, task
+from airflow.models.baseoperator import chain
 
 from dag_utils import date, dbt
 from dag_utils.virtualenvs import PYTHON_BIN_PATH
@@ -14,7 +15,9 @@ from dag_utils.virtualenvs import PYTHON_BIN_PATH
 def import_prenoms(schema: str):
     import pandas as pd
 
-    from dag_utils import pg
+    from airflow.providers.postgres.hooks import postgres
+
+    pg_hook = postgres.PostgresHook(postgres_conn_id="pg")
 
     url = (
         "https://www.insee.fr/fr/statistiques/fichier/8595130/prenoms-2024-nat_csv.zip"
@@ -22,7 +25,7 @@ def import_prenoms(schema: str):
 
     df = pd.read_csv(url, sep=";")
 
-    with pg.connect_begin() as conn:
+    with pg_hook.get_sqlalchemy_engine().begin() as conn:
         df.to_sql(
             schema=schema,
             name="prenoms",
@@ -46,10 +49,10 @@ def import_etat_civil():
 
     schema = "etat_civil"
 
-    (
-        tasks.create_schema(name=schema)
-        >> import_prenoms(schema=schema)
-        >> dbt_build_staging
+    chain(
+        tasks.create_schema(name=schema),
+        import_prenoms(schema=schema),
+        dbt_build_staging,
     )
 
 

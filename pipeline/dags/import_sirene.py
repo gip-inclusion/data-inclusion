@@ -12,7 +12,9 @@ from dag_utils.virtualenvs import PYTHON_BIN_PATH
 def import_file(url: str, schema: str, table: str):
     import pandas as pd
 
-    from dag_utils import pg
+    from airflow.providers.postgres.hooks import postgres
+
+    pg_hook = postgres.PostgresHook(postgres_conn_id="pg")
 
     reader = pd.read_csv(
         url,
@@ -22,7 +24,7 @@ def import_file(url: str, schema: str, table: str):
         dtype=str,
     )
 
-    with pg.connect_begin() as conn:
+    with pg_hook.get_sqlalchemy_engine().begin() as conn:
         for i, df_chunk in enumerate(reader):
             df_chunk.to_sql(
                 schema=schema,
