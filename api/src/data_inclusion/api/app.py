@@ -34,6 +34,9 @@ def create_app(settings: config.Settings) -> fastapi.FastAPI:
         traces_sample_rate=1.0,
         profiles_sample_rate=0.1,  # 10% of sampled requests will also be profiled
         environment=settings.ENV,
+        _experiments={
+            "enable_logs": True,
+        },
     )
 
     description = jinja2.Template(
