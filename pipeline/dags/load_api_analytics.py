@@ -2,6 +2,7 @@ import pendulum
 
 import airflow
 from airflow.decorators import task
+from airflow.models.baseoperator import chain
 from airflow.utils.trigger_rule import TriggerRule
 
 from dag_utils import date, sentry
@@ -81,7 +82,7 @@ with airflow.DAG(
     # trigger_rule=TriggerRule.ALL_DONE,
     # )
 
-    (
+    chain(
         load_api_analytics()
         # Will generate the daily stats 24 times a day.
         # The same table will be generated, the snapshot won't
