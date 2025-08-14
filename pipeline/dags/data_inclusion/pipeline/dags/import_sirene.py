@@ -1,14 +1,10 @@
-import pendulum
-from common import tasks
-
 from airflow.decorators import dag, task
 from airflow.models.baseoperator import chain
 
-from dag_utils import date, dbt
-from dag_utils.virtualenvs import PYTHON_BIN_PATH
+from data_inclusion.pipeline.common import dags, dbt, tasks
 
 
-@task.external_python(python=str(PYTHON_BIN_PATH))
+@task.external_python(python=tasks.PYTHON_BIN_PATH)
 def import_file(url: str, schema: str, table: str):
     import pandas as pd
 
@@ -46,10 +42,9 @@ FILES = {
 
 
 @dag(
-    start_date=pendulum.datetime(2022, 1, 1, tz=date.TIME_ZONE),
     schedule=EVERY_MONTH_ON_THE_10TH,
-    catchup=False,
-    concurrency=1,
+    max_active_tasks=1,
+    **dags.common_args(),
 )
 def import_sirene():
     dbt_build_staging = dbt.dbt_operator_factory(

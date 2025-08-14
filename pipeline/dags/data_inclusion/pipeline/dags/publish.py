@@ -1,11 +1,9 @@
-import pendulum
-
 from airflow.decorators import dag, task
 
-from dag_utils.virtualenvs import PYTHON_BIN_PATH
+from data_inclusion.pipeline.common import dags, tasks
 
 
-@task.external_python(python=str(PYTHON_BIN_PATH))
+@task.external_python(python=tasks.PYTHON_BIN_PATH)
 def publish_to_datagouv():
     import io
     import tempfile
@@ -16,9 +14,8 @@ def publish_to_datagouv():
     from airflow.models import Variable
     from airflow.providers.postgres.hooks import postgres
 
+    from data_inclusion.pipeline.sources import datagouv
     from data_inclusion.schema import v0
-
-    from dag_utils.sources import datagouv
 
     pg_hook = postgres.PostgresHook(postgres_conn_id="pg")
 
@@ -121,9 +118,8 @@ EVERY_MONDAY_AT_2PM = "0 14 * * 1"
 
 @dag(
     description="Publish the consolidated dataset to datagouv",
-    start_date=pendulum.datetime(2022, 1, 1),
     schedule=EVERY_MONDAY_AT_2PM,
-    catchup=False,
+    **dags.common_args(use_sentry=True),
 )
 def publish():
     publish_to_datagouv()

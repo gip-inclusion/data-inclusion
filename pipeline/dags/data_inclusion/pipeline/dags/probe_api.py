@@ -3,11 +3,11 @@ import pendulum
 from airflow.decorators import dag, task
 from airflow.models.baseoperator import chain
 
-from dag_utils.virtualenvs import PYTHON_BIN_PATH
+from data_inclusion.pipeline.common import dags, tasks
 
 
 @task.external_python(
-    python=str(PYTHON_BIN_PATH),
+    python=tasks.PYTHON_BIN_PATH,
 )
 def store_probe_results(get_requests: list[str], today: str) -> None:
     import io
@@ -19,7 +19,7 @@ def store_probe_results(get_requests: list[str], today: str) -> None:
     from airflow.models import Variable
     from airflow.providers.amazon.aws.hooks import s3
 
-    from dag_utils.sources.utils import filename_from_url
+    from data_inclusion.pipeline.sources import utils
 
     BASE_URI = "https://api.data.inclusion.gouv.fr"
     token_probe = Variable.get("DATA_INCLUSION_API_PROBE_TOKEN")
@@ -30,7 +30,7 @@ def store_probe_results(get_requests: list[str], today: str) -> None:
 
     for get_request in get_requests:
         url = furl.furl(f"{BASE_URI}/{get_request}")
-        filename = filename_from_url(list(url.path.segments), url.query.params)
+        filename = utils.filename_from_url(list(url.path.segments), url.query.params)
         # For size, no need to get too many results.
         # We only want to compare the total number of items
         response = requests.get(url.add({"size": 100}).url, headers=headers)
@@ -47,7 +47,7 @@ def store_probe_results(get_requests: list[str], today: str) -> None:
 
 
 @task.external_python(
-    python=str(PYTHON_BIN_PATH),
+    python=tasks.PYTHON_BIN_PATH,
 )
 def compare_results(get_requests: list[str], today: str, yesterday: str) -> None:
     import json
@@ -57,7 +57,7 @@ def compare_results(get_requests: list[str], today: str, yesterday: str) -> None
 
     from airflow.providers.amazon.aws.hooks import s3
 
-    from dag_utils.sources.utils import filename_from_url
+    from data_inclusion.pipeline.sources import utils
 
     s3_hook = s3.S3Hook(aws_conn_id="s3")
 
@@ -67,7 +67,7 @@ def compare_results(get_requests: list[str], today: str, yesterday: str) -> None
 
     for get_request in get_requests:
         url = furl.furl(get_request)
-        filename = filename_from_url(list(url.path.segments), url.query.params)
+        filename = utils.filename_from_url(list(url.path.segments), url.query.params)
         today_path = f"tests/{today}/{filename}"
         yesterday_path = f"tests/{yesterday}/{filename}"
 
@@ -108,9 +108,8 @@ EVERY_DAY_AT_7AM = "0 7 * * *"
         Probe the API to check if there are no significant
         data differences compared to the last time.
     """,
-    start_date=pendulum.datetime(2022, 1, 1),
     schedule=EVERY_DAY_AT_7AM,
-    catchup=False,
+    **dags.common_args(),
 )
 def import_decoupage_administratif():
     today = pendulum.now().format("YYYY-MM-DD")

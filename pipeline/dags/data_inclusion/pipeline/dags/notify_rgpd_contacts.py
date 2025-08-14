@@ -1,26 +1,24 @@
-import pendulum
-
 from airflow.decorators import dag, task
 
-from dag_utils import sentry
-from dag_utils.virtualenvs import PYTHON_BIN_PATH
+from data_inclusion.pipeline.common import dags, tasks
 
 
-@task.external_python(python=str(PYTHON_BIN_PATH))
+@task.external_python(python=tasks.PYTHON_BIN_PATH)
 def send_rgpd_notice():
     import time
 
     from airflow.models import Variable
+    from airflow.providers.postgres.hooks import postgres
 
-    from dag_utils import pg
-    from dag_utils.sources import brevo
+    from data_inclusion.pipeline.sources import brevo
 
     ALL_CONTACTS_LIST_ID = 6
     CURRENT_CONTACTS_LIST_ID = 5
 
     brevo_client = brevo.BrevoClient(token=Variable.get("BREVO_API_KEY"))
 
-    contacts = pg.hook().get_records(
+    pg_hook = postgres.PostgresHook(postgres_conn_id="pg")
+    contacts = pg_hook.get_records(
         sql="SELECT * FROM public_intermediate.int__courriels_verifies",
     )
 
@@ -48,10 +46,8 @@ def send_rgpd_notice():
 
 @dag(
     description="Sends RGPD notifications to DI users",
-    start_date=pendulum.datetime(2023, 11, 1),
-    default_args=sentry.notify_failure_args(),
     schedule="@monthly",
-    catchup=False,
+    **dags.common_args(use_sentry=True),
 )
 def notify_rgpd_contacts():
     send_rgpd_notice()

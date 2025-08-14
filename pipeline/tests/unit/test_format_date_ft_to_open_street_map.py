@@ -1,4 +1,6 @@
-from dags.dag_utils.sources.france_travail import format_date_ft_to_open_street_map
+from dags.data_inclusion.pipeline.sources.france_travail import (
+    format_date_ft_to_open_street_map,
+)
 
 
 def test_horaires_continus():

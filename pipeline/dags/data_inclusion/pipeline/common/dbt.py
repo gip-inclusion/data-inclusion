@@ -1,11 +1,15 @@
 import json
+from pathlib import Path
 from typing import Optional
 
+from airflow import configuration
 from airflow.models import Variable
 from airflow.operators import bash
 from airflow.utils.trigger_rule import TriggerRule
 
-from dag_utils.virtualenvs import DBT_PYTHON_BIN_PATH
+DBT_PYTHON_BIN_PATH = (
+    Path() / configuration.get_airflow_home() / "venvs" / "dbt" / "venv" / "bin" / "dbt"
+)
 
 
 def dbt_operator_factory(
@@ -31,7 +35,7 @@ def dbt_operator_factory(
 
     return bash.BashOperator(
         task_id=task_id,
-        bash_command=f"{DBT_PYTHON_BIN_PATH.parent / 'dbt'} {dbt_args}",
+        bash_command=f"{DBT_PYTHON_BIN_PATH} {dbt_args}",
         append_env=True,
         trigger_rule=trigger_rule,
         env={

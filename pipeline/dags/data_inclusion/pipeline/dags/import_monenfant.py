@@ -1,15 +1,11 @@
-import pendulum
-from common import helpers, tasks
-
 from airflow.decorators import dag, task
 from airflow.models.baseoperator import chain
 
-from dag_utils import date, sentry
-from dag_utils.virtualenvs import PYTHON_BIN_PATH
+from data_inclusion.pipeline.common import dags, s3, tasks
 
 
 @task.external_python(
-    python=str(PYTHON_BIN_PATH),
+    python=tasks.PYTHON_BIN_PATH,
     retries=2,
 )
 def list_cities(max_number_of_cities: int):
@@ -40,7 +36,7 @@ def list_cities(max_number_of_cities: int):
 
 
 @task.external_python(
-    python=str(PYTHON_BIN_PATH),
+    python=tasks.PYTHON_BIN_PATH,
     retries=15,
 )
 def extract(city_code: str, commune: str, region: str, to_s3_path: str):
@@ -51,7 +47,7 @@ def extract(city_code: str, commune: str, region: str, to_s3_path: str):
     from airflow.models import Variable
     from airflow.providers.amazon.aws.hooks import s3
 
-    from dag_utils.sources import monenfant
+    from data_inclusion.pipeline.sources import monenfant
 
     os.environ["MONENFANT_BASE_URL"] = "https://monenfant.fr"
     os.environ["TWOCAPTCHA_API_KEY"] = Variable.get("TWOCAPTCHA_API_KEY")
@@ -68,18 +64,18 @@ def extract(city_code: str, commune: str, region: str, to_s3_path: str):
 
 
 @task.external_python(
-    python=str(PYTHON_BIN_PATH),
+    python=tasks.PYTHON_BIN_PATH,
 )
 def load(schema_name, table_name, from_s3_path):
     import tempfile
 
     import pandas as pd
-    from common import pg
 
     from airflow.providers.amazon.aws.hooks import s3
     from airflow.providers.postgres.hooks import postgres
 
-    from dag_utils.sources import monenfant
+    from data_inclusion.pipeline.common import pg
+    from data_inclusion.pipeline.sources import monenfant
 
     s3_hook = s3.S3Hook(aws_conn_id="s3")
 
@@ -110,17 +106,15 @@ EXTRACT_TASK_CONCURRENCY = 2
 
 
 @dag(
-    start_date=pendulum.datetime(2022, 1, 1, tz=date.TIME_ZONE),
-    default_args=sentry.notify_failure_args(),
     schedule="@monthly",
-    catchup=False,
     tags=["source"],
+    **dags.common_args(use_sentry=True),
 )
 def import_monenfant():
     source_id = "monenfant"
     stream_id = "creches"
 
-    base_s3_path = helpers.s3_file_path(source_id=source_id) / stream_id
+    base_s3_path = s3.get_key(stage="raw", source_id=source_id) / stream_id
 
     # limit the extraction to the top cities in France
     # because searches on monenfant.fr are limited to a 30km radius around a city
