@@ -20,7 +20,7 @@ x-airflow-common:
     AIRFLOW__SENTRY__SENTRY_DSN: ${AIRFLOW__SENTRY__SENTRY_DSN}
     AIRFLOW__SENTRY__SENTRY_ON: 'true'
     AIRFLOW__SENTRY__TRACES_SAMPLE_RATE: 1.0
-    AIRFLOW__SENTRY__BEFORE_SEND: dag_utils.sentry.before_send
+    AIRFLOW__SENTRY__BEFORE_SEND: data_inclusion.pipeline.common.sentry.before_send
     AIRFLOW__WEBSERVER__BASE_URL: ${AIRFLOW__WEBSERVER__BASE_URL}
 
     # Connections

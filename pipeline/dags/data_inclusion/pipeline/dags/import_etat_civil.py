@@ -1,15 +1,11 @@
-import pendulum
-from common import tasks
-
 from airflow.decorators import dag, task
 from airflow.models.baseoperator import chain
 
-from dag_utils import date, dbt
-from dag_utils.virtualenvs import PYTHON_BIN_PATH
+from data_inclusion.pipeline.common import dags, dbt, tasks
 
 
 @task.external_python(
-    python=str(PYTHON_BIN_PATH),
+    python=tasks.PYTHON_BIN_PATH,
     retries=2,
 )
 def import_prenoms(schema: str):
@@ -36,9 +32,8 @@ def import_prenoms(schema: str):
 
 
 @dag(
-    start_date=pendulum.datetime(2022, 1, 1, tz=date.TIME_ZONE),
     schedule="@yearly",
-    catchup=False,
+    **dags.common_args(),
 )
 def import_etat_civil():
     dbt_build_staging = dbt.dbt_operator_factory(

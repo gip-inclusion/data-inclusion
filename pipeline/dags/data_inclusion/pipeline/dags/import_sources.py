@@ -1,16 +1,13 @@
-import pendulum
-from common import helpers, tasks
-
 from airflow.decorators import dag, task
 from airflow.models.baseoperator import chain
 from airflow.utils.task_group import TaskGroup
 
-from dag_utils import date, sentry, sources
-from dag_utils.virtualenvs import PYTHON_BIN_PATH
+from data_inclusion.pipeline import sources
+from data_inclusion.pipeline.common import dags, s3, tasks
 
 
 @task.external_python(
-    python=str(PYTHON_BIN_PATH),
+    python=tasks.PYTHON_BIN_PATH,
     retries=2,
 )
 def extract(source_id, stream_id, to_s3_path):
@@ -18,7 +15,7 @@ def extract(source_id, stream_id, to_s3_path):
 
     from airflow.providers.amazon.aws.hooks import s3
 
-    from dag_utils import sources
+    from data_inclusion.pipeline import sources
 
     source = sources.SOURCES_CONFIGS[source_id]
     stream = source["streams"][stream_id]
@@ -38,17 +35,16 @@ def extract(source_id, stream_id, to_s3_path):
         )
 
 
-@task.external_python(python=str(PYTHON_BIN_PATH))
+@task.external_python(python=tasks.PYTHON_BIN_PATH)
 def load(schema_name: str, source_id, stream_id, from_s3_path):
     import tempfile
     from pathlib import Path
 
-    from common import pg
-
     from airflow.providers.amazon.aws.hooks import s3
     from airflow.providers.postgres.hooks import postgres
 
-    from dag_utils import sources
+    from data_inclusion.pipeline import sources
+    from data_inclusion.pipeline.common import pg
 
     read_fn = sources.get_reader(source_id, stream_id)
 
@@ -80,14 +76,12 @@ for source_id, source_config in sources.SOURCES_CONFIGS.items():
 
     @dag(
         dag_id=dag_id,
-        start_date=pendulum.datetime(2022, 1, 1, tz=date.TIME_ZONE),
-        default_args=sentry.notify_failure_args(),
         schedule=source_config["schedule"],
-        catchup=False,
         tags=["source"],
+        **dags.common_args(use_sentry=True),
     )
     def _dag():
-        base_s3_path = helpers.s3_file_path(source_id=source_id)
+        base_s3_path = s3.get_key(stage="raw", source_id=source_id)
         schema_name = source_id.replace("-", "_")
 
         create_schema_task = tasks.create_schema(name=schema_name)
