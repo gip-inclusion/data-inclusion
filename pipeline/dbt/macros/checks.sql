@@ -115,10 +115,6 @@ zone_eligibilite IS NULL OR FALSE <> ALL(SELECT x.code ~ '^(\d{9}|\w{5}|\w{2,3}|
 date_maj IS NOT NULL
 {% endmacro %}
 
-{% macro check_siret() %}
-siret IS NULL OR siret IN (SELECT siret FROM {{ ref('stg_sirene__stock_etablissement') }} WHERE etat_administratif_etablissement = 'actif')
-{% endmacro %}
-
 {% macro check_rna() %}
 rna IS NULL OR rna ~ '^W\d{9}$'
 {% endmacro %}
@@ -191,8 +187,8 @@ code_insee IS NULL OR code_insee ~ '^.{5}$'
         ("telephone", check_telephone()),
         ("courriel", check_courriel()),
         ("date_maj", check_date_maj()),
-        ("siret", check_siret()),
         ("rna", check_rna()),
+        ("siret", 'special case, see below'),
 ] %}
 {% if schema_version == 'v0' %}
 {% set checks = checks + [
@@ -225,7 +221,7 @@ code_insee IS NULL OR code_insee ~ '^.{5}$'
 {% macro select_errors(model, checks, resource_type, schema_version) %}
 {# generates, from a list of checks, a select query that lists all check violations #}
 
-{% for field, expression in checks %}
+{% for field, expression in checks if field != 'siret' %}
 SELECT
     source || '-' || id       AS "_di_surrogate_id",
     source                    AS "source",
@@ -237,6 +233,25 @@ SELECT
 FROM {{ model }}
 WHERE NOT ({{ expression }})
 {% if not loop.last %}UNION ALL{% endif %}
+{% endfor %}
+
+-- speed up siret validation with a join
+{% for field, expression in checks if field == 'siret' %}
+UNION ALL
+SELECT
+    model.source || '-' || model.id AS "_di_surrogate_id",
+    model.source                    AS "source",
+    model.id                        AS "id",
+    'siret'                         AS "field",
+    sirene.siret                    AS "value",
+    '{{ schema_version }}'          AS "schema_version",
+    '{{ resource_type }}'           AS "resource_type"
+FROM {{ model }} AS model
+LEFT JOIN {{ ref('stg_sirene__stock_etablissement') }} AS sirene ON model.siret = sirene.siret
+WHERE
+    model.siret IS NOT NULL
+    AND sirene.siret IS NULL
+    AND sirene.etat_administratif_etablissement = 'actif'
 {% endfor %}
 
 {% endmacro %}
