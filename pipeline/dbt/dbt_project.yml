@@ -34,15 +34,24 @@ models:
       +schema: staging
 
       sources:
+        # These models can be materialized as views, because:
+        # - their upstream source tables are loaded with a TRUNCATE.
+        # - they usually contain lightweight transformations.
         +materialized: view
-
         carif_oref:
+          # These models are materialized as views, because they contain heavy
+          # transformations.
           +materialized: table
 
+      # The following models use table materialization, because:
+      # - their upstream source tables are (currently) loaded with DROP/CREATE.
+      # - using views would require cascading, which could impact downstream models.
+      # - they defined indexes.
       decoupage_administratif:
         +materialized: table
-
       sirene:
+        +materialized: table
+      etat_civil:
         +materialized: table
 
     intermediate:
