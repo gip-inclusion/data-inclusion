@@ -18,7 +18,6 @@ select = [
 section-order = ["future","standard-library","third-party","airflow","first-party","local-folder"]
 combine-as-imports = true
 known-first-party = ["data_inclusion"]
-known-local-folder = ["dags", "dag_utils"]
 
 [tool.ruff.lint.isort.sections]
 airflow = ["airflow"]

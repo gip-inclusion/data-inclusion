@@ -45,9 +45,3 @@ def fill_sentry_scope(context):
                 "github_commit_url": f"{github_base_url}/commit/{commit_sha}",
             },
         )
-
-
-def notify_failure_args():
-    return {
-        "on_failure_callback": fill_sentry_scope,
-    }

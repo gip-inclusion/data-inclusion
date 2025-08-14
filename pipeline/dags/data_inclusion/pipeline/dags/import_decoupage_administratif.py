@@ -1,14 +1,11 @@
-import pendulum
-from common import tasks
-
 from airflow.decorators import dag, task
+from airflow.models.baseoperator import chain
 
-from dag_utils import date, dbt, sentry
-from dag_utils.virtualenvs import PYTHON_BIN_PATH
+from data_inclusion.pipeline.common import dags, dbt, tasks
 
 
 @task.external_python(
-    python=str(PYTHON_BIN_PATH),
+    python=tasks.PYTHON_BIN_PATH,
     retries=2,
 )
 def extract_and_load(schema: str):
@@ -87,10 +84,8 @@ def extract_and_load(schema: str):
 
 
 @dag(
-    start_date=pendulum.datetime(2022, 1, 1, tz=date.TIME_ZONE),
-    default_args=sentry.notify_failure_args(),
     schedule="@monthly",
-    catchup=False,
+    **dags.common_args(use_sentry=True),
 )
 def import_decoupage_administratif():
     dbt_build_staging = dbt.dbt_operator_factory(
@@ -101,10 +96,10 @@ def import_decoupage_administratif():
 
     schema = "decoupage_administratif"
 
-    (
-        tasks.create_schema(name=schema)
-        >> extract_and_load(schema=schema)
-        >> dbt_build_staging
+    chain(
+        tasks.create_schema(name=schema),
+        extract_and_load(schema=schema),
+        dbt_build_staging,
     )
 
 
