@@ -1,21 +1,18 @@
 import pendulum
 
-import airflow
-from airflow.decorators import task
+from airflow.decorators import dag, task
 from airflow.models.baseoperator import chain
 from airflow.utils.trigger_rule import TriggerRule
 
-from dag_utils import date, sentry
-from dag_utils.dbt import dbt_operator_factory
-from dag_utils.virtualenvs import PYTHON_BIN_PATH
+from data_inclusion.pipeline.common import dags, dbt, tasks
 
 
 @task.external_python(
-    python=str(PYTHON_BIN_PATH),
+    python=tasks.PYTHON_BIN_PATH,
     retries=1,
     retry_delay=pendulum.duration(seconds=10),
 )
-def load_api_analytics():
+def import_data():
     import subprocess
     import tempfile
     from pathlib import Path
@@ -60,30 +57,31 @@ def load_api_analytics():
 
 FIFTEEN_BEFORE_THE_HOUR = "45 * * * *"
 
-with airflow.DAG(
-    dag_id="load_api_analytics",
-    start_date=pendulum.datetime(2022, 1, 1, tz=date.TIME_ZONE),
-    default_args=sentry.notify_failure_args(),
+
+@dag(
     schedule=FIFTEEN_BEFORE_THE_HOUR,
-    catchup=False,
-) as dag:
-    build_source_stats = dbt_operator_factory(
+    **dags.common_args(use_sentry=True),
+)
+def import_data_inclusion_api():
+    build_source_stats = dbt.dbt_operator_factory(
         task_id="generate_source_stats",
         command="build",
         select="path:models/intermediate/quality",
         trigger_rule=TriggerRule.ALL_DONE,
     )
 
-    # TODO
-    # snapshot_source_stats = dbt_operator_factory(
-    # task_id="snapshot_source_stats",
-    # command="snapshot",
-    # select="quality",
-    # trigger_rule=TriggerRule.ALL_DONE,
-    # )
+    """
+    TODO
+    snapshot_source_stats = dbt.dbt_operator_factory(
+        task_id="snapshot_source_stats",
+        command="snapshot",
+        select="quality",
+        trigger_rule=TriggerRule.ALL_DONE,
+    )
+    """
 
     chain(
-        load_api_analytics()
+        import_data()
         # Will generate the daily stats 24 times a day.
         # The same table will be generated, the snapshot won't
         # be triggered except on day boundaries and it's fast.
@@ -91,3 +89,6 @@ with airflow.DAG(
         >> build_source_stats
         # >> snapshot_source_stats
     )
+
+
+import_data_inclusion_api()
