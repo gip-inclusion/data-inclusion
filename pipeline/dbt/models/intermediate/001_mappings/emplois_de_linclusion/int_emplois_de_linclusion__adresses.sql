@@ -7,7 +7,7 @@ final AS (
         id                             AS "id",
         longitude                      AS "longitude",
         latitude                       AS "latitude",
-        _di_source_id                  AS "source",
+        'emplois-de-linclusion'        AS "source",
         NULLIF(complement_adresse, '') AS "complement_adresse",
         NULLIF(adresse, '')            AS "adresse",
         NULLIF(commune, '')            AS "commune",

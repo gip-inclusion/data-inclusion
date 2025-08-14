@@ -6,6 +6,10 @@ adresses AS (
     SELECT * FROM {{ ref('int__adresses') }}
 ),
 
+sirets AS (
+    SELECT * FROM {{ ref('int__sirets') }}
+),
+
 valid_site_web AS (
     SELECT
         input_url,
@@ -49,7 +53,11 @@ SELECT
     structures.presentation_detail                        AS "presentation_detail",
     structures.presentation_resume                        AS "presentation_resume",
     structures.rna                                        AS "rna",
-    structures.siret                                      AS "siret",
+    CASE
+        WHEN sirets.statut = 'valide' THEN sirets.siret
+        WHEN sirets.statut = 'successeur-ouvert' THEN sirets.siret_successeur
+        WHEN sirets.statut = 'fermé-définitivement' THEN NULL
+    END                                                   AS "siret",
     structures.source                                     AS "source",
     structures.typologie                                  AS "typologie",
     structures.date_maj                                   AS "date_maj",
@@ -74,3 +82,4 @@ LEFT JOIN valid_site_web AS valid_site_web_1 ON structures.site_web = valid_site
 LEFT JOIN valid_site_web AS valid_site_web_2 ON structures.accessibilite = valid_site_web_2.input_url
 LEFT JOIN reseaux_porteurs ON structures._di_surrogate_id = reseaux_porteurs._di_surrogate_id
 LEFT JOIN adresses ON structures._di_adresse_surrogate_id = adresses._di_surrogate_id
+LEFT JOIN sirets ON structures._di_surrogate_id = sirets._di_surrogate_id

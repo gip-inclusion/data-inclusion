@@ -30,7 +30,7 @@ final AS (
         structures.rna                    AS "rna",
         structures.siret                  AS "siret",
         structures.site_web               AS "site_web",
-        structures._di_source_id          AS "source",
+        'dora'                            AS "source",
         structures.telephone              AS "telephone",
         CAST(NULL AS TEXT [])             AS "thematiques",
         structures.typologie              AS "typologie"

@@ -6,7 +6,7 @@ final AS (
     SELECT
         id                              AS "id",
         id                              AS "adresse_id",
-        _di_source_id                   AS "source",
+        'emplois-de-linclusion'         AS "source",
         labels_nationaux                AS "labels_nationaux",
         labels_autres                   AS "labels_autres",
         thematiques                     AS "thematiques",

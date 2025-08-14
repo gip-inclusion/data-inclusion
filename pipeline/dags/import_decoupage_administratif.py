@@ -1,7 +1,7 @@
 import pendulum
+from common import tasks
 
 from airflow.decorators import dag, task
-from airflow.operators import empty
 
 from dag_utils import date, dbt, sentry
 from dag_utils.virtualenvs import PYTHON_BIN_PATH
@@ -11,12 +11,14 @@ from dag_utils.virtualenvs import PYTHON_BIN_PATH
     python=str(PYTHON_BIN_PATH),
     retries=2,
 )
-def extract_and_load():
+def extract_and_load(schema: str):
     import pandas as pd
     import sqlalchemy as sqla
     from furl import furl
 
-    from dag_utils import pg
+    from airflow.providers.postgres.hooks import postgres
+
+    pg_hook = postgres.PostgresHook(postgres_conn_id="pg")
 
     base_url = furl("https://geo.api.gouv.fr")
     # the default zone parameter is inconsistent between resources
@@ -52,16 +54,13 @@ def extract_and_load():
         URL_BY_RESOURCE["communes"].copy().add({"type": "arrondissement-municipal"})
     )
 
-    schema = "decoupage_administratif"
-    pg.create_schema(schema)
-
     for resource, url in URL_BY_RESOURCE.items():
         print(f"Fetching resource={resource} from url={url}")
         df = pd.read_json(str(url), dtype=False)
 
         fq_table_name = f"{schema}.{resource}"
         print(f"Loading to {fq_table_name}")
-        with pg.connect_begin() as conn:
+        with pg_hook.get_sqlalchemy_engine().begin() as conn:
             df.to_sql(
                 f"{resource}_tmp",
                 con=conn,
@@ -94,16 +93,19 @@ def extract_and_load():
     catchup=False,
 )
 def import_decoupage_administratif():
-    start = empty.EmptyOperator(task_id="start")
-    end = empty.EmptyOperator(task_id="end")
-
     dbt_build_staging = dbt.dbt_operator_factory(
         task_id="dbt_build_staging",
         command="build",
         select="path:models/staging/decoupage_administratif",
     )
 
-    start >> extract_and_load() >> dbt_build_staging >> end
+    schema = "decoupage_administratif"
+
+    (
+        tasks.create_schema(name=schema)
+        >> extract_and_load(schema=schema)
+        >> dbt_build_staging
+    )
 
 
 import_decoupage_administratif()
