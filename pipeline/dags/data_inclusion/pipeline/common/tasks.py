@@ -5,13 +5,7 @@ from airflow.decorators import task
 from airflow.providers.postgres.hooks import postgres
 
 PYTHON_BIN_PATH = str(
-    Path()
-    / configuration.get_airflow_home()
-    / "venvs"
-    / "python"
-    / "venv"
-    / "bin"
-    / "python"
+    Path(configuration.get_airflow_home()) / "venvs" / "tasks" / "bin" / "python"
 )
 
 
