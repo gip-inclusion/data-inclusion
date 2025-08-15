@@ -63,7 +63,7 @@ final AS (
         CAST(NULL AS TEXT [])                                                                       AS "profils",
         LEFT(garages.criteres_eligibilite_raw, 500)                                                 AS "profils_precisions",
         NULL                                                                                        AS "recurrence",
-        garages._di_source_id                                                                       AS "source",
+        'mes-aides'                                                                                 AS "source",
         garages.id                                                                                  AS "structure_id",
         ARRAY_REMOVE(
             ARRAY[

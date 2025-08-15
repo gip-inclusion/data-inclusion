@@ -21,7 +21,7 @@ structures_with_commune AS (
 
 final AS (
     SELECT
-        services._di_source_id                                                           AS "source",
+        'france-travail'                                                                 AS "source",
         structures.id                                                                    AS "structure_id",
         structures.id                                                                    AS "adresse_id",
         NULLIF(ARRAY_TO_STRING(services.pre_requis || services.justificatifs, '\n'), '') AS "conditions_acces",
