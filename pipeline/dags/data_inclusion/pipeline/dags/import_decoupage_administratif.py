@@ -88,8 +88,9 @@ def extract_and_load(schema: str):
     **dags.common_args(use_sentry=True),
 )
 def import_decoupage_administratif():
-    dbt_build_staging = dbt.dbt_operator_factory(
+    dbt_build_staging = dbt.dbt_task.override(
         task_id="dbt_build_staging",
+    )(
         command="build",
         select="path:models/staging/decoupage_administratif",
     )
