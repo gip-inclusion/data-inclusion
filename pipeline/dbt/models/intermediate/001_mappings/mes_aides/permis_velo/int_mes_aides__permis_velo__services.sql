@@ -187,7 +187,7 @@ final AS (
         CAST(NULL AS TEXT [])                                              AS "profils",
         LEFT(permis_velo.autres_conditions, 500)                           AS "profils_precisions",
         NULL                                                               AS "recurrence",
-        permis_velo._di_source_id                                          AS "source",
+        'mes-aides'                                                        AS "source",
         permis_velo.id                                                     AS "structure_id",
         thematiques.thematiques                                            AS "thematiques",
         transformed_types.transformed_types                                AS "types",

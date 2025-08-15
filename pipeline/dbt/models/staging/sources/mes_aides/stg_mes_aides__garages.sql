@@ -4,7 +4,6 @@ WITH source AS (
 
 final AS (
     SELECT
-        _di_source_id                                                                                      AS "_di_source_id",
         data #>> '{fields,Adresse}'                                                                        AS "adresse",
         data #>> '{fields,Code INSEE}'                                                                     AS "code_insee",
         data #>> '{fields,Code Postal}'                                                                    AS "code_postal",

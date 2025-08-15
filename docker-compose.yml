@@ -27,6 +27,7 @@ x-airflow-common:
 
     # Variables
     AIRFLOW_VAR_BREVO_API_KEY: ${AIRFLOW_VAR_BREVO_API_KEY}
+    AIRFLOW_VAR_CARIF_OREF_URL: ${AIRFLOW_VAR_CARIF_OREF_URL}
     AIRFLOW_VAR_DATAGOUV_API_KEY: ${AIRFLOW_VAR_DATAGOUV_API_KEY}
     AIRFLOW_VAR_DATA_INCLUSION_API_PROBE_TOKEN: ${AIRFLOW_VAR_DATA_INCLUSION_API_PROBE_TOKEN}
     AIRFLOW_VAR_DORA_API_TOKEN: ${AIRFLOW_VAR_DORA_API_TOKEN}
@@ -43,7 +44,6 @@ x-airflow-common:
   volumes:
     - ./pipeline/dbt:/opt/airflow/dbt
     - ./pipeline/dags:/opt/airflow/dags
-    - ./pipeline/src:/opt/airflow/src
 
   user: ${AIRFLOW_UID:-50000}:0
 
@@ -99,8 +99,6 @@ services:
       <<: *airflow-common-depends-on
       airflow-init:
         condition: service_completed_successfully
-    env_file:
-      - ./pipeline/defaults.env
 
   airflow-init:
     <<: *airflow-common
@@ -116,7 +114,7 @@ services:
       _AIRFLOW_WWW_USER_PASSWORD: airflow
 
   minio:
-    image: minio/minio:RELEASE.2024-05-10T01-41-38Z
+    image: minio/minio:RELEASE.2025-07-23T15-54-02Z
     command: server /data
     restart: no
     ports:
@@ -130,7 +128,7 @@ services:
       - minio-data:/data
 
   minio-init:
-    image: minio/mc:RELEASE.2024-05-09T17-04-24Z
+    image: minio/mc:RELEASE.2025-07-21T05-28-08Z
     entrypoint: /bin/bash -c
     command:
       - |
