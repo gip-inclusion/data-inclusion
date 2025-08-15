@@ -59,3 +59,6 @@ def notify_rgpd_contacts():
     end = empty.EmptyOperator(task_id="end")
 
     start >> send_rgpd_notice() >> end
+
+
+notify_rgpd_contacts()

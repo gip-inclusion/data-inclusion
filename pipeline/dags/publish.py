@@ -115,3 +115,6 @@ def publish():
     end = empty.EmptyOperator(task_id="end")
 
     start >> publish_to_datagouv() >> end
+
+
+publish()
