@@ -47,8 +47,9 @@ FILES = {
     **dags.common_args(),
 )
 def import_sirene():
-    dbt_build_staging = dbt.dbt_operator_factory(
+    dbt_build_staging = dbt.dbt_task.override(
         task_id="dbt_build_staging",
+    )(
         command="build",
         select="path:models/staging/sirene",
     )

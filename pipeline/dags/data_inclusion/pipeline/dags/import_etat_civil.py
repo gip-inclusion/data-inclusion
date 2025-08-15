@@ -36,8 +36,9 @@ def import_prenoms(schema: str):
     **dags.common_args(),
 )
 def import_etat_civil():
-    dbt_build_staging = dbt.dbt_operator_factory(
+    dbt_build_staging = dbt.dbt_task.override(
         task_id="dbt_build_staging",
+    )(
         command="build",
         select="path:models/staging/etat_civil",
     )
