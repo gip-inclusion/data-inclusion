@@ -6,24 +6,24 @@ from airflow import configuration
 from airflow.decorators import task
 from airflow.models import Variable
 
-DBT_PYTHON_BIN_PATH = (
-    Path() / configuration.get_airflow_home() / "venvs" / "dbt" / "venv" / "bin" / "dbt"
+AIRFLOW_HOME = Path(configuration.get_airflow_home())
+DBT_PROJECT_PATH = AIRFLOW_HOME / "dbt"
+
+DBT_BIN_PATH = str(
+    Path(configuration.get_airflow_home()) / "venvs" / "dbt" / "bin" / "dbt"
 )
 
 
 @task.bash(
     append_env=True,
     env={
-        "DBT_PROFILES_DIR": Variable.get("DBT_PROJECT_DIR"),
-        "DBT_TARGET_PATH": Variable.get("DBT_TARGET_PATH", "target"),
-        "DBT_LOG_PATH": Variable.get("DBT_LOG_PATH", "logs"),
         "POSTGRES_HOST": "{{ conn.pg.host }}",
         "POSTGRES_PORT": "{{ conn.pg.port }}",
         "POSTGRES_USER": "{{ conn.pg.login }}",
         "POSTGRES_PASSWORD": "{{ conn.pg.password }}",
         "POSTGRES_DB": "{{ conn.pg.schema }}",
     },
-    cwd=Variable.get("DBT_PROJECT_DIR"),
+    cwd=str(DBT_PROJECT_PATH),
 )
 def dbt_task(
     command: Literal["build", "run", "test", "snapshot", "seed", "run-operation"],
@@ -48,4 +48,4 @@ def dbt_task(
     if command in ["build", "test"] and Variable.get("ENVIRONMENT", None) == "prod":
         args += ["--exclude-resource-type", "unit_test"]
 
-    return f"{DBT_PYTHON_BIN_PATH} {command} {' '.join(args)}"
+    return f"{DBT_BIN_PATH} {command} {' '.join(args)}"
