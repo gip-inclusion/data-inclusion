@@ -45,27 +45,31 @@ def get_staging_tasks():
         )
 
         with TaskGroup(group_id=source_id) as source_task_group:
-            dbt_run_staging = dbt.dbt_operator_factory(
+            dbt_run_staging = dbt.dbt_task.override(
                 task_id="dbt_run_staging",
+            )(
                 command="run",
                 select=stg_selector,
             )
 
-            dbt_test_staging = dbt.dbt_operator_factory(
+            dbt_test_staging = dbt.dbt_task.override(
                 task_id="dbt_test_staging",
+            )(
                 command="test",
                 select=stg_selector,
             )
 
-            dbt_build_intermediate_tmp = dbt.dbt_operator_factory(
+            dbt_build_intermediate_tmp = dbt.dbt_task.override(
                 task_id="dbt_build_intermediate_tmp",
+            )(
                 command="build",
                 select=int_selector,
                 dbt_vars={"build_intermediate_tmp": True},
             )
 
-            dbt_run_intermediate_mappings = dbt.dbt_operator_factory(
+            dbt_run_intermediate_mappings = dbt.dbt_task.override(
                 task_id="dbt_run_intermediate_mappings",
+            )(
                 command="run",
                 select=int_selector,
             )
@@ -88,49 +92,58 @@ def get_staging_tasks():
     **dags.common_args(use_sentry=True),
 )
 def main():
-    dbt_seed = dbt.dbt_operator_factory(
+    dbt_seed = dbt.dbt_task.override(
         task_id="dbt_seed",
+    )(
         command="seed",
     )
 
-    dbt_create_udfs = dbt.dbt_operator_factory(
+    dbt_create_udfs = dbt.dbt_task.override(
         task_id="dbt_create_udfs",
-        command="run-operation create_udfs",
+    )(
+        command="run-operation",
+        macro="create_udfs",
     )
 
-    dbt_build_intermediate_unions = dbt.dbt_operator_factory(
+    dbt_build_intermediate_unions = dbt.dbt_task.override(
         task_id="dbt_build_intermediate_unions",
+        trigger_rule=TriggerRule.ALL_DONE,
+    )(
         command="build",
         select="intermediate.002_unions",
-        trigger_rule=TriggerRule.ALL_DONE,
     )
 
-    dbt_build_intermediate_enrichments = dbt.dbt_operator_factory(
+    dbt_build_intermediate_enrichments = dbt.dbt_task.override(
         task_id="dbt_build_intermediate_enrichments",
+    )(
         command="build",
         select="intermediate.003_enrichments",
     )
 
-    dbt_build_intermediate_finals = dbt.dbt_operator_factory(
+    dbt_build_intermediate_finals = dbt.dbt_task.override(
         task_id="dbt_build_intermediate_finals",
+    )(
         command="build",
         select="intermediate.004_finals",
     )
 
-    dbt_build_intermediate_deduplicate = dbt.dbt_operator_factory(
+    dbt_build_intermediate_deduplicate = dbt.dbt_task.override(
         task_id="dbt_build_intermediate_deduplicate",
+    )(
         command="build",
         select="intermediate.005_deduplicate",
     )
 
-    dbt_build_marts = dbt.dbt_operator_factory(
+    dbt_build_marts = dbt.dbt_task.override(
         task_id="dbt_build_marts",
+    )(
         command="build",
         select="marts",
     )
 
-    dbt_snapshot_deduplicate_stats = dbt.dbt_operator_factory(
+    dbt_snapshot_deduplicate_stats = dbt.dbt_task.override(
         task_id="dbt_snapshot_deduplicate_stats",
+    )(
         command="snapshot",
         select="deduplicate",
     )
