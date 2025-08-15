@@ -1,6 +1,5 @@
-from airflow.decorators import dag, task
+from airflow.decorators import dag, task, task_group
 from airflow.models.baseoperator import chain
-from airflow.utils.task_group import TaskGroup
 
 from data_inclusion.pipeline import sources
 from data_inclusion.pipeline.common import dags, s3, tasks
@@ -89,7 +88,8 @@ for source_id, source_config in sources.SOURCES_CONFIGS.items():
         for stream_id, stream in source_config["streams"].items():
             s3_path = str(base_s3_path / stream["filename"])
 
-            with TaskGroup(group_id=stream_id) as tg:
+            @task_group(group_id=stream_id)
+            def tg():
                 chain(
                     extract(
                         source_id=source_id,
@@ -104,6 +104,6 @@ for source_id, source_config in sources.SOURCES_CONFIGS.items():
                     ),
                 )
 
-            chain(create_schema_task, tg)
+            chain(create_schema_task, tg())
 
     globals()[dag_id] = _dag()
