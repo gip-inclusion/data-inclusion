@@ -84,18 +84,20 @@ HOURLY_AT_FIFTEEN = "15 * * * *"
     **dags.common_args(use_sentry=True),
 )
 def import_data_inclusion_api():
-    build_source_stats = dbt.dbt_operator_factory(
+    build_source_stats = dbt.dbt_task.override(
         task_id="generate_source_stats",
+        trigger_rule=TriggerRule.ALL_DONE,
+    )(
         command="build",
         select="path:models/intermediate/quality",
-        trigger_rule=TriggerRule.ALL_DONE,
     )
 
-    snapshot_source_stats = dbt.dbt_operator_factory(
+    snapshot_source_stats = dbt.dbt_task.override(
         task_id="snapshot_source_stats",
+        trigger_rule=TriggerRule.ALL_DONE,
+    )(
         command="snapshot",
         select="quality",
-        trigger_rule=TriggerRule.ALL_DONE,
     )
 
     chain(
