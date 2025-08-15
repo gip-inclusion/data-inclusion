@@ -1,6 +1,5 @@
-from airflow.decorators import dag, task
+from airflow.decorators import dag, task, task_group
 from airflow.models.baseoperator import chain
-from airflow.utils.task_group import TaskGroup
 from airflow.utils.trigger_rule import TriggerRule
 
 from data_inclusion.pipeline import sources
@@ -44,7 +43,8 @@ def get_staging_tasks():
             f"path:models/intermediate/001_mappings/**/*int_{dbt_source_id}__*.sql"
         )
 
-        with TaskGroup(group_id=source_id) as source_task_group:
+        @task_group(group_id=source_id)
+        def tg():
             dbt_run_staging = dbt.dbt_task.override(
                 task_id="dbt_run_staging",
             )(
@@ -81,7 +81,7 @@ def get_staging_tasks():
                 dbt_run_intermediate_mappings,
             )
 
-        task_list += [source_task_group]
+        task_list += [tg()]
 
     return task_list
 
