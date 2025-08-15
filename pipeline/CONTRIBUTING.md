@@ -3,43 +3,27 @@
 ## Setup
 
 ```bash
-# Create a new virtualenv in the project's root directory
-python3 -m venv .venv --prompt di-scripts
-
-# Activate the environment
-source .venv/bin/activate
-pip install -U pip setuptools wheel
-
-# Install the dev dependencies
-pip install -r requirements/dev/requirements.txt
-
-# Install dbt
-pip install -r requirements/tasks/dbt/requirements.txt
+uv venv
+uv pip install -r requirements/dev/requirements.txt
+uv pip install dbt-postgres dbt-core==1.*
 ```
 
 ## Running `dbt`
 
 * dbt is configured to target the `datawarehouse` postgres container (see the root `docker-compose.yml`).
-* all dbt commands must be run in the in the `pipeline/dbt` directory.
-
-You can run dbt commands from your terminal.
 
 ```bash
+# run dbt commands in the dbt project dir
+cd ./dbt
+
 # install extra dbt packages (e.g. dbt_utils)
-dbt deps
-
+uv dbt deps
 # load seeds
-dbt seed
-
+uv dbt seed
 # create user defined functions
-dbt run-operation create_udfs
-
+uv dbt run-operation create_udfs
 # run commands
-dbt ls
-
-dbt build --select models/staging
-dbt build --select models/intermediate
-dbt build --select models/marts
+uv dbt ls
 ```
 
 ## Updating schema in dbt seeds
@@ -47,7 +31,7 @@ dbt build --select models/marts
 * Required when the schema changes.
 
 ```bash
-python scripts/update_schema_seeds.py
+./scripts/update_schema_seeds.py
 ```
 
 ## Managing the pipeline requirements
@@ -55,7 +39,6 @@ python scripts/update_schema_seeds.py
 In order to prevent conflicts:
 
 * tasks requirements are compiled separately
-* cli based tasks (like dbt) are also compiled separately
 * python tasks run in dedicated virtuale envs using `python.external_python`
 * python tasks requirements must comply to airflow constraints
 
