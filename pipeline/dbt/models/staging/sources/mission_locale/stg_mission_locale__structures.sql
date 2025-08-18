@@ -4,7 +4,6 @@ WITH source AS (
 
 final AS (
     SELECT
-        _di_source_id                                                             AS "_di_source_id",
         NULLIF(TRIM(data -> 'structures' ->> 'id_structure'), '')                 AS "id_structure",
         NULLIF(TRIM(data -> 'structures' ->> 'email'), '')                        AS "email",
         NULLIF(TRIM(data -> 'structures' ->> 'commune'), '')                      AS "commune",

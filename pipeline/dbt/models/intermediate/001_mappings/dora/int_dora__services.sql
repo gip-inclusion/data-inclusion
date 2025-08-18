@@ -50,7 +50,7 @@ final AS (
         LEFT(ARRAY_TO_STRING(services.profils, ', '), 500)                               AS "profils_precisions",
         /* We decided against using dora's recurrence field in the new horaires_accueil field. */
         NULL                                                                             AS "recurrence",
-        services._di_source_id                                                           AS "source",
+        'dora'                                                                           AS "source",
         services.structure_id                                                            AS "structure_id",
         /* Dora made some changes to the thematics which add '--autre' in some cases.
         We do not need them, thus they are removed from the table in order to pass the checks */

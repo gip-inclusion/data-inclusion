@@ -1,7 +1,7 @@
 version: 2
 
 models:
-  - name: stg_insee__prenoms
+  - name: stg_etat_civil__prenoms
     columns:
       - name: prenom
         data_tests:

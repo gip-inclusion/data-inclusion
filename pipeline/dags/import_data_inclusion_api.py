@@ -2,7 +2,7 @@ import pendulum
 
 import airflow
 from airflow.decorators import task
-from airflow.operators import empty
+from airflow.models.baseoperator import chain
 from airflow.utils.trigger_rule import TriggerRule
 
 from dag_utils import date, sentry
@@ -88,9 +88,6 @@ with airflow.DAG(
     schedule=HOURLY_AT_FIFTEEN,
     catchup=False,
 ) as dag:
-    start = empty.EmptyOperator(task_id="start")
-    end = empty.EmptyOperator(task_id="end")
-
     build_source_stats = dbt_operator_factory(
         task_id="generate_source_stats",
         command="build",
@@ -105,14 +102,12 @@ with airflow.DAG(
         trigger_rule=TriggerRule.ALL_DONE,
     )
 
-    (
-        start
-        >> import_data_inclusion_api()
+    chain(
+        import_data_inclusion_api()
         # Will generate the daily stats 24 times a day.
         # The same table will be generated, the snapshot won't
         # be triggered except on day boundaries and it's fast.
         # The alternative would be more complicated code.
         >> build_source_stats
         >> snapshot_source_stats
-        >> end
     )

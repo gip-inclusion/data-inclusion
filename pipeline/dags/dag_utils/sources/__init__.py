@@ -14,6 +14,7 @@ from . import (
     emplois_de_linclusion,
     france_travail,
     fredo,
+    ma_boussole_aidants,
     mediation_numerique,
     mes_aides,
     mission_locale,
@@ -25,18 +26,29 @@ from . import (
 
 SOURCES_CONFIGS = {
     "dora": {
-        "schedule": "@daily",
+        "schedule": "@hourly",
         "extractor": dora.extract,
         "streams": {
             "structures": {
                 "filename": "structures.json",
-                "url": Variable.get("DORA_API_URL", None),
+                "url": "https://api.dora.inclusion.beta.gouv.fr/api/v2/",
                 "token": Variable.get("DORA_API_TOKEN", None),
             },
             "services": {
                 "filename": "services.json",
-                "url": Variable.get("DORA_API_URL", None),
+                "url": "https://api.dora.inclusion.beta.gouv.fr/api/v2/",
                 "token": Variable.get("DORA_API_TOKEN", None),
+            },
+        },
+    },
+    "ma-boussole-aidants": {
+        "schedule": None,
+        "extractor": ma_boussole_aidants.extract,
+        "streams": {
+            "structures": {
+                "filename": "structures.json",
+                "url": "https://solutionsv2-back.maboussoleaidants.fr/api/",
+                "token": Variable.get("MA_BOUSSOLE_AIDANTS_API_KEY", None),
             },
         },
     },
@@ -46,12 +58,12 @@ SOURCES_CONFIGS = {
         "streams": {
             "garages": {
                 "filename": "garages.json",
-                "url": Variable.get("MES_AIDES_GARAGES_URL", None),
+                "url": "https://airtable.com/appRga7C9USklxYiV/tblfhYoBpcQoJwGIv/viwoJsw0vsAnU0fAo",
                 "token": Variable.get("MES_AIDES_AIRTABLE_KEY", None),
             },
             "permis_velo": {
                 "filename": "permis_velo.json",
-                "url": Variable.get("MES_AIDES_PERMIS_VELO_URL", None),
+                "url": "https://airtable.com/appRga7C9USklxYiV/tblcAC5yMV3Ftzv5c/viwMte3unsIYXxY9a",
                 "token": Variable.get("MES_AIDES_AIRTABLE_KEY", None),
             },
         },
@@ -62,7 +74,7 @@ SOURCES_CONFIGS = {
         "streams": {
             "structures": {
                 "filename": "structures.json",
-                "url": Variable.get("FREDO_API_URL", None),
+                "url": "https://api.fredo.re/v1/structures",
                 "token": Variable.get("FREDO_API_TOKEN", None),
             },
         },
@@ -73,7 +85,7 @@ SOURCES_CONFIGS = {
         "streams": {
             "organisations": {
                 "filename": "organisations.json",
-                "url": Variable.get("CD35_API_URL", None),
+                "url": "https://services1.arcgis.com/jGLANYlFVVx3nuxa/arcgis/rest/services/annuaire_social_CD35/FeatureServer/0/query",
             },
         },
     },
@@ -82,7 +94,7 @@ SOURCES_CONFIGS = {
         "streams": {
             "organisations": {
                 "filename": "organisations.json",
-                "url": Variable.get("EMPLOIS_API_URL", None),
+                "url": "https://emplois.inclusion.beta.gouv.fr/api/v1/structures/",
                 "token": Variable.get("EMPLOIS_API_TOKEN", None),
                 "extractor": emplois_de_linclusion.extract_organisations,
             },
@@ -94,11 +106,11 @@ SOURCES_CONFIGS = {
         "streams": {
             "benefits": {
                 "filename": "benefits.json",
-                "url": Variable.get("UN_JEUNE_UNE_SOLUTION_API_URL", None),
+                "url": "https://mes-aides.1jeune1solution.beta.gouv.fr/api/",
             },
             "institutions": {
                 "filename": "institutions.json",
-                "url": Variable.get("UN_JEUNE_UNE_SOLUTION_API_URL", None),
+                "url": "https://mes-aides.1jeune1solution.beta.gouv.fr/api/",
             },
         },
     },
@@ -108,7 +120,7 @@ SOURCES_CONFIGS = {
         "streams": {
             "etablissements": {
                 "filename": "etablissements.json",
-                "url": Variable.get("ETAB_PUB_FILE_URL", None),
+                "url": "https://www.data.gouv.fr/fr/datasets/r/73302880-e4df-4d4c-8676-1a61bb997f3d",
             },
         },
     },
@@ -118,11 +130,11 @@ SOURCES_CONFIGS = {
         "streams": {
             "structures": {
                 "filename": "structures.json",
-                "url": Variable.get("MEDNUM_API_URL", None),
+                "url": "https://cartographie.societenumerique.gouv.fr/api/v0/",
             },
             "services": {
                 "filename": "services.json",
-                "url": Variable.get("MEDNUM_API_URL", None),
+                "url": "https://cartographie.societenumerique.gouv.fr/api/v0/",
             },
         },
     },
@@ -133,7 +145,7 @@ SOURCES_CONFIGS = {
         "streams": {
             "lieux": {
                 "filename": "lieux.json",
-                "url": Variable.get("SOLIGUIDE_API_URL", None),
+                "url": "https://api.soliguide.fr/",
                 "token": Variable.get("SOLIGUIDE_API_TOKEN", None),
             }
         },
@@ -143,13 +155,13 @@ SOURCES_CONFIGS = {
         "streams": {
             "structures": {
                 "filename": "structures.tar.gz",
-                "url": Variable.get("RESEAU_ALPHA_URL", None),
+                "url": "https://www.reseau-alpha.org",
                 "extractor": reseau_alpha.extract_structures,
                 "reader": reseau_alpha.read_structures,
             },
             "formations": {
                 "filename": "formations.tar.gz",
-                "url": Variable.get("RESEAU_ALPHA_URL", None),
+                "url": "https://www.reseau-alpha.org",
                 "extractor": reseau_alpha.extract_formations,
                 "reader": reseau_alpha.read_formations,
             },
@@ -161,12 +173,12 @@ SOURCES_CONFIGS = {
         "streams": {
             "services": {
                 "filename": "services.json",
-                "url": Variable.get("AGEFIPH_SERVICES_API_URL", None),
+                "url": "https://www.agefiph.fr/jsonapi/node/solution",
                 "reader": agefiph.read,
             },
             "structures": {
                 "filename": "structures.json",
-                "url": Variable.get("AGEFIPH_STRUCTURES_API_URL", None),
+                "url": "https://www.agefiph.fr/jsonapi/node/contact",
             },
         },
     },
@@ -175,7 +187,7 @@ SOURCES_CONFIGS = {
         "streams": {
             "agences": {
                 "filename": "agences.json",
-                "url": Variable.get("FT_API_URL", None),
+                "url": "https://api.francetravail.io/",
                 # the "request token" is the client_id:client_secret string.
                 "token": Variable.get("FT_API_TOKEN", None),
                 "extractor": france_travail.extract,
@@ -183,7 +195,7 @@ SOURCES_CONFIGS = {
             },
             "services": {
                 "filename": "services.json",
-                "url": Variable.get("FT_SERVICES_TEMPLATE_URL", None),
+                "url": "https://docs.google.com/spreadsheets/d/e/2PACX-1vR0yWGydubfpeoC6uDSlWrvsNE3lq0KiC-i4Qg2IwJXYAGgxrCP6G-iTv4m7Z668LcAbqvAeV4CQztz/pub?gid=1682557473&single=true&output=csv",
                 "reader": lambda path: utils.read_csv(path, sep=","),
             },
         },
@@ -194,11 +206,11 @@ SOURCES_CONFIGS = {
         "streams": {
             "services": {
                 "filename": "services.csv",
-                "url": Variable.get("ACTION_LOGEMENT_SERVICES_URL", None),
+                "url": "https://docs.google.com/spreadsheets/d/1TJOXcGMCTSwEVf3fgArAnUS0BN6rdix2-LSyGTKnAhg/export?format=csv",
             },
             "structures": {
                 "filename": "structures.csv",
-                "url": Variable.get("ACTION_LOGEMENT_STRUCTURES_URL", None),
+                "url": "https://docs.google.com/spreadsheets/d/1TJOXcGMCTSwEVf3fgArAnUS0BN6rdix2-LSyGTKnAhg/export?format=csv",
             },
         },
     },
@@ -222,17 +234,17 @@ SOURCES_CONFIGS = {
         "streams": {
             "offres": {
                 "filename": "offres.json",
-                "url": Variable.get("MISSION_LOCALE_API_URL", None),
+                "url": "https://api-ods.dsiml.org",
                 "token": Variable.get("MISSION_LOCALE_API_SECRET", None),
             },
             "structures": {
                 "filename": "structures.json",
-                "url": Variable.get("MISSION_LOCALE_API_URL", None),
+                "url": "https://api-ods.dsiml.org",
                 "token": Variable.get("MISSION_LOCALE_API_SECRET", None),
             },
             "structures_offres": {
                 "filename": "structures_offres.json",
-                "url": Variable.get("MISSION_LOCALE_API_URL", None),
+                "url": "https://api-ods.dsiml.org",
                 "token": Variable.get("MISSION_LOCALE_API_SECRET", None),
             },
         },

@@ -42,6 +42,9 @@ models:
       decoupage_administratif:
         +materialized: table
 
+      sirene:
+        +materialized: table
+
     intermediate:
       +schema: "{{ 'intermediate_tmp' if var('build_intermediate_tmp', false) else 'intermediate' }}"
       +materialized: table

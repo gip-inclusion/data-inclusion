@@ -30,7 +30,7 @@ final AS (
         SUBSTRING(permis_velo.contact_telephone FROM '\+?\d[\d\.\-\s]*\d') AS "telephone",
         permis_velo.contact_email                                          AS "courriel",
         permis_velo.site                                                   AS "site_web",
-        permis_velo._di_source_id                                          AS "source",
+        'mes-aides'                                                        AS "source",
         permis_velo.url_mes_aides                                          AS "lien_source",
         NULL                                                               AS "horaires_ouverture",
         NULL                                                               AS "accessibilite",

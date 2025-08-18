@@ -1,7 +1,8 @@
 import pendulum
+from common import tasks
 
 from airflow.decorators import dag, task
-from airflow.operators import empty
+from airflow.models.baseoperator import chain
 
 from dag_utils import date, sentry
 from dag_utils.virtualenvs import PYTHON_BIN_PATH
@@ -9,21 +10,19 @@ from dag_utils.virtualenvs import PYTHON_BIN_PATH
 
 @task.external_python(python=str(PYTHON_BIN_PATH))
 def import_dataset(
-    run_id: str,
-    logical_date,
+    schema: str,
+    run_id=None,
+    logical_date=None,
 ):
     import pandas as pd
 
-    from airflow.models import Variable
     from airflow.providers.amazon.aws.hooks import s3
+    from airflow.providers.postgres.hooks import postgres
 
-    from dag_utils import pg
-
-    ODSPEP_S3_KEY_PREFIX = Variable.get("ODSPEP_S3_KEY_PREFIX")
+    ODSPEP_S3_KEY_PREFIX = "sources/odspep/2023-01-23/denormalized/Exports/"
 
     s3_hook = s3.S3Hook(aws_conn_id="s3_sources")
-
-    pg.create_schema("odspep")
+    pg_hook = postgres.PostgresHook(postgres_conn_id="pg")
 
     for excel_file_name in s3_hook.list_keys(prefix=ODSPEP_S3_KEY_PREFIX):
         tmp_filename = s3_hook.download_file(key=excel_file_name)
@@ -40,11 +39,11 @@ def import_dataset(
             .upper()
         )
 
-        with pg.connect_begin() as conn:
+        with pg_hook.get_sqlalchemy_engine().begin() as conn:
             df.to_sql(
                 table_name,
                 con=conn,
-                schema="odspep",
+                schema=schema,
                 if_exists="replace",
                 index=False,
             )
@@ -58,10 +57,9 @@ def import_dataset(
     tags=["source"],
 )
 def import_odspep():
-    start = empty.EmptyOperator(task_id="start")
-    end = empty.EmptyOperator(task_id="end")
+    schema = "odspep"
 
-    start >> import_dataset() >> end
+    chain(tasks.create_schema(name=schema), import_dataset(schema=schema))
 
 
 import_odspep()

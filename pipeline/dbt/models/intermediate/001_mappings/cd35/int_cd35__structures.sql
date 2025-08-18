@@ -12,7 +12,7 @@ final AS (
         telephone           AS "telephone",
         courriel            AS "courriel",
         site_web            AS "site_web",
-        _di_source_id       AS "source",
+        'cd35'              AS "source",
         lien_source         AS "lien_source",
         horaires_ouvertures AS "horaires_ouverture",
         NULL                AS "accessibilite",

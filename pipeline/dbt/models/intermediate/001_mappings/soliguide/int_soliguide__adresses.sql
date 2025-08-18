@@ -5,7 +5,7 @@ WITH lieux AS (
 final AS (
     SELECT
         lieu_id                                                                          AS "id",
-        _di_source_id                                                                    AS "source",
+        'soliguide'                                                                      AS "source",
         position__coordinates__x                                                         AS "longitude",
         position__coordinates__y                                                         AS "latitude",
         position__additional_information                                                 AS "complement_adresse",

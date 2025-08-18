@@ -4,7 +4,6 @@ WITH source AS (
 
 creches AS (
     SELECT
-        _di_source_id,
         NULLIF(TRIM(data ->> 'structureType'), '')                                        AS "structure_type",
         NULLIF(TRIM(data ->> 'structureId'), '')                                          AS "structure_id",
         NULLIF(TRIM(data ->> 'structureName'), '')                                        AS "structure_name",
