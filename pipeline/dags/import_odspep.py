@@ -21,7 +21,7 @@ def import_dataset(
 
     ODSPEP_S3_KEY_PREFIX = Variable.get("ODSPEP_S3_KEY_PREFIX")
 
-    s3_hook = s3.S3Hook(aws_conn_id="s3_sources")
+    s3_hook = s3.S3Hook(aws_conn_id="s3")
 
     pg.create_schema("odspep")
 

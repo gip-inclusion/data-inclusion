@@ -22,13 +22,6 @@ variable "airflow_application_id" {
   sensitive   = false
 }
 
-variable "airflow_conn_s3_sources" {
-  description = "Used in extraction tasks orchestrated by airflow"
-  type        = string
-  sensitive   = true
-  default     = ""
-}
-
 variable "airflow_secret_key" {
   description = "Scaleway secret key for Airflow"
   type        = string

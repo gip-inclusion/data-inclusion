@@ -21,7 +21,6 @@ x-airflow-common:
     # Connections
     AIRFLOW_CONN_PG: postgresql://data-inclusion:data-inclusion@datawarehouse:5432/data-inclusion
     AIRFLOW_CONN_S3: '{"conn_type": "aws", "extra": {"endpoint_url": "http://minio:9000", "aws_access_key_id": "minioadmin", "aws_secret_access_key": "minioadmin", "service_config": {"s3": {"bucket_name": "data-inclusion-lake"}}}}'
-    AIRFLOW_CONN_S3_SOURCES: ${AIRFLOW_CONN_S3_SOURCES}
     AIRFLOW_CONN_SSH_API: ${AIRFLOW_CONN_SSH_API}
     AIRFLOW_CONN_PG_API: ${AIRFLOW_CONN_PG_API}
 
