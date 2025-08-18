@@ -189,13 +189,6 @@ variable "airflow_conn_pg_api" {
   default     = ""
 }
 
-variable "airflow_conn_ssh_api" {
-  description = "SSH connection string used to open a tunnel to scalingo. The associated private_key must have been uploaded to scalingo"
-  type        = string
-  sensitive   = true
-  default     = ""
-}
-
 variable "airflow_conn_mattermost" {
   description = "Mattermost webhook used by airflow to notifications"
   type        = string
