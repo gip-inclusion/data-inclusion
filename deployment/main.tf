@@ -23,14 +23,32 @@ resource "scaleway_instance_security_group" "main" {
 
 resource "scaleway_instance_server" "main" {
   type              = var.environment == "prod" ? "POP2-HC-8C-16G" : "GP1-XS"
-  image             = "docker"
+  image             = "ubuntu_noble"
   ip_id             = scaleway_instance_ip.main.id
   security_group_id = scaleway_instance_security_group.main.id
 
   root_volume {
-    size_in_gb            = var.environment == "prod" ? 200 : 100
+    size_in_gb            = 200
     delete_on_termination = false
   }
+
+  cloud_init = <<-EOF
+    #cloud-config
+    packages:
+      - apt-transport-https
+      - ca-certificates
+      - curl
+      - gnupg
+      - lsb-release
+
+    runcmd:
+      - install -m 0755 -d /etc/apt/keyrings
+      - curl -fsSL https://download.docker.com/linux/ubuntu/gpg -o /etc/apt/keyrings/docker.asc
+      - chmod a+r /etc/apt/keyrings/docker.asc
+      - echo "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.asc] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable" | tee /etc/apt/sources.list.d/docker.list > /dev/null
+      - apt-get update
+      - apt-get install -y docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
+  EOF
 }
 
 resource "random_pet" "datalake_bucket_suffix" {}
