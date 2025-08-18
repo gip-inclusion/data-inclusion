@@ -25,7 +25,7 @@ mapping_profils AS (
 
 final AS (
     SELECT
-        offres._di_source_id                                                      AS "source",
+        'mission-locale'                                                          AS "source",
         structures_offres.missionlocale_id || '-' || structures_offres.offre_id   AS "id",
         structures_offres.missionlocale_id                                        AS "adresse_id",
         structures_offres.missionlocale_id                                        AS "structure_id",

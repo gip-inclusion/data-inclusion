@@ -3,20 +3,23 @@ x-airflow-common:
 
   environment:
     &airflow-common-environment
-    AIRFLOW__CORE__DEFAULT_TIMEZONE: Europe/Paris
     AIRFLOW__CORE__EXECUTOR: LocalExecutor
-    # AIRFLOW__CORE__FERNET_KEY:
-    AIRFLOW__CORE__LOAD_EXAMPLES: 'false'
-    AIRFLOW__CORE__LOAD_DEFAULT_CONNECTIONS: 'false'
-    AIRFLOW__CORE__MAX_MAP_LENGTH: 2048
+    AIRFLOW__CORE__AUTH_MANAGER: airflow.providers.fab.auth_manager.fab_auth_manager.FabAuthManager
     AIRFLOW__DATABASE__SQL_ALCHEMY_CONN: postgresql://airflow:airflow@airflow-db:5432/airflow
-    AIRFLOW__SCHEDULER__MIN_FILE_PROCESS_INTERVAL: 60
-    AIRFLOW__SCHEDULER__PARSING_PROCESSES: 4
+    AIRFLOW__CORE__DEFAULT_TIMEZONE: Europe/Paris
+    # AIRFLOW__CORE__FERNET_KEY: ''
+    AIRFLOW__CORE__LOAD_EXAMPLES: 'false'
+    AIRFLOW__CORE__EXECUTION_API_SERVER_URL: 'http://airflow-apiserver:8080/execution/'
+    AIRFLOW__SCHEDULER__ENABLE_HEALTH_CHECK: 'true'
+    AIRFLOW__CORE__MAX_MAP_LENGTH: 2048
     AIRFLOW__CORE__PARALLELISM: 4
-    AIRFLOW__SCHEDULER__MAX_TIS_PER_QUERY: 0
     AIRFLOW__CORE__DEFAULT_POOL_TASK_SLOT_COUNT: 24
-    AIRFLOW__WEBSERVER__SECRET_KEY: USE_IN_DEVELOPMENT_ONLY
-    AIRFLOW__WEBSERVER__WORKERS: 1
+    AIRFLOW__DAG_PROCESSOR__MIN_FILE_PROCESS_INTERVAL: 60
+    AIRFLOW__DAG_PROCESSOR__PARSING_PROCESSES: 4
+    AIRFLOW__SCHEDULER__MAX_TIS_PER_QUERY: 0
+    AIRFLOW__API_AUTH__JWT_SECRET: USE_IN_DEVELOPMENT_ONLY
+    AIRFLOW__API__SECRET_KEY: USE_IN_DEVELOPMENT_ONLY
+    AIRFLOW__API__WORKERS: 1
 
     # Connections
     AIRFLOW_CONN_PG: postgresql://data-inclusion:data-inclusion@datawarehouse:5432/data-inclusion
@@ -27,6 +30,7 @@ x-airflow-common:
 
     # Variables
     AIRFLOW_VAR_BREVO_API_KEY: ${AIRFLOW_VAR_BREVO_API_KEY}
+    AIRFLOW_VAR_CARIF_OREF_URL: ${AIRFLOW_VAR_CARIF_OREF_URL}
     AIRFLOW_VAR_DATAGOUV_API_KEY: ${AIRFLOW_VAR_DATAGOUV_API_KEY}
     AIRFLOW_VAR_DATA_INCLUSION_API_PROBE_TOKEN: ${AIRFLOW_VAR_DATA_INCLUSION_API_PROBE_TOKEN}
     AIRFLOW_VAR_DORA_API_TOKEN: ${AIRFLOW_VAR_DORA_API_TOKEN}
@@ -43,7 +47,6 @@ x-airflow-common:
   volumes:
     - ./pipeline/dbt:/opt/airflow/dbt
     - ./pipeline/dags:/opt/airflow/dags
-    - ./pipeline/src:/opt/airflow/src
 
   user: ${AIRFLOW_UID:-50000}:0
 
@@ -67,11 +70,17 @@ services:
       - POSTGRES_USER=airflow
       - POSTGRES_PASSWORD=airflow
 
-  airflow-webserver:
+  airflow-apiserver:
     <<: *airflow-common
     build:
       context: pipeline
-    command: webserver
+    command: api-server
+    healthcheck:
+      test: ["CMD", "curl", "--fail", "http://localhost:8080/api/v2/version"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 30s
     restart: no
     ports:
       - ${AIRFLOW_UI_PORT:-8080}:8080
@@ -92,15 +101,31 @@ services:
           "CMD-SHELL",
           'airflow jobs check --job-type SchedulerJob --hostname "$${HOSTNAME}"'
         ]
-      interval: 10s
+      interval: 30s
       timeout: 10s
       retries: 5
+      start_period: 30s
     depends_on:
       <<: *airflow-common-depends-on
       airflow-init:
         condition: service_completed_successfully
-    env_file:
-      - ./pipeline/defaults.env
+
+  airflow-dag-processor:
+    <<: *airflow-common
+    build:
+      context: pipeline
+    command: dag-processor
+    healthcheck:
+      test: ["CMD-SHELL", 'airflow jobs check --job-type DagProcessorJob --hostname "$${HOSTNAME}"']
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 30s
+    restart: no
+    depends_on:
+      <<: *airflow-common-depends-on
+      airflow-init:
+        condition: service_completed_successfully
 
   airflow-init:
     <<: *airflow-common
@@ -116,7 +141,7 @@ services:
       _AIRFLOW_WWW_USER_PASSWORD: airflow
 
   minio:
-    image: minio/minio:RELEASE.2024-05-10T01-41-38Z
+    image: minio/minio:RELEASE.2025-07-23T15-54-02Z
     command: server /data
     restart: no
     ports:
@@ -130,7 +155,7 @@ services:
       - minio-data:/data
 
   minio-init:
-    image: minio/mc:RELEASE.2024-05-09T17-04-24Z
+    image: minio/mc:RELEASE.2025-07-21T05-28-08Z
     entrypoint: /bin/bash -c
     command:
       - |
