@@ -54,6 +54,6 @@ if __name__ == "__main__":
     stack = os.environ.get("STACK")
 
     if stack is not None and stack.startswith("scalingo"):
-        subprocess.run("dbclient-fetcher pgsql")
+        subprocess.run("dbclient-fetcher pgsql", shell=True, check=True)
 
     export()

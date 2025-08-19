@@ -90,6 +90,16 @@ resource "scaleway_object_bucket" "main" {
       days = 30
     }
   }
+
+  lifecycle_rule {
+    id      = "expire-api-data-after-1-day"
+    prefix  = "data/api"
+    enabled = true
+
+    expiration {
+      days = 1
+    }
+  }
 }
 
 data "scaleway_account_project" "main" {
@@ -184,7 +194,6 @@ resource "scaleway_object_bucket_policy" "main" {
             "s3:PutObject",
           ],
           Resource = [
-            "${scaleway_object_bucket.main.name}",
             "${scaleway_object_bucket.main.name}/data/api/*",
           ]
         },
