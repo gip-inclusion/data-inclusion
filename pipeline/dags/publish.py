@@ -77,7 +77,7 @@ def publish_to_datagouv():
         df = df.drop(columns="_has_pii")
 
         # remove invalid rows
-        df = df.loc[~df["_is_valid_v0"]]
+        df = df.loc[df["_is_valid_v0"]]
 
         # keep only the columns we want to publish
         if resource == "structures":
