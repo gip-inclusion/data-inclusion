@@ -2,6 +2,10 @@
 #    uv pip compile --constraint airflow/constraints.txt tasks/python/requirements.in --output-file=tasks/python/requirements.txt
 2captcha-python==1.5.1
     # via -r tasks/python/requirements.in
+aiobotocore==2.22.0
+    # via
+    #   -c airflow/constraints.txt
+    #   s3fs
 aiohappyeyeballs==2.6.1
     # via
     #   -c airflow/constraints.txt
@@ -9,7 +13,13 @@ aiohappyeyeballs==2.6.1
 aiohttp==3.11.18
     # via
     #   -c airflow/constraints.txt
+    #   aiobotocore
     #   apache-airflow-providers-http
+    #   s3fs
+aioitertools==0.12.0
+    # via
+    #   -c airflow/constraints.txt
+    #   aiobotocore
 aiosignal==1.3.2
     # via
     #   -c airflow/constraints.txt
@@ -154,6 +164,7 @@ boto3==1.37.3
 botocore==1.37.3
     # via
     #   -c airflow/constraints.txt
+    #   aiobotocore
     #   apache-airflow-providers-amazon
     #   boto3
     #   pyathena
@@ -323,6 +334,7 @@ fsspec==2025.3.2
     #   -c airflow/constraints.txt
     #   apache-airflow
     #   pyathena
+    #   s3fs
     #   universal-pathlib
 furl==2.1.4
     # via -r tasks/python/requirements.in
@@ -407,6 +419,7 @@ jinja2==3.1.6
 jmespath==0.10.0
     # via
     #   -c airflow/constraints.txt
+    #   aiobotocore
     #   apache-airflow-providers-amazon
     #   apache-airflow-providers-fab
     #   boto3
@@ -511,6 +524,7 @@ more-itertools==10.7.0
 multidict==6.4.4
     # via
     #   -c airflow/constraints.txt
+    #   aiobotocore
     #   aiohttp
     #   yarl
 numpy==1.26.4
@@ -693,6 +707,7 @@ python-daemon==3.1.2
 python-dateutil==2.9.0.post0
     # via
     #   -c airflow/constraints.txt
+    #   aiobotocore
     #   apache-airflow
     #   botocore
     #   croniter
@@ -781,6 +796,10 @@ rpds-py==0.25.0
     #   -c airflow/constraints.txt
     #   jsonschema
     #   referencing
+s3fs==2025.3.2
+    # via
+    #   -c airflow/constraints.txt
+    #   apache-airflow-providers-amazon
 s3transfer==0.11.3
     # via
     #   -c airflow/constraints.txt
@@ -948,6 +967,7 @@ wirerope==1.0.0
 wrapt==1.17.2
     # via
     #   -c airflow/constraints.txt
+    #   aiobotocore
     #   deprecated
 wtforms==3.2.1
     # via

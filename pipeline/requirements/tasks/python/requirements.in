@@ -1,6 +1,6 @@
 apache-airflow==2.*
 apache-airflow-providers-postgres
-apache-airflow-providers-amazon
+apache-airflow-providers-amazon[s3fs]
 apache-airflow-providers-ssh
 sentry-sdk
 
