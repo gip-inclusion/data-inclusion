@@ -7,6 +7,10 @@
         {
             "command": "0 4 * * * vacuumdb --full --analyze --verbose --table api__structures --table api__services $DATABASE_URL",
             "size": "S"
+        },
+        {
+            "command": "30 * * * * ./scripts/export_analytics",
+            "size": "M"
         }
     ]
 }
