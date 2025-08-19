@@ -9,7 +9,7 @@
             "size": "S"
         },
         {
-            "command": "30 * * * * ./scripts/export_analytics",
+            "command": "30 * * * * ./scripts/export_analytics.py",
             "size": "M"
         }
     ]
