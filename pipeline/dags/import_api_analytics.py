@@ -17,15 +17,18 @@ from dag_utils.virtualenvs import PYTHON_BIN_PATH
 def load_api_analytics():
     import subprocess
     import tempfile
+    from pathlib import Path
 
     from airflow.models import Connection
     from airflow.providers.amazon.aws.fs import s3 as s3fs
+    from airflow.providers.amazon.aws.hooks import s3
 
-    BASE_KEY = "data/api"
     pg_conn = Connection.get_connection_from_secrets(conn_id="pg")
+    s3_hook = s3.S3Hook(aws_conn_id="s3")
 
     s3fs_client = s3fs.get_fs(conn_id="s3")
 
+    BASE_KEY = Path(s3_hook.service_config["bucket_name"]) / "data" / "api"
     value = sorted(s3fs_client.ls(BASE_KEY))[-1]  # latest day
     value = sorted(s3fs_client.ls(value))[-1]  # latest run
 
