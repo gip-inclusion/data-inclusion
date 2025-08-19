@@ -26,6 +26,10 @@ flags:
   # `buildable` means only runs tests that refer to selected nodes or their ancestors.
   indirect_selection: buildable
 
+on-run-end:
+# this macro ensures the dbt managed schema will be readableby all pg users (including BI)
+- "{{ grant_select_on_schemas_to_public(schemas) }}"
+
 models:
   data_inclusion:
     +sql_header: "SET LC_TIME='fr_FR.utf8';"
