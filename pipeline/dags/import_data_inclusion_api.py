@@ -14,17 +14,50 @@ from dag_utils.virtualenvs import PYTHON_BIN_PATH
     retries=3,
     retry_delay=pendulum.duration(seconds=10),
 )
-def import_data_inclusion_api():
-    raise NotImplementedError()
+def load_api_analytics():
+    import subprocess
+    import tempfile
+
+    from airflow.models import Connection
+    from airflow.providers.amazon.aws.fs import s3 as s3fs
+
+    BASE_KEY = "data/api"
+    pg_conn = Connection.get_connection_from_secrets(conn_id="pg")
+
+    s3fs_client = s3fs.get_fs(conn_id="s3")
+
+    value = sorted(s3fs_client.ls(BASE_KEY))[-1]  # latest day
+    value = sorted(s3fs_client.ls(value))[-1]  # latest run
+
+    with tempfile.NamedTemporaryFile() as tmpfile:
+        s3fs_client.get_file(rpath=value, lpath=tmpfile.name)
+
+        command = (
+            "pg_restore"
+            f" --dbname={pg_conn.get_uri()}"
+            " --clean"
+            " --if-exists"
+            " --no-owner"
+            " --no-privileges"
+            f" {tmpfile.name}"
+        )
+
+        try:
+            print(command.replace(pg_conn.password, "***"))
+            subprocess.run(command, shell=True, check=True, capture_output=True)
+        except subprocess.CalledProcessError as exc:
+            print(exc.stdout)
+            print(exc.stderr)
+            raise exc
 
 
-HOURLY_AT_FIFTEEN = "15 * * * *"
+FIFTEEN_BEFORE_THE_HOUR = "45 * * * *"
 
 with airflow.DAG(
-    dag_id="import_data_inclusion_api",
+    dag_id="load_api_analytics",
     start_date=pendulum.datetime(2022, 1, 1, tz=date.TIME_ZONE),
     default_args=sentry.notify_failure_args(),
-    schedule=HOURLY_AT_FIFTEEN,
+    schedule=FIFTEEN_BEFORE_THE_HOUR,
     catchup=False,
 ) as dag:
     build_source_stats = dbt_operator_factory(
@@ -42,7 +75,7 @@ with airflow.DAG(
     )
 
     (
-        import_data_inclusion_api()
+        load_api_analytics()
         # Will generate the daily stats 24 times a day.
         # The same table will be generated, the snapshot won't
         # be triggered except on day boundaries and it's fast.

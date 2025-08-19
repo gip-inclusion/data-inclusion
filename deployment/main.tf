@@ -173,6 +173,20 @@ resource "scaleway_object_bucket_policy" "main" {
         },
         {
           Effect = "Allow",
+          Sid    = "Grant write in data/api/* to the api",
+          Principal = {
+            SCW = ["application_id:${var.api_scw_application_id}"]
+          },
+          Action = [
+            "s3:PutObject",
+          ],
+          Resource = [
+            "${scaleway_object_bucket.main.name}",
+            "${scaleway_object_bucket.main.name}/data/api/*",
+          ]
+        },
+        {
+          Effect = "Allow",
           Sid    = "Grant full access to apps and users that must manage this bucket",
           Principal = {
             SCW = concat(
