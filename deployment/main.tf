@@ -294,7 +294,6 @@ resource "terraform_data" "up" {
     AIRFLOW__WEBSERVER__BASE_URL='https://${local.airflow_hostname}'
 
     # Airflow connections
-    AIRFLOW_CONN_MATTERMOST='${var.airflow_conn_mattermost}'
     AIRFLOW_CONN_PG_API='${var.airflow_conn_pg_api}'
     AIRFLOW_CONN_PG='${local.airflow_conn_pg}'
     AIRFLOW_CONN_S3='${local.airflow_conn_s3}'

@@ -189,13 +189,6 @@ variable "airflow_conn_pg_api" {
   default     = ""
 }
 
-variable "airflow_conn_mattermost" {
-  description = "Mattermost webhook used by airflow to notifications"
-  type        = string
-  sensitive   = true
-  default     = ""
-}
-
 variable "twocaptcha_api_key" {
   description = "Used in extraction tasks orchestrated by airflow"
   type        = string
