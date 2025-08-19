@@ -42,7 +42,7 @@ final AS (
         NULL                                                               AS "typologie",
         NULL                                                               AS "presentation_resume",
         NULL                                                               AS "presentation_detail",
-        CAST(permis_velo.modifiee_le AS DATE)                              AS "date_maj",
+        permis_velo.modifie_le                                             AS "date_maj",
         thematiques.thematiques                                            AS "thematiques"
     FROM permis_velo
     LEFT JOIN thematiques ON permis_velo.id = thematiques.service_id
