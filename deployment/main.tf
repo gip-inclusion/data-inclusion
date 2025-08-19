@@ -34,6 +34,9 @@ resource "scaleway_instance_server" "main" {
 
   cloud_init = <<-EOF
     #cloud-config
+    package_update: true
+    package_upgrade: true
+    package_reboot_if_required: true
     packages:
       - apt-transport-https
       - ca-certificates
