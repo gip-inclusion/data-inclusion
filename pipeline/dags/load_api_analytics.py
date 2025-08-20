@@ -11,7 +11,7 @@ from dag_utils.virtualenvs import PYTHON_BIN_PATH
 
 @task.external_python(
     python=str(PYTHON_BIN_PATH),
-    retries=3,
+    retries=1,
     retry_delay=pendulum.duration(seconds=10),
 )
 def load_api_analytics():
@@ -31,6 +31,9 @@ def load_api_analytics():
     BASE_KEY = Path(s3_hook.service_config["bucket_name"]) / "data" / "api"
     value = sorted(s3fs_client.ls(BASE_KEY))[-1]  # latest day
     value = sorted(s3fs_client.ls(value))[-1]  # latest run
+    value = Path(value) / "analytics.dump"
+
+    print(f"Using {value}")
 
     with tempfile.NamedTemporaryFile() as tmpfile:
         s3fs_client.get_file(rpath=value, lpath=tmpfile.name)
@@ -70,12 +73,13 @@ with airflow.DAG(
         trigger_rule=TriggerRule.ALL_DONE,
     )
 
-    snapshot_source_stats = dbt_operator_factory(
-        task_id="snapshot_source_stats",
-        command="snapshot",
-        select="quality",
-        trigger_rule=TriggerRule.ALL_DONE,
-    )
+    # TODO
+    # snapshot_source_stats = dbt_operator_factory(
+    # task_id="snapshot_source_stats",
+    # command="snapshot",
+    # select="quality",
+    # trigger_rule=TriggerRule.ALL_DONE,
+    # )
 
     (
         load_api_analytics()
@@ -84,5 +88,5 @@ with airflow.DAG(
         # be triggered except on day boundaries and it's fast.
         # The alternative would be more complicated code.
         >> build_source_stats
-        >> snapshot_source_stats
+        # >> snapshot_source_stats
     )

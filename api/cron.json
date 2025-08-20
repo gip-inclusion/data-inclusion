@@ -9,7 +9,7 @@
             "size": "S"
         },
         {
-            "command": "30 * * * * ./scripts/export_analytics.py",
+            "command": "30 * * * * data-inclusion-api export-analytics",
             "size": "M"
         }
     ]

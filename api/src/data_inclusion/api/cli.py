@@ -1,8 +1,11 @@
 import logging
+import os
+import subprocess
 import tempfile
 from pathlib import Path
 
 import click
+import pendulum
 import s3fs
 
 from data_inclusion.api import auth
@@ -89,6 +92,48 @@ def _load_inclusion_data(db_session, path: Path):
     # if the dataset has been downloaded from s3
     if tempfile.gettempdir() in path.parents:
         path.rmdir()
+
+
+@cli.command(name="export-analytics")
+def _export_analytics():
+    """Export analytics data"""
+
+    # TODO(vmttn): make this code testable with local export
+    output_filename = "analytics.dump"
+
+    if (stack := os.environ.get("STACK")) is not None and stack.startswith("scalingo"):
+        subprocess.run("dbclient-fetcher pgsql", shell=True, check=True)
+
+    s3fs_client = s3fs.S3FileSystem()
+    base_key = Path(settings.DATALAKE_BUCKET_NAME) / "data" / "api"
+    key = str(
+        base_key
+        / pendulum.now().date().isoformat()
+        / pendulum.now().isoformat()
+        / output_filename
+    )
+
+    with tempfile.TemporaryDirectory() as tmpdir:
+        tmpfile = Path(tmpdir) / output_filename
+
+        command = (
+            "pg_dump $DATABASE_URL "
+            "--format=custom "
+            "--clean "
+            "--if-exists "
+            "--no-owner "
+            "--no-privileges "
+            "--section=pre-data "
+            "--section=data "
+            "--table api__*_events "
+            f"--file {tmpfile}"
+        )
+
+        logger.info(command)
+        subprocess.run(command, shell=True, check=True)
+
+        logger.info(f"Storing to {key}")
+        s3fs_client.put_file(tmpfile, key)
 
 
 @cli.command(name="import-communes")
