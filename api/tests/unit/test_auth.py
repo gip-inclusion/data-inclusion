@@ -11,6 +11,18 @@ from data_inclusion.api import auth
     [
         (None, 403),
         ("not-a-token", 403),
+        pytest.param(
+            # generated with key=legacy-key and sub=legacy.user@example.com
+            "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJsZWdhY3kudXNlckBleGFtc"
+            "GxlLmNvbSIsImFkbWluIjpmYWxzZX0.pqDa-_YHnPlsP0v0PWROb2Bgmvz7hUaYpjH_DPSb85Y",
+            200,
+            marks=[
+                pytest.mark.settings(
+                    OLD_SECRET_KEY="legacy-key",
+                    OLD_USER_SUBS=["legacy.user@example.com"],
+                )
+            ],
+        ),
         (auth.create_access_token("some_user"), 200),
     ],
 )
