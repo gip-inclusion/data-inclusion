@@ -12,6 +12,10 @@ class Settings(BaseSettings):
     DEBUG: bool = False
     ENV: str = "prod"
     SECRET_KEY: str
+    # On 2025-04-12 this key has been rotated. We keep compatibility
+    # with existing tokens until full renewal.
+    OLD_SECRET_KEY: str | None = None
+    OLD_USER_SUBS: list[str] = []  # use JSON list in the env var
     SENTRY_DSN: str | None = None
     TOKEN_ENABLED: bool = True
 
@@ -34,3 +38,5 @@ class Settings(BaseSettings):
 
 
 settings = Settings()
+
+assert settings.SECRET_KEY != settings.OLD_SECRET_KEY
