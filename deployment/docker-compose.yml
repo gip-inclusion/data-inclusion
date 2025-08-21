@@ -22,6 +22,8 @@ x-airflow-common:
     AIRFLOW__SENTRY__TRACES_SAMPLE_RATE: 1.0
     AIRFLOW__SENTRY__BEFORE_SEND: data_inclusion.pipeline.common.sentry.before_send
     AIRFLOW__WEBSERVER__BASE_URL: ${AIRFLOW__WEBSERVER__BASE_URL}
+    # the following var should be dropped in airflow 3
+    AIRFLOW__METRICS__TIMER_UNIT_CONSISTENCY: 'true'
 
     # Connections
     AIRFLOW_CONN_PG: ${AIRFLOW_CONN_PG}
@@ -104,14 +106,11 @@ services:
     command: scheduler
     restart: always
     healthcheck:
-      test:
-        [
-          "CMD-SHELL",
-          'airflow jobs check --job-type SchedulerJob --hostname "$${HOSTNAME}"'
-        ]
+      test: ["CMD-SHELL", 'airflow jobs check --job-type SchedulerJob --local']
       interval: 10s
-      timeout: 10s
+      timeout: 20s
       retries: 5
+      start_period: 30s
     depends_on:
       <<: *airflow-common-depends-on
       airflow-init:

@@ -17,6 +17,8 @@ x-airflow-common:
     AIRFLOW__CORE__DEFAULT_POOL_TASK_SLOT_COUNT: 24
     AIRFLOW__WEBSERVER__SECRET_KEY: USE_IN_DEVELOPMENT_ONLY
     AIRFLOW__WEBSERVER__WORKERS: 1
+    # the following var should be dropped in airflow 3
+    AIRFLOW__METRICS__TIMER_UNIT_CONSISTENCY: 'true'
 
     # Connections
     AIRFLOW_CONN_PG: postgresql://data-inclusion:data-inclusion@datawarehouse:5432/data-inclusion
@@ -84,14 +86,11 @@ services:
     command: scheduler
     restart: no
     healthcheck:
-      test:
-        [
-          "CMD-SHELL",
-          'airflow jobs check --job-type SchedulerJob --hostname "$${HOSTNAME}"'
-        ]
+      test: ["CMD-SHELL", "airflow jobs check --job-type SchedulerJob --local"]
       interval: 10s
-      timeout: 10s
+      timeout: 20s
       retries: 5
+      start_period: 30s
     depends_on:
       <<: *airflow-common-depends-on
       airflow-init:
