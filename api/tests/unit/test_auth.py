@@ -16,29 +16,31 @@ from data_inclusion.api import auth
             "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJsZWdhY3kudXNlckBleGFtc"
             "GxlLmNvbSIsImFkbWluIjpmYWxzZX0.pqDa-_YHnPlsP0v0PWROb2Bgmvz7hUaYpjH_DPSb85Y",
             200,
-            marks=[
-                pytest.mark.settings(
-                    OLD_SECRET_KEY="legacy-key",
-                    OLD_USER_SUBS=["legacy.user@example.com"],
-                )
-            ],
         ),
         (auth.create_access_token("some_user"), 200),
     ],
 )
-def test_private_endpoint(token, status_code):
+def test_private_endpoint(token, status_code, monkeypatch):
     app = fastapi.FastAPI()
 
-    @app.get("/api/private", dependencies=[auth.authenticated_dependency])
-    def private_endpoint():
-        pass
+    # The auth module structure statically loads the settings in memory;
+    # thus we have to monkeypatch the values in-place.
+    from data_inclusion.api.auth.services import settings as auth_settings
 
-    api_client = TestClient(app)
-    if token is not None:
-        api_client.headers.update({"Authorization": f"Bearer {token}"})
+    with monkeypatch.context() as m:
+        m.setattr(auth_settings, "OLD_SECRET_KEY", "legacy-key")
+        m.setattr(auth_settings, "OLD_USER_SUBS", ["legacy.user@example.com"])
 
-    response = api_client.get("/api/private")
-    assert response.status_code == status_code
+        @app.get("/api/private", dependencies=[auth.authenticated_dependency])
+        def private_endpoint():
+            pass
+
+        api_client = TestClient(app)
+        if token is not None:
+            api_client.headers.update({"Authorization": f"Bearer {token}"})
+
+        response = api_client.get("/api/private")
+        assert response.status_code == status_code
 
 
 @pytest.mark.parametrize(
