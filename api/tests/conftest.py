@@ -22,16 +22,23 @@ DIR = Path(__file__).parent
 def settings(request):
     from data_inclusion.api import config
 
-    settings = config.Settings(
-        ALLOWED_HOSTS=["*"],
-        BASE_URL="http://testserver",
-        ENV="test",
-    )
+    settings_kwargs = {
+        "ALLOWED_HOSTS": ["*"],
+        "BASE_URL": "http://testserver",
+        "ENV": "test",
+    }
 
-    if mark := request.node.get_closest_marker("env"):
-        settings.ENV = mark.args[0] if len(mark.args) > 0 else mark.kwargs["env"]
+    if mark := request.node.get_closest_marker("settings"):
+        if len(mark.args) > 0:
+            if not isinstance(mark.args[0], dict):
+                raise ValueError("Expecting a dictionary for settings")
+            settings_from_mark = mark.args[0]
+        else:
+            settings_from_mark = mark.kwargs
 
-    yield settings
+        settings_kwargs |= settings_from_mark
+
+    yield config.Settings(**settings_kwargs)
 
 
 @pytest.fixture(scope="function")
