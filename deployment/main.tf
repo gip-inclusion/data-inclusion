@@ -313,8 +313,7 @@ resource "terraform_data" "up" {
       "cd ${local.work_dir}",
       "scw secret version access-by-path secret-name=pipeline secret-path=/ revision=latest -o template=\"{{ printf \\\"%s\\\" .Data }}\" >> .env",
       "docker compose --progress=plain up --pull=always --force-recreate --remove-orphans --wait --wait-timeout 1200 --quiet-pull --detach",
-      # FIXME: ideally this file should be removed
-      # "rm -f ${local.work_dir}/.env",
+      "rm .env",
     ]
   }
 }
