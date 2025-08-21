@@ -100,19 +100,7 @@ terraform apply
 
 ### prod and staging on github
 
-Each environment has a dedicated github environment. In each of these gh environment, a `TF_VARS_BASE64` secret contains a base64 encoded version of `terraform.tfvars.json`, with all the variables for a given environment.
-
-The files are stored on bitwarden as `<ENVIRONMENT>.terraform.tfvars.json`.
-
-Use the following gh cli command to update this file on github:
-
-```bash
-# using gh cli
-# replace <ENVIRONMENT>
-base64 -w0 <ENVIRONMENT>.terraform.tfvars.json | gh secret --repo gip-inclusion/data-inclusion --env <ENVIRONMENT> set TF_VARS_BASE64
-```
-
-Make sure to update the config on bitwarden.
+Each environment has a dedicated github environment containing a collection of deployment secrets.
 
 ### formatting `.tf` files
 
