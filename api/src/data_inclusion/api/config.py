@@ -17,7 +17,6 @@ class Settings(BaseSettings):
     OLD_SECRET_KEY: str | None = None
     OLD_USER_SUBS: list[str] = []  # use JSON list in the env var
     SENTRY_DSN: str | None = None
-    TOKEN_ENABLED: bool = True
 
     SOLIGUIDE_API_URL: str = "https://api.soliguide.fr"
     SOLIGUIDE_API_TOKEN: str | None = None

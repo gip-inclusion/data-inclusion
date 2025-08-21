@@ -26,9 +26,7 @@ from data_inclusion.api import auth
         (auth.create_access_token("some_user"), 200),
     ],
 )
-def test_private_endpoint(token, status_code):
-    app = fastapi.FastAPI()
-
+def test_private_endpoint(token, status_code, app):
     @app.get("/api/private", dependencies=[auth.authenticated_dependency])
     def private_endpoint():
         pass

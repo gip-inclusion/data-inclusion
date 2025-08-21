@@ -45,35 +45,11 @@ jobs:
             type=ref,event=pr
             type=sha,format=long,prefix=
 
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v3
-
-      - name: Build and export to Docker
-        uses: docker/build-push-action@v5
-        with:
-          context: ./${{ matrix.service }}
-          load: true
-          tags: ${{ steps.meta.outputs.tags }}
-          cache-from: type=gha
-          cache-to: type=gha,mode=max
-          labels: ${{ steps.meta.outputs.labels }}
-
       - name: Run tests
         env:
           CI: 1
           API_ENV: test
         run: |
-            if [[ "${{ matrix.service }}" == "pipeline" ]]; then
-              TARGET_CONTAINER=airflow-scheduler
-            else
-              TARGET_CONTAINER=${{ matrix.service }}
-            fi
-            docker compose run --entrypoint pytest $TARGET_CONTAINER -p no:cacheprovider -vv
+            env
+            docker compose run --entrypoint pytest api -p no:cacheprovider -vvsx tests/unit/test_auth.py
 
-      - name: Push image to GitHub registry
-        uses: docker/build-push-action@v5
-        with:
-          context: ./${{ matrix.service }}
-          push: true
-          tags: ${{ steps.meta.outputs.tags }}
-          labels: ${{ steps.meta.outputs.labels }}

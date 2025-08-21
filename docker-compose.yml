@@ -156,7 +156,8 @@ services:
       - pg-data:/var/lib/postgresql/data
 
   api:
-    image: data-inclusion/api
+    tty: true
+    stdin_open: true
     build: api
     depends_on:
       datawarehouse:
@@ -165,6 +166,8 @@ services:
     ports:
       - ${API_PORT:-8000}:8000
     environment:
+      - PYTHONUNBUFFERED=1
+      - PYTHONDONTWRITEBYTECODE=1
       - ENV=${API_ENV:-dev}
       - DEBUG=${API_DEBUG:-False}
       - DATABASE_URL=postgresql://data-inclusion:data-inclusion@datawarehouse:5432/data-inclusion

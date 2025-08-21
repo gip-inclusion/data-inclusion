@@ -58,6 +58,8 @@ def create_app(settings: config.Settings) -> fastapi.FastAPI:
         dependencies=[auth.authenticate_dependency],
     )
 
+    app.state.settings = settings
+
     app.add_middleware(gzip.GZipMiddleware)
 
     app.add_middleware(

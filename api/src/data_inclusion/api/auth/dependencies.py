@@ -1,3 +1,5 @@
+import os
+
 import sentry_sdk
 from starlette.authentication import AuthCredentials, SimpleUser, UnauthenticatedUser
 
@@ -5,13 +7,11 @@ import fastapi
 from fastapi import security, status
 
 from data_inclusion.api import auth
-from data_inclusion.api.config import settings
 
 credentials_dependency = (
     fastapi.Depends(security.HTTPBearer(), use_cache=True)
-    if settings.TOKEN_ENABLED
-    # hide auth from openapi UI
-    else fastapi.Depends(lambda: None)
+    if os.environ.get("TOKEN_ENABLED", "false").lower() != "false"
+    else fastapi.Depends(lambda: None)  # hide auth from openapi UI
 )
 
 
@@ -44,7 +44,7 @@ async def authenticate(request: fastapi.Request):
         return
 
     # extract payload from token
-    payload = auth.verify_token(credentials.credentials)
+    payload = auth.verify_token(credentials.credentials, request.app.state.settings)
 
     if payload is not None:
         scopes = ["authenticated"]

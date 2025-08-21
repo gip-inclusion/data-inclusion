@@ -2,14 +2,13 @@ import logging
 
 import jwt
 
-from data_inclusion.api.config import settings
-
 ALGORITHM = "HS256"
 
 logger = logging.getLogger(__name__)
 
 
 def create_access_token(
+    secret_key,
     subject,
     admin: bool | None = False,
 ) -> str:
@@ -18,13 +17,13 @@ def create_access_token(
             "sub": str(subject),
             "admin": admin,
         },
-        key=settings.SECRET_KEY,
+        key=secret_key,
         algorithm=ALGORITHM,
     )
     return encoded_jwt
 
 
-def verify_token(token: str) -> dict | None:
+def verify_token(token: str, settings) -> dict | None:
     try:
         payload = jwt.decode(jwt=token, key=settings.SECRET_KEY, algorithms=[ALGORITHM])
     except jwt.InvalidTokenError:
