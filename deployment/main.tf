@@ -51,6 +51,7 @@ resource "scaleway_instance_server" "main" {
       - echo "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.asc] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable" | tee /etc/apt/sources.list.d/docker.list > /dev/null
       - apt-get update
       - apt-get install -y docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
+      - curl -s https://raw.githubusercontent.com/scaleway/scaleway-cli/master/scripts/get.sh | sh
   EOF
 }
 
@@ -346,6 +347,24 @@ resource "terraform_data" "up" {
   provisioner "file" {
     source      = "${path.root}/docker-compose.yml"
     destination = "${local.work_dir}/docker-compose.yml"
+  }
+
+  provisioner "file" {
+    source      = "${path.root}/../pipeline/defaults.env"
+    destination = "${local.work_dir}/defaults.env"
+  }
+
+  provisioner "file" {
+    content = sensitive(<<-EOT
+    access_key: ${var.app_secrets_access_key}
+    secret_key: ${var.app_secrets_secret_key}
+    default_organization_id: ${var.scaleway_organization_id}
+    default_project_id: ${var.scaleway_project_id}
+    default_region: fr-par
+    default_zone: fr-par-1
+    EOT
+    )
+    destination = "${path.root}/.config/scw/config.yaml"
   }
 
   provisioner "file" {
