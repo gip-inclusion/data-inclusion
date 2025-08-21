@@ -1,5 +1,11 @@
+import os
+
 from pydantic import field_validator
-from pydantic_settings import BaseSettings, SettingsConfigDict
+from pydantic_settings import (
+    BaseSettings,
+    PydanticBaseSettingsSource,
+    SettingsConfigDict,
+)
 
 
 class Settings(BaseSettings):
@@ -35,6 +41,37 @@ class Settings(BaseSettings):
     @classmethod
     def valid_postgres_url(cls, value: str) -> str:
         return value.replace("postgres://", "postgresql://")
+
+    def __init__(self, **kwargs):
+        if os.environ.get("ENV") == "test":
+            test_defaults = {
+                "ALLOWED_HOSTS": ["*"],
+                "BASE_URL": "http://testserver",
+                "ENV": "test",
+                "SECRET_KEY": "test-secret-key",
+                "DATABASE_URL": "postgresql://data-inclusion:data-inclusion@localhost:5455/data-inclusion",
+            }
+            kwargs = {**test_defaults, **kwargs}
+        super().__init__(**kwargs)
+
+    @classmethod
+    def settings_customise_sources(
+        cls,
+        settings_cls: type[BaseSettings],
+        init_settings: PydanticBaseSettingsSource,
+        env_settings: PydanticBaseSettingsSource,
+        dotenv_settings: PydanticBaseSettingsSource,
+        file_secret_settings: PydanticBaseSettingsSource,
+    ) -> tuple[PydanticBaseSettingsSource, ...]:
+        if os.environ.get("ENV") == "test":
+            return (init_settings,)
+
+        return (
+            init_settings,
+            env_settings,
+            dotenv_settings,
+            file_secret_settings,
+        )
 
 
 settings = Settings()
