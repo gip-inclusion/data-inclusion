@@ -158,6 +158,22 @@ variable "scaleway_project_id" {
   type        = string
 }
 
+variable "scaleway_organization_id" {
+  description = "Scaleway organization id (https://console.scaleway.com/organization)"
+  type        = string
+}
+
+variable "app_secrets_access_key" {
+  description = "Access key for the app secrets"
+  type        = string
+}
+
+variable "app_secrets_secret_key" {
+  description = "Secret key for the app secrets"
+  type        = string
+  sensitive   = true
+}
+
 variable "soliguide_api_token" {
   description = "Used in extraction tasks orchestrated by airflow"
   type        = string
