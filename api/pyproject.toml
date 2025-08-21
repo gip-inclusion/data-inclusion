@@ -100,7 +100,7 @@ fastapi = ["fastapi", "fastapi_pagination"]
 markers = '''
     with_token: inject token headers in test client
     with_admin_token: inject admin token headers in test client
-    env: override settings.ENV (prod, dev, etc.)
+    settings: override api settings
     feature_deprecated: the marked test is deprecated
 '''
 testpaths = "tests"
