@@ -58,7 +58,7 @@ services:
     image: postgres:14
     restart: always
     healthcheck:
-      test: [ "CMD", "pg_isready", "-U", "airflow" ]
+      test: pg_isready
       interval: 5s
       retries: 5
     environment:
@@ -83,7 +83,7 @@ services:
     command: webserver
     restart: always
     healthcheck:
-      test: ["CMD", "curl", "--fail", "http://localhost:8080/health"]
+      test: curl --fail http://localhost:8080/health
       interval: 30s
       timeout: 10s
       retries: 5
@@ -106,7 +106,7 @@ services:
     command: scheduler
     restart: always
     healthcheck:
-      test: ["CMD-SHELL", 'airflow jobs check --job-type SchedulerJob --local']
+      test: airflow jobs check --job-type SchedulerJob --local
       interval: 10s
       timeout: 20s
       retries: 5
@@ -120,7 +120,7 @@ services:
     image: ghcr.io/gip-inclusion/data-inclusion-datawarehouse:${STACK_VERSION}
     restart: always
     healthcheck:
-      test: [ "CMD", "pg_isready", "-U", "${DATAWAREHOUSE_DI_USERNAME}"]
+      test: pg_isready
       interval: 5s
       retries: 5
     ports:

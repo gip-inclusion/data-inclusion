@@ -56,7 +56,7 @@ services:
     image: postgres:14
     restart: no
     healthcheck:
-      test: [ "CMD", "pg_isready", "-U", "airflow" ]
+      test: pg_isready
       interval: 5s
       retries: 5
     ports:
@@ -86,7 +86,7 @@ services:
     command: scheduler
     restart: no
     healthcheck:
-      test: ["CMD-SHELL", "airflow jobs check --job-type SchedulerJob --local"]
+      test: airflow jobs check --job-type SchedulerJob --local
       interval: 10s
       timeout: 20s
       retries: 5
@@ -139,7 +139,7 @@ services:
     restart: no
     command: -c fsync=off -c full_page_writes=off -c synchronous_commit=off -c log_statement=all
     healthcheck:
-      test: [ "CMD", "pg_isready", "-U", "data-inclusion" ]
+      test: pg_isready
       interval: 5s
       retries: 5
     ports:
