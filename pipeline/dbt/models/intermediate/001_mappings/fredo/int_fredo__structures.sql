@@ -37,7 +37,7 @@ final AS (
     SELECT
         structures.id                             AS "id",
         structures.id                             AS "adresse_id",
-        structures._di_source_id                  AS "source",
+        'fredo'                                   AS "source",
         structures.siret                          AS "siret",
         NULL                                      AS "rna",
         structures.nom                            AS "nom",

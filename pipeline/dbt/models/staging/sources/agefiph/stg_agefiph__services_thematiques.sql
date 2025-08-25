@@ -4,7 +4,6 @@ WITH source AS (
 
 final AS (
     SELECT
-        source._di_source_id      AS "_di_source_id",
         source.data ->> 'id'      AS "service_id",
         thematiques.data ->> 'id' AS "thematique_id"
     FROM

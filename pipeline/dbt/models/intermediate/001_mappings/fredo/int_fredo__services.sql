@@ -132,7 +132,7 @@ profils AS (
 final AS (
     SELECT
         fredo_structures.id                                                                   AS "structure_id",
-        fredo_structures._di_source_id                                                        AS "source",
+        'fredo'                                                                               AS "source",
         fredo_structures.id                                                                   AS "adresse_id",
         thematiques.thematiques                                                               AS "thematiques",
         NULL                                                                                  AS "prise_rdv",

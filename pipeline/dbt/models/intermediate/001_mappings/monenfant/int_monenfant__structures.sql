@@ -12,7 +12,7 @@ final AS (
         coordonnees__telephone                                                     AS "telephone",
         coordonnees__adresse_mail                                                  AS "courriel",
         coordonnees__site_internet                                                 AS "site_web",
-        _di_source_id                                                              AS "source",
+        'monenfant'                                                                AS "source",
         'https://monenfant.fr/que-recherchez-vous/mode-d-accueil/' || structure_id AS "lien_source",
         service_commun__calendrier__jours_horaires_text                            AS "horaires_ouverture",
         NULL                                                                       AS "accessibilite",

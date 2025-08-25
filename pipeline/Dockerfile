@@ -15,36 +15,30 @@ RUN apt-get update \
     && apt-get clean -y \
     && rm -rf /var/lib/apt/lists/*
 
-ENV AIRFLOW_VAR_DBT_PROJECT_DIR=/opt/airflow/dbt
-
 USER airflow
 
 COPY requirements requirements
-RUN pip install -r requirements/airflow/requirements.txt
+RUN uv --no-cache pip install -r requirements/airflow/requirements.txt
 
-ENV VIRTUAL_ENV=/opt/airflow/venvs/python/venv
-RUN python -m venv ${VIRTUAL_ENV}
-RUN "${VIRTUAL_ENV}/bin/python" -m pip install --no-cache-dir --upgrade pip setuptools wheel
-RUN "${VIRTUAL_ENV}/bin/python" -m pip install --no-cache-dir -r requirements/tasks/python/requirements.txt
+RUN uv venv venvs/tasks
+RUN uv --no-cache pip install --python venvs/tasks/bin/python -r requirements/tasks/requirements.txt
 
-ENV VIRTUAL_ENV=/opt/airflow/venvs/dbt/venv
-RUN python -m venv ${VIRTUAL_ENV}
-RUN "${VIRTUAL_ENV}/bin/python" -m pip install --no-cache-dir --upgrade pip setuptools wheel
-RUN "${VIRTUAL_ENV}/bin/python" -m pip install --no-cache-dir -r requirements/tasks/dbt/requirements.txt
-
+# setup playwright
 USER root
-
-RUN /opt/airflow/venvs/python/venv/bin/playwright install-deps chromium
-
+RUN uv --no-cache run --python venvs/tasks/bin/python playwright install-deps chromium
 USER airflow
+RUN uv --no-cache run --python venvs/tasks/bin/python playwright install chromium
 
 COPY --chown=airflow:0 pyproject.toml pyproject.toml
-COPY --chown=airflow:0 dags /opt/airflow/dags
-COPY --chown=airflow:0 dbt ${AIRFLOW_VAR_DBT_PROJECT_DIR}
-COPY --chown=airflow:0 tests /opt/airflow/tests
+COPY --chown=airflow:0 dags dags
+COPY --chown=airflow:0 dbt dbt
+COPY --chown=airflow:0 tests tests
 
-RUN /opt/airflow/venvs/dbt/venv/bin/dbt deps --project-dir /opt/airflow/dbt
-RUN /opt/airflow/venvs/python/venv/bin/playwright install chromium
+# setup dbt
+USER airflow
+RUN uv venv venvs/dbt
+RUN uv --no-cache pip install --python venvs/dbt/bin/python dbt-postgres dbt-core==1.*
+RUN uv --no-cache run --no-project --python venvs/dbt/bin/python dbt deps --project-dir dbt
 
 # make the dags package available in editable mode
 ENV PYTHONPATH="${PYTHONPATH}:/opt/airflow/dags"

@@ -12,7 +12,7 @@ final AS (
         SUBSTRING(garages.telephone FROM '\+?\d[\d\.\-\s]*\d') AS "telephone",
         garages.email                                          AS "courriel",
         garages.url                                            AS "site_web",
-        garages._di_source_id                                  AS "source",
+        'mes-aides'                                            AS "source",
         NULL                                                   AS "lien_source",
         NULL                                                   AS "horaires_ouverture",
         NULL                                                   AS "accessibilite",

@@ -20,7 +20,7 @@ final AS (
         id                             AS "id",
         nom                            AS "nom",
         siret                          AS "siret",
-        _di_source_id                  AS "source",
+        'france-travail'               AS "source",
         '3949'                         AS "telephone",
         'FT'                           AS "typologie",
         ARRAY['france-travail']        AS "labels_nationaux"

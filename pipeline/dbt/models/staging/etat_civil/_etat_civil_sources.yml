@@ -1,0 +1,7 @@
+version: 2
+
+sources:
+  - name: etat_civil
+    schema: etat_civil
+    tables:
+      - name: prenoms
