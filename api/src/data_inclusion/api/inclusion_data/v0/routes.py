@@ -54,7 +54,7 @@ def retrieve_structure_endpoint(
     background_tasks: fastapi.BackgroundTasks,
     params: Annotated[parameters.RetrieveStructurePathParams, fastapi.Path()],
     db_session=fastapi.Depends(db.get_session),
-    _=fastapi.Depends(soliguide.notify_soliguide_dependency),
+    _=fastapi.Depends(soliguide.notify_soliguide_dependency_v0),
 ):
     structure = services.retrieve_structure(
         db_session=db_session,
@@ -122,7 +122,7 @@ def retrieve_service_endpoint(
     params: Annotated[parameters.RetrieveServicePathParams, fastapi.Path()],
     background_tasks: fastapi.BackgroundTasks,
     db_session=fastapi.Depends(db.get_session),
-    _=fastapi.Depends(soliguide.notify_soliguide_dependency),
+    _=fastapi.Depends(soliguide.notify_soliguide_dependency_v0),
 ):
     service = services.retrieve_service(
         db_session=db_session,

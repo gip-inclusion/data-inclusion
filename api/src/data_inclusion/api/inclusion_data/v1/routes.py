@@ -44,7 +44,7 @@ def list_structures_endpoint(
 
 
 @router.get(
-    "/structures/{source}/{id}",
+    "/structures/{id}",
     response_model=schemas.DetailedStructure,
     summary="Détailler une structure",
     dependencies=[auth.authenticated_dependency] if settings.TOKEN_ENABLED else [],
@@ -54,7 +54,7 @@ def retrieve_structure_endpoint(
     background_tasks: fastapi.BackgroundTasks,
     params: Annotated[parameters.RetrieveStructurePathParams, fastapi.Path()],
     db_session=fastapi.Depends(db.get_session),
-    _=fastapi.Depends(soliguide.notify_soliguide_dependency),
+    _=fastapi.Depends(soliguide.notify_soliguide_dependency_v1),
 ):
     structure = services.retrieve_structure(
         db_session=db_session,
@@ -112,7 +112,7 @@ def list_services_endpoint(
 
 
 @router.get(
-    "/services/{source}/{id}",
+    "/services/{id}",
     response_model=schemas.DetailedService,
     summary="Détailler un service",
     dependencies=[auth.authenticated_dependency] if settings.TOKEN_ENABLED else [],
@@ -122,7 +122,7 @@ def retrieve_service_endpoint(
     params: Annotated[parameters.RetrieveServicePathParams, fastapi.Path()],
     background_tasks: fastapi.BackgroundTasks,
     db_session=fastapi.Depends(db.get_session),
-    _=fastapi.Depends(soliguide.notify_soliguide_dependency),
+    _=fastapi.Depends(soliguide.notify_soliguide_dependency_v1),
 ):
     service = services.retrieve_service(
         db_session=db_session,
