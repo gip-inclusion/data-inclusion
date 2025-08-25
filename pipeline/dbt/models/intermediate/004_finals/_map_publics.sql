@@ -43,6 +43,6 @@ FROM (
     ('tous-publics', 'personnes-en-situation-durgence'),
     ('tous-publics', 'personnes-en-situation-juridique-specifique'),
     ('tous-publics', 'personnes-exilees'),
-    ('tous-publics', 'residents-QPV-FRR'),
+    ('tous-publics', 'residents-qpv-frr'),
     ('tous-publics', 'seniors')
 ) AS x (profil, public)
