@@ -51,13 +51,12 @@ resource "scaleway_instance_server" "main" {
       - echo "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.asc] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable" | tee /etc/apt/sources.list.d/docker.list > /dev/null
       - apt-get update
       - apt-get install -y docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
+      - curl -s https://raw.githubusercontent.com/scaleway/scaleway-cli/master/scripts/get.sh | sh
   EOF
 }
 
-resource "random_pet" "datalake_bucket_suffix" {}
-
 resource "scaleway_object_bucket" "main" {
-  name = "data-inclusion-datalake-${var.environment}-${random_pet.datalake_bucket_suffix.id}"
+  name = "data-inclusion-datalake-${var.environment}"
 
   lifecycle_rule {
     id      = "archive-raw-data-after-30-days"
@@ -233,36 +232,6 @@ resource "scaleway_object_bucket_policy" "main" {
 }
 
 locals {
-  airflow_conn_pg = format(
-    "postgresql://%s:%s@%s:%s/%s",
-    var.datawarehouse_di_username,
-    var.datawarehouse_di_password,
-    "datawarehouse",
-    "5432",
-    var.datawarehouse_di_database
-  )
-
-  s3_endpoint = replace(scaleway_object_bucket.main.endpoint, "${scaleway_object_bucket.main.name}.", "")
-
-  airflow_conn_s3 = jsonencode(
-    {
-      conn_type = "aws"
-      extra = {
-        "region_name" : "${scaleway_object_bucket.main.region}",
-        "endpoint_url" : "${local.s3_endpoint}",
-        "aws_access_key_id" : "${var.airflow_access_key}",
-        "aws_secret_access_key" : "${var.airflow_secret_key}",
-        "service_config" : {
-          "s3" : {
-            "bucket_name" : "${scaleway_object_bucket.main.name}",
-          }
-        },
-        # FIXME(vmttn): https://gip-inclusion.slack.com/archives/C088XSD8VNV/p1750322121003849
-        "config_kwargs" : { "request_checksum_calculation" : "when_required" }
-      }
-    }
-  )
-
   base_hostname = "${var.dns_subdomain != "" ? "${var.dns_subdomain}." : ""}${var.dns_zone}"
 
   airflow_hostname = "airflow.${local.base_hostname}"
@@ -305,40 +274,10 @@ resource "terraform_data" "up" {
   provisioner "file" {
     content = sensitive(<<-EOT
     STACK_VERSION='${var.stack_version}'
-    AIRFLOW_HOSTNAME='${local.airflow_hostname}'
-
-    # Datawarehouse
-    DATAWAREHOUSE_DI_DATABASE='${var.datawarehouse_di_database}'
-    DATAWAREHOUSE_DI_PASSWORD='${var.datawarehouse_di_password}'
-    DATAWAREHOUSE_DI_USERNAME='${var.datawarehouse_di_username}'
-
-    # Airflow settings
-    AIRFLOW_WWW_USER_PASSWORD='${var.airflow_admin_password}'
-    AIRFLOW__CORE__FERNET_KEY='${var.airflow__core__fernet_key}'
-    AIRFLOW__SENTRY__SENTRY_DSN='${var.airflow__sentry__sentry_dsn}'
     AIRFLOW__SENTRY__RELEASE='${var.stack_version}'
+    AIRFLOW_HOSTNAME='${local.airflow_hostname}'
     AIRFLOW__WEBSERVER__BASE_URL='https://${local.airflow_hostname}'
-
-    # Airflow connections
-    AIRFLOW_CONN_PG_API='${var.airflow_conn_pg_api}'
-    AIRFLOW_CONN_PG='${local.airflow_conn_pg}'
-    AIRFLOW_CONN_S3='${local.airflow_conn_s3}'
-
-    # Airflow variables
-    AIRFLOW_VAR_BREVO_API_KEY='${var.brevo_api_key}'
-    AIRFLOW_VAR_CARIF_OREF_URL='${var.carif_oref_url}'
-    AIRFLOW_VAR_DATA_INCLUSION_API_PROBE_TOKEN='${var.data_inclusion_api_probe_token}'
-    AIRFLOW_VAR_DATAGOUV_API_KEY='${var.datagouv_api_key}'
-    AIRFLOW_VAR_DORA_API_TOKEN='${var.dora_api_token}'
-    AIRFLOW_VAR_DORA_API_URL='${var.dora_api_url}'
-    AIRFLOW_VAR_EMPLOIS_API_TOKEN='${var.emplois_api_token}'
     AIRFLOW_VAR_ENVIRONMENT='${var.environment}'
-    AIRFLOW_VAR_FREDO_API_TOKEN='${var.fredo_api_token}'
-    AIRFLOW_VAR_MISSION_LOCALE_API_SECRET='${var.mission_locale_api_secret}'
-    AIRFLOW_VAR_FT_API_TOKEN='${var.ft_api_token}'
-    AIRFLOW_VAR_MES_AIDES_AIRTABLE_KEY='${var.mes_aides_airtable_key}'
-    AIRFLOW_VAR_SOLIGUIDE_API_TOKEN='${var.soliguide_api_token}'
-    AIRFLOW_VAR_TWOCAPTCHA_API_KEY='${var.twocaptcha_api_key}'
     EOT
     )
     destination = "${local.work_dir}/.env"
@@ -355,6 +294,19 @@ resource "terraform_data" "up" {
   }
 
   provisioner "file" {
+    content = sensitive(<<-EOT
+    access_key: ${var.app_secrets_access_key}
+    secret_key: ${var.app_secrets_secret_key}
+    default_organization_id: ${var.scaleway_organization_id}
+    default_project_id: ${var.scaleway_project_id}
+    default_region: fr-par
+    default_zone: fr-par-1
+    EOT
+    )
+    destination = "${path.root}/.config/scw/config.yaml"
+  }
+
+  provisioner "file" {
     source      = "${path.root}/systemd/system/"
     destination = "/etc/systemd/system"
   }
@@ -365,9 +317,9 @@ resource "terraform_data" "up" {
       "systemctl enable cleanup.timer",
       "systemctl start cleanup.timer",
       "cd ${local.work_dir}",
+      "scw secret version access-by-path secret-name=pipeline secret-path=/ revision=latest -o template=\"{{ printf \\\"%s\\\" .Data }}\" >> .env",
       "docker compose --progress=plain up --pull=always --force-recreate --remove-orphans --wait --wait-timeout 1200 --quiet-pull --detach",
-      # FIXME: ideally this file should be removed
-      # "rm -f ${local.work_dir}/.env",
+      "rm .env",
     ]
   }
 
