@@ -182,7 +182,7 @@ models:
           - unique
           - not_null
           - relationships:
-              to: ref('int__structures')
+              to: ref('int__union_structures')
               field: _di_surrogate_id
       - name: siret
         data_tests:
