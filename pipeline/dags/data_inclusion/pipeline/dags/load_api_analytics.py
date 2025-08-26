@@ -63,7 +63,7 @@ FIFTEEN_BEFORE_THE_HOUR = "45 5-22 * * *"
     schedule=FIFTEEN_BEFORE_THE_HOUR,
     **dags.common_args(use_sentry=True),
 )
-def import_data_inclusion_api():
+def load_api_analytics():
     build_source_stats = dbt.dbt_task.override(
         task_id="generate_source_stats",
         trigger_rule=TriggerRule.ALL_DONE,
@@ -94,4 +94,4 @@ def import_data_inclusion_api():
     )
 
 
-import_data_inclusion_api()
+load_api_analytics()
