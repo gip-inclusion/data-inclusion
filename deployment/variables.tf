@@ -26,6 +26,15 @@ variable "environment" {
   type        = string
 }
 
+variable "scaleway_access_key" {
+  description = "the key having access to the terraform states"
+  type        = string
+}
+
+variable "scaleway_secret_key" {
+  description = "the secret key having access to the terraform states"
+  type        = string
+}
 
 variable "scaleway_application_id" {
   description = "ID of the application owning the api keys"

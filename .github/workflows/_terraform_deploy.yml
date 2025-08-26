@@ -15,10 +15,21 @@ jobs:
     environment: ${{ inputs.environment }}
 
     env:
-      ENV: ${{ vars.ENVIRONMENT }}
       AWS_ACCESS_KEY_ID: ${{ vars.AWS_ACCESS_KEY_ID }}
       AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-      TF_VARS_BASE64: ${{ secrets.TF_VARS_BASE64 }}
+      TF_VAR_environment: ${{ inputs.environment }}
+      TF_VAR_airflow_application_id: ${{ vars.AIRFLOW_APPLICATION_ID }}
+      TF_VAR_airflow_access_key: ${{ vars.AIRFLOW_ACCESS_KEY }}
+      TF_VAR_api_scw_application_id: ${{ vars.API_SCW_APPLICATION_ID }}
+      TF_VAR_app_secrets_access_key: ${{ vars.APP_SECRETS_ACCESS_KEY }}
+      TF_VAR_app_secrets_secret_key: ${{ secrets.APP_SECRETS_SECRET_KEY }}
+      TF_VAR_dns_zone: ${{ vars.DNS_ZONE }}
+      TF_VAR_scaleway_application_id: ${{ vars.SCALEWAY_APPLICATION_ID }}
+      TF_VAR_scaleway_access_key: ${{ vars.SCALEWAY_ACCESS_KEY }}
+      TF_VAR_scaleway_secret_key: ${{ secrets.SCALEWAY_SECRET_KEY }}
+      TF_VAR_scaleway_organization_id: ${{ vars.SCALEWAY_ORGANIZATION_ID }}
+      TF_VAR_scaleway_project_id: ${{ vars.SCALEWAY_PROJECT_ID }}
+      TF_VAR_ssh_private_key: ${{ secrets.SSH_PRIVATE_KEY }}
       TF_VAR_stack_version: ${{ github.sha }}
 
     defaults:
@@ -30,20 +41,13 @@ jobs:
 
       - uses: hashicorp/setup-terraform@v3
         with:
-          terraform_version: "1.9.7"
-
-      - name: mask tf variables
-        run: |
-          echo "${TF_VARS_BASE64}" \
-            | base64 --decode \
-            | jq 'to_entries | map(.value // empty) | .[]' \
-            | xargs -I{} echo '::add-mask::{}'
+          terraform_version: "1.12.1"
 
       - name: tf init
         run: |
           terraform init \
             -backend-config "bucket=data-inclusion-tf-states" \
-            -backend-config "key=${ENV}"
+            -backend-config "key=${{ inputs.environment }}"
 
       - name: tf validate
         run: |
@@ -51,12 +55,8 @@ jobs:
 
       - name: tf plan
         run: |
-          trap "rm -f terraform.tfvars.json" EXIT
-          echo "${TF_VARS_BASE64}" | base64 --decode > terraform.tfvars.json
           terraform plan -input=false
 
       - name: tf apply
         run: |
-          trap "rm -f terraform.tfvars.json" EXIT
-          echo "${TF_VARS_BASE64}" | base64 --decode > terraform.tfvars.json
           terraform apply -input=false -auto-approve
