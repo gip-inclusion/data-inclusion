@@ -14,8 +14,8 @@ all: airflow tasks dev
 airflow: airflow/requirements.in
 	$(PIP_COMPILE) airflow/requirements.in --output-file=airflow/requirements.txt
 
-python: airflow tasks/requirements.in
+tasks: airflow tasks/requirements.in
 	$(PIP_COMPILE) tasks/requirements.in --output-file=tasks/requirements.txt
 
-dev: python dev/requirements.in
+dev: tasks dev/requirements.in
 	$(PIP_COMPILE) dev/requirements.in --output-file=dev/requirements.txt
