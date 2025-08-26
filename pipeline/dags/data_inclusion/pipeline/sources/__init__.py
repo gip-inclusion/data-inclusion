@@ -25,7 +25,8 @@ from . import (
 
 SOURCES_CONFIGS = {
     "dora": {
-        "schedule": "@hourly",
+        # Hourly between 5am and 10pm
+        "schedule": "0 5-22 * * *",
         "extractor": dora.extract,
         "streams": {
             "structures": {

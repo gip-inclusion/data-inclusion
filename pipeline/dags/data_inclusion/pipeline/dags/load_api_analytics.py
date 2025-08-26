@@ -55,7 +55,8 @@ def import_data():
             raise exc
 
 
-FIFTEEN_BEFORE_THE_HOUR = "45 * * * *"
+# At 45 minutes past the hour, between 5am and 10pm
+FIFTEEN_BEFORE_THE_HOUR = "45 5-22 * * *"
 
 
 @dag(
