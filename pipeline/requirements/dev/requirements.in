@@ -1,5 +1,5 @@
 -r ../airflow/requirements.in
--r ../tasks/python/requirements.in
+-r ../tasks/requirements.in
 
 pre-commit
 pytest
