@@ -31,7 +31,11 @@ def import_file(url: str, schema: str, table: str):
             )
 
 
-EVERY_MONTH_ON_THE_10TH = "30 3 10 * *"
+# Run monthly on the 10th at 10:30 PM
+# This dag should run during the night
+# Based on the historic of publications on data.gouv.fr,
+# the data is usually updated in the first week of the month.
+EVERY_MONTH_ON_THE_10TH_AT_10_30_PM = "30 22 10 * *"
 
 FILES = {
     "etablissement_historique": "https://www.data.gouv.fr/api/1/datasets/r/88fbb6b4-0320-443e-b739-b4376a012c32",
@@ -42,7 +46,7 @@ FILES = {
 
 
 @dag(
-    schedule=EVERY_MONTH_ON_THE_10TH,
+    schedule=EVERY_MONTH_ON_THE_10TH_AT_10_30_PM,
     max_active_tasks=1,
     **dags.common_args(),
 )
