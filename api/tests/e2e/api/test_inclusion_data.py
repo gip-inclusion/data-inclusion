@@ -72,7 +72,6 @@ def test_list_structures_unauthenticated(api_client, schema_version):
         (
             "v1",
             models_v1.Structure(
-                _di_surrogate_id="04cfed4d-d3f7-4f9f-ad97-64bb6bbd7c96",
                 accessibilite_lieu="https://acceslibre.beta.gouv.fr/app/kitchen-amount/",
                 adresse="49, avenue de Pichon",
                 code_insee="59350",
@@ -329,7 +328,6 @@ def test_list_services_unauthenticated(api_client, schema_version):
             "v1",
             [
                 models_v1.Structure(
-                    _di_surrogate_id="04cfed4d-d3f7-4f9f-ad97-64bb6bbd7c96",
                     accessibilite_lieu="https://acceslibre.beta.gouv.fr/app/kitchen-amount/",
                     adresse="49, avenue de Pichon",
                     code_insee="59350",
@@ -339,7 +337,7 @@ def test_list_services_unauthenticated(api_client, schema_version):
                     courriel="levyalexandre@example.org",
                     date_maj="2023-01-01",
                     horaires_accueil="Mo-Fr 10:00-20:00",
-                    id="dora--lot-kitchen-amount",
+                    id="dora--much-mention",
                     reseaux_porteurs=[],
                     latitude=-20.074628,
                     longitude=99.899603,
@@ -355,8 +353,6 @@ def test_list_services_unauthenticated(api_client, schema_version):
                     telephone="0102030405",
                 ),
                 models_v1.Service(
-                    _di_surrogate_id="eafdc798-18a6-446d-acda-7bc14ba83a39",
-                    _di_structure_surrogate_id="04cfed4d-d3f7-4f9f-ad97-64bb6bbd7c96",
                     adresse="62, rue Eugène Rodrigues",
                     code_insee="59350",
                     code_postal="92950",
@@ -385,7 +381,7 @@ def test_list_services_unauthenticated(api_client, schema_version):
                     publics_precisions="Femme en situation d'insertion",
                     score_qualite=0.5,
                     source="dora",
-                    structure_id="much-mention",
+                    structure_id="dora--much-mention",
                     telephone="0102030405",
                     thematiques=["choisir-un-metier"],
                     type="formation",

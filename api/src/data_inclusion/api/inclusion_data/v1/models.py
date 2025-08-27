@@ -28,28 +28,26 @@ class Structure(HasAddress, Base):
     __tablename__ = "api__structures_v1"
 
     # internal metadata
-    _di_surrogate_id: Mapped[str] = mapped_column(primary_key=True)
     _is_best_duplicate: Mapped[bool | None]
     _cluster_id: Mapped[str | None]
 
     # structure data
+    id: Mapped[str] = mapped_column(primary_key=True)
+    source: Mapped[str]
+    nom: Mapped[str]
+    score_qualite: Mapped[float]
+    description: Mapped[str | None]
     accessibilite_lieu: Mapped[str | None] = mapped_column("accessibilite")
     courriel: Mapped[str | None]
     date_maj: Mapped[date | None]
     # FIXME(vperron) : for now this is not validated against OSM opening hours format
     # see https://pypi.org/project/opening-hours-py/ when we stop using pl/Python
     horaires_accueil: Mapped[str | None]
-    id: Mapped[str] = mapped_column(unique=True, index=True)
     reseaux_porteurs: Mapped[list[str] | None]
-    nom: Mapped[str]
-    description: Mapped[str | None]
     rna: Mapped[str | None]
     siret: Mapped[str | None]
     site_web: Mapped[str | None]
-    source: Mapped[str]
     telephone: Mapped[str | None]
-
-    score_qualite: Mapped[float]
 
     services: Mapped[list["v1.models.Service"]] = relationship(  # noqa: F821
         back_populates="structure"
@@ -69,8 +67,7 @@ Structure.doublons = relationship(
     Structure,
     primaryjoin=sqla.and_(
         orm.foreign(Structure._cluster_id) == orm.remote(Structure._cluster_id),
-        orm.foreign(Structure._di_surrogate_id)
-        != orm.remote(Structure._di_surrogate_id),
+        orm.foreign(Structure.id) != orm.remote(Structure.id),
     ),
     uselist=True,
 )
@@ -79,33 +76,33 @@ Structure.doublons = relationship(
 class Service(HasAddress, Base):
     __tablename__ = "api__services_v1"
 
-    # internal metadata
-    _di_surrogate_id: Mapped[str] = mapped_column(primary_key=True)
-    _di_structure_surrogate_id: Mapped[str] = mapped_column(
-        sqla.ForeignKey(Structure._di_surrogate_id, ondelete="CASCADE")
-    )
-    structure: Mapped[Structure] = relationship(back_populates="services")
-
     # service data
+    id: Mapped[str] = mapped_column(primary_key=True)
+    source: Mapped[str]
+    structure_id: Mapped[str] = mapped_column(
+        sqla.ForeignKey(Structure.id, ondelete="CASCADE")
+    )
+    nom: Mapped[str]
+    score_qualite: Mapped[float]
+    description: Mapped[str | None]
+    date_maj: Mapped[date | None]
+    type: Mapped[str | None]
+    thematiques: Mapped[list[str] | None]
+    publics: Mapped[list[str] | None]
+    publics_precisions: Mapped[str | None]
     conditions_acces: Mapped[str | None]
     contact_nom_prenom: Mapped[str | None]
     courriel: Mapped[str | None]
-    date_maj: Mapped[date | None]
     frais: Mapped[str | None]
     frais_precisions: Mapped[str | None]
     # FIXME(vperron) : for now this is not validated against OSM opening hours format
     # see https://pypi.org/project/opening-hours-py/ when we stop using pl/Python
     horaires_accueil: Mapped[str | None]
-    id: Mapped[str] = mapped_column(unique=True, index=True)
     modes_accueil: Mapped[list[str] | None]
     modes_mobilisation: Mapped[list[str] | None]
     mobilisation_precisions: Mapped[str | None]
     mobilisable_par: Mapped[list[str] | None]
     lien_mobilisation: Mapped[str | None]
-    nom: Mapped[str]
-    description: Mapped[str | None]
-    publics: Mapped[list[str] | None]
-    publics_precisions: Mapped[str | None]
     # generate_profils_precisions is a function that generates
     # a TSVECTOR from publics_precisions and publics.
     # cf: 20250107_172223_c947102bb23f_add_profils_autres_field_in_service.py
@@ -119,21 +116,16 @@ class Service(HasAddress, Base):
         TSVECTOR,
         Computed("generate_profils(publics)", persisted=True),
     )
-    source: Mapped[str]
-    structure_id: Mapped[str]
     telephone: Mapped[str | None]
-    thematiques: Mapped[list[str] | None]
-    type: Mapped[str | None]
-    score_qualite: Mapped[float]
     volume_horaire_hebdomadaire: Mapped[float | None]
     zone_eligibilite: Mapped[list[str] | None]
-    description: Mapped[str | None]
     nombre_semaines: Mapped[int | None]
 
     commune_: Mapped[Commune] = relationship(back_populates="services_v1")
+    structure: Mapped[Structure] = relationship(back_populates="services")
 
     __table_args__ = (
-        sqla.Index(None, "_di_structure_surrogate_id"),
+        sqla.Index(None, "structure_id"),
         sqla.Index(None, "source"),
         sqla.Index(None, "modes_accueil", postgresql_using="gin"),
         sqla.Index(None, "thematiques", postgresql_using="gin"),

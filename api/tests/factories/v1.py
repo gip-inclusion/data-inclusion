@@ -16,12 +16,10 @@ class StructureFactory(factory.alchemy.SQLAlchemyModelFactory):
         # attributes starting with an underscore ignored by default
         # the recommended way is to use the `rename` dict
         rename = {
-            "di_surrogate_id": "_di_surrogate_id",
             "is_best_duplicate": "_is_best_duplicate",
             "cluster_id": "_cluster_id",
         }
 
-    di_surrogate_id = factory.SelfAttribute("id")
     is_best_duplicate = None
     cluster_id = None
 
@@ -54,15 +52,6 @@ class ServiceFactory(factory.alchemy.SQLAlchemyModelFactory):
     class Meta:
         model = models.Service
         sqlalchemy_session_persistence = "commit"
-        # attributes starting with an underscore ignored by default
-        # the recommended way is to use the `rename` dict
-        rename = {
-            "di_surrogate_id": "_di_surrogate_id",
-            "di_structure_surrogate_id": "_di_structure_surrogate_id",
-        }
-
-    di_surrogate_id = factory.SelfAttribute("id")
-    di_structure_surrogate_id = factory.SelfAttribute("structure._di_surrogate_id")
 
     structure = factory.SubFactory(
         StructureFactory,
