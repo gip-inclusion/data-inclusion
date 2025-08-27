@@ -618,42 +618,6 @@
           "title": "ReseauPorteur",
           "type": "string"
         },
-        "RetrieveServicePathParams": {
-          "properties": {
-            "id": {
-              "title": "Id",
-              "type": "string"
-            },
-            "source": {
-              "title": "Source",
-              "type": "string"
-            }
-          },
-          "required": [
-            "source",
-            "id"
-          ],
-          "title": "RetrieveServicePathParams",
-          "type": "object"
-        },
-        "RetrieveStructurePathParams": {
-          "properties": {
-            "id": {
-              "title": "Id",
-              "type": "string"
-            },
-            "source": {
-              "title": "Source",
-              "type": "string"
-            }
-          },
-          "required": [
-            "source",
-            "id"
-          ],
-          "title": "RetrieveStructurePathParams",
-          "type": "object"
-        },
         "Source": {
           "properties": {
             "description": {
@@ -6914,14 +6878,6 @@
           "parameters": [
             {
               "in": "path",
-              "name": "params",
-              "required": true,
-              "schema": {
-                "$ref": "#/components/schemas/RetrieveServicePathParams"
-              }
-            },
-            {
-              "in": "path",
               "name": "source",
               "required": true,
               "schema": {
@@ -7271,14 +7227,6 @@
         "get": {
           "operationId": "retrieve_structure_endpoint_api_v0_structures__source___id__get",
           "parameters": [
-            {
-              "in": "path",
-              "name": "params",
-              "required": true,
-              "schema": {
-                "$ref": "#/components/schemas/RetrieveStructurePathParams"
-              }
-            },
             {
               "in": "path",
               "name": "source",
@@ -8151,27 +8099,10 @@
           ]
         }
       },
-      "/api/v1/services/{source}/{id}": {
+      "/api/v1/services/{id}": {
         "get": {
-          "operationId": "retrieve_service_endpoint_api_v1_services__source___id__get",
+          "operationId": "retrieve_service_endpoint_api_v1_services__id__get",
           "parameters": [
-            {
-              "in": "path",
-              "name": "params",
-              "required": true,
-              "schema": {
-                "$ref": "#/components/schemas/RetrieveServicePathParams"
-              }
-            },
-            {
-              "in": "path",
-              "name": "source",
-              "required": true,
-              "schema": {
-                "title": "Source",
-                "type": "string"
-              }
-            },
             {
               "in": "path",
               "name": "id",
@@ -8458,27 +8389,10 @@
           ]
         }
       },
-      "/api/v1/structures/{source}/{id}": {
+      "/api/v1/structures/{id}": {
         "get": {
-          "operationId": "retrieve_structure_endpoint_api_v1_structures__source___id__get",
+          "operationId": "retrieve_structure_endpoint_api_v1_structures__id__get",
           "parameters": [
-            {
-              "in": "path",
-              "name": "params",
-              "required": true,
-              "schema": {
-                "$ref": "#/components/schemas/RetrieveStructurePathParams"
-              }
-            },
-            {
-              "in": "path",
-              "name": "source",
-              "required": true,
-              "schema": {
-                "title": "Source",
-                "type": "string"
-              }
-            },
             {
               "in": "path",
               "name": "id",

@@ -50,7 +50,11 @@ def test_consult_structure_event_saved(
     model,
 ):
     structure = structure_factory(source="foo", id="1")
-    url = f"{url}/{structure.source}/{structure.id}"
+
+    if "v0" in url:
+        url = f"{url}/{structure.source}/{structure.id}"
+    else:
+        url = f"{url}/{structure.id}"
 
     response = api_client.get(
         url,
@@ -69,7 +73,6 @@ def test_consult_structure_event_saved(
     if event:
         assert event.user == "some_user"
         assert event.structure_id == structure.id
-        assert event.source == structure.source
 
 
 @pytest.mark.parametrize(
@@ -97,7 +100,11 @@ def test_consult_service_event_saved(
     model,
 ):
     service = service_factory(source="foo", id="1", score_qualite=0.8)
-    url = f"{url}/{service.source}/{service.id}"
+
+    if "v0" in url:
+        url = f"{url}/{service.source}/{service.id}"
+    else:
+        url = f"{url}/{service.id}"
 
     response = api_client.get(
         url,
@@ -116,7 +123,6 @@ def test_consult_service_event_saved(
     if event:
         assert event.user == "some_user"
         assert event.service_id == service.id
-        assert event.source == service.source
         assert event.score_qualite == service.score_qualite
 
 

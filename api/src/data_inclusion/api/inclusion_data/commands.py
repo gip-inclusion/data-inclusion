@@ -171,6 +171,12 @@ def load_inclusion_data(db_session: orm.Session, path: Path):
         if schema_version == "v1":
             services_df = services_df.drop(columns="frais", errors="ignore")
             services_df = services_df.rename(columns={"frais_v1": "frais"})
+            services_df = services_df.assign(
+                id=services_df["source"] + "--" + services_df["id"]
+            )
+            structures_df = structures_df.assign(
+                id=structures_df["source"] + "--" + structures_df["id"]
+            )
 
         logger.info(f"{schema_version=} Validating data...")
         structures_df, services_df = validate_dataset(

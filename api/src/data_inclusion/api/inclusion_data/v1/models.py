@@ -39,7 +39,7 @@ class Structure(HasAddress, Base):
     # FIXME(vperron) : for now this is not validated against OSM opening hours format
     # see https://pypi.org/project/opening-hours-py/ when we stop using pl/Python
     horaires_accueil: Mapped[str | None]
-    id: Mapped[str]
+    id: Mapped[str] = mapped_column(unique=True, index=True)
     reseaux_porteurs: Mapped[list[str] | None]
     nom: Mapped[str]
     description: Mapped[str | None]
@@ -96,7 +96,7 @@ class Service(HasAddress, Base):
     # FIXME(vperron) : for now this is not validated against OSM opening hours format
     # see https://pypi.org/project/opening-hours-py/ when we stop using pl/Python
     horaires_accueil: Mapped[str | None]
-    id: Mapped[str]
+    id: Mapped[str] = mapped_column(unique=True, index=True)
     modes_accueil: Mapped[list[str] | None]
     modes_mobilisation: Mapped[list[str] | None]
     mobilisation_precisions: Mapped[str | None]

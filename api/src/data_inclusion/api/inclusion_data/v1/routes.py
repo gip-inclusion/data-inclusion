@@ -44,7 +44,7 @@ def list_structures_endpoint(
 
 
 @router.get(
-    "/structures/{source}/{id}",
+    "/structures/{id}",
     response_model=schemas.DetailedStructure,
     summary="Détailler une structure",
     dependencies=[auth.authenticated_dependency] if settings.TOKEN_ENABLED else [],
@@ -112,7 +112,7 @@ def list_services_endpoint(
 
 
 @router.get(
-    "/services/{source}/{id}",
+    "/services/{id}",
     response_model=schemas.DetailedService,
     summary="Détailler un service",
     dependencies=[auth.authenticated_dependency] if settings.TOKEN_ENABLED else [],

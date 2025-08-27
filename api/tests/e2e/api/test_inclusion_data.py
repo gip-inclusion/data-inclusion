@@ -83,7 +83,7 @@ def test_list_structures_unauthenticated(api_client, schema_version):
                 date_maj="2023-01-01",
                 doublons=[],
                 horaires_accueil="Mo-Fr 10:00-20:00",
-                id="lot-kitchen-amount",
+                id="dora--lot-kitchen-amount",
                 reseaux_porteurs=[],
                 latitude=-20.074628,
                 longitude=99.899603,
@@ -339,7 +339,7 @@ def test_list_services_unauthenticated(api_client, schema_version):
                     courriel="levyalexandre@example.org",
                     date_maj="2023-01-01",
                     horaires_accueil="Mo-Fr 10:00-20:00",
-                    id="lot-kitchen-amount",
+                    id="dora--lot-kitchen-amount",
                     reseaux_porteurs=[],
                     latitude=-20.074628,
                     longitude=99.899603,
@@ -369,7 +369,7 @@ def test_list_services_unauthenticated(api_client, schema_version):
                     frais_precisions="Camarade il.",
                     frais="gratuit",
                     horaires_accueil="Mo-Fr 10:00-20:00",
-                    id="be-water-scene-wind",
+                    id="dora--be-water-scene-wind",
                     latitude=-77.857573,
                     longitude=-62.54684,
                     modes_accueil=["a-distance"],
@@ -1664,10 +1664,10 @@ def test_search_services_with_code_commune_a_distance(api_client, url, service_f
     assert resp_data["items"][1]["distance"] is None
 
 
-@pytest.mark.parametrize("schema_version", ["v0", "v1"])
+@pytest.mark.parametrize("schema_version", ["v0"])
 @pytest.mark.parametrize("path", ["/services"])
 @pytest.mark.with_token
-def test_retrieve_service(api_client, url, service_factory):
+def test_retrieve_service_v0(api_client, url, service_factory):
     service_1 = service_factory(source="foo", id="1")
     service_2 = service_factory(source="bar", id="1")
     service_3 = service_factory(source="foo", id="2")
@@ -1684,10 +1684,30 @@ def test_retrieve_service(api_client, url, service_factory):
     assert response.status_code == 404
 
 
-@pytest.mark.parametrize("schema_version", ["v0", "v1"])
+@pytest.mark.parametrize("schema_version", ["v1"])
+@pytest.mark.parametrize("path", ["/services"])
+@pytest.mark.with_token
+def test_retrieve_service_v1(api_client, url, service_factory):
+    service_1 = service_factory(source="foo", id="foo--1")
+    # ensure there is another service to not trivially select "the latest"
+    service_factory(source="bar", id="bar--1")
+
+    response = api_client.get(url + f"/{service_1.id}")
+
+    assert response.status_code == 200
+    resp_data = response.json()
+    assert resp_data["id"] == service_1.id
+    assert "structure" in resp_data
+    assert resp_data["structure"]["id"] == service_1.structure.id
+
+    response = api_client.get(url + "bar--42")
+    assert response.status_code == 404
+
+
+@pytest.mark.parametrize("schema_version", ["v0"])
 @pytest.mark.parametrize("path", ["/structures"])
 @pytest.mark.with_token
-def test_retrieve_structure(api_client, url, structure_factory, service_factory):
+def test_retrieve_structure_v0(api_client, url, structure_factory, service_factory):
     structure_1 = structure_factory(
         source="foo", id="1", cluster_id="1", is_best_duplicate=True
     )
@@ -1714,6 +1734,35 @@ def test_retrieve_structure(api_client, url, structure_factory, service_factory)
     assert response.status_code == 404
 
 
+@pytest.mark.parametrize("schema_version", ["v1"])
+@pytest.mark.parametrize("path", ["/structures"])
+@pytest.mark.with_token
+def test_retrieve_structure_v1(api_client, url, structure_factory, service_factory):
+    structure_1 = structure_factory(
+        source="foo", id="foo--1", cluster_id="1", is_best_duplicate=True
+    )
+    service_1 = service_factory(structure=structure_1)
+    structure_2 = structure_factory(
+        source="bar", id="bar--1", cluster_id="1", is_best_duplicate=False
+    )
+    service_factory(structure=structure_2)
+
+    response = api_client.get(url + f"/{structure_1.id}")
+
+    assert response.status_code == 200
+    resp_data = response.json()
+    assert resp_data["id"] == structure_1.id
+    assert "services" in resp_data
+    assert len(resp_data["services"]) == 1
+    assert resp_data["services"][0]["id"] == service_1.id
+    assert "doublons" in resp_data
+    assert len(resp_data["doublons"]) == 1
+    assert resp_data["doublons"][0]["id"] == structure_2.id
+
+    response = api_client.get(url + "/foo--42")
+    assert response.status_code == 404
+
+
 class FakeSoliguideClient(soliguide.SoliguideAPIClient):
     def __init__(self):
         self.retrieved_ids = []
@@ -1728,17 +1777,20 @@ class FakeSoliguideClient(soliguide.SoliguideAPIClient):
 def test_retrieve_structure_and_notify_soliguide(
     api_client, app, url, structure_factory
 ):
-    structure_1 = structure_factory(source="soliguide", id="soliguide-structure-id")
+    structure_1 = structure_factory(source="soliguide", id="soliguide--structure-id")
 
     fake_soliguide_client = FakeSoliguideClient()
     app.dependency_overrides[soliguide.SoliguideAPIClient] = (
         lambda: fake_soliguide_client
     )
 
-    response = api_client.get(url + f"/{structure_1.source}/{structure_1.id}")
+    if "v0" in url:
+        response = api_client.get(url + f"/{structure_1.source}/{structure_1.id}")
+    else:
+        response = api_client.get(url + f"/{structure_1.id}")
 
     assert response.status_code == 200
-    assert fake_soliguide_client.retrieved_ids == ["soliguide-structure-id"]
+    assert fake_soliguide_client.retrieved_ids == ["soliguide--structure-id"]
 
 
 @pytest.mark.parametrize("schema_version", ["v0", "v1"])
@@ -1746,8 +1798,8 @@ def test_retrieve_structure_and_notify_soliguide(
 @pytest.mark.parametrize(
     ("requested_id", "status_code", "retrieved_ids"),
     [
-        ("soliguide-service-id", 200, ["soliguide-structure-id"]),
-        ("not-a-soliguide-service-id", 404, []),
+        ("soliguide--service-id", 200, ["soliguide--structure-id"]),
+        ("soliguide--42", 404, []),
     ],
 )
 @pytest.mark.with_token
@@ -1761,11 +1813,11 @@ def test_retrieve_service_and_notify_soliguide(
     structure_factory,
     service_factory,
 ):
-    structure_factory(source="soliguide", id="soliguide-structure-id")
     service_1 = service_factory(
         source="soliguide",
-        id="soliguide-service-id",
-        structure_id="soliguide-structure-id",
+        id="soliguide--service-id",
+        structure__source="soliguide",
+        structure__id="soliguide--structure-id",
     )
 
     fake_soliguide_client = FakeSoliguideClient()
@@ -1773,7 +1825,10 @@ def test_retrieve_service_and_notify_soliguide(
         lambda: fake_soliguide_client
     )
 
-    response = api_client.get(url + f"/{service_1.source}/{requested_id}")
+    if "v0" in url:
+        response = api_client.get(url + f"/{service_1.source}/{requested_id}")
+    else:
+        response = api_client.get(url + f"/{requested_id}")
 
     assert response.status_code == status_code
     assert fake_soliguide_client.retrieved_ids == retrieved_ids
@@ -1927,7 +1982,7 @@ def test_search_services_deduplicate_flag(
     }
 
 
-@pytest.mark.parametrize("schema_version", ["v0", "v1"])
+@pytest.mark.parametrize("schema_version", ["v0"])
 @pytest.mark.parametrize("path", ["/search/services", "/services", "/structures"])
 @pytest.mark.with_token
 def test_ressources_ordered_by_surrogate_id(api_client, url, factory):
@@ -1946,4 +2001,35 @@ def test_ressources_ordered_by_surrogate_id(api_client, url, factory):
     items_data = response.json()["items"]
     assert [d["service"]["id"] if "search" in url else d["id"] for d in items_data] == [
         str(i) for i in range(10)
+    ]
+
+
+@pytest.mark.parametrize("schema_version", ["v1"])
+@pytest.mark.parametrize("path", ["/search/services", "/services", "/structures"])
+@pytest.mark.with_token
+def test_ressources_ordered_by_id(api_client, url, factory):
+    # Create 10 rows with ids in **reverse** order
+    for i in reversed(range(10)):
+        factory_kwargs = {
+            "id": f"{str(i // 2)}--{str(i)}",
+            "source": str(i // 2),
+        }
+        if "search" in url:
+            factory_kwargs["modes_accueil"] = [v0.ModeAccueil.EN_PRESENTIEL]
+        factory(**factory_kwargs)
+
+    response = api_client.get(url)
+    assert response.status_code == 200
+    items_data = response.json()["items"]
+    assert [d["service"]["id"] if "search" in url else d["id"] for d in items_data] == [
+        "0--0",
+        "0--1",
+        "1--2",
+        "1--3",
+        "2--4",
+        "2--5",
+        "3--6",
+        "3--7",
+        "4--8",
+        "4--9",
     ]

@@ -46,8 +46,6 @@ def is_allowed_user(request: fastapi.Request) -> bool:
 
 def notify_soliguide_dependency(
     request: fastapi.Request,
-    source: Annotated[str, fastapi.Path()],
-    id: Annotated[str, fastapi.Path()],
     soliguide_client: Annotated[
         SoliguideAPIClient, fastapi.Depends(SoliguideAPIClient)
     ],
@@ -55,8 +53,16 @@ def notify_soliguide_dependency(
     db_session=fastapi.Depends(db.get_session),
     service_model=fastapi.Depends(get_service_model),
 ):
-    if source != "soliguide":
-        return
+    path_components = request.url.path.split("/")[2:]
+    api_version, path_components = path_components[0], path_components[1:]
+    if api_version == "v0":
+        _, source, service_id = path_components
+        if source != "soliguide":
+            return
+    else:
+        service_id = path_components[-1]
+        if not service_id.startswith("soliguide--"):
+            return
 
     route = request.scope.get("route")
 
@@ -65,12 +71,12 @@ def notify_soliguide_dependency(
 
     match route.name:
         case "retrieve_structure_endpoint":
-            place_id = id
+            place_id = service_id
         case "retrieve_service_endpoint":
             service_instance = db_session.scalar(
                 sqla.select(service_model)
                 .filter(service_model.source == "soliguide")
-                .filter(service_model.id == id)
+                .filter(service_model.id == service_id)
             )
 
             if service_instance is None:

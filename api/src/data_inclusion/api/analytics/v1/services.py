@@ -41,7 +41,6 @@ def save_event(
         case parameters.RetrieveStructurePathParams():
             event = models.ConsultStructureEvent(
                 structure_id=params.id,
-                source=params.source,
                 user=user.username,
             )
         case parameters.ListServicesQueryParams():
@@ -64,7 +63,6 @@ def save_event(
         case parameters.RetrieveServicePathParams():
             event = models.ConsultServiceEvent(
                 service_id=params.id,
-                source=params.source,
                 user=user.username,
                 score_qualite=score_qualite,
             )
