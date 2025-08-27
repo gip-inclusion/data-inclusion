@@ -47,7 +47,6 @@ class ListStructuresQueryParams(pydantic.BaseModel, pagination.get_pagination_pa
 
 
 class RetrieveStructurePathParams(pydantic.BaseModel):
-    source: Annotated[str, pydantic.Field()]
     id: Annotated[str, pydantic.Field()]
 
 
@@ -84,7 +83,6 @@ class ListServicesQueryParams(pydantic.BaseModel, pagination.get_pagination_para
 
 
 class RetrieveServicePathParams(pydantic.BaseModel):
-    source: Annotated[str, pydantic.Field()]
     id: Annotated[str, pydantic.Field()]
 
 

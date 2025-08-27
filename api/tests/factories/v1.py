@@ -21,11 +21,11 @@ class StructureFactory(factory.alchemy.SQLAlchemyModelFactory):
             "cluster_id": "_cluster_id",
         }
 
-    di_surrogate_id = factory.LazyAttribute(lambda o: f"{o.source}-{o.id}")
+    di_surrogate_id = factory.SelfAttribute("id")
     is_best_duplicate = None
     cluster_id = None
 
-    id = factory.Faker("slug", locale="fr_FR")
+    id = factory.LazyAttribute(lambda o: f"{o.source}--{fake.slug()}")
     siret = factory.LazyFunction(lambda: fake.siret().replace(" ", ""))
     rna = factory.Faker("bothify", text="W#########")
     nom = factory.Faker("company", locale="fr_FR")
@@ -61,7 +61,7 @@ class ServiceFactory(factory.alchemy.SQLAlchemyModelFactory):
             "di_structure_surrogate_id": "_di_structure_surrogate_id",
         }
 
-    di_surrogate_id = factory.LazyAttribute(lambda o: f"{o.source}-{o.id}")
+    di_surrogate_id = factory.SelfAttribute("id")
     di_structure_surrogate_id = factory.SelfAttribute("structure._di_surrogate_id")
 
     structure = factory.SubFactory(
@@ -69,7 +69,7 @@ class ServiceFactory(factory.alchemy.SQLAlchemyModelFactory):
         source=factory.SelfAttribute("..source"),
         code_insee=factory.SelfAttribute("..code_insee"),
     )
-    id = factory.Faker("slug", locale="fr_FR")
+    id = factory.LazyAttribute(lambda o: f"{o.source}--{fake.slug()}")
     structure_id = factory.SelfAttribute("structure.id")
     source = factory.Iterator(["dora", "emplois-de-linclusion"])
     nom = factory.Faker("company", locale="fr_FR")
