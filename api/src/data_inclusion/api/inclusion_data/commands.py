@@ -16,27 +16,28 @@ logger = logging.getLogger(__name__)
 
 
 def validate_dataset(
+    schema_version: str,
     db_session: orm.Session,
     structures_df: pd.DataFrame,
     services_df: pd.DataFrame,
     structure_schema: pydantic.BaseModel,
     service_schema: pydantic.BaseModel,
 ) -> tuple[pd.DataFrame, pd.DataFrame]:
-    """Run validation on the dataset."""
     city_codes = db_session.scalars(sqla.select(Commune.code)).all()
 
     def validate_data(model_schema, data):
         errors = []
+        id_column = "_di_surrogate_id" if schema_version == "v0" else "id"
 
         try:
             model_schema(**data)
         except pydantic.ValidationError as exc:
-            errors += [{"id": data["_di_surrogate_id"], **err} for err in exc.errors()]
+            errors += [{"id": data[id_column], **err} for err in exc.errors()]
 
         if data["code_insee"] is not None and data["code_insee"] not in city_codes:
             errors += [
                 {
-                    "id": data["_di_surrogate_id"],
+                    "id": data[id_column],
                     "loc": ("code_insee",),
                     "input": data["code_insee"],
                 }
@@ -68,27 +69,35 @@ def validate_dataset(
         services_df = services_df.loc[
             services_df["code_insee"].apply(lambda c: c is None or c in city_codes)
         ]
-        services_df = services_df.loc[
-            services_df["_di_structure_surrogate_id"].isin(
-                structures_df["_di_surrogate_id"]
-            )
-        ]
+        if schema_version == "v0":
+            services_df = services_df.loc[
+                services_df["_di_structure_surrogate_id"].isin(
+                    structures_df["_di_surrogate_id"]
+                )
+            ]
+        else:
+            services_df = services_df.loc[
+                services_df["structure_id"].isin(structures_df["id"])
+            ]
 
     return structures_df, services_df
 
 
 def prepare_dataset(
+    schema_version: str,
     structures_df: pd.DataFrame,
     services_df: pd.DataFrame,
 ) -> tuple[pd.DataFrame, pd.DataFrame]:
+    structure_id_column = (
+        "_di_structure_surrogate_id" if schema_version == "v0" else "structure_id"
+    )
+    id_column = "_di_surrogate_id" if schema_version == "v0" else "id"
     service_scores = (
-        services_df.groupby("_di_structure_surrogate_id")["score_qualite"]
-        .mean()
-        .round(2)
+        services_df.groupby(structure_id_column)["score_qualite"].mean().round(2)
     )
 
     structures_df = structures_df.assign(
-        score_qualite=structures_df["_di_surrogate_id"]
+        score_qualite=structures_df[id_column]
         .map(service_scores)
         .astype(float)
         .fillna(0.0)
@@ -109,6 +118,7 @@ def prepare_dataset(
 
 
 def load_df_to_table(
+    schema_version: str,
     db_session,
     df: pd.DataFrame,
     model,
@@ -125,7 +135,9 @@ def load_df_to_table(
         and c.name not in ["cluster_best_duplicate", "doublons"]
     ]
 
-    df = df.sort_values(by="_di_surrogate_id", ascending=True)
+    df = df.sort_values(
+        by="_di_surrogate_id" if schema_version == "v0" else "id", ascending=True
+    )
     df = df[[c.name for c in columns_list]]
 
     df.to_sql(
@@ -138,6 +150,7 @@ def load_df_to_table(
 
 
 def load_dataset(
+    schema_version: str,
     db_session: orm.Session,
     structures_df: pd.DataFrame,
     services_df: pd.DataFrame,
@@ -146,8 +159,8 @@ def load_dataset(
 ):
     db_session.execute(sqla.delete(service_model))
     db_session.execute(sqla.delete(structure_model))
-    load_df_to_table(db_session, structures_df, structure_model)
-    load_df_to_table(db_session, services_df, service_model)
+    load_df_to_table(schema_version, db_session, structures_df, structure_model)
+    load_df_to_table(schema_version, db_session, services_df, service_model)
 
     db_session.commit()
 
@@ -172,7 +185,8 @@ def load_inclusion_data(db_session: orm.Session, path: Path):
             services_df = services_df.drop(columns="frais", errors="ignore")
             services_df = services_df.rename(columns={"frais_v1": "frais"})
             services_df = services_df.assign(
-                id=services_df["source"] + "--" + services_df["id"]
+                id=services_df["source"] + "--" + services_df["id"],
+                structure_id=services_df["source"] + "--" + services_df["structure_id"],
             )
             structures_df = structures_df.assign(
                 id=structures_df["source"] + "--" + structures_df["id"]
@@ -180,6 +194,7 @@ def load_inclusion_data(db_session: orm.Session, path: Path):
 
         logger.info(f"{schema_version=} Validating data...")
         structures_df, services_df = validate_dataset(
+            schema_version=schema_version,
             db_session=db_session,
             structures_df=structures_df,
             services_df=services_df,
@@ -197,12 +212,14 @@ def load_inclusion_data(db_session: orm.Session, path: Path):
 
         logger.info(f"{schema_version=} Preparing data...")
         structures_df, services_df = prepare_dataset(
+            schema_version=schema_version,
             structures_df=structures_df,
             services_df=services_df,
         )
 
         logger.info(f"{schema_version=} Loading data...")
         load_dataset(
+            schema_version=schema_version,
             db_session=db_session,
             structures_df=structures_df,
             services_df=services_df,

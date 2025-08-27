@@ -112,7 +112,7 @@
         "publics_precisions": "Femme en situation d'insertion",
         "score_qualite": 0.5,
         "source": "dora",
-        "structure_id": "much-mention",
+        "structure_id": "dora--much-mention",
         "telephone": "0102030405",
         "thematiques": [
           "choisir-un-metier"
