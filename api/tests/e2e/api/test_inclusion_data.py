@@ -752,41 +752,59 @@ def test_can_filter_services_by_profils(api_client, url, service_factory):
     assert_paginated_response_data(response.json(), total=0)
 
 
+UNDEFINED = "UNDEFINED"
+
+
 @pytest.mark.with_token
 @pytest.mark.parametrize("schema_version", ["v1"])
 @pytest.mark.parametrize("path", ["/services", "/search/services"])
-def test_can_filter_services_by_publics(api_client, url, service_factory):
-    service_1 = service_factory(publics=[v1.Public.FEMMES.value])
-    service_2 = service_factory(publics=[v1.Public.JEUNES.value])
-    service_factory(publics=[v1.Public.PERSONNES_EN_SITUATION_DE_HANDICAP.value])
-    service_factory(publics=[])
-    service_factory(publics=None)
-
-    response = api_client.get(
-        url,
-        params={
-            "publics": [
-                v1.Public.FEMMES.value,
-                v1.Public.JEUNES.value,
-            ],
-        },
+@pytest.mark.parametrize(
+    ("defined_publics", "requested_publics", "expected_total"),
+    [
+        ([v1.Public.FEMMES, v1.Public.SENIORS], [v1.Public.FEMMES], 1),
+        # same, but use the second defined value
+        ([v1.Public.FEMMES, v1.Public.SENIORS], [v1.Public.SENIORS], 1),
+        # when requested values are overlapping, but not included,
+        # they should match
+        (
+            [v1.Public.FEMMES, v1.Public.SENIORS],
+            [v1.Public.FEMMES, v1.Public.JEUNES],
+            1,
+        ),
+        # when `tous-publics` is defined, it should match any requested values
+        ([v1.Public.TOUS_PUBLICS], [v1.Public.JEUNES], 1),
+        # when `tous-publics` is requested, it should match any defined values
+        ([v1.Public.JEUNES], [v1.Public.TOUS_PUBLICS], 1),
+        # when there isn't a requested public, it should match all
+        ([v1.Public.FEMMES], UNDEFINED, 1),
+        ([v1.Public.FEMMES, v1.Public.SENIORS], [v1.Public.JEUNES], 0),
+        ([], [v1.Public.FEMMES], 0),
+        (None, [v1.Public.FEMMES], 0),
+    ],
+)
+def test_can_filter_services_by_publics(
+    api_client,
+    url,
+    service_factory,
+    defined_publics,
+    requested_publics,
+    expected_total,
+):
+    service_factory(
+        publics=[p.value for p in defined_publics]
+        if isinstance(defined_publics, list)
+        else defined_publics
     )
+
+    if requested_publics == UNDEFINED:
+        params = {}
+    elif isinstance(requested_publics, list):
+        params = {"publics": [p.value for p in requested_publics]}
+
+    response = api_client.get(url, params=params)
 
     assert response.status_code == 200
-    resp_data = response.json()
-    assert_paginated_response_data(resp_data, total=2)
-    assert {d["id"] for d in list_resources_data(resp_data)} == {
-        service_1.id,
-        service_2.id,
-    }
-
-    response = api_client.get(
-        url,
-        params={
-            "publics": v1.Public.ETUDIANTS.value,
-        },
-    )
-    assert_paginated_response_data(response.json(), total=0)
+    assert_paginated_response_data(response.json(), total=expected_total)
 
 
 @pytest.mark.with_token
