@@ -1771,9 +1771,12 @@ class FakeSoliguideClient(soliguide.SoliguideAPIClient):
 @pytest.mark.parametrize("path", ["/structures"])
 @pytest.mark.with_token
 def test_retrieve_structure_and_notify_soliguide(
-    api_client, app, url, structure_factory
+    schema_version, api_client, app, url, structure_factory
 ):
-    structure_1 = structure_factory(source="soliguide", id="soliguide--structure-id")
+    structure_1 = structure_factory(
+        source="soliguide",
+        id="place-id" if schema_version == "v0" else "soliguide--place-id",
+    )
 
     fake_soliguide_client = FakeSoliguideClient()
     app.dependency_overrides[soliguide.SoliguideAPIClient] = (
@@ -1786,7 +1789,7 @@ def test_retrieve_structure_and_notify_soliguide(
         response = api_client.get(url + f"/{structure_1.id}")
 
     assert response.status_code == 200
-    assert fake_soliguide_client.retrieved_ids == ["soliguide--structure-id"]
+    assert fake_soliguide_client.retrieved_ids == ["place-id"]
 
 
 @pytest.mark.parametrize("schema_version", ["v0", "v1"])
@@ -1794,26 +1797,35 @@ def test_retrieve_structure_and_notify_soliguide(
 @pytest.mark.parametrize(
     ("requested_id", "status_code", "retrieved_ids"),
     [
-        ("soliguide--service-id", 200, ["soliguide--structure-id"]),
+        ("soliguide--service-id", 200, ["place-id"]),
         ("soliguide--42", 404, []),
     ],
 )
 @pytest.mark.with_token
 def test_retrieve_service_and_notify_soliguide(
+    schema_version,
     api_client,
     app,
     url,
     requested_id,
     status_code,
     retrieved_ids,
-    structure_factory,
     service_factory,
 ):
+    service_id = "soliguide--service-id"
+    structure_id = "soliguide--place-id"
+
+    if schema_version == "v0":
+        # convert to v0 ids
+        service_id = service_id.split("--", 1)[1]
+        structure_id = structure_id.split("--", 1)[1]
+        requested_id = requested_id.split("--", 1)[1]
+
     service_1 = service_factory(
         source="soliguide",
-        id="soliguide--service-id",
+        id=service_id,
         structure__source="soliguide",
-        structure__id="soliguide--structure-id",
+        structure__id=structure_id,
     )
 
     fake_soliguide_client = FakeSoliguideClient()
@@ -1821,10 +1833,8 @@ def test_retrieve_service_and_notify_soliguide(
         lambda: fake_soliguide_client
     )
 
-    if "v0" in url:
-        response = api_client.get(url + f"/{service_1.source}/{requested_id}")
-    else:
-        response = api_client.get(url + f"/{requested_id}")
+    path = f"/{service_1.source}/{requested_id}" if "v0" in url else f"/{requested_id}"
+    response = api_client.get(url + path)
 
     assert response.status_code == status_code
     assert fake_soliguide_client.retrieved_ids == retrieved_ids
@@ -1834,7 +1844,10 @@ def test_retrieve_service_and_notify_soliguide(
 @pytest.mark.parametrize("path", ["/structures"])
 @pytest.mark.parametrize(
     ("exclure_doublons", "expected_ids"),
-    [(False, {"first", "second", "third", "fourth"}), (True, {"second", "fourth"})],
+    [
+        (False, {"src_1--first", "src_2--second", "src_2--third", "src_3--fourth"}),
+        (True, {"src_2--second", "src_3--fourth"}),
+    ],
 )
 @pytest.mark.with_token
 def test_list_structures_deduplicate_flag(
@@ -1842,28 +1855,28 @@ def test_list_structures_deduplicate_flag(
 ):
     structure_factory(
         source="src_1",
-        id="first",
+        id="src_1--first",
         cluster_id="cluster_1",
         is_best_duplicate=False,
         score_qualite=0.5,
     )
     structure_factory(
         source="src_2",
-        id="second",
+        id="src_2--second",
         cluster_id="cluster_1",
         is_best_duplicate=True,
         score_qualite=0.9,
     )
     structure_factory(
         source="src_2",
-        id="third",
+        id="src_2--third",
         cluster_id="cluster_1",
         is_best_duplicate=False,
         score_qualite=0.3,
     )
     structure_factory(
         source="src_3",
-        id="fourth",
+        id="src_3--fourth",
         score_qualite=0.8,
         cluster_id=None,
         is_best_duplicate=None,
@@ -1883,27 +1896,27 @@ def test_list_structures_deduplicate_flag_equal(api_client, url, structure_facto
     structure_factory(
         date_maj="2020-01-01",
         source="src_1",
-        id="first",
+        id="src_1--first",
         cluster_id="cluster_1",
         is_best_duplicate=False,
     )
     structure_factory(
         date_maj="2024-01-01",  # the latest update
         source="src_2",
-        id="second",
+        id="src_2--second",
         cluster_id="cluster_1",
         is_best_duplicate=True,
     )
     structure_factory(
         date_maj="2008-01-01",
         source="src_3",
-        id="third",
+        id="src_3--third",
         cluster_id="cluster_1",
         is_best_duplicate=False,
     )
     structure_factory(
         source="src_3",
-        id="fourth",
+        id="src_3--fourth",
         cluster_id=None,
         is_best_duplicate=None,
     )
@@ -1911,7 +1924,10 @@ def test_list_structures_deduplicate_flag_equal(api_client, url, structure_facto
     response = api_client.get(url, params={"exclure_doublons": True})
 
     assert_paginated_response_data(response.json(), total=2)
-    assert {d["id"] for d in response.json()["items"]} == {"second", "fourth"}
+    assert {d["id"] for d in response.json()["items"]} == {
+        "src_2--second",
+        "src_3--fourth",
+    }
 
 
 @pytest.mark.parametrize("schema_version", ["v0", "v1"])
@@ -1923,49 +1939,49 @@ def test_search_services_deduplicate_flag(
     s1 = structure_factory(
         date_maj="2020-01-01",
         source="src_1",
-        id="first",
+        id="src_1--first",
         cluster_id="cluster_1",
         is_best_duplicate=False,
     )
     s2 = structure_factory(
         date_maj="2024-01-01",  # the latest update
         source="src_2",
-        id="second",
+        id="src_2--second",
         cluster_id="cluster_1",
         is_best_duplicate=True,
     )
     s3 = structure_factory(
         date_maj="2008-01-01",
         source="src_3",
-        id="third",
+        id="src_3--third",
         cluster_id="cluster_1",
         is_best_duplicate=False,
     )
     s4 = structure_factory(
         source="src_3",
-        id="fourth",
+        id="src_3--fourth",
         cluster_id=None,
         is_best_duplicate=None,
     )
 
     service_factory(
         source="src_1",
-        id="first",
+        id="src_1--first",
         structure=s1,
     )
     service_factory(
         source="src_2",
-        id="second",
+        id="src_2--second",
         structure=s2,
     )
     service_factory(
         source="src_2",
-        id="third",
+        id="src_2--third",
         structure=s3,
     )
     service_factory(
         source="src_3",
-        id="fourth",
+        id="src_3--fourth",
         structure=s4,
     )
 
@@ -1973,8 +1989,8 @@ def test_search_services_deduplicate_flag(
 
     assert_paginated_response_data(response.json(), total=2)
     assert {d["service"]["id"] for d in response.json()["items"]} == {
-        "second",
-        "fourth",
+        "src_2--second",
+        "src_3--fourth",
     }
 
 
