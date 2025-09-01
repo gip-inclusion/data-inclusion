@@ -13,8 +13,8 @@ HAZEBROUCK = {"code_insee": "59295", "latitude": 50.7262, "longitude": 2.5387}
     [
         ("v0", "/structures/foo/bar", v0.ConsultStructureEvent),
         ("v0", "/services/foo/bar", v0.ConsultServiceEvent),
-        ("v1", "/structures/foo/bar", v1.ConsultStructureEvent),
-        ("v1", "/services/foo/bar", v1.ConsultServiceEvent),
+        ("v1", "/structures/foo--bar", v1.ConsultStructureEvent),
+        ("v1", "/services/foo--bar", v1.ConsultServiceEvent),
     ],
 )
 @pytest.mark.with_token
@@ -49,7 +49,7 @@ def test_consult_structure_event_saved(
     structure_factory,
     model,
 ):
-    structure = structure_factory(source="foo", id="1")
+    structure = structure_factory(source="foo", id="foo--1")
 
     if "v0" in url:
         url = f"{url}/{structure.source}/{structure.id}"
@@ -99,7 +99,7 @@ def test_consult_service_event_saved(
     service_factory,
     model,
 ):
-    service = service_factory(source="foo", id="1", score_qualite=0.8)
+    service = service_factory(source="foo", id="foo--1", score_qualite=0.8)
 
     if "v0" in url:
         url = f"{url}/{service.source}/{service.id}"

@@ -8,7 +8,8 @@ import fastapi
 
 from data_inclusion.api.config import settings
 from data_inclusion.api.core import db
-from data_inclusion.api.inclusion_data.dependencies import get_service_model
+from data_inclusion.api.inclusion_data.v0 import models as models_v0
+from data_inclusion.api.inclusion_data.v1 import models as models_v1
 
 logger = logging.getLogger(__name__)
 
@@ -51,38 +52,31 @@ def notify_soliguide_dependency(
     ],
     background_tasks: fastapi.BackgroundTasks,
     db_session=fastapi.Depends(db.get_session),
-    service_model=fastapi.Depends(get_service_model),
 ):
-    path_components = request.url.path.split("/")[2:]
-    api_version, path_components = path_components[0], path_components[1:]
-    if api_version == "v0":
-        _, source, service_id = path_components
-        if source != "soliguide":
-            return
-    else:
-        service_id = path_components[-1]
-        if not service_id.startswith("soliguide--"):
-            return
-
-    route = request.scope.get("route")
-
-    if route is None:
-        return
-
-    match route.name:
-        case "retrieve_structure_endpoint":
-            place_id = service_id
-        case "retrieve_service_endpoint":
+    match request.url.path.strip("/").split("/"):
+        # in v0, `id` are scoped by `source`
+        case ["api", "v0", "structures", "soliguide", id]:
+            place_id = id
+        case ["api", "v0", "services", "soliguide", id]:
             service_instance = db_session.scalar(
-                sqla.select(service_model)
-                .filter(service_model.source == "soliguide")
-                .filter(service_model.id == service_id)
+                sqla.select(models_v0.Service)
+                .filter(models_v0.Service.source == "soliguide")
+                .filter(models_v0.Service.id == id)
             )
-
             if service_instance is None:
                 return
-
             place_id = service_instance.structure_id
+
+        # in v1, `id` are globally unique and prefixed by the source
+        case ["api", "v1", "structures", id] if id.startswith("soliguide--"):
+            place_id = id.split("--", 1)[1]
+        case ["api", "v1", "services", id] if id.startswith("soliguide--"):
+            service_instance = db_session.scalar(
+                sqla.select(models_v1.Service).filter(models_v1.Service.id == id)
+            )
+            if service_instance is None:
+                return
+            place_id = service_instance.structure_id.split("--", 1)[1]
         case _:
             return
 
