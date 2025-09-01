@@ -446,6 +446,7 @@
         "Public": {
           "description": "Publics",
           "enum": [
+            "tous-publics",
             "actifs",
             "beneficiaires-des-minimas-sociaux",
             "demandeurs-emploi",
@@ -3332,6 +3333,12 @@
               "title": "Horaires d’accueil du public"
             },
             "id": {
+              "description": "Identifiant unique de la structure, obtenu par une combinaison de l’identifiant producteur et de l’identifiant de la structure (fourni par le producteur).",
+              "examples": [
+                "emplois-de-linclusion--17",
+                "france-travail--ccas-provence-alpes-cote-dazur-2024-01-01",
+                "dora--AidantsConnect:2024-47BXY"
+              ],
               "title": "Id",
               "type": "string"
             },
@@ -3421,6 +3428,12 @@
               "title": "Site Web"
             },
             "source": {
+              "description": "Identifiant du producteur original de la donnée.",
+              "examples": [
+                "emplois-de-linclusion",
+                "france-travail",
+                "dora"
+              ],
               "title": "Source",
               "type": "string"
             },
@@ -3621,6 +3634,12 @@
               "title": "Horaires d’accueil du public"
             },
             "id": {
+              "description": "Identifiant unique du service, obtenu par une combinaison de l’identifiant du producteur et de l’identifiant du service (fourni par le producteur).",
+              "examples": [
+                "emplois-de-linclusion--17",
+                "france-travail--ccas-provence-alpes-cote-dazur-2024-01-01",
+                "dora--AidantsConnect:2024-47BXY"
+              ],
               "title": "Id",
               "type": "string"
             },
@@ -3735,7 +3754,9 @@
               ],
               "description": "Modes de mobilisation de l’offre de service.",
               "examples": [
-                "envoyer-un-courriel"
+                [
+                  "envoyer-un-courriel"
+                ]
               ],
               "title": "Modes Mobilisation"
             },
@@ -3779,10 +3800,17 @@
                   "type": "null"
                 }
               ],
-              "description": "Publics visés par le service.\n\nDes informations complémentaires peuvent être précisées dans le champ `publics_precisions`.",
+              "description": "Publics visés par le service.\n\nUn bénéficiaire est éligible s’il appartient à (au moins) un des publics spécifiés.\n\nLes services sans publics spécifiques doivent contenir uniquement la valeur `tous-publics`. Celle-ci ne peut pas être utilisée avec d’autres valeurs.\n\nDes informations complémentaires peuvent être précisées dans le champ `publics_precisions`.",
               "examples": [
-                "femmes",
-                "residents-qpv-frr"
+                [
+                  "femmes"
+                ],
+                [
+                  "residents-qpv-frr"
+                ],
+                [
+                  "tous-publics"
+                ]
               ],
               "title": "Publics"
             },
@@ -3809,6 +3837,12 @@
               "type": "number"
             },
             "source": {
+              "description": "Identifiant du producteur original de la donnée.",
+              "examples": [
+                "emplois-de-linclusion",
+                "france-travail",
+                "dora"
+              ],
               "title": "Source",
               "type": "string"
             },
@@ -3816,7 +3850,12 @@
               "$ref": "#/components/schemas/data_inclusion__api__inclusion_data__v1__schemas__BaseStructure"
             },
             "structure_id": {
-              "title": "Structure Id",
+              "description": "Identifiant unique de la structure rattachée au service.",
+              "examples": [
+                "dora--42",
+                "cd35--mjc-13-grandjour"
+              ],
+              "title": "ID structure",
               "type": "string"
             },
             "telephone": {
@@ -4098,6 +4137,12 @@
               "title": "Horaires d’accueil du public"
             },
             "id": {
+              "description": "Identifiant unique de la structure, obtenu par une combinaison de l’identifiant producteur et de l’identifiant de la structure (fourni par le producteur).",
+              "examples": [
+                "emplois-de-linclusion--17",
+                "france-travail--ccas-provence-alpes-cote-dazur-2024-01-01",
+                "dora--AidantsConnect:2024-47BXY"
+              ],
               "title": "Id",
               "type": "string"
             },
@@ -4201,6 +4246,12 @@
               "title": "Site Web"
             },
             "source": {
+              "description": "Identifiant du producteur original de la donnée.",
+              "examples": [
+                "emplois-de-linclusion",
+                "france-travail",
+                "dora"
+              ],
               "title": "Source",
               "type": "string"
             },
@@ -4373,6 +4424,12 @@
               "title": "Horaires d’accueil du public"
             },
             "id": {
+              "description": "Identifiant unique de la structure, obtenu par une combinaison de l’identifiant producteur et de l’identifiant de la structure (fourni par le producteur).",
+              "examples": [
+                "emplois-de-linclusion--17",
+                "france-travail--ccas-provence-alpes-cote-dazur-2024-01-01",
+                "dora--AidantsConnect:2024-47BXY"
+              ],
               "title": "Id",
               "type": "string"
             },
@@ -4469,6 +4526,12 @@
               "title": "Site Web"
             },
             "source": {
+              "description": "Identifiant du producteur original de la donnée.",
+              "examples": [
+                "emplois-de-linclusion",
+                "france-travail",
+                "dora"
+              ],
               "title": "Source",
               "type": "string"
             },
@@ -4671,6 +4734,12 @@
               "title": "Horaires d’accueil du public"
             },
             "id": {
+              "description": "Identifiant unique du service, obtenu par une combinaison de l’identifiant du producteur et de l’identifiant du service (fourni par le producteur).",
+              "examples": [
+                "emplois-de-linclusion--17",
+                "france-travail--ccas-provence-alpes-cote-dazur-2024-01-01",
+                "dora--AidantsConnect:2024-47BXY"
+              ],
               "title": "Id",
               "type": "string"
             },
@@ -4785,7 +4854,9 @@
               ],
               "description": "Modes de mobilisation de l’offre de service.",
               "examples": [
-                "envoyer-un-courriel"
+                [
+                  "envoyer-un-courriel"
+                ]
               ],
               "title": "Modes Mobilisation"
             },
@@ -4829,10 +4900,17 @@
                   "type": "null"
                 }
               ],
-              "description": "Publics visés par le service.\n\nDes informations complémentaires peuvent être précisées dans le champ `publics_precisions`.",
+              "description": "Publics visés par le service.\n\nUn bénéficiaire est éligible s’il appartient à (au moins) un des publics spécifiés.\n\nLes services sans publics spécifiques doivent contenir uniquement la valeur `tous-publics`. Celle-ci ne peut pas être utilisée avec d’autres valeurs.\n\nDes informations complémentaires peuvent être précisées dans le champ `publics_precisions`.",
               "examples": [
-                "femmes",
-                "residents-qpv-frr"
+                [
+                  "femmes"
+                ],
+                [
+                  "residents-qpv-frr"
+                ],
+                [
+                  "tous-publics"
+                ]
               ],
               "title": "Publics"
             },
@@ -4859,11 +4937,22 @@
               "type": "number"
             },
             "source": {
+              "description": "Identifiant du producteur original de la donnée.",
+              "examples": [
+                "emplois-de-linclusion",
+                "france-travail",
+                "dora"
+              ],
               "title": "Source",
               "type": "string"
             },
             "structure_id": {
-              "title": "Structure Id",
+              "description": "Identifiant unique de la structure rattachée au service.",
+              "examples": [
+                "dora--42",
+                "cd35--mjc-13-grandjour"
+              ],
+              "title": "ID structure",
               "type": "string"
             },
             "telephone": {
@@ -5723,6 +5812,12 @@
               "title": "Horaires d’accueil du public"
             },
             "id": {
+              "description": "Identifiant unique de la structure, obtenu par une combinaison de l’identifiant producteur et de l’identifiant de la structure (fourni par le producteur).",
+              "examples": [
+                "emplois-de-linclusion--17",
+                "france-travail--ccas-provence-alpes-cote-dazur-2024-01-01",
+                "dora--AidantsConnect:2024-47BXY"
+              ],
               "title": "Id",
               "type": "string"
             },
@@ -5812,6 +5907,12 @@
               "title": "Site Web"
             },
             "source": {
+              "description": "Identifiant du producteur original de la donnée.",
+              "examples": [
+                "emplois-de-linclusion",
+                "france-travail",
+                "dora"
+              ],
               "title": "Source",
               "type": "string"
             },

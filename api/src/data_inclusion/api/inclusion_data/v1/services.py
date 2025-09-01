@@ -5,7 +5,7 @@ from pathlib import Path
 
 import geoalchemy2
 import sqlalchemy as sqla
-from sqlalchemy import func, or_, orm
+from sqlalchemy import orm
 
 from data_inclusion.api.decoupage_administratif import constants
 from data_inclusion.api.decoupage_administratif.models import Commune
@@ -68,11 +68,19 @@ def list_structures_query(
         query = query.filter(Commune.region == params.region.code)
 
     if params.reseaux_porteurs is not None:
-        query = _filter_array_field(
-            query,
-            models.Structure,
-            "reseaux_porteurs",
-            params.reseaux_porteurs,
+        query = query.filter(
+            sqla.exists(
+                sqla.select(sqla.literal(1))
+                .select_from(
+                    sqla.func.unnest(models.Structure.reseaux_porteurs).alias("item")
+                )
+                .where(
+                    sqla.literal_column("item")
+                    == sqla.any_(
+                        sqla.literal([f.value for f in params.reseaux_porteurs])
+                    )
+                )
+            )
         )
 
     if params.exclure_doublons:
@@ -125,20 +133,6 @@ def get_sub_thematiques(thematiques: list[v1.Thematique]) -> list[str]:
     return list(all_thematiques)
 
 
-def _filter_array_field(query, model, field_name, values):
-    filter_stmt = f"""\
-    EXISTS(
-        SELECT
-        FROM unnest({model.__tablename__}.{field_name}) {field_name}
-        WHERE {field_name} = ANY(:{field_name})
-    )
-    """
-    query = query.filter(
-        sqla.text(filter_stmt).bindparams(**{field_name: [f.value for f in values]})
-    )
-    return query
-
-
 def filter_services(
     query: sqla.Select,
     params: parameters.ListServicesQueryParams | parameters.SearchServicesQueryParams,
@@ -162,15 +156,33 @@ def filter_services(
             models.Service.frais == sqla.any_(sqla.literal(params.frais))
         )
 
-    if params.publics is not None:
-        query = _filter_array_field(query, models.Service, "publics", params.publics)
+    if params.publics is not None and v1.Public.TOUS_PUBLICS not in params.publics:
+        # also match services for all publics
+        publics = params.publics + [v1.Public.TOUS_PUBLICS]
+
+        query = query.filter(
+            sqla.exists(
+                sqla.select(sqla.literal(1))
+                .select_from(sqla.func.unnest(models.Service.publics).alias("item"))
+                .where(
+                    sqla.literal_column("item")
+                    == sqla.any_(sqla.literal([p.value for p in publics]))
+                )
+            )
+        )
 
     if params.modes_accueil is not None:
-        query = _filter_array_field(
-            query,
-            models.Service,
-            "modes_accueil",
-            params.modes_accueil,
+        query = query.filter(
+            sqla.exists(
+                sqla.select(sqla.literal(1))
+                .select_from(
+                    sqla.func.unnest(models.Service.modes_accueil).alias("item")
+                )
+                .where(
+                    sqla.literal_column("item")
+                    == sqla.any_(sqla.literal([f.value for f in params.modes_accueil]))
+                )
+            )
         )
 
     if params.types is not None:
@@ -187,12 +199,12 @@ def filter_services(
         publics_only = params.recherche_public.split(" ")
         publics_only = [p.strip() for p in publics_only]
         query = query.filter(
-            or_(
+            sqla.or_(
                 models.Service.searchable_index_publics.bool_op("@@")(
-                    func.to_tsquery("french_di", " | ".join(publics_only))
+                    sqla.func.to_tsquery("french_di", " | ".join(publics_only))
                 ),
                 models.Service.searchable_index_publics_precisions.bool_op("@@")(
-                    func.websearch_to_tsquery("french_di", params.recherche_public)
+                    sqla.func.websearch_to_tsquery("french_di", params.recherche_public)
                 ),
             )
         )
