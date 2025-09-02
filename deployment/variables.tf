@@ -209,3 +209,10 @@ variable "mission_locale_api_secret" {
   sensitive   = true
   default     = ""
 }
+
+variable "ma_boussole_aidants_api_key" {
+  description = "Used in extraction tasks orchestrated by airflow"
+  type        = string
+  sensitive   = true
+  default     = ""
+}
