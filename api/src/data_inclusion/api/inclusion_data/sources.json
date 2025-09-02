@@ -73,5 +73,10 @@
         "slug": "carif-oref",
         "nom": "Réseau des CARIF OREF",
         "description": "Association qui accompagne les acteurs de l’emploi, de la formation et de l’orientation. Contient l’offre de formation FLE et Illettrisme nationale référencée par RCO."
+    },
+    {
+        "slug": "ma-boussole-aidants",
+        "nom": "Ma Boussole Aidants",
+        "description": "“Ma Boussole Aidants est une coopérative portée par la Fédération Agirc-Arrco dédiée à l’accompagnement des aidants. Contient les CCAS, CIAS, MDS et MDA ainsi que leur offre de service pour les aidants."
     }
 ]
