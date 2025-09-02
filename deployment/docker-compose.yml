@@ -62,6 +62,7 @@ services:
       interval: 5s
       retries: 5
     environment:
+      - PGUSER=airflow
       - POSTGRES_DB=airflow
       - POSTGRES_USER=airflow
       - POSTGRES_PASSWORD=airflow
@@ -126,6 +127,7 @@ services:
     ports:
       - 5432:5432
     environment:
+      - PGUSER=${DATAWAREHOUSE_DI_USERNAME}
       - POSTGRES_DB=${DATAWAREHOUSE_DI_DATABASE}
       - POSTGRES_USER=${DATAWAREHOUSE_DI_USERNAME}
       - POSTGRES_PASSWORD=${DATAWAREHOUSE_DI_PASSWORD}
