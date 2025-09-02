@@ -62,6 +62,7 @@ services:
     ports:
       - ${AIRFLOW_DB_PORT:-5454}:5432
     environment:
+      - PGUSER=airflow
       - POSTGRES_DB=airflow
       - POSTGRES_USER=airflow
       - POSTGRES_PASSWORD=airflow
@@ -145,6 +146,7 @@ services:
     ports:
       - ${TARGET_POSTGRES_PORT:-5433}:5432
     environment:
+      - PGUSER=data-inclusion
       - POSTGRES_DB=data-inclusion
       - POSTGRES_USER=data-inclusion
       - POSTGRES_PASSWORD=data-inclusion
