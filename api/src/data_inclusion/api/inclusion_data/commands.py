@@ -162,12 +162,12 @@ def load_dataset(
 @sentry_sdk.monitor(
     monitor_slug="load-inclusion-data",
     monitor_config={
-        "schedule": {"type": "crontab", "value": "0 * * * *"},
+        "schedule": {"type": "crontab", "value": "0 5-22 * * *"},
         "checkin_margin": 60,
         "max_runtime": 60,
         "failure_issue_threshold": 1,
         "recovery_threshold": 1,
-        "timezone": "UTC",
+        "timezone": "Europe/Paris",
     },
 )
 def load_inclusion_data(
