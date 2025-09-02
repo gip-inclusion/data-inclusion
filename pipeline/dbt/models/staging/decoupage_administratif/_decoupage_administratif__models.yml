@@ -69,6 +69,10 @@ models:
         - columns: [code_departement]
         - columns: [code_region]
         - columns: [code_epci]
+        - columns: [codes_postaux]
+          type: gin
+        - columns: [centre]
+          type: gist
     columns:
       - name: code
         data_tests:
