@@ -337,6 +337,7 @@ resource "terraform_data" "up" {
     AIRFLOW_VAR_MES_AIDES_AIRTABLE_KEY='${var.mes_aides_airtable_key}'
     AIRFLOW_VAR_SOLIGUIDE_API_TOKEN='${var.soliguide_api_token}'
     AIRFLOW_VAR_TWOCAPTCHA_API_KEY='${var.twocaptcha_api_key}'
+    AIRFLOW_VAR_MA_BOUSSOLE_AIDANTS_API_KEY='${var.ma_boussole_aidants_api_key}'
     EOT
     )
     destination = "${local.work_dir}/.env"
