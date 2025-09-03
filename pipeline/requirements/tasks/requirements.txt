@@ -239,7 +239,7 @@ cryptography==45.0.2
     #   -c airflow/constraints.txt
     #   apache-airflow
     #   paramiko
-data-inclusion-schema==1.0.0b3
+data-inclusion-schema==1.0.0b6
     # via -r tasks/requirements.in
 dateparser==1.2.2
     # via htmldate

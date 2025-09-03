@@ -427,7 +427,7 @@ requires-dist = [
     { name = "certifi", specifier = ">=2025.1.31" },
     { name = "click", specifier = ">=8.1.8" },
     { name = "cryptography", specifier = ">=44.0.2" },
-    { name = "data-inclusion-schema", git = "https://github.com/gip-inclusion/data-inclusion-schema.git?rev=vmttn%2Ffeat%2Fajout-tous-publics" },
+    { name = "data-inclusion-schema", specifier = "==1.0.0b6" },
     { name = "fastapi", specifier = ">=0.115.12" },
     { name = "furl", specifier = ">=2.1.4" },
     { name = "geoalchemy2", specifier = ">=0.17.1" },
@@ -473,11 +473,15 @@ test = [
 
 [[package]]
 name = "data-inclusion-schema"
-version = "1.0.0b5"
-source = { git = "https://github.com/gip-inclusion/data-inclusion-schema.git?rev=vmttn%2Ffeat%2Fajout-tous-publics#1efea5f07a106d50f4b43c073f3d35a54fcb104b" }
+version = "1.0.0b6"
+source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "pendulum" },
     { name = "pydantic", extra = ["email"] },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/14/71/1e0af9ae3444e8ecb1fbddab91f2006b614c011263ecb4afea6e62ff74e2/data_inclusion_schema-1.0.0b6.tar.gz", hash = "sha256:a450ef0433a9ed4322f9aec6ba3c261765a124e70987861519ec35958436bce9", size = 33965, upload-time = "2025-09-05T09:44:36.787Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/20/5a/0f748a24e6c72c5df84f3ede3f973ccf0ef4d821ec09b6e71e298bdcfbb2/data_inclusion_schema-1.0.0b6-py3-none-any.whl", hash = "sha256:f3db34734870ca6a38361d9016de8041589b3e35ca29712ab69e6f74411086fb", size = 43230, upload-time = "2025-09-05T09:44:35.224Z" },
 ]
 
 [[package]]

@@ -32,17 +32,5 @@ FROM (
     ('retraites', 'seniors'),
     ('seniors-65', 'seniors'),
     ('salaries', 'actifs'),
-    ('tous-publics', 'actifs'),
-    ('tous-publics', 'beneficiaires-des-minimas-sociaux'),
-    ('tous-publics', 'demandeurs-emploi'),
-    ('tous-publics', 'etudiants'),
-    ('tous-publics', 'familles'),
-    ('tous-publics', 'femmes'),
-    ('tous-publics', 'jeunes'),
-    ('tous-publics', 'personnes-en-situation-de-handicap'),
-    ('tous-publics', 'personnes-en-situation-durgence'),
-    ('tous-publics', 'personnes-en-situation-juridique-specifique'),
-    ('tous-publics', 'personnes-exilees'),
-    ('tous-publics', 'residents-qpv-frr'),
-    ('tous-publics', 'seniors')
+    ('tous-publics', 'tous-publics')
 ) AS x (profil, public)

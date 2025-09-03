@@ -33,7 +33,11 @@ unnested_profils AS (
 publics AS (
     SELECT
         unnested_profils._di_surrogate_id,
-        ARRAY_AGG(DISTINCT map_publics.public) AS publics
+        CASE
+            WHEN 'tous-publics' = ANY(ARRAY_AGG(map_publics.public))
+                THEN ARRAY['tous-publics']
+            ELSE ARRAY_AGG(DISTINCT map_publics.public)
+        END AS publics
     FROM unnested_profils
     INNER JOIN map_publics ON unnested_profils.profil = map_publics.profil
     WHERE map_publics.public IS NOT NULL
