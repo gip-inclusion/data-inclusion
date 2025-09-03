@@ -7,6 +7,7 @@ from pathlib import Path
 import click
 import pendulum
 import s3fs
+import sentry_sdk
 
 from data_inclusion.api import auth
 from data_inclusion.api.config import settings
@@ -15,6 +16,11 @@ from data_inclusion.api.decoupage_administratif.commands import import_communes
 from data_inclusion.api.inclusion_data.commands import load_inclusion_data
 
 logger = logging.getLogger(__name__)
+
+sentry_sdk.init(
+    dsn=settings.SENTRY_DSN,
+    environment=settings.ENV,
+)
 
 
 @click.group()
@@ -80,6 +86,17 @@ def get_path(value) -> Path:
     )
 
 
+@sentry_sdk.monitor(
+    monitor_slug="load-inclusion-data",
+    monitor_config={
+        "schedule": {"type": "crontab", "value": "0 5-22 * * *"},
+        "checkin_margin": 60,
+        "max_runtime": 60,
+        "failure_issue_threshold": 1,
+        "recovery_threshold": 1,
+        "timezone": "Europe/Paris",
+    },
+)
 @cli.command(name="load-inclusion-data")
 @click.option(
     "--path",
@@ -94,6 +111,17 @@ def _load_inclusion_data(db_session, path: Path):
         path.rmdir()
 
 
+@sentry_sdk.monitor(
+    monitor_slug="export-analytics",
+    monitor_config={
+        "schedule": {"type": "crontab", "value": "0 5-22 * * *"},
+        "checkin_margin": 60,
+        "max_runtime": 60,
+        "failure_issue_threshold": 1,
+        "recovery_threshold": 1,
+        "timezone": "Europe/Paris",
+    },
+)
 @cli.command(name="export-analytics")
 def _export_analytics():
     """Export analytics data"""

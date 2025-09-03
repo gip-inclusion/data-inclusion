@@ -4,11 +4,9 @@ from pathlib import Path
 import numpy as np
 import pandas as pd
 import pydantic
-import sentry_sdk
 import sqlalchemy as sqla
 from sqlalchemy import orm
 
-from data_inclusion.api.config import settings
 from data_inclusion.api.decoupage_administratif.models import Commune
 from data_inclusion.api.inclusion_data.v0 import models as v0_models
 from data_inclusion.api.inclusion_data.v1 import models as v1_models
@@ -16,14 +14,9 @@ from data_inclusion.schema import v0, v1
 
 logger = logging.getLogger(__name__)
 
-sentry_sdk.init(
-    dsn=settings.SENTRY_DSN,
-    environment=settings.ENV,
-)
-
 
 def validate_dataset(
-    db_session,
+    db_session: orm.Session,
     structures_df: pd.DataFrame,
     services_df: pd.DataFrame,
     structure_schema: pydantic.BaseModel,
@@ -159,21 +152,7 @@ def load_dataset(
     db_session.commit()
 
 
-@sentry_sdk.monitor(
-    monitor_slug="load-inclusion-data",
-    monitor_config={
-        "schedule": {"type": "crontab", "value": "0 5-22 * * *"},
-        "checkin_margin": 60,
-        "max_runtime": 60,
-        "failure_issue_threshold": 1,
-        "recovery_threshold": 1,
-        "timezone": "Europe/Paris",
-    },
-)
-def load_inclusion_data(
-    db_session,
-    path: Path,
-):
+def load_inclusion_data(db_session: orm.Session, path: Path):
     for (
         schema_version,
         structure_model,
