@@ -48,7 +48,8 @@ di_profils_by_fredo_public AS (
         ('personne de nationalité étrangère', 'personnes-de-nationalite-etrangere'),
         ('sans domicile fixe', 'sans-domicile-fixe'),
         ('sortant ase', 'familles-enfants'),
-        ('victime', 'victimes')
+        ('victime', 'victimes'),
+        ('tout public', 'tous-publics')
     ) AS x (public, profil)
 ),
 
@@ -122,8 +123,8 @@ thematiques AS (
 profils AS (
     SELECT
         fredo_publics.structure_id,
-        ARRAY_AGG(di_profils_by_fredo_public.profil) AS profils,
-        STRING_AGG(fredo_publics.value, ', ')        AS profils_precisions
+        ARRAY_AGG(DISTINCT di_profils_by_fredo_public.profil) AS profils,
+        STRING_AGG(fredo_publics.value, ', ')                 AS profils_precisions
     FROM fredo_publics
     INNER JOIN di_profils_by_fredo_public ON fredo_publics.value = di_profils_by_fredo_public.public
     GROUP BY fredo_publics.structure_id
