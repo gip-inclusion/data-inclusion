@@ -69,7 +69,9 @@ def deduplicate(data: list[DeduplicateInput]) -> pd.DataFrame:
 
     # some cleanups and formatting
     df["id"] = df["_di_surrogate_id"]
-    df["date_maj"] = pd.to_datetime(df["date_maj"]).dt.strftime("%m/%d/%Y")
+    df["date_maj"] = pd.to_datetime(df["date_maj"], errors="coerce").dt.strftime(
+        "%m/%d/%Y"
+    )
     df["nom"] = df["nom"].str.lower().str.strip().apply(unidecode)
     df["location"] = df.apply(
         lambda row: [
