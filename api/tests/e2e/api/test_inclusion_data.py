@@ -65,7 +65,7 @@ def test_list_structures_unauthenticated(api_client, schema_version):
                 site_web="https://www.le.net/",
                 source="dora",
                 telephone="0102030405",
-                thematiques=["choisir-un-metier"],
+                thematiques=["famille--garde-denfants"],
                 typologie="ACI",
             ),
         ),
@@ -275,7 +275,7 @@ def test_list_services_unauthenticated(api_client, schema_version):
                     site_web="https://www.le.net/",
                     source="dora",
                     telephone="0102030405",
-                    thematiques=["choisir-un-metier"],
+                    thematiques=["famille--garde-denfants"],
                     typologie="ACI",
                 ),
                 models_v0.Service(
@@ -314,7 +314,7 @@ def test_list_services_unauthenticated(api_client, schema_version):
                     source="dora",
                     structure_id="much-mention",
                     telephone="0102030405",
-                    thematiques=["choisir-un-metier"],
+                    thematiques=["famille--garde-denfants"],
                     types=["formation"],
                     zone_diffusion_code=None,
                     zone_diffusion_nom=None,
@@ -383,7 +383,7 @@ def test_list_services_unauthenticated(api_client, schema_version):
                     source="dora",
                     structure_id="dora--much-mention",
                     telephone="0102030405",
-                    thematiques=["choisir-un-metier"],
+                    thematiques=["famille--garde-denfants"],
                     type="formation",
                     zone_eligibilite=None,
                     volume_horaire_hebdomadaire=1,
@@ -544,9 +544,7 @@ def test_can_filter_resources_by_profils_precisions_with_only_profils_data_v1(
     ("schema_version", "path"),
     [
         ("v0", "/services"),
-        ("v1", "/services"),
         ("v0", "/search/services"),
-        ("v1", "/search/services"),
         ("v0", "/structures"),
     ],
 )
@@ -579,7 +577,7 @@ def test_can_filter_resources_by_profils_precisions_with_only_profils_data_v1(
     ],
 )
 @pytest.mark.with_token
-def test_can_filter_resources_by_thematiques(
+def test_can_filter_resources_by_thematiques_v0(
     api_client, url, factory, thematiques, input, found
 ):
     # this checks that the fixture thematiques are in the current schema
@@ -588,6 +586,87 @@ def test_can_filter_resources_by_thematiques(
 
     resource = factory(thematiques=thematiques)
     factory(thematiques=[v0.Thematique.MOBILITE.value])
+
+    response = api_client.get(url, params={"thematiques": input})
+
+    assert response.status_code == 200
+    resp_data = response.json()
+    if found:
+        assert_paginated_response_data(resp_data, total=1)
+        assert list_resources_data(resp_data)[0]["id"] in [resource.id]
+    else:
+        assert_paginated_response_data(resp_data, total=0)
+
+
+@pytest.mark.parametrize(
+    ("schema_version", "path"),
+    [
+        ("v1", "/services"),
+        ("v1", "/search/services"),
+    ],
+)
+@pytest.mark.parametrize(
+    "thematiques,input,found",
+    [
+        ([], [v1.Thematique.FAMILLE__GARDE_DENFANTS.value], False),
+        (
+            [v1.Thematique.FAMILLE__GARDE_DENFANTS.value],
+            [v1.Thematique.FAMILLE__GARDE_DENFANTS.value],
+            True,
+        ),
+        (
+            [v1.Thematique.NUMERIQUE__ACQUERIR_UN_EQUIPEMENT.value],
+            [v1.Thematique.FAMILLE__GARDE_DENFANTS.value],
+            False,
+        ),
+        (
+            [
+                v1.Thematique.NUMERIQUE__ACQUERIR_UN_EQUIPEMENT.value,
+                v1.Thematique.FAMILLE__GARDE_DENFANTS.value,
+            ],
+            [v1.Thematique.FAMILLE__GARDE_DENFANTS.value],
+            True,
+        ),
+        (
+            [
+                v1.Thematique.SANTE__ACCES_AUX_SOINS.value,
+                v1.Thematique.NUMERIQUE__ACQUERIR_UN_EQUIPEMENT.value,
+            ],
+            [
+                v1.Thematique.FAMILLE__GARDE_DENFANTS.value,
+                v1.Thematique.NUMERIQUE__ACQUERIR_UN_EQUIPEMENT.value,
+            ],
+            True,
+        ),
+        (
+            [
+                v1.Thematique.SANTE__ACCES_AUX_SOINS.value,
+                v1.Thematique.NUMERIQUE__ACQUERIR_UN_EQUIPEMENT.value,
+            ],
+            [
+                v1.Thematique.FAMILLE__GARDE_DENFANTS.value,
+                v1.Thematique.NUMERIQUE__ACQUERIR_UN_EQUIPEMENT.value,
+            ],
+            True,
+        ),
+        pytest.param(
+            [v1.Thematique.FAMILLE__GARDE_DENFANTS.value],
+            ["famille"],
+            True,
+            marks=pytest.mark.xfail,  # TODO
+        ),
+    ],
+)
+@pytest.mark.with_token
+def test_can_filter_resources_by_thematiques(
+    api_client, url, factory, thematiques, input, found
+):
+    # this checks that the fixture thematiques are in the current schema
+    if any(t not in v1.Thematique for t in thematiques):
+        raise ValueError("Invalid fixture param")
+
+    resource = factory(thematiques=thematiques)
+    factory(thematiques=[v1.Thematique.MOBILITE__FINANCER_MA_MOBILITE.value])
 
     response = api_client.get(url, params={"thematiques": input})
 
