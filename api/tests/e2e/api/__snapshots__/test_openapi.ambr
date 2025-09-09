@@ -666,181 +666,6 @@
           "title": "SourceIdDict",
           "type": "object"
         },
-        "Thematique": {
-          "description": "Thématiques",
-          "enum": [
-            "acces-aux-droits-et-citoyennete",
-            "acces-aux-droits-et-citoyennete--accompagnement-dans-les-demarches-administratives",
-            "acces-aux-droits-et-citoyennete--accompagnement-juridique",
-            "acces-aux-droits-et-citoyennete--aide-aux-victimes",
-            "acces-aux-droits-et-citoyennete--connaitre-ses-droits",
-            "acces-aux-droits-et-citoyennete--demandeurs-dasile-et-naturalisation",
-            "acces-aux-droits-et-citoyennete--developpement-durable",
-            "acces-aux-droits-et-citoyennete--faciliter-laction-citoyenne",
-            "accompagnement-social-et-professionnel-personnalise",
-            "accompagnement-social-et-professionnel-personnalise--decrochage-scolaire",
-            "accompagnement-social-et-professionnel-personnalise--definition-du-projet-professionnel",
-            "accompagnement-social-et-professionnel-personnalise--parcours-d-insertion-socioprofessionnel",
-            "apprendre-francais",
-            "apprendre-francais--accompagnement-insertion-pro",
-            "apprendre-francais--communiquer-vie-tous-les-jours",
-            "apprendre-francais--suivre-formation",
-            "choisir-un-metier",
-            "choisir-un-metier--confirmer-son-choix-de-metier",
-            "choisir-un-metier--connaitre-les-opportunites-demploi",
-            "choisir-un-metier--decouvrir-un-metier-ou-un-secteur-dactivite",
-            "choisir-un-metier--identifier-ses-points-forts-et-ses-competences",
-            "creation-activite",
-            "creation-activite--definir-son-projet-de-creation-dentreprise",
-            "creation-activite--developper-son-entreprise",
-            "creation-activite--financer-son-projet",
-            "creation-activite--reseautage-pour-createurs-dentreprise",
-            "creation-activite--structurer-son-projet-de-creation-dentreprise",
-            "difficultes-administratives-ou-juridiques--accompagnement-pour-lacces-aux-droits",
-            "difficultes-administratives-ou-juridiques--prendre-en-compte-une-problematique-judiciaire",
-            "difficultes-administratives-ou-juridiques--accompagnement-aux-demarches-administratives",
-            "difficultes-financieres--acquerir-une-autonomie-budgetaire",
-            "difficultes-financieres--mettre-en-place-une-mesure-de-protection-financiere",
-            "equipement-et-alimentation",
-            "equipement-et-alimentation--acces-a-du-materiel-informatique",
-            "equipement-et-alimentation--acces-a-un-telephone-et-un-abonnement",
-            "equipement-et-alimentation--alimentation",
-            "equipement-et-alimentation--aide-menagere",
-            "equipement-et-alimentation--electromenager",
-            "equipement-et-alimentation--habillement",
-            "famille",
-            "famille--accompagnement-femme-enceinte-bebe-jeune-enfant",
-            "famille--garde-denfants",
-            "famille--information-et-accompagnement-des-parents",
-            "famille--jeunes-sans-soutien-familial",
-            "famille--soutien-aidants",
-            "famille--soutien-a-la-parentalite",
-            "famille--soutien-aux-familles",
-            "famille--violences-intrafamiliales",
-            "gestion-financiere",
-            "gestion-financiere--accompagnement-aux-personnes-en-difficultes-financieres",
-            "gestion-financiere--acces-au-micro-credit",
-            "gestion-financiere--apprendre-a-gerer-son-budget",
-            "gestion-financiere--beneficier-daides-financieres",
-            "gestion-financiere--creation-et-utilisation-dun-compte-bancaire",
-            "gestion-financiere--obtenir-une-aide-alimentaire",
-            "gestion-financiere--prevention-et-gestion-du-surendettement",
-            "handicap",
-            "handicap--accompagnement-par-une-structure-specialisee",
-            "handicap--adaptation-au-poste-de-travail",
-            "handicap--adapter-son-logement",
-            "handicap--aide-a-la-personne",
-            "handicap--connaissance-des-droits-des-travailleurs",
-            "handicap--faire-reconnaitre-un-handicap",
-            "handicap--favoriser-le-retour-et-le-maintien-dans-lemploi",
-            "handicap--gerer-le-depart-a-la-retraite-des-personnes-en-situation-de-handicap",
-            "handicap--mobilite-des-personnes-en-situation-de-handicap",
-            "illettrisme",
-            "illettrisme--accompagner-scolarite",
-            "illettrisme--ameliorer-vocabulaire",
-            "illettrisme--etre-autonome",
-            "illettrisme--info-acquisition-connaissances",
-            "illettrisme--permis-conduire",
-            "illettrisme--reperer-situation-illettrisme",
-            "illettrisme--surmonter-trouble-apprentissage",
-            "illettrisme--trouver-emploi-formation",
-            "illettrisme--utiliser-numerique",
-            "illettrisme--valider-certification-clea",
-            "logement-hebergement",
-            "logement-hebergement--acheter-un-logement",
-            "logement-hebergement--aides-financieres-investissement-locatif",
-            "logement-hebergement--besoin-dadapter-mon-logement",
-            "logement-hebergement--connaissance-de-ses-droits-et-interlocuteurs",
-            "logement-hebergement--demenagement",
-            "logement-hebergement--etre-accompagne-dans-son-projet-accession",
-            "logement-hebergement--etre-accompagne-en cas-de-difficultes-financieres",
-            "logement-hebergement--etre-accompagne-pour-se-loger",
-            "logement-hebergement--financer-son-projet-travaux",
-            "logement-hebergement--gerer-son-budget",
-            "logement-hebergement--louer-un-logement",
-            "logement-hebergement--mal-loges-sans-logis",
-            "logement-hebergement--probleme-avec-son-logement",
-            "logement-hebergement--rechercher-une-solution-dhebergement-temporaire",
-            "logement-hebergement--reprendre-un-emploi-ou-une-formation",
-            "logement-hebergement--sinformer-sur-les-demarches-liees-a-lacces-au-logement",
-            "mobilite",
-            "mobilite--acceder-a-un-vehicule",
-            "mobilite--acheter-un-vehicule-motorise",
-            "mobilite--acheter-un-velo",
-            "mobilite--aides-a-la-reprise-demploi-ou-a-la-formation",
-            "mobilite--apprendre-a-utiliser-un-deux-roues",
-            "mobilite--comprendre-et-utiliser-les-transports-en-commun",
-            "mobilite--entretenir-reparer-son-vehicule",
-            "mobilite--etre-accompagne-dans-son-parcours-mobilite",
-            "mobilite--financer-ma-mobilite",
-            "mobilite--financer-mon-projet-mobilite",
-            "mobilite--louer-un-vehicule",
-            "mobilite--preparer-son-permis-de-conduire-se-reentrainer-a-la-conduite",
-            "mobilite--preparer-un-permis-de-conduire",
-            "numerique",
-            "numerique--acquerir-un-equipement",
-            "numerique--acceder-a-du-materiel",
-            "numerique--acceder-a-une-connexion-internet",
-            "numerique--accompagner-les-demarches-de-sante",
-            "numerique--approfondir-ma-culture-numerique",
-            "numerique--creer-avec-le-numerique",
-            "numerique--creer-et-developper-mon-entreprise",
-            "numerique--devenir-autonome-dans-les-demarches-administratives",
-            "numerique--favoriser-mon-insertion-professionnelle",
-            "numerique--prendre-en-main-un-ordinateur",
-            "numerique--prendre-en-main-un-smartphone-ou-une-tablette",
-            "numerique--promouvoir-la-citoyennete-numerique",
-            "numerique--realiser-des-demarches-administratives-avec-un-accompagnement",
-            "numerique--s-equiper-en-materiel-informatique",
-            "numerique--soutenir-la-parentalite-et-l-education-avec-le-numerique",
-            "numerique--utiliser-le-numerique-au-quotidien",
-            "preparer-sa-candidature",
-            "preparer-sa-candidature--developper-son-reseau",
-            "preparer-sa-candidature--organiser-ses-demarches-de-recherche-demploi",
-            "preparer-sa-candidature--realiser-un-cv-et-ou-une-lettre-de-motivation",
-            "preparer-sa-candidature--valoriser-ses-competences",
-            "remobilisation",
-            "remobilisation--activites-sportives-et-culturelles",
-            "remobilisation--bien-etre",
-            "remobilisation--bien-etre-confiance-en-soi",
-            "remobilisation--decouvrir-son-potentiel-via-le-sport-et-la-culture",
-            "remobilisation--discrimination",
-            "remobilisation--identifier-ses-competences-et-aptitudes",
-            "remobilisation--lien-social",
-            "remobilisation--participer-a-des-actions-solidaires-ou-de-benevolat",
-            "remobilisation--pression-sociale",
-            "remobilisation--restaurer-sa-confiance-son-image-de-soi",
-            "sante",
-            "sante--acces-aux-soins",
-            "sante--accompagnement-de-la-femme-enceinte-du-bebe-et-du-jeune-enfant",
-            "sante--accompagner-les-traumatismes",
-            "sante--bien-etre-psychologique",
-            "sante--constituer-un-dossier-mdph-invalidite",
-            "sante--diagnostic-et-accompagnement-a-lemployabilite",
-            "sante--faire-face-a-une-situation-daddiction",
-            "sante--obtenir-la-prise-en-charge-de-frais-medicaux",
-            "sante--prevention-et-acces-aux-soins",
-            "sante--sante-mentale",
-            "sante--se-soigner-et-prevenir-la-maladie",
-            "sante--vie-relationnelle-et-affective",
-            "se-former",
-            "se-former--monter-son-dossier-de-formation",
-            "se-former--trouver-sa-formation",
-            "se-former--utiliser-le-numerique",
-            "souvrir-a-linternational",
-            "souvrir-a-linternational--connaitre-les-opportunites-demploi-a-letranger",
-            "souvrir-a-linternational--sinformer-sur-les-aides-pour-travailler-a-letranger",
-            "souvrir-a-linternational--sorganiser-suite-a-son-retour-en-france",
-            "trouver-un-emploi",
-            "trouver-un-emploi--convaincre-un-recruteur-en-entretien",
-            "trouver-un-emploi--faire-des-candidatures-spontanees",
-            "trouver-un-emploi--maintien-dans-lemploi",
-            "trouver-un-emploi--repondre-a-des-offres-demploi",
-            "trouver-un-emploi--suivre-ses-candidatures-et-relancer-les-employeurs"
-          ],
-          "title": "Thematique",
-          "type": "string"
-        },
         "TypeService": {
           "description": "Types de services",
           "enum": [
@@ -1302,7 +1127,7 @@
               "anyOf": [
                 {
                   "items": {
-                    "$ref": "#/components/schemas/Thematique"
+                    "$ref": "#/components/schemas/data_inclusion__schema__v0__thematiques__Thematique"
                   },
                   "type": "array",
                   "uniqueItems": true
@@ -1804,7 +1629,7 @@
               "anyOf": [
                 {
                   "items": {
-                    "$ref": "#/components/schemas/Thematique"
+                    "$ref": "#/components/schemas/data_inclusion__schema__v0__thematiques__Thematique"
                   },
                   "type": "array",
                   "uniqueItems": true
@@ -2220,7 +2045,7 @@
               "anyOf": [
                 {
                   "items": {
-                    "$ref": "#/components/schemas/Thematique"
+                    "$ref": "#/components/schemas/data_inclusion__schema__v0__thematiques__Thematique"
                   },
                   "type": "array",
                   "uniqueItems": true
@@ -2555,7 +2380,7 @@
               "anyOf": [
                 {
                   "items": {
-                    "$ref": "#/components/schemas/Thematique"
+                    "$ref": "#/components/schemas/data_inclusion__schema__v0__thematiques__Thematique"
                   },
                   "type": "array",
                   "uniqueItems": true
@@ -3056,7 +2881,7 @@
               "anyOf": [
                 {
                   "items": {
-                    "$ref": "#/components/schemas/Thematique"
+                    "$ref": "#/components/schemas/data_inclusion__schema__v0__thematiques__Thematique"
                   },
                   "type": "array",
                   "uniqueItems": true
@@ -3868,7 +3693,7 @@
               "anyOf": [
                 {
                   "items": {
-                    "$ref": "#/components/schemas/Thematique"
+                    "$ref": "#/components/schemas/data_inclusion__schema__v1__thematiques__Thematique"
                   },
                   "type": "array",
                   "uniqueItems": true
@@ -3876,6 +3701,16 @@
                 {
                   "type": "null"
                 }
+              ],
+              "description": "Thématiques adressées par le service.",
+              "examples": [
+                [
+                  "numerique--acquerir-un-equipement"
+                ],
+                [
+                  "sante--constituer-un-dossier-mdph-invalidite",
+                  "logement-hebergement--se-maintenir-dans-le-logement"
+                ]
               ],
               "title": "Thematiques"
             },
@@ -4977,7 +4812,7 @@
               "anyOf": [
                 {
                   "items": {
-                    "$ref": "#/components/schemas/Thematique"
+                    "$ref": "#/components/schemas/data_inclusion__schema__v1__thematiques__Thematique"
                   },
                   "type": "array",
                   "uniqueItems": true
@@ -4985,6 +4820,16 @@
                 {
                   "type": "null"
                 }
+              ],
+              "description": "Thématiques adressées par le service.",
+              "examples": [
+                [
+                  "numerique--acquerir-un-equipement"
+                ],
+                [
+                  "sante--constituer-un-dossier-mdph-invalidite",
+                  "logement-hebergement--se-maintenir-dans-le-logement"
+                ]
               ],
               "title": "Thematiques"
             },
@@ -5643,7 +5488,7 @@
               "anyOf": [
                 {
                   "items": {
-                    "$ref": "#/components/schemas/Thematique"
+                    "$ref": "#/components/schemas/data_inclusion__schema__v0__thematiques__Thematique"
                   },
                   "type": "array",
                   "uniqueItems": true
@@ -5673,6 +5518,181 @@
           ],
           "title": "Structure",
           "type": "object"
+        },
+        "data_inclusion__schema__v0__thematiques__Thematique": {
+          "description": "Thématiques",
+          "enum": [
+            "acces-aux-droits-et-citoyennete",
+            "acces-aux-droits-et-citoyennete--accompagnement-dans-les-demarches-administratives",
+            "acces-aux-droits-et-citoyennete--accompagnement-juridique",
+            "acces-aux-droits-et-citoyennete--aide-aux-victimes",
+            "acces-aux-droits-et-citoyennete--connaitre-ses-droits",
+            "acces-aux-droits-et-citoyennete--demandeurs-dasile-et-naturalisation",
+            "acces-aux-droits-et-citoyennete--developpement-durable",
+            "acces-aux-droits-et-citoyennete--faciliter-laction-citoyenne",
+            "accompagnement-social-et-professionnel-personnalise",
+            "accompagnement-social-et-professionnel-personnalise--decrochage-scolaire",
+            "accompagnement-social-et-professionnel-personnalise--definition-du-projet-professionnel",
+            "accompagnement-social-et-professionnel-personnalise--parcours-d-insertion-socioprofessionnel",
+            "apprendre-francais",
+            "apprendre-francais--accompagnement-insertion-pro",
+            "apprendre-francais--communiquer-vie-tous-les-jours",
+            "apprendre-francais--suivre-formation",
+            "choisir-un-metier",
+            "choisir-un-metier--confirmer-son-choix-de-metier",
+            "choisir-un-metier--connaitre-les-opportunites-demploi",
+            "choisir-un-metier--decouvrir-un-metier-ou-un-secteur-dactivite",
+            "choisir-un-metier--identifier-ses-points-forts-et-ses-competences",
+            "creation-activite",
+            "creation-activite--definir-son-projet-de-creation-dentreprise",
+            "creation-activite--developper-son-entreprise",
+            "creation-activite--financer-son-projet",
+            "creation-activite--reseautage-pour-createurs-dentreprise",
+            "creation-activite--structurer-son-projet-de-creation-dentreprise",
+            "difficultes-administratives-ou-juridiques--accompagnement-pour-lacces-aux-droits",
+            "difficultes-administratives-ou-juridiques--prendre-en-compte-une-problematique-judiciaire",
+            "difficultes-administratives-ou-juridiques--accompagnement-aux-demarches-administratives",
+            "difficultes-financieres--acquerir-une-autonomie-budgetaire",
+            "difficultes-financieres--mettre-en-place-une-mesure-de-protection-financiere",
+            "equipement-et-alimentation",
+            "equipement-et-alimentation--acces-a-du-materiel-informatique",
+            "equipement-et-alimentation--acces-a-un-telephone-et-un-abonnement",
+            "equipement-et-alimentation--alimentation",
+            "equipement-et-alimentation--aide-menagere",
+            "equipement-et-alimentation--electromenager",
+            "equipement-et-alimentation--habillement",
+            "famille",
+            "famille--accompagnement-femme-enceinte-bebe-jeune-enfant",
+            "famille--garde-denfants",
+            "famille--information-et-accompagnement-des-parents",
+            "famille--jeunes-sans-soutien-familial",
+            "famille--soutien-aidants",
+            "famille--soutien-a-la-parentalite",
+            "famille--soutien-aux-familles",
+            "famille--violences-intrafamiliales",
+            "gestion-financiere",
+            "gestion-financiere--accompagnement-aux-personnes-en-difficultes-financieres",
+            "gestion-financiere--acces-au-micro-credit",
+            "gestion-financiere--apprendre-a-gerer-son-budget",
+            "gestion-financiere--beneficier-daides-financieres",
+            "gestion-financiere--creation-et-utilisation-dun-compte-bancaire",
+            "gestion-financiere--obtenir-une-aide-alimentaire",
+            "gestion-financiere--prevention-et-gestion-du-surendettement",
+            "handicap",
+            "handicap--accompagnement-par-une-structure-specialisee",
+            "handicap--adaptation-au-poste-de-travail",
+            "handicap--adapter-son-logement",
+            "handicap--aide-a-la-personne",
+            "handicap--connaissance-des-droits-des-travailleurs",
+            "handicap--faire-reconnaitre-un-handicap",
+            "handicap--favoriser-le-retour-et-le-maintien-dans-lemploi",
+            "handicap--gerer-le-depart-a-la-retraite-des-personnes-en-situation-de-handicap",
+            "handicap--mobilite-des-personnes-en-situation-de-handicap",
+            "illettrisme",
+            "illettrisme--accompagner-scolarite",
+            "illettrisme--ameliorer-vocabulaire",
+            "illettrisme--etre-autonome",
+            "illettrisme--info-acquisition-connaissances",
+            "illettrisme--permis-conduire",
+            "illettrisme--reperer-situation-illettrisme",
+            "illettrisme--surmonter-trouble-apprentissage",
+            "illettrisme--trouver-emploi-formation",
+            "illettrisme--utiliser-numerique",
+            "illettrisme--valider-certification-clea",
+            "logement-hebergement",
+            "logement-hebergement--acheter-un-logement",
+            "logement-hebergement--aides-financieres-investissement-locatif",
+            "logement-hebergement--besoin-dadapter-mon-logement",
+            "logement-hebergement--connaissance-de-ses-droits-et-interlocuteurs",
+            "logement-hebergement--demenagement",
+            "logement-hebergement--etre-accompagne-dans-son-projet-accession",
+            "logement-hebergement--etre-accompagne-en cas-de-difficultes-financieres",
+            "logement-hebergement--etre-accompagne-pour-se-loger",
+            "logement-hebergement--financer-son-projet-travaux",
+            "logement-hebergement--gerer-son-budget",
+            "logement-hebergement--louer-un-logement",
+            "logement-hebergement--mal-loges-sans-logis",
+            "logement-hebergement--probleme-avec-son-logement",
+            "logement-hebergement--rechercher-une-solution-dhebergement-temporaire",
+            "logement-hebergement--reprendre-un-emploi-ou-une-formation",
+            "logement-hebergement--sinformer-sur-les-demarches-liees-a-lacces-au-logement",
+            "mobilite",
+            "mobilite--acceder-a-un-vehicule",
+            "mobilite--acheter-un-vehicule-motorise",
+            "mobilite--acheter-un-velo",
+            "mobilite--aides-a-la-reprise-demploi-ou-a-la-formation",
+            "mobilite--apprendre-a-utiliser-un-deux-roues",
+            "mobilite--comprendre-et-utiliser-les-transports-en-commun",
+            "mobilite--entretenir-reparer-son-vehicule",
+            "mobilite--etre-accompagne-dans-son-parcours-mobilite",
+            "mobilite--financer-ma-mobilite",
+            "mobilite--financer-mon-projet-mobilite",
+            "mobilite--louer-un-vehicule",
+            "mobilite--preparer-son-permis-de-conduire-se-reentrainer-a-la-conduite",
+            "mobilite--preparer-un-permis-de-conduire",
+            "numerique",
+            "numerique--acquerir-un-equipement",
+            "numerique--acceder-a-du-materiel",
+            "numerique--acceder-a-une-connexion-internet",
+            "numerique--accompagner-les-demarches-de-sante",
+            "numerique--approfondir-ma-culture-numerique",
+            "numerique--creer-avec-le-numerique",
+            "numerique--creer-et-developper-mon-entreprise",
+            "numerique--devenir-autonome-dans-les-demarches-administratives",
+            "numerique--favoriser-mon-insertion-professionnelle",
+            "numerique--prendre-en-main-un-ordinateur",
+            "numerique--prendre-en-main-un-smartphone-ou-une-tablette",
+            "numerique--promouvoir-la-citoyennete-numerique",
+            "numerique--realiser-des-demarches-administratives-avec-un-accompagnement",
+            "numerique--s-equiper-en-materiel-informatique",
+            "numerique--soutenir-la-parentalite-et-l-education-avec-le-numerique",
+            "numerique--utiliser-le-numerique-au-quotidien",
+            "preparer-sa-candidature",
+            "preparer-sa-candidature--developper-son-reseau",
+            "preparer-sa-candidature--organiser-ses-demarches-de-recherche-demploi",
+            "preparer-sa-candidature--realiser-un-cv-et-ou-une-lettre-de-motivation",
+            "preparer-sa-candidature--valoriser-ses-competences",
+            "remobilisation",
+            "remobilisation--activites-sportives-et-culturelles",
+            "remobilisation--bien-etre",
+            "remobilisation--bien-etre-confiance-en-soi",
+            "remobilisation--decouvrir-son-potentiel-via-le-sport-et-la-culture",
+            "remobilisation--discrimination",
+            "remobilisation--identifier-ses-competences-et-aptitudes",
+            "remobilisation--lien-social",
+            "remobilisation--participer-a-des-actions-solidaires-ou-de-benevolat",
+            "remobilisation--pression-sociale",
+            "remobilisation--restaurer-sa-confiance-son-image-de-soi",
+            "sante",
+            "sante--acces-aux-soins",
+            "sante--accompagnement-de-la-femme-enceinte-du-bebe-et-du-jeune-enfant",
+            "sante--accompagner-les-traumatismes",
+            "sante--bien-etre-psychologique",
+            "sante--constituer-un-dossier-mdph-invalidite",
+            "sante--diagnostic-et-accompagnement-a-lemployabilite",
+            "sante--faire-face-a-une-situation-daddiction",
+            "sante--obtenir-la-prise-en-charge-de-frais-medicaux",
+            "sante--prevention-et-acces-aux-soins",
+            "sante--sante-mentale",
+            "sante--se-soigner-et-prevenir-la-maladie",
+            "sante--vie-relationnelle-et-affective",
+            "se-former",
+            "se-former--monter-son-dossier-de-formation",
+            "se-former--trouver-sa-formation",
+            "se-former--utiliser-le-numerique",
+            "souvrir-a-linternational",
+            "souvrir-a-linternational--connaitre-les-opportunites-demploi-a-letranger",
+            "souvrir-a-linternational--sinformer-sur-les-aides-pour-travailler-a-letranger",
+            "souvrir-a-linternational--sorganiser-suite-a-son-retour-en-france",
+            "trouver-un-emploi",
+            "trouver-un-emploi--convaincre-un-recruteur-en-entretien",
+            "trouver-un-emploi--faire-des-candidatures-spontanees",
+            "trouver-un-emploi--maintien-dans-lemploi",
+            "trouver-un-emploi--repondre-a-des-offres-demploi",
+            "trouver-un-emploi--suivre-ses-candidatures-et-relancer-les-employeurs"
+          ],
+          "title": "Thematique",
+          "type": "string"
         },
         "data_inclusion__schema__v1__frais__Frais": {
           "description": "Frais",
@@ -5950,6 +5970,82 @@
           ],
           "title": "Structure",
           "type": "object"
+        },
+        "data_inclusion__schema__v1__thematiques__Thematique": {
+          "description": "Thématiques",
+          "enum": [
+            "choisir-un-metier--confirmer-son-choix-de-metier",
+            "choisir-un-metier--connaitre-les-opportunites-demploi",
+            "choisir-un-metier--decouvrir-un-metier-ou-un-secteur-dactivite",
+            "choisir-un-metier--identifier-ses-points-forts-et-ses-competences",
+            "creer-une-entreprise--definir-son-projet-de-creation-dentreprise",
+            "creer-une-entreprise--developper-son-entreprise",
+            "creer-une-entreprise--structurer-son-projet-de-creation-dentreprise",
+            "difficultes-administratives-ou-juridiques--accompagnement-aux-demarches-administratives",
+            "difficultes-administratives-ou-juridiques--accompagnement-pour-lacces-a-la-citoyennete",
+            "difficultes-administratives-ou-juridiques--accompagnement-pour-lacces-aux-droits",
+            "difficultes-administratives-ou-juridiques--beneficier-dune-mesure-daccompagnement-adapte",
+            "difficultes-administratives-ou-juridiques--connaitre-ses-droits-face-a-une-discrimination",
+            "difficultes-administratives-ou-juridiques--prendre-en-compte-une-problematique-judiciaire",
+            "difficultes-financieres--acquerir-une-autonomie-budgetaire",
+            "difficultes-financieres--ameliorer-sa-gestion-budgetaire",
+            "difficultes-financieres--mettre-en-place-une-mesure-de-protection-financiere",
+            "difficultes-financieres--prevenir-une-degradation-de-la-situation-financiere",
+            "difficultes-financieres--situation-dendettement-surendettement",
+            "equipement-et-alimentation--aide-menagere",
+            "equipement-et-alimentation--alimentation",
+            "equipement-et-alimentation--electromenager",
+            "equipement-et-alimentation--habillement",
+            "famille--garde-denfants",
+            "famille--prise-en-charge-personne-dependante",
+            "famille--soutien-a-la-parentalite-et-a-leducation",
+            "famille--soutien-aidants",
+            "famille--surmonter-conflits-separation-violence",
+            "lecture-ecriture-calcul--maitriser-le-calcul",
+            "lecture-ecriture-calcul--maitriser-le-francais",
+            "logement-hebergement--acheter-un-logement",
+            "logement-hebergement--changer-de-logement",
+            "logement-hebergement--louer-un-logement",
+            "logement-hebergement--rechercher-une-solution-dhebergement-temporaire",
+            "logement-hebergement--reduire-les-impayes-de-loyer",
+            "logement-hebergement--se-maintenir-dans-le-logement",
+            "logement-hebergement--sinformer-sur-les-demarches-liees-a-lacces-au-logement",
+            "mobilite--acceder-a-un-vehicule",
+            "mobilite--entretenir-reparer-son-vehicule",
+            "mobilite--etre-accompagne-dans-son-parcours-mobilite",
+            "mobilite--financer-ma-mobilite",
+            "mobilite--preparer-un-permis-de-conduire",
+            "mobilite--utiliser-des-services-de-mobilite-partagee",
+            "numerique--acceder-a-des-services-en-ligne",
+            "numerique--acceder-a-une-connexion-internet",
+            "numerique--acquerir-un-equipement",
+            "numerique--maitriser-les-fondamentaux-du-numerique",
+            "preparer-sa-candidature--developper-son-reseau",
+            "preparer-sa-candidature--organiser-ses-demarches-de-recherche-demploi",
+            "preparer-sa-candidature--realiser-un-cv-et-ou-une-lettre-de-motivation",
+            "preparer-sa-candidature--valoriser-ses-competences",
+            "remobilisation--activites-sportives-et-culturelles",
+            "remobilisation--benevolat-action-citoyenne",
+            "remobilisation--bien-etre-confiance-en-soi",
+            "remobilisation--lien-social",
+            "sante--acces-aux-soins",
+            "sante--addictions",
+            "sante--constituer-un-dossier-mdph-invalidite",
+            "sante--sante-mentale",
+            "sante--sante-sexuelle",
+            "se-former--monter-son-dossier-de-formation",
+            "se-former--trouver-sa-formation",
+            "souvrir-a-linternational--connaitre-les-opportunites-demploi-a-letranger",
+            "souvrir-a-linternational--sinformer-sur-les-aides-pour-travailler-a-letranger",
+            "souvrir-a-linternational--sorganiser-suite-a-son-retour-en-france",
+            "trouver-un-emploi--convaincre-un-recruteur-en-entretien",
+            "trouver-un-emploi--faire-des-candidatures-spontanees",
+            "trouver-un-emploi--maintien-dans-lemploi",
+            "trouver-un-emploi--repondre-a-des-offres-demploi",
+            "trouver-un-emploi--suivre-ses-candidatures-et-relancer-les-employeurs"
+          ],
+          "title": "Thematique",
+          "type": "string"
         }
       },
       "securitySchemes": {
@@ -6338,7 +6434,7 @@
                 "anyOf": [
                   {
                     "items": {
-                      "$ref": "#/components/schemas/Thematique"
+                      "$ref": "#/components/schemas/data_inclusion__schema__v0__thematiques__Thematique"
                     },
                     "type": "array"
                   },
@@ -6600,7 +6696,7 @@
                 "anyOf": [
                   {
                     "items": {
-                      "$ref": "#/components/schemas/Thematique"
+                      "$ref": "#/components/schemas/data_inclusion__schema__v0__thematiques__Thematique"
                     },
                     "type": "array"
                   },
@@ -7069,7 +7165,7 @@
                 "anyOf": [
                   {
                     "items": {
-                      "$ref": "#/components/schemas/Thematique"
+                      "$ref": "#/components/schemas/data_inclusion__schema__v0__thematiques__Thematique"
                     },
                     "type": "array"
                   },
@@ -7598,7 +7694,7 @@
                 "anyOf": [
                   {
                     "items": {
-                      "$ref": "#/components/schemas/Thematique"
+                      "$ref": "#/components/schemas/data_inclusion__schema__v1__thematiques__Thematique"
                     },
                     "type": "array"
                   },
@@ -7844,7 +7940,7 @@
                 "anyOf": [
                   {
                     "items": {
-                      "$ref": "#/components/schemas/Thematique"
+                      "$ref": "#/components/schemas/data_inclusion__schema__v1__thematiques__Thematique"
                     },
                     "type": "array"
                   },

@@ -48,6 +48,7 @@ def dataset_path(structures_df, services_df, tmpdir):
                         "conditions_acces": "Etre plutôt grand",
                         "description": None,
                         "frais_v1": "payant",
+                        "thematiques_v1": ["equipement-et-alimentation--aide-menagere"],
                         "frais_precisions": "100 balles et un mars",
                         "horaires_accueil": "Mon-Fri 9:00-17:00",
                         "lien_mobilisation": None,

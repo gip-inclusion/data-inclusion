@@ -70,14 +70,7 @@ class ServiceFactory(factory.alchemy.SQLAlchemyModelFactory):
             v1.TypeService.INFORMATION,
         ],
     )
-    thematiques = factory.Iterator(
-        [
-            v1.Thematique.CHOISIR_UN_METIER,
-            v1.Thematique.CREATION_ACTIVITE,
-            v1.Thematique.MOBILITE,
-        ],
-        getter=lambda v: [v.value],
-    )
+    thematiques = [v1.Thematique.FAMILLE__GARDE_DENFANTS.value]
     frais = factory.Iterator([v1.Frais.GRATUIT, v1.Frais.PAYANT])
     frais_precisions = factory.Faker("text", max_nb_chars=20, locale="fr_FR")
     horaires_accueil = "Mo-Fr 10:00-20:00"
