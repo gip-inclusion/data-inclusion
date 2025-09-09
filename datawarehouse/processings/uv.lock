@@ -200,7 +200,11 @@ test = [
 
 [package.metadata]
 requires-dist = [
+<<<<<<< HEAD
     { name = "data-inclusion-schema", specifier = "==1.0.0b7" },
+=======
+    { name = "data-inclusion-schema", git = "https://github.com/gip-inclusion/data-inclusion-schema.git?rev=vmttn%2Ffeat%2Fv1-thematiques" },
+>>>>>>> 34ec2b64 (chore(dwh): use thematiques v1)
     { name = "dedupe" },
     { name = "dedupe-variable-datetime" },
     { name = "furl" },
@@ -219,16 +223,24 @@ provides-extras = ["dev", "test"]
 
 [[package]]
 name = "data-inclusion-schema"
+<<<<<<< HEAD
 version = "1.0.0b7"
 source = { registry = "https://pypi.org/simple" }
+=======
+version = "1.0.0b6"
+source = { git = "https://github.com/gip-inclusion/data-inclusion-schema.git?rev=vmttn%2Ffeat%2Fv1-thematiques#46f2e03f5194ee5bb69be397b71adb06c520d908" }
+>>>>>>> 34ec2b64 (chore(dwh): use thematiques v1)
 dependencies = [
     { name = "pendulum" },
     { name = "pydantic", extra = ["email"] },
 ]
+<<<<<<< HEAD
 sdist = { url = "https://files.pythonhosted.org/packages/6f/6d/3cc0e1d06458f60484c57ad17fbfe1ff2d2f2bedfbe101e2d673541354f3/data_inclusion_schema-1.0.0b7.tar.gz", hash = "sha256:e5a87e1b606abb3e3b195b7ec469e3696c93053103e436cc081603c457893cdd", size = 34774, upload-time = "2025-09-11T15:35:39.281Z" }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/74/03/2b485147f7f5690b21ca1327ce766b00d14d293ac93608d2bf0771bf4f8b/data_inclusion_schema-1.0.0b7-py3-none-any.whl", hash = "sha256:b75effea8f3e5c4537220144678068c7d83e71f98bfed7f381ce57e62cd54082", size = 43930, upload-time = "2025-09-11T15:35:38.29Z" },
 ]
+=======
+>>>>>>> 34ec2b64 (chore(dwh): use thematiques v1)
 
 [[package]]
 name = "datetime-distance"
