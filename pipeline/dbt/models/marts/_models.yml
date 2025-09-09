@@ -182,6 +182,8 @@ models:
         data_type: text
       - name: thematiques
         data_type: text[]
+      - name: thematiques_v1
+        data_type: text[]
       - name: prise_rdv
         data_type: text
       - name: frais
