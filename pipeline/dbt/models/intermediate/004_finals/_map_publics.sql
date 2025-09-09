@@ -1,7 +1,7 @@
 {{ config(materialized='ephemeral') }}
 SELECT
-    x.profil,
-    x.public
+    x.profil_v0,
+    x.public_v1
 FROM (
     VALUES
     ('adultes', NULL),
@@ -33,4 +33,4 @@ FROM (
     ('seniors-65', 'seniors'),
     ('salaries', 'actifs'),
     ('tous-publics', 'tous-publics')
-) AS x (profil, public)
+) AS x (profil_v0, public_v1)

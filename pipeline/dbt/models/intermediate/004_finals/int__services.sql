@@ -21,27 +21,50 @@ frais AS (
     GROUP BY unnested_frais._di_surrogate_id
 ),
 
-map_publics AS (SELECT * FROM {{ ref('_map_publics') }}),
+mapping_publics AS (SELECT * FROM {{ ref('_map_publics') }}),
 
-unnested_profils AS (
+publics_v1 AS (
     SELECT
         services._di_surrogate_id,
+        CASE
+            WHEN 'tous-publics' = ANY(services.profils)
+                THEN ARRAY['tous-publics']
+            WHEN
+                services.thematiques && ARRAY[
+                    'handicap',
+                    'handicap--accompagnement-par-une-structure-specialisee',
+                    'handicap--adaptation-au-poste-de-travail',
+                    'handicap--adapter-son-logement',
+                    'handicap--aide-a-la-personne',
+                    'handicap--connaissance-des-droits-des-travailleurs',
+                    'handicap--faire-reconnaitre-un-handicap',
+                    'handicap--favoriser-le-retour-et-le-maintien-dans-lemploi',
+                    'handicap--gerer-le-depart-a-la-retraite-des-personnes-en-situation-de-handicap',
+                    'handicap--mobilite-des-personnes-en-situation-de-handicap'
+                ] AND NOT 'personnes-en-situation-de-handicap' = ANY(ARRAY_AGG(mapping_publics.public_v1))
+                THEN ARRAY_AGG(DISTINCT mapping_publics.public_v1) || ARRAY['personnes-en-situation-de-handicap']
+            ELSE ARRAY_AGG(DISTINCT mapping_publics.public_v1)
+        END AS publics
+    FROM
+        services,
         UNNEST(services.profils) AS profil
-    FROM services
+    LEFT JOIN mapping_publics ON profil = mapping_publics.profil_v0
+    WHERE mapping_publics.public_v1 IS NOT NULL
+    GROUP BY services._di_surrogate_id, services.profils, services.thematiques
 ),
 
-publics AS (
+mapping_thematiques AS (SELECT * FROM {{ ref('_map_thematiques') }}),
+
+thematiques_v1 AS (
     SELECT
-        unnested_profils._di_surrogate_id,
-        CASE
-            WHEN 'tous-publics' = ANY(ARRAY_AGG(map_publics.public))
-                THEN ARRAY['tous-publics']
-            ELSE ARRAY_AGG(DISTINCT map_publics.public)
-        END AS publics
-    FROM unnested_profils
-    INNER JOIN map_publics ON unnested_profils.profil = map_publics.profil
-    WHERE map_publics.public IS NOT NULL
-    GROUP BY unnested_profils._di_surrogate_id
+        services._di_surrogate_id,
+        ARRAY_AGG(DISTINCT mapping_thematiques.v1) AS thematiques
+    FROM
+        services,
+        UNNEST(services.thematiques) AS thematique_v0
+    LEFT JOIN mapping_thematiques ON thematique_v0 = mapping_thematiques.v0
+    WHERE mapping_thematiques.v1 IS NOT NULL
+    GROUP BY services._di_surrogate_id
 ),
 
 structures AS (
@@ -159,6 +182,7 @@ SELECT
         ELSE COALESCE(services.presentation_detail, services.presentation_resume)
     END                                                                                                       AS "description",
     services.thematiques                                                                                      AS "thematiques",
+    thematiques_v1.thematiques                                                                                AS "thematiques_v1",
     services.modes_accueil                                                                                    AS "modes_accueil",
     services.modes_orientation_accompagnateur                                                                 AS "modes_orientation_accompagnateur",
     services.modes_orientation_accompagnateur_autres                                                          AS "modes_orientation_accompagnateur_autres",
@@ -212,7 +236,7 @@ SELECT
     services.modes_orientation_beneficiaire_autres || ' ' || services.modes_orientation_accompagnateur_autres AS "mobilisation_precisions",
     services.profils                                                                                          AS "profils",
     services.profils_precisions                                                                               AS "profils_precisions",
-    publics.publics                                                                                           AS "publics",
+    publics_v1.publics                                                                                        AS "publics",
     services.profils_precisions                                                                               AS "publics_precisions",
     services.types                                                                                            AS "types",
     CASE
@@ -298,7 +322,9 @@ LEFT JOIN valid_site_web AS valid_formulaire_en_ligne
     ON services.formulaire_en_ligne = valid_formulaire_en_ligne.input_url
 LEFT JOIN valid_site_web AS valid_page_web
     ON services.page_web = valid_page_web.input_url
-LEFT JOIN publics
-    ON services._di_surrogate_id = publics._di_surrogate_id
+LEFT JOIN publics_v1
+    ON services._di_surrogate_id = publics_v1._di_surrogate_id
 LEFT JOIN frais
     ON services._di_surrogate_id = frais._di_surrogate_id
+LEFT JOIN thematiques_v1
+    ON services._di_surrogate_id = thematiques_v1._di_surrogate_id
