@@ -239,7 +239,7 @@ cryptography==45.0.2
     #   -c airflow/constraints.txt
     #   apache-airflow
     #   paramiko
-data-inclusion-schema==1.0.0b7
+data-inclusion-schema @ git+https://github.com/gip-inclusion/data-inclusion-schema.git@f1e5d5c716e5e4526ddb98cf43275c06a3eaf77d
     # via -r tasks/requirements.in
 dateparser==1.2.2
     # via htmldate
