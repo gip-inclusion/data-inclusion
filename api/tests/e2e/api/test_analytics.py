@@ -137,7 +137,7 @@ def test_consult_service_event_saved(
 def test_list_services_event_saved(api_client, db_session, url, schema_version, model):
     query_param = {
         "sources": ["foo"],
-        "thematiques": ["acces-aux-droits-et-citoyennete"],
+        "thematiques": ["famille--garde-denfants"],
         "code_departement": "26",
         "code_region": "84",
         "code_commune": "26400",
@@ -197,7 +197,7 @@ def test_list_structures_event_saved(
         "exclure_doublons": True,
     }
     if schema_version == "v0":
-        query_param["thematiques"] = ["acces-aux-droits-et-citoyennete"]
+        query_param["thematiques"] = ["famille--garde-denfants"]
         query_param["label_national"] = "action-logement"
         query_param["typologie"] = "ACIPHC"
     elif schema_version == "v1":
@@ -236,7 +236,7 @@ def test_search_services_event_saved(
 ):
     query_param = {
         "sources": ["foo"],
-        "thematiques": ["acces-aux-droits-et-citoyennete"],
+        "thematiques": ["famille--garde-denfants"],
         "code_commune": HAZEBROUCK["code_insee"],
         "code_insee": DUNKERQUE["code_insee"],
         "frais": ["gratuit"],

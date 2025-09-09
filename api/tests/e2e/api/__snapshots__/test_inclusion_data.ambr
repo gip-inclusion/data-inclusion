@@ -54,7 +54,7 @@
         "structure_id": "much-mention",
         "telephone": "0102030405",
         "thematiques": [
-          "choisir-un-metier"
+          "famille--garde-denfants"
         ],
         "types": [
           "formation"
@@ -115,7 +115,7 @@
         "structure_id": "dora--much-mention",
         "telephone": "0102030405",
         "thematiques": [
-          "choisir-un-metier"
+          "famille--garde-denfants"
         ],
         "type": "formation",
         "volume_horaire_hebdomadaire": 1.0,
@@ -163,7 +163,7 @@
         "source": "dora",
         "telephone": "0102030405",
         "thematiques": [
-          "choisir-un-metier"
+          "famille--garde-denfants"
         ],
         "typologie": "ACI"
       }
