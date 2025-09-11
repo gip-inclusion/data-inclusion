@@ -2,15 +2,6 @@ version: 2
 
 models:
   - name: int_mes_aides__garages__adresses
-    data_tests:
-      - check_adresse:
-          schema_version: v0
-          config:
-            severity: warn
-      - check_adresse:
-          schema_version: v1
-          config:
-            severity: warn
     columns:
       - name: id
         data_tests:
@@ -19,15 +10,6 @@ models:
           - dbt_utils.not_empty_string
 
   - name: int_mes_aides__garages__structures
-    data_tests:
-      - check_structure:
-          schema_version: v0
-          config:
-            severity: warn
-      - check_structure:
-          schema_version: v1
-          config:
-            severity: warn
     columns:
       - name: id
         data_tests:
@@ -42,11 +24,6 @@ models:
               field: id
 
   - name: int_mes_aides__garages__services
-    data_tests:
-      - check_service:
-          schema_version: v0
-          config:
-            severity: warn
     columns:
       - name: id
         data_tests:

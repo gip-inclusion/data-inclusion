@@ -24,11 +24,11 @@ models:
         data_tests:
           - not_null
           - dbt_utils.not_empty_string
-      - name: field
+      - name: loc
         data_tests:
           - not_null
           - dbt_utils.not_empty_string
-      - name: value
+      - name: input
       - name: schema_version
         data_tests:
           - not_null
@@ -43,6 +43,18 @@ models:
               values:
                 - service
                 - structure
+      - name: model_class
+        data_tests:
+          - not_null
+          - accepted_values:
+              values:
+                - data_inclusion.schema.v0.Service
+                - data_inclusion.schema.v0.Structure
+                - data_inclusion.schema.v1.Service
+                - data_inclusion.schema.v1.Structure
+      - name: msg
+        data_tests:
+          - not_null
 
   - name: int__services
     columns:
