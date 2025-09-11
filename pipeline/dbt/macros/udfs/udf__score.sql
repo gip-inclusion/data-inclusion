@@ -25,8 +25,6 @@ if schema_version == "v1":
 else:
     from data_inclusion.schema.v0 import Service, score_qualite
 
-
-# TODO(vmttn): run score *after* pydantic validation then remove this try/except
 try:
     service = Service(**json_data)
 except pydantic.ValidationError as exc:

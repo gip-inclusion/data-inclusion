@@ -18,6 +18,7 @@ CREATE SCHEMA IF NOT EXISTS processings;
 {{ udf__format_phone_number() }}
 {{ udf__score() }}
 {{ udf__soliguide_to_osm_opening_hours() }}
+{{ udf__model_validate() }}
 
 {% endset %}
 
