@@ -63,6 +63,7 @@ FROM (
     ('GEIQ', 'geiq'),
     ('HUDA', 'huda'),
     ('LA_POSTE', 'la-poste'),
+    ('MDA', 'maison-departementale-de-lautonomie'),
     ('MDE', 'maisons-de-l-emploi'),
     ('MDEF', 'maisons-de-l-emploi'),
     ('MDPH', 'departements'),

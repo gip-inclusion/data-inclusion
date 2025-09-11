@@ -24,6 +24,7 @@ models:
           - emplois_de_linclusion
           - france_travail
           - fredo
+          - ma_boussole_aidants
           - mission_locale
           - mediation_numerique
           - mes_aides

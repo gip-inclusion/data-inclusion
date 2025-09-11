@@ -62,6 +62,7 @@ konexio,Association Konexio,
 la-cravate-solidaire,La Cravate Solidaire,
 la-poste,La Poste,
 les-premieres,Les Premières,
+maison-departementale-de-lautonomie,Maisons Départementales de l’Autonomie,
 maisons-de-l-emploi,Maisons de l’Emploi,
 maisons-des-solidarites,Maisons Départementales des Solidarités (MDS),"Les Maisons Départementales des Solidarités sont des services départementaux. Par conséquent, le réseau `departements` devrait être également défini pour ces structures."
 mission-locale,Mission Locale,

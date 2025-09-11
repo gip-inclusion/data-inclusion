@@ -1,0 +1,113 @@
+version: 2
+
+models:
+  - name: stg_ma_boussole_aidants__structures__services
+    columns:
+      - name: id_structure
+        data_tests:
+          - not_null
+          - relationships:
+              to: ref('stg_ma_boussole_aidants__structures')
+              field: id_structure
+      - name: is_distanciel
+        data_tests:
+          - not_null
+      - name: id_sous_thematique_solutions
+        data_tests:
+          - not_null
+          - relationships:
+              to: ref('stg_ma_boussole_aidants__solutions')
+              field: code
+
+  - name: stg_ma_boussole_aidants__structures__situations
+    columns:
+      - name: id_structure
+        data_tests:
+          - not_null
+          - relationships:
+              to: ref('stg_ma_boussole_aidants__structures')
+              field: id_structure
+      - name: id_situation
+        data_tests:
+          - not_null
+      - name: nom_situation
+        data_tests:
+          - not_null
+      - name: id_profil
+        data_tests:
+          - not_null
+
+  - name: stg_ma_boussole_aidants__structures
+    columns:
+      - name: id_structure
+        data_tests:
+          - not_null
+          - unique
+      - name: adresse__code_postal
+        data_tests:
+          - not_null
+      - name: adresse__latitude
+        data_tests:
+          - not_null
+      - name: adresse__longitude
+        data_tests:
+          - not_null
+      - name: adresse__ligne_adresse
+        data_tests:
+          - not_null
+      - name: age_max
+        data_tests:
+          - not_null
+      - name: age_min
+        data_tests:
+          - not_null
+      - name: departement__code_departement
+        data_tests:
+          - not_null
+      - name: email
+        data_tests:
+          - dbt_utils.not_null_proportion:
+              at_least: 0.5
+      - name: last_modified_date
+        data_tests:
+          - not_null
+      - name: nom_structure
+        data_tests:
+          - not_null
+      - name: rayon_action__nom_rayon_action
+        data_tests:
+          - not_null
+          - accepted_values:
+              values: ['départemental', 'communal', 'local']
+      - name: site_web
+        data_tests:
+          - dbt_utils.not_null_proportion:
+              at_least: 0.5
+      - name: structure_mere__siret
+        data_tests:
+          - not_null
+      - name: telephone_1
+        data_tests:
+          - dbt_utils.not_null_proportion:
+              at_least: 0.9
+      - name: id_type_structure
+        data_tests:
+          - not_null
+          - accepted_values:
+              values: ['15', '53', '127']
+      - name: description_structure
+        data_tests:
+          - not_null
+
+  - name: stg_ma_boussole_aidants__solutions
+    columns:
+      - name: code
+        data_tests:
+          - not_null
+          - unique
+      - name: label
+        data_tests:
+          - not_null
+      - name: description
+        data_tests:
+          - not_null
