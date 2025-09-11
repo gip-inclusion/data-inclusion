@@ -24,6 +24,10 @@
 -- depends_on: {{ ref('int_france_travail__structures') }}
 -- depends_on: {{ ref('stg_fredo__structures') }}
 -- depends_on: {{ ref('int_fredo__structures') }}
+-- depends_on: {{ ref('stg_ma_boussole_aidants__structures__services') }}
+-- depends_on: {{ ref('stg_ma_boussole_aidants__structures') }}
+-- depends_on: {{ ref('int_ma_boussole_aidants__services') }}
+-- depends_on: {{ ref('int_ma_boussole_aidants__structures') }}
 -- depends_on: {{ ref('stg_mission_locale__offres') }}
 -- depends_on: {{ ref('stg_mission_locale__structures') }}
 -- depends_on: {{ ref('int_mission_locale__services') }}

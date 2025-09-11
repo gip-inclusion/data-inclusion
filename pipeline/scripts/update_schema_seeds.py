@@ -3,7 +3,7 @@
 # /// script
 # requires-python = ">=3.12"
 # dependencies = [
-#     "data-inclusion-schema==1.0.0b6",
+#     "data-inclusion-schema==1.0.0b7",
 #     "pandas",
 # ]
 # ///

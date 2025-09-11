@@ -14,6 +14,7 @@ from . import (
     emplois_de_linclusion,
     france_travail,
     fredo,
+    ma_boussole_aidants,
     mediation_numerique,
     mes_aides,
     mission_locale,
@@ -38,6 +39,17 @@ SOURCES_CONFIGS = {
                 "filename": "services.json",
                 "url": "https://api.dora.inclusion.beta.gouv.fr/api/v2/",
                 "token": Variable.get("DORA_API_TOKEN", None),
+            },
+        },
+    },
+    "ma-boussole-aidants": {
+        "schedule": "@daily",
+        "extractor": ma_boussole_aidants.extract,
+        "streams": {
+            "structures": {
+                "filename": "structures.json",
+                "url": "https://solutionsv2-back.maboussoleaidants.fr/api/",
+                "token": Variable.get("MA_BOUSSOLE_AIDANTS_API_KEY", None),
             },
         },
     },
