@@ -2,15 +2,6 @@ version: 2
 
 models:
   - name: int_dora__adresses
-    data_tests:
-      - check_adresse:
-          schema_version: v0
-          config:
-            severity: warn
-      - check_adresse:
-          schema_version: v1
-          config:
-            severity: warn
     columns:
       - name: id
         data_tests:
@@ -19,14 +10,10 @@ models:
 
   - name: int_dora__services
     data_tests:
-      - check_service:
-          schema_version: v0
+      - model_validate:
+          model_class: data_inclusion.schema.v0.Service
           config:
-            severity: warn
-      - check_service:
-          schema_version: v1
-          config:
-            severity: warn
+            enabled: "{{ env_var('DBT_ENV', 'prod') == 'dev' }}"
     columns:
       - name: id
         data_tests:
@@ -48,14 +35,10 @@ models:
 
   - name: int_dora__structures
     data_tests:
-      - check_structure:
-          schema_version: v0
+      - model_validate:
+          model_class: data_inclusion.schema.v0.Structure
           config:
-            severity: warn
-      - check_structure:
-          schema_version: v1
-          config:
-            severity: warn
+            enabled: "{{ env_var('DBT_ENV', 'prod') == 'dev' }}"
     columns:
       - name: id
         data_tests:

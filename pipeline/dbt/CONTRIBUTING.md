@@ -33,13 +33,13 @@ Therefore our tests start at the `staging` layer.
 `intermediate`:
 
 * ✅ use `data_tests` for primary keys and foreign keys
-* ✅ use the generic tests `check_structure`, `check_service` and `check_address`
+* ✅ use the generic tests `model_validate` **in dev**
 * ✅ use `dbt_utils.equal_rowcount` between `staging` and `intermediate` when applicable simply
 
 `marts`:
 
 * ✅ use `contracts`
-* ✅ use generic tests `check_structure`, `check_service` and `check_address`
+* ✅ use generic tests `model_validate`
 
 #### which type of `data_tests` should I use ?
 

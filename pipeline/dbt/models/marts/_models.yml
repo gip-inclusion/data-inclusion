@@ -5,6 +5,15 @@ models:
     config:
       indexes:
         - columns: ['source']
+    data_tests:
+      - model_validate:
+          model_class: data_inclusion.schema.v0.Structure
+          config:
+            where: _is_valid_v0
+      - model_validate:
+          model_class: data_inclusion.schema.v1.Structure
+          config:
+            where: _is_valid_v1
     columns:
       - name: _di_surrogate_id
         data_type: text
@@ -16,6 +25,11 @@ models:
           - type: not_null
       - name: siret
         data_type: text
+        data_tests:
+          - dbt_utils.relationships_where:
+              to: ref('stg_sirene__stock_etablissement')
+              field: siret
+              to_condition: etat_administratif_etablissement = 'actif'
       - name: rna
         data_type: text
       - name: nom
@@ -140,6 +154,15 @@ models:
           type: gin
         - columns: ['CAST(ST_MakePoint(longitude, latitude) AS geography(geometry, 4326))']
           type: gist
+    data_tests:
+      - model_validate:
+          model_class: data_inclusion.schema.v0.Service
+          config:
+            where: _is_valid_v0
+      - model_validate:
+          model_class: data_inclusion.schema.v1.Service
+          config:
+            where: _is_valid_v1
     columns:
       - name: _di_surrogate_id
         data_type: text

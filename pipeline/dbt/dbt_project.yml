@@ -65,7 +65,8 @@ models:
         enforced: true
 
 data_tests:
-  +store_failures: true
+  data_inclusion:
+    +store_failures: true
 
 seeds:
   data_inclusion:
