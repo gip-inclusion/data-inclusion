@@ -22,13 +22,15 @@ models:
       - name: name
         data_tests:
           - dbt_utils.expression_is_true:
-              expression: "!~ '(?<!etc)\\.$'"
+              arguments:
+                expression: "!~ '(?<!etc)\\.$'"
       - name: position__country
         data_tests:
           - not_null
           - dbt_utils.not_empty_string
           - accepted_values:
-              values: ['fr']
+              arguments:
+                values: ['fr']
       - name: position__department
         data_tests:
           - not_null
@@ -37,7 +39,8 @@ models:
         data_tests:
           - not_null
           - accepted_values:
-              values: [0, 1, 2]
+              arguments:
+                values: [0, 1, 2]
       - name: position__coordinates__x
         data_tests:
           - not_null
@@ -65,11 +68,12 @@ models:
           - not_null
           - dbt_utils.not_empty_string
           - relationships:
-              to: ref('stg_decoupage_administratif__communes')
-              field: code
               config:
                 severity: warn
 
+              arguments:
+                to: ref('stg_decoupage_administratif__communes')
+                field: code
   - name: stg_soliguide__services
     columns:
       - name: id
@@ -80,89 +84,97 @@ models:
         data_tests:
           - not_null
           - relationships:
-              to: ref('stg_soliguide__lieux')
-              field: lieu_id
+              arguments:
+                to: ref('stg_soliguide__lieux')
+                field: lieu_id
       - name: category
         data_tests:
           - not_null
           - dbt_utils.not_constant
           - relationships:
-              to: ref('stg_soliguide__categories')
-              field: code
-
+              arguments:
+                to: ref('stg_soliguide__categories')
+                field: code
   - name: stg_soliguide__phones
     columns:
       - name: lieu_id
         data_tests:
           - not_null
           - relationships:
-              to: ref('stg_soliguide__lieux')
-              field: lieu_id
-
-
+              arguments:
+                to: ref('stg_soliguide__lieux')
+                field: lieu_id
   - name: stg_soliguide__lieux__publics__familiale
     columns:
       - name: lieu_id
         data_tests:
           - not_null
           - relationships:
-              to: ref('stg_soliguide__lieux')
-              field: id
+              arguments:
+                to: ref('stg_soliguide__lieux')
+                field: id
       - name: value
         data_tests:
           - not_null
           - dbt_utils.not_empty_string
           - accepted_values:
-              values: ['isolated', 'family', 'pregnant', 'couple']
+              arguments:
+                values: ['isolated', 'family', 'pregnant', 'couple']
   - name: stg_soliguide__lieux__publics__gender
     columns:
       - name: lieu_id
         data_tests:
           - not_null
           - relationships:
-              to: ref('stg_soliguide__lieux')
-              field: id
+              arguments:
+                to: ref('stg_soliguide__lieux')
+                field: id
       - name: value
         data_tests:
           - not_null
           - dbt_utils.not_empty_string
           - accepted_values:
-              values: ['men', 'women']
+              arguments:
+                values: ['men', 'women']
   - name: stg_soliguide__lieux__publics__administrative
     columns:
       - name: lieu_id
         data_tests:
           - not_null
           - relationships:
-              to: ref('stg_soliguide__lieux')
-              field: id
+              arguments:
+                to: ref('stg_soliguide__lieux')
+                field: id
       - name: value
         data_tests:
           - not_null
           - dbt_utils.not_empty_string
           - accepted_values:
-              values: ["regular", "asylum", "refugee", "undocumented"]
+              arguments:
+                values: ["regular", "asylum", "refugee", "undocumented"]
   - name: stg_soliguide__lieux__publics__other
     columns:
       - name: lieu_id
         data_tests:
           - not_null
           - relationships:
-              to: ref('stg_soliguide__lieux')
-              field: id
+              arguments:
+                to: ref('stg_soliguide__lieux')
+                field: id
       - name: value
         data_tests:
           - not_null
           - dbt_utils.not_empty_string
           - accepted_values:
-              values:
-                - 'violence'
-                - 'addiction'
-                - 'handicap'
-                - 'lgbt'
-                - 'hiv'
-                - 'prostitution'
-                - 'prison'
-                - 'student'
-                - 'ukraine'
-                - 'mentalHealth'
+              arguments:
+                values:
+                  - 'violence'
+                  - 'addiction'
+                  - 'handicap'
+                  - 'lgbt'
+                  - 'hiv'
+                  - 'prostitution'
+                  - 'prison'
+                  - 'student'
+                  - 'ukraine'
+                  - 'mentalHealth'

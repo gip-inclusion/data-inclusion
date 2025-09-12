@@ -1,4 +1,3 @@
-
 models:
   - name: int__doublons_structures
     description: |
@@ -14,78 +13,90 @@ models:
           - dbt_utils.not_empty_string
           - unique
           - relationships:
-              to: ref('int__union_structures')
-              field: _di_surrogate_id
+              arguments:
+                to: ref('int__union_structures')
+                field: _di_surrogate_id
       - name: score
         data_tests:
           - not_null
           - dbt_utils.accepted_range:
-              min_value: 0.7
-              max_value: 1
+              arguments:
+                min_value: 0.7
+                max_value: 1
       - name: size
         description: The size of the cluster. Added for convenience.
         data_tests:
           - not_null
           - dbt_utils.accepted_range:
-              min_value: 2
+              arguments:
+                min_value: 2
           - dbt_utils.accepted_range:
               config:
                 severity: warn
-              max_value: 20
+              arguments:
+                max_value: 20
           - dbt_utils.accepted_range:
-              max_value: 50
-
+              arguments:
+                max_value: 50
   - name: int__doublons_paires_structures
     description: |
       Displays the duplicates as pairs of structures, including their sources.
       This is mainly a useful denormalization for our analytics.
     data_tests:
       - dbt_utils.expression_is_true:
-          expression: "structure_id_1 < structure_id_2"
+          arguments:
+            expression: "structure_id_1 < structure_id_2"
     columns:
       - name: cluster_id
         data_tests:
           - not_null
           - relationships:
-              to: ref('int__doublons_structures')
-              field: cluster_id
+              arguments:
+                to: ref('int__doublons_structures')
+                field: cluster_id
       - name: source_1
         data_tests:
           - not_null
           - relationships:
-              to: ref('int__union_structures')
-              field: source
+              arguments:
+                to: ref('int__union_structures')
+                field: source
       - name: structure_id_1
         data_tests:
           - not_null
           - relationships:
-              to: ref('int__union_structures')
-              field: _di_surrogate_id
+              arguments:
+                to: ref('int__union_structures')
+                field: _di_surrogate_id
       - name: source_2
         data_tests:
           - not_null
           - relationships:
-              to: ref('int__union_structures')
-              field: source
+              arguments:
+                to: ref('int__union_structures')
+                field: source
       - name: structure_id_2
         data_tests:
           - not_null
           - relationships:
-              to: ref('int__union_structures')
-              field: _di_surrogate_id
+              arguments:
+                to: ref('int__union_structures')
+                field: _di_surrogate_id
       - name: size
         description: The size of the cluster. Added for convenience.
         data_tests:
           - not_null
           - dbt_utils.accepted_range:
-              min_value: 2
+              arguments:
+                min_value: 2
           - dbt_utils.accepted_range:
               config:
                 severity: warn
-              max_value: 20
+              arguments:
+                max_value: 20
           - dbt_utils.accepted_range:
-              max_value: 50
-
+              arguments:
+                max_value: 50
   - name: int__doublons_nb_mono_source
     description: Per source, the number of found duplicates that also are in that same source.
     columns:
@@ -93,14 +104,15 @@ models:
         data_tests:
           - not_null
           - relationships:
-              to: ref('int__union_structures')
-              field: source
+              arguments:
+                to: ref('int__union_structures')
+                field: source
       - name: count
         data_tests:
           - not_null
           - dbt_utils.accepted_range:
-              min_value: 1
-
+              arguments:
+                min_value: 1
   - name: int__doublons_nb_cross_source
     description: For each pair of sources, the number of clusters they share duplicates with.
     columns:
@@ -108,33 +120,39 @@ models:
         data_tests:
           - not_null
           - relationships:
-              to: ref('int__union_structures')
-              field: source
+              arguments:
+                to: ref('int__union_structures')
+                field: source
       - name: source_2
         data_tests:
           - not_null
           - relationships:
-              to: ref('int__union_structures')
-              field: source
+              arguments:
+                to: ref('int__union_structures')
+                field: source
       - name: nb_1
         data_tests:
           - not_null
           - dbt_utils.accepted_range:
-              min_value: 1
+              arguments:
+                min_value: 1
       - name: nb_2
         data_tests:
           - not_null
           - dbt_utils.accepted_range:
-              min_value: 1
+              arguments:
+                min_value: 1
       - name: percent_1
         data_tests:
           - not_null
           - dbt_utils.accepted_range:
-              min_value: 0
-              max_value: 100
+              arguments:
+                min_value: 0
+                max_value: 100
       - name: percent_2
         data_tests:
           - not_null
           - dbt_utils.accepted_range:
-              min_value: 0
-              max_value: 100
+              arguments:
+                min_value: 0
+                max_value: 100

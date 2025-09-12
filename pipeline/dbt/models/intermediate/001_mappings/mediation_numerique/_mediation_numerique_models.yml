@@ -4,9 +4,10 @@ models:
   - name: int_mediation_numerique__adresses
     data_tests:
       - dbt_utils.unique_combination_of_columns:
-          combination_of_columns:
-            - source
-            - id
+          arguments:
+            combination_of_columns:
+              - source
+              - id
     columns:
       - name: id
         data_tests:
@@ -16,13 +17,15 @@ models:
   - name: int_mediation_numerique__services
     data_tests:
       - dbt_utils.unique_combination_of_columns:
-          combination_of_columns:
-            - source
-            - id
+          arguments:
+            combination_of_columns:
+              - source
+              - id
       - model_validate:
-          model_class: data_inclusion.schema.v0.Service
           config:
             enabled: "{{ env_var('DBT_ENV', 'prod') == 'dev' }}"
+          arguments:
+            model_class: data_inclusion.schema.v0.Service
     columns:
       - name: id
         data_tests:
@@ -32,25 +35,28 @@ models:
         data_tests:
           - not_null
           - relationships:
-              to: ref('int_mediation_numerique__structures')
-              field: id
+              arguments:
+                to: ref('int_mediation_numerique__structures')
+                field: id
       - name: adresse_id
         data_tests:
           - not_null
           - relationships:
-              to: ref('int_mediation_numerique__adresses')
-              field: id
-
+              arguments:
+                to: ref('int_mediation_numerique__adresses')
+                field: id
   - name: int_mediation_numerique__structures
     data_tests:
       - dbt_utils.unique_combination_of_columns:
-          combination_of_columns:
-            - source
-            - id
+          arguments:
+            combination_of_columns:
+              - source
+              - id
       - model_validate:
-          model_class: data_inclusion.schema.v0.Structure
           config:
             enabled: "{{ env_var('DBT_ENV', 'prod') == 'dev' }}"
+          arguments:
+            model_class: data_inclusion.schema.v0.Structure
     columns:
       - name: id
         data_tests:
@@ -60,5 +66,6 @@ models:
         data_tests:
           - not_null
           - relationships:
-              to: ref('int_mediation_numerique__adresses')
-              field: id
+              arguments:
+                to: ref('int_mediation_numerique__adresses')
+                field: id

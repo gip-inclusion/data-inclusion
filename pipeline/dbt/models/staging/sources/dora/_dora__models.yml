@@ -35,9 +35,10 @@ models:
         data_tests:
           - not_null
           - dbt_utils.accepted_range:
-              min_value: "now() - interval '2 years'"
               config:
                 severity: warn
+              arguments:
+                min_value: "now() - interval '2 years'"
       - name: formulaire_en_ligne
         data_tests:
           - dbt_utils.not_constant
@@ -50,8 +51,9 @@ models:
         data_tests:
           - dbt_utils.not_constant
           - relationships:
-              to: ref('frais')
-              field: value
+              arguments:
+                to: ref('frais')
+                field: value
       - name: id
         data_tests:
           - unique
@@ -73,13 +75,15 @@ models:
       - name: modes_accueil
         data_tests:
           - dbt_utils.expression_is_true:
-              expression: "<@ ARRAY(SELECT value FROM {{ ref('modes_accueil') }})"
+              arguments:
+                expression: "<@ ARRAY(SELECT value FROM {{ ref('modes_accueil') }})"
       - name: nom
         data_tests:
           - not_null
           - dbt_utils.not_empty_string
           - dbt_utils.expression_is_true:
-              expression: "!~ '(?<!etc)\\.$'"
+              arguments:
+                expression: "!~ '(?<!etc)\\.$'"
       - name: pre_requis
         data_tests:
           - dbt_utils.not_constant
@@ -102,9 +106,10 @@ models:
       - name: profils
         data_tests:
           - dbt_utils.expression_is_true:
-              expression: "<@ ARRAY(SELECT value FROM {{ ref('profils') }})"
               config:
                 severity: warn
+              arguments:
+                expression: "<@ ARRAY(SELECT value FROM {{ ref('profils') }})"
       - name: recurrence
         data_tests:
           - dbt_utils.not_constant
@@ -116,8 +121,9 @@ models:
         data_tests:
           - not_null
           - relationships:
-              to: ref('stg_dora__structures')
-              field: id
+              arguments:
+                to: ref('stg_dora__structures')
+                field: id
       - name: telephone
         data_tests:
           - dbt_utils.not_constant
@@ -125,13 +131,15 @@ models:
       - name: thematiques
         data_tests:
           - dbt_utils.expression_is_true:
-              expression: "<@ ARRAY(SELECT value FROM {{ ref('thematiques') }})"
               config:
                 severity: warn
+              arguments:
+                expression: "<@ ARRAY(SELECT value FROM {{ ref('thematiques') }})"
       - name: types
         data_tests:
           - dbt_utils.expression_is_true:
-              expression: "<@ ARRAY(SELECT value FROM {{ ref('typologies_de_services') }})"
+              arguments:
+                expression: "<@ ARRAY(SELECT value FROM {{ ref('typologies_de_services') }})"
       - name: zone_diffusion_code
         data_tests:
           - dbt_utils.not_constant
@@ -145,7 +153,8 @@ models:
           - not_null
           - dbt_utils.not_constant
           - accepted_values:
-              values: [commune, epci, departement, region, pays]
+              arguments:
+                values: [commune, epci, departement, region, pays]
 
   - name: stg_dora__structures
     columns:
@@ -187,9 +196,10 @@ models:
                 severity: warn
           - dbt_utils.not_constant
           - dbt_utils.accepted_range:
-              min_value: "now() - interval '2 years'"
               config:
                 severity: warn
+              arguments:
+                min_value: "now() - interval '2 years'"
       - name: horaires_ouverture
         data_tests:
           - dbt_utils.not_constant
@@ -203,9 +213,10 @@ models:
       - name: labels_nationaux
         data_tests:
           - dbt_utils.expression_is_true:
-              expression: "<@ ARRAY(SELECT value FROM {{ ref('labels_nationaux') }})"
               config:
                 severity: warn
+              arguments:
+                expression: "<@ ARRAY(SELECT value FROM {{ ref('labels_nationaux') }})"
       - name: latitude
         data_tests:
           - dbt_utils.not_constant
@@ -224,7 +235,8 @@ models:
           - dbt_utils.not_constant
           - dbt_utils.not_empty_string
           - dbt_utils.expression_is_true:
-              expression: "!~ '(?<!etc)\\.$'"
+              arguments:
+                expression: "!~ '(?<!etc)\\.$'"
       - name: presentation_detail
         data_tests:
           - dbt_utils.not_constant
@@ -261,5 +273,6 @@ models:
         data_tests:
           - dbt_utils.not_constant
           - relationships:
-              to: ref('typologies_de_structures')
-              field: value
+              arguments:
+                to: ref('typologies_de_structures')
+                field: value

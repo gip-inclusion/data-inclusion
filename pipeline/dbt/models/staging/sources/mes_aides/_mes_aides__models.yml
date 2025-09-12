@@ -18,131 +18,140 @@ models:
           # - not_null
           - dbt_utils.not_empty_string
           - accepted_values:
-              values:
-                - 'Échelle communale'
-                - 'Échelle intercommunale'
-                - 'Échelle régionale'
-                - 'Échelle départementale'
-                - 'France métropolitaine'
-                - 'Échelle nationale'
               config:
                 severity: error
                 error_if: ">20"
                 warn_if: ">0"
 
+              arguments:
+                values:
+                  - 'Échelle communale'
+                  - 'Échelle intercommunale'
+                  - 'Échelle régionale'
+                  - 'Échelle départementale'
+                  - 'France métropolitaine'
+                  - 'Échelle nationale'
   - name: stg_mes_aides__permis_velo__types
     columns:
       - name: service_id
         data_tests:
           - not_null
           - relationships:
-              to: ref('stg_mes_aides__permis_velo')
-              field: id
+              arguments:
+                to: ref('stg_mes_aides__permis_velo')
+                field: id
       - name: value
         data_tests:
           - not_null
           - dbt_utils.not_empty_string
           - accepted_values:
-              values: ['Aide financière','Prestation','Accompagnement']
               config:
                 severity: error
                 error_if: ">20"
                 warn_if: ">0"
+              arguments:
+                values: ['Aide financière', 'Prestation', 'Accompagnement']
   - name: stg_mes_aides__permis_velo__natures
     columns:
       - name: service_id
         data_tests:
           - not_null
           - relationships:
-              to: ref('stg_mes_aides__permis_velo')
-              field: id
+              arguments:
+                to: ref('stg_mes_aides__permis_velo')
+                field: id
       - name: value
         data_tests:
           - not_null
           - dbt_utils.not_empty_string
           - accepted_values:
-              values:
-                - Somme d''argent
-                - Prise en charge partielle
-                - Tarif préférentiel
-                - Prise en charge totale
-                - Prêt remboursement
-                - Facilitation de paiement
-                - Prise en charge partielle ou totale
+              arguments:
+                values:
+                  - Somme d''argent
+                  - Prise en charge partielle
+                  - Tarif préférentiel
+                  - Prise en charge totale
+                  - Prêt remboursement
+                  - Facilitation de paiement
+                  - Prise en charge partielle ou totale
   - name: stg_mes_aides__permis_velo__methodes
     columns:
       - name: service_id
         data_tests:
           - not_null
           - relationships:
-              to: ref('stg_mes_aides__permis_velo')
-              field: id
+              arguments:
+                to: ref('stg_mes_aides__permis_velo')
+                field: id
       - name: value
         data_tests:
           - not_null
           - dbt_utils.not_empty_string
           - accepted_values:
-              values:
-                - 'La démarche nécessite un passage ou une prise de contact directe avec votre organisme'
-                - 'La démarche nécessite une connexion sur le site de votre organisme'
-                - 'La démarche peut être faite par mail'
               config:
                 severity: error
                 error_if: ">20"
                 warn_if: ">0"
+              arguments:
+                values:
+                  - 'La démarche nécessite un passage ou une prise de contact directe avec votre organisme'
+                  - 'La démarche nécessite une connexion sur le site de votre organisme'
+                  - 'La démarche peut être faite par mail'
   - name: stg_mes_aides__permis_velo__liaisons_besoins
     columns:
       - name: service_id
         data_tests:
           - not_null
           - relationships:
-              to: ref('stg_mes_aides__permis_velo')
-              field: id
+              arguments:
+                to: ref('stg_mes_aides__permis_velo')
+                field: id
       - name: value
         data_tests:
           - not_null
           - dbt_utils.not_empty_string
           - accepted_values:
-              values:
-                - "Financer mon permis"
-                - "Financer mes trajets"
-                - "Financer le carburant"
-                - "Financer mon BSR"
-                - "Financer l''achat d''un véhicule"
-                - "Déménager"
-                - "Transports en commun"
-                - "Transport à la demande"
-                - "Réparer ma voiture"
-                - "Louer un vélo électrique"
-                - "Ma voiture"
-                - "Mon vélo électrique"
-                - "Mon scooter"
-                - "Acheter un vélo électrique"
-                - "Acheter ou louer un vélo"
-                - "Acheter ou louer une voiture"
-                - "Accéder au permis de conduire"
-                - "Partir à l''étranger"
-                - "Handicap & mobilité"
-                - "Trouver une alternance"
-                - "Trouver un contrat d''apprentissage"
-                - "Préparer une candidature"
-                - "Rédiger une lettre de motivation ou un CV"
-                - "Préparer une candidature"
-                - "Rédiger une lettre de motivation ou un CV"
-                - "Devenir locataire"
-                - "Financer mon loyer"
-                - "Faire des travaux"
-                - "Trouver un logement social"
-                - "Financer une formation"
-                - "Faire garder mes enfants"
-                - "Trouver une formation"
-                - "Rémunération pendant la formation"
-                - "Reconversion"
-                - "Accompagnement personnalisé à la mobilité"
-                - "Créer ou reprendre une entreprise"
-                - "Réparer mon vélo"
-                - "Acheter ou louer une voiture sans permis, \"Scooter, trottinette...\""
               config:
                 severity: error
                 error_if: ">20"
                 warn_if: ">0"
+              arguments:
+                values:
+                  - "Financer mon permis"
+                  - "Financer mes trajets"
+                  - "Financer le carburant"
+                  - "Financer mon BSR"
+                  - "Financer l''achat d''un véhicule"
+                  - "Déménager"
+                  - "Transports en commun"
+                  - "Transport à la demande"
+                  - "Réparer ma voiture"
+                  - "Louer un vélo électrique"
+                  - "Ma voiture"
+                  - "Mon vélo électrique"
+                  - "Mon scooter"
+                  - "Acheter un vélo électrique"
+                  - "Acheter ou louer un vélo"
+                  - "Acheter ou louer une voiture"
+                  - "Accéder au permis de conduire"
+                  - "Partir à l''étranger"
+                  - "Handicap & mobilité"
+                  - "Trouver une alternance"
+                  - "Trouver un contrat d''apprentissage"
+                  - "Préparer une candidature"
+                  - "Rédiger une lettre de motivation ou un CV"
+                  - "Préparer une candidature"
+                  - "Rédiger une lettre de motivation ou un CV"
+                  - "Devenir locataire"
+                  - "Financer mon loyer"
+                  - "Faire des travaux"
+                  - "Trouver un logement social"
+                  - "Financer une formation"
+                  - "Faire garder mes enfants"
+                  - "Trouver une formation"
+                  - "Rémunération pendant la formation"
+                  - "Reconversion"
+                  - "Accompagnement personnalisé à la mobilité"
+                  - "Créer ou reprendre une entreprise"
+                  - "Réparer mon vélo"
+                  - "Acheter ou louer une voiture sans permis, \"Scooter, trottinette...\""

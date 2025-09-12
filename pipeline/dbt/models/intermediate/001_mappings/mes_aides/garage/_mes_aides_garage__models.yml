@@ -20,9 +20,9 @@ models:
         data_tests:
           - not_null
           - relationships:
-              to: ref('int_mes_aides__garages__adresses')
-              field: id
-
+              arguments:
+                to: ref('int_mes_aides__garages__adresses')
+                field: id
   - name: int_mes_aides__garages__services
     columns:
       - name: id
@@ -34,11 +34,13 @@ models:
         data_tests:
           - not_null
           - relationships:
-              to: ref('int_mes_aides__garages__structures')
-              field: id
+              arguments:
+                to: ref('int_mes_aides__garages__structures')
+                field: id
       - name: adresse_id
         data_tests:
           - not_null
           - relationships:
-              to: ref('int_mes_aides__garages__adresses')
-              field: id
+              arguments:
+                to: ref('int_mes_aides__garages__adresses')
+                field: id

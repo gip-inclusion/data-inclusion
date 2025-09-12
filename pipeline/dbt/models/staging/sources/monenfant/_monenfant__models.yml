@@ -23,91 +23,92 @@ models:
         data_tests:
           - dbt_utils.not_empty_string
           - dbt_utils.not_null_proportion:
-              at_least: 0.5
-
+              arguments:
+                at_least: 0.5
       - name: coordonnees__type_voie
         data_tests:
           - dbt_utils.not_empty_string
           - dbt_utils.not_null_proportion:
-              at_least: 0.5
-
+              arguments:
+                at_least: 0.5
       - name: coordonnees__nom_voie
         data_tests:
           - dbt_utils.not_empty_string
           - dbt_utils.not_null_proportion:
-              at_least: 0.5
-
+              arguments:
+                at_least: 0.5
       - name: coordonnees__code_postal
         data_tests:
           - dbt_utils.not_empty_string
           - dbt_utils.not_null_proportion:
-              at_least: 0.5
-
+              arguments:
+                at_least: 0.5
       - name: coordonnees__commune
         data_tests:
           - dbt_utils.not_empty_string
           - dbt_utils.not_null_proportion:
-              at_least: 0.5
-
+              arguments:
+                at_least: 0.5
       - name: coordonnees__telephone
         data_tests:
           - dbt_utils.not_empty_string
           - dbt_utils.not_null_proportion:
-              at_least: 0.5
-
+              arguments:
+                at_least: 0.5
       - name: coordonnees__adresse_mail
         data_tests:
           - dbt_utils.not_empty_string
           - dbt_utils.not_null_proportion:
-              at_least: 0.5
-
+              arguments:
+                at_least: 0.5
       - name: coordonnees__site_internet
         data_tests:
           - dbt_utils.not_empty_string
           - dbt_utils.not_null_proportion:
-              at_least: 0.1
-
+              arguments:
+                at_least: 0.1
       - name: description__modalites_tarifaires
         data_tests:
           - dbt_utils.not_empty_string
           - dbt_utils.not_null_proportion:
-              at_least: 0.5
-
+              arguments:
+                at_least: 0.5
       - name: description__projet
         data_tests:
           - dbt_utils.not_empty_string
           - dbt_utils.not_null_proportion:
-              at_least: 0.5
-
+              arguments:
+                at_least: 0.5
       - name: description__gestionnaire
         data_tests:
           - dbt_utils.not_empty_string
           - dbt_utils.not_null_proportion:
-              at_least: 0.5
-
+              arguments:
+                at_least: 0.5
       - name: description__equipe
         data_tests:
           - dbt_utils.not_empty_string
           - dbt_utils.not_null_proportion:
-              at_least: 0.5
-
+              arguments:
+                at_least: 0.5
       - name: description__conditions_admission
         data_tests:
           - dbt_utils.not_empty_string
           - dbt_utils.not_null_proportion:
-              at_least: 0.5
-
+              arguments:
+                at_least: 0.5
       - name: description__modalites_inscription
         data_tests:
           - dbt_utils.not_empty_string
           - dbt_utils.not_null_proportion:
-              at_least: 0.5
-
+              arguments:
+                at_least: 0.5
       - name: service_commun__avip
         data_tests:
           - not_null
           - accepted_values:
-              values: [true, false]
+              arguments:
+                values: [true, false]
 
   - name: stg_monenfant__communes_desservies
     description: >
@@ -119,9 +120,9 @@ models:
         data_tests:
           - not_null
           - relationships:
-              to: ref('stg_monenfant__creches')
-              field: structure_id
-
+              arguments:
+                to: ref('stg_monenfant__creches')
+                field: structure_id
       - name: service_commun__communes_desservies__commune
         data_tests:
           - not_null
@@ -132,4 +133,5 @@ models:
           - not_null
           - dbt_utils.not_empty_string
           - dbt_utils.expression_is_true:
-              expression: "~ '^\\d{5}$'"
+              arguments:
+                expression: "~ '^\\d{5}$'"
