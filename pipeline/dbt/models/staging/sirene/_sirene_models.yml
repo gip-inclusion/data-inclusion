@@ -14,12 +14,14 @@ models:
       - name: etat_administratif_etablissement
         data_tests:
           - accepted_values:
-              values: ['actif', 'fermé']
+              arguments:
+                values: ['actif', 'fermé']
       - name: changement_etat_administratif_etablissement
         data_tests:
           - not_null
           - accepted_values:
-              values: [true, false]
+              arguments:
+                values: [true, false]
     config:
       indexes:
         - columns: ['siret']
@@ -54,7 +56,8 @@ models:
         data_tests:
           - not_null
           - accepted_values:
-              values: ['actif', 'fermé']
+              arguments:
+                values: ['actif', 'fermé']
     config:
       indexes:
         - columns: ['siret']

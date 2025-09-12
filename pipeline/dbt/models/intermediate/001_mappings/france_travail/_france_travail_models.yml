@@ -12,9 +12,10 @@ models:
   - name: int_france_travail__services
     data_tests:
       - model_validate:
-          model_class: data_inclusion.schema.v0.Service
           config:
             enabled: "{{ env_var('DBT_ENV', 'prod') == 'dev' }}"
+          arguments:
+            model_class: data_inclusion.schema.v0.Service
     columns:
       - name: id
         data_tests:
@@ -25,28 +26,32 @@ models:
         data_tests:
           - not_null
           - relationships:
-              to: ref('int_france_travail__structures')
-              field: id
+              arguments:
+                to: ref('int_france_travail__structures')
+                field: id
       - name: adresse_id
         data_tests:
           - not_null
           - relationships:
-              to: ref('int_france_travail__adresses')
-              field: id
+              arguments:
+                to: ref('int_france_travail__adresses')
+                field: id
       - name: nom
         data_tests:
           - not_null
           - dbt_utils.not_accepted_values:
-              values: ['Bilan/Accompagnement mobilité']
               config:
                 where: "zone_diffusion_code LIKE '69%'"
 
+              arguments:
+                values: ['Bilan/Accompagnement mobilité']
   - name: int_france_travail__structures
     data_tests:
       - model_validate:
-          model_class: data_inclusion.schema.v0.Structure
           config:
             enabled: "{{ env_var('DBT_ENV', 'prod') == 'dev' }}"
+          arguments:
+            model_class: data_inclusion.schema.v0.Structure
     columns:
       - name: id
         data_tests:
@@ -57,5 +62,6 @@ models:
         data_tests:
           - not_null
           - relationships:
-              to: ref('int_france_travail__adresses')
-              field: id
+              arguments:
+                to: ref('int_france_travail__adresses')
+                field: id

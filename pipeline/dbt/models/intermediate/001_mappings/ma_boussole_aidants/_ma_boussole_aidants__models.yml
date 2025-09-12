@@ -4,13 +4,15 @@ models:
   - name: int_ma_boussole_aidants__adresses
     data_tests:
       - check_adresse:
-          schema_version: v0
           config:
             severity: warn
+          arguments:
+            schema_version: v0
       - check_adresse:
-          schema_version: v1
           config:
             severity: warn
+          arguments:
+            schema_version: v1
     columns:
       - name: id
         data_tests:
@@ -21,13 +23,15 @@ models:
   - name: int_ma_boussole_aidants__structures
     data_tests:
       - check_structure:
-          schema_version: v0
           config:
             severity: warn
+          arguments:
+            schema_version: v0
       - check_structure:
-          schema_version: v1
           config:
             severity: warn
+          arguments:
+            schema_version: v1
     columns:
       - name: id
         data_tests:
@@ -38,19 +42,21 @@ models:
         data_tests:
           - not_null
           - relationships:
-              to: ref('int_ma_boussole_aidants__adresses')
-              field: id
-
+              arguments:
+                to: ref('int_ma_boussole_aidants__adresses')
+                field: id
   - name: int_ma_boussole_aidants__services
     data_tests:
       - check_service:
-          schema_version: v0
           config:
             severity: warn
+          arguments:
+            schema_version: v0
       - check_service:
-          schema_version: v1
           config:
             severity: warn
+          arguments:
+            schema_version: v1
     columns:
       - name: id
         data_tests:
@@ -61,11 +67,13 @@ models:
         data_tests:
           - not_null
           - relationships:
-              to: ref('int_ma_boussole_aidants__structures')
-              field: id
+              arguments:
+                to: ref('int_ma_boussole_aidants__structures')
+                field: id
       - name: adresse_id
         data_tests:
           - not_null
           - relationships:
-              to: ref('int_ma_boussole_aidants__adresses')
-              field: id
+              arguments:
+                to: ref('int_ma_boussole_aidants__adresses')
+                field: id

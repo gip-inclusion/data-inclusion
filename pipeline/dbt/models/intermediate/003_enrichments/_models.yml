@@ -26,8 +26,9 @@ models:
           - unique
           - not_null
           - relationships:
-              to: ref('int__union_adresses')
-              field: _di_surrogate_id
+              arguments:
+                to: ref('int__union_adresses')
+                field: _di_surrogate_id
       - name: input_adresse
       - name: input_code_insee
       - name: input_code_postal
@@ -45,18 +46,18 @@ models:
         data_tests:
           - dbt_utils.not_empty_string
           - relationships:
-              to: ref('stg_decoupage_administratif__communes')
-              field: code
-              # FIXME: temporarily disabled, as the ban api returns
-              # codes that are not the decoupage administratif codes
               config:
                 error_if: "> 1000"
+              arguments:
+                to: ref('stg_decoupage_administratif__communes')
+                field: code
       - name: code_arrondissement
         data_tests:
           - dbt_utils.not_empty_string
           - relationships:
-              to: ref('stg_decoupage_administratif__arrondissements')
-              field: code
+              arguments:
+                to: ref('stg_decoupage_administratif__arrondissements')
+                field: code
       - name: latitude
       - name: longitude
       - name: score
@@ -70,11 +71,12 @@ models:
               config:
                 severity: warn
           - accepted_values:
-              values:
-                - housenumber
-                - street
-                - locality
-                - municipality
+              arguments:
+                values:
+                  - housenumber
+                  - street
+                  - locality
+                  - municipality
 
   - name: int__courriels_personnels
     columns:
@@ -105,13 +107,15 @@ models:
           It has been discussed internally in 2024 and we assumed that in all these cases, we would hide the e-mail in data⋅inclusion.
         data_tests:
           - accepted_values:
-              values: [true, false]
+              arguments:
+                values: [true, false]
       - name: was_objected_to
         description: |
           Permet de savoir si le contact a fait l'objet d'une demande de retrait RGPD.
         data_tests:
           - accepted_values:
-              values: [true, false]
+              arguments:
+                values: [true, false]
 
   - name: int__urls
     description: |
@@ -153,8 +157,9 @@ models:
         data_tests:
           - not_null
           - dbt_utils.accepted_range:
-              min_value: -2
-              max_value: 999
+              arguments:
+                min_value: -2
+                max_value: 999
       - name: error_message
         description: |
           Contains a message describing the validation error encountered.
@@ -182,16 +187,18 @@ models:
           - unique
           - not_null
           - relationships:
-              to: ref('int__union_structures')
-              field: _di_surrogate_id
+              arguments:
+                to: ref('int__union_structures')
+                field: _di_surrogate_id
       - name: siret
         data_tests:
           - not_null
           - relationships:
-              to: ref('stg_sirene__stock_etablissement')
-              field: siret
               config:
                 where: "statut != 'inconnu'"
+              arguments:
+                to: ref('stg_sirene__stock_etablissement')
+                field: siret
       - name: date_fermeture
       - name: siret_successeur
         data_tests:
@@ -202,11 +209,12 @@ models:
         data_tests:
           - not_null
           - accepted_values:
-              values:
-                - valide
-                - inconnu
-                - fermé-définitivement
-                - successeur-ouvert
+              arguments:
+                values:
+                  - valide
+                  - inconnu
+                  - fermé-définitivement
+                  - successeur-ouvert
 
 unit_tests:
   - name: test_courriels_personnels

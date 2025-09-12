@@ -12,24 +12,29 @@ models:
         data_tests:
           - not_null
           - relationships:
-              to: ref('stg_mediation_numerique__structures')
-              field: id
+              arguments:
+                to: ref('stg_mediation_numerique__structures')
+                field: id
       - name: thematiques
         data_tests:
           - dbt_utils.expression_is_true:
-              expression: "<@ ARRAY(SELECT value FROM {{ ref('thematiques') }})"
+              arguments:
+                expression: "<@ ARRAY(SELECT value FROM {{ ref('thematiques') }})"
       - name: profils
         data_tests:
           - dbt_utils.expression_is_true:
-              expression: "<@ ARRAY(SELECT value FROM {{ ref('profils') }})"
+              arguments:
+                expression: "<@ ARRAY(SELECT value FROM {{ ref('profils') }})"
       - name: types
         data_tests:
           - dbt_utils.expression_is_true:
-              expression: "<@ ARRAY(SELECT value FROM {{ ref('typologies_de_services') }})"
+              arguments:
+                expression: "<@ ARRAY(SELECT value FROM {{ ref('typologies_de_services') }})"
       - name: frais
         data_tests:
           - dbt_utils.expression_is_true:
-              expression: "<@ ARRAY(SELECT value FROM {{ ref('frais') }})"
+              arguments:
+                expression: "<@ ARRAY(SELECT value FROM {{ ref('frais') }})"
       - name: latitude
         data_tests:
           - dbt_utils.not_constant:
@@ -66,7 +71,8 @@ models:
         data_tests:
           - dbt_utils.not_empty_string
           - dbt_utils.expression_is_true:
-              expression: "!= REPEAT('0', 14)"
+              arguments:
+                expression: "!= REPEAT('0', 14)"
       - name: source
         data_tests:
           - not_null
@@ -78,7 +84,8 @@ models:
       - name: thematiques
         data_tests:
           - dbt_utils.expression_is_true:
-              expression: "<@ ARRAY(SELECT value FROM {{ ref('thematiques') }})"
+              arguments:
+                expression: "<@ ARRAY(SELECT value FROM {{ ref('thematiques') }})"
       - name: latitude
         data_tests:
           - dbt_utils.not_constant
@@ -88,9 +95,10 @@ models:
       - name: labels_nationaux
         data_tests:
           - dbt_utils.expression_is_true:
-              expression: "<@ ARRAY(SELECT value FROM {{ ref('labels_nationaux') }})"
               config:
                 severity: warn
+              arguments:
+                expression: "<@ ARRAY(SELECT value FROM {{ ref('labels_nationaux') }})"
       - name: adresse
         data_tests:
           - not_null
@@ -134,6 +142,7 @@ models:
               config:
                 severity: warn
           - dbt_utils.accepted_range:
-              min_value: "now() - interval '10 years'"
               config:
                 severity: warn
+              arguments:
+                min_value: "now() - interval '10 years'"

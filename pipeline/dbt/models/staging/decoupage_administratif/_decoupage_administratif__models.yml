@@ -91,16 +91,18 @@ models:
           - dbt_utils.not_constant
           - dbt_utils.not_empty_string
           - relationships:
-              to: ref('stg_decoupage_administratif__departements')
-              field: code
+              arguments:
+                to: ref('stg_decoupage_administratif__departements')
+                field: code
       - name: code_region
         data_tests:
           - not_null
           - dbt_utils.not_constant
           - dbt_utils.not_empty_string
           - relationships:
-              to: ref('stg_decoupage_administratif__regions')
-              field: code
+              arguments:
+                to: ref('stg_decoupage_administratif__regions')
+                field: code
       - name: code_epci
         data_tests:
           - not_null:
@@ -109,8 +111,9 @@ models:
           - dbt_utils.not_constant
           - dbt_utils.not_empty_string
           - relationships:
-              to: ref('stg_decoupage_administratif__epcis')
-              field: code
+              arguments:
+                to: ref('stg_decoupage_administratif__epcis')
+                field: code
       - name: centre
         data_tests:
           - not_null
@@ -153,24 +156,27 @@ models:
           - dbt_utils.not_constant
           - dbt_utils.not_empty_string
           - relationships:
-              to: ref('stg_decoupage_administratif__regions')
-              field: code
+              arguments:
+                to: ref('stg_decoupage_administratif__regions')
+                field: code
       - name: code_departement
         data_tests:
           - not_null
           - dbt_utils.not_constant
           - dbt_utils.not_empty_string
           - relationships:
-              to: ref('stg_decoupage_administratif__departements')
-              field: code
+              arguments:
+                to: ref('stg_decoupage_administratif__departements')
+                field: code
       - name: code_commune
         data_tests:
           - not_null
           - dbt_utils.not_constant
           - dbt_utils.not_empty_string
           - relationships:
-              to: ref('stg_decoupage_administratif__communes')
-              field: code
+              arguments:
+                to: ref('stg_decoupage_administratif__communes')
+                field: code
       - name: centre
         data_tests:
           - not_null
