@@ -12,11 +12,13 @@ models:
   - name: int_carif_oref__structures
     data_tests:
       - model_validate:
-          model_class: data_inclusion.schema.v0.Structure
           config:
             enabled: "{{ env_var('DBT_ENV', 'prod') == 'dev' }}"
+          arguments:
+            model_class: data_inclusion.schema.v0.Structure
       - dbt_utils.equal_rowcount:
-          compare_model: ref('stg_carif_oref__organismes_formateurs')
+          arguments:
+            compare_model: ref('stg_carif_oref__organismes_formateurs')
     columns:
       - name: id
         data_tests:
@@ -29,17 +31,19 @@ models:
               config:
                 severity: warn
           - relationships:
-              to: ref('int_carif_oref__adresses')
-              field: id
-
+              arguments:
+                to: ref('int_carif_oref__adresses')
+                field: id
   - name: int_carif_oref__services
     data_tests:
       - model_validate:
-          model_class: data_inclusion.schema.v0.Service
           config:
             enabled: "{{ env_var('DBT_ENV', 'prod') == 'dev' }}"
+          arguments:
+            model_class: data_inclusion.schema.v0.Service
       - dbt_utils.equal_rowcount:
-          compare_model: ref('stg_carif_oref__actions')
+          arguments:
+            compare_model: ref('stg_carif_oref__actions')
     columns:
       - name: id
         data_tests:
@@ -50,13 +54,15 @@ models:
         data_tests:
           - not_null
           - relationships:
-              to: ref('int_carif_oref__structures')
-              field: id
+              arguments:
+                to: ref('int_carif_oref__structures')
+                field: id
       - name: adresse_id
         data_tests:
           - not_null:
               config:
                 severity: warn
           - relationships:
-              to: ref('int_carif_oref__adresses')
-              field: id
+              arguments:
+                to: ref('int_carif_oref__adresses')
+                field: id

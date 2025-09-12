@@ -12,7 +12,8 @@ models:
   - name: int_ma_boussole_aidants__structures
     data_tests:
       - model_validate:
-          model_class: data_inclusion.schema.v0.Structure
+          arguments:
+            model_class: data_inclusion.schema.v0.Structure
           config:
             enabled: "{{ env_var('DBT_ENV', 'prod') == 'dev' }}"
     columns:
@@ -25,13 +26,15 @@ models:
         data_tests:
           - not_null
           - relationships:
-              to: ref('int_ma_boussole_aidants__adresses')
-              field: id
+              arguments:
+                to: ref('int_ma_boussole_aidants__adresses')
+                field: id
 
   - name: int_ma_boussole_aidants__services
     data_tests:
       - model_validate:
-          model_class: data_inclusion.schema.v0.Structure
+          arguments:
+            model_class: data_inclusion.schema.v0.Service
           config:
             enabled: "{{ env_var('DBT_ENV', 'prod') == 'dev' }}"
     columns:
@@ -44,11 +47,13 @@ models:
         data_tests:
           - not_null
           - relationships:
-              to: ref('int_ma_boussole_aidants__structures')
-              field: id
+              arguments:
+                to: ref('int_ma_boussole_aidants__structures')
+                field: id
       - name: adresse_id
         data_tests:
           - not_null
           - relationships:
-              to: ref('int_ma_boussole_aidants__adresses')
-              field: id
+              arguments:
+                to: ref('int_ma_boussole_aidants__adresses')
+                field: id

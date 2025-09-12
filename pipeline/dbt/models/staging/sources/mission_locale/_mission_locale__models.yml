@@ -25,8 +25,9 @@ models:
         data_tests:
           - not_null
           - relationships:
-              to: ref('thematiques')
-              field: value
+              arguments:
+                to: ref('thematiques')
+                field: value
       - name: presentation
         data_tests:
           - dbt_utils.not_empty_string
@@ -34,47 +35,52 @@ models:
         data_tests:
           - not_null
           - relationships:
-              to: ref('modes_accueil')
-              field: value
+              arguments:
+                to: ref('modes_accueil')
+                field: value
       - name: modes_orientation_beneficiaire
         data_tests:
           - not_null
           - relationships:
-              to: ref('modes_orientation_beneficiaire')
-              field: value
+              arguments:
+                to: ref('modes_orientation_beneficiaire')
+                field: value
       - name: frais
         data_tests:
           - not_null
           - relationships:
-              to: ref('frais')
-              field: value
+              arguments:
+                to: ref('frais')
+                field: value
       - name: perimetre_offre
         data_tests:
           - not_null
           - relationships:
-              to: ref('zones_de_diffusion_types')
-              field: value
+              arguments:
+                to: ref('zones_de_diffusion_types')
+                field: value
       - name: type_offre
         data_tests:
           - relationships:
-              to: ref('typologies_de_services')
-              field: value
-
+              arguments:
+                to: ref('typologies_de_services')
+                field: value
   - name: stg_mission_locale__structures_offres
     columns:
       - name: offre_id
         data_tests:
           - not_null
           - relationships:
-              to: ref('stg_mission_locale__offres')
-              field: id_offre
+              arguments:
+                to: ref('stg_mission_locale__offres')
+                field: id_offre
       - name: missionlocale_id
         data_tests:
           - not_null
           - relationships:
-              to: ref('stg_mission_locale__structures')
-              field: id_structure
-
+              arguments:
+                to: ref('stg_mission_locale__structures')
+                field: id_structure
   - name: stg_mission_locale__structures
     columns:
       - name: id_structure
@@ -140,11 +146,13 @@ models:
         data_tests:
           - not_null
           - relationships:
-              to: ref('stg_mission_locale__offres')
-              field: id_offre
+              arguments:
+                to: ref('stg_mission_locale__offres')
+                field: id_offre
       - name: value
         data_tests:
           - accepted_values:
-              values:
-                - 'jeunes de 16 à 25 ans'
-                - 'rqth moins de 30 ans'
+              arguments:
+                values:
+                  - 'jeunes de 16 à 25 ans'
+                  - 'rqth moins de 30 ans'

@@ -7,15 +7,17 @@ models:
         data_tests:
           - not_null
           - relationships:
-              to: ref('int__structures')
-              field: _di_surrogate_id
               config:
                 where: resource_type = 'structure'
+              arguments:
+                to: ref('int__structures')
+                field: _di_surrogate_id
           - relationships:
-              to: ref('int__services')
-              field: _di_surrogate_id
               config:
                 where: resource_type = 'service'
+              arguments:
+                to: ref('int__services')
+                field: _di_surrogate_id
       - name: source
         data_tests:
           - not_null
@@ -33,25 +35,28 @@ models:
         data_tests:
           - not_null
           - accepted_values:
-              values:
-                - v0
-                - v1
+              arguments:
+                values:
+                  - v0
+                  - v1
       - name: resource_type
         data_tests:
           - not_null
           - accepted_values:
-              values:
-                - service
-                - structure
+              arguments:
+                values:
+                  - service
+                  - structure
       - name: model_class
         data_tests:
           - not_null
           - accepted_values:
-              values:
-                - data_inclusion.schema.v0.Service
-                - data_inclusion.schema.v0.Structure
-                - data_inclusion.schema.v1.Service
-                - data_inclusion.schema.v1.Structure
+              arguments:
+                values:
+                  - data_inclusion.schema.v0.Service
+                  - data_inclusion.schema.v0.Structure
+                  - data_inclusion.schema.v1.Service
+                  - data_inclusion.schema.v1.Structure
       - name: msg
         data_tests:
           - not_null
@@ -66,36 +71,41 @@ models:
           - dbt_utils.not_empty_string
           - dbt_utils.not_constant
           - dbt_utils.expression_is_true:
-              expression: "!~ '^(751|693|132)'"
               config:
                 severity: warn
+              arguments:
+                expression: "!~ '^(751|693|132)'"
           - relationships:
-              to: ref('stg_decoupage_administratif__regions')
-              field: code
-              where: "zone_diffusion_type = 'region'"
-            # TODO(vmttn): prevent false codes from being propagated downstream
-            # and set back severity to error
+              # TODO(vmttn): prevent false codes from being propagated downstream
+              # and set back severity to error
               config:
                 severity: warn
+                where: "zone_diffusion_type = 'region'"
+              arguments:
+                to: ref('stg_decoupage_administratif__regions')
+                field: code
           - relationships:
-              to: ref('stg_decoupage_administratif__departements')
-              field: code
-              where: "zone_diffusion_type = 'departement'"
               config:
                 severity: warn
+                where: "zone_diffusion_type = 'departement'"
+              arguments:
+                to: ref('stg_decoupage_administratif__departements')
+                field: code
           - relationships:
-              to: ref('stg_decoupage_administratif__epcis')
-              field: code
-              where: "zone_diffusion_type = 'epci'"
               config:
                 severity: warn
+                where: "zone_diffusion_type = 'epci'"
+              arguments:
+                to: ref('stg_decoupage_administratif__epcis')
+                field: code
           - relationships:
-              to: ref('stg_decoupage_administratif__communes')
-              field: code
-              where: "zone_diffusion_type = 'commune'"
               config:
                 severity: warn
 
+                where: "zone_diffusion_type = 'commune'"
+              arguments:
+                to: ref('stg_decoupage_administratif__communes')
+                field: code
   - name: int__structures
 
   - name: int__criteres_qualite
@@ -110,8 +120,9 @@ models:
         data_tests:
           - not_null
           - relationships:
-              to: ref('int__union_services')
-              field: _di_surrogate_id
+              arguments:
+                to: ref('int__union_services')
+                field: _di_surrogate_id
       - name: nom_critere
         description: Name of the criterion.
         data_tests:
@@ -125,15 +136,17 @@ models:
           - not_null
           - dbt_utils.not_constant
           - dbt_utils.accepted_range:
-              min_value: 0
-              max_value: 1
+              arguments:
+                min_value: 0
+                max_value: 1
       - name: schema_version
         data_tests:
           - not_null
           - accepted_values:
-              values:
-                - v0
-                - v1
+              arguments:
+                values:
+                  - v0
+                  - v1
 
   - name: _map_thematiques
     columns:
@@ -142,11 +155,13 @@ models:
           - not_null
           - dbt_utils.not_empty_string
           - relationships:
-              to: ref('thematiques')
-              field: value
+              arguments:
+                to: ref('thematiques')
+                field: value
       - name: v1
         data_tests:
           - dbt_utils.not_empty_string
           - relationships:
-              to: ref('thematiques_v1')
-              field: value
+              arguments:
+                to: ref('thematiques_v1')
+                field: value

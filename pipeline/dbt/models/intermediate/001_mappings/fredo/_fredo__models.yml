@@ -12,9 +12,10 @@ models:
   - name: int_fredo__structures
     data_tests:
       - model_validate:
-          model_class: data_inclusion.schema.v0.Structure
           config:
             enabled: "{{ env_var('DBT_ENV', 'prod') == 'dev' }}"
+          arguments:
+            model_class: data_inclusion.schema.v0.Structure
     columns:
       - name: id
         data_tests:
@@ -25,15 +26,16 @@ models:
         data_tests:
           - not_null
           - relationships:
-              to: ref('int_fredo__adresses')
-              field: id
-
+              arguments:
+                to: ref('int_fredo__adresses')
+                field: id
   - name: int_fredo__services
     data_tests:
       - model_validate:
-          model_class: data_inclusion.schema.v0.Service
           config:
             enabled: "{{ env_var('DBT_ENV', 'prod') == 'dev' }}"
+          arguments:
+            model_class: data_inclusion.schema.v0.Service
     columns:
       - name: id
         data_tests:
@@ -44,11 +46,13 @@ models:
         data_tests:
           - not_null
           - relationships:
-              to: ref('int_fredo__structures')
-              field: id
+              arguments:
+                to: ref('int_fredo__structures')
+                field: id
       - name: adresse_id
         data_tests:
           - not_null
           - relationships:
-              to: ref('int_fredo__adresses')
-              field: id
+              arguments:
+                to: ref('int_fredo__adresses')
+                field: id

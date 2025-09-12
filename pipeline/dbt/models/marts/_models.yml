@@ -7,13 +7,15 @@ models:
         - columns: ['source']
     data_tests:
       - model_validate:
-          model_class: data_inclusion.schema.v0.Structure
           config:
             where: _is_valid_v0
+          arguments:
+            model_class: data_inclusion.schema.v0.Structure
       - model_validate:
-          model_class: data_inclusion.schema.v1.Structure
           config:
             where: _is_valid_v1
+          arguments:
+            model_class: data_inclusion.schema.v1.Structure
     columns:
       - name: _di_surrogate_id
         data_type: text
@@ -27,9 +29,10 @@ models:
         data_type: text
         data_tests:
           - dbt_utils.relationships_where:
-              to: ref('stg_sirene__stock_etablissement')
-              field: siret
-              to_condition: etat_administratif_etablissement = 'actif'
+              arguments:
+                to: ref('stg_sirene__stock_etablissement')
+                field: siret
+                to_condition: etat_administratif_etablissement = 'actif'
       - name: rna
         data_type: text
       - name: nom
@@ -156,13 +159,15 @@ models:
           type: gist
     data_tests:
       - model_validate:
-          model_class: data_inclusion.schema.v0.Service
           config:
             where: _is_valid_v0
+          arguments:
+            model_class: data_inclusion.schema.v0.Service
       - model_validate:
-          model_class: data_inclusion.schema.v1.Service
           config:
             where: _is_valid_v1
+          arguments:
+            model_class: data_inclusion.schema.v1.Service
     columns:
       - name: _di_surrogate_id
         data_type: text

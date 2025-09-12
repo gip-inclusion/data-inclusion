@@ -7,29 +7,32 @@ models:
         data_tests:
           - not_null
           - relationships:
-              to: ref('stg_soliguide__categories')
-              field: code
+              arguments:
+                to: ref('stg_soliguide__categories')
+                field: code
       - name: thematique
         data_tests:
           - not_null
           - relationships:
-              to: ref('thematiques')
-              field: value
+              arguments:
+                to: ref('thematiques')
+                field: value
   - name: _map_soliguide__types
     columns:
       - name: category
         data_tests:
           - not_null
           - relationships:
-              to: ref('stg_soliguide__categories')
-              field: code
+              arguments:
+                to: ref('stg_soliguide__categories')
+                field: code
       - name: di_type
         data_tests:
           - not_null
           - relationships:
-              to: ref('typologies_de_services')
-              field: value
-
+              arguments:
+                to: ref('typologies_de_services')
+                field: value
   - name: int_soliguide__adresses
     columns:
       - name: id
@@ -40,9 +43,10 @@ models:
   - name: int_soliguide__structures
     data_tests:
       - model_validate:
-          model_class: data_inclusion.schema.v0.Structure
           config:
             enabled: "{{ env_var('DBT_ENV', 'prod') == 'dev' }}"
+          arguments:
+            model_class: data_inclusion.schema.v0.Structure
     columns:
       - name: id
         data_tests:
@@ -53,15 +57,16 @@ models:
         data_tests:
           - not_null
           - relationships:
-              to: ref('int_soliguide__adresses')
-              field: id
-
+              arguments:
+                to: ref('int_soliguide__adresses')
+                field: id
   - name: int_soliguide__services
     data_tests:
       - model_validate:
-          model_class: data_inclusion.schema.v0.Service
           config:
             enabled: "{{ env_var('DBT_ENV', 'prod') == 'dev' }}"
+          arguments:
+            model_class: data_inclusion.schema.v0.Service
     columns:
       - name: id
         data_tests:
@@ -72,15 +77,16 @@ models:
         data_tests:
           - not_null
           - relationships:
-              to: ref('int_soliguide__structures')
-              field: id
+              arguments:
+                to: ref('int_soliguide__structures')
+                field: id
       - name: adresse_id
         data_tests:
           - not_null
           - relationships:
-              to: ref('int_soliguide__adresses')
-              field: id
-
+              arguments:
+                to: ref('int_soliguide__adresses')
+                field: id
 unit_tests:
 - name: test_address_without_postal_code_and_city
   model: int_soliguide__adresses
