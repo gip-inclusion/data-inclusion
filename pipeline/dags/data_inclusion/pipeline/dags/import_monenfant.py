@@ -66,7 +66,7 @@ def extract(city_code: str, commune: str, region: str, to_s3_path: str):
 @task.external_python(
     python=tasks.PYTHON_BIN_PATH,
 )
-def load(schema_name, table_name, from_s3_path):
+def load(schema_name: str, table_name: str, from_s3_path: str):
     import tempfile
 
     import pandas as pd
@@ -128,17 +128,13 @@ def import_monenfant():
             max_active_tis_per_dag=EXTRACT_TASK_CONCURRENCY,
             map_index_template="{{ task.op_kwargs.city_code }}",
         )
-        .partial(
-            to_s3_path=(base_s3_path / "{{ task.op_kwargs.city_code }}").with_suffix(
-                ".json"
-            )
-        )
+        .partial(to_s3_path=str(base_s3_path / "{{ task.op_kwargs.city_code }}.json"))
         .expand_kwargs(cities_list),
         tasks.create_schema(name=source_id),
         load(
             schema_name=source_id,
             table_name=stream_id,
-            from_s3_path=base_s3_path,
+            from_s3_path=str(base_s3_path),
         ),
     )
 
