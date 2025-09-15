@@ -7,15 +7,13 @@ models:
         - columns: ['source']
     data_tests:
       - model_validate:
-          config:
-            where: _is_valid_v0
           arguments:
             model_class: data_inclusion.schema.v0.Structure
+            where: _is_valid_v0
       - model_validate:
-          config:
-            where: _is_valid_v1
           arguments:
             model_class: data_inclusion.schema.v1.Structure
+            where: _is_valid_v1
     columns:
       - name: _di_surrogate_id
         data_type: text
