@@ -85,7 +85,7 @@ FROM (
     ('tzcld', NULL),
     ('unaf', 'unaf'),
     ('unai', 'siae'),
-    ('unccas', 'unccas'),
+    ('unccas', 'ccas-cias'),
     ('unea', 'unea'),
     ('unis-cite', 'unis-cite'),
     ('wimoov', 'wimoov')

@@ -427,7 +427,7 @@ requires-dist = [
     { name = "certifi", specifier = ">=2025.1.31" },
     { name = "click", specifier = ">=8.1.8" },
     { name = "cryptography", specifier = ">=44.0.2" },
-    { name = "data-inclusion-schema", git = "https://github.com/gip-inclusion/data-inclusion-schema.git?rev=vmttn%2Ffeat%2Fv1-thematiques" },
+    { name = "data-inclusion-schema", git = "https://github.com/gip-inclusion/data-inclusion-schema.git?rev=vmttn%2Fchore%2Fv1-renommage-unccas" },
     { name = "fastapi", specifier = ">=0.115.12" },
     { name = "furl", specifier = ">=2.1.4" },
     { name = "geoalchemy2", specifier = ">=0.17.1" },
@@ -474,7 +474,7 @@ test = [
 [[package]]
 name = "data-inclusion-schema"
 version = "1.0.0b7"
-source = { git = "https://github.com/gip-inclusion/data-inclusion-schema.git?rev=vmttn%2Ffeat%2Fv1-thematiques#f1e5d5c716e5e4526ddb98cf43275c06a3eaf77d" }
+source = { git = "https://github.com/gip-inclusion/data-inclusion-schema.git?rev=vmttn%2Fchore%2Fv1-renommage-unccas#081685c6638d2b379013dace4ed1fb906c099d73" }
 dependencies = [
     { name = "pendulum" },
     { name = "pydantic", extra = ["email"] },

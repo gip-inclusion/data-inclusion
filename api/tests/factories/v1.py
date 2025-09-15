@@ -26,7 +26,7 @@ class StructureFactory(factory.alchemy.SQLAlchemyModelFactory):
     id = factory.LazyAttribute(lambda o: f"{o.source}--{fake.slug()}")
     siret = factory.LazyFunction(lambda: fake.siret().replace(" ", ""))
     rna = factory.Faker("bothify", text="W#########")
-    nom = factory.Faker("company", locale="fr_FR")
+    nom = factory.LazyFunction(lambda: fake.company().rstrip("."))
     commune = factory.Faker("city", locale="fr_FR")
     code_postal = factory.Faker("postcode")
     code_insee = "59350"
@@ -61,7 +61,7 @@ class ServiceFactory(factory.alchemy.SQLAlchemyModelFactory):
     id = factory.LazyAttribute(lambda o: f"{o.source}--{fake.slug()}")
     structure_id = factory.SelfAttribute("structure.id")
     source = factory.Iterator(["dora", "emplois-de-linclusion"])
-    nom = factory.Faker("company", locale="fr_FR")
+    nom = factory.LazyFunction(lambda: fake.company().rstrip("."))
     description = factory.Faker("sentence", nb_words=100, locale="fr_FR")
     type = factory.Iterator(
         [
