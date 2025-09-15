@@ -1,7 +1,7 @@
 {
     "jobs": [
         {
-            "command": "0 5-22 * * * TQDM_DISABLE=1 data-inclusion-api load-inclusion-data",
+            "command": "30 5-22 * * * TQDM_DISABLE=1 data-inclusion-api load-inclusion-data",
             "size": "XL"
         },
         {
@@ -9,7 +9,7 @@
             "size": "S"
         },
         {
-            "command": "30 5-22 * * * data-inclusion-api export-analytics",
+            "command": "45 5-22 * * * data-inclusion-api export-analytics",
             "size": "M"
         }
     ]
