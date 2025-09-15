@@ -76,33 +76,43 @@ filtered_phones AS (
     FROM phones
 ),
 
--- remove temporarily suspended services from downstream data
--- FIXME: these services should ideally be in the downstream but flagged as unavailable in some way
+services_with_description AS (
+    SELECT
+        services.*,
+        CASE
+            WHEN LENGTH(services.description) <= 280 THEN services.description
+            ELSE LEFT(services.description, 279) || '…'
+        END AS "description_courte",
+        CASE
+            WHEN services.close__actif AND services.close__date_fin IS NULL
+                THEN 'Ce service est fermé temporairement depuis le ' || TO_CHAR(services.close__date_debut, 'DD/MM/YYYY') || E'.\n'
+            WHEN services.close__actif AND services.close__date_fin IS NOT NULL
+                THEN 'Ce service est fermé temporairement du ' || TO_CHAR(services.close__date_debut, 'DD/MM/YYYY') || ' au ' || TO_CHAR(services.close__date_fin, 'DD/MM/YYYY') || E'.\n'
+            ELSE ''
+        END || CASE
+            WHEN services.saturated__status = 'HIGH'
+                THEN E'Attention, la structure est très sollicitée pour ce service.\n'
+            ELSE ''
+        END || COALESCE(services.description, lieux.description) || CASE
+            WHEN services.hours ->> 'closedHolidays' = 'CLOSED'
+                THEN E'\nLa structure est fermée pendant les jours fériés.'
+            ELSE ''
+        END AS "description_longue"
+    FROM services
+    LEFT JOIN lieux ON services.lieu_id = lieux.id
+),
+
 open_services AS (
     SELECT *
-    FROM services
+    FROM services_with_description
     WHERE
         NOT close__actif
         OR
-        (close__date_debut IS NOT NULL OR close__date_fin IS NOT NULL)
-        AND
-        /* Support for OVERLAPS clause with postgres engine is not broad with DBT.
-           It is getting better but we're not there yet.
-           https://github.com/sqlfluff/sqlfluff/issues/4664
-        */
-        -- noqa: disable=PRS
-        (
-            CURRENT_DATE AT TIME ZONE 'Europe/Paris',
-            CURRENT_DATE AT TIME ZONE 'Europe/Paris'
-        )
-        OVERLAPS  -- noqa: LT02
-        (
-            COALESCE(close__date_debut, CURRENT_DATE - INTERVAL '1 year'),
-            COALESCE(close__date_fin, CURRENT_DATE + INTERVAL '1 year')
-        )  -- noqa: enable=PRS
+        (close__date_debut > CURRENT_DATE AT TIME ZONE 'Europe/Paris')
+        OR
+        (close__date_fin < CURRENT_DATE AT TIME ZONE 'Europe/Paris')
 ),
 
--- TODO(vmttn): clean up modes_orientation_* with dbt macros ?
 final AS (
     SELECT
         open_services.id                                  AS "id",
@@ -141,14 +151,8 @@ final AS (
         NULL                                              AS "mobilisation_precisions",
         categories.label                                  AS "nom",
         'https://soliguide.fr/fr/fiche/' || lieux.seo_url AS "lien_source",
-        CASE
-            WHEN LENGTH(open_services.description) <= 280 THEN open_services.description
-            ELSE LEFT(open_services.description, 279) || '…'
-        END                                               AS "presentation_resume",
-        CASE
-            WHEN LENGTH(open_services.description) <= 280 THEN NULL
-            ELSE open_services.description
-        END                                               AS "presentation_detail",
+        open_services.description_courte                  AS "presentation_resume",
+        open_services.description_longue                  AS "presentation_detail",
         CASE
             WHEN open_services.modalities__price__checked THEN ARRAY['payant']
             ELSE ARRAY['gratuit']

@@ -1,6 +1,5 @@
 WITH source AS (
-    {{ stg_source_header('soliguide', 'lieux') }}
-),
+    {{ stg_source_header('soliguide', 'lieux') }}),
 
 lieux AS (
     SELECT
@@ -15,7 +14,7 @@ lieux AS (
         data ->> 'lieu_id'                                                                               AS "lieu_id",
         -- first replace trailing groups of 2 or more dots by an ellipsis
         -- then remove trailing dot if not preceded by "etc"
-        REGEXP_REPLACE(REGEXP_REPLACE(data ->> 'name', '\.{2,}$', '…'), '(?<!etc)\.$', '')               AS "name",
+        REGEXP_REPLACE(REGEXP_REPLACE(data ->> 'name', '\.{2,}$', '…'), '(?<!etc)\.$', '')             AS "name",
         data #>> '{position,city}'                                                                       AS "position__city",
         data #>> '{position,cityCode}'                                                                   AS "position__city_code",
         data #>> '{position,country}'                                                                    AS "position__country",
@@ -29,6 +28,7 @@ lieux AS (
         CAST(data #>> '{publics,accueil}' AS INT)                                                        AS "publics__accueil",
         NULLIF(data #>> '{entity,mail}', '')                                                             AS "entity_mail",
         NULLIF(data #>> '{entity,website}', '')                                                          AS "entity_website",
+        data #>> '{tempInfos,message,name}'                                                              AS "temp_infos__message__texte",
         data -> 'newhours'                                                                               AS "newhours",
         data #>> '{modalities,appointment,precisions}'                                                   AS "modalities__appointment__precisions",
         data #>> '{modalities,inscription,precisions}'                                                   AS "modalities__inscription__precisions",

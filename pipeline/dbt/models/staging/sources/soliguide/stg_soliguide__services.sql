@@ -12,6 +12,7 @@ services AS (
         services.data ->> 'category'                                                                                      AS "category",
         NULLIF(services.data ->> 'description', '')                                                                       AS "description",
         services.data -> 'hours'                                                                                          AS "hours",
+        services.data #>> '{saturated,status}'                                                                            AS "saturated__status",
         CAST(services.data ->> 'differentHours' AS BOOLEAN)                                                               AS "different_hours",
         CAST(services.data #>> '{close,actif}' AS BOOLEAN)                                                                AS "close__actif",
         CAST(SUBSTRING(services.data #>> '{close,dateDebut}' FROM '\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d{3}Z') AS DATE) AS "close__date_debut",
