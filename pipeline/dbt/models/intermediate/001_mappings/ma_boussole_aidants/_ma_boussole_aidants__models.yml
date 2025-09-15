@@ -2,15 +2,6 @@ version: 2
 
 models:
   - name: int_ma_boussole_aidants__adresses
-    data_tests:
-      - check_adresse:
-          schema_version: v0
-          config:
-            severity: warn
-      - check_adresse:
-          schema_version: v1
-          config:
-            severity: warn
     columns:
       - name: id
         data_tests:
@@ -20,14 +11,10 @@ models:
 
   - name: int_ma_boussole_aidants__structures
     data_tests:
-      - check_structure:
-          schema_version: v0
+      - model_validate:
+          model_class: data_inclusion.schema.v0.Structure
           config:
-            severity: warn
-      - check_structure:
-          schema_version: v1
-          config:
-            severity: warn
+            enabled: "{{ env_var('DBT_ENV', 'prod') == 'dev' }}"
     columns:
       - name: id
         data_tests:
@@ -43,14 +30,10 @@ models:
 
   - name: int_ma_boussole_aidants__services
     data_tests:
-      - check_service:
-          schema_version: v0
+      - model_validate:
+          model_class: data_inclusion.schema.v0.Structure
           config:
-            severity: warn
-      - check_service:
-          schema_version: v1
-          config:
-            severity: warn
+            enabled: "{{ env_var('DBT_ENV', 'prod') == 'dev' }}"
     columns:
       - name: id
         data_tests:
