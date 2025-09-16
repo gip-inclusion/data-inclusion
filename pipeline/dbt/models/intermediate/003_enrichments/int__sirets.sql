@@ -16,7 +16,6 @@ filtered_etablissements AS (
         etablissements.date_debut,
         etablissements.etat_administratif_etablissement
     FROM etablissements
-    INNER JOIN structures ON etablissements.siret = structures.siret
     ORDER BY 1, 2 DESC
 ),
 
@@ -100,7 +99,7 @@ SELECT
             THEN last_successions.siret_etablissement_successeur
     END AS "siret_successeur"
 FROM structures
-LEFT JOIN filtered_etablissements ON structures.siret = filtered_etablissements.siret
+INNER JOIN filtered_etablissements ON structures.siret = filtered_etablissements.siret
 LEFT JOIN last_successions ON structures.siret = last_successions.siret
 LEFT JOIN filtered_etablissements AS etablissements_successeur ON last_successions.siret_etablissement_successeur = etablissements_successeur.siret
 WHERE structures.siret IS NOT NULL
