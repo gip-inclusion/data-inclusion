@@ -2,6 +2,11 @@ version: 2
 
 models:
   - name: int__erreurs_validation
+    config:
+      indexes:
+        - columns: ['_di_surrogate_id']
+        - columns: ['schema_version']
+        - columns: ['resource_type']
     columns:
       - name: _di_surrogate_id
         data_tests:
@@ -62,6 +67,10 @@ models:
           - not_null
 
   - name: int__services
+    config:
+      indexes:
+        - columns: ['_di_surrogate_id']
+          unique: true
     columns:
       - name: zone_diffusion_code
         data_tests:
