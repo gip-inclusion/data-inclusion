@@ -24,7 +24,20 @@ scores AS (
     GROUP BY 1
 ),
 
+erreurs_v0 AS (
+    SELECT DISTINCT _di_surrogate_id
+    FROM erreurs
+    WHERE schema_version = 'v0' AND resource_type = 'service'
+),
+
+erreurs_v1 AS (
+    SELECT DISTINCT _di_surrogate_id
+    FROM erreurs
+    WHERE schema_version = 'v1' AND resource_type = 'service'
+),
+
 final AS (
+
     SELECT
         {{
             dbt_utils.star(
@@ -43,21 +56,8 @@ final AS (
         scores.score_v1                                 AS "score_qualite_v1",
         courriels_personnels.courriel IS NOT NULL       AS "_has_pii",
         services.source NOT IN ('soliguide', 'agefiph') AS "_in_opendata",
-        NOT EXISTS (
-            SELECT
-            FROM erreurs
-            WHERE
-                erreurs._di_surrogate_id = services._di_surrogate_id
-                AND erreurs.schema_version = 'v0'
-        )                                               AS "_is_valid_v0",
-        NOT EXISTS (
-            SELECT
-            FROM erreurs
-            WHERE
-                erreurs._di_surrogate_id = services._di_surrogate_id
-                AND erreurs.schema_version = 'v1'
-        )                                               AS "_is_valid_v1",
-
+        erreurs_v0._di_surrogate_id IS NULL             AS "_is_valid_v0",
+        erreurs_v1._di_surrogate_id IS NULL             AS "_is_valid_v1",
         -- the following fields will be removed in v1
         -- for now they are kept for compatibility, but without any value
         CAST(NULL AS BOOLEAN)                           AS "contact_public",
@@ -67,6 +67,8 @@ final AS (
     FROM services
     LEFT JOIN courriels_personnels ON services.courriel = courriels_personnels.courriel
     LEFT JOIN scores ON services._di_surrogate_id = scores.service_id
+    LEFT JOIN erreurs_v0 ON services._di_surrogate_id = erreurs_v0._di_surrogate_id
+    LEFT JOIN erreurs_v1 ON services._di_surrogate_id = erreurs_v1._di_surrogate_id
 )
 
 SELECT * FROM final
