@@ -16,9 +16,19 @@ RUN apt-get update \
     python3-dev \
     build-essential \
     git-core \
+    curl \
+    wget \
+    ca-certificates \
+    && wget -O /usr/local/share/ca-certificates/mozilla-cacert.crt https://curl.se/ca/cacert.pem \
+    && wget -O /usr/local/share/ca-certificates/google-roots.crt https://pki.goog/roots.pem \
+    && update-ca-certificates --fresh \
     && apt-get autoremove --purge -y \
     && apt-get clean -y \
     && rm -rf /var/lib/apt/lists/*
+
+ENV SSL_CERT_FILE=/etc/ssl/certs/ca-certificates.crt
+ENV REQUESTS_CA_BUNDLE=/etc/ssl/certs/ca-certificates.crt
+ENV CURL_CA_BUNDLE=/etc/ssl/certs/ca-certificates.crt
 
 RUN python3.11 -m venv ${VIRTUAL_ENV}
 RUN pip install --no-cache-dir --upgrade pip setuptools wheel
