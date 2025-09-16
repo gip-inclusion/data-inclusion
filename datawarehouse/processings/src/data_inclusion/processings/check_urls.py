@@ -3,6 +3,7 @@ import socket
 from dataclasses import astuple, dataclass
 from functools import lru_cache
 
+import certifi
 import requests
 from furl import furl
 
@@ -43,14 +44,15 @@ class CheckedURL:
     error: str | None
 
 
-def check_url(input_url, timeout=PING_TIMEOUT) -> CheckedURL:
+def check_url(input_url, timeout=PING_TIMEOUT, verify=True) -> CheckedURL:
     # most invalid URLs only have a missing schema
     if input_url.startswith("http://") or input_url.startswith("https://"):
         url = input_url
     else:
         url = f"https://{input_url}"
     try:
-        response = requests.get(furl(url).url, timeout=timeout)
+        verify = certifi.where() if verify else False
+        response = requests.get(furl(url).url, timeout=timeout, verify=verify)
         return CheckedURL(
             input_url=input_url,
             valid_url=response.url,  # in case of redirects (allowed by default)
@@ -63,6 +65,17 @@ def check_url(input_url, timeout=PING_TIMEOUT) -> CheckedURL:
             valid_url=url,
             status_code=0,
             error="Invalid URL",
+        )
+    except requests.exceptions.SSLError as e:
+        if "certificate verify failed: unable to get local issuer certificate" in str(
+            e
+        ):
+            return check_url(input_url, timeout=timeout, verify=False)
+        return CheckedURL(
+            input_url=input_url,
+            valid_url=url,
+            status_code=-1,
+            error=str(e),
         )
     except requests.exceptions.Timeout as e:
         return CheckedURL(
