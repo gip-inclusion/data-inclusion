@@ -37,13 +37,17 @@ def model_validate(model_class: str, data: str) -> ValidationErrorDict:
         ValidationErrorDict: A dictionary containing validation error details,
         or an empty dictionary if validation is successful.
     """
-
+    json_data = json.loads(data)
     module_path, class_name = model_class.rsplit('.', 1)
+    schema_version = module_path.rsplit('.', 1)[-1]
+    if schema_version == "v1" and class_name == "Service":
+        json_data["frais"] = json_data["frais_v1"]
+        json_data["thematiques"] = json_data["thematiques_v1"]
     module = importlib.import_module(module_path)
     model = getattr(module, class_name)
 
     try:
-        model.model_validate_json(data)
+        model.model_validate_json(json.dumps(json_data))
     except pydantic.ValidationError as exc:
         return [
             {
