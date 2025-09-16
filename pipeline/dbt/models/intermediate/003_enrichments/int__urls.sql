@@ -10,7 +10,7 @@ WITH urls AS (
 ),
 
 next_batch AS (
-    SELECT
+    SELECT DISTINCT ON (2)
         CAST('{{ run_started_at }}' AS TIMESTAMP)                             AS "last_checked_at",
         urls.url,
         {% if is_incremental() %}
@@ -20,7 +20,7 @@ next_batch AS (
         {% endif %}
     FROM urls
     {% if is_incremental() %}
-        LEFT JOIN {{ this }} ON urls.url = {{ this }}.input_url
+        LEFT JOIN {{ this }} ON urls.url = {{ this }}.input_url OR urls.url = {{ this }}.url
         WHERE
             {{ this }}.input_url IS NULL
             OR ({{ this }}.status_code < 0 AND {{ this }}.attempt_count < 10) -- timeout
@@ -47,7 +47,8 @@ resolved_batch AS (
     LEFT JOIN
         processings.check_urls(
             (SELECT JSONB_AGG(next_batch.url) FROM next_batch)
-        ) AS results ON next_batch.url = results.input_url
+        ) AS results
+        ON next_batch.url = results.input_url
 ),
 
 final AS (
