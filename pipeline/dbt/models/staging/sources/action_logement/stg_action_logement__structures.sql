@@ -1,36 +1,48 @@
 WITH source AS (
-    {{ stg_source_header('action_logement', 'structures') }}
-),
+    {{ stg_source_header('action_logement', 'structures') }}),
 
 final AS (
     SELECT
-        TO_DATE(data ->> 'date_maj', 'DD/MM/YYYY')                                                             AS "date_maj",
-        ARRAY_REMOVE(ARRAY(SELECT value FROM JSONB_EACH_TEXT(data) WHERE key ~* 'labels_autres.\d+'), NULL)    AS "labels_autres",
-        ARRAY_REMOVE(ARRAY(SELECT value FROM JSONB_EACH_TEXT(data) WHERE key ~* 'labels_nationaux.\d+'), NULL) AS "labels_nationaux",
-        CAST(data ->> 'latitude' AS FLOAT)                                                                     AS "latitude",
-        CAST(data ->> 'longitude' AS FLOAT)                                                                    AS "longitude",
-        ARRAY_REMOVE(ARRAY(SELECT value FROM JSONB_EACH_TEXT(data) WHERE key ~* 'thematiques.\d+'), NULL)      AS "thematiques",
-        data ->> 'accessibilite'                                                                               AS "accessibilite",
-        data ->> 'adresse'                                                                                     AS "adresse",
-        data ->> 'code_insee'                                                                                  AS "code_insee",
-        data ->> 'code_postal'                                                                                 AS "code_postal",
-        data ->> 'commune'                                                                                     AS "commune",
-        data ->> 'complement_adresse'                                                                          AS "complement_adresse",
-        data ->> 'courriel'                                                                                    AS "courriel",
-        data ->> 'horaires_ouverture'                                                                          AS "horaires_ouverture",
-        data ->> 'id'                                                                                          AS "id",
-        data ->> 'nom'                                                                                         AS "nom",
-        data ->> 'presentation_detail'                                                                         AS "presentation_detail",
-        data ->> 'presentation_resume'                                                                         AS "presentation_resume",
-        data ->> 'rna'                                                                                         AS "rna",
-        data ->> 'siret'                                                                                       AS "siret",
-        data ->> 'site_web'                                                                                    AS "site_web",
-        data ->> 'source'                                                                                      AS "source",
-        data ->> 'telephone'                                                                                   AS "telephone",
-        data ->> 'typologie'                                                                                   AS "typologie"
+        CURRENT_DATE AT TIME ZONE 'Europe/Paris'   AS "date_maj",
+        ARRAY_REMOVE(ARRAY(
+            SELECT x.value FROM JSONB_EACH_TEXT(source.data) AS x
+            WHERE x.key ~* 'labels_autres.\d+'
+        ), NULL)                                   AS "labels_autres",
+        ARRAY_REMOVE(ARRAY(
+            SELECT x.value FROM JSONB_EACH_TEXT(source.data) AS x
+            WHERE x.key ~* 'labels_nationaux.\d+'
+        ), NULL)                                   AS "labels_nationaux",
+        CAST(source.data ->> 'latitude' AS FLOAT)  AS "latitude",
+        CAST(source.data ->> 'longitude' AS FLOAT) AS "longitude",
+        ARRAY_REMOVE(ARRAY(
+            SELECT x.value FROM JSONB_EACH_TEXT(source.data) AS x
+            WHERE x.key ~* 'thematiques.\d+'
+        ), NULL)                                   AS "thematiques",
+        source.data ->> 'accessibilite'            AS "accessibilite",
+        source.data ->> 'adresse'                  AS "adresse",
+        source.data ->> 'code_insee'               AS "code_insee",
+        source.data ->> 'code_postal'              AS "code_postal",
+        source.data ->> 'commune'                  AS "commune",
+        source.data ->> 'complement_adresse'       AS "complement_adresse",
+        source.data ->> 'courriel'                 AS "courriel",
+        source.data ->> 'horaires_ouverture'       AS "horaires_ouverture",
+        source.data ->> 'id'                       AS "id",
+        source.data ->> 'nom'                      AS "nom",
+        CASE
+            WHEN LENGTH(source.data ->> 'description') >= 280
+                THEN LEFT(source.data ->> 'description', 279) || '…'
+            ELSE source.data ->> 'description'
+        END                                        AS "presentation_resume",
+        source.data ->> 'description'              AS "presentation_detail",
+        source.data ->> 'rna'                      AS "rna",
+        source.data ->> 'siret'                    AS "siret",
+        source.data ->> 'site_web'                 AS "site_web",
+        source.data ->> 'source'                   AS "source",
+        source.data ->> 'telephone'                AS "telephone",
+        source.data ->> 'typologie'                AS "typologie"
     FROM source
     WHERE
-        NOT COALESCE(CAST(data ->> '__ignore__' AS BOOLEAN), FALSE)
+        NOT COALESCE(CAST(source.data ->> '__ignore__' AS BOOLEAN), FALSE)
 )
 
 SELECT * FROM final
