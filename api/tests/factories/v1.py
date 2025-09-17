@@ -36,6 +36,7 @@ class StructureFactory(factory.alchemy.SQLAlchemyModelFactory):
     telephone = "0102030405"
     courriel = factory.Faker("email", locale="fr_FR")
     site_web = factory.Faker("url", locale="fr_FR")
+    lien_source = factory.LazyAttribute(lambda o: f"https://{o.source}.fr/{o.id}")
     description = factory.Faker("sentence", nb_words=100, locale="fr_FR")
     source = factory.Iterator(["dora", "emplois-de-linclusion"])
     date_maj = factory.LazyFunction(lambda: date(2023, 1, 1))
@@ -104,6 +105,7 @@ class ServiceFactory(factory.alchemy.SQLAlchemyModelFactory):
         getter=lambda v: [v.value],
     )
     lien_mobilisation = None
+    lien_source = factory.LazyAttribute(lambda o: f"https://{o.source}.fr/{o.id}")
     modes_mobilisation = None
     mobilisation_precisions = None
     mobilisable_par = None

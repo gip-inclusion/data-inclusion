@@ -18,7 +18,7 @@ cffi==1.17.1
     # via persistent
 charset-normalizer==3.4.2
     # via requests
-data-inclusion-schema @ git+https://github.com/gip-inclusion/data-inclusion-schema.git@081685c6638d2b379013dace4ed1fb906c099d73
+data-inclusion-schema @ git+https://github.com/gip-inclusion/data-inclusion-schema.git@dccc1a64189514fc48c34694d68cae8ae965cdc3
     # via data-inclusion-processings (pyproject.toml)
 datetime-distance==0.1.3
     # via dedupe-variable-datetime
