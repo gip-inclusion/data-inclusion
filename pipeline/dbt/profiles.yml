@@ -3,7 +3,7 @@ data_inclusion:
 
     dev:
       type: postgres
-      threads: 1
+      threads: 4
       host: "{{ env_var('POSTGRES_HOST', 'localhost') }}"
       port: "{{ env_var('POSTGRES_PORT', '5455') | int }}"
       user: "{{ env_var('POSTGRES_USER', 'data-inclusion') }}"
