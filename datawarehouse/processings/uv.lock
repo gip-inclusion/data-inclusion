@@ -220,7 +220,7 @@ provides-extras = ["dev", "test"]
 [[package]]
 name = "data-inclusion-schema"
 version = "1.0.0b7"
-source = { git = "https://github.com/gip-inclusion/data-inclusion-schema.git?rev=vmttn%2Fchore%2Fv1-renommage-unccas#081685c6638d2b379013dace4ed1fb906c099d73" }
+source = { git = "https://github.com/gip-inclusion/data-inclusion-schema.git?rev=vmttn%2Fchore%2Fv1-renommage-unccas#dccc1a64189514fc48c34694d68cae8ae965cdc3" }
 dependencies = [
     { name = "pendulum" },
     { name = "pydantic", extra = ["email"] },

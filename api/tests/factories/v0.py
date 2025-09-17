@@ -46,6 +46,7 @@ class StructureFactory(factory.alchemy.SQLAlchemyModelFactory):
     telephone = "0102030405"
     courriel = factory.Faker("email", locale="fr_FR")
     site_web = factory.Faker("url", locale="fr_FR")
+    lien_source = factory.LazyAttribute(lambda o: f"https://{o.source}.fr/{o.id}")
     presentation_resume = factory.Faker("text", max_nb_chars=20, locale="fr_FR")
     presentation_detail = factory.Faker("text", max_nb_chars=30, locale="fr_FR")
     source = factory.Iterator(["dora", "emplois-de-linclusion"])
@@ -128,6 +129,7 @@ class ServiceFactory(factory.alchemy.SQLAlchemyModelFactory):
     pre_requis = []
     justificatifs = []
     formulaire_en_ligne = None
+    lien_source = factory.LazyAttribute(lambda o: f"https://{o.source}.fr/{o.id}")
     commune = factory.Faker("city", locale="fr_FR")
     code_postal = factory.Faker("postcode")
     code_insee = "59350"

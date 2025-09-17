@@ -47,6 +47,7 @@ class Structure(HasAddress, Base):
     rna: Mapped[str | None]
     siret: Mapped[str | None]
     site_web: Mapped[str | None]
+    lien_source: Mapped[str | None]
     telephone: Mapped[str | None]
 
     services: Mapped[list["v1.models.Service"]] = relationship(  # noqa: F821
@@ -103,6 +104,7 @@ class Service(HasAddress, Base):
     mobilisation_precisions: Mapped[str | None]
     mobilisable_par: Mapped[list[str] | None]
     lien_mobilisation: Mapped[str | None]
+    lien_source: Mapped[str | None]
     # generate_profils_precisions is a function that generates
     # a TSVECTOR from publics_precisions and publics.
     # cf: 20250107_172223_c947102bb23f_add_profils_autres_field_in_service.py

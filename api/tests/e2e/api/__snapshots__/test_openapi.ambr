@@ -3170,6 +3170,24 @@
               ],
               "title": "Latitude"
             },
+            "lien_source": {
+              "anyOf": [
+                {
+                  "format": "uri",
+                  "maxLength": 2083,
+                  "minLength": 1,
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Lien pour accéder à la structure sur le site web du producteur.",
+              "examples": [
+                "https://dora.inclusion.beta.gouv.fr/structures/ass-pour-droit-a-l-i-nhes"
+              ],
+              "title": "Lien Source"
+            },
             "longitude": {
               "anyOf": [
                 {
@@ -3487,6 +3505,24 @@
                 "https://www.actionlogement.fr/demande-cfi"
               ],
               "title": "Lien Mobilisation"
+            },
+            "lien_source": {
+              "anyOf": [
+                {
+                  "format": "uri",
+                  "maxLength": 2083,
+                  "minLength": 1,
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Lien pour accéder au service sur le site web du producteur.",
+              "examples": [
+                "https://dora.inclusion.beta.gouv.fr/services/ass-pour-droit-a-l-i-nhes"
+              ],
+              "title": "Lien Source"
             },
             "longitude": {
               "anyOf": [
@@ -3990,6 +4026,24 @@
               ],
               "title": "Latitude"
             },
+            "lien_source": {
+              "anyOf": [
+                {
+                  "format": "uri",
+                  "maxLength": 2083,
+                  "minLength": 1,
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Lien pour accéder à la structure sur le site web du producteur.",
+              "examples": [
+                "https://dora.inclusion.beta.gouv.fr/structures/ass-pour-droit-a-l-i-nhes"
+              ],
+              "title": "Lien Source"
+            },
             "longitude": {
               "anyOf": [
                 {
@@ -4282,6 +4336,24 @@
                 }
               ],
               "title": "Latitude"
+            },
+            "lien_source": {
+              "anyOf": [
+                {
+                  "format": "uri",
+                  "maxLength": 2083,
+                  "minLength": 1,
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Lien pour accéder à la structure sur le site web du producteur.",
+              "examples": [
+                "https://dora.inclusion.beta.gouv.fr/structures/ass-pour-droit-a-l-i-nhes"
+              ],
+              "title": "Lien Source"
             },
             "longitude": {
               "anyOf": [
@@ -4609,6 +4681,24 @@
                 "https://www.actionlogement.fr/demande-cfi"
               ],
               "title": "Lien Mobilisation"
+            },
+            "lien_source": {
+              "anyOf": [
+                {
+                  "format": "uri",
+                  "maxLength": 2083,
+                  "minLength": 1,
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Lien pour accéder au service sur le site web du producteur.",
+              "examples": [
+                "https://dora.inclusion.beta.gouv.fr/services/ass-pour-droit-a-l-i-nhes"
+              ],
+              "title": "Lien Source"
             },
             "longitude": {
               "anyOf": [
@@ -5861,6 +5951,24 @@
                 }
               ],
               "title": "Latitude"
+            },
+            "lien_source": {
+              "anyOf": [
+                {
+                  "format": "uri",
+                  "maxLength": 2083,
+                  "minLength": 1,
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Lien pour accéder à la structure sur le site web du producteur.",
+              "examples": [
+                "https://dora.inclusion.beta.gouv.fr/structures/ass-pour-droit-a-l-i-nhes"
+              ],
+              "title": "Lien Source"
             },
             "longitude": {
               "anyOf": [

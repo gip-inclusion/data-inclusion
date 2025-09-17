@@ -93,6 +93,7 @@
         "id": "dora--be-water-scene-wind",
         "latitude": -77.857573,
         "lien_mobilisation": "https://teixeira.fr/",
+        "lien_source": null,
         "longitude": -62.54684,
         "mobilisable_par": [
           "usagers"
@@ -193,6 +194,7 @@
         "horaires_accueil": "Mo-Fr 10:00-20:00",
         "id": "dora--lot-kitchen-amount",
         "latitude": -20.074628,
+        "lien_source": null,
         "longitude": 99.899603,
         "nom": "Perrin",
         "reseaux_porteurs": [],
