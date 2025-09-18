@@ -207,11 +207,11 @@ SOURCES_CONFIGS = {
         "streams": {
             "services": {
                 "filename": "services.csv",
-                "url": "https://docs.google.com/spreadsheets/d/e/2PACX-1vSgRmkjEPWWod82Avh_8Q0n066fUQbedUdINKCJCCAQ1Vv1ozrBXF9kw5vW9h41uz2oiNoYjy43KsvM/pub?gid=636818394&single=true&output=csv",
+                "url": "https://docs.google.com/spreadsheets/d/e/2PACX-1vTUGrgfisHO0mBz_6_SD3meXkU-GM_uY75jEMt6Y1C8I0fRmlNaL2Jd1bhQXAXEYZ9Wg4XJyKPFN0wa/pub?gid=636818394&single=true&output=csv",
             },
             "structures": {
                 "filename": "structures.csv",
-                "url": "https://docs.google.com/spreadsheets/d/e/2PACX-1vSgRmkjEPWWod82Avh_8Q0n066fUQbedUdINKCJCCAQ1Vv1ozrBXF9kw5vW9h41uz2oiNoYjy43KsvM/pub?gid=1318485024&single=true&output=csv",
+                "url": "https://docs.google.com/spreadsheets/d/e/2PACX-1vTUGrgfisHO0mBz_6_SD3meXkU-GM_uY75jEMt6Y1C8I0fRmlNaL2Jd1bhQXAXEYZ9Wg4XJyKPFN0wa/pub?gid=1318485024&single=true&output=csv",
             },
         },
     },

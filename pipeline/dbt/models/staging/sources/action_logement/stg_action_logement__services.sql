@@ -43,16 +43,12 @@ final AS (
         ), NULL)                                                  AS "frais",
         source.data ->> 'modes_orientation_accompagnateur_autres' AS "modes_orientation_accompagnateur_autres",
         source.data ->> 'modes_orientation_beneficiaire_autres'   AS "modes_orientation_beneficiaire_autres",
-        source.data ->> 'lien_mobilisation'                       AS "formulaire_en_ligne",
+        source.data ->> 'formulaire_en_ligne'                     AS "formulaire_en_ligne",
         source.data ->> 'frais_autres'                            AS "frais_autres",
         source.data ->> 'nom'                                     AS "nom",
         source.data ->> 'page_web'                                AS "page_web",
-        CASE
-            WHEN LENGTH(source.data ->> 'description') >= 280
-                THEN LEFT(source.data ->> 'description', 279) || '…'
-            ELSE source.data ->> 'description'
-        END                                                       AS "presentation_resume",
-        source.data ->> 'description'                             AS "presentation_detail",
+        source.data ->> 'presentation_resume'                     AS "presentation_resume",
+        source.data ->> 'presentation_detail'                     AS "presentation_detail",
         source.data ->> 'prise_rdv'                               AS "prise_rdv",
         source.data ->> 'recurrence'                              AS "recurrence",
         NULLIF(TRIM(source.data ->> 'zone_diffusion_code'), '')   AS "zone_diffusion_code",

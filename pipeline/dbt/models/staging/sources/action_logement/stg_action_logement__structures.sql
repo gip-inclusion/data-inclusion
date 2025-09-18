@@ -28,12 +28,8 @@ final AS (
         source.data ->> 'horaires_ouverture'       AS "horaires_ouverture",
         source.data ->> 'id'                       AS "id",
         source.data ->> 'nom'                      AS "nom",
-        CASE
-            WHEN LENGTH(source.data ->> 'description') >= 280
-                THEN LEFT(source.data ->> 'description', 279) || '…'
-            ELSE source.data ->> 'description'
-        END                                        AS "presentation_resume",
-        source.data ->> 'description'              AS "presentation_detail",
+        source.data ->> 'presentation_resume'      AS "presentation_resume",
+        source.data ->> 'presentation_detail'      AS "presentation_detail",
         source.data ->> 'rna'                      AS "rna",
         source.data ->> 'siret'                    AS "siret",
         source.data ->> 'site_web'                 AS "site_web",
