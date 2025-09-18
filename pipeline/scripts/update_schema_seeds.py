@@ -3,12 +3,9 @@
 # /// script
 # requires-python = ">=3.12"
 # dependencies = [
-#     "data-inclusion-schema==1.0.0b7",
+#     "data-inclusion-schema==1.0.0b8",
 #     "pandas",
 # ]
-#
-# [tool.uv.sources]
-# data-inclusion-schema = { git = "https://github.com/gip-inclusion/data-inclusion-schema.git", rev = "vmttn/chore/v1-renommage-unccas" }  # noqa: E501
 # ///
 
 """Generate dbt seeds in pipeline/seeds/schema"""
