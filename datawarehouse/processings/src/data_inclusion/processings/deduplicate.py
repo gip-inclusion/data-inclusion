@@ -41,7 +41,9 @@ def _format_phonenumber(s):
     return phonenumbers.format_number(p, phonenumbers.PhoneNumberFormat.NATIONAL)
 
 
-def deduplicate(data: list[DeduplicateInput]) -> pd.DataFrame:
+def deduplicate(
+    data: list[DeduplicateInput], threshold: float = THRESHOLD
+) -> pd.DataFrame:
     df = pd.DataFrame.from_records(data)
 
     # exclude structures with long surrogate_id (mednum...)
@@ -95,10 +97,10 @@ def deduplicate(data: list[DeduplicateInput]) -> pd.DataFrame:
 
     data = json.loads(df.to_json(orient="records"))
 
-    logger.info(f"partitioning data into clusters with {THRESHOLD=}")
+    logger.info(f"partitioning data into clusters with {threshold=}")
     clustered_dupes = deduper.partition(
         data={d["id"]: d for d in data},
-        threshold=THRESHOLD,
+        threshold=threshold,
     )
 
     logger.info("exporting clusters to JSON")
