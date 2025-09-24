@@ -1,12 +1,9 @@
 {% for model, model_class in [
-    ('int__structures', 'data_inclusion.schema.v0.Structure'),
-    ('int__services', 'data_inclusion.schema.v0.Service'),
-    ('int__structures', 'data_inclusion.schema.v1.Structure'),
-    ('int__services', 'data_inclusion.schema.v1.Service')
+    ('int__structures_v1', 'data_inclusion.schema.v1.Structure'),
+    ('int__services_v1', 'data_inclusion.schema.v1.Service')
 ] %}
 
     SELECT
-        resources._di_surrogate_id,
         resources.source,
         resources.id,
         LOWER(SPLIT_PART('{{ model_class }}', '.', -1)) AS resource_type,

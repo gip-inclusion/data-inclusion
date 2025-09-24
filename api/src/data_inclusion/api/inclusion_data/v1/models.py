@@ -37,14 +37,13 @@ class Structure(HasAddress, Base):
     nom: Mapped[str]
     score_qualite: Mapped[float]
     description: Mapped[str | None]
-    accessibilite_lieu: Mapped[str | None] = mapped_column("accessibilite")
+    accessibilite_lieu: Mapped[str | None]
     courriel: Mapped[str | None]
     date_maj: Mapped[date | None]
     # FIXME(vperron) : for now this is not validated against OSM opening hours format
     # see https://pypi.org/project/opening-hours-py/ when we stop using pl/Python
     horaires_accueil: Mapped[str | None]
     reseaux_porteurs: Mapped[list[str] | None]
-    rna: Mapped[str | None]
     siret: Mapped[str | None]
     site_web: Mapped[str | None]
     lien_source: Mapped[str | None]

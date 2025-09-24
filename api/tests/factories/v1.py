@@ -25,7 +25,6 @@ class StructureFactory(factory.alchemy.SQLAlchemyModelFactory):
 
     id = factory.LazyAttribute(lambda o: f"{o.source}--{fake.slug()}")
     siret = factory.LazyFunction(lambda: fake.siret().replace(" ", ""))
-    rna = factory.Faker("bothify", text="W#########")
     nom = factory.LazyFunction(lambda: fake.company().rstrip("."))
     commune = factory.Faker("city", locale="fr_FR")
     code_postal = factory.Faker("postcode")
