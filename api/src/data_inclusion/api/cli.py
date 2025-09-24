@@ -89,7 +89,7 @@ def get_path(value) -> Path:
 @sentry_sdk.monitor(
     monitor_slug="load-inclusion-data",
     monitor_config={
-        "schedule": {"type": "crontab", "value": "0 5-22 * * *"},
+        "schedule": {"type": "crontab", "value": "30 5-22 * * *"},
         "checkin_margin": 60,
         "max_runtime": 60,
         "failure_issue_threshold": 1,
@@ -114,7 +114,7 @@ def _load_inclusion_data(db_session, path: Path):
 @sentry_sdk.monitor(
     monitor_slug="export-analytics",
     monitor_config={
-        "schedule": {"type": "crontab", "value": "0 5-22 * * *"},
+        "schedule": {"type": "crontab", "value": "45 5-22 * * *"},
         "checkin_margin": 60,
         "max_runtime": 60,
         "failure_issue_threshold": 1,
