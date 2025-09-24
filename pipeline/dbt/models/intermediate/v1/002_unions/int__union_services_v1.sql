@@ -1,6 +1,7 @@
 {{
     dbt_utils.union_relations(
         relations=[
+            ref('int_soliguide__services_v1'),
         ],
         column_override={
             "thematiques": "TEXT[]",

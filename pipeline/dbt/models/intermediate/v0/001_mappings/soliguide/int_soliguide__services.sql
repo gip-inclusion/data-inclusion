@@ -15,13 +15,7 @@ phones AS (
 ),
 
 publics AS (
-    SELECT * FROM {{ ref('stg_soliguide__lieux__publics__administrative') }}
-    UNION ALL
-    SELECT * FROM {{ ref('stg_soliguide__lieux__publics__gender') }}
-    UNION ALL
-    SELECT * FROM {{ ref('stg_soliguide__lieux__publics__familiale') }}
-    UNION ALL
-    SELECT * FROM {{ ref('stg_soliguide__lieux__publics__other') }}
+    SELECT * FROM {{ ref('stg_soliguide__lieux__publics') }}
 ),
 
 mapping_thematiques AS (
@@ -135,7 +129,7 @@ final AS (
         filtered_phones.phone_number                      AS "telephone",
         lieux.entity_mail                                 AS "courriel",
         NULL                                              AS "contact_nom_prenom",
-        open_services.updated_at                          AS "date_maj",
+        lieux.updated_at                                  AS "date_maj",
         NULL                                              AS "page_web",
         'commune'                                         AS "zone_diffusion_type",
         NULL                                              AS "zone_diffusion_code",  -- will be overridden after geocoding
@@ -160,8 +154,8 @@ final AS (
         open_services.modalities__price__precisions       AS "frais_autres",
         CASE
             WHEN open_services.different_hours
-                THEN UDF_SOLIGUIDE__NEW_HOURS_TO_OSM_OPENING_HOURS(open_services.hours)
-            ELSE UDF_SOLIGUIDE__NEW_HOURS_TO_OSM_OPENING_HOURS(lieux.newhours)
+                THEN processings.soliguide_opening_hours(open_services.hours)
+            ELSE processings.soliguide_opening_hours(lieux.newhours)
         END                                               AS "recurrence",
         ARRAY_REMOVE(
             ARRAY[

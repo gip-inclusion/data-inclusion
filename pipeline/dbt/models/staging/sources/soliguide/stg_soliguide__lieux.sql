@@ -18,23 +18,33 @@ lieux AS (
         data #>> '{position,city}'                                                                       AS "position__city",
         data #>> '{position,cityCode}'                                                                   AS "position__city_code",
         data #>> '{position,country}'                                                                    AS "position__country",
-        data ->> 'description'                                                                           AS "description",
-        data ->> 'seo_url'                                                                               AS "seo_url",
+        NULLIF(TRIM(data ->> 'description'), '')                                                         AS "description",
+        NULLIF(TRIM(data ->> 'seo_url'), '')                                                             AS "seo_url",
         data #>> '{position,postalCode}'                                                                 AS "position__postal_code",
-        data #>> '{position,address}'                                                                    AS "position__address",
+        NULLIF(BTRIM(REGEXP_REPLACE(data #>> '{position,address}', ', \d\d\d\d\d.*$', ''), ','), '')     AS "position__address",
         NULLIF(TRIM(data #>> '{position,additionalInformation}'), '')                                    AS "position__additional_information",
         data #>> '{position,department}'                                                                 AS "position__department",
-        data #>> '{publics,age}'                                                                         AS "publics__age",
+        data #>> '{position,departmentCode}'                                                             AS "position__department_code",
         CAST(data #>> '{publics,accueil}' AS INT)                                                        AS "publics__accueil",
-        NULLIF(data #>> '{entity,mail}', '')                                                             AS "entity_mail",
-        NULLIF(data #>> '{entity,website}', '')                                                          AS "entity_website",
-        data #>> '{tempInfos,message,name}'                                                              AS "temp_infos__message__texte",
+        CAST(data #>> '{publics,age,min}' AS INT)                                                        AS "publics__age__min",
+        CAST(data #>> '{publics,age,max}' AS INT)                                                        AS "publics__age__max",
+        NULLIF(TRIM(data #>> '{publics,description}'), '')                                               AS "publics__description",
+        NULLIF(TRIM(data #>> '{entity,mail}'), '')                                                       AS "entity_mail",
+        NULLIF(TRIM(data #>> '{entity,website}'), '')                                                    AS "entity_website",
+        NULLIF(TRIM(data #>> '{tempInfos,message,name}'), '')                                            AS "temp_infos__message__name",
+        CAST(data #>> '{tempInfos,closure,actif}' AS BOOLEAN)                                            AS "temp_infos__closure__actif",
+        CAST(data #>> '{tempInfos,hours,actif}' AS BOOLEAN)                                              AS "temp_infos__hours__actif",
+        data #> '{tempInfos,hours,hours}'                                                                AS "temp_infos__hours__hours",
         data -> 'newhours'                                                                               AS "newhours",
-        data #>> '{modalities,appointment,precisions}'                                                   AS "modalities__appointment__precisions",
-        data #>> '{modalities,inscription,precisions}'                                                   AS "modalities__inscription__precisions",
-        data #>> '{modalities,orientation,precisions}'                                                   AS "modalities__orientation__precisions",
-        data -> 'sources'                                                                                AS "sources"
+        NULLIF(TRIM(data #>> '{modalities,other}'), '')                                                  AS "modalities__other",
+        NULLIF(TRIM(data #>> '{modalities,price,precisions}'), '')                                       AS "modalities__price__precisions",
+        NULLIF(TRIM(data #>> '{modalities,appointment,precisions}'), '')                                 AS "modalities__appointment__precisions",
+        NULLIF(TRIM(data #>> '{modalities,inscription,precisions}'), '')                                 AS "modalities__inscription__precisions",
+        NULLIF(TRIM(data #>> '{modalities,orientation,precisions}'), '')                                 AS "modalities__orientation__precisions",
+        CAST(data #>> '{modalities,pmr,checked}' AS BOOLEAN)                                             AS "modalities__pmr__checked"
     FROM source
+    WHERE
+        NOT data -> 'sources' @> '[{"name": "dora"}]'
 ),
 
 /*
@@ -78,7 +88,6 @@ final AS (
     LEFT JOIN duplicates ON lieux.lieu_id = duplicates.lieu_id
     WHERE
         lieux.position__country = 'fr'
-        AND NOT lieux.sources @> '[{"name": "dora"}]'
         AND duplicates.lieu_id IS NULL
 )
 

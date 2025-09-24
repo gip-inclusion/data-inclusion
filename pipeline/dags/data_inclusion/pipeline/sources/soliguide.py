@@ -90,10 +90,16 @@ def read(path: Path):
 
     for lieu_data in data:
         lieu_data["description"] = utils.html_to_markdown(lieu_data["description"])
+        lieu_data["modalities"]["other"] = utils.html_to_markdown(
+            lieu_data["modalities"]["other"]
+        )
 
         for service_data in lieu_data["services_all"]:
             service_data["description"] = utils.html_to_markdown(
                 service_data["description"]
+            )
+            service_data["modalities"]["other"] = utils.html_to_markdown(
+                service_data["modalities"]["other"]
             )
 
     df = pd.DataFrame.from_records(data)
