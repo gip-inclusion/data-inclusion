@@ -29,10 +29,13 @@ lieux AS (
         NULLIF(data #>> '{entity,mail}', '')                                                             AS "entity_mail",
         NULLIF(data #>> '{entity,website}', '')                                                          AS "entity_website",
         data #>> '{tempInfos,message,name}'                                                              AS "temp_infos__message__texte",
+        CAST(data #>> '{tempInfos,closure,actif}' AS BOOLEAN)                                            AS "temp_infos__closure__actif",
+        data #> '{tempInfos,hours}'                                                                      AS "temp_infos__hours",
         data -> 'newhours'                                                                               AS "newhours",
         data #>> '{modalities,appointment,precisions}'                                                   AS "modalities__appointment__precisions",
         data #>> '{modalities,inscription,precisions}'                                                   AS "modalities__inscription__precisions",
         data #>> '{modalities,orientation,precisions}'                                                   AS "modalities__orientation__precisions",
+        CAST(data #>> '{modalities,pmr,checked}' AS BOOLEAN)                                             AS "modalities__pmr__checked",
         data -> 'sources'                                                                                AS "sources"
     FROM source
 ),
