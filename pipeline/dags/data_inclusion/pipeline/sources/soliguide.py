@@ -32,7 +32,7 @@ class APIClient(utils.BaseApiClient):
                 # this value must be greater than the total # of lieux
                 # otherwise there will be duplicated lieux.
                 # the issue comes from the fact that the api does not sort the results
-                "limit": 25000,
+                "limit": 50_000,
             },
         }
         if location_geo_value is not None:
