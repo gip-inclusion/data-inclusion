@@ -13,8 +13,7 @@ phones AS (
             WHEN inline_phone.data ->> 'phoneNumber' ~ '^[1-9]\d{8}$'
                 THEN '0' || inline_phone.data ->> 'phoneNumber'
             ELSE inline_phone.data ->> 'phoneNumber'
-        END                                       AS "phone_number",
-        source.data -> 'sources'                  AS "sources"
+        END                                       AS "phone_number"
     FROM
         source,
         LATERAL JSONB_PATH_QUERY(source.data, '$.entity.phones[*]') AS inline_phone (data)

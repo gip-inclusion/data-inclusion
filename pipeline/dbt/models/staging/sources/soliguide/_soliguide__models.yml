@@ -15,10 +15,33 @@ models:
 
   - name: stg_soliguide__lieux
     columns:
+      - name: id
+        data_tests:
+          - not_null
+          - unique
       - name: lieu_id
         data_tests:
           - not_null
           - unique
+      - name: name
+      - name: description
+        data_tests:
+          - not_null:
+              config:
+                error_if: ">100"
+          - dbt_utils.not_constant
+          - dbt_utils.not_empty_string
+      - name: seo_url
+        data_tests:
+          - not_null
+          - dbt_utils.not_constant
+          - dbt_utils.not_empty_string
+      - name: updated_at
+        data_tests:
+          - not_null
+          - dbt_utils.accepted_range:
+              arguments:
+                min_value: "now() - interval '1 years'"
       - name: name
         data_tests:
           - dbt_utils.expression_is_true:
@@ -35,18 +58,21 @@ models:
         data_tests:
           - not_null
           - dbt_utils.not_empty_string
-      - name: publics__accueil
+      - name: position__department_code
         data_tests:
           - not_null
-          - accepted_values:
+          - relationships:
               arguments:
-                values: [0, 1, 2]
+                to: ref('stg_decoupage_administratif__departements')
+                field: code
       - name: position__coordinates__x
         data_tests:
           - not_null
+          - dbt_utils.not_constant
       - name: position__coordinates__y
         data_tests:
           - not_null
+          - dbt_utils.not_constant
       - name: position__additional_information
         data_tests:
           - dbt_utils.not_constant
@@ -74,6 +100,121 @@ models:
               arguments:
                 to: ref('stg_decoupage_administratif__communes')
                 field: code
+      - name: publics__accueil
+        data_tests:
+          - not_null
+          - accepted_values:
+              arguments:
+                values:
+                  - 0  # inconditionnel
+                  - 1  # inconditionnel adapté à un certain public
+                  - 2  # exclusif
+      - name: publics__age__min
+        data_tests:
+          - not_null
+          - dbt_utils.accepted_range:
+              arguments:
+                min_value: 0
+                max_value: 99
+      - name: publics__age__max
+        data_tests:
+          - not_null
+          - dbt_utils.accepted_range:
+              arguments:
+                min_value: 0
+                max_value: 99
+      - name: publics__description
+        data_tests:
+          - dbt_utils.not_null_proportion:
+              arguments:
+                at_least: 0.1
+          - dbt_utils.not_constant
+          - dbt_utils.not_empty_string
+      - name: entity_mail
+        data_tests:
+          - dbt_utils.not_null_proportion:
+              arguments:
+                at_least: 0.5
+          - dbt_utils.not_constant
+          - dbt_utils.not_empty_string
+      - name: entity_website
+        data_tests:
+          - dbt_utils.not_null_proportion:
+              arguments:
+                at_least: 0.5
+          - dbt_utils.not_constant
+          - dbt_utils.not_empty_string
+      - name: temp_infos__message__name
+      - name: temp_infos__closure__actif
+      - name: temp_infos__hours__actif
+      - name: temp_infos__hours__hours
+      - name: newhours
+      - name: modalities__other
+        data_tests:
+          - dbt_utils.not_constant
+          - dbt_utils.not_empty_string
+          - dbt_utils.expression_is_true:
+              arguments:
+                expression: "!~ '</?.+>'"
+      - name: modalities__price__precisions
+        data_tests:
+          - dbt_utils.not_constant
+          - dbt_utils.not_empty_string
+      - name: modalities__inconditionnel
+      - name: modalities__appointment__checked
+      - name: modalities__appointment__precisions
+        data_tests:
+          - dbt_utils.not_constant
+          - dbt_utils.not_empty_string
+      - name: modalities__inscription__checked
+      - name: modalities__inscription__precisions
+        data_tests:
+          - dbt_utils.not_constant
+          - dbt_utils.not_empty_string
+      - name: modalities__orientation__checked
+      - name: modalities__orientation__precisions
+        data_tests:
+          - dbt_utils.not_constant
+          - dbt_utils.not_empty_string
+      - name: modalities__pmr__checked
+
+  - name: stg_soliguide__lieux__publics
+    columns:
+      - name: lieu_id
+        data_tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('stg_soliguide__lieux')
+                field: id
+      - name: value
+        data_tests:
+          - not_null
+          - dbt_utils.not_empty_string
+          - accepted_values:
+              arguments:
+                values:
+                  - isolated
+                  - family
+                  - pregnant
+                  - couple
+                  - men
+                  - women
+                  - regular
+                  - asylum
+                  - refugee
+                  - undocumented
+                  - addiction
+                  - handicap
+                  - hiv
+                  - lgbt
+                  - mentalHealth
+                  - prison
+                  - prostitution
+                  - student
+                  - ukraine
+                  - violence
+
   - name: stg_soliguide__services
     columns:
       - name: id
@@ -95,6 +236,122 @@ models:
               arguments:
                 to: ref('stg_soliguide__categories')
                 field: code
+      - name: description
+        data_tests:
+          - dbt_utils.not_null_proportion:
+              arguments:
+                at_least: 0.5
+          - dbt_utils.not_constant
+          - dbt_utils.not_empty_string
+      - name: hours
+      - name: saturated__status
+        data_tests:
+          - not_null
+          - accepted_values:
+              arguments:
+                values:
+                  - low
+                  - moderate
+                  - high
+      - name: different_hours
+      - name: close__actif
+      - name: close__date_debut
+      - name: close__date_fin
+      - name: modalities__other
+        data_tests:
+          - dbt_utils.not_constant
+          - dbt_utils.not_empty_string
+      - name: modalities__inconditionnel
+      - name: modalities__appointment__checked
+      - name: modalities__appointment__precisions
+        data_tests:
+          - dbt_utils.not_constant
+          - dbt_utils.not_empty_string
+      - name: modalities__price__checked
+      - name: modalities__price__precisions
+        data_tests:
+          - dbt_utils.not_constant
+          - dbt_utils.not_empty_string
+      - name: modalities__inscription__checked
+      - name: modalities__inscription__precisions
+        data_tests:
+          - dbt_utils.not_constant
+          - dbt_utils.not_empty_string
+      - name: modalities__orientation__checked
+      - name: modalities__orientation__precisions
+        data_tests:
+          - dbt_utils.not_constant
+          - dbt_utils.not_empty_string
+      - name: publics__description
+      - name: different_modalities
+      - name: different_publics
+
+  - name: stg_soliguide__sources
+    columns:
+      - name: lieu_id
+        data_tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('stg_soliguide__lieux')
+                field: lieu_id
+      - name: name
+        data_tests:
+          - dbt_utils.not_empty_string
+          - accepted_values:
+              arguments:
+                values:
+                  - 'Alisol (AD2S)'
+                  - 'Conseil Départemental du 59'
+                  - 'Croix-Rouge française'
+                  - 'Crous - Pays de la Loire'
+                  - 'Société Saint Vincent de Paul'
+                  - restos
+
+  - name: stg_soliguide__services__publics
+    columns:
+      - name: lieu_id
+        data_tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('stg_soliguide__lieux')
+                field: id
+      - name: service_id
+        data_tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('stg_soliguide__services')
+                field: id
+      - name: value
+        data_tests:
+          - not_null
+          - dbt_utils.not_empty_string
+          - accepted_values:
+              arguments:
+                values:
+                  - isolated
+                  - family
+                  - pregnant
+                  - couple
+                  - men
+                  - women
+                  - regular
+                  - asylum
+                  - refugee
+                  - undocumented
+                  - addiction
+                  - handicap
+                  - hiv
+                  - lgbt
+                  - mentalHealth
+                  - prison
+                  - prostitution
+                  - student
+                  - ukraine
+                  - violence
+
   - name: stg_soliguide__phones
     columns:
       - name: lieu_id
@@ -104,77 +361,4 @@ models:
               arguments:
                 to: ref('stg_soliguide__lieux')
                 field: lieu_id
-  - name: stg_soliguide__lieux__publics__familiale
-    columns:
-      - name: lieu_id
-        data_tests:
-          - not_null
-          - relationships:
-              arguments:
-                to: ref('stg_soliguide__lieux')
-                field: id
-      - name: value
-        data_tests:
-          - not_null
-          - dbt_utils.not_empty_string
-          - accepted_values:
-              arguments:
-                values: ['isolated', 'family', 'pregnant', 'couple']
-  - name: stg_soliguide__lieux__publics__gender
-    columns:
-      - name: lieu_id
-        data_tests:
-          - not_null
-          - relationships:
-              arguments:
-                to: ref('stg_soliguide__lieux')
-                field: id
-      - name: value
-        data_tests:
-          - not_null
-          - dbt_utils.not_empty_string
-          - accepted_values:
-              arguments:
-                values: ['men', 'women']
-  - name: stg_soliguide__lieux__publics__administrative
-    columns:
-      - name: lieu_id
-        data_tests:
-          - not_null
-          - relationships:
-              arguments:
-                to: ref('stg_soliguide__lieux')
-                field: id
-      - name: value
-        data_tests:
-          - not_null
-          - dbt_utils.not_empty_string
-          - accepted_values:
-              arguments:
-                values: ["regular", "asylum", "refugee", "undocumented"]
-  - name: stg_soliguide__lieux__publics__other
-    columns:
-      - name: lieu_id
-        data_tests:
-          - not_null
-          - relationships:
-              arguments:
-                to: ref('stg_soliguide__lieux')
-                field: id
-      - name: value
-        data_tests:
-          - not_null
-          - dbt_utils.not_empty_string
-          - accepted_values:
-              arguments:
-                values:
-                  - 'violence'
-                  - 'addiction'
-                  - 'handicap'
-                  - 'lgbt'
-                  - 'hiv'
-                  - 'prostitution'
-                  - 'prison'
-                  - 'student'
-                  - 'ukraine'
-                  - 'mentalHealth'
+

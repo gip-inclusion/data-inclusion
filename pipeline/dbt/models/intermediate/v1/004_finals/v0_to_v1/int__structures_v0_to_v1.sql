@@ -21,29 +21,29 @@ reseaux_porteurs AS (
 )
 
 SELECT
-    structures.courriel                                   AS "courriel",
-    structures.horaires_ouverture                         AS "horaires_accueil",
-    structures.source || '--' || structures.id            AS "id",
-    structures.lien_source                                AS "lien_source",
+    structures.courriel                        AS "courriel",
+    structures.horaires_ouverture              AS "horaires_accueil",
+    structures.source || '--' || structures.id AS "id",
+    structures.lien_source                     AS "lien_source",
     CASE
         WHEN LENGTH(structures.presentation_detail) >= 2000
             THEN LEFT(structures.presentation_detail, 1999) || '…'
         ELSE COALESCE(structures.presentation_detail, structures.presentation_resume)
-    END                                                   AS "description",
-    structures.siret                                      AS "siret",
-    structures.source                                     AS "source",
-    structures.date_maj                                   AS "date_maj",
-    reseaux_porteurs.reseaux_porteurs                     AS "reseaux_porteurs",
-    processings.format_phone_number(structures.telephone) AS "telephone",
-    structures.site_web                                   AS "site_web",
-    structures.accessibilite                              AS "accessibilite_lieu",
-    structures.nom                                        AS "nom",
-    structures.longitude                                  AS "longitude",
-    structures.latitude                                   AS "latitude",
-    structures.complement_adresse                         AS "complement_adresse",
-    structures.commune                                    AS "commune",
-    structures.adresse                                    AS "adresse",
-    structures.code_postal                                AS "code_postal",
-    structures.code_insee                                 AS "code_insee"
+    END                                        AS "description",
+    structures.siret                           AS "siret",
+    structures.source                          AS "source",
+    structures.date_maj                        AS "date_maj",
+    reseaux_porteurs.reseaux_porteurs          AS "reseaux_porteurs",
+    structures.telephone                       AS "telephone",
+    structures.site_web                        AS "site_web",
+    structures.accessibilite                   AS "accessibilite_lieu",
+    structures.nom                             AS "nom",
+    structures.longitude                       AS "longitude",
+    structures.latitude                        AS "latitude",
+    structures.complement_adresse              AS "complement_adresse",
+    structures.commune                         AS "commune",
+    structures.adresse                         AS "adresse",
+    structures.code_postal                     AS "code_postal",
+    structures.code_insee                      AS "code_insee"
 FROM structures
 LEFT JOIN reseaux_porteurs ON structures._di_surrogate_id = reseaux_porteurs._di_surrogate_id

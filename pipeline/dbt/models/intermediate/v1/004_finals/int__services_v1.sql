@@ -52,7 +52,10 @@ SELECT
     END                                  AS "conditions_acces",
     services.date_maj                    AS "date_maj",
     services.id                          AS "id",
-    services.description                 AS "description",
+    CASE
+        WHEN LENGTH(services.description) > 2000 THEN LEFT(services.description, 1999) || '…'
+        ELSE services.description
+    END                                  AS "description",
     services.thematiques                 AS "thematiques",
     services.modes_accueil               AS "modes_accueil",
     services.modes_mobilisation          AS "modes_mobilisation",

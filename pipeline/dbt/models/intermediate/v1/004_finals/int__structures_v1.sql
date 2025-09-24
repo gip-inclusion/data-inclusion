@@ -31,7 +31,11 @@ SELECT
     structures.horaires_accueil                           AS "horaires_accueil",
     structures.id                                         AS "id",
     structures.lien_source                                AS "lien_source",
-    structures.description                                AS "description",
+    CASE
+        WHEN LENGTH(structures.description) > 2000
+            THEN LEFT(structures.description, 1999) || '…'
+        ELSE structures.description
+    END                                                   AS "description",
     CASE
         WHEN sirets.statut = 'valide' THEN sirets.siret
         WHEN sirets.statut = 'successeur-ouvert' THEN sirets.siret_successeur
