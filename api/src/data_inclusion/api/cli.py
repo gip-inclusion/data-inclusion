@@ -3,6 +3,7 @@ import os
 import subprocess
 import tempfile
 from pathlib import Path
+from typing import Literal
 
 import click
 import pendulum
@@ -13,7 +14,6 @@ from data_inclusion.api import auth
 from data_inclusion.api.config import settings
 from data_inclusion.api.core import db
 from data_inclusion.api.decoupage_administratif.commands import import_communes
-from data_inclusion.api.inclusion_data.commands import load_inclusion_data
 
 logger = logging.getLogger(__name__)
 
@@ -52,7 +52,7 @@ def _generate_token_for_user(
     click.echo(auth.create_access_token(subject=email, admin=admin))
 
 
-def get_path(value) -> Path:
+def get_path(value: str, version: Literal["v0", "v1"]) -> Path:
     """Get a valid local path to the target dataset."""
 
     if value is not None and Path(value).exists():
@@ -68,6 +68,7 @@ def get_path(value) -> Path:
         value = str(Path(settings.DATALAKE_BUCKET_NAME) / "data" / "marts")
         value = sorted(s3fs_client.ls(value))[-1]  # latest day
         value = sorted(s3fs_client.ls(value))[-1]  # latest run
+        value = str(Path(value) / version)
 
         logger.info(f"Using {value}")
 
@@ -99,11 +100,25 @@ def get_path(value) -> Path:
 )
 @cli.command(name="load-inclusion-data")
 @click.option(
+    "--version",
+    type=click.Choice(["v0", "v1"]),
+    default="v1",
+    show_default=True,
+    help="Dataset version to load",
+)
+@click.option(
     "--path",
-    callback=lambda ctx, param, value: get_path(value),
+    callback=lambda ctx, param, value: get_path(
+        value, version=ctx.params.get("version", param.default)
+    ),
 )
 @click.pass_obj
-def _load_inclusion_data(db_session, path: Path):
+def _load_inclusion_data(db_session, path: Path, version: Literal["v0", "v1"]):
+    if version == "v1":
+        from data_inclusion.api.inclusion_data.v1.commands import load_inclusion_data
+    elif version == "v0":
+        from data_inclusion.api.inclusion_data.v0.commands import load_inclusion_data
+
     load_inclusion_data(db_session=db_session, path=path)
 
     # if the dataset has been downloaded from s3

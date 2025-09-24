@@ -1,0 +1,20 @@
+version: 2
+
+models:
+  - name: int__union_adresses_v1
+
+  - name: int__union_contacts_v1
+
+  - name: int__union_services_v1
+
+  - name: int__union_structures_v1
+
+  - name: int__union_urls_v1
+    description: |
+      This model contains all the potential URLs that we want to validate.
+    columns:
+      - name: url
+        data_tests:
+          - not_null
+          - dbt_utils.not_empty_string
+          - unique

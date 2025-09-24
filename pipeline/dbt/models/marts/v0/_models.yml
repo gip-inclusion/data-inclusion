@@ -9,11 +9,7 @@ models:
       - model_validate:
           arguments:
             model_class: data_inclusion.schema.v0.Structure
-            where: _is_valid_v0
-      - model_validate:
-          arguments:
-            model_class: data_inclusion.schema.v1.Structure
-            where: _is_valid_v1
+            where: _is_valid
     columns:
       - name: _di_surrogate_id
         data_type: text
@@ -61,8 +57,6 @@ models:
         data_type: text
       - name: presentation_detail
         data_type: text
-      - name: description
-        data_type: text
       - name: source
         data_type: text
         constraints:
@@ -75,8 +69,6 @@ models:
         data_type: text
       - name: horaires_ouverture
         data_type: text
-      - name: horaires_accueil
-        data_type: text
       - name: accessibilite
         data_type: text
       - name: labels_nationaux
@@ -84,8 +76,6 @@ models:
       - name: labels_autres
         data_type: text[]
       - name: thematiques
-        data_type: text[]
-      - name: reseaux_porteurs
         data_type: text[]
       - name: _cluster_id
         data_type: text
@@ -97,11 +87,7 @@ models:
         data_type: boolean
         constraints:
           - type: not_null
-      - name: _is_valid_v0
-        data_type: boolean
-        constraints:
-          - type: not_null
-      - name: _is_valid_v1
+      - name: _is_valid
         data_type: boolean
         constraints:
           - type: not_null
@@ -157,15 +143,9 @@ models:
           type: gist
     data_tests:
       - model_validate:
-          config:
-            where: _is_valid_v0
           arguments:
             model_class: data_inclusion.schema.v0.Service
-      - model_validate:
-          config:
-            where: _is_valid_v1
-          arguments:
-            model_class: data_inclusion.schema.v1.Service
+            where: _is_valid
     columns:
       - name: _di_surrogate_id
         data_type: text
@@ -194,21 +174,13 @@ models:
         data_type: text
       - name: page_web
         data_type: text
-      - name: conditions_acces
-        data_type: text
       - name: presentation_resume
         data_type: text
       - name: presentation_detail
         data_type: text
-      - name: description
-        data_type: text
       - name: types
         data_type: text[]
-      - name: type
-        data_type: text
       - name: thematiques
-        data_type: text[]
-      - name: thematiques_v1
         data_type: text[]
       - name: prise_rdv
         data_type: text
@@ -216,20 +188,12 @@ models:
         data_type: text[]
       - name: frais_autres
         data_type: text
-      - name: frais_v1
-        data_type: text
-      - name: frais_precisions
-        data_type: text
       - name: profils
         data_type: text[]
       - name: profils_precisions
         data_type: text
       - name: pre_requis
         data_type: text[]
-      - name: publics
-        data_type: text[]
-      - name: publics_precisions
-        data_type: text
       - name: cumulable
         data_type: boolean
       - name: justificatifs
@@ -252,8 +216,6 @@ models:
         data_type: float
       - name: recurrence
         data_type: text
-      - name: horaires_accueil
-        data_type: text
       - name: date_creation
         data_type: date
       - name: date_suspension
@@ -270,15 +232,7 @@ models:
         data_type: text
       - name: date_maj
         data_type: date
-      - name: lien_mobilisation
-        data_type: text
-      - name: mobilisable_par
-        data_type: text[]
-      - name: mobilisation_precisions
-        data_type: text
       - name: modes_accueil
-        data_type: text[]
-      - name: modes_mobilisation
         data_type: text[]
       - name: modes_orientation_accompagnateur
         data_type: text[]
@@ -294,17 +248,11 @@ models:
         data_type: text
       - name: zone_diffusion_nom
         data_type: text
-      - name: zone_eligibilite
-        data_type: text[]
       - name: volume_horaire_hebdomadaire
         data_type: float
       - name: nombre_semaines
         data_type: integer
       - name: score_qualite
-        data_type: float
-      - name: score_qualite_v0
-        data_type: float
-      - name: score_qualite_v1
         data_type: float
       - name: _has_pii
         data_type: boolean
@@ -314,11 +262,7 @@ models:
         data_type: boolean
         constraints:
           - type: not_null
-      - name: _is_valid_v0
-        data_type: boolean
-        constraints:
-          - type: not_null
-      - name: _is_valid_v1
+      - name: _is_valid
         data_type: boolean
         constraints:
           - type: not_null
@@ -409,23 +353,6 @@ models:
           - type: not_null
 
   - name: marts__services_profils
-    config:
-      indexes:
-        - columns: ['value']
-    columns:
-      - name: service_surrogate_id
-        data_type: text
-        constraints:
-          - type: not_null
-          - type: foreign_key
-            to: ref('marts__services')
-            to_columns: [_di_surrogate_id]
-      - name: value
-        data_type: text
-        constraints:
-          - type: not_null
-
-  - name: marts__services_publics
     config:
       indexes:
         - columns: ['value']

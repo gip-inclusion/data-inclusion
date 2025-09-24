@@ -8,10 +8,7 @@ from airflow.models import Variable
 
 AIRFLOW_HOME = Path(configuration.get_airflow_home())
 DBT_PROJECT_PATH = AIRFLOW_HOME / "dbt"
-
-DBT_BIN_PATH = str(
-    Path(configuration.get_airflow_home()) / "venvs" / "dbt" / "bin" / "dbt"
-)
+DBT_BIN_PATH = AIRFLOW_HOME / "venvs" / "dbt" / "bin" / "dbt"
 
 
 @task.bash(
