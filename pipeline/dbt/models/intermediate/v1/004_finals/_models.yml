@@ -1,33 +1,31 @@
 version: 2
 
 models:
-  - name: int__erreurs_validation
+  - name: int__structures_v1
+
+  - name: int__services_v1
+
+  - name: int__erreurs_validation_v1
     config:
       indexes:
-        - columns: ['_di_surrogate_id']
-        - columns: ['schema_version']
         - columns: ['resource_type']
     columns:
-      - name: _di_surrogate_id
+      - name: id
         data_tests:
           - not_null
           - relationships:
               config:
                 where: resource_type = 'structure'
               arguments:
-                to: ref('int__structures')
-                field: _di_surrogate_id
+                to: ref('int__structures_v1')
+                field: id
           - relationships:
               config:
                 where: resource_type = 'service'
               arguments:
-                to: ref('int__services')
-                field: _di_surrogate_id
+                to: ref('int__services_v1')
+                field: id
       - name: source
-        data_tests:
-          - not_null
-          - dbt_utils.not_empty_string
-      - name: id
         data_tests:
           - not_null
           - dbt_utils.not_empty_string
@@ -42,7 +40,6 @@ models:
           - accepted_values:
               arguments:
                 values:
-                  - v0
                   - v1
       - name: resource_type
         data_tests:
@@ -58,66 +55,13 @@ models:
           - accepted_values:
               arguments:
                 values:
-                  - data_inclusion.schema.v0.Service
-                  - data_inclusion.schema.v0.Structure
                   - data_inclusion.schema.v1.Service
                   - data_inclusion.schema.v1.Structure
       - name: msg
         data_tests:
           - not_null
 
-  - name: int__services
-    config:
-      indexes:
-        - columns: ['_di_surrogate_id']
-          unique: true
-    columns:
-      - name: zone_diffusion_code
-        data_tests:
-          - not_null:
-              config:
-                severity: warn
-          - dbt_utils.not_empty_string
-          - dbt_utils.not_constant
-          - dbt_utils.expression_is_true:
-              config:
-                severity: warn
-              arguments:
-                expression: "!~ '^(751|693|132)'"
-          - relationships:
-              # TODO(vmttn): prevent false codes from being propagated downstream
-              # and set back severity to error
-              config:
-                severity: warn
-                where: "zone_diffusion_type = 'region'"
-              arguments:
-                to: ref('stg_decoupage_administratif__regions')
-                field: code
-          - relationships:
-              config:
-                severity: warn
-                where: "zone_diffusion_type = 'departement'"
-              arguments:
-                to: ref('stg_decoupage_administratif__departements')
-                field: code
-          - relationships:
-              config:
-                severity: warn
-                where: "zone_diffusion_type = 'epci'"
-              arguments:
-                to: ref('stg_decoupage_administratif__epcis')
-                field: code
-          - relationships:
-              config:
-                severity: warn
-
-                where: "zone_diffusion_type = 'commune'"
-              arguments:
-                to: ref('stg_decoupage_administratif__communes')
-                field: code
-  - name: int__structures
-
-  - name: int__criteres_qualite
+  - name: int__criteres_qualite_v1
     description: |
       Quality criteria scorings for services from all sources.
       Each row holds a single criterion score for a service.
@@ -130,8 +74,8 @@ models:
           - not_null
           - relationships:
               arguments:
-                to: ref('int__union_services')
-                field: _di_surrogate_id
+                to: ref('int__services_v1')
+                field: id
       - name: nom_critere
         description: Name of the criterion.
         data_tests:
@@ -154,5 +98,4 @@ models:
           - accepted_values:
               arguments:
                 values:
-                  - v0
                   - v1

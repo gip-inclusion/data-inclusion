@@ -11,33 +11,20 @@ criteres AS (
 ),
 
 erreurs AS (
-    SELECT * FROM {{ ref('int__erreurs_validation') }}
+    SELECT DISTINCT _di_surrogate_id
+    FROM {{ ref('int__erreurs_validation') }}
     WHERE resource_type = 'service'
 ),
 
 scores AS (
     SELECT
-        criteres.service_id                                                     AS "service_id",
-        AVG(criteres.score_ligne) FILTER (WHERE criteres.schema_version = 'v0') AS "score_v0",
-        AVG(criteres.score_ligne) FILTER (WHERE criteres.schema_version = 'v1') AS "score_v1"
+        criteres.service_id       AS "service_id",
+        AVG(criteres.score_ligne) AS "score"
     FROM criteres
     GROUP BY 1
 ),
 
-erreurs_v0 AS (
-    SELECT DISTINCT _di_surrogate_id
-    FROM erreurs
-    WHERE schema_version = 'v0' AND resource_type = 'service'
-),
-
-erreurs_v1 AS (
-    SELECT DISTINCT _di_surrogate_id
-    FROM erreurs
-    WHERE schema_version = 'v1' AND resource_type = 'service'
-),
-
 final AS (
-
     SELECT
         {{
             dbt_utils.star(
@@ -49,17 +36,11 @@ final AS (
                 ]
             )
         }},
-        -- keep this column for backward compatibility
-        -- TODO: remove after metabase migration on v1
-        scores.score_v0                                 AS "score_qualite",
-        scores.score_v0                                 AS "score_qualite_v0",
-        scores.score_v1                                 AS "score_qualite_v1",
+        scores.score                                    AS "score_qualite",
         courriels_personnels.courriel IS NOT NULL       AS "_has_pii",
         services.source NOT IN ('soliguide', 'agefiph') AS "_in_opendata",
-        erreurs_v0._di_surrogate_id IS NULL             AS "_is_valid_v0",
-        erreurs_v1._di_surrogate_id IS NULL             AS "_is_valid_v1",
-        -- the following fields will be removed in v1
-        -- for now they are kept for compatibility, but without any value
+        erreurs._di_surrogate_id IS NULL                AS "_is_valid",
+        -- the following is kept for retrocompatibility
         CAST(NULL AS BOOLEAN)                           AS "contact_public",
         CAST(NULL AS BOOLEAN)                           AS "cumulable",
         CAST(NULL AS DATE)                              AS "date_creation",
@@ -67,8 +48,7 @@ final AS (
     FROM services
     LEFT JOIN courriels_personnels ON services.courriel = courriels_personnels.courriel
     LEFT JOIN scores ON services._di_surrogate_id = scores.service_id
-    LEFT JOIN erreurs_v0 ON services._di_surrogate_id = erreurs_v0._di_surrogate_id
-    LEFT JOIN erreurs_v1 ON services._di_surrogate_id = erreurs_v1._di_surrogate_id
+    LEFT JOIN erreurs ON services._di_surrogate_id = erreurs._di_surrogate_id
 )
 
 SELECT * FROM final
