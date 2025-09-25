@@ -1,23 +1,19 @@
 version: 2
 
 models:
-  - name: marts__structures
+  - name: marts__structures_v1
     config:
       indexes:
         - columns: ['source']
     data_tests:
       - model_validate:
           arguments:
-            model_class: data_inclusion.schema.v0.Structure
+            model_class: data_inclusion.schema.v1.Structure
     columns:
-      - name: _di_surrogate_id
-        data_type: text
-        constraints:
-          - type: primary_key
       - name: id
         data_type: text
         constraints:
-          - type: not_null
+          - type: primary_key
       - name: siret
         data_type: text
         data_tests:
@@ -26,8 +22,6 @@ models:
                 to: ref('stg_sirene__stock_etablissement')
                 field: siret
                 to_condition: etat_administratif_etablissement = 'actif'
-      - name: rna
-        data_type: text
       - name: nom
         data_type: text
       - name: commune
@@ -44,17 +38,13 @@ models:
         data_type: float
       - name: latitude
         data_type: float
-      - name: typologie
-        data_type: text
       - name: telephone
         data_type: text
       - name: courriel
         data_type: text
       - name: site_web
         data_type: text
-      - name: presentation_resume
-        data_type: text
-      - name: presentation_detail
+      - name: description
         data_type: text
       - name: source
         data_type: text
@@ -62,19 +52,13 @@ models:
           - type: not_null
       - name: date_maj
         data_type: date
-      - name: antenne
-        data_type: boolean
       - name: lien_source
         data_type: text
-      - name: horaires_ouverture
+      - name: horaires_accueil
         data_type: text
-      - name: accessibilite
+      - name: accessibilite_lieu
         data_type: text
-      - name: labels_nationaux
-        data_type: text[]
-      - name: labels_autres
-        data_type: text[]
-      - name: thematiques
+      - name: reseaux_porteurs
         data_type: text[]
       - name: _cluster_id
         data_type: text
@@ -95,44 +79,27 @@ models:
         constraints:
           - type: not_null
 
-  - name: marts__structures_labels_nationaux
+  - name: marts__structures_reseaux_porteurs_v1
     config:
       indexes:
         - columns: ['value']
     columns:
-      - name: structure_surrogate_id
+      - name: structure_id
         data_type: text
         constraints:
           - type: not_null
           - type: foreign_key
-            to: ref('marts__structures')
-            to_columns: [_di_surrogate_id]
+            to: ref('marts__structures_v1')
+            to_columns: [id]
       - name: value
         data_type: text
         constraints:
           - type: not_null
 
-  - name: marts__structures_thematiques
+  - name: marts__services_v1
     config:
       indexes:
-        - columns: ['value']
-    columns:
-      - name: structure_surrogate_id
-        data_type: text
-        constraints:
-          - type: not_null
-          - type: foreign_key
-            to: ref('marts__structures')
-            to_columns: [_di_surrogate_id]
-      - name: value
-        data_type: text
-        constraints:
-          - type: not_null
-
-  - name: marts__services
-    config:
-      indexes:
-        - columns: ['_di_structure_surrogate_id']
+        - columns: ['structure_id']
         - columns: ['source']
         - columns: ['modes_accueil']
           type: gin
@@ -143,62 +110,42 @@ models:
     data_tests:
       - model_validate:
           arguments:
-            model_class: data_inclusion.schema.v0.Service
+            model_class: data_inclusion.schema.v1.Service
     columns:
-      - name: _di_surrogate_id
-        data_type: text
-        constraints:
-          - type: primary_key
-      - name: _di_structure_surrogate_id
-        data_type: text
-        constraints:
-          - type: not_null
-          - type: foreign_key
-            to: ref('marts__structures')
-            to_columns: [_di_surrogate_id]
       - name: id
         data_type: text
         constraints:
-          - type: not_null
+          - type: primary_key
       - name: structure_id
         data_type: text
         constraints:
           - type: not_null
+          - type: foreign_key
+            to: ref('marts__structures_v1')
+            to_columns: [id]
       - name: source
         data_type: text
         constraints:
           - type: not_null
       - name: nom
         data_type: text
-      - name: page_web
+      - name: conditions_acces
         data_type: text
-      - name: presentation_resume
+      - name: description
         data_type: text
-      - name: presentation_detail
+      - name: type
         data_type: text
-      - name: types
-        data_type: text[]
       - name: thematiques
         data_type: text[]
       - name: prise_rdv
         data_type: text
       - name: frais
         data_type: text[]
-      - name: frais_autres
-        data_type: text
       - name: frais_precisions
         data_type: text
-      - name: profils
+      - name: publics
         data_type: text[]
-      - name: profils_precisions
-        data_type: text
-      - name: pre_requis
-        data_type: text[]
-      - name: cumulable
-        data_type: boolean
-      - name: justificatifs
-        data_type: text[]
-      - name: formulaire_en_ligne
+      - name: publics_precisions
         data_type: text
       - name: commune
         data_type: text
@@ -214,40 +161,30 @@ models:
         data_type: float
       - name: latitude
         data_type: float
-      - name: recurrence
+      - name: horaires_accueil
         data_type: text
-      - name: date_creation
-        data_type: date
-      - name: date_suspension
-        data_type: date
       - name: lien_source
         data_type: text
       - name: telephone
         data_type: text
       - name: courriel
         data_type: text
-      - name: contact_public
-        data_type: boolean
       - name: contact_nom_prenom
         data_type: text
       - name: date_maj
         data_type: date
+      - name: lien_mobilisation
+        data_type: text
+      - name: mobilisable_par
+        data_type: text[]
+      - name: mobilisation_precisions
+        data_type: text
       - name: modes_accueil
         data_type: text[]
-      - name: modes_orientation_accompagnateur
+      - name: modes_mobilisation
         data_type: text[]
-      - name: modes_orientation_accompagnateur_autres
-        data_type: text
-      - name: modes_orientation_beneficiaire
+      - name: zone_eligibilite
         data_type: text[]
-      - name: modes_orientation_beneficiaire_autres
-        data_type: text
-      - name: zone_diffusion_type
-        data_type: text
-      - name: zone_diffusion_code
-        data_type: text
-      - name: zone_diffusion_nom
-        data_type: text
       - name: volume_horaire_hebdomadaire
         data_type: float
       - name: nombre_semaines
@@ -267,154 +204,86 @@ models:
         constraints:
           - type: not_null
 
-  - name: marts__services_frais
+  - name: marts__services_mobilisable_par_v1
     config:
       indexes:
         - columns: ['value']
     columns:
-      - name: service_surrogate_id
+      - name: service_id
         data_type: text
         constraints:
           - type: not_null
           - type: foreign_key
-            to: ref('marts__services')
-            to_columns: [_di_surrogate_id]
+            to: ref('marts__services_v1')
+            to_columns: [id]
       - name: value
         data_type: text
         constraints:
           - type: not_null
 
-  - name: marts__services_justificatifs
+  - name: marts__services_modes_accueil_v1
     config:
       indexes:
         - columns: ['value']
     columns:
-      - name: service_surrogate_id
+      - name: service_id
         data_type: text
         constraints:
           - type: not_null
           - type: foreign_key
-            to: ref('marts__services')
-            to_columns: [_di_surrogate_id]
+            to: ref('marts__services_v1')
+            to_columns: [id]
       - name: value
         data_type: text
         constraints:
           - type: not_null
 
-  - name: marts__services_modes_accueil
+  - name: marts__services_modes_mobilisation_v1
     config:
       indexes:
         - columns: ['value']
     columns:
-      - name: service_surrogate_id
+      - name: service_id
         data_type: text
         constraints:
           - type: not_null
           - type: foreign_key
-            to: ref('marts__services')
-            to_columns: [_di_surrogate_id]
+            to: ref('marts__services_v1')
+            to_columns: [id]
       - name: value
         data_type: text
         constraints:
           - type: not_null
 
-  - name: marts__services_modes_orientation_accompagnateur
+  - name: marts__services_publics_v1
     config:
       indexes:
         - columns: ['value']
     columns:
-      - name: service_surrogate_id
+      - name: service_id
         data_type: text
         constraints:
           - type: not_null
           - type: foreign_key
-            to: ref('marts__services')
-            to_columns: [_di_surrogate_id]
+            to: ref('marts__services_v1')
+            to_columns: [id]
       - name: value
         data_type: text
         constraints:
           - type: not_null
 
-  - name: marts__services_modes_orientation_beneficiaire
+  - name: marts__services_thematiques_v1
     config:
       indexes:
         - columns: ['value']
     columns:
-      - name: service_surrogate_id
+      - name: service_id
         data_type: text
         constraints:
           - type: not_null
           - type: foreign_key
-            to: ref('marts__services')
-            to_columns: [_di_surrogate_id]
-      - name: value
-        data_type: text
-        constraints:
-          - type: not_null
-
-  - name: marts__services_profils
-    config:
-      indexes:
-        - columns: ['value']
-    columns:
-      - name: service_surrogate_id
-        data_type: text
-        constraints:
-          - type: not_null
-          - type: foreign_key
-            to: ref('marts__services')
-            to_columns: [_di_surrogate_id]
-      - name: value
-        data_type: text
-        constraints:
-          - type: not_null
-
-  - name: marts__services_pre_requis
-    config:
-      indexes:
-        - columns: ['value']
-    columns:
-      - name: service_surrogate_id
-        data_type: text
-        constraints:
-          - type: not_null
-          - type: foreign_key
-            to: ref('marts__services')
-            to_columns: [_di_surrogate_id]
-      - name: value
-        data_type: text
-        constraints:
-          - type: not_null
-
-  - name: marts__services_thematiques
-    config:
-      indexes:
-        - columns: ['value']
-    columns:
-      - name: service_surrogate_id
-        data_type: text
-        constraints:
-          - type: not_null
-          - type: foreign_key
-            to: ref('marts__services')
-            to_columns: [_di_surrogate_id]
-      - name: value
-        data_type: text
-        constraints:
-          - type: not_null
-
-  - name: marts__services_types
-    config:
-      indexes:
-        - columns: ['value']
-    columns:
-      - name: service_surrogate_id
-        data_type: text
-        constraints:
-          - type: not_null
-          - type: foreign_key
-            to: ref('marts__services')
-            to_columns: [_di_surrogate_id]
+            to: ref('marts__services_v1')
+            to_columns: [id]
       - name: value
         data_type: text
         constraints:
