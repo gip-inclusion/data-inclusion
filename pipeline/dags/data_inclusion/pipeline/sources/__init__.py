@@ -32,12 +32,12 @@ SOURCES_CONFIGS = {
         "streams": {
             "structures": {
                 "filename": "structures.json",
-                "url": "https://api.dora.inclusion.beta.gouv.fr/api/v2/",
+                "url": "https://api.dora.inclusion.gouv.fr/api/v2/",
                 "token": Variable.get("DORA_API_TOKEN", None),
             },
             "services": {
                 "filename": "services.json",
-                "url": "https://api.dora.inclusion.beta.gouv.fr/api/v2/",
+                "url": "https://api.dora.inclusion.gouv.fr/api/v2/",
                 "token": Variable.get("DORA_API_TOKEN", None),
             },
         },
