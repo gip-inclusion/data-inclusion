@@ -29,7 +29,7 @@ communes AS (
 codes_postaux AS (
     SELECT DISTINCT
         UNNEST(communes.codes_postaux)
-        AS code_postal
+            AS code_postal
     FROM communes
 ),
 
@@ -88,6 +88,14 @@ final AS (
                     {{ this }}.adresse_id IS NULL
                     -- previously failed rows
                     OR {{ this }}.score IS NULL
+                    -- score is low, and has not been checked recently
+                    OR (
+                        {{ this }}.score < 0.765
+                        AND (
+                            {{ this }}.geocoded_at IS NULL
+                            OR {{ this }}.geocoded_at < (NOW() - INTERVAL '1 week')
+                        )
+                    )
                     -- changed rows
                     OR {{ this }}.input_adresse != input_adresses.adresse
                     OR {{ this }}.input_code_postal != input_adresses.code_postal

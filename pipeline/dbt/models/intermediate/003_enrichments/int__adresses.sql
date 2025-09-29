@@ -27,7 +27,7 @@ final AS (
     LEFT JOIN geocodages
         ON
             adresses._di_surrogate_id = geocodages.adresse_id
-            AND geocodages.score >= 0.8
+            AND geocodages.score >= 0.765
 )
 
 SELECT * FROM final
