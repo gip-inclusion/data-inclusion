@@ -41,7 +41,7 @@ def list_structures_query(
     include_all_soliguide: bool,
 ) -> sqla.Select[tuple[models.Structure]]:
     query = sqla.select(models.Structure).options(
-        orm.selectinload(models.Structure.doublons)
+        orm.joinedload(models.Structure.doublons)
     )
 
     if not include_all_soliguide:
