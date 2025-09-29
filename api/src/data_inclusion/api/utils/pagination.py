@@ -51,7 +51,7 @@ def paginate(
         items = db_session.execute(query).all()
         items = [dict(zip(mapping, item, strict=True)) for item in items]
     else:
-        items = db_session.execute(query).scalars().all()
+        items = db_session.execute(query).scalars().unique().all()
 
     size = len(items)
     total = db_session.execute(total_count_query).scalar()
