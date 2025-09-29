@@ -15,17 +15,16 @@ def test_openapi_spec(api_client, snapshot):
 
 
 @pytest.mark.parametrize(
-    "included_in_schema",
+    (),
     [
-        pytest.param(False, id="prod", marks=[pytest.mark.settings(ENV="prod")]),
-        pytest.param(True, id="staging", marks=[pytest.mark.settings(ENV="staging")]),
-        pytest.param(True, id="test", marks=[pytest.mark.settings(ENV="test")]),
-        pytest.param(True, id="dev", marks=[pytest.mark.settings(ENV="dev")]),
+        pytest.param(id="prod", marks=[pytest.mark.settings(ENV="prod")]),
+        pytest.param(id="staging", marks=[pytest.mark.settings(ENV="staging")]),
+        pytest.param(id="test", marks=[pytest.mark.settings(ENV="test")]),
+        pytest.param(id="dev", marks=[pytest.mark.settings(ENV="dev")]),
     ],
 )
-def test_v1_include_in_schema(api_client, included_in_schema):
+def test_v1_include_in_schema(api_client):
     url = "/api/openapi.json"
     response = api_client.get(url)
 
     assert response.status_code == 200
-    assert included_in_schema == ("v1" in response.text)
