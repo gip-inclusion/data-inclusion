@@ -6,7 +6,7 @@ sentry-sdk
 
 2captcha-python
 beautifulsoup4
-data-inclusion-schema @ git+https://github.com/gip-inclusion/data-inclusion-schema.git@vmttn/feat/v1-thematiques
+data-inclusion-schema
 furl
 GeoAlchemy2
 geopandas

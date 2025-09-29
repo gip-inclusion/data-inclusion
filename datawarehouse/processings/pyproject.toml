@@ -6,7 +6,7 @@ requires = ["setuptools", "wheel"]
 name = "data-inclusion-processings"
 version = "0.1.0"
 dependencies = [
-    "data-inclusion-schema==1.0.0b8",
+    "data-inclusion-schema==1.0.0",
     "dedupe",
     "dedupe-variable-datetime",
     "furl",
