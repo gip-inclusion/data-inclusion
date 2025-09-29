@@ -38,8 +38,11 @@ def paginate(
 ) -> dict:
     limit, offset = size, size * (page - 1)
 
-    count_query = sa.select(sa.func.count()).select_from(
-        query.order_by(None).options(orm.noload("*")).subquery()
+    total_count_query = sa.select(sa.func.count()).select_from(
+        query.with_only_columns(sa.literal(1))
+        .order_by(None)
+        .options(orm.noload("*"))
+        .subquery()
     )
 
     query = query.limit(limit).offset(offset)
@@ -50,7 +53,8 @@ def paginate(
     else:
         items = db_session.execute(query).scalars().all()
 
-    total = db_session.execute(count_query).scalar()
+    size = len(items)
+    total = db_session.execute(total_count_query).scalar()
 
     if size == 0:
         pages = 0
@@ -63,6 +67,6 @@ def paginate(
         "items": items,
         "total": total,
         "page": page,
-        "size": len(items),
+        "size": size,
         "pages": pages,
     }
