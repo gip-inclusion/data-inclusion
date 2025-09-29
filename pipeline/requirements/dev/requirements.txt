@@ -256,11 +256,7 @@ cryptography==45.0.2
     #   -c airflow/constraints.txt
     #   apache-airflow
     #   paramiko
-<<<<<<< HEAD
-data-inclusion-schema==1.0.0b7
-=======
-data-inclusion-schema @ git+https://github.com/gip-inclusion/data-inclusion-schema.git@46f2e03f5194ee5bb69be397b71adb06c520d908
->>>>>>> abef9da9 (feat(pipeline): map thematiques v1)
+data-inclusion-schema==1.0.0
     # via -r dev/../tasks/requirements.in
 dateparser==1.2.2
     # via htmldate
