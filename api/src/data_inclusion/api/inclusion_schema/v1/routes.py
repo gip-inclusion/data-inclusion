@@ -14,7 +14,7 @@ for name, model, summary in [
         "Récupérer le référentiel des modes de mobilisation",
     ),
     (
-        "personnes-mobilisatrice",
+        "personnes-mobilisatrices",
         v1.PersonneMobilisatrice,
         "Récupérer le référentiel des personnes mobilisatrices",
     ),
