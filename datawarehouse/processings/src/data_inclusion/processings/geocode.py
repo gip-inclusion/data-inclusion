@@ -17,7 +17,7 @@ def _geocode(df: pd.DataFrame) -> pd.DataFrame:
 
         try:
             response = requests.post(
-                "https://api-adresse.data.gouv.fr/search/csv/",
+                "https://data.geopf.fr/geocodage/search/csv/",
                 files={"data": ("data.csv", buf.getvalue(), "text/csv")},
                 data={
                     "columns": ["adresse", "code_postal", "commune"],
