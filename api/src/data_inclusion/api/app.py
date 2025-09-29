@@ -79,8 +79,8 @@ def create_app(settings: config.Settings) -> fastapi.FastAPI:
 
     app.middleware("http")(db.db_session_middleware)
 
-    app.include_router(v0_api_router)
-    app.include_router(v1_api_router, include_in_schema=settings.ENV != "prod")
+    app.include_router(v1_api_router)
+    app.include_router(v0_api_router, deprecated=True)
 
     @app.get("/robots.txt", include_in_schema=False)
     def get_robots_txt():
