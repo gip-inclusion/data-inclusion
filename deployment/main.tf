@@ -276,6 +276,7 @@ resource "terraform_data" "up" {
     AIRFLOW__SENTRY__RELEASE='${var.stack_version}'
     AIRFLOW_HOSTNAME='${local.airflow_hostname}'
     AIRFLOW__WEBSERVER__BASE_URL='https://${local.airflow_hostname}'
+    AIRFLOW__API__BASE_URL='https://${local.airflow_hostname}'
     AIRFLOW_VAR_ENVIRONMENT='${var.environment}'
     EOT
     )
