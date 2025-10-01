@@ -1,5 +1,4 @@
-from airflow.decorators import dag, task
-from airflow.models.baseoperator import chain
+from airflow.sdk import chain, dag, task
 
 from data_inclusion.pipeline.common import dags, tasks
 
