@@ -1,8 +1,11 @@
+from datetime import datetime
+
 import pandas as pd
 import pytest
+from click.testing import CliRunner
 
 from data_inclusion.api.cli import cli
-from data_inclusion.schema import v0
+from data_inclusion.schema import v0, v1
 
 
 @pytest.fixture
@@ -13,25 +16,27 @@ def dataset_path(structures_df, services_df, tmpdir):
 
 
 @pytest.mark.parametrize(
-    ("structures_df", "services_df", "expected_exit_code"),
+    ("version", "structures_df", "services_df", "expected_exit_code"),
     [
-        (pd.DataFrame(), pd.DataFrame(), 1),
+        ("v0", pd.DataFrame(), pd.DataFrame(), 1),
+        ("v1", pd.DataFrame(), pd.DataFrame(), 1),
         (
+            "v0",
             pd.DataFrame(
                 [
                     {
                         "_di_surrogate_id": "foo-1",
                         "_cluster_id": None,
                         "_is_closed": False,
-                        "description": None,
-                        "horaires_accueil": "Mon-Fri 9:00-17:00",
-                        "reseaux_porteurs": ["action-logement"],
                         **v0.Structure(
                             source="foo",
                             id="1",
                             code_insee="59350",
                             nom="ma structure",
-                            date_maj="2025-01-01",
+                            date_maj=datetime(2025, 1, 1),
+                            telephone=None,
+                            courriel=None,
+                            site_web=None,
                         ).model_dump(),
                     }
                 ]
@@ -39,34 +44,53 @@ def dataset_path(structures_df, services_df, tmpdir):
             pd.DataFrame(
                 [
                     {
-                        "_di_structure_surrogate_id": "foo-1",
                         "_di_surrogate_id": "foo-1",
-                        "score_qualite_v0": 0.8,
-                        # NOTE(vperron): I like that we gradually add the v1 fields
-                        # here and keep the **v0.Service below to attest the presence
-                        # of the v0 fields.
-                        "conditions_acces": "Etre plutôt grand",
-                        "description": None,
-                        "frais_v1": "payant",
-                        "thematiques_v1": ["equipement-et-alimentation--aide-menagere"],
-                        "frais_precisions": "100 balles et un mars",
-                        "horaires_accueil": "Mon-Fri 9:00-17:00",
-                        "lien_mobilisation": None,
-                        "mobilisable_par": None,
-                        "mobilisation_precisions": None,
-                        "modes_mobilisation": None,
-                        "publics": ["adultes"],
-                        "publics_precisions": "adultes en bonne santé",
-                        "score_qualite_v1": 0.8,
-                        "type": "formation",
-                        "zone_eligibilite": None,
+                        "_di_structure_surrogate_id": "foo-1",
+                        "score_qualite": 0.8,
                         **v0.Service(
                             source="foo",
                             id="1",
                             structure_id="1",
                             code_insee="59350",
                             nom="mon service",
-                            date_maj="2025-01-01",
+                            date_maj=datetime(2025, 1, 1),
+                            telephone=None,
+                            courriel=None,
+                        ).model_dump(),
+                    }
+                ]
+            ),
+            0,
+        ),
+        (
+            "v1",
+            pd.DataFrame(
+                [
+                    {
+                        "_cluster_id": None,
+                        "_is_closed": False,
+                        **v1.Structure(
+                            source="foo",
+                            id="1",
+                            code_insee="59350",
+                            nom="ma structure",
+                            date_maj=datetime(2025, 1, 1),
+                        ).model_dump(),
+                    }
+                ]
+            ),
+            pd.DataFrame(
+                [
+                    {
+                        "score_qualite": 0.8,
+                        **v1.Service(
+                            source="foo",
+                            id="1",
+                            description="." * 100,
+                            structure_id="1",
+                            code_insee="59350",
+                            nom="mon service",
+                            date_maj=datetime(2025, 1, 1),
                         ).model_dump(),
                     }
                 ]
@@ -76,20 +100,28 @@ def dataset_path(structures_df, services_df, tmpdir):
     ],
 )
 @pytest.mark.with_token
-def test_load_inclusion_data(api_client, cli_runner, dataset_path, expected_exit_code):
+def test_load_inclusion_data(
+    version, api_client, cli_runner: CliRunner, dataset_path, expected_exit_code
+):
     result = cli_runner.invoke(
         cli,
         [
             "load-inclusion-data",
+            "--version",
+            version,
             "--path",
             str(dataset_path),
         ],
     )
 
-    assert result.exit_code == expected_exit_code
+    if expected_exit_code > 0:
+        assert result.exit_code == expected_exit_code
 
-    if expected_exit_code == 0:
-        for path in ["/api/v0/structures", "/api/v0/services"]:
+    else:
+        if result.exception is not None:
+            raise result.exception
+
+        for path in [f"/api/{version}/structures", f"/api/{version}/services"]:
             response = api_client.get(path)
             assert response.status_code == 200
             assert len(response.json()["items"]) == 1
