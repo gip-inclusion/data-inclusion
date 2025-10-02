@@ -12,10 +12,3 @@ jobs:
     if: contains(github.event.pull_request.labels.*.name, 'deploy-to-staging')
     uses: ./.github/workflows/_build_images.yml
 
-  deploy_staging:
-    needs: build
-    if: contains(github.event.pull_request.labels.*.name, 'deploy-to-staging')
-    uses: ./.github/workflows/_terraform_deploy.yml
-    secrets: inherit
-    with:
-      environment: staging
