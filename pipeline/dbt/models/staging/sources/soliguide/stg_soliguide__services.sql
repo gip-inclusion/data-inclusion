@@ -39,7 +39,7 @@ services AS (
 ),
 
 final AS (
-    SELECT *
+    SELECT DISTINCT ON (id) *
     FROM services
     WHERE NOT sources @> '[{"name": "dora"}]'
 )
