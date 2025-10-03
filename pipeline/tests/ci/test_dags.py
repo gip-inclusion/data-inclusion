@@ -1,12 +1,11 @@
-import pytest
-
 from airflow.models import DagBag
 
 
-@pytest.mark.parametrize("dag_id", DagBag().dag_ids)
-def test_dags_generic(dag_id):
+def test_dags_generic():
     dagbag = DagBag()
-    dag = dagbag.get_dag(dag_id=dag_id)
     assert dagbag.import_errors == {}
-    assert dag is not None
-    assert len(dag.tasks) >= 1
+    assert len(dagbag.dag_ids) > 0, "No DAGs found"
+    for dag_id in dagbag.dag_ids:
+        dag = dagbag.get_dag(dag_id=dag_id)
+        assert dag is not None
+        assert len(dag.tasks) >= 1
