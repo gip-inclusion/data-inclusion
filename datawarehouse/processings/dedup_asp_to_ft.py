@@ -56,6 +56,10 @@ df_total["date_maj"] = pd.to_datetime(df_total["date_maj"], format="mixed")
 df_total["telephone"] = df_total["telephone"].astype(str)
 df_total["code_insee"] = df_total["code_insee"].astype(str)
 
+df_total["nom"] = "france travail " + df_total["commune"].astype(str)
+df_total["siren"] = "130005481"
+df_total["telephone"] = "39 49"
+
 df_total = df_total.assign(
     adresse=df_total["adresse"].str.lower().str.strip(),
     commune=df_total["commune"].str.lower().str.strip(),
@@ -63,7 +67,7 @@ df_total = df_total.assign(
     courriel=df_total["courriel"].str.lower().str.strip(),
 )
 
-df_doublons = deduplicate(df_total.to_dict(orient="records"), threshold=0.25)
+df_doublons = deduplicate(df_total.to_dict(orient="records"), threshold=0.75)
 
 
 df = df_total.merge(
@@ -136,3 +140,4 @@ print("Summary of Cluster ID Distribution by Source:")
 print(final_summary)
 
 df.to_excel("ft_asp_structures_dedupe.xlsx", index=False)
+df.to_csv("ft_asp_structures_dedupe.csv", index=False)
