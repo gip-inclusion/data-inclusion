@@ -3,6 +3,7 @@ WITH source AS (
 
 lieux AS (
     SELECT
+        data ->> 'lieu_id'                                                                               AS "lieu_id",
         CAST(SUBSTRING(data ->> 'updatedAt' FROM '\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d{3}Z') AS DATE) AS "updated_at",
         CAST(data #>> '{position,location,coordinates,0}' AS FLOAT)                                      AS "position__coordinates__x",
         CAST(data #>> '{position,location,coordinates,1}' AS FLOAT)                                      AS "position__coordinates__y",
@@ -11,7 +12,6 @@ lieux AS (
         CAST(data #>> '{modalities,inscription,checked}' AS BOOLEAN)                                     AS "modalities__inscription__checked",
         CAST(data #>> '{modalities,orientation,checked}' AS BOOLEAN)                                     AS "modalities__orientation__checked",
         data ->> 'lieu_id'                                                                               AS "id",
-        data ->> 'lieu_id'                                                                               AS "lieu_id",
         -- first replace trailing groups of 2 or more dots by an ellipsis
         -- then remove trailing dot if not preceded by "etc"
         REGEXP_REPLACE(REGEXP_REPLACE(data ->> 'name', '\.{2,}$', '…'), '(?<!etc)\.$', '')             AS "name",
@@ -37,10 +37,42 @@ lieux AS (
     FROM source
 ),
 
+/*
+    Starting mid 2025, there are duplicated lieux in Soliguide. For instance,
+    https://soliguide.fr/fr/fiche/62249 and https://soliguide.fr/fr/fiche/55997.
+
+    These are two seperate entries in Soliguide with different `lieu_id` but
+    representing the same physical location (same coordinates, same name, etc.).
+
+    For now, duplicates can be identified by looking at the services they offer.
+    Each service has a unique `serviceObjectId` that is consistent across
+    duplicated lieux. Though this might not be enough if the two entries differ.
+
+    Below, entries are deduplicated by keeping the most recently updated one.
+    The remaining entries can be used to filter the `lieux` table.
+*/
+deduplicated_lieux AS (
+    SELECT DISTINCT lieu_id
+    FROM (
+        SELECT DISTINCT ON (1)
+            services.data ->> 'serviceObjectId' AS service_id,
+            lieux.updated_at,
+            lieux.lieu_id
+        FROM
+            lieux
+        LEFT JOIN source ON lieux.lieu_id = source.data ->> 'lieu_id',
+            LATERAL JSONB_PATH_QUERY(source.data, '$.services_all[*]') AS services (data)
+        ORDER BY 1, 2 DESC
+    )
+),
+
 final AS (
-    SELECT *
+    SELECT lieux.*
     FROM lieux
-    WHERE position__country = 'fr' AND NOT sources @> '[{"name": "dora"}]'
+    INNER JOIN deduplicated_lieux ON lieux.lieu_id = deduplicated_lieux.lieu_id
+    WHERE
+        lieux.position__country = 'fr'
+        AND NOT lieux.sources @> '[{"name": "dora"}]'
 )
 
 SELECT * FROM final

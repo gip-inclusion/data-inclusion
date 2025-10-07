@@ -1,5 +1,8 @@
 WITH source AS (
-    {{ stg_source_header('soliguide', 'lieux') }}
+    {{ stg_source_header('soliguide', 'lieux') }}),
+
+lieux AS (
+    SELECT * FROM {{ ref('stg_soliguide__lieux') }}
 ),
 
 phones AS (
@@ -18,9 +21,9 @@ phones AS (
 ),
 
 final AS (
-    SELECT *
+    SELECT phones.*
     FROM phones
-    WHERE NOT sources @> '[{"name": "dora"}]'
+    INNER JOIN lieux ON phones.lieu_id = lieux.lieu_id
 )
 
 SELECT * FROM final
