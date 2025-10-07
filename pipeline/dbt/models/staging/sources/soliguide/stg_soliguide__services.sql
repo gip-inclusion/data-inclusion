@@ -1,6 +1,10 @@
 WITH source AS (
     {{ stg_source_header('soliguide', 'lieux') }}),
 
+lieux AS (
+    SELECT * FROM {{ ref('stg_soliguide__lieux') }}
+),
+
 -- about timestamps : soliguide can have corrupted timestamps,
 -- therefore timestamps are extracted from datetime fields and then casted to date
 
@@ -39,9 +43,9 @@ services AS (
 ),
 
 final AS (
-    SELECT *
+    SELECT services.*
     FROM services
-    WHERE NOT sources @> '[{"name": "dora"}]'
+    INNER JOIN lieux ON services.lieu_id = lieux.lieu_id
 )
 
 SELECT * FROM final
