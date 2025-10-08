@@ -68,6 +68,7 @@ def extract(city_code: str, commune: str, region: str, to_s3_path: str):
 )
 def load(schema_name: str, table_name: str, from_s3_path: str):
     import tempfile
+    from pathlib import Path
 
     import pandas as pd
 
@@ -83,10 +84,10 @@ def load(schema_name: str, table_name: str, from_s3_path: str):
 
     with tempfile.TemporaryDirectory() as tmpdir:
         s3_hook = s3.S3Hook(aws_conn_id="s3")
-        dfs_list = (
-            monenfant.read(s3_hook.download_file(key=p, local_path=tmpdir))
+        dfs_list = [
+            monenfant.read(Path(s3_hook.download_file(key=p, local_path=tmpdir)))
             for p in s3_hook.list_keys(prefix=from_s3_path)
-        )
+        ]
 
     df = pd.concat(dfs_list)
 
