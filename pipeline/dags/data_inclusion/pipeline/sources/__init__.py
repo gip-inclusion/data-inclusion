@@ -3,7 +3,7 @@
 It is used as a source of truth in general and to generate dedicated dags in particular.
 """
 
-from airflow.models import Variable
+from airflow.sdk import Variable
 
 from . import (
     agefiph,
