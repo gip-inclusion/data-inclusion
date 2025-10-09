@@ -89,7 +89,6 @@ def test_list_structures_unauthenticated(api_client, schema_version):
                 nom="Perrin",
                 description="""Lorem ipsum dolor sit amet, consectetur adipiscing elit,
                 sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.""",
-                rna="W242194892",
                 score_qualite=0.7,
                 siret="76475938700658",
                 site_web="https://www.le.net/",
@@ -345,7 +344,6 @@ def test_list_services_unauthenticated(api_client, schema_version):
                     description="""Lorem ipsum dolor sit amet, consectetur adipiscing
                     elit, sed do eiusmod tempor incididunt ut labore et dolore magna
                     aliqua.""",
-                    rna="W242194892",
                     score_qualite=0.3,
                     siret="76475938700658",
                     site_web="https://www.le.net/",

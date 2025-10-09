@@ -1,0 +1,101 @@
+version: 2
+
+models:
+  - name: int__structures_v1
+
+  - name: int__services_v1
+
+  - name: int__erreurs_validation_v1
+    config:
+      indexes:
+        - columns: ['resource_type']
+    columns:
+      - name: id
+        data_tests:
+          - not_null
+          - relationships:
+              config:
+                where: resource_type = 'structure'
+              arguments:
+                to: ref('int__structures_v1')
+                field: id
+          - relationships:
+              config:
+                where: resource_type = 'service'
+              arguments:
+                to: ref('int__services_v1')
+                field: id
+      - name: source
+        data_tests:
+          - not_null
+          - dbt_utils.not_empty_string
+      - name: loc
+        data_tests:
+          - not_null
+          - dbt_utils.not_empty_string
+      - name: input
+      - name: schema_version
+        data_tests:
+          - not_null
+          - accepted_values:
+              arguments:
+                values:
+                  - v1
+      - name: resource_type
+        data_tests:
+          - not_null
+          - accepted_values:
+              arguments:
+                values:
+                  - service
+                  - structure
+      - name: model_class
+        data_tests:
+          - not_null
+          - accepted_values:
+              arguments:
+                values:
+                  - data_inclusion.schema.v1.Service
+                  - data_inclusion.schema.v1.Structure
+      - name: msg
+        data_tests:
+          - not_null
+
+  - name: int__criteres_qualite_v1
+    description: |
+      Quality criteria scorings for services from all sources.
+      Each row holds a single criterion score for a service.
+      For a given service, there is as many rows as defined criteria.
+      A null score means the criterion is not applicable to the service.
+      Scoring is done by data-inclusion-schema scoring api in PL/Python.
+    columns:
+      - name: service_id
+        data_tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('int__services_v1')
+                field: id
+      - name: nom_critere
+        description: Name of the criterion.
+        data_tests:
+          - not_null
+          - dbt_utils.not_empty_string
+      - name: score_critere
+        description: |
+          Score for the given criterion and the given service, between 0 and 1.
+      - name: score_ligne
+        data_tests:
+          - not_null
+          - dbt_utils.not_constant
+          - dbt_utils.accepted_range:
+              arguments:
+                min_value: 0
+                max_value: 1
+      - name: schema_version
+        data_tests:
+          - not_null
+          - accepted_values:
+              arguments:
+                values:
+                  - v1
