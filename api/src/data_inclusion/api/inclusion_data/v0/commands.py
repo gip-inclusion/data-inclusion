@@ -83,6 +83,7 @@ def prepare_dataset(
     service_scores = (
         services_df.groupby("_di_structure_surrogate_id")["score_qualite"]
         .mean()
+        .astype(float)
         .round(2)
     )
 

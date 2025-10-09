@@ -76,7 +76,10 @@ def prepare_dataset(
     services_df: pd.DataFrame,
 ) -> tuple[pd.DataFrame, pd.DataFrame]:
     service_scores = (
-        services_df.groupby("structure_id")["score_qualite"].mean().round(2)
+        services_df.groupby("structure_id")["score_qualite"]
+        .mean()
+        .astype(float)
+        .round(2)
     )
 
     structures_df = structures_df.assign(

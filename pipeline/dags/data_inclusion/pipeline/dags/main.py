@@ -162,12 +162,14 @@ def main():
         dbt_build_intermediate.override(group_id="dbt_build_intermediate_v1")(
             version="v1"
         ),
-        dbt.dbt_task.override(task_id="dbt_build_marts_v0")(
-            command="build", select="marts.v0"
-        ),
-        dbt.dbt_task.override(task_id="dbt_build_marts_v1")(
-            command="build", select="marts.v1"
-        ),
+        [
+            dbt.dbt_task.override(task_id="dbt_build_marts_v0")(
+                command="build", select="marts.v0"
+            ),
+            dbt.dbt_task.override(task_id="dbt_build_marts_v1")(
+                command="build", select="marts.v1"
+            ),
+        ],
         export_dataset(to_s3_path=str(s3.get_key(stage="marts"))),
         dbt_snapshot_deduplicate_stats,
     )

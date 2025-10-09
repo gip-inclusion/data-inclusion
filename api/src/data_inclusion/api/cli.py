@@ -65,9 +65,10 @@ def get_path(value: str, version: Literal["v0", "v1"]) -> Path:
     )
 
     if value is None:
-        value = str(Path(settings.DATALAKE_BUCKET_NAME) / "data" / "marts" / version)
+        value = str(Path(settings.DATALAKE_BUCKET_NAME) / "data" / "marts")
         value = sorted(s3fs_client.ls(value))[-1]  # latest day
         value = sorted(s3fs_client.ls(value))[-1]  # latest run
+        value = str(Path(value) / version)
 
         logger.info(f"Using {value}")
 

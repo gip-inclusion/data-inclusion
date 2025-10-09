@@ -58,7 +58,7 @@ FROM structures
 LEFT JOIN urls AS urls_site_web ON structures.site_web = urls_site_web.input_url
 LEFT JOIN urls AS urls_accessibilite_lieu ON structures.accessibilite_lieu = urls_accessibilite_lieu.input_url
 LEFT JOIN adresses ON structures.adresse_id = adresses.id
-LEFT JOIN sirets ON structures.id = sirets.structure_id
+LEFT JOIN sirets ON structures.id = sirets.id
 UNION ALL
 SELECT
     structures_v0_to_v1.courriel,

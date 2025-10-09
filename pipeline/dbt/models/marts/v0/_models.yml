@@ -9,6 +9,7 @@ models:
       - model_validate:
           arguments:
             model_class: data_inclusion.schema.v0.Structure
+            where: _is_valid
     columns:
       - name: _di_surrogate_id
         data_type: text
@@ -144,6 +145,7 @@ models:
       - model_validate:
           arguments:
             model_class: data_inclusion.schema.v0.Service
+            where: _is_valid
     columns:
       - name: _di_surrogate_id
         data_type: text
@@ -185,8 +187,6 @@ models:
       - name: frais
         data_type: text[]
       - name: frais_autres
-        data_type: text
-      - name: frais_precisions
         data_type: text
       - name: profils
         data_type: text[]

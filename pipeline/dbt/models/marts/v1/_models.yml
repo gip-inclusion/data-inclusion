@@ -9,6 +9,7 @@ models:
       - model_validate:
           arguments:
             model_class: data_inclusion.schema.v1.Structure
+            where: _is_valid
     columns:
       - name: id
         data_type: text
@@ -111,6 +112,7 @@ models:
       - model_validate:
           arguments:
             model_class: data_inclusion.schema.v1.Service
+            where: _is_valid
     columns:
       - name: id
         data_type: text

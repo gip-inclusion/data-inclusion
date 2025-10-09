@@ -8,21 +8,16 @@ departements AS (
 
 map_frais AS (SELECT * FROM {{ ref('_map_frais') }}),
 
-unnested_frais AS (
-    SELECT
-        services._di_surrogate_id,
-        UNNEST(services.frais) AS frais
-    FROM services
-),
-
 frais AS (
-    SELECT
-        unnested_frais._di_surrogate_id,
-        ARRAY_AGG(DISTINCT map_frais.frais_v1) AS frais
-    FROM unnested_frais
-    INNER JOIN map_frais ON unnested_frais.frais = map_frais.frais_v0
+    SELECT DISTINCT ON (1)
+        services._di_surrogate_id,
+        map_frais.frais_v1 AS frais
+    FROM
+        services,
+        UNNEST(services.frais) AS item
+    INNER JOIN map_frais ON item = map_frais.frais_v0
     WHERE map_frais.frais_v1 IS NOT NULL
-    GROUP BY unnested_frais._di_surrogate_id
+    ORDER BY services._di_surrogate_id, map_frais.frais_v1 = 'payant' DESC
 ),
 
 mapping_publics AS (SELECT * FROM {{ ref('_map_publics') }}),
@@ -89,7 +84,7 @@ SELECT
         ELSE COALESCE(services.presentation_detail, services.presentation_resume)
     END                                                                                                       AS "description",
     services.thematiques                                                                                      AS "thematiques",
-    services.modes_accueil                                                                                    AS "modes_accueil",
+    thematiques_v1.thematiques                                                                                AS "modes_accueil",
     NULLIF(ARRAY(
         -- Mapping https://www.notion.so/gip-inclusion/24610bd08f8a412c83c09f6b36a1a44f?v=34cdd4c049e44f49aec060657c72c9b0&p=1fa5f321b604805a9ba5d0c7c2386dc2&pm=s
         SELECT x FROM
@@ -158,10 +153,7 @@ SELECT
             OR services.types && ARRAY['information']
             THEN 'information'
     END                                                                                                       AS "type",
-    CASE
-        WHEN services.frais && ARRAY['payant'] THEN 'payant'
-        WHEN services.frais && ARRAY['gratuit'] THEN 'gratuit'
-    END                                                                                                       AS "frais",
+    frais.frais                                                                                               AS "frais",
     NULLIF(services.frais_autres, '')                                                                         AS "frais_precisions",
     services.nombre_semaines                                                                                  AS "nombre_semaines",
     services.volume_horaire_hebdomadaire                                                                      AS "volume_horaire_hebdomadaire",
