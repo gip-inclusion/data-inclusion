@@ -51,28 +51,35 @@ lieux AS (
     Below, entries are deduplicated by keeping the most recently updated one.
     The remaining entries can be used to filter the `lieux` table.
 */
-deduplicated_lieux AS (
-    SELECT DISTINCT lieu_id
-    FROM (
-        SELECT DISTINCT ON (1)
-            services.data ->> 'serviceObjectId' AS service_id,
-            lieux.updated_at,
-            lieux.lieu_id
-        FROM
-            lieux
-        LEFT JOIN source ON lieux.lieu_id = source.data ->> 'lieu_id',
-            LATERAL JSONB_PATH_QUERY(source.data, '$.services_all[*]') AS services (data)
-        ORDER BY 1, 2 DESC
-    )
+services AS (
+    SELECT
+        lieux.lieu_id,
+        lieux.updated_at,
+        services.data ->> 'serviceObjectId' AS service_id
+    FROM
+        lieux
+    LEFT JOIN source ON lieux.lieu_id = source.data ->> 'lieu_id',
+        LATERAL JSONB_PATH_QUERY(source.data, '$.services_all[*]') AS services (data)
+),
+
+duplicates AS (
+    SELECT DISTINCT duplicates.lieu_id
+    FROM
+        services
+    INNER JOIN services AS duplicates
+        ON
+            services.service_id = duplicates.service_id
+            AND services.updated_at > duplicates.updated_at
 ),
 
 final AS (
     SELECT lieux.*
     FROM lieux
-    INNER JOIN deduplicated_lieux ON lieux.lieu_id = deduplicated_lieux.lieu_id
+    LEFT JOIN duplicates ON lieux.lieu_id = duplicates.lieu_id
     WHERE
         lieux.position__country = 'fr'
         AND NOT lieux.sources @> '[{"name": "dora"}]'
+        AND duplicates.lieu_id IS NULL
 )
 
 SELECT * FROM final
