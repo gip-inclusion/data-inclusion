@@ -74,6 +74,7 @@ models:
               arguments:
                 to: ref('stg_decoupage_administratif__communes')
                 field: code
+
   - name: stg_soliguide__services
     columns:
       - name: id
@@ -95,6 +96,29 @@ models:
               arguments:
                 to: ref('stg_soliguide__categories')
                 field: code
+
+  - name: stg_soliguide__sources
+    columns:
+      - name: lieu_id
+        data_tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('stg_soliguide__lieux')
+                field: lieu_id
+      - name: source_name
+        data_tests:
+          - dbt_utils.not_empty_string
+          - accepted_values:
+              arguments:
+                values:
+                  - 'Alisol (AD2S)'
+                  - 'Conseil Départemental du 59'
+                  - 'Croix-Rouge française'
+                  - 'Crous - Pays de la Loire'
+                  - 'Société Saint Vincent de Paul'
+                  - restos
+
   - name: stg_soliguide__phones
     columns:
       - name: lieu_id
@@ -104,6 +128,7 @@ models:
               arguments:
                 to: ref('stg_soliguide__lieux')
                 field: lieu_id
+
   - name: stg_soliguide__lieux__publics__familiale
     columns:
       - name: lieu_id
@@ -120,6 +145,7 @@ models:
           - accepted_values:
               arguments:
                 values: ['isolated', 'family', 'pregnant', 'couple']
+
   - name: stg_soliguide__lieux__publics__gender
     columns:
       - name: lieu_id
@@ -136,6 +162,7 @@ models:
           - accepted_values:
               arguments:
                 values: ['men', 'women']
+
   - name: stg_soliguide__lieux__publics__administrative
     columns:
       - name: lieu_id
@@ -152,6 +179,7 @@ models:
           - accepted_values:
               arguments:
                 values: ["regular", "asylum", "refugee", "undocumented"]
+
   - name: stg_soliguide__lieux__publics__other
     columns:
       - name: lieu_id
@@ -168,13 +196,13 @@ models:
           - accepted_values:
               arguments:
                 values:
-                  - 'violence'
                   - 'addiction'
                   - 'handicap'
-                  - 'lgbt'
                   - 'hiv'
-                  - 'prostitution'
+                  - 'lgbt'
+                  - 'mentalHealth'
                   - 'prison'
+                  - 'prostitution'
                   - 'student'
                   - 'ukraine'
-                  - 'mentalHealth'
+                  - 'violence'

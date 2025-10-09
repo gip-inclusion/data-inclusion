@@ -36,6 +36,7 @@ services AS (
         services.data #>> '{modalities,inscription,precisions}'                                                           AS "modalities__inscription__precisions",
         CAST(services.data #>> '{modalities,orientation,checked}' AS BOOLEAN)                                             AS "modalities__orientation__checked",
         services.data #>> '{modalities,orientation,precisions}'                                                           AS "modalities__orientation__precisions",
+        services.data                                                                                                     AS "data",
         source.data -> 'sources'                                                                                          AS "sources"
     FROM
         source,
