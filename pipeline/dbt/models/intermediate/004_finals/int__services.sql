@@ -182,7 +182,15 @@ SELECT
         ELSE COALESCE(services.presentation_detail, services.presentation_resume)
     END                                                                                                       AS "description",
     services.thematiques                                                                                      AS "thematiques",
-    thematiques_v1.thematiques                                                                                AS "thematiques_v1",
+    CASE
+        WHEN services.presentation_detail ILIKE '%vélo%'
+            THEN ARRAY_REMOVE(
+                thematiques_v1.thematiques || ARRAY['mobilite--mobilite-douce-partagee-collective'],
+                'mobilite--preparer-un-permis'
+            )
+
+        ELSE thematiques_v1.thematiques
+    END                                                                                                       AS "thematiques_v1",
     services.modes_accueil                                                                                    AS "modes_accueil",
     services.modes_orientation_accompagnateur                                                                 AS "modes_orientation_accompagnateur",
     services.modes_orientation_accompagnateur_autres                                                          AS "modes_orientation_accompagnateur_autres",
