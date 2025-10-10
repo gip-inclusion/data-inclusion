@@ -69,11 +69,9 @@ def load_api_analytics():
         trigger_rule=TriggerRule.ALL_DONE,
     )(
         command="build",
-        select="path:models/intermediate/quality",
+        select="path:models/intermediate/006_quality",
     )
 
-    """
-    TODO
     snapshot_source_stats = dbt.dbt_task.override(
         task_id="snapshot_source_stats",
         trigger_rule=TriggerRule.ALL_DONE,
@@ -81,7 +79,6 @@ def load_api_analytics():
         command="snapshot",
         select="quality",
     )
-    """
 
     chain(
         import_data()
@@ -90,7 +87,7 @@ def load_api_analytics():
         # be triggered except on day boundaries and it's fast.
         # The alternative would be more complicated code.
         >> build_source_stats
-        # >> snapshot_source_stats
+        >> snapshot_source_stats
     )
 
 

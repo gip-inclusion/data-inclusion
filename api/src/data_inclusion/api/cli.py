@@ -154,6 +154,8 @@ def _export_analytics():
             "--section=pre-data "
             "--section=data "
             "--table api__*_events "
+            "--table api__structures* "
+            "--table api__services* "
             f"--file {tmpfile}"
         )
 
