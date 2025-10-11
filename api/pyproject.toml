@@ -3,7 +3,7 @@ build-backend = "setuptools.build_meta"
 requires = ["setuptools", "wheel"]
 
 [project]
-requires-python = ">=3.12"
+requires-python = ">=3.13"
 name = "data-inclusion-api"
 version = "0.1.0"
 authors = [
@@ -15,7 +15,7 @@ dependencies = [
     "certifi>=2025.1.31",
     "click>=8.1.8",
     "cryptography>=44.0.2",
-    "data-inclusion-schema==1.0.0",
+    "data-inclusion-schema",
     "fastapi>=0.115.12",
     "furl>=2.1.4",
     "geoalchemy2>=0.17.1",
@@ -104,3 +104,6 @@ markers = '''
     feature_deprecated: the marked test is deprecated
 '''
 testpaths = "tests"
+
+[tool.uv.sources]
+data-inclusion-schema = { git = "https://github.com/gip-inclusion/data-inclusion-schema.git", rev = "591425d74048955b081315c931fa5414941452ad" }

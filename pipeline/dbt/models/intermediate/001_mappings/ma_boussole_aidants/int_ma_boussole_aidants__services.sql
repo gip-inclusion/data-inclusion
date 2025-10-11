@@ -67,7 +67,7 @@ types_mapping AS (
         (50, 'accompagnement'),  -- Secteur protégé ou adapté
         (51, 'aide-materielle')  -- Soins à domicile
     )
-    AS x (code, label)
+        AS x (code, label)
 ),
 
 thematiques_mapping AS (
@@ -92,7 +92,7 @@ thematiques_mapping AS (
         (16, ARRAY['sante--acces-aux-soins']),
         (17, ARRAY['mobilite--etre-accompagne-dans-son-parcours-mobilite', 'mobilite--financer-ma-mobilite']),
         (18, ARRAY['mobilite--acceder-a-un-vehicule', 'mobilite--etre-accompagne-dans-son-parcours-mobilite']),
-        (19, ARRAY['mobilite--preparer-un-permis-de-conduire']),
+        (19, ARRAY['mobilite--preparer-un-permis']),
         (20, ARRAY['sante--acces-aux-soins', 'sante--sante-mentale']),
         (21, ARRAY['sante--acces-aux-soins']),
         (23, ARRAY['sante--sante-mentale', 'sante--acces-aux-soins']),
@@ -123,7 +123,7 @@ thematiques_mapping AS (
         (50, ARRAY['trouver-un-emploi--maintien-dans-lemploi']),
         (51, ARRAY['sante--acces-aux-soins'])
     )
-    AS x (code, thematiques)
+        AS x (code, thematiques)
 ),
 
 profils_mapping AS (
