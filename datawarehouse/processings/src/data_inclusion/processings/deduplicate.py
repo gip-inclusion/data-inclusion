@@ -44,34 +44,13 @@ def _format_phonenumber(s):
 def deduplicate(data: list[DeduplicateInput]) -> pd.DataFrame:
     df = pd.DataFrame.from_records(data)
 
-    # focus on "quality" sources
-    df = df.loc[
-        df["source"].isin(
-            [
-                "action-logement",
-                "dora",
-                "cd35",
-                "fredo",
-                "emplois-de-linclusion",
-                "france-travail",
-                "mediation-numerique",
-                "mes-aides",
-                "soliguide",
-            ]
-        )
-    ]
+    df = df.loc[~df["source"].isin(["odspep", "mes-aides", "mediation-numerique"])]
 
     # exclude structures with long surrogate_id (mednum...)
     df = df.loc[df["_di_surrogate_id"].str.len() <= 256]
 
-    # ignore structures with no city code (no address, no geolocation)
-    df = df.loc[df["code_insee"].notnull()]
-
     # some cleanups and formatting
     df["id"] = df["_di_surrogate_id"]
-    df["date_maj"] = pd.to_datetime(df["date_maj"], errors="coerce").dt.strftime(
-        "%m/%d/%Y"
-    )
     df["nom"] = df["nom"].str.lower().str.strip().apply(unidecode)
     df["location"] = df.apply(
         lambda row: [
@@ -85,11 +64,17 @@ def deduplicate(data: list[DeduplicateInput]) -> pd.DataFrame:
     # including the SIREN helps the algorithm converge
     df["siren"] = df["siret"].str[:9]
 
+    df = df.assign(
+        adresse=df["adresse"].str.lower().str.strip(),
+        commune=df["commune"].str.lower().str.strip(),
+        nom=df["nom"].str.lower().str.strip(),
+        courriel=df["courriel"].str.lower().str.strip(),
+    )
+
     df = df[
         [
             "id",
             "source",
-            "date_maj",
             "nom",
             "commune",
             "adresse",
