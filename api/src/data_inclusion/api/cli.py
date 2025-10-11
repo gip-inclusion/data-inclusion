@@ -132,7 +132,12 @@ def _export_analytics():
     if (stack := os.environ.get("STACK")) is not None and stack.startswith("scalingo"):
         subprocess.run("dbclient-fetcher pgsql", shell=True, check=True)
 
-    s3fs_client = s3fs.S3FileSystem()
+    s3fs_client = s3fs.S3FileSystem(
+        endpoint_url=settings.AWS_ENDPOINT_URL,
+        key=settings.AWS_ACCESS_KEY_ID,
+        secret=settings.AWS_SECRET_ACCESS_KEY,
+    )
+
     base_key = Path(settings.DATALAKE_BUCKET_NAME) / "data" / "api"
     key = str(
         base_key
