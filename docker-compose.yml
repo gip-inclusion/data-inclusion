@@ -4,12 +4,12 @@ x-airflow-common:
   environment:
     &airflow-common-environment
     AIRFLOW__CORE__EXECUTOR: LocalExecutor
-    AIRFLOW__CORE__AUTH_MANAGER: airflow.providers.fab.auth_manager.fab_auth_manager.FabAuthManager
     AIRFLOW__DATABASE__SQL_ALCHEMY_CONN: postgresql://airflow:airflow@airflow-db:5432/airflow
     AIRFLOW__CORE__DEFAULT_TIMEZONE: Europe/Paris
     # AIRFLOW__CORE__FERNET_KEY: ''
     AIRFLOW__CORE__LOAD_EXAMPLES: 'false'
     AIRFLOW__CORE__EXECUTION_API_SERVER_URL: 'http://airflow-apiserver:8080/execution/'
+    AIRFLOW__CORE__SIMPLE_AUTH_MANAGER_USERS: 'airflow:admin'
     AIRFLOW__SCHEDULER__ENABLE_HEALTH_CHECK: 'true'
     AIRFLOW__CORE__MAX_MAP_LENGTH: 2048
     AIRFLOW__CORE__PARALLELISM: 4
@@ -129,11 +129,7 @@ services:
     command: airflow version
     environment:
       <<: *airflow-common-environment
-      # Additional variables for development only
       _AIRFLOW_DB_MIGRATE: 'true'
-      _AIRFLOW_WWW_USER_CREATE: 'true'
-      _AIRFLOW_WWW_USER_USERNAME: airflow
-      _AIRFLOW_WWW_USER_PASSWORD: airflow
 
   minio:
     image: minio/minio:RELEASE.2025-07-23T15-54-02Z

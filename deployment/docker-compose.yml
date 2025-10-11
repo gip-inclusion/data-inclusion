@@ -7,13 +7,13 @@ x-airflow-common:
 
   environment:
     &airflow-common-environment
-    AIRFLOW__CORE__AUTH_MANAGER: airflow.providers.fab.auth_manager.fab_auth_manager.FabAuthManager
     AIRFLOW__CORE__DEFAULT_TIMEZONE: Europe/Paris
     AIRFLOW__CORE__EXECUTOR: LocalExecutor
     AIRFLOW__CORE__FERNET_KEY: ${AIRFLOW__CORE__FERNET_KEY}
     AIRFLOW__CORE__LOAD_EXAMPLES: 'false'
     AIRFLOW__CORE__MAX_MAP_LENGTH: 2048
     AIRFLOW__CORE__PARALLELISM: 4
+    AIRFLOW__CORE__SIMPLE_AUTH_MANAGER_USERS: 'airflow:admin'
     AIRFLOW__DATABASE__SQL_ALCHEMY_CONN: postgresql://airflow:airflow@airflow-db:5432/airflow
     AIRFLOW__SCHEDULER__MAX_TIS_PER_QUERY: 0
     AIRFLOW__SENTRY__RELEASE: ${AIRFLOW__SENTRY__RELEASE}
