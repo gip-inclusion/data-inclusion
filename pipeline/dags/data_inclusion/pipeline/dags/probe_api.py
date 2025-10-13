@@ -1,7 +1,6 @@
 import pendulum
 
-from airflow.decorators import dag, task
-from airflow.models.baseoperator import chain
+from airflow.sdk import chain, dag, task
 
 from data_inclusion.pipeline.common import dags, tasks
 
@@ -16,8 +15,8 @@ def store_probe_results(get_requests: list[str], today: str) -> None:
     import furl
     import requests
 
-    from airflow.models import Variable
     from airflow.providers.amazon.aws.hooks import s3
+    from airflow.sdk import Variable
 
     from data_inclusion.pipeline.sources import utils
 
