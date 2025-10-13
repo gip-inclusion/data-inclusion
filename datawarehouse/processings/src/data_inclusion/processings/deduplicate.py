@@ -8,7 +8,7 @@ import pandas as pd
 import phonenumbers
 from unidecode import unidecode
 
-THRESHOLD = 0.75  # as defined in our Jupyter simulations
+THRESHOLD = 0.56  # as defined in our Jupyter simulations
 
 
 logger = logging.getLogger(__name__)

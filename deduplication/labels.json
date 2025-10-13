@@ -1,5 +1,45 @@
 [
     {
+        "left":"soliguide-25819",
+        "right":"soliguide-25740",
+        "label":"distinct"
+    },
+    {
+        "left":"soliguide-28286",
+        "right":"soliguide-35345",
+        "label":"distinct"
+    },
+    {
+        "left":"soliguide-28286",
+        "right":"soliguide-35345",
+        "label":"distinct"
+    },
+    {
+        "left":"soliguide-28286",
+        "right":"soliguide-35335",
+        "label":"distinct"
+    },
+    {
+        "left":"soliguide-35335",
+        "right":"soliguide-35345",
+        "label":"distinct"
+    },
+    {
+        "left":"soliguide-27470",
+        "right":"soliguide-27936",
+        "label":"distinct"
+    },
+    {
+        "left":"soliguide-27470",
+        "right":"soliguide-35348",
+        "label":"distinct"
+    },
+    {
+        "left":"soliguide-27936",
+        "right":"soliguide-35348",
+        "label":"distinct"
+    },
+    {
         "left":"dora-60e2a025-9cde-4cb6-b0d2-14655acd818b",
         "right":"emplois-de-linclusion-a5110f39-7d92-473d-8e68-dfb2408b304b",
         "label":"distinct"
@@ -812,6 +852,31 @@
     {
         "left":"cd35-2590",
         "right":"monenfant-62886526",
+        "label":"distinct"
+    },
+    {
+        "left":"soliguide-25740",
+        "right":"soliguide-25819",
+        "label":"distinct"
+    },
+    {
+        "left":"soliguide-27768",
+        "right":"soliguide-40109",
+        "label":"distinct"
+    },
+    {
+        "left":"soliguide-27466",
+        "right":"soliguide-27964",
+        "label":"distinct"
+    },
+    {
+        "left":"soliguide-26534",
+        "right":"soliguide-26535",
+        "label":"distinct"
+    },
+    {
+        "left":"soliguide-37174",
+        "right":"soliguide-41458",
         "label":"distinct"
     },
     {
