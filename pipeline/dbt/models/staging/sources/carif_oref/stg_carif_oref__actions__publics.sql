@@ -3,7 +3,7 @@ WITH source AS (
 ),
 
 final AS (
-    SELECT DISTINCT ON (1)
+    SELECT
         NULLIF(TRIM(actions.data ->> '@numero'), '') AS "numero_action",
         code.data ->> '$'                            AS "code_public_vise",
         code.data ->> '@ref'                         AS "version_formacode"

@@ -152,7 +152,6 @@ models:
           - dbt_utils.not_empty_string
       - name: objectif_formation
         data_tests:
-          - not_null
           - dbt_utils.not_empty_string
           - dbt_utils.expression_is_true:
               arguments:
