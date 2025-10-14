@@ -1,11 +1,11 @@
 {
     "jobs": [
         {
-            "command": "30 5-22 * * * TQDM_DISABLE=1 data-inclusion-api load-inclusion-data --version v1",
+            "command": "30 5-22 * * * data-inclusion-api load-inclusion-data --version v1",
             "size": "XL"
         },
         {
-            "command": "30 5-22 * * * TQDM_DISABLE=1 data-inclusion-api load-inclusion-data --version v0",
+            "command": "30 5-22 * * * data-inclusion-api load-inclusion-data --version v0",
             "size": "XL"
         },
         {
