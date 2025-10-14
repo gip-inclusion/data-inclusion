@@ -52,6 +52,9 @@ def read(path: Path):
         formation_data["objectif-formation"] = utils.html_to_markdown(
             formation_data["objectif-formation"]
         )
+        formation_data["contenu-formation"] = utils.html_to_markdown(
+            formation_data["contenu-formation"]
+        )
 
     df = pd.json_normalize(
         data=data,

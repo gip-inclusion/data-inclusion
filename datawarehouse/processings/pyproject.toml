@@ -12,6 +12,7 @@ dependencies = [
     "furl",
     "numpy~=2.0",
     "pandas~=2.2",
+    "python-slugify",
     "phonenumbers",
     "requests~=2.31",
     "sib-api-v3-sdk",
