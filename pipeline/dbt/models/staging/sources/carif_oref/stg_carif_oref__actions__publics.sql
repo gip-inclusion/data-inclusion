@@ -3,7 +3,7 @@ WITH source AS (
 ),
 
 final AS (
-    SELECT DISTINCT ON (1)
+    SELECT
         NULLIF(TRIM(actions.data ->> '@numero'), '') AS "numero_action",
         code.data ->> '$'                            AS "code_public_vise",
         code.data ->> '@ref'                         AS "version_formacode"
@@ -13,7 +13,6 @@ final AS (
     INNER JOIN JSONB_PATH_QUERY(actions.data, '$.code\-public\-vise[*]') AS code (data) ON TRUE
     LEFT JOIN JSONB_PATH_QUERY(actions.data, '$.lieu\-de\-formation[*]') AS lieux_de_formation (data) ON TRUE
     ORDER BY
-        NULLIF(TRIM(actions.data ->> '@numero'), ''),
         (lieux_de_formation.data ->> '@tag') = 'principal' DESC
 )
 

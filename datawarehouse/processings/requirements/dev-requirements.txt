@@ -122,6 +122,8 @@ python-dateutil==2.9.0.post0
     #   pandas
     #   pendulum
     #   sib-api-v3-sdk
+python-slugify==8.0.4
+    # via data-inclusion-processings (pyproject.toml)
 pytz==2025.2
     # via pandas
 pyyaml==6.0.2
@@ -150,6 +152,8 @@ six==1.17.0
     #   orderedmultidict
     #   python-dateutil
     #   sib-api-v3-sdk
+text-unidecode==1.3
+    # via python-slugify
 threadpoolctl==3.6.0
     # via scikit-learn
 tox==4.27.0
