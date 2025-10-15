@@ -12,7 +12,7 @@ FROM (
     ('baby_parcel',                           'famille--soutien-a-la-parentalite-et-a-leducation'),
     ('babysitting',                           'famille--garde-denfants'),
     ('budget_advice',                         'difficultes-financieres--ameliorer-sa-gestion-budgetaire'),
-    ('carpooling',                            'mobilite--utiliser-des-services-de-mobilite-partagee'),
+    ('carpooling',                            'mobilite--mobilite-douce-partagee-collective'),
     ('chauffeur_driven_transport',            'mobilite--etre-accompagne-dans-son-parcours-mobilite'),
     ('child_care',                            'famille--garde-denfants'),
     ('citizen_housing',                       'logement-hebergement--rechercher-une-solution-dhebergement-temporaire'),
