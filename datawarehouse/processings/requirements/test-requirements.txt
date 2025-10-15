@@ -18,7 +18,7 @@ cffi==1.17.1
     # via persistent
 charset-normalizer==3.4.2
     # via requests
-data-inclusion-schema==1.0.0
+data-inclusion-schema==1.0.1
     # via data-inclusion-processings (pyproject.toml)
 datetime-distance==0.1.3
     # via dedupe-variable-datetime
