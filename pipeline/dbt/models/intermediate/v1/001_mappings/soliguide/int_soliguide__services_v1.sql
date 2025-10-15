@@ -34,6 +34,7 @@ thematiques AS (
         ON services.category = mapping_.category
     WHERE mapping_.thematique IS NOT NULL
     GROUP BY services.id
+    HAVING COUNT(DISTINCT mapping_.thematique) > 0
 ),
 
 publics AS (
@@ -148,6 +149,8 @@ final AS (
     LEFT JOIN {{ ref('_map_soliguide__types_v1') }} AS mappings_types ON services.category = mappings_types.category
     LEFT JOIN thematiques ON services.id = thematiques.id
     LEFT JOIN filtered_phones ON services.lieu_id = filtered_phones.lieu_id
+    -- remove services without mapped thematiques which are assumed irrelevant
+    WHERE thematiques.thematiques IS NOT NULL
 )
 
 SELECT * FROM final
