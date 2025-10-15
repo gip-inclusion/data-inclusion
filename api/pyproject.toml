@@ -15,7 +15,7 @@ dependencies = [
     "certifi>=2025.1.31",
     "click>=8.1.8",
     "cryptography>=44.0.2",
-    "data-inclusion-schema==1.0.0",
+    "data-inclusion-schema==1.0.1",
     "fastapi>=0.115.12",
     "furl>=2.1.4",
     "geoalchemy2>=0.17.1",

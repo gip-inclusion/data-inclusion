@@ -774,11 +774,9 @@ typing-extensions==4.13.2
     # via
     #   -c airflow/constraints.txt
     #   alembic
-    #   anyio
     #   beautifulsoup4
     #   limits
     #   opentelemetry-sdk
-    #   referencing
 tzdata==2025.2
     # via
     #   -c airflow/constraints.txt
