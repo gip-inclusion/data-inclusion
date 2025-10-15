@@ -1,6 +1,21 @@
 version: 2
 
 models:
+  - name: _map_carif_oref__publics
+    columns:
+      - name: formacode_v14
+        data_tests:
+          - unique
+          - not_null
+          - dbt_utils.not_empty_string
+      - name: public
+        data_tests:
+          - not_null
+          - dbt_utils.not_empty_string
+          - relationship:
+              arguments:
+                to: ref('publics_v1')
+                field: value
   - name: int_carif_oref__adresses_v1
     columns:
       - name: id
