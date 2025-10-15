@@ -56,7 +56,11 @@ SELECT
         WHEN LENGTH(services.description) > 2000 THEN LEFT(services.description, 1999) || '…'
         ELSE services.description
     END                                  AS "description",
-    services.thematiques                 AS "thematiques",
+    CASE
+        WHEN services.nom ILIKE '%vélo%'
+            THEN services.thematiques || ARRAY['mobilite--mobilite-douce-partagee-collective']
+        ELSE services.thematiques
+    END                                  AS "thematiques",
     services.modes_accueil               AS "modes_accueil",
     services.modes_mobilisation          AS "modes_mobilisation",
     services.mobilisable_par             AS "mobilisable_par",
