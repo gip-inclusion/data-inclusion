@@ -152,7 +152,14 @@ models:
           - dbt_utils.not_empty_string
       - name: objectif_formation
         data_tests:
-          - not_null
+          - dbt_utils.not_constant
+          - dbt_utils.not_empty_string
+          - dbt_utils.expression_is_true:
+              arguments:
+                expression: "!~ '<[^>]+>'"
+      - name: contenu_formation
+        data_tests:
+          - dbt_utils.not_constant
           - dbt_utils.not_empty_string
           - dbt_utils.expression_is_true:
               arguments:
