@@ -4,29 +4,25 @@ WITH structures AS (
 
 final AS (
     SELECT
-        id                              AS "id",
-        id                              AS "adresse_id",
-        'emplois-de-linclusion'         AS "source",
-        labels_nationaux                AS "labels_nationaux",
-        labels_autres                   AS "labels_autres",
-        thematiques                     AS "thematiques",
-        -- SOURCEFIX(2024-10-30) : Remove this when there is no 'PE' in the sources anymore
-        CASE
-            WHEN typologie = 'PE' THEN 'FT'
-            ELSE typologie
-        END                             AS typologie,
-        date_maj                        AS "date_maj",
-        NULLIF(siret, '')               AS "siret",
-        NULLIF(nom, '')                 AS "nom",
-        NULLIF(lien_source, '')         AS "lien_source",
-        NULLIF(horaires_ouverture, '')  AS "horaires_ouverture",
-        NULLIF(accessibilite, '')       AS "accessibilite",
-        NULLIF(rna, '')                 AS "rna",
-        NULLIF(presentation_resume, '') AS "presentation_resume",
-        NULLIF(presentation_detail, '') AS "presentation_detail",
-        NULLIF(telephone, '')           AS "telephone",
-        NULLIF(courriel, '')            AS "courriel",
-        NULLIF(site_web, '')            AS "site_web"
+        'emplois-de-linclusion' AS "source",
+        structures.id           AS "id",
+        structures.id           AS "adresse_id",
+        structures.kind         AS typologie,
+        structures.date_maj     AS "date_maj",
+        structures.siret        AS "siret",
+        structures.nom          AS "nom",
+        structures.lien_source  AS "lien_source",
+        structures.description  AS "presentation_resume",
+        structures.description  AS "presentation_detail",
+        structures.telephone    AS "telephone",
+        structures.courriel     AS "courriel",
+        structures.site_web     AS "site_web",
+        NULL                    AS "horaires_ouverture",
+        NULL                    AS "accessibilite",
+        NULL                    AS "rna",
+        CAST(NULL AS TEXT [])   AS "labels_nationaux",
+        CAST(NULL AS TEXT [])   AS "labels_autres",
+        CAST(NULL AS TEXT [])   AS "thematiques"
     FROM structures
 )
 
