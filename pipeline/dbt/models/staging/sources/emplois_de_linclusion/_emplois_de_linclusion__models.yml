@@ -2,3 +2,211 @@ version: 2
 
 models:
   - name: stg_emplois_de_linclusion__organisations
+    columns:
+      - name: id
+        data_tests:
+          - not_null
+          - unique
+      - name: nom
+        data_tests:
+          - not_null:
+              config:
+                error_if: ">10"
+          - dbt_utils.not_empty_string
+      - name: date_maj
+        data_tests:
+          - not_null
+      - name: kind
+        data_tests:
+          - not_null
+          - dbt_utils.not_constant
+          - accepted_values:
+              arguments:
+                values:
+                  - AFPA
+                  - ASE
+                  - Autre
+                  - CAARUD
+                  - CADA
+                  - CAF
+                  - CAP_EMPLOI
+                  - CAVA
+                  - CCAS
+                  - CHRS
+                  - CHU
+                  - CIDFF
+                  - CPH
+                  - CSAPA
+                  - DEPT
+                  - E2C
+                  - EPIDE
+                  - FT
+                  - HUDA
+                  - ML
+                  - MSA
+                  - OACAS
+                  - OCASF
+                  - ODC
+                  - OHPD
+                  - OIL
+                  - PENSION
+                  - PIJ_BIJ
+                  - PJJ
+                  - PLIE
+                  - PREVENTION
+                  - RS_FJT
+                  - SPIP
+      - name: lien_source
+        data_tests:
+          - dbt_utils.not_empty_string
+          - dbt_utils.not_constant
+      - name: siret
+        data_tests:
+          - dbt_utils.not_empty_string
+          - dbt_utils.expression_is_true:
+              arguments:
+                expression: "!= REPEAT('0', 14)"
+      - name: courriel
+        data_tests:
+          - dbt_utils.not_empty_string
+      - name: telephone
+        data_tests:
+          - dbt_utils.not_constant
+          - dbt_utils.not_empty_string
+      - name: adresse
+        data_tests:
+          - dbt_utils.not_empty_string
+          - dbt_utils.not_null_proportion:
+              arguments:
+                at_least: 0.95
+      - name: commune
+        data_tests:
+          - dbt_utils.not_empty_string
+          - dbt_utils.not_null_proportion:
+              arguments:
+                at_least: 0.95
+      - name: code_postal
+        data_tests:
+          - dbt_utils.not_empty_string
+          - dbt_utils.not_null_proportion:
+              arguments:
+                at_least: 0.95
+      - name: latitude
+        data_tests:
+          - dbt_utils.not_constant
+          - dbt_utils.not_null_proportion:
+              arguments:
+                at_least: 0.95
+      - name: longitude
+        data_tests:
+          - dbt_utils.not_constant
+          - dbt_utils.not_null_proportion:
+              arguments:
+                at_least: 0.95
+      - name: description
+        data_tests:
+          - dbt_utils.not_empty_string
+          - dbt_utils.not_constant
+      - name: site_web
+        data_tests:
+          - dbt_utils.not_constant
+          - dbt_utils.not_empty_string
+
+  - name: stg_emplois_de_linclusion__siaes
+    columns:
+      - name: id
+        data_tests:
+          - not_null
+          - unique
+      - name: nom
+        data_tests:
+          - not_null
+          - dbt_utils.not_empty_string
+          - dbt_utils.not_constant
+      - name: date_maj
+        data_tests:
+          - not_null
+          - dbt_utils.accepted_range:
+              arguments:
+                min_value: "now() - interval '10 years'"
+      - name: kind
+        data_tests:
+          - not_null
+          - dbt_utils.not_constant
+          - accepted_values:
+              arguments:
+                values:
+                  - ACI
+                  - AI
+                  - EA
+                  - EATT
+                  - EI
+                  - EITI
+                  - ETTI
+                  - GEIQ
+                  - OPCS
+      - name: lien_source
+        data_tests:
+          - not_null
+          - dbt_utils.not_empty_string
+      - name: siret
+        data_tests:
+          - not_null
+          - dbt_utils.not_empty_string
+          - dbt_utils.expression_is_true:
+              arguments:
+                expression: "!= REPEAT('0', 14)"
+      - name: telephone
+        data_tests:
+          - dbt_utils.not_empty_string
+          - dbt_utils.not_null_proportion:
+              arguments:
+                at_least: 0.8
+      - name: courriel
+        data_tests:
+          - dbt_utils.not_empty_string
+          - dbt_utils.not_null_proportion:
+              arguments:
+                at_least: 0.5
+      - name: adresse
+        data_tests:
+          - dbt_utils.not_empty_string
+          - dbt_utils.not_null_proportion:
+              arguments:
+                at_least: 0.95
+      - name: commune
+        data_tests:
+          - dbt_utils.not_empty_string
+          - dbt_utils.not_null_proportion:
+              arguments:
+                at_least: 0.95
+      - name: code_postal
+        data_tests:
+          - dbt_utils.not_empty_string
+          - dbt_utils.not_null_proportion:
+              arguments:
+                at_least: 0.95
+      - name: latitude
+        data_tests:
+          - dbt_utils.not_constant
+          - dbt_utils.not_null_proportion:
+              arguments:
+                at_least: 0.95
+      - name: longitude
+        data_tests:
+          - dbt_utils.not_constant
+          - dbt_utils.not_null_proportion:
+              arguments:
+                at_least: 0.95
+      - name: site_web
+        data_tests:
+          - dbt_utils.not_null_proportion:
+              arguments:
+                at_least: 0.5
+          - dbt_utils.not_empty_string
+      - name: description
+        data_tests:
+          - dbt_utils.not_null_proportion:
+              arguments:
+                at_least: 0.5
+          - dbt_utils.not_empty_string

@@ -1,34 +1,24 @@
 WITH source AS (
-    {{ stg_source_header('emplois_de_linclusion', 'organisations') }}
-),
+    {{ stg_source_header('emplois_de_linclusion', 'organisations') }}),
 
 final AS (
     SELECT
-        ARRAY(SELECT * FROM JSONB_ARRAY_ELEMENTS_TEXT(data -> 'thematiques'))::TEXT []      AS "thematiques",
-        ARRAY(SELECT * FROM JSONB_ARRAY_ELEMENTS_TEXT(data -> 'labels_autres'))::TEXT []    AS "labels_autres",
-        ARRAY(SELECT * FROM JSONB_ARRAY_ELEMENTS_TEXT(data -> 'labels_nationaux'))::TEXT [] AS "labels_nationaux",
-        (data ->> 'longitude')::FLOAT                                                       AS "longitude",
-        (data ->> 'latitude')::FLOAT                                                        AS "latitude",
-        (data ->> 'date_maj')::DATE                                                         AS "date_maj",
-        data ->> 'id'                                                                       AS "id",
-        data ->> 'nom'                                                                      AS "nom",
-        data ->> 'rna'                                                                      AS "rna",
-        data ->> 'siret'                                                                    AS "siret",
-        data ->> 'source'                                                                   AS "source",
-        data ->> 'adresse'                                                                  AS "adresse",
-        data ->> 'commune'                                                                  AS "commune",
-        data ->> 'courriel'                                                                 AS "courriel",
-        data ->> 'site_web'                                                                 AS "site_web",
-        data ->> 'telephone'                                                                AS "telephone",
-        data ->> 'typologie'                                                                AS "typologie",
-        data ->> 'code_insee'                                                               AS "code_insee",
-        data ->> 'code_postal'                                                              AS "code_postal",
-        data ->> 'lien_source'                                                              AS "lien_source",
-        data ->> 'accessibilite'                                                            AS "accessibilite",
-        data ->> 'complement_adresse'                                                       AS "complement_adresse",
-        data ->> 'horaires_ouverture'                                                       AS "horaires_ouverture",
-        data ->> 'presentation_detail'                                                      AS "presentation_detail",
-        data ->> 'presentation_resume'                                                      AS "presentation_resume"
+        source.data ->> 'id'                                               AS "id",
+        NULLIF(TRIM(source.data ->> 'nom'), '')                            AS "nom",
+        CAST(source.data ->> 'date_maj' AS DATE)                           AS "date_maj",
+        NULLIF(TRIM(source.data ->> 'kind'), '')                           AS "kind",
+        NULLIF(TRIM(source.data ->> 'commune'), '')                        AS "commune",
+        NULLIF(NULLIF(TRIM(source.data ->> 'siret'), ''), REPEAT('0', 14)) AS "siret",
+        NULLIF(TRIM(source.data ->> 'description'), '')                    AS "description",
+        NULLIF(TRIM(source.data ->> 'adresse'), '')                        AS "adresse",
+        NULLIF(TRIM(source.data ->> 'complement_adresse'), '')             AS "complement_adresse",
+        NULLIF(TRIM(source.data ->> 'code_postal'), '')                    AS "code_postal",
+        NULLIF(TRIM(source.data ->> 'site_web'), '')                       AS "site_web",
+        NULLIF(CAST(source.data ->> 'longitude' AS FLOAT), 0)              AS "longitude",
+        NULLIF(CAST(source.data ->> 'latitude' AS FLOAT), 0)               AS "latitude",
+        NULLIF(TRIM(source.data ->> 'lien_source'), '')                    AS "lien_source",
+        NULLIF(TRIM(source.data ->> 'telephone'), '')                      AS "telephone",
+        NULLIF(TRIM(source.data ->> 'courriel'), '')                       AS "courriel"
     FROM source
 )
 
