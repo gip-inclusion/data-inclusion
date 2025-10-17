@@ -6,7 +6,6 @@ requires = ["setuptools", "wheel"]
 name = "data-inclusion-processings"
 version = "0.1.0"
 dependencies = [
-    "data-inclusion-schema==1.0.1",
     "dedupe",
     "dedupe-variable-datetime",
     "furl",
@@ -17,6 +16,7 @@ dependencies = [
     "requests~=2.31",
     "sib-api-v3-sdk",
     "unidecode",
+    "data-inclusion-schema>=1.0.2",
 ]
 
 [project.optional-dependencies]

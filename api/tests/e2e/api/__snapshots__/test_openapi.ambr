@@ -552,9 +552,12 @@
             "cresus",
             "croix-rouge",
             "csapa",
+            "delegataire-conseil-departemental",
             "departements",
             "duo-for-a-job",
             "ecoles-de-la-deuxieme-chance",
+            "ea",
+            "eatt",
             "egee",
             "emmaus",
             "epide",
@@ -603,7 +606,10 @@
             "ressourceries",
             "restos-du-coeur",
             "secours-populaire",
-            "siae",
+            "ei",
+            "aci",
+            "etti",
+            "eiti",
             "siao",
             "simplon",
             "singa",
@@ -3120,8 +3126,8 @@
             "description": {
               "anyOf": [
                 {
-                  "maxLength": 2000,
-                  "minLength": 50,
+                  "maxLength": 10000,
+                  "minLength": 5,
                   "type": "string"
                 },
                 {
@@ -3412,12 +3418,12 @@
               "type": "string"
             },
             "description": {
-              "description": "Description du service.\n\nEntre 50 et 2000 caractères.\n\nCe champ est pris en compte dans le calcul du score de qualité.",
+              "description": "Description du service.\n\nIdéalement entre 200 et 2000 caractères. Privilégier des phrases courtes et un langage simple.",
               "examples": [
                 "Cet atelier-conseil vous permet d’identifier les compétences à développer pour atteindre vos objectifs d’évolution professionnelle et à découvrir les différentes modalités de formation.  Durée d’une journée et inscription via votre espace France Travail."
               ],
-              "maxLength": 2000,
-              "minLength": 50,
+              "maxLength": 10000,
+              "minLength": 5,
               "title": "Description",
               "type": "string"
             },
@@ -3613,7 +3619,7 @@
               "title": "Modes Mobilisation"
             },
             "nom": {
-              "description": "Nom du service.\n\nChaîne de caractères entre 3 et 150 caractères, ne se terminant pas par un point.",
+              "description": "Nom du service.\n\nChaîne de caractères entre 3 et 150 caractères. Idéalement ne se termine pas par un point (sauf \"etc.\").",
               "examples": [
                 "Atelier insertion et posture professionnelle"
               ],
@@ -3968,8 +3974,8 @@
             "description": {
               "anyOf": [
                 {
-                  "maxLength": 2000,
-                  "minLength": 50,
+                  "maxLength": 10000,
+                  "minLength": 5,
                   "type": "string"
                 },
                 {
@@ -4279,8 +4285,8 @@
             "description": {
               "anyOf": [
                 {
-                  "maxLength": 2000,
-                  "minLength": 50,
+                  "maxLength": 10000,
+                  "minLength": 5,
                   "type": "string"
                 },
                 {
@@ -4588,12 +4594,12 @@
               "type": "string"
             },
             "description": {
-              "description": "Description du service.\n\nEntre 50 et 2000 caractères.\n\nCe champ est pris en compte dans le calcul du score de qualité.",
+              "description": "Description du service.\n\nIdéalement entre 200 et 2000 caractères. Privilégier des phrases courtes et un langage simple.",
               "examples": [
                 "Cet atelier-conseil vous permet d’identifier les compétences à développer pour atteindre vos objectifs d’évolution professionnelle et à découvrir les différentes modalités de formation.  Durée d’une journée et inscription via votre espace France Travail."
               ],
-              "maxLength": 2000,
-              "minLength": 50,
+              "maxLength": 10000,
+              "minLength": 5,
               "title": "Description",
               "type": "string"
             },
@@ -4789,7 +4795,7 @@
               "title": "Modes Mobilisation"
             },
             "nom": {
-              "description": "Nom du service.\n\nChaîne de caractères entre 3 et 150 caractères, ne se terminant pas par un point.",
+              "description": "Nom du service.\n\nChaîne de caractères entre 3 et 150 caractères. Idéalement ne se termine pas par un point (sauf \"etc.\").",
               "examples": [
                 "Atelier insertion et posture professionnelle"
               ],
@@ -5902,8 +5908,8 @@
             "description": {
               "anyOf": [
                 {
-                  "maxLength": 2000,
-                  "minLength": 50,
+                  "maxLength": 10000,
+                  "minLength": 5,
                   "type": "string"
                 },
                 {

@@ -366,7 +366,7 @@ requires-dist = [
     { name = "certifi", specifier = ">=2025.1.31" },
     { name = "click", specifier = ">=8.1.8" },
     { name = "cryptography", specifier = ">=44.0.2" },
-    { name = "data-inclusion-schema", specifier = "==1.0.1" },
+    { name = "data-inclusion-schema", specifier = ">=1.0.2" },
     { name = "fastapi", specifier = ">=0.115.12" },
     { name = "furl", specifier = ">=2.1.4" },
     { name = "geoalchemy2", specifier = ">=0.17.1" },
@@ -411,15 +411,15 @@ test = [
 
 [[package]]
 name = "data-inclusion-schema"
-version = "1.0.1"
+version = "1.0.2"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "pendulum" },
     { name = "pydantic", extra = ["email"] },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/58/db/5fd0098dc7b268209ba5c668aab7bfd32d984a29290f106c1c496ad16ef8/data_inclusion_schema-1.0.1.tar.gz", hash = "sha256:145e5b5883e899425fc48b887be0cefe9fbf718f64a2be171f548c43af5fe565", size = 38946, upload-time = "2025-10-14T09:00:20.904Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/3b/3b/d7d950a711c3aae1e72558657764d83dd93724d0f0aeb6e7a7ce60b40b9f/data_inclusion_schema-1.0.2.tar.gz", hash = "sha256:4020692ddefcdbf02df252d9110f4f348b2cc7dd3f5528e0ec2ed32797134aba", size = 39438, upload-time = "2025-11-03T09:40:39.575Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/cc/79/2c16fe15d1bc85b8e42bd9f22475a6553272ee6f6d33c5457e111336958c/data_inclusion_schema-1.0.1-py3-none-any.whl", hash = "sha256:8ce1a506629325da4736442082a62dcd727bba40eb3ff807880704ac06168852", size = 49035, upload-time = "2025-10-14T09:00:19.704Z" },
+    { url = "https://files.pythonhosted.org/packages/28/e6/51e8a71357d84e0814dcd84d822854f072ec5be83315f780eec751f1d763/data_inclusion_schema-1.0.2-py3-none-any.whl", hash = "sha256:eab76f01ea4b8a7a681ea08683541ff120dd65d38737c7acc193da22833ad47c", size = 49785, upload-time = "2025-11-03T09:40:37.842Z" },
 ]
 
 [[package]]
