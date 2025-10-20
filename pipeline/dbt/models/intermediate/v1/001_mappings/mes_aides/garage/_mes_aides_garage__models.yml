@@ -1,0 +1,47 @@
+version: 2
+
+models:
+  - name: int_mes_aides__garages__adresses_v1
+    columns:
+      - name: id
+        data_tests:
+          - unique
+          - not_null
+          - dbt_utils.not_empty_string
+
+  - name: int_mes_aides__garages__structures_v1
+    columns:
+      - name: id
+        data_tests:
+          - unique
+          - not_null
+          - dbt_utils.not_empty_string
+      - name: adresse_id
+        data_tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('int_mes_aides__garages__adresses_v1')
+                field: id
+
+  - name: int_mes_aides__garages__services_v1
+    columns:
+      - name: id
+        data_tests:
+          - unique
+          - not_null
+          - dbt_utils.not_empty_string
+      - name: structure_id
+        data_tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('int_mes_aides__garages__structures_v1')
+                field: id
+      - name: adresse_id
+        data_tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('int_mes_aides__garages__adresses_v1')
+                field: id
