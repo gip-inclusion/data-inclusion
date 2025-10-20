@@ -71,7 +71,7 @@ final AS (
                         THEN 'Ce service est fermé temporairement du ' || TO_CHAR(services.close__date_debut, 'DD/MM/YYYY') || ' au ' || TO_CHAR(services.close__date_fin, 'DD/MM/YYYY') || '.'
                 END,
                 CASE
-                    WHEN services.saturated__status = 'HIGH'
+                    WHEN services.saturated__status = 'high'
                         THEN 'Attention, la structure est très sollicitée pour ce service.'
                 END,
                 lieux.description
