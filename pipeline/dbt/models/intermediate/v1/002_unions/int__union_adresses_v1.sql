@@ -14,6 +14,7 @@ WITH final AS ({{
             ref('int_ma_boussole_aidants__adresses_v1'),
             ref('int_monenfant__adresses_v1'),
             ref('int_reseau_alpha__adresses_v1'),
+            ref('int_mes_aides__adresses_v1'),
         ],
         source_column_name=None
     )

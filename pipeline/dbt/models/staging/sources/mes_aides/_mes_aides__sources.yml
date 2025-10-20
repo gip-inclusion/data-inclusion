@@ -5,4 +5,4 @@ sources:
     schema: mes_aides
     tables:
       - name: garages
-      - name: permis_velo
+      - name: aides
