@@ -2,6 +2,114 @@ version: 2
 
 models:
   - name: stg_mes_aides__garages
+    columns:
+      - name: id
+        data_tests:
+          - unique
+          - not_null
+          - dbt_utils.not_empty_string
+      - name: modifie_le
+      - name: nom
+        data_tests:
+          - not_null
+          - dbt_utils.not_empty_string
+      - name: adresse
+        data_tests:
+          - not_null
+          - dbt_utils.not_empty_string
+      - name: code_insee
+        data_tests:
+          - not_null
+          - dbt_utils.not_empty_string
+          - relationships:
+              config:
+                error_if: ">100"
+              arguments:
+                to: ref('stg_decoupage_administratif__communes')
+                field: code
+      - name: code_postal
+        data_tests:
+          - not_null
+          - dbt_utils.not_empty_string
+      - name: cree_le
+      - name: criteres_eligibilite
+      - name: departement_nom
+      - name: email
+        data_tests:
+          - dbt_utils.not_constant
+          - dbt_utils.not_empty_string
+      - name: en_ligne
+        data_tests:
+          - not_null
+          - accepted_values:
+              arguments:
+                values: [true, false]
+          - dbt_utils.not_constant
+      - name: latitude
+        data_tests:
+          - dbt_utils.not_constant
+      - name: longitude
+        data_tests:
+          - dbt_utils.not_constant
+      - name: partenaire_nom
+      - name: region_nom
+      - name: siret
+        data_tests:
+          - dbt_utils.not_constant
+          - dbt_utils.not_empty_string
+      - name: telephone
+        data_tests:
+          - dbt_utils.not_null_proportion:
+              arguments:
+                at_least: 0.1
+          - dbt_utils.not_empty_string
+      - name: type
+      - name: url
+      - name: ville_nom
+
+  - name: stg_mes_aides__garages__services
+    columns:
+      - name: garage_id
+        data_tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('stg_mes_aides__garages')
+                field: id
+      - name: item
+        data_tests:
+          - not_null
+          - dbt_utils.not_empty_string
+          - accepted_values:
+              arguments:
+                values:
+                  - location
+                  - réparation
+                  - achat
+
+  - name: stg_mes_aides__garages__types_de_vehicule
+    columns:
+      - name: garage_id
+        data_tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('stg_mes_aides__garages')
+                field: id
+      - name: item
+        data_tests:
+          - not_null
+          - dbt_utils.not_empty_string
+          - accepted_values:
+              arguments:
+                values:
+                  - bateau
+                  - moto
+                  - scooter
+                  - trotinettes
+                  - vélo
+                  - voiture
+
   - name: stg_mes_aides__permis_velo
     columns:
       - name: id
