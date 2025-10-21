@@ -6,10 +6,9 @@ CREATE OR REPLACE FUNCTION processings.soliguide_opening_hours(data JSONB)
 RETURNS TEXT
 AS $$
 
-    from typing import Literal
+    from typing import Annotated, Literal
 
     import pydantic
-
 
     class TimeSlotItem(pydantic.BaseModel):
         start: int
@@ -28,7 +27,10 @@ AS $$
         saturday: WeekdaySchedule
         sunday: WeekdaySchedule
         description: str | None = None
-        closed_holidays: Literal["CLOSED", "OPEN", "UNKNOWN"] = "UNKNOWN"
+        closed_holidays: Annotated[
+            Literal["CLOSED", "OPEN", "UNKNOWN"],
+            pydantic.Field(alias="closedHolidays"),
+        ] = "UNKNOWN"
 
         def weekdays(self) -> list[tuple[str, WeekdaySchedule]]:
             return [
@@ -45,7 +47,6 @@ AS $$
         start_hour = str(time_slot_item.start).zfill(4)
         end_hour = str(time_slot_item.end).zfill(4)
         return f"{start_hour[:2]}:{start_hour[2:]}-{end_hour[:2]}:{end_hour[2:]}"
-
 
     def handle_weekday(weekday_str: str, weekday_schedule: WeekdaySchedule) -> str:
         weekday_abbr = weekday_str[:2].capitalize()
