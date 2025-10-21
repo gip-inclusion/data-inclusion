@@ -44,21 +44,30 @@ def read(path: Path):
 
     from . import utils
 
+    # Reset the limit on the number of XML elements, added in version 4.2.0 of xmlschema
+    # but seemingly still taken into account even when we use a lazy decoding iterator.
+    # Since we're lazy enumerating, I guess we're safe to remove to make it higher.
+    xmlschema.limits.MAX_XML_ELEMENTS = 100_000_000
+
     schema_path = Path(__file__).resolve().parent / "lheo.xsd"
     schema = xmlschema.XMLSchema(schema_path)
-    data = schema.to_dict(path)
 
-    for formation_data in data["offres"]["formation"]:
+    data = []
+    for formation_data in schema.iter_decode(
+        path,
+        path="//offres/formation",
+        lazy=True,
+    ):
         formation_data["objectif-formation"] = utils.html_to_markdown(
             formation_data["objectif-formation"]
         )
         formation_data["contenu-formation"] = utils.html_to_markdown(
             formation_data["contenu-formation"]
         )
+        data.append(formation_data)
 
     df = pd.json_normalize(
         data=data,
-        record_path=["offres", "formation"],
         max_level=0,
     )
     return utils.df_clear_nan(df)
