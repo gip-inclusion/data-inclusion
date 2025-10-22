@@ -35,6 +35,7 @@ creches AS (
 ),
 
 final AS (
+    -- our scraping can create duplicates : the search results overlaps between two nearby cities
     SELECT DISTINCT ON (structure_id) *
     FROM creches
 )

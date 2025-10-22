@@ -28,10 +28,10 @@ zones_eligibilite AS (
 
 final AS (
     SELECT
-        'monenfant'                                AS "source",
-        'monenfant--' || creches.structure_id      AS "id",
-        'monenfant--' || creches.structure_id      AS "adresse_id",
-        'monenfant--' || creches.structure_id      AS "structure_id",
+        'monenfant'                                                             AS "source",
+        'monenfant--' || creches.structure_id                                   AS "id",
+        'monenfant--' || creches.structure_id                                   AS "adresse_id",
+        'monenfant--' || creches.structure_id                                   AS "structure_id",
         ARRAY_TO_STRING(
             ARRAY[
                 'Garde et accueil des enfants',
@@ -41,7 +41,7 @@ final AS (
                 END
             ],
             ', '
-        )                                          AS "nom",
+        )                                                                       AS "nom",
         ARRAY_TO_STRING(
             ARRAY[
                 CASE WHEN creches.service_commun__avip THEN {{ description_avip }} END,
@@ -49,40 +49,40 @@ final AS (
                 '## Le projet pédagogique :' || E'\n\n' || creches.description__projet
             ],
             E'\n\n'
-        )                                          AS "description",
+        )                                                                       AS "description",
         FORMAT(
             'https://monenfant.fr/que-recherchez-vous/%s/%s/%s',
             creches.structure_name,
             creches.structure_type,
             creches.structure_id
-        )                                          AS "lien_source",
-        creches.modified_date                      AS "date_maj",
-        'accompagnement'                           AS "type",
-        ARRAY['famille--garde-denfants']           AS "thematiques",
-        'payant'                                   AS "frais",
-        creches.description__modalites_tarifaires  AS "frais_precisions",
-        ARRAY['familles']                          AS "publics",
-        NULL                                       AS "publics_precisions",
-        creches.description__conditions_admission  AS "conditions_acces",
-        creches.coordonnees__telephone             AS "telephone",
-        creches.coordonnees__adresse_mail          AS "courriel",
-        NULL                                       AS "contact_nom_prenom",
-        ARRAY['en-presentiel']                     AS "modes_accueil",
-        zones_eligibilite.zone_eligibilite         AS "zone_eligibilite",
-        NULL                                       AS "zone_eligibilite_type",
-        NULL                                       AS "lien_mobilisation",
+        )                                                                       AS "lien_source",
+        creches.modified_date                                                   AS "date_maj",
+        'accompagnement'                                                        AS "type",
+        ARRAY['famille--garde-denfants']                                        AS "thematiques",
+        'payant'                                                                AS "frais",
+        creches.description__modalites_tarifaires                               AS "frais_precisions",
+        ARRAY['familles']                                                       AS "publics",
+        NULL                                                                    AS "publics_precisions",
+        creches.description__conditions_admission                               AS "conditions_acces",
+        creches.coordonnees__telephone                                          AS "telephone",
+        creches.coordonnees__adresse_mail                                       AS "courriel",
+        NULL                                                                    AS "contact_nom_prenom",
+        ARRAY['en-presentiel']                                                  AS "modes_accueil",
+        zones_eligibilite.zone_eligibilite                                      AS "zone_eligibilite",
+        NULL                                                                    AS "zone_eligibilite_type",
+        NULL                                                                    AS "lien_mobilisation",
         NULLIF(ARRAY_REMOVE(
             ARRAY[
                 CASE WHEN creches.coordonnees__telephone IS NOT NULL THEN 'telephoner' END,
                 CASE WHEN creches.coordonnees__adresse_mail IS NOT NULL THEN 'envoyer-un-courriel' END
             ],
             NULL
-        ), '{}')                                   AS "modes_mobilisation",
-        ARRAY['usagers', 'professionnels']         AS "mobilisable_par",
-        creches.description__modalites_inscription AS "mobilisation_precisions",
-        NULL                                       AS "volume_horaire_hebdomadaire",
-        NULL                                       AS "nombre_semaines",
-        NULL                                       AS "horaires_accueil"  -- TODO
+        ), '{}')                                                                AS "modes_mobilisation",
+        ARRAY['usagers', 'professionnels']                                      AS "mobilisable_par",
+        creches.description__modalites_inscription                              AS "mobilisation_precisions",
+        NULL                                                                    AS "volume_horaire_hebdomadaire",
+        NULL                                                                    AS "nombre_semaines",
+        processings.monenfant_opening_hours(creches.service_commun__calendrier) AS "horaires_accueil"
     FROM creches
     LEFT JOIN zones_eligibilite ON creches.structure_id = zones_eligibilite.structure_id
 )
