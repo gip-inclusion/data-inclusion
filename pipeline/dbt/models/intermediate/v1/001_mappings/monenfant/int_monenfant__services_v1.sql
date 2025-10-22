@@ -79,7 +79,7 @@ final AS (
         creches.description__modalites_inscription                                         AS "mobilisation_precisions",
         NULL                                                                               AS "volume_horaire_hebdomadaire",
         NULL                                                                               AS "nombre_semaines",
-        NULL                                                                               AS "horaires_accueil"  -- TODO
+        processings.monenfant_opening_hours(creches.service_commun__calendrier)            AS "horaires_accueil"
     FROM creches
     LEFT JOIN zones_eligibilite ON creches.structure_id = zones_eligibilite.structure_id
 )

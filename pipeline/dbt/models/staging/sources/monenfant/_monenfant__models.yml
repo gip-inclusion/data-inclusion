@@ -96,6 +96,9 @@ models:
         data_tests:
           - dbt_utils.not_constant
           - dbt_utils.not_empty_string
+      - name: service_commun__calendrier
+        data_tests:
+          - not_null
 
   - name: stg_monenfant__communes_desservies
     description: >

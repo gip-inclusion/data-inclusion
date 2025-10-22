@@ -25,7 +25,7 @@ final AS (
             ),
             ''
         )                                                                          AS "description",
-        NULL                                                                       AS "horaires_accueil",  -- TODO
+        processings.monenfant_opening_hours(service_commun__calendrier)            AS "horaires_accueil",
         NULL                                                                       AS "accessibilite_lieu",
         ARRAY['caf']                                                               AS "reseaux_porteurs"
     FROM creches

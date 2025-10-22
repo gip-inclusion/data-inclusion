@@ -27,13 +27,14 @@ creches AS (
         NULLIF(TRIM(data -> 'description' ->> 'description5'), '')                        AS "description__conditions_admission",
         NULLIF(TRIM(data -> 'description' ->> 'description6'), '')                        AS "description__modalites_inscription",
         CAST(data -> 'serviceCommun' -> 'avip' AS BOOLEAN)                                AS "service_commun__avip",
-        CAST(data -> 'serviceCommun' -> 'calendrier' -> 'rendezVous' AS BOOLEAN)          AS "service_commun__calendrier__rendez_vous",
         NULLIF(TRIM(data -> 'serviceCommun' -> 'calendrier' ->> 'joursHorairesText'), '') AS "service_commun__calendrier__jours_horaires_text",
+        data -> 'serviceCommun' -> 'calendrier'                                           AS "service_commun__calendrier",
         NULLIF(TRIM(data -> 'serviceAccueil' ->> 'handicap'), '')                         AS "service_accueil__handicap"
     FROM source
 ),
 
 final AS (
+    -- our scraping can create duplicates : the search results overlaps between two nearby cities
     SELECT DISTINCT ON (structure_id) *
     FROM creches
 )
