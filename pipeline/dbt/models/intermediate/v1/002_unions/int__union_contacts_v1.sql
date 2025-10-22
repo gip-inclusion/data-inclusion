@@ -3,6 +3,7 @@ WITH services AS (
         dbt_utils.union_relations(
             relations=[
                 ref('int_soliguide__services_v1'),
+                ref('int_monenfant__services_v1'),
             ],
             include=[
                 'source',

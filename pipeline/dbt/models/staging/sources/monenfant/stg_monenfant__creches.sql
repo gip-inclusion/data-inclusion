@@ -1,6 +1,5 @@
 WITH source AS (
-    {{ stg_source_header('monenfant', 'creches') }}
-),
+    {{ stg_source_header('monenfant', 'creches') }}),
 
 creches AS (
     SELECT
@@ -19,14 +18,18 @@ creches AS (
         NULLIF(TRIM(data -> 'coordonnees' ->> 'adresseMail'), '')                         AS "coordonnees__adresse_mail",
         NULLIF(TRIM(data -> 'coordonnees' ->> 'siteInternet'), '')                        AS "coordonnees__site_internet",
         NULLIF(TRIM(data -> 'description' ->> 'description1'), '')                        AS "description__modalites_tarifaires",
-        NULLIF(TRIM(data -> 'description' ->> 'description2'), '')                        AS "description__projet",
+        CASE
+            WHEN LENGTH(TRIM(data -> 'description' ->> 'description2')) >= 8  -- junk values observed on shorter entries
+                THEN TRIM(data -> 'description' ->> 'description2')
+        END                                                                               AS "description__projet",
         NULLIF(TRIM(data -> 'description' ->> 'description3'), '')                        AS "description__gestionnaire",
         NULLIF(TRIM(data -> 'description' ->> 'description4'), '')                        AS "description__equipe",
         NULLIF(TRIM(data -> 'description' ->> 'description5'), '')                        AS "description__conditions_admission",
         NULLIF(TRIM(data -> 'description' ->> 'description6'), '')                        AS "description__modalites_inscription",
         CAST(data -> 'serviceCommun' -> 'avip' AS BOOLEAN)                                AS "service_commun__avip",
         CAST(data -> 'serviceCommun' -> 'calendrier' -> 'rendezVous' AS BOOLEAN)          AS "service_commun__calendrier__rendez_vous",
-        NULLIF(TRIM(data -> 'serviceCommun' -> 'calendrier' ->> 'joursHorairesText'), '') AS "service_commun__calendrier__jours_horaires_text"
+        NULLIF(TRIM(data -> 'serviceCommun' -> 'calendrier' ->> 'joursHorairesText'), '') AS "service_commun__calendrier__jours_horaires_text",
+        NULLIF(TRIM(data -> 'serviceAccueil' ->> 'handicap'), '')                         AS "service_accueil__handicap"
     FROM source
 ),
 
