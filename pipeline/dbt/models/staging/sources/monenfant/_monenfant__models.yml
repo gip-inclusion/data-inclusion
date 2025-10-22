@@ -122,6 +122,9 @@ models:
           - dbt_utils.expression_is_true:
               arguments:
                 expression: "!~ '^\\W*$'"
+      - name: service_commun__calendrier
+        data_tests:
+          - not_null
 
   - name: stg_monenfant__communes_desservies
     description: >
