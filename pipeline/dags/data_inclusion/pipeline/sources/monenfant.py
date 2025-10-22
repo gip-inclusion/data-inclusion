@@ -245,6 +245,9 @@ def read(path: Path):
         creche_data["description"] = {
             k: utils.html_to_markdown(v) for k, v in creche_data["description"].items()
         }
+        creche_data["service_accueil"]["handicap"] = utils.html_to_markdown(
+            creche_data["service_accueil"]["handicap"]
+        )
 
     df = pd.DataFrame.from_records(data)
     return utils.df_clear_nan(df)

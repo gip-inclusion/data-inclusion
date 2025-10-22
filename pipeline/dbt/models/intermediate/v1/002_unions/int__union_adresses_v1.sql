@@ -4,6 +4,7 @@
             ref('int_carif_oref__adresses_v1'),
             ref('int_emplois_de_linclusion__adresses_v1'),
             ref('int_soliguide__adresses_v1'),
+            ref('int_monenfant__adresses_v1'),
         ],
         source_column_name=None
     )
