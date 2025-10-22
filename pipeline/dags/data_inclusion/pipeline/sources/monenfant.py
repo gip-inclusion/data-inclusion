@@ -203,7 +203,10 @@ def extract(
     data = []
 
     with sync_playwright() as playwright:
-        browser = playwright.chromium.launch(headless=not debug)
+        if debug:
+            browser = playwright.chromium.launch(headless=False)
+        else:
+            browser = playwright.chromium.connect("ws://playwright:3000/")
         location = get_location(city_code=city_code, commune=commune, region=region)
 
         if city_code[:3] in [
