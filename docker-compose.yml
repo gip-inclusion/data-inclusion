@@ -111,6 +111,16 @@ services:
       _AIRFLOW_WWW_USER_USERNAME: airflow
       _AIRFLOW_WWW_USER_PASSWORD: airflow
 
+  playwright:
+    # the version should match the tasks requirements
+    image: mcr.microsoft.com/playwright:v1.55.0-noble
+    command: npx -y playwright@1.55.0 run-server --port 3000 --host 0.0.0.0
+    user: pwuser
+    init: true
+    ipc: host
+    depends_on:
+      - airflow-scheduler
+
   minio:
     image: minio/minio:RELEASE.2025-07-23T15-54-02Z
     command: server /data
