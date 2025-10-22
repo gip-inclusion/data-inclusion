@@ -32,12 +32,16 @@ publics_mapping AS (
 
 publics AS (
     SELECT
-        actions__publics.numero_action             AS "numero_action",
-        ARRAY_AGG(DISTINCT publics_mapping.public) AS "publics"
-    FROM actions__publics
-    LEFT JOIN publics_mapping
-        ON actions__publics.code_public_vise = publics_mapping.formacode_v14
-    WHERE publics_mapping.public IS NOT NULL
+        actions__publics.numero_action   AS "numero_action",
+        ARRAY_AGG(DISTINCT public.value) AS "publics"
+    FROM actions__publics,
+        LATERAL (
+            SELECT publics_mapping.public
+            FROM publics_mapping
+            WHERE
+                publics_mapping.formacode_v14 = actions__publics.code_public_vise
+                AND publics_mapping.public IS NOT NULL
+        ) AS public (value)    -- noqa: references.keywords
     GROUP BY actions__publics.numero_action
 ),
 

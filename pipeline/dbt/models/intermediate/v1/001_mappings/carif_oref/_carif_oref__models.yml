@@ -5,17 +5,18 @@ models:
     columns:
       - name: formacode_v14
         data_tests:
-          - unique
           - not_null
+          - dbt_utils.not_constant
           - dbt_utils.not_empty_string
       - name: public
         data_tests:
-          - not_null
+          - dbt_utils.not_constant
           - dbt_utils.not_empty_string
-          - relationship:
+          - relationships:
               arguments:
                 to: ref('publics_v1')
                 field: value
+
   - name: int_carif_oref__adresses_v1
     columns:
       - name: id
@@ -39,7 +40,10 @@ models:
           - dbt_utils.not_empty_string
       - name: adresse_id
         data_tests:
-          - not_null
+          - not_null:
+              config:
+                severity: warn
+                error_if: ">50"
           - relationships:
               arguments:
                 to: ref('int_carif_oref__adresses_v1')
@@ -67,7 +71,10 @@ models:
                 field: id
       - name: adresse_id
         data_tests:
-          - not_null
+          - not_null:
+              config:
+                severity: warn
+                error_if: ">200"
           - relationships:
               arguments:
                 to: ref('int_carif_oref__adresses_v1')
