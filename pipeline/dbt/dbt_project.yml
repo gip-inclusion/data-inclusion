@@ -44,6 +44,8 @@ models:
           +materialized: table
         soliguide:
           +materialized: table
+        monenfant:
+          +materialized: table
 
       # The following models use table materialization, because:
       # - their upstream source tables are (currently) loaded with DROP/CREATE.

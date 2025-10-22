@@ -5,6 +5,7 @@ WITH services AS (
                 ref('int_carif_oref__services_v1'),
                 ref('int_emplois_de_linclusion__structures_v1'),
                 ref('int_soliguide__services_v1'),
+                ref('int_monenfant__services_v1'),
             ],
             include=[
                 'source',
