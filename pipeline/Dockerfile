@@ -23,12 +23,6 @@ RUN uv --no-cache pip install -r requirements/airflow/requirements.txt
 RUN uv venv venvs/tasks
 RUN uv --no-cache pip install --python venvs/tasks/bin/python -r requirements/tasks/requirements.txt
 
-# setup playwright
-USER root
-RUN uv --no-cache run --python venvs/tasks/bin/python playwright install-deps chromium
-USER airflow
-RUN uv --no-cache run --python venvs/tasks/bin/python playwright install chromium
-
 COPY --chown=airflow:0 pyproject.toml pyproject.toml
 COPY --chown=airflow:0 dags dags
 COPY --chown=airflow:0 dbt dbt

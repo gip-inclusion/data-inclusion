@@ -118,6 +118,16 @@ services:
       airflow-init:
         condition: service_completed_successfully
 
+  playwright:
+    # the version should match the tasks requirements
+    image: mcr.microsoft.com/playwright:v1.55.0-noble
+    command: npx -y playwright@1.55.0 run-server --port 3000 --host 0.0.0.0
+    user: pwuser
+    init: true
+    ipc: host
+    depends_on:
+      - airflow-scheduler
+
   datawarehouse:
     image: ghcr.io/gip-inclusion/data-inclusion-datawarehouse:${STACK_VERSION}
     restart: always
