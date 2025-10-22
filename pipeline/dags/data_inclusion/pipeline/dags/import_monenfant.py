@@ -1,3 +1,5 @@
+from datetime import timedelta
+
 from airflow.decorators import dag, task
 from airflow.models.baseoperator import chain
 
@@ -37,7 +39,9 @@ def list_cities(max_number_of_cities: int):
 
 @task.external_python(
     python=tasks.PYTHON_BIN_PATH,
-    retries=15,
+    retries=6,
+    retry_delay=timedelta(minutes=5),
+    retry_exponential_backoff=True,
 )
 def extract(city_code: str, commune: str, region: str, to_s3_path: str):
     """Extract the list of creches from monenfant.fr in a given city."""
@@ -103,7 +107,7 @@ MAX_NUMBER_OF_CITIES = 2000
 
 # number of concurrent extract tasks
 # keep this number low to stay under the radar
-EXTRACT_TASK_CONCURRENCY = 2
+EXTRACT_TASK_CONCURRENCY = 3
 
 
 @dag(
