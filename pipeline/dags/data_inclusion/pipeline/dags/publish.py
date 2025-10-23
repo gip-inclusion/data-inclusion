@@ -123,3 +123,6 @@ EVERY_MONDAY_AT_2PM = "0 14 * * 1"
 )
 def publish():
     publish_to_datagouv()
+
+
+publish()
