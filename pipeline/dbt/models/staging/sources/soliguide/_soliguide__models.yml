@@ -149,6 +149,8 @@ models:
       - name: temp_infos__hours__actif
       - name: temp_infos__hours__hours
       - name: newhours
+        data_tests:
+          - not_null
       - name: modalities__other
         data_tests:
           - dbt_utils.not_constant
@@ -244,6 +246,8 @@ models:
           - dbt_utils.not_constant
           - dbt_utils.not_empty_string
       - name: hours
+        data_tests:
+          - not_null
       - name: saturated__status
         data_tests:
           - not_null

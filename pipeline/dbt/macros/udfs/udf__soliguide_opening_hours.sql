@@ -6,9 +6,21 @@ CREATE OR REPLACE FUNCTION processings.soliguide_opening_hours(data JSONB)
 RETURNS TEXT
 AS $$
 
-    from typing import Annotated, Literal
+    import difflib
+    import enum
+    from typing import Annotated, Any, Literal
 
     import pydantic
+
+    def fuzzy_enum_validator(enum_class):
+        def _validator(value: Any) -> Any:
+            return next(iter(difflib.get_close_matches(value, enum_class, n=1)), value)
+        return _validator
+
+    class HolidaysStatus(str, enum.Enum):
+        CLOSED = "CLOSED"
+        OPEN = "OPEN"
+        UNKNOWN = "UNKNOWN"
 
     class TimeSlotItem(pydantic.BaseModel):
         start: int
@@ -28,9 +40,10 @@ AS $$
         sunday: WeekdaySchedule
         description: str | None = None
         closed_holidays: Annotated[
-            Literal["CLOSED", "OPEN", "UNKNOWN"],
+            HolidaysStatus,
             pydantic.Field(alias="closedHolidays"),
-        ] = "UNKNOWN"
+            pydantic.BeforeValidator(fuzzy_enum_validator(HolidaysStatus)),
+        ] = HolidaysStatus.UNKNOWN
 
         def weekdays(self) -> list[tuple[str, WeekdaySchedule]]:
             return [
@@ -65,9 +78,9 @@ AS $$
         if schedule.description is not None and len(schedule.description) > 0:
             result += f"; {schedule.description}"
 
-        if schedule.closed_holidays == "CLOSED":
+        if schedule.closed_holidays == HolidaysStatus.CLOSED:
             result += "; PH closed"
-        elif schedule.closed_holidays == "OPEN":
+        elif schedule.closed_holidays == HolidaysStatus.OPEN:
             result += "; PH open"
 
         return result
