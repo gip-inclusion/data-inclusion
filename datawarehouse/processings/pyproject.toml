@@ -6,7 +6,6 @@ requires = ["setuptools", "wheel"]
 name = "data-inclusion-processings"
 version = "0.1.0"
 dependencies = [
-    "data-inclusion-schema==1.0.1",
     "dedupe",
     "dedupe-variable-datetime",
     "furl",
@@ -17,6 +16,7 @@ dependencies = [
     "requests~=2.31",
     "sib-api-v3-sdk",
     "unidecode",
+    "data-inclusion-schema",
 ]
 
 [project.optional-dependencies]
@@ -52,6 +52,9 @@ testpaths = "tests"
 markers = '''
     ban_api: mark test as requiring the base base adresse nationale api
 '''
+
+[tool.uv.sources]
+data-inclusion-schema = { git = "https://github.com/gip-inclusion/data-inclusion-schema.git", rev = "4f7df72343a66b9823a10ad17fbbcd8076cad88e" }
 
 [tool.ruff.lint.per-file-ignores]
 "test_*.py" = ["S101"]

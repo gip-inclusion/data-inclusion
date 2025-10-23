@@ -983,6 +983,7 @@ typing-extensions==4.13.2
     # via
     #   -c airflow/constraints.txt
     #   alembic
+    #   anyio
     #   beautifulsoup4
     #   limits
     #   opentelemetry-sdk
@@ -990,6 +991,7 @@ typing-extensions==4.13.2
     #   pydantic
     #   pydantic-core
     #   pyee
+    #   referencing
     #   typing-inspection
 typing-inspection==0.4.0
     # via
