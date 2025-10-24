@@ -6,14 +6,14 @@ DATAGOUV_DI_RESOURCE_IDS = {
         Format.CSV: "fd4cb3ef-5c31-4c99-92fe-2cd8016c0ca5",
         Format.GEOJSON: "42d46a21-eeef-433c-b3c3-961e1c37bc93",
         Format.JSON: "4fc64287-e869-4550-8fb9-b1e0b7809ffa",
-        Format.PARQUET: "",
+        Format.PARQUET: "915c05e8-77ea-44f6-9837-0f1eff897a54",
         Format.XLSX: "fad88958-c9a7-4914-a9b8-89d1285c210a",
     },
     "services": {
         Format.CSV: "5abc151a-5729-4055-b0a9-d5691276f461",
         Format.GEOJSON: "307529c0-dcc5-449a-a88d-9290a8a86a14",
         Format.JSON: "0eac1faa-66f9-4e49-8fb3-f0721027d89f",
-        Format.PARQUET: "",
+        Format.PARQUET: "de4856b8-bb67-4b79-83bd-038e846a1774",
         Format.XLSX: "de2eb57b-113d-48eb-95d2-59a69ba36eb1",
     },
 }
