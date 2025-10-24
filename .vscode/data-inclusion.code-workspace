@@ -17,11 +17,6 @@
 		"python.testing.pytestEnabled": true,
 		"python.testing.unittestEnabled": false,
 		"python.defaultInterpreterPath": ".venv/bin/python",
-		"python.experiments.optOutFrom": [
-			// opt-out of this experiment, because it disturbs virtualenv
-			// activation in vscode terminal
-			"pythonTerminalEnvVarActivation"
-		],
 		"files.trimTrailingWhitespace": true,
 		"files.insertFinalNewline": true,
 	},
