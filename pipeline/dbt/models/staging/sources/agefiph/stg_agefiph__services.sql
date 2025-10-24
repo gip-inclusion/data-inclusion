@@ -1,6 +1,5 @@
 WITH source AS (
-    {{ stg_source_header('agefiph', 'services') }}
-),
+    {{ stg_source_header('agefiph', 'services') }}),
 
 final AS (
     SELECT
@@ -9,7 +8,12 @@ final AS (
         CAST(data #>> '{attributes,changed}' AS TIMESTAMP WITH TIME ZONE) AS "attributes__changed",
         data #>> '{attributes,title}'                                     AS "attributes__title",
         data #>> '{attributes,path,alias}'                                AS "attributes__path__alias",
-        data #>> '{attributes,field_lien_aide,uri}'                       AS "attributes__field_lien_aide_uri",
+        CASE
+            WHEN data #>> '{attributes,field_lien_aide,uri}' = 'route:<nolink>'
+                THEN NULL
+            ELSE
+                data #>> '{attributes,field_lien_aide,uri}'
+        END                                                               AS "attributes__field_lien_aide_uri",
         data #>> '{relationships,field_profil_associe,data,id}'           AS "relationships__field_profil_associe__data__id",
         data #>> '{attributes,field_solution_detail,processed}'           AS "attributes__field_solution_detail__processed",
         data #>> '{attributes,field_montant_aide}'                        AS "attributes__field_montant_aide",
