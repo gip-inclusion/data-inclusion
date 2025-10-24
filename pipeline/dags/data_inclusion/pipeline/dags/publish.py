@@ -5,6 +5,7 @@ from data_inclusion.pipeline.common import dags, tasks
 
 @task.external_python(python=tasks.PYTHON_BIN_PATH)
 def publish_to_datagouv():
+    import enum
     import io
     import tempfile
 
@@ -15,7 +16,14 @@ def publish_to_datagouv():
     from airflow.providers.postgres.hooks import postgres
 
     from data_inclusion.pipeline.sources import datagouv
-    from data_inclusion.schema import v0
+    from data_inclusion.schema import v1
+
+    class Format(str, enum.Enum):
+        CSV = "csv"
+        GEOJSON = "geojson"
+        JSON = "json"
+        PARQUET = "parquet"
+        XLSX = "xlsx"
 
     pg_hook = postgres.PostgresHook(postgres_conn_id="pg")
 
@@ -24,16 +32,18 @@ def publish_to_datagouv():
     DATAGOUV_DI_DATASET_ID = "6233723c2c1e4a54af2f6b2d"
     DATAGOUV_DI_RESOURCE_IDS = {
         "structures": {
-            "json": "4fc64287-e869-4550-8fb9-b1e0b7809ffa",
-            "csv": "fd4cb3ef-5c31-4c99-92fe-2cd8016c0ca5",
-            "xlsx": "fad88958-c9a7-4914-a9b8-89d1285c210a",
-            "geojson": "42d46a21-eeef-433c-b3c3-961e1c37bc93",
+            Format.CSV: "fd4cb3ef-5c31-4c99-92fe-2cd8016c0ca5",
+            Format.GEOJSON: "42d46a21-eeef-433c-b3c3-961e1c37bc93",
+            Format.JSON: "4fc64287-e869-4550-8fb9-b1e0b7809ffa",
+            Format.PARQUET: "",
+            Format.XLSX: "fad88958-c9a7-4914-a9b8-89d1285c210a",
         },
         "services": {
-            "json": "0eac1faa-66f9-4e49-8fb3-f0721027d89f",
-            "csv": "5abc151a-5729-4055-b0a9-d5691276f461",
-            "xlsx": "de2eb57b-113d-48eb-95d2-59a69ba36eb1",
-            "geojson": "307529c0-dcc5-449a-a88d-9290a8a86a14",
+            Format.CSV: "5abc151a-5729-4055-b0a9-d5691276f461",
+            Format.GEOJSON: "307529c0-dcc5-449a-a88d-9290a8a86a14",
+            Format.JSON: "0eac1faa-66f9-4e49-8fb3-f0721027d89f",
+            Format.PARQUET: "",
+            Format.XLSX: "de2eb57b-113d-48eb-95d2-59a69ba36eb1",
         },
     }
 
@@ -58,20 +68,23 @@ def publish_to_datagouv():
                 buf.write(fp.read())
                 buf.seek(0)
 
-    to_buf_fn_by_format = {
-        "json": lambda df, buf: df.to_json(buf, orient="records", force_ascii=False),
-        "csv": lambda df, buf: df.to_csv(buf, index=False),
-        "xlsx": lambda df, buf: df.to_excel(
+    formats = {
+        Format.CSV: lambda df, buf: df.to_csv(buf, index=False),
+        Format.GEOJSON: to_geojson,
+        Format.JSON: lambda df, buf: df.to_json(
+            buf, orient="records", force_ascii=False
+        ),
+        Format.PARQUET: lambda df, buf: df.to_parquet(buf, index=False),
+        Format.XLSX: lambda df, buf: df.to_excel(
             buf,
             engine="xlsxwriter",
             engine_kwargs={"options": {"strings_to_urls": False}},
         ),
-        "geojson": to_geojson,
     }
 
     for resource in ["structures", "services"]:
         df = pg_hook.get_pandas_df(
-            sql=f"SELECT * FROM public_marts.marts__{resource}",
+            sql=f"SELECT * FROM public_marts.marts__{resource}_v1",
         )
 
         # remove closed sources
@@ -93,23 +106,20 @@ def publish_to_datagouv():
 
         # keep only the columns we want to publish
         if resource == "structures":
-            df = df[list(v0.Structure.model_fields.keys()) + ["_di_surrogate_id"]]
+            df = df[list(v1.Structure.model_fields.keys())]
         elif resource == "services":
-            df = df[
-                list(v0.Service.model_fields.keys())
-                + ["_di_surrogate_id", "_di_structure_surrogate_id"]
-            ]
+            df = df[list(v1.Service.model_fields.keys())]
 
         df.info()
 
-        for format in ["csv", "json", "xlsx", "geojson"]:
+        for format, to_format in formats.items():
             with io.BytesIO() as buf:
-                to_buf_fn_by_format[format](df, buf)
+                to_format(df, buf)
                 datagouv_client.upload_dataset_resource(
                     dataset_id=DATAGOUV_DI_DATASET_ID,
                     resource_id=DATAGOUV_DI_RESOURCE_IDS[resource][format],
                     buf=buf,
-                    filename=f"{resource}-inclusion-{date_str}.{format}",
+                    filename=f"{resource}-inclusion-{date_str}.{format.value}",
                 )
 
 
