@@ -16,3 +16,19 @@ models:
           - unique
           - not_null
           - dbt_utils.not_empty_string
+
+  - name: stg_action_logement__services_v1
+    columns:
+      - name: id
+        data_tests:
+          - unique
+          - not_null
+          - dbt_utils.not_empty_string
+
+  - name: stg_action_logement__structures_v1
+    columns:
+      - name: id
+        data_tests:
+          - unique
+          - not_null
+          - dbt_utils.not_empty_string
