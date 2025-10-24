@@ -81,10 +81,10 @@ final AS (
         structures.id                                                AS "adresse_id",
         NULL                                                         AS "contact_nom_prenom",
         CASE
-            WHEN services.attributes__field_lien_aide_uri IS NULL THEN structures.courriel
+            WHEN services.attributes__field_lien_aide__uri IS NULL THEN structures.courriel
         END                                                          AS "courriel",
         REPLACE(
-            services.attributes__field_lien_aide_uri,
+            services.attributes__field_lien_aide__uri,
             'internal:',
             'https://www.agefiph.fr'
         )                                                            AS "formulaire_en_ligne",
@@ -101,7 +101,7 @@ final AS (
         'agefiph'                                                    AS "source",
         structures.id                                                AS "structure_id",
         CASE
-            WHEN services.attributes__field_lien_aide_uri IS NULL THEN structures.telephone
+            WHEN services.attributes__field_lien_aide__uri IS NULL THEN structures.telephone
         END                                                          AS "telephone",
         code_insee.code_region                                       AS "zone_diffusion_code",
         code_insee.nom_region                                        AS "zone_diffusion_nom",
@@ -131,17 +131,17 @@ final AS (
         ARRAY['a-distance']                                          AS "modes_accueil",
         ARRAY_REMOVE(
             ARRAY[
-                CASE WHEN services.attributes__field_lien_aide_uri IS NULL AND structures.telephone IS NOT NULL THEN 'telephoner' END,
-                CASE WHEN services.attributes__field_lien_aide_uri IS NULL AND structures.courriel IS NOT NULL THEN 'envoyer-un-mail' END,
-                CASE WHEN services.attributes__field_lien_aide_uri IS NOT NULL THEN 'completer-le-formulaire-dadhesion' END
+                CASE WHEN services.attributes__field_lien_aide__uri IS NULL AND structures.telephone IS NOT NULL THEN 'telephoner' END,
+                CASE WHEN services.attributes__field_lien_aide__uri IS NULL AND structures.courriel IS NOT NULL THEN 'envoyer-un-mail' END,
+                CASE WHEN services.attributes__field_lien_aide__uri IS NOT NULL THEN 'completer-le-formulaire-dadhesion' END
             ],
             NULL
         )                                                            AS "modes_orientation_accompagnateur",
         ARRAY_REMOVE(
             ARRAY[
-                CASE WHEN services.attributes__field_lien_aide_uri IS NULL AND structures.telephone IS NOT NULL THEN 'telephoner' END,
-                CASE WHEN services.attributes__field_lien_aide_uri IS NULL AND structures.courriel IS NOT NULL THEN 'envoyer-un-mail' END,
-                CASE WHEN services.attributes__field_lien_aide_uri IS NOT NULL THEN 'completer-le-formulaire-dadhesion' END
+                CASE WHEN services.attributes__field_lien_aide__uri IS NULL AND structures.telephone IS NOT NULL THEN 'telephoner' END,
+                CASE WHEN services.attributes__field_lien_aide__uri IS NULL AND structures.courriel IS NOT NULL THEN 'envoyer-un-mail' END,
+                CASE WHEN services.attributes__field_lien_aide__uri IS NOT NULL THEN 'completer-le-formulaire-dadhesion' END
             ],
             NULL
         )                                                            AS "modes_orientation_beneficiaire",
