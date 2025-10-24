@@ -1,6 +1,12 @@
+from pathlib import Path
+
 import pendulum
 
+from airflow import configuration
+
 from data_inclusion.pipeline.common import sentry
+
+AIRFLOW_HOME = Path(configuration.get_airflow_home()).resolve()
 
 
 def common_args(use_sentry: bool = False):
@@ -14,4 +20,5 @@ def common_args(use_sentry: bool = False):
         "catchup": False,
         "default_args": default_args,
         "max_active_runs": 1,
+        "template_searchpath": [str(AIRFLOW_HOME)],
     }
