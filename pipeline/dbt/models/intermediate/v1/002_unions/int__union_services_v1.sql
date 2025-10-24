@@ -1,6 +1,7 @@
 {{
     dbt_utils.union_relations(
         relations=[
+            ref('int_action_logement__services_v1'),
             ref('int_agefiph__services_v1'),
             ref('int_carif_oref__services_v1'),
             ref('int_soliguide__services_v1'),

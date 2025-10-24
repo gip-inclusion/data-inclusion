@@ -1,14 +1,6 @@
 version: 2
 
 models:
-  - name: stg_action_logement__services
-    columns:
-      - name: id
-        data_tests:
-          - unique
-          - not_null
-          - dbt_utils.not_empty_string
-
   - name: stg_action_logement__structures
     columns:
       - name: id
@@ -16,3 +8,240 @@ models:
           - unique
           - not_null
           - dbt_utils.not_empty_string
+          - dbt_utils.not_constant
+      - name: date_maj
+        data_tests:
+          - not_null
+      - name: nom
+        data_tests:
+          - not_null
+          - dbt_utils.not_empty_string
+      - name: siret
+        data_tests:
+          - dbt_utils.at_least_one
+          - dbt_utils.not_empty_string
+      - name: description
+        data_tests:
+          - not_null
+          - dbt_utils.not_empty_string
+      - name: adresse
+        data_tests:
+          - not_null
+          - dbt_utils.not_empty_string
+          - dbt_utils.not_constant
+      - name: complement_adresse
+        data_tests:
+          - dbt_utils.at_least_one
+          - dbt_utils.not_constant
+          - dbt_utils.not_empty_string
+      - name: code_postal
+        data_tests:
+          - not_null
+          - dbt_utils.not_empty_string
+          - dbt_utils.not_constant
+      - name: commune
+        data_tests:
+          - not_null
+          - dbt_utils.not_empty_string
+          - dbt_utils.not_constant
+      - name: telephone
+        data_tests:
+          - not_null
+          - dbt_utils.not_empty_string
+      - name: lien_source
+        data_tests:
+          - not_null
+          - dbt_utils.not_empty_string
+          - dbt_utils.not_constant
+      - name: site_web
+        data_tests:
+          - not_null
+          - dbt_utils.not_empty_string
+          - dbt_utils.not_constant
+      - name: horaires_accueil
+        data_tests:
+          - not_null
+          - dbt_utils.not_empty_string
+
+  - name: stg_action_logement__structures__reseaux_porteurs
+    columns:
+      - name: service_id
+        data_tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('stg_action_logement__services')
+                field: id
+      - name: value
+        data_tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('reseaux_porteurs_v1')
+                field: value
+
+  - name: stg_action_logement__services
+    columns:
+      - name: id
+        data_tests:
+          - unique
+          - not_null
+          - dbt_utils.not_empty_string
+          - dbt_utils.not_constant
+      - name: date_maj
+        data_tests:
+          - not_null
+      - name: nom
+        data_tests:
+          - not_null
+          - dbt_utils.not_empty_string
+          - dbt_utils.not_constant
+      - name: description
+        data_tests:
+          - not_null
+          - dbt_utils.not_empty_string
+          - dbt_utils.not_constant
+      - name: lien_source
+        data_tests:
+          - dbt_utils.at_least_one
+          - dbt_utils.not_empty_string
+      - name: type
+        data_tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('types_de_services_v1')
+                field: value
+      - name: frais_precisions
+        data_tests:
+          - dbt_utils.not_empty_string
+      - name: publics_precisions
+        data_tests:
+          - dbt_utils.not_empty_string
+      - name: conditions_acces
+        data_tests:
+          - dbt_utils.not_empty_string
+      - name: telephone
+        data_tests:
+          - not_null
+          - dbt_utils.not_empty_string
+      - name: courriel
+        data_tests:
+          - dbt_utils.not_empty_string
+      - name: contact_nom_prenom
+        data_tests:
+          - dbt_utils.not_empty_string
+      - name: lien_mobilisation
+        data_tests:
+          - not_null
+          - dbt_utils.not_empty_string
+          - dbt_utils.not_constant
+      - name: mobilisation_precisions
+        data_tests:
+          - dbt_utils.not_empty_string
+      - name: zone_eligibilite
+      - name: volume_horaire_hebdomadaire
+      - name: nombre_semaines
+      - name: horaires_accueil
+
+  - name: stg_action_logement__services__frais
+    columns:
+      - name: service_id
+        data_tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('stg_action_logement__services')
+                field: id
+      - name: value
+        data_tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('frais_v1')
+                field: value
+
+  - name: stg_action_logement__services__modes_accueil
+    columns:
+      - name: service_id
+        data_tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('stg_action_logement__services')
+                field: id
+      - name: value
+        data_tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('modes_accueil_v1')
+                field: value
+
+  - name: stg_action_logement__services__modes_mobilisation
+    columns:
+      - name: service_id
+        data_tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('stg_action_logement__services')
+                field: id
+      - name: value
+        data_tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('modes_mobilisation_v1')
+                field: value
+
+  - name: stg_action_logement__services__mobilisable_par
+    columns:
+      - name: service_id
+        data_tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('stg_action_logement__services')
+                field: id
+      - name: value
+        data_tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('personne_mobilisatrice_v1')
+                field: value
+
+  - name: stg_action_logement__services__publics
+    columns:
+      - name: service_id
+        data_tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('stg_action_logement__services')
+                field: id
+      - name: value
+        data_tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('publics_v1')
+                field: value
+
+  - name: stg_action_logement__services__thematiques
+    columns:
+      - name: service_id
+        data_tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('stg_action_logement__services')
+                field: id
+      - name: value
+        data_tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('thematiques_v1')
+                field: value
