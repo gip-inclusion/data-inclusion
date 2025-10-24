@@ -3,7 +3,7 @@ x-airflow-common:
 
   environment:
     &airflow-common-environment
-    AIRFLOW__CORE__DEFAULT_TIMEZONE: Europe/Paris
+    AIRFLOW__CORE__DEFAULT_TIMEZONE: ${AIRFLOW__CORE__DEFAULT_TIMEZONE}
     AIRFLOW__CORE__EXECUTOR: LocalExecutor
     # AIRFLOW__CORE__FERNET_KEY:
     AIRFLOW__CORE__LOAD_EXAMPLES: 'false'
