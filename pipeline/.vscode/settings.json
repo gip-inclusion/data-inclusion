@@ -1,6 +1,4 @@
 {
     "python.autoComplete.extraPaths": ["./dags"],
     "python.analysis.extraPaths": ["./dags"],
-    "sqlfluff.linter.run": "onSave",
-    "sqlfluff.experimental.format.executeInTerminal": true
 }
