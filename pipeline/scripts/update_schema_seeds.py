@@ -3,7 +3,7 @@
 # /// script
 # requires-python = ">=3.12"
 # dependencies = [
-#     "data-inclusion-schema==1.0.1",
+#     "data-inclusion-schema @ git+https://github.com/gip-inclusion/data-inclusion-schema.git@4f7df72343a66b9823a10ad17fbbcd8076cad88e",
 #     "pandas",
 # ]
 # ///

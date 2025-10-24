@@ -1,5 +1,5 @@
 WITH source AS (
-    {{ stg_source_header('emplois_de_linclusion', 'organisations') }}),
+    {{ stg_source_header('emplois_de_linclusion', 'siaes') }}),
 
 final AS (
     SELECT

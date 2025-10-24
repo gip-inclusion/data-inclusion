@@ -2,3 +2,174 @@ version: 2
 
 models:
   - name: stg_emplois_de_linclusion__organisations
+    columns:
+      - name: id
+        data_tests:
+          - not_null
+          - unique
+      - name: nom
+        data_tests:
+          - not_null
+          - dbt_utils.not_empty_string
+          - dbt_utils.not_constant
+      - name: date_maj
+        data_tests:
+          - not_null
+          - dbt_utils.accepted_range:
+              arguments:
+                min_value: "now() - interval '10 years'"
+      - name: kind
+        data_tests:
+          - not_null
+          - dbt_utils.not_constant
+          - accepted_values:
+              arguments:
+                values: ['SPIP', 'FT', 'PJJ', 'CCAS', 'CAP_EMPLOI', 'DEPT', 'ML', 'Autre']
+
+      - name: commune
+        data_tests:
+          - not_null
+          - dbt_utils.not_empty_string
+          - dbt_utils.not_constant
+      - name: code_postal
+        data_tests:
+          - not_null
+          - dbt_utils.not_empty_string
+          - dbt_utils.not_constant
+      - name: lien_source
+        data_tests:
+          - not_null
+          - dbt_utils.not_empty_string
+          - dbt_utils.not_constant
+      - name: site_web
+        data_tests:
+          - dbt_utils.not_empty_string
+          - dbt_utils.not_constant
+      - name: siret
+        data_tests:
+          - dbt_utils.not_empty_string
+          - dbt_utils.not_constant
+          - dbt_utils.expression_is_true:
+              arguments:
+                expression: "!= REPEAT('0', 14)"
+      - name: courriel
+        data_tests:
+          - dbt_utils.not_constant
+          - dbt_utils.not_empty_string
+      - name: telephone
+        data_tests:
+          - dbt_utils.not_constant
+          - dbt_utils.not_empty_string
+          - dbt_utils.not_null_proportion:
+              arguments:
+                at_least: 0.95
+      - name: adresse
+        data_tests:
+          - dbt_utils.not_constant
+          - dbt_utils.not_null_proportion:
+              arguments:
+                at_least: 0.95
+      - name: latitude
+        data_tests:
+          - dbt_utils.not_constant
+          - dbt_utils.not_null_proportion:
+              arguments:
+                at_least: 0.95
+      - name: longitude
+        data_tests:
+          - dbt_utils.not_constant
+          - dbt_utils.not_null_proportion:
+              arguments:
+                at_least: 0.95
+      - name: description
+        data_tests:
+          - dbt_utils.not_empty_string
+          - dbt_utils.not_constant
+
+  - name: stg_emplois_de_linclusion__siaes
+    columns:
+      - name: id
+        data_tests:
+          - not_null
+          - unique
+      - name: nom
+        data_tests:
+          - not_null
+          - dbt_utils.not_empty_string
+          - dbt_utils.not_constant
+      - name: date_maj
+        data_tests:
+          - not_null
+          - dbt_utils.accepted_range:
+              arguments:
+                min_value: "now() - interval '10 years'"
+      - name: kind
+        data_tests:
+          - not_null
+          - dbt_utils.not_constant
+          - accepted_values:
+              arguments:
+                values: ['ACI', 'AI', 'EA', 'EI', 'EITI', 'ETTI', 'GEIQ']
+      - name: commune
+        data_tests:
+          - not_null
+          - dbt_utils.not_empty_string
+          - dbt_utils.not_constant
+      - name: code_postal
+        data_tests:
+          - not_null
+          - dbt_utils.not_empty_string
+          - dbt_utils.not_constant
+      - name: lien_source
+        data_tests:
+          - not_null
+          - dbt_utils.not_empty_string
+          - dbt_utils.not_constant
+      - name: siret
+        data_tests:
+          - not_null
+          - dbt_utils.not_empty_string
+          - dbt_utils.not_constant
+          - dbt_utils.expression_is_true:
+              arguments:
+                expression: "!= REPEAT('0', 14)"
+      - name: telephone
+        data_tests:
+          - dbt_utils.not_constant
+          - dbt_utils.not_empty_string
+          - dbt_utils.not_null_proportion:
+              arguments:
+                at_least: 0.95
+      - name: courriel
+        data_tests:
+          - dbt_utils.not_constant
+          - dbt_utils.not_empty_string
+          - dbt_utils.not_null_proportion:
+              arguments:
+                at_least: 0.95
+      - name: adresse
+        data_tests:
+          - dbt_utils.not_constant
+          - dbt_utils.not_null_proportion:
+              arguments:
+                at_least: 0.95
+      - name: latitude
+        data_tests:
+          - dbt_utils.not_constant
+          - dbt_utils.not_null_proportion:
+              arguments:
+                at_least: 0.95
+      - name: longitude
+        data_tests:
+          - dbt_utils.not_constant
+          - dbt_utils.not_null_proportion:
+              arguments:
+                at_least: 0.95
+      - name: site_web
+        data_tests:
+          - dbt_utils.not_empty_string
+          - dbt_utils.not_constant
+      - name: description
+        data_tests:
+          - dbt_utils.not_empty_string
+          - dbt_utils.not_constant
