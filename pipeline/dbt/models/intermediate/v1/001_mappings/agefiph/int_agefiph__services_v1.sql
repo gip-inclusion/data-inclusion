@@ -44,12 +44,13 @@ final AS (
         'agefiph--' || structures.id                                 AS "adresse_id",
         'agefiph--' || structures.id || '-' || services.id           AS "id",
         services.attributes__title                                   AS "nom",
-        services.attributes__field_solution_detail__processed
-        || CASE
-            WHEN services.attributes__field_montant_aide IS NOT NULL
-                THEN E'\nAide d’un montant de : ' || LOWER(services.attributes__field_montant_aide)
-            ELSE ''
-        END                                                          AS "description",
+        ARRAY_TO_STRING(
+            ARRAY[
+                services.attributes__field_solution_detail__processed,
+                '\Aide d’un montant de : ' || LOWER(services.attributes__field_montant_aide)
+            ],
+            E'\n'
+        )                                                            AS "description",
         'https://www.agefiph.fr' || services.attributes__path__alias AS "lien_source",
         CAST(services.attributes__changed AS DATE)                   AS "date_maj",
         CASE
@@ -57,7 +58,7 @@ final AS (
             WHEN services.relationships__field_type_de_solution__data__id = 'f7e83615-cb00-4ddd-91ee-9586d86ccf23' THEN 'accompagnement'
         END                                                          AS "type",
         ARRAY(
-            SELECT agefiph_thematique_mapping.thematique
+            SELECT DISTINCT agefiph_thematique_mapping.thematique
             FROM services_thematiques
             INNER JOIN agefiph_thematique_mapping ON services_thematiques.thematique_id = agefiph_thematique_mapping.agefiph_thematique_id
             WHERE services.id = services_thematiques.service_id

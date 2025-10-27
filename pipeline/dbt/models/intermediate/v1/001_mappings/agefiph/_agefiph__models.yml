@@ -56,3 +56,22 @@ models:
               arguments:
                 to: ref('int_agefiph__adresses_v1')
                 field: id
+
+  - name: _map_agefiph_thematiques_v1
+    columns:
+      - name: agefiph_thematique_id
+        data_tests:
+          - not_null
+          - dbt_utils.not_empty_string
+          - relationships:
+              arguments:
+                to: ref('stg_agefiph__services__thematiques')
+                field: thematique_id
+      - name: thematique
+        data_tests:
+          - not_null
+          - dbt_utils.not_empty_string
+          - relationships:
+              arguments:
+                to: ref('thematiques_v1')
+                field: value
