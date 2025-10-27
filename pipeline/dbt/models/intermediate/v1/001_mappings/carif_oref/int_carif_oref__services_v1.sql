@@ -26,8 +26,20 @@ coordonnees AS (
     SELECT * FROM {{ ref('stg_carif_oref__coordonnees') }}
 ),
 
+adresses AS (
+    SELECT * FROM {{ ref('stg_carif_oref__adresses') }}
+),
+
 publics_mapping AS (
     SELECT * FROM {{ ref('_map_carif_oref__publics') }}
+),
+
+departements AS (
+    SELECT * FROM {{ ref('stg_decoupage_administratif__departements') }}
+),
+
+communes AS (
+    SELECT * FROM {{ ref('stg_decoupage_administratif__communes') }}
 ),
 
 publics AS (
@@ -128,8 +140,16 @@ final AS (
             WHEN actions.modalites_enseignement = '1' THEN ARRAY['a-distance']
             WHEN actions.modalites_enseignement = '2' THEN ARRAY['en-presentiel', 'a-distance']
         END                                                                   AS "modes_accueil",
-        CAST(NULL AS TEXT [])                                                 AS "zone_eligibilite",
-        CAST(NULL AS FLOAT)                                                   AS "volume_horaire_hebdomadaire",
+        CASE actions.code_perimetre_recrutement
+            WHEN '1' THEN ARRAY[communes.code]
+            WHEN '2' THEN ARRAY[communes.code_departement]
+            ELSE ARRAY(
+                SELECT departements.code
+                FROM departements
+                WHERE departements.code_region = communes.code_region
+            )
+        END                                                                   AS "zone_eligibilite",
+        CAST(actions.duree_hebdo AS FLOAT)                                    AS "volume_horaire_hebdomadaire",
         CAST(NULL AS INTEGER)                                                 AS "nombre_semaines",
         NULL                                                                  AS "horaires_accueil"
 
@@ -146,10 +166,14 @@ final AS (
             AND actions.numero = organismes_formateurs__contacts.numero_action
     LEFT JOIN coordonnees AS coordonnees_organisme_formateur
         ON organismes_formateurs__contacts.hash_coordonnees = coordonnees_organisme_formateur.hash_
+    LEFT JOIN adresses AS adresses_organisme_formateur
+        ON coordonnees_organisme_formateur.hash_adresse = adresses_organisme_formateur.hash_
 
     -- coordonnees lieux de formation
     LEFT JOIN coordonnees AS coordonnees_lieu_de_formation
         ON actions.hash_coordonnees_lieu_de_formation_principal = coordonnees_lieu_de_formation.hash_
+    LEFT JOIN adresses AS adresses_lieu_de_formation
+        ON coordonnees_lieu_de_formation.hash_adresse = adresses_lieu_de_formation.hash_
 
     -- coordonnes formations
     LEFT JOIN formations__contacts
@@ -157,6 +181,8 @@ final AS (
     LEFT JOIN coordonnees AS coordonnees_formation
         ON formations__contacts.hash_coordonnees = coordonnees_formation.hash_
 
+    LEFT JOIN communes
+        ON COALESCE(adresses_lieu_de_formation.code_insee_commune, adresses_organisme_formateur.code_insee_commune) = communes.code
     LEFT JOIN publics
         ON actions.numero = publics.numero_action
     ORDER BY
