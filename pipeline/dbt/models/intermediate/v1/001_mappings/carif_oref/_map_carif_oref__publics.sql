@@ -56,5 +56,14 @@ FROM (
     ('82068', NULL),
     ('82069', 'actifs'),
     ('82080', 'actifs'),
-    ('83056', 'tous-publics')
+    ('83056', 'tous-publics'),
+    ('81028', 'personnes-en-situation-de-handicap'),
+    ('81027', 'personnes-en-situation-de-handicap'),
+    ('81025', 'personnes-en-situation-de-handicap'),
+    ('81029', 'personnes-en-situation-de-handicap'),
+    ('81026', 'personnes-en-situation-de-handicap'),
+    ('81024', 'jeunes'),
+    ('81033', 'jeunes'),
+    ('81023', 'personnes-exilees'),
+    ('81031', 'demandeurs-emploi')
 ) AS x (formacode_v14, public)
