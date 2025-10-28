@@ -4,6 +4,7 @@ WITH services AS (
             relations=[
                 ref('int_carif_oref__services_v1'),
                 ref('int_soliguide__services_v1'),
+                ref('int_monenfant__services_v1'),
             ],
             include=[
                 'source',

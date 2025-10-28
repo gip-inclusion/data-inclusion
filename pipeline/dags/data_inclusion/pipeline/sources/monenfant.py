@@ -203,7 +203,10 @@ def extract(
     data = []
 
     with sync_playwright() as playwright:
-        browser = playwright.chromium.launch(headless=not debug)
+        if debug:
+            browser = playwright.chromium.launch(headless=False)
+        else:
+            browser = playwright.chromium.connect("ws://playwright:3000/")
         location = get_location(city_code=city_code, commune=commune, region=region)
 
         if city_code[:3] in [
@@ -245,6 +248,9 @@ def read(path: Path):
         creche_data["description"] = {
             k: utils.html_to_markdown(v) for k, v in creche_data["description"].items()
         }
+        creche_data["service_accueil"]["handicap"] = utils.html_to_markdown(
+            creche_data["service_accueil"]["handicap"]
+        )
 
     df = pd.DataFrame.from_records(data)
     return utils.df_clear_nan(df)
