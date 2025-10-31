@@ -5,6 +5,20 @@ from furl import furl
 from data_inclusion.pipeline.dags.import_decoupage_administratif import constants
 from data_inclusion.pipeline.sources import utils
 
+COMMUNES_FIELDS = [
+    "nom",
+    "code",
+    "centre",  # must be explicitly included
+    "codesPostaux",
+    "codeEpci",
+    "codeDepartement",
+    "codeRegion",
+]
+
+
+def set_communes_query_params(base_url: furl) -> furl:
+    return base_url.copy().set({"fields": ",".join(COMMUNES_FIELDS)})
+
 
 class GeoApiClient:
     class Resource(enum.Enum):
@@ -13,6 +27,7 @@ class GeoApiClient:
         EPCIS = "epcis"
         COMMUNES = "communes"
         ARRONDISSEMENTS = "arrondissements"
+        COMMUNES_ASSOCIEES_DELEGUEES = "communes_associees_deleguees"
 
     def __init__(self) -> None:
         self.base_url = furl(constants.GEO_API_URL)
@@ -22,40 +37,37 @@ class GeoApiClient:
         self.session = utils.logging_raising_session()
 
     def list_regions(self) -> list[dict]:
-        return self.session.get(str(self.base_url / "regions")).json()
+        return self.session.get(str(self.base_url / self.Resource.REGIONS.value)).json()
 
     def list_departements(self) -> list[dict]:
-        return self.session.get(str(self.base_url / "departements")).json()
+        return self.session.get(
+            str(self.base_url / self.Resource.DEPARTEMENTS.value)
+        ).json()
 
     def list_epcis(self) -> list[dict]:
-        return self.session.get(str(self.base_url / "epcis")).json()
-
-    @property
-    def communes_url(self) -> furl:
-        return (self.base_url / "communes").set(
-            {
-                # explicitely list retrieve fields
-                # to include the "center" field
-                "fields": ",".join(
-                    [
-                        "nom",
-                        "code",
-                        "centre",
-                        "codesPostaux",
-                        "codeEpci",
-                        "codeDepartement",
-                        "codeRegion",
-                    ]
-                )
-            }
-        )
+        return self.session.get(str(self.base_url / self.Resource.EPCIS.value)).json()
 
     def list_communes(self) -> list[dict]:
-        return self.session.get(str(self.communes_url)).json()
+        return self.session.get(
+            str(set_communes_query_params(self.base_url / self.Resource.COMMUNES.value))
+        ).json()
 
     def list_arrondissements(self) -> list[dict]:
         return self.session.get(
-            str(self.communes_url.copy().add({"type": "arrondissement-municipal"}))
+            str(
+                set_communes_query_params(
+                    self.base_url / self.Resource.COMMUNES.value
+                ).add({"type": "arrondissement-municipal"})
+            )
+        ).json()
+
+    def list_communes_associees_deleguees(self) -> list[dict]:
+        return self.session.get(
+            str(
+                set_communes_query_params(
+                    self.base_url / self.Resource.COMMUNES_ASSOCIEES_DELEGUEES.value
+                )
+            )
         ).json()
 
     def list_resource(self, resource: Resource) -> list[dict]:
