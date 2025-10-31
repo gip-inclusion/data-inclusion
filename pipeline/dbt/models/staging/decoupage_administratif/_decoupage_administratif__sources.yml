@@ -4,8 +4,9 @@ sources:
   - name: decoupage_administratif
     schema: decoupage_administratif
     tables:
-      - name: regions
+      - name: arrondissements
+      - name: communes
+      - name: communes_associees_deleguees
       - name: departements
       - name: epcis
-      - name: communes
-      - name: arrondissements
+      - name: regions
