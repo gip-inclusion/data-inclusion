@@ -39,8 +39,9 @@ def extract_and_load(schema: str):
                 }
                 if resource
                 in [
-                    geoapi.GeoApiClient.Resource.COMMUNES,
                     geoapi.GeoApiClient.Resource.ARRONDISSEMENTS,
+                    geoapi.GeoApiClient.Resource.COMMUNES_ASSOCIEES_DELEGUEES,
+                    geoapi.GeoApiClient.Resource.COMMUNES,
                 ]
                 else None,
             )
