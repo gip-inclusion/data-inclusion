@@ -1,0 +1,44 @@
+version: 2
+
+models:
+  - name: _map_emplois__reseaux_porteurs_v1
+    columns:
+      - name: kind
+        data_tests:
+          - not_null
+          - unique
+      - name: reseaux_porteurs
+        data_tests:
+          - relationships:
+              arguments:
+                to: ref('reseaux_porteurs_v1')
+                field: value
+
+  - name: int_emplois_de_linclusion__adresses_v1
+    columns:
+      - name: id
+        data_tests:
+          - unique
+          - not_null
+          - dbt_utils.not_empty_string
+
+  - name: int_emplois_de_linclusion__structures_v1
+    data_tests:
+      - model_validate:
+          config:
+            enabled: "{{ env_var('DBT_ENV', 'prod') == 'dev' }}"
+          arguments:
+            model_class: data_inclusion.schema.v1.Structure
+    columns:
+      - name: id
+        data_tests:
+          - unique
+          - not_null
+          - dbt_utils.not_empty_string
+      - name: adresse_id
+        data_tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('int_emplois_de_linclusion__adresses_v1')
+                field: id

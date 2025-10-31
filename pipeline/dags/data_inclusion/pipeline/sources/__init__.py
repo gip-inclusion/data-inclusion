@@ -95,9 +95,15 @@ SOURCES_CONFIGS = {
         "streams": {
             "organisations": {
                 "filename": "organisations.json",
-                "url": "https://emplois.inclusion.beta.gouv.fr/api/v1/structures/",
+                "url": "https://emplois.inclusion.beta.gouv.fr/api/v1/data-inclusion/",
                 "token": Variable.get("EMPLOIS_API_TOKEN", None),
                 "extractor": emplois_de_linclusion.extract_organisations,
+            },
+            "siaes": {
+                "filename": "siaes.json",
+                "url": "https://emplois.inclusion.beta.gouv.fr/api/v1/data-inclusion/",
+                "token": Variable.get("EMPLOIS_API_TOKEN", None),
+                "extractor": emplois_de_linclusion.extract_siaes,
             },
         },
     },
