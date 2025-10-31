@@ -3,22 +3,22 @@ WITH source AS (
 
 final AS (
     SELECT
-        source.data ->> 'id'                                  AS "id",
-        source.data ->> 'nom'                                 AS "nom",
-        CAST(source.data ->> 'date_maj' AS DATE)              AS "date_maj",
-        source.data ->> 'kind'                                AS "kind",
-        NULLIF(source.data ->> 'commune', '')                 AS "commune",
-        NULLIF(source.data ->> 'siret', '')                   AS "siret",
-        NULLIF(source.data ->> 'description', '')             AS "description",
-        NULLIF(source.data ->> 'adresse', '')                 AS "adresse",
-        NULLIF(source.data ->> 'complement_adresse', '')      AS "complement_adresse",
-        NULLIF(source.data ->> 'code_postal', '')             AS "code_postal",
-        NULLIF(source.data ->> 'site_web', '')                AS "site_web",
-        NULLIF(CAST(source.data ->> 'longitude' AS FLOAT), 0) AS "longitude",
-        NULLIF(CAST(source.data ->> 'latitude' AS FLOAT), 0)  AS "latitude",
-        NULLIF(source.data ->> 'lien_source', '')             AS "lien_source",
-        NULLIF(source.data ->> 'telephone', '')               AS "telephone",
-        NULLIF(source.data ->> 'courriel', '')                AS "courriel"
+        source.data ->> 'id'                                   AS "id",
+        NULLIF(TRIM(source.data ->> 'nom'), '')                AS "nom",
+        CAST(source.data ->> 'date_maj' AS DATE)               AS "date_maj",
+        NULLIF(TRIM(source.data ->> 'kind'), '')               AS "kind",
+        NULLIF(TRIM(source.data ->> 'commune'), '')            AS "commune",
+        NULLIF(TRIM(source.data ->> 'siret'), '')              AS "siret",
+        NULLIF(TRIM(source.data ->> 'description'), '')        AS "description",
+        NULLIF(TRIM(source.data ->> 'adresse'), '')            AS "adresse",
+        NULLIF(TRIM(source.data ->> 'complement_adresse'), '') AS "complement_adresse",
+        NULLIF(TRIM(source.data ->> 'code_postal'), '')        AS "code_postal",
+        NULLIF(TRIM(source.data ->> 'site_web'), '')           AS "site_web",
+        NULLIF(CAST(source.data ->> 'longitude' AS FLOAT), 0)  AS "longitude",
+        NULLIF(CAST(source.data ->> 'latitude' AS FLOAT), 0)   AS "latitude",
+        NULLIF(TRIM(source.data ->> 'lien_source'), '')        AS "lien_source",
+        NULLIF(TRIM(source.data ->> 'telephone'), '')          AS "telephone",
+        NULLIF(TRIM(source.data ->> 'courriel'), '')           AS "courriel"
     FROM source
 )
 

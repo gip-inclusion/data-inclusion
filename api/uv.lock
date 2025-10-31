@@ -366,7 +366,7 @@ requires-dist = [
     { name = "certifi", specifier = ">=2025.1.31" },
     { name = "click", specifier = ">=8.1.8" },
     { name = "cryptography", specifier = ">=44.0.2" },
-    { name = "data-inclusion-schema", git = "https://github.com/gip-inclusion/data-inclusion-schema.git?rev=4f7df72343a66b9823a10ad17fbbcd8076cad88e" },
+    { name = "data-inclusion-schema", git = "https://github.com/gip-inclusion/data-inclusion-schema.git?rev=vperron%2Fchore%2Freseaux-porteurs" },
     { name = "fastapi", specifier = ">=0.115.12" },
     { name = "furl", specifier = ">=2.1.4" },
     { name = "geoalchemy2", specifier = ">=0.17.1" },
@@ -412,7 +412,7 @@ test = [
 [[package]]
 name = "data-inclusion-schema"
 version = "1.0.1"
-source = { git = "https://github.com/gip-inclusion/data-inclusion-schema.git?rev=4f7df72343a66b9823a10ad17fbbcd8076cad88e#4f7df72343a66b9823a10ad17fbbcd8076cad88e" }
+source = { git = "https://github.com/gip-inclusion/data-inclusion-schema.git?rev=vperron%2Fchore%2Freseaux-porteurs#d79cc93a617199537b2df54e535e2f52c694c4ba" }
 dependencies = [
     { name = "pendulum" },
     { name = "pydantic", extra = ["email"] },

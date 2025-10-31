@@ -105,4 +105,4 @@ markers = '''
 testpaths = "tests"
 
 [tool.uv.sources]
-data-inclusion-schema = { git = "https://github.com/gip-inclusion/data-inclusion-schema.git", rev = "4f7df72343a66b9823a10ad17fbbcd8076cad88e" }
+data-inclusion-schema = { git = "https://github.com/gip-inclusion/data-inclusion-schema.git", rev = "vperron/chore/reseaux-porteurs" }
