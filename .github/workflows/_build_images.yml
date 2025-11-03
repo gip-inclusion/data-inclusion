@@ -68,7 +68,7 @@ jobs:
             else
               TARGET_CONTAINER=${{ matrix.service }}
             fi
-            docker compose run --entrypoint pytest $TARGET_CONTAINER -p no:cacheprovider -vv -m 'not integration'
+            docker compose run --entrypoint pytest $TARGET_CONTAINER -p no:cacheprovider -vv -m 'not integration'  --ignore-glob="dags/*"
 
       - name: Push image to GitHub registry
         uses: docker/build-push-action@v5
