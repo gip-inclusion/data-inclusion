@@ -1,0 +1,76 @@
+version: 2
+
+models:
+  - name: int_mes_aides__aides__structures_v1
+    data_tests:
+      - model_validate:
+          config:
+            enabled: "{{ env_var('DBT_ENV', 'prod') == 'dev' }}"
+          arguments:
+            model_class: data_inclusion.schema.v1.Structure
+    columns:
+      - name: id
+        data_tests:
+          - unique
+          - not_null
+          - dbt_utils.not_empty_string
+
+  - name: int_mes_aides__aides__services_v1
+    data_tests:
+      - model_validate:
+          config:
+            enabled: "{{ env_var('DBT_ENV', 'prod') == 'dev' }}"
+          arguments:
+            model_class: data_inclusion.schema.v1.Service
+    columns:
+      - name: id
+        data_tests:
+          - unique
+          - not_null
+          - dbt_utils.not_empty_string
+      - name: structure_id
+        data_tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('int_mes_aides__aides__structures_v1')
+                field: id
+
+  - name: _map_mes_aides__frais_v1
+    columns:
+      - name: nature
+        data_tests:
+          - not_null
+      - name: frais
+        data_tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('frais_v1')
+                field: value
+
+  - name: _map_mes_aides__thematiques_v1
+    columns:
+      - name: besoin
+        data_tests:
+          - not_null
+      - name: thematique
+        data_tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('thematiques_v1')
+                field: value
+
+  - name: _map_mes_aides__types_v1
+    columns:
+      - name: type_aide
+        data_tests:
+          - not_null
+      - name: type
+        data_tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('types_de_service_v1')
+                field: value

@@ -5,6 +5,7 @@
             ref('int_emplois_de_linclusion__structures_v1'),
             ref('int_soliguide__structures_v1'),
             ref('int_monenfant__structures_v1'),
+            ref('int_mes_aides__structures_v1'),
         ],
         column_override={
             "reseaux_porteurs": "TEXT[]",
