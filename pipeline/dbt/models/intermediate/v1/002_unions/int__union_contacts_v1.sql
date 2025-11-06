@@ -9,6 +9,7 @@ WITH services AS (
                 ref('int_france_travail__services_v1'),
                 ref('int_soliguide__services_v1'),
                 ref('int_monenfant__services_v1'),
+                ref('int_mes_aides__services_v1'),
             ],
             include=[
                 'source',

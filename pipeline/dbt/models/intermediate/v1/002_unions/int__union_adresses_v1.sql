@@ -8,6 +8,7 @@
             ref('int_france_travail__adresses_v1'),
             ref('int_soliguide__adresses_v1'),
             ref('int_monenfant__adresses_v1'),
+            ref('int_mes_aides__adresses_v1'),
         ],
         source_column_name=None
     )

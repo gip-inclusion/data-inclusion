@@ -211,156 +211,533 @@ models:
                   - voiture
                   - voiture sans permis
 
-  - name: stg_mes_aides__permis_velo
+  - name: stg_mes_aides__aides
     columns:
       - name: id
         data_tests:
           - unique
           - not_null
           - dbt_utils.not_empty_string
-      - name: modifie_le
+          - relationships:
+              config:
+                error_if: ">100"
+              arguments:
+                to: ref('stg_mes_aides__aides__besoins')
+                field: aide_id
+          - relationships:
+              config:
+                error_if: ">100"
+              arguments:
+                to: ref('stg_mes_aides__aides__conditions')
+                field: aide_id
+          - relationships:
+              config:
+                severity: warn
+              arguments:
+                to: ref('stg_mes_aides__aides__departements')
+                field: aide_id
+          - relationships:
+              config:
+                severity: warn
+              arguments:
+                to: ref('stg_mes_aides__aides__emails')
+                field: aide_id
+          - relationships:
+              config:
+                severity: warn
+              arguments:
+                to: ref('stg_mes_aides__aides__epcis')
+                field: aide_id
+          - relationships:
+              config:
+                severity: warn
+              arguments:
+                to: ref('stg_mes_aides__aides__justificatifs')
+                field: aide_id
+          - relationships:
+              config:
+                severity: warn
+              arguments:
+                to: ref('stg_mes_aides__aides__methodes')
+                field: aide_id
+          - relationships:
+              config:
+                error_if: ">500"
+              arguments:
+                to: ref('stg_mes_aides__aides__natures')
+                field: aide_id
+          - relationships:
+              config:
+                error_if: ">500"
+              arguments:
+                to: ref('stg_mes_aides__aides__regions')
+                field: aide_id
+          - relationships:
+              config:
+                severity: warn
+              arguments:
+                to: ref('stg_mes_aides__aides__telephones')
+                field: aide_id
+          - relationships:
+              config:
+                error_if: ">100"
+              arguments:
+                to: ref('stg_mes_aides__aides__thematiques')
+                field: aide_id
+          - relationships:
+              config:
+                error_if: ">100"
+              arguments:
+                to: ref('stg_mes_aides__aides__types_aides')
+                field: aide_id
+          - relationships:
+              config:
+                severity: warn
+              arguments:
+                to: ref('stg_mes_aides__aides__villes')
+                field: aide_id
+
+      - name: autres_conditions
+        data_tests:
+          - dbt_utils.at_least_one
+          - dbt_utils.not_empty_string
+      - name: autres_justificatifs
+        data_tests:
+          - dbt_utils.at_least_one
+          - dbt_utils.not_empty_string
+      - name: bon_a_savoir
+        data_tests:
+          - dbt_utils.at_least_one
+          - dbt_utils.not_empty_string
+      - name: contact_dossier
+        data_tests:
+          - dbt_utils.at_least_one
+          - dbt_utils.not_empty_string
+      - name: creee_le
         data_tests:
           - not_null
+      - name: cumulable
+        data_tests:
+          - dbt_utils.at_least_one
+          - accepted_values:
+              arguments:
+                values: [true]
+      - name: demarches
+        data_tests:
+          - dbt_utils.at_least_one
+          - dbt_utils.not_empty_string
+      - name: description
+        data_tests:
+          - not_null:
+              config:
+                error_if: ">100"
+          - dbt_utils.not_empty_string
+      - name: documentation_url
+        data_tests:
+          - dbt_utils.at_least_one
+          - dbt_utils.not_empty_string
+      - name: en_ligne
+        data_tests:
+          - dbt_utils.not_constant
+          - accepted_values:
+              arguments:
+                values: [true, false]
+      - name: expiration
+        data_tests:
+          - dbt_utils.not_constant
+      - name: formulaire_url
+        data_tests:
+          - dbt_utils.at_least_one
+          - dbt_utils.not_empty_string
+      - name: mise_a_jour_le
+        description: |
+          Date of last validation, set by mes_aides.fr team.
+        data_tests:
+          - dbt_utils.not_constant
+          - dbt_utils.expression_is_true:
+              config:
+                error_if: ">10"
+              arguments:
+                expression: "<= modifiee_le"
+      - name: modalite_et_versement
+        data_tests:
+          - dbt_utils.at_least_one
+          - dbt_utils.not_empty_string
+      - name: modifiee_le
+        description: |
+          Date of last row modification, generated by airtable.
+        data_tests:
+          - not_null
+      - name: montant
+        data_tests:
+          - dbt_utils.not_constant
+      - name: nom
+        data_tests:
+          - not_null
+          - dbt_utils.not_empty_string
+      - name: organisme
+        data_tests:
+          - not_null:
+              config:
+                error_if: ">100"
+          - dbt_utils.not_empty_string
+      - name: organisme_financeur
+        data_tests:
+          - not_null:
+              config:
+                error_if: ">100"
+          - dbt_utils.not_empty_string
+      - name: reglement_url
+        data_tests:
+          - dbt_utils.at_least_one
+          - dbt_utils.not_empty_string
+      - name: site
+        data_tests:
+          - not_null:
+              config:
+                error_if: ">100"
+          - dbt_utils.not_empty_string
+      - name: voir_l_aide
+        data_tests:
+          - not_null
+          - dbt_utils.not_empty_string
       - name: zone_geographique
         data_tests:
-          # FIXME: to remove once the data is clean
-          # - not_null
+          - not_null:
+              config:
+                error_if: ">10"
           - dbt_utils.not_empty_string
           - accepted_values:
-              config:
-                severity: error
-                error_if: ">20"
-                warn_if: ">0"
+              arguments:
+                values:
+                  - echelle communale
+                  - echelle intercommunale
+                  - echelle regionale
+                  - echelle departementale
+                  - france metropolitaine
+                  - echelle nationale
 
-              arguments:
-                values:
-                  - 'Échelle communale'
-                  - 'Échelle intercommunale'
-                  - 'Échelle régionale'
-                  - 'Échelle départementale'
-                  - 'France métropolitaine'
-                  - 'Échelle nationale'
-  - name: stg_mes_aides__permis_velo__types
+  - name: stg_mes_aides__aides__besoins
     columns:
-      - name: service_id
+      - name: aide_id
         data_tests:
           - not_null
           - relationships:
               arguments:
-                to: ref('stg_mes_aides__permis_velo')
+                to: ref('stg_mes_aides__aides')
                 field: id
       - name: value
         data_tests:
           - not_null
           - dbt_utils.not_empty_string
           - accepted_values:
+              arguments:
+                values:
+                  - "aide au pouvoir d''achat"
+                  - "partir à l''étranger"
+                  - "s''équiper en matériel informatique"
+                  - "trouver un contrat d''alternance"
+                  - accéder à un logement
+                  - accompagnement des nouveaux arrivants
+                  - accompagnement personnalisé à la mobilité
+                  - acheter ou louer un véhicule
+                  - aide juridique
+                  - auto-école sociale
+                  - bien-être
+                  - covoiturage & autopartage
+                  - créer ou reprendre une entreprise
+                  - déménager
+                  - document administratifs
+                  - être aidé financièrement
+                  - faire des travaux
+                  - faire garder mes enfants
+                  - faire une reconversion
+                  - financer une formation
+                  - financer vos permis
+                  - financer vos trajets
+                  - handicap & mobilité
+                  - insertion professionnelle
+                  - mutuelle
+                  - préparer une candidature
+                  - rédiger une lettre de motivation ou un cv
+                  - rémunération pendant la formation
+                  - réparer votre véhicule
+                  - transport à la demande
+                  - transports en commun
+                  - trouver un logement saisonnier ou temporaire
+                  - trouver un logement social
+
+  - name: stg_mes_aides__aides__conditions
+    columns:
+      - name: aide_id
+        data_tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('stg_mes_aides__aides')
+                field: id
+      - name: value
+        data_tests:
+          - not_null
+          - dbt_utils.not_empty_string
+
+  - name: stg_mes_aides__aides__departements
+    data_tests:
+      - dbt_utils.unique_combination_of_columns:
+          arguments:
+            combination_of_columns:
+              - aide_id
+              - nom
+    columns:
+      - name: aide_id
+        data_tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('stg_mes_aides__aides')
+                field: id
+      - name: nom
+        data_tests:
+          - not_null
+          - dbt_utils.not_empty_string
+      - name: code
+        data_tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('stg_decoupage_administratif__departements')
+                field: code
+
+  - name: stg_mes_aides__aides__emails
+    columns:
+      - name: aide_id
+        data_tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('stg_mes_aides__aides')
+                field: id
+      - name: value
+        data_tests:
+          - not_null
+          - dbt_utils.not_empty_string
+
+  - name: stg_mes_aides__aides__epcis
+    data_tests:
+      - dbt_utils.unique_combination_of_columns:
+          arguments:
+            combination_of_columns:
+              - aide_id
+              - value
+    columns:
+      - name: aide_id
+        data_tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('stg_mes_aides__aides')
+                field: id
+      - name: value
+        data_tests:
+          - not_null
+          - dbt_utils.not_empty_string
+      - name: code
+        data_tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('stg_decoupage_administratif__epcis')
+                field: code
+
+  - name: stg_mes_aides__aides__justificatifs
+    columns:
+      - name: aide_id
+        data_tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('stg_mes_aides__aides')
+                field: id
+      - name: value
+        data_tests:
+          - not_null
+          - dbt_utils.not_empty_string
+
+  - name: stg_mes_aides__aides__methodes
+    columns:
+      - name: aide_id
+        data_tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('stg_mes_aides__aides')
+                field: id
+      - name: value
+        data_tests:
+          - not_null
+          - dbt_utils.not_empty_string
+          - accepted_values:
+              arguments:
+                values:
+                  - "La démarche nécessite un passage ou une prise de contact directe avec votre organisme"
+                  - "La démarche nécessite une connexion sur le site de l''organisme"
+                  - "La démarche peut être faite par mail"
+
+  - name: stg_mes_aides__aides__natures
+    columns:
+      - name: aide_id
+        data_tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('stg_mes_aides__aides')
+                field: id
+      - name: value
+        data_tests:
+          - not_null
+          - dbt_utils.not_empty_string
+          - accepted_values:
+              arguments:
+                values:
+                  - "somme d''argent"
+                  - prise en charge partielle
+                  - tarif preferentiel
+                  - prise en charge totale
+                  - pret remboursement
+                  - facilitation de paiement
+                  - prise en charge partielle ou totale
+
+  - name: stg_mes_aides__aides__regions
+    data_tests:
+      - dbt_utils.unique_combination_of_columns:
+          arguments:
+            combination_of_columns:
+              - aide_id
+              - value
+    columns:
+      - name: aide_id
+        data_tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('stg_mes_aides__aides')
+                field: id
+      - name: value
+        data_tests:
+          - not_null
+          - dbt_utils.not_empty_string
+      - name: code
+        data_tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('stg_decoupage_administratif__regions')
+                field: code
+
+  - name: stg_mes_aides__aides__telephones
+    data_tests:
+      - dbt_utils.unique_combination_of_columns:
+          arguments:
+            combination_of_columns:
+              - aide_id
+              - index
+    columns:
+      - name: aide_id
+        data_tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('stg_mes_aides__aides')
+                field: id
+      - name: index
+        data_tests:
+          - not_null
+          - accepted_values:
+              arguments:
+                values: [1, 2, 3]
+      - name: value
+        data_tests:
+          - not_null
+          - dbt_utils.not_empty_string
+
+  - name: stg_mes_aides__aides__thematiques
+    columns:
+      - name: aide_id
+        data_tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('stg_mes_aides__aides')
+                field: id
+      - name: value
+        data_tests:
+          - not_null
+          - dbt_utils.not_empty_string
+          - accepted_values:
+              arguments:
+                values:
+                  - transport
+                  - mobilité
+                  - logement
+                  - famille et vie quotidienne
+                  - informatique et numérique
+                  - formation et orientation
+                  - trouver un emploi
+                  - santé
+                  - créer ou reprendre une entreprise
+                  - démarches administratives
+
+  - name: stg_mes_aides__aides__types_aides
+    columns:
+      - name: aide_id
+        data_tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('stg_mes_aides__aides')
+                field: id
+      - name: value
+        data_tests:
+          - not_null
+          - dbt_utils.not_empty_string
+          - accepted_values:
+              arguments:
+                values:
+                  - accompagnement
+                  - aide financiere
+                  - allocation
+                  - prestation
+
+  - name: stg_mes_aides__aides__villes
+    data_tests:
+      - dbt_utils.unique_combination_of_columns:
+          config:
+            error_if: ">200"
+          arguments:
+            combination_of_columns:
+              - aide_id
+              - nom
+    columns:
+      - name: aide_id
+        data_tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('stg_mes_aides__aides')
+                field: id
+      - name: nom
+        data_tests:
+          - not_null
+          - dbt_utils.not_empty_string
+      - name: code_postal
+        data_tests:
+          - not_null
+      - name: code
+        data_tests:
+          - not_null:
               config:
-                severity: error
                 error_if: ">20"
-                warn_if: ">0"
-              arguments:
-                values: ['Aide financière', 'Prestation', 'Accompagnement']
-  - name: stg_mes_aides__permis_velo__natures
-    columns:
-      - name: service_id
-        data_tests:
-          - not_null
           - relationships:
               arguments:
-                to: ref('stg_mes_aides__permis_velo')
-                field: id
-      - name: value
-        data_tests:
-          - not_null
-          - dbt_utils.not_empty_string
-          - accepted_values:
-              arguments:
-                values:
-                  - Somme d''argent
-                  - Prise en charge partielle
-                  - Tarif préférentiel
-                  - Prise en charge totale
-                  - Prêt remboursement
-                  - Facilitation de paiement
-                  - Prise en charge partielle ou totale
-  - name: stg_mes_aides__permis_velo__methodes
-    columns:
-      - name: service_id
-        data_tests:
-          - not_null
-          - relationships:
-              arguments:
-                to: ref('stg_mes_aides__permis_velo')
-                field: id
-      - name: value
-        data_tests:
-          - not_null
-          - dbt_utils.not_empty_string
-          - accepted_values:
-              config:
-                severity: error
-                error_if: ">20"
-                warn_if: ">0"
-              arguments:
-                values:
-                  - 'La démarche nécessite un passage ou une prise de contact directe avec votre organisme'
-                  - 'La démarche nécessite une connexion sur le site de votre organisme'
-                  - 'La démarche peut être faite par mail'
-  - name: stg_mes_aides__permis_velo__liaisons_besoins
-    columns:
-      - name: service_id
-        data_tests:
-          - not_null
-          - relationships:
-              arguments:
-                to: ref('stg_mes_aides__permis_velo')
-                field: id
-      - name: value
-        data_tests:
-          - not_null
-          - dbt_utils.not_empty_string
-          - accepted_values:
-              config:
-                severity: error
-                error_if: ">20"
-                warn_if: ">0"
-              arguments:
-                values:
-                  - "Financer mon permis"
-                  - "Financer mes trajets"
-                  - "Financer le carburant"
-                  - "Financer mon BSR"
-                  - "Financer l''achat d''un véhicule"
-                  - "Déménager"
-                  - "Transports en commun"
-                  - "Transport à la demande"
-                  - "Réparer ma voiture"
-                  - "Louer un vélo électrique"
-                  - "Ma voiture"
-                  - "Mon vélo électrique"
-                  - "Mon scooter"
-                  - "Acheter un vélo électrique"
-                  - "Acheter ou louer un vélo"
-                  - "Acheter ou louer une voiture"
-                  - "Accéder au permis de conduire"
-                  - "Partir à l''étranger"
-                  - "Handicap & mobilité"
-                  - "Trouver une alternance"
-                  - "Trouver un contrat d''apprentissage"
-                  - "Préparer une candidature"
-                  - "Rédiger une lettre de motivation ou un CV"
-                  - "Préparer une candidature"
-                  - "Rédiger une lettre de motivation ou un CV"
-                  - "Devenir locataire"
-                  - "Financer mon loyer"
-                  - "Faire des travaux"
-                  - "Trouver un logement social"
-                  - "Financer une formation"
-                  - "Faire garder mes enfants"
-                  - "Trouver une formation"
-                  - "Rémunération pendant la formation"
-                  - "Reconversion"
-                  - "Accompagnement personnalisé à la mobilité"
-                  - "Créer ou reprendre une entreprise"
-                  - "Réparer mon vélo"
-                  - "Acheter ou louer une voiture sans permis, \"Scooter, trottinette...\""
+                to: ref('stg_decoupage_administratif__communes')
+                field: code
