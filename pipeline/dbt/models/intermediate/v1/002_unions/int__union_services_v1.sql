@@ -5,6 +5,7 @@
             ref('int_carif_oref__services_v1'),
             ref('int_soliguide__services_v1'),
             ref('int_monenfant__services_v1'),
+            ref('int_mes_aides__services_v1'),
         ],
         column_override={
             "thematiques": "TEXT[]",
