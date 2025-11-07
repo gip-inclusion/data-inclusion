@@ -42,12 +42,12 @@ def publish():
         df = helpers.remove_internal_columns(df)
         return df
 
-    structures_df = clean_up(structures_df)
-    services_df = clean_up(services_df)
-
     structures_df, services_df = helpers.remove_closed_structures(
         structures_df, services_df
     )
+
+    structures_df = clean_up(structures_df)
+    services_df = clean_up(services_df)
 
     structures_df.info()
     services_df.info()
