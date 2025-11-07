@@ -9,6 +9,10 @@
             "size": "XL"
         },
         {
+            "command": "15 4 * * MON data-inclusion-api import-communes",
+            "size": "M"
+        },
+        {
             "command": "0 4 * * * vacuumdb --full --analyze --verbose --table api__structures --table api__services $DATABASE_URL",
             "size": "S"
         },
