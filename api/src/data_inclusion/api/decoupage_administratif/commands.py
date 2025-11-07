@@ -9,7 +9,7 @@ from sqlalchemy.dialects.postgresql import insert
 
 from data_inclusion.api.config import settings
 from data_inclusion.api.core import db
-from data_inclusion.api.decoupage_administratif import models
+from data_inclusion.api.decoupage_administratif import constants, models
 
 logger = logging.getLogger(__name__)
 
@@ -34,19 +34,33 @@ def import_communes():
         "codesPostaux": types.ARRAY(types.TEXT),
     }
 
-    communes_url = (
-        furl("https://geo.api.gouv.fr/communes").set(query_params=query_params).url
-    )
+    base_url = furl(constants.GEO_API_URL)
+
+    communes_url = (base_url / "communes").set(query_params=query_params).url
     communes_df = pd.read_json(communes_url, dtype=dtypes)
 
+    communes_associees_deleguees_url = (
+        (base_url / "communes_associees_deleguees").set(query_params=query_params).url
+    )
+    communes_associees_deleguees_df = pd.read_json(
+        communes_associees_deleguees_url, dtype=dtypes
+    )
+
     districts_url = (
-        furl("https://geo.api.gouv.fr/communes")
+        (base_url / "communes")
         .set(query_params=query_params | {"type": "arrondissement-municipal"})
         .url
     )
     districts_df = pd.read_json(districts_url, dtype=dtypes)
 
-    df = pd.concat([communes_df, districts_df])
+    # order matters for dropping duplicates
+    df = pd.concat([communes_df, communes_associees_deleguees_df, districts_df])
+
+    # remove duplicates between communes and communes associées/déléguées:
+    # sometimes when communes are merged, the resulting commune has the code
+    # of one of the old communes AND the old commune remains in the database as a
+    # "commune associée" or "commune déléguée".
+    df = df.drop_duplicates(subset=["code"], keep="first")
 
     df = df.rename(
         columns={

@@ -6,6 +6,8 @@ cf https://www.insee.fr/fr/information/2560452
 from dataclasses import dataclass
 from enum import Enum
 
+GEO_API_URL = "https://geo.api.gouv.fr"
+
 
 @dataclass(frozen=True)
 class Pays:
