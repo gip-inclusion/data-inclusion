@@ -148,6 +148,22 @@ profils AS (
     GROUP BY situations.id_structure
 ),
 
+deduped_services AS (
+    SELECT
+        id_structure,
+        id_sous_thematique_solutions,
+        ARRAY_AGG(
+            CASE
+                WHEN is_distanciel THEN 'a-distance'
+                WHEN NOT is_distanciel THEN 'en-presentiel'
+            END
+        ) AS "modes_accueil"
+    FROM services
+    GROUP BY
+        id_structure,
+        id_sous_thematique_solutions
+),
+
 final AS (
     SELECT
         'ma-boussole-aidants'                                                 AS "source",
@@ -167,10 +183,7 @@ final AS (
         NULL                                                                  AS "conditions_acces",
         structures.telephone_1                                                AS "telephone",
         structures.email                                                      AS "courriel",
-        CASE services."is_distanciel"
-            WHEN TRUE THEN ARRAY['en-presentiel', 'a-distance']
-            ELSE ARRAY['en-presentiel']
-        END                                                                   AS "modes_accueil",
+        services.modes_accueil                                                AS "modes_accueil",
         NULL                                                                  AS "contact_nom_prenom",
         NULL                                                                  AS "lien_mobilisation",
         profils.profils                                                       AS "profils",
@@ -203,7 +216,7 @@ final AS (
             ],
             NULL
         )                                                                     AS "modes_orientation_beneficiaire"
-    FROM services
+    FROM deduped_services AS services
     LEFT JOIN structures ON services.id_structure = structures.id_structure
     LEFT JOIN solutions ON services.id_sous_thematique_solutions = solutions.code
     LEFT JOIN thematiques_mapping ON services.id_sous_thematique_solutions = thematiques_mapping.code
