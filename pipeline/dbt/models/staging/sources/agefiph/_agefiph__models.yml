@@ -33,13 +33,30 @@ models:
         data_tests:
           - not_null
           - dbt_utils.not_empty_string
-  - name: stg_agefiph__services
-    columns:
-      - name: id
+      - name: attributes__field_lien_externe__uri
         data_tests:
-          - unique
-          - not_null
           - dbt_utils.not_empty_string
+          - dbt_utils.not_constant
+          - dbt_utils.not_null_proportion:
+              arguments:
+                at_least: 0.5
+      - name: attributes__field_courriel
+        data_tests:
+          - dbt_utils.not_empty_string
+          - dbt_utils.not_constant
+      - name: attributes__field_telephone
+        data_tests:
+          - dbt_utils.not_empty_string
+          - dbt_utils.not_constant
+          - dbt_utils.not_null_proportion:
+              arguments:
+                at_least: 0.9
+      - name: attributes__field_adresse__locality
+        data_tests:
+          - not_null
+          - dbt_utils.not_constant
+          - dbt_utils.not_empty_string
+
   - name: stg_agefiph__services_thematiques
     columns:
       - name: service_id
@@ -50,3 +67,53 @@ models:
         data_tests:
           - not_null
           - dbt_utils.not_empty_string
+          - relationships:
+              to: ref('stg_agefiph__thematiques')
+              field: thematique_id
+      
+  - name: stg_agefiph__services
+    columns:
+      - name: id
+        data_tests:
+          - unique
+          - not_null
+          - dbt_utils.not_empty_string
+      - name: attributes__field_solution_detail__processed
+        data_tests:
+          - dbt_utils.not_empty_string
+          - dbt_utils.not_constant
+          - dbt_utils.not_null_proportion:
+              arguments:
+                at_least: 0.7
+      - name: attributes__field_montant_aide
+        data_tests:
+          - dbt_utils.not_empty_string
+          - dbt_utils.not_constant
+      - name: attributes__path__alias
+        data_tests:
+          - not_null
+          - dbt_utils.not_constant
+          - dbt_utils.not_empty_string
+      - name: relationships__field_type_de_solution__data__id
+        data_tests:
+          - not_null
+          - dbt_utils.not_constant
+          - dbt_utils.not_empty_string
+      - name: relationships__field_profil_associe__data__id
+        data_tests:
+          - not_null
+          - dbt_utils.not_constant
+          - dbt_utils.not_empty_string
+      - name: attributes__field_lien_aide_uri
+        data_tests:
+          - dbt_utils.not_constant
+          - dbt_utils.not_empty_string
+          - dbt_utils.not_null_proportion:
+              arguments:
+                at_least: 0.9
+      - name: attributes__field_solution_partenaire
+        data_tests:
+          - not_null
+          - dbt_utils.not_constant
+          - dbt_utils.not_empty_string
+
