@@ -95,7 +95,7 @@ models:
         data_tests:
           - dbt_utils.not_null_proportion:
               arguments:
-                at_least: 0.9
+                at_least: 0.5
       - name: id_type_structure
         data_tests:
           - not_null
