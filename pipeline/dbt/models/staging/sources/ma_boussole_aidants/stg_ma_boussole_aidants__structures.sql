@@ -28,7 +28,7 @@ final AS (
         NULLIF(TRIM(data ->> 'telephone1'), '')                                  AS "telephone_1",
         NULLIF(TRIM(data -> 'typeStructure' ->> 'idTypeStructure'), '')          AS "id_type_structure",
         NULLIF(TRIM(data -> 'typeStructure' ->> 'descriptionTypeStructure'), '') AS "description_structure",
-        NULLIF(TRIM(data -> 'ville' ->> 'codeCommune'), '')                      AS "ville_code_commune"
+        SUBSTRING(data -> 'ville' ->> 'codeCommune' FROM '\d[\w\d]\d{3}')        AS "ville_code_commune"
     FROM source
 )
 
