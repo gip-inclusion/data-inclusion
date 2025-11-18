@@ -33,13 +33,24 @@ models:
         data_tests:
           - not_null
           - dbt_utils.not_empty_string
-  - name: stg_agefiph__services
-    columns:
-      - name: id
+      - name: attributes__field_lien_externe__uri
         data_tests:
-          - unique
-          - not_null
+          - dbt_utils.at_least_one
           - dbt_utils.not_empty_string
+      - name: attributes__field_courriel
+        data_tests:
+          - dbt_utils.at_least_one
+          - dbt_utils.not_empty_string
+      - name: attributes__field_telephone
+        data_tests:
+          - dbt_utils.at_least_one
+          - dbt_utils.not_empty_string
+      - name: attributes__field_adresse__locality
+        data_tests:
+          - not_null
+          - dbt_utils.not_constant
+          - dbt_utils.not_empty_string
+
   - name: stg_agefiph__services_thematiques
     columns:
       - name: service_id
@@ -47,6 +58,81 @@ models:
           - not_null
           - dbt_utils.not_empty_string
       - name: thematique_id
+        data_tests:
+          - not_null
+          - dbt_utils.not_empty_string
+          - relationships:
+              arguments:
+                to: ref('stg_agefiph__thematiques')
+                field: id
+
+  - name: stg_agefiph__services
+    columns:
+      - name: id
+        data_tests:
+          - unique
+          - not_null
+          - dbt_utils.not_empty_string
+      - name: attributes__field_solution_detail__processed
+        data_tests:
+          - dbt_utils.at_least_one
+          - dbt_utils.not_empty_string
+      - name: attributes__field_montant_aide
+        data_tests:
+          - dbt_utils.not_empty_string
+          - dbt_utils.not_constant
+      - name: attributes__path__alias
+        data_tests:
+          - not_null
+          - dbt_utils.not_constant
+          - dbt_utils.not_empty_string
+      - name: relationships__field_type_de_solution__data__id
+        data_tests:
+          - not_null
+          - dbt_utils.not_constant
+          - relationships:
+              arguments:
+                to: ref('stg_agefiph__types_de_solution')
+                field: id
+      - name: relationships__field_profil_associe__data__id
+        data_tests:
+          - not_null
+          - dbt_utils.not_constant
+          - relationships:
+              arguments:
+                to: ref('stg_agefiph__profils')
+                field: id
+      - name: attributes__field_lien_aide__uri
+        data_tests:
+          - dbt_utils.at_least_one
+          - dbt_utils.not_empty_string
+      - name: attributes__field_solution_partenaire
+        data_tests:
+          - not_null
+          - accepted_values:
+              arguments:
+                values: [true, false]
+
+  - name: stg_agefiph__profils
+    columns:
+      - name: id
+        data_tests:
+          - unique
+          - not_null
+          - dbt_utils.not_empty_string
+      - name: name
+        data_tests:
+          - not_null
+          - dbt_utils.not_empty_string
+
+  - name: stg_agefiph__types_de_solution
+    columns:
+      - name: id
+        data_tests:
+          - unique
+          - not_null
+          - dbt_utils.not_empty_string
+      - name: name
         data_tests:
           - not_null
           - dbt_utils.not_empty_string
