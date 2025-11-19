@@ -59,68 +59,81 @@ publics AS (
 
 final AS (
     SELECT DISTINCT ON (actions.numero, organismes_formateurs.numero)
-        'carif-oref'                                                          AS "source",
-        COALESCE(actions.date_maj, formations.date_maj)                       AS "date_maj",
-        'carif-oref--' || actions.numero                                      AS "id",
+        'carif-oref'                                            AS "source",
+        COALESCE(actions.date_maj, formations.date_maj)         AS "date_maj",
+        'carif-oref--' || actions.numero                        AS "id",
         COALESCE(
             coordonnees_lieu_de_formation.hash_adresse,
             coordonnees_organisme_formateur.hash_adresse
-        )                                                                     AS "adresse_id",
-        'carif-oref--' || organismes_formateurs.numero                        AS "structure_id",
+        )                                                       AS "adresse_id",
+        'carif-oref--' || organismes_formateurs.numero          AS "structure_id",
         -- NOTE(vperron): I don't RTRIM the trailing dot but there are quite a few
-        formations.intitule_formation                                         AS "nom",
-        COALESCE(formations.objectif_formation, formations.contenu_formation) AS "description",
+        CASE
+            WHEN LENGTH(formations.intitule_formation) > 150
+                THEN LEFT(formations.intitule_formation, 149) || '…'
+            ELSE formations.intitule_formation
+        END                                                     AS "nom",
+        ARRAY_TO_STRING(
+            ARRAY[
+                '### Objectif de la formation' || E'\n\n' || formations.objectif_formation,
+                '### Contenu de la formation' || E'\n\n' || formations.contenu_formation
+            ],
+            E'\n\n'
+        )                                                       AS "description",
         FORMAT(
             'https://www.intercariforef.org/formations/%s/formation-%s_%s.html',
             SLUGIFY('formations.intitule_formation'),
             formations.numero,
             SUBSTRING(actions.numero, 4)
-        )                                                                     AS "lien_source",
-        'formation'                                                           AS "type",
-        ARRAY['lecture-ecriture-calcul--maitriser-le-francais']               AS "thematiques",
+        )                                                       AS "lien_source",
+        'formation'                                             AS "type",
+        ARRAY['lecture-ecriture-calcul--maitriser-le-francais'] AS "thematiques",
         CASE
             WHEN actions.prix_total_ttc = 0 THEN 'gratuit'
             ELSE 'payant'
-        END                                                                   AS "frais",
+        END                                                     AS "frais",
         CASE
             WHEN actions.detail_conditions_prise_en_charge IS NOT NULL
                 THEN FORMAT('Prise en charge: %s', actions.detail_conditions_prise_en_charge)
-        END                                                                   AS "frais_autres",
+        END                                                     AS "frais_autres",
         CASE
             WHEN publics.publics @> ARRAY['tous-publics']
                 THEN ARRAY['tous-publics']
             ELSE publics.publics
-        END                                                                   AS "publics",
-        actions.info_public_vise                                              AS "publics_precisions",
-        NULLIF(actions.conditions_specifiques, '')                            AS "conditions_acces",
-        ARRAY_REMOVE(
-            ARRAY[
-                CASE
-                    WHEN
-                        COALESCE(
-                            coordonnees_organisme_formateur.telfixe[1],
-                            coordonnees_organisme_formateur.portable[1],
-                            coordonnees_lieu_de_formation.telfixe[1],
-                            coordonnees_lieu_de_formation.portable[1],
-                            coordonnees_formation.telfixe[1],
-                            coordonnees_formation.portable[1]
-                        ) IS NOT NULL
-                        THEN 'telephoner'
-                END,
-                CASE
-                    WHEN
-                        COALESCE(
-                            coordonnees_organisme_formateur.courriel,
-                            coordonnees_lieu_de_formation.courriel,
-                            coordonnees_formation.courriel
-                        ) IS NOT NULL
-                        THEN 'envoyer-un-courriel'
-                END
-            ],
-            NULL
-        )                                                                     AS "modes_mobilisation",
-        actions.modalites_recrutement                                         AS "mobilisation_precisions",
-        ARRAY['professionnels']                                               AS "mobilisable_par",
+        END                                                     AS "publics",
+        actions.info_public_vise                                AS "publics_precisions",
+        NULLIF(actions.conditions_specifiques, '')              AS "conditions_acces",
+        NULLIF(
+            ARRAY_REMOVE(
+                ARRAY[
+                    CASE
+                        WHEN
+                            COALESCE(
+                                coordonnees_organisme_formateur.telfixe[1],
+                                coordonnees_organisme_formateur.portable[1],
+                                coordonnees_lieu_de_formation.telfixe[1],
+                                coordonnees_lieu_de_formation.portable[1],
+                                coordonnees_formation.telfixe[1],
+                                coordonnees_formation.portable[1]
+                            ) IS NOT NULL
+                            THEN 'telephoner'
+                    END,
+                    CASE
+                        WHEN
+                            COALESCE(
+                                coordonnees_organisme_formateur.courriel,
+                                coordonnees_lieu_de_formation.courriel,
+                                coordonnees_formation.courriel
+                            ) IS NOT NULL
+                            THEN 'envoyer-un-courriel'
+                    END
+                ],
+                NULL
+            ),
+            '{}'
+        )                                                       AS "modes_mobilisation",
+        actions.modalites_recrutement                           AS "mobilisation_precisions",
+        ARRAY['professionnels']                                 AS "mobilisable_par",
         COALESCE(
             coordonnees_organisme_formateur.telfixe[1],
             coordonnees_organisme_formateur.portable[1],
@@ -128,30 +141,33 @@ final AS (
             coordonnees_lieu_de_formation.portable[1],
             coordonnees_formation.telfixe[1],
             coordonnees_formation.portable[1]
-        )                                                                     AS "telephone",
+        )                                                       AS "telephone",
         COALESCE(
             coordonnees_organisme_formateur.courriel,
             coordonnees_lieu_de_formation.courriel,
             coordonnees_formation.courriel
-        )                                                                     AS "courriel",
-        NULL                                                                  AS "contact_nom_prenom",
+        )                                                       AS "courriel",
+        NULL                                                    AS "contact_nom_prenom",
         CASE
             WHEN actions.modalites_enseignement = '0' THEN ARRAY['en-presentiel']
             WHEN actions.modalites_enseignement = '1' THEN ARRAY['a-distance']
             WHEN actions.modalites_enseignement = '2' THEN ARRAY['en-presentiel', 'a-distance']
-        END                                                                   AS "modes_accueil",
+        END                                                     AS "modes_accueil",
         CASE actions.code_perimetre_recrutement
             WHEN '1' THEN ARRAY[communes.code]
             WHEN '2' THEN ARRAY[communes.code_departement]
-            ELSE ARRAY(
-                SELECT departements.code
-                FROM departements
-                WHERE departements.code_region = communes.code_region
+            ELSE NULLIF(
+                ARRAY(
+                    SELECT departements.code
+                    FROM departements
+                    WHERE departements.code_region = communes.code_region
+                ),
+                '{}'
             )
-        END                                                                   AS "zone_eligibilite",
-        CAST(actions.duree_hebdo AS FLOAT)                                    AS "volume_horaire_hebdomadaire",
-        CAST(NULL AS INTEGER)                                                 AS "nombre_semaines",
-        NULL                                                                  AS "horaires_accueil"
+        END                                                     AS "zone_eligibilite",
+        CAST(actions.duree_hebdo AS FLOAT)                      AS "volume_horaire_hebdomadaire",
+        CAST(NULL AS INTEGER)                                   AS "nombre_semaines",
+        NULL                                                    AS "horaires_accueil"
 
     FROM actions
     INNER JOIN formations
