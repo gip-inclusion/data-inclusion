@@ -36,9 +36,12 @@ class SoliguideAPIClient:
 
 
 def is_allowed_user(request: fastapi.Request) -> bool:
+    print("fooooo")
+    print(f"{request.user.is_authenticated=}")
     if not request.user.is_authenticated:
         return False
 
+    print(f"{request.user.username=}")
     if not request.user.username.startswith("dora-"):
         return False
 

@@ -93,6 +93,7 @@ def list_services_endpoint(
     params: Annotated[parameters.ListServicesQueryParams, fastapi.Query()],
     db_session=fastapi.Depends(db.get_session),
 ):
+    print(f"{soliguide.is_allowed_user(request)=}")
     page = pagination.paginate(
         db_session=db_session,
         query=services.list_services_query(

@@ -28,6 +28,7 @@ def get_thematiques_by_group() -> dict[str, list[str]]:
 def filter_soliguide[T: tuple[models.Structure] | tuple[models.Service]](
     query: sqla.Select[T],
 ) -> sqla.Select[T]:
+    print("Filtering soliguide data")
     return query.filter(
         sqla.or_(
             models.Structure.source != "soliguide",
@@ -253,6 +254,8 @@ def search_services_query(
         .join(models.Structure)
         .options(orm.contains_eager(models.Service.structure))
     )
+
+    print(f"{include_all_soliguide=}")
 
     if not include_all_soliguide:
         query = filter_soliguide(query)
