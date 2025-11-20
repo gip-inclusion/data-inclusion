@@ -12,3 +12,15 @@ sources:
       - name: services
         meta:
           kind: service
+
+  - name: action_logement_v1
+    schema: action_logement_v1
+    meta:
+      is_provider: true
+    tables:
+      - name: structures
+        meta:
+          kind: structure
+      - name: services
+        meta:
+          kind: service
