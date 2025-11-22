@@ -5,6 +5,7 @@ SELECT
     x.v1
 FROM (
     VALUES
+    -- noqa: disable=layout.spacing
     ('acces-aux-droits-et-citoyennete',                                                              'difficultes-administratives-ou-juridiques--accompagnement-aux-demarches-administratives'),
     ('acces-aux-droits-et-citoyennete',                                                              'difficultes-administratives-ou-juridiques--accompagnement-pour-lacces-a-la-citoyennete'),
     ('acces-aux-droits-et-citoyennete',                                                              'difficultes-administratives-ou-juridiques--accompagnement-pour-lacces-aux-droits'),
@@ -212,4 +213,5 @@ FROM (
     ('trouver-un-emploi--faire-des-candidatures-spontanees',                                         'trouver-un-emploi--faire-des-candidatures-spontanees'),
     ('trouver-un-emploi--repondre-a-des-offres-demploi',                                             'trouver-un-emploi--repondre-a-des-offres-demploi'),
     ('trouver-un-emploi--suivre-ses-candidatures-et-relancer-les-employeurs',                        'trouver-un-emploi--suivre-ses-candidatures-et-relancer-les-employeurs')
+    -- noqa: enable=layout.spacing
 ) AS x (v0, v1)
