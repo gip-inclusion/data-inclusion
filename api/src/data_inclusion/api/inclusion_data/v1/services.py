@@ -25,28 +25,16 @@ def get_thematiques_by_group() -> dict[str, list[str]]:
     return thematiques
 
 
-def filter_soliguide[T: tuple[models.Structure] | tuple[models.Service]](
-    query: sqla.Select[T],
-) -> sqla.Select[T]:
-    return query.filter(
-        sqla.or_(
-            models.Structure.source != "soliguide",
-            models.Structure.code_insee.startswith("59"),  # Nord
-            models.Structure.code_insee.startswith("67"),  # Bas-Rhin
-        )
-    )
-
-
 def list_structures_query(
     params: parameters.ListStructuresQueryParams,
-    include_all_soliguide: bool,
+    include_soliguide: bool,
 ) -> sqla.Select[tuple[models.Structure]]:
     query = sqla.select(models.Structure).options(
         orm.joinedload(models.Structure.doublons),
     )
 
-    if not include_all_soliguide:
-        query = filter_soliguide(query)
+    if not include_soliguide:
+        query = query.filter(models.Structure.source != "soliguide")
 
     if params.sources is not None:
         query = query.filter(
@@ -213,7 +201,7 @@ def filter_services(
 
 def list_services_query(
     params: parameters.ListServicesQueryParams,
-    include_all_soliguide: bool,
+    include_soliguide: bool,
 ):
     query = (
         sqla.select(models.Service)
@@ -221,8 +209,8 @@ def list_services_query(
         .options(orm.contains_eager(models.Service.structure))
     )
 
-    if not include_all_soliguide:
-        query = filter_soliguide(query)
+    if not include_soliguide:
+        query = query.filter(models.Structure.source != "soliguide")
 
     if params.departement is not None:
         query = query.filter(
@@ -245,7 +233,7 @@ def list_services_query(
 
 def search_services_query(
     params: parameters.SearchServicesQueryParams,
-    include_all_soliguide: bool,
+    include_soliguide: bool,
     commune_instance: Commune | None = None,
 ) -> tuple[sqla.Select[tuple[models.Service, int]], tuple[str, str]]:
     query = (
@@ -254,8 +242,8 @@ def search_services_query(
         .options(orm.contains_eager(models.Service.structure))
     )
 
-    if not include_all_soliguide:
-        query = filter_soliguide(query)
+    if not include_soliguide:
+        query = query.filter(models.Structure.source != "soliguide")
 
     if commune_instance is not None:
         query = query.filter(

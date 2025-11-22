@@ -1110,10 +1110,11 @@ def test_can_filter_resources_by_sources(api_client, url, factory):
     [
         ("soliguide", PARIS["code_insee"], True),
         ("soliguide", None, True),
-        ("soliguide", LILLE["code_insee"], False),
-        ("soliguide", STRASBOURG["code_insee"], False),
         ("emplois-de-linclusion", PARIS["code_insee"], False),
         ("emplois-de-linclusion", None, False),
+        # 59 and 67 wew part of the 2025 soliguide experiment which has ended
+        ("soliguide", LILLE["code_insee"], True),
+        ("soliguide", STRASBOURG["code_insee"], True),
     ],
 )
 def test_soliguide_is_partially_available(

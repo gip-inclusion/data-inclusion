@@ -29,7 +29,7 @@ def list_structures_endpoint(
         db_session=db_session,
         query=services.list_structures_query(
             params=params,
-            include_all_soliguide=soliguide.is_allowed_user(request),
+            include_soliguide=soliguide.is_allowed_user(request),
         ),
         size=params.size,
         page=params.page,
@@ -97,7 +97,7 @@ def list_services_endpoint(
         db_session=db_session,
         query=services.list_services_query(
             params=params,
-            include_all_soliguide=soliguide.is_allowed_user(request),
+            include_soliguide=soliguide.is_allowed_user(request),
         ),
         size=params.size,
         page=params.page,
@@ -185,7 +185,7 @@ def search_services_endpoint(
     query, mapping = services.search_services_query(
         params=params,
         commune_instance=commune_instance,
-        include_all_soliguide=soliguide.is_allowed_user(request),
+        include_soliguide=soliguide.is_allowed_user(request),
     )
 
     page = pagination.paginate(
