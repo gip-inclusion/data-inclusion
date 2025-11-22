@@ -52,7 +52,7 @@ class RetrieveStructurePathParams(pydantic.BaseModel):
 
 class ListServicesQueryParams(pydantic.BaseModel, pagination.get_pagination_params()):
     sources: filters.SourcesFilter = None
-    thematiques: filters.ThematiquesFilter[schema.Thematique] = None
+    thematiques: filters.ThematiquesFilter[schema.Thematique | schema.Categorie] = None
     code_region: filters.CodeRegionFilter = None
     slug_region: Annotated[RegionSlugEnum | None, pydantic.Field()] = None
     code_departement: filters.CodeDepartementFilter = None
@@ -91,7 +91,7 @@ class SearchServicesQueryParams(pydantic.BaseModel, pagination.get_pagination_pa
     code_commune: filters.SearchCodeCommuneFilter[schema.CodeCommune] = None
     lat: filters.SearchLatitudeFilter = None
     lon: filters.SearchLongitudeFilter = None
-    thematiques: filters.ThematiquesFilter[schema.Thematique] = None
+    thematiques: filters.ThematiquesFilter[schema.Thematique | schema.Categorie] = None
     frais: filters.FraisFilter[schema.Frais] = None
     modes_accueil: filters.ModesAccueilFilter[schema.ModeAccueil] = None
     publics: filters.ProfilsFilter[schema.Public] = None

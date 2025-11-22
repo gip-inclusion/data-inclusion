@@ -4,6 +4,29 @@
   {
     "components": {
       "schemas": {
+        "Categorie": {
+          "description": "Catégories de thématiques",
+          "enum": [
+            "choisir-un-metier",
+            "creer-une-entreprise",
+            "difficultes-administratives-ou-juridiques",
+            "difficultes-financieres",
+            "equipement-et-alimentation",
+            "famille",
+            "lecture-ecriture-calcul",
+            "logement-hebergement",
+            "mobilite",
+            "numerique",
+            "preparer-sa-candidature",
+            "remobilisation",
+            "sante",
+            "se-former",
+            "souvrir-a-linternational",
+            "trouver-un-emploi"
+          ],
+          "title": "Categorie",
+          "type": "string"
+        },
         "DepartementCodeEnum": {
           "enum": [
             "01",
@@ -7825,7 +7848,14 @@
                 "anyOf": [
                   {
                     "items": {
-                      "$ref": "#/components/schemas/data_inclusion__schema__v1__thematiques__Thematique"
+                      "anyOf": [
+                        {
+                          "$ref": "#/components/schemas/data_inclusion__schema__v1__thematiques__Thematique"
+                        },
+                        {
+                          "$ref": "#/components/schemas/Categorie"
+                        }
+                      ]
                     },
                     "type": "array"
                   },
@@ -8071,7 +8101,14 @@
                 "anyOf": [
                   {
                     "items": {
-                      "$ref": "#/components/schemas/data_inclusion__schema__v1__thematiques__Thematique"
+                      "anyOf": [
+                        {
+                          "$ref": "#/components/schemas/data_inclusion__schema__v1__thematiques__Thematique"
+                        },
+                        {
+                          "$ref": "#/components/schemas/Categorie"
+                        }
+                      ]
                     },
                     "type": "array"
                   },

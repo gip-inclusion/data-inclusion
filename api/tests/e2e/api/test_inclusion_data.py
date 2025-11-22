@@ -647,11 +647,10 @@ def test_can_filter_resources_by_thematiques_v0(
             ],
             True,
         ),
-        pytest.param(
+        (
             [v1.Thematique.FAMILLE__GARDE_DENFANTS.value],
-            ["famille"],
+            [v1.Categorie.FAMILLE.value],
             True,
-            marks=pytest.mark.xfail,  # TODO
         ),
     ],
 )

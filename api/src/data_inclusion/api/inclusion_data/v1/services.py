@@ -110,16 +110,6 @@ def list_sources() -> list[dict]:
     return json.loads((Path(__file__).parent.parent / "sources.json").read_text())
 
 
-def get_sub_thematiques(thematiques: list[v1.Thematique]) -> list[str]:
-    all_thematiques = set()
-    for t in thematiques:
-        all_thematiques.add(t.value)
-        group = get_thematiques_by_group()[t.value]
-        if group:
-            all_thematiques.update(group)
-    return list(all_thematiques)
-
-
 def filter_services(
     query: sqla.Select,
     params: parameters.ListServicesQueryParams | parameters.SearchServicesQueryParams,
@@ -130,12 +120,16 @@ def filter_services(
         )
 
     if params.thematiques is not None:
+        thematiques = [
+            get_thematiques_by_group()[t.value]
+            if isinstance(t, v1.Categorie)
+            else t.value
+            for t in params.thematiques
+        ]
         query = query.filter(
             sqla.text(
                 f"{models.Service.__tablename__}.thematiques && :thematiques"
-            ).bindparams(
-                thematiques=get_sub_thematiques(thematiques=params.thematiques),
-            )
+            ).bindparams(thematiques=thematiques),
         )
 
     if params.frais is not None:
