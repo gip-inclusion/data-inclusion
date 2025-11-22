@@ -65,7 +65,9 @@ models:
           - not_null
       - name: departement__code_departement
         data_tests:
-          - not_null
+          - not_null:
+              config:
+                error_if: ">20"
       - name: email
         data_tests:
           - dbt_utils.not_null_proportion:
@@ -101,7 +103,10 @@ models:
           - not_null
           - accepted_values:
               arguments:
-                values: ['15', '53', '127']
+                values:
+                  - 15  # CCAS
+                  - 53  # Maison Départementale de l'Autonomie
+                  - 127 # Maison Départementale des Solidarités
       - name: description_structure
         data_tests:
           - not_null

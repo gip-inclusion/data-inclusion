@@ -170,6 +170,20 @@ final AS (
         services.id_structure                                                 AS "structure_id",
         services.id_structure                                                 AS "adresse_id",
         services.id_structure || '-' || services.id_sous_thematique_solutions AS "id",
+        CASE
+            WHEN structures.departement__code_departement IS NOT NULL
+                THEN
+                    FORMAT(
+                        'https://maboussoleaidants.fr/mes-solutions/%s/%s/%s',
+                        CASE
+                            WHEN structures.id_type_structure = '15' THEN 'centre-communal-action-sociale-ccas'
+                            WHEN structures.id_type_structure = '53' THEN 'maison-departementale-autonomie-mda'
+                            WHEN structures.id_type_structure = '127' THEN 'maison-departementale-des-solidarites'
+                        END,
+                        structures.departement__code_departement,
+                        structures.id_structure
+                    )
+        END                                                                   AS "lien_source",
         solutions.label                                                       AS "nom",
         NULL                                                                  AS "presentation_resume",
         solutions.description                                                 AS "presentation_detail",

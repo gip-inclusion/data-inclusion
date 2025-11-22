@@ -11,24 +11,24 @@ Ignored fields:
 
 final AS (
     SELECT
-        NULLIF(TRIM(data -> 'adresse' ->> 'codePostal'), '')                     AS "adresse__code_postal",
-        CAST(data -> 'adresse' -> 'latitude' AS FLOAT)                           AS "adresse__latitude",
-        CAST(data -> 'adresse' -> 'longitude' AS FLOAT)                          AS "adresse__longitude",
-        NULLIF(TRIM(data -> 'adresse' ->> 'ligneAdresse'), '')                   AS "adresse__ligne_adresse",
-        CAST(data ->> 'ageMax' AS INT)                                           AS "age_max",
-        CAST(data ->> 'ageMin' AS INT)                                           AS "age_min",
-        NULLIF(TRIM(data -> 'departement' ->> 'codeDepartement'), '')            AS "departement__code_departement",
-        NULLIF(TRIM(data ->> 'email'), '')                                       AS "email",
-        NULLIF(TRIM(data ->> 'idStructure'), '')                                 AS "id_structure",
-        CAST(data ->> 'lastModifiedDate' AS DATE)                                AS "last_modified_date",
-        NULLIF(TRIM(data ->> 'nomStructure'), '')                                AS "nom_structure",
-        LOWER(NULLIF(TRIM(data -> 'rayonAction' ->> 'nomRayonAction'), ''))      AS "rayon_action__nom_rayon_action",
-        NULLIF(TRIM(data ->> 'siteWeb'), '')                                     AS "site_web",
-        NULLIF(TRIM(data -> 'structureMere' ->> 'siret'), '')                    AS "structure_mere__siret",
-        NULLIF(TRIM(data ->> 'telephone1'), '')                                  AS "telephone_1",
-        NULLIF(TRIM(data -> 'typeStructure' ->> 'idTypeStructure'), '')          AS "id_type_structure",
-        NULLIF(TRIM(data -> 'typeStructure' ->> 'descriptionTypeStructure'), '') AS "description_structure",
-        SUBSTRING(data -> 'ville' ->> 'codeCommune' FROM '\d[\w\d]\d{3}')        AS "ville_code_commune"
+        NULLIF(TRIM(data -> 'adresse' ->> 'codePostal'), '')                              AS "adresse__code_postal",
+        CAST(data -> 'adresse' -> 'latitude' AS FLOAT)                                    AS "adresse__latitude",
+        CAST(data -> 'adresse' -> 'longitude' AS FLOAT)                                   AS "adresse__longitude",
+        NULLIF(TRIM(data -> 'adresse' ->> 'ligneAdresse'), '')                            AS "adresse__ligne_adresse",
+        CAST(data ->> 'ageMax' AS INT)                                                    AS "age_max",
+        CAST(data ->> 'ageMin' AS INT)                                                    AS "age_min",
+        SUBSTRING((data -> 'departement' ->> 'codeDepartement') FROM '(?i)^\d[\dab]\d?$') AS "departement__code_departement",
+        NULLIF(TRIM(data ->> 'email'), '')                                                AS "email",
+        NULLIF(TRIM(data ->> 'idStructure'), '')                                          AS "id_structure",
+        CAST(data ->> 'lastModifiedDate' AS DATE)                                         AS "last_modified_date",
+        NULLIF(TRIM(data ->> 'nomStructure'), '')                                         AS "nom_structure",
+        LOWER(NULLIF(TRIM(data -> 'rayonAction' ->> 'nomRayonAction'), ''))               AS "rayon_action__nom_rayon_action",
+        NULLIF(TRIM(data ->> 'siteWeb'), '')                                              AS "site_web",
+        NULLIF(TRIM(data -> 'structureMere' ->> 'siret'), '')                             AS "structure_mere__siret",
+        NULLIF(TRIM(data ->> 'telephone1'), '')                                           AS "telephone_1",
+        NULLIF(TRIM(data -> 'typeStructure' ->> 'idTypeStructure'), '')                   AS "id_type_structure",
+        NULLIF(TRIM(data -> 'typeStructure' ->> 'descriptionTypeStructure'), '')          AS "description_structure",
+        SUBSTRING(data -> 'ville' ->> 'codeCommune' FROM '\d[\w\d]\d{3}')                 AS "ville_code_commune"
     FROM source
 )
 

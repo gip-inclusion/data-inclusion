@@ -24,7 +24,20 @@ final AS (
         NULL                             AS "presentation_resume",
         structures.description_structure AS "presentation_detail",
         NULL                             AS "antenne",
-        NULL                             AS "lien_source",
+        CASE
+            WHEN structures.departement__code_departement IS NOT NULL
+                THEN
+                    FORMAT(
+                        'https://maboussoleaidants.fr/mes-solutions/%s/%s/%s',
+                        CASE
+                            WHEN structures.id_type_structure = '15' THEN 'centre-communal-action-sociale-ccas'
+                            WHEN structures.id_type_structure = '53' THEN 'maison-departementale-autonomie-mda'
+                            WHEN structures.id_type_structure = '127' THEN 'maison-departementale-des-solidarites'
+                        END,
+                        structures.departement__code_departement,
+                        structures.id_structure
+                    )
+        END                              AS "lien_source",
         CAST(NULL AS TEXT [])            AS "labels_nationaux",
         CAST(NULL AS TEXT [])            AS "labels_autres"
     FROM structures
