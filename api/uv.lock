@@ -366,7 +366,7 @@ requires-dist = [
     { name = "certifi", specifier = ">=2025.1.31" },
     { name = "click", specifier = ">=8.1.8" },
     { name = "cryptography", specifier = ">=44.0.2" },
-    { name = "data-inclusion-schema", specifier = ">=1.0.2" },
+    { name = "data-inclusion-schema", specifier = "==1.0.3" },
     { name = "fastapi", specifier = ">=0.115.12" },
     { name = "furl", specifier = ">=2.1.4" },
     { name = "geoalchemy2", specifier = ">=0.17.1" },
@@ -406,20 +406,21 @@ test = [
     { name = "locust", specifier = ">=2.33.2" },
     { name = "pytest", specifier = ">=8.3.5" },
     { name = "pytest-dotenv", specifier = ">=0.5.2" },
+    { name = "pytest-playwright", specifier = ">=0.7.1" },
     { name = "syrupy", specifier = ">=4.9.1" },
 ]
 
 [[package]]
 name = "data-inclusion-schema"
-version = "1.0.2"
+version = "1.0.3"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "pendulum" },
     { name = "pydantic", extra = ["email"] },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/3b/3b/d7d950a711c3aae1e72558657764d83dd93724d0f0aeb6e7a7ce60b40b9f/data_inclusion_schema-1.0.2.tar.gz", hash = "sha256:4020692ddefcdbf02df252d9110f4f348b2cc7dd3f5528e0ec2ed32797134aba", size = 39438, upload-time = "2025-11-03T09:40:39.575Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/ce/ca/7fa3cdcaeba1049a4140daa286e946325b3d644490ccd00191b5b12e8f61/data_inclusion_schema-1.0.3.tar.gz", hash = "sha256:82e4379e726153c812ed8087c19eae80f48469733e2a989633f7ad81e9f7bce8", size = 39704, upload-time = "2025-11-19T14:00:28.135Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/28/e6/51e8a71357d84e0814dcd84d822854f072ec5be83315f780eec751f1d763/data_inclusion_schema-1.0.2-py3-none-any.whl", hash = "sha256:eab76f01ea4b8a7a681ea08683541ff120dd65d38737c7acc193da22833ad47c", size = 49785, upload-time = "2025-11-03T09:40:37.842Z" },
+    { url = "https://files.pythonhosted.org/packages/a5/92/55bd097b5a2a2ef918485f854ec1e418ec978cda3f677664949a562883d2/data_inclusion_schema-1.0.3-py3-none-any.whl", hash = "sha256:edcd1cd3f6ece34ce950498286023e0efcb8acd7d606c3519b3d0384507382c4", size = 50091, upload-time = "2025-11-19T14:00:27.109Z" },
 ]
 
 [[package]]
