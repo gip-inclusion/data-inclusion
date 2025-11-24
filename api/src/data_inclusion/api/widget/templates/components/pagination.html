@@ -1,0 +1,81 @@
+{% macro pagination() -%}
+
+<style>
+    .pagination {
+        text-align: center;
+    }
+
+    .pagination ol {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+
+        list-style: none;
+        padding: 0;
+    }
+
+    .pagination li a {
+        display: inline-block;
+        min-width: 40px;
+    }
+
+    .pagination li span {
+        display: inline-block;
+        min-width: 40px;
+    }
+
+    .pagination li a[aria-current="page"] {
+        border-radius: var(--radius-small);
+        border: 1px solid var(--outline-interaction-primary);
+    }
+
+    .pagination .prev-icon::before {
+        content: "";
+        display: inline-block;
+        width: 1rem;
+        height: 1rem;
+        mask-image: url('/widget/static/icons/arrow-left-s-line.svg');
+        mask-position: center;
+        background-color: currentColor;
+    }
+
+    .pagination .next-icon::before {
+        content: "";
+        display: inline-block;
+        width: 1rem;
+        height: 1rem;
+        mask-image: url('/widget/static/icons/arrow-right-s-line.svg');
+        mask-position: center;
+        background-color: currentColor;
+    }
+</style>
+<nav class="pagination">
+    <ol>
+        {% if page > 1 %}
+        <li>
+            <a hx-get="/widget/?{{ request.url.include_query_params(page=page-1).query }}" hx-push-url="true" hx-target="#results" hx-swap="outerHTML" title="Page précédente"><span class="prev-icon"></span></a>
+        </li>
+        {% endif %}
+        {% if page - 1 > 1 %}
+        <li>
+            <span> … </span>
+        </li>
+        {% endif %}
+        {% for i in range([page - 1, 1]|max, [page + 1, pages]|min + 1) %}
+        <li>
+            <a hx-get="/widget/?{{ request.url.include_query_params(page=i).query }}" hx-push-url="true" hx-target="#results" hx-swap="outerHTML" title="Page {{ i }}" {% if i==page %} aria-current="page" {% endif %}> {{ i }} </a>
+        </li>
+        {% endfor %}
+        {% if pages - page > 1 %}
+        <li>
+            <span> … </span>
+        </li>
+        {% endif %}
+        {% if pages - page > 0 %}
+        <li>
+            <a hx-get="/widget/?{{ request.url.include_query_params(page=page+1).query }}" hx-push-url="true" hx-target="#results" hx-swap="outerHTML" title="Page suivante"><span class="next-icon"></span></a>
+        </li>
+        {% endif %}
+    </ol>
+</nav>
+{%- endmacro %}

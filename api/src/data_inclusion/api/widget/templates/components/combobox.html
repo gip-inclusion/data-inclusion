@@ -1,0 +1,34 @@
+{% macro combobox(input) -%}
+<style>
+    .input-group {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        gap: var(--padding-extra-small);
+    }
+</style>
+<script type="text/hyperscript">
+  behavior combobox
+    on input
+        set nom to my value
+        set url to encodeURI(`https://geo.api.gouv.fr/communes?boost=population&limit=5&nom=${nom}`)
+        fetch `${url}` as json
+        set suggestions to the result
+        remove <option/> from the next <datalist/>
+        repeat for suggestion in suggestions
+            make an <option/>
+            set its @value to `${suggestion.nom} (${suggestion.codesPostaux[0]})`
+            set its @data-code to `${suggestion.code}`
+            put the `${suggestion.nom} (${suggestion.codesPostaux[0]})` into its textContent
+            append it to the next <datalist/>
+        end
+    end
+  end
+</script>
+<div class="input-group">
+    <label for="input-code_commune">Lieux</label>
+    <input autocomplete="off" name="code_commune" list="suggestions" id="input-code_commune" type="text"
+        placeholder="Choisir un lieu" _="install combobox" value="{{ input }}">
+    <datalist id="suggestions"></datalist>
+</div>
+{%- endmacro %}

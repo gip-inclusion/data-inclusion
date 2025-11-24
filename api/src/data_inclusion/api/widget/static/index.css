@@ -1,0 +1,325 @@
+/* Typography */
+:root {
+  font-family: Inter, sans-serif;
+  font-feature-settings: 'liga' 1, 'calt' 1; /* fix for Chrome */
+  font-optical-sizing: auto;
+}
+@font-face {
+  font-family: Inter;
+  font-style: normal;
+  font-weight: 100 900;
+  font-display: swap;
+  src: url("InterVariable.woff2") format("woff2");
+}
+@font-face {
+  font-family: Inter;
+  font-style: italic;
+  font-weight: 100 900;
+  font-display: swap;
+  src: url("InterVariable-Italic.woff2") format("woff2");
+}
+ /* Variables  */
+ :root {
+  --size-base-0,25-rem: 0.2500rem;
+  --size-base-0,5-rem: 0.5000rem;
+  --size-base-0,75-rem: 0.7500rem;
+  --size-base-1-rem: 1.0000rem;
+  --size-base-1,5-rem: 1.5000rem;
+  --size-base-2-rem: 2.0000rem;
+  --size-base-2,5-rem: 2.5000rem;
+  --size-base-3-rem: 3.0000rem;
+  --size-base-3,5-rem: 3.5000rem;
+  --size-base-4-rem: 4.0000rem;
+  --size-base-4,5-rem: 4.5000rem;
+  --size-base-5-rem: 5.0000rem;
+  --size-base-5,5-rem: 5.5000rem;
+  --size-base-6-rem: 6.0000rem;
+  --size-base-6,5-rem: 6.5000rem;
+  --size-base-7-rem: 7.0000rem;
+  --size-base-7,5-rem: 7.5000rem;
+  --size-base-8-rem: 8.0000rem;
+  --color-core-blue-france: rgba(0, 0, 145, 1);
+  --color-core-red-marianne: rgba(225, 0, 15, 1);
+  --color-core-white: rgba(255, 255, 255, 1);
+  --color-core-black: rgba(0, 0, 0, 1);
+  --color-core-blue-france-hover: rgba(18, 18, 255, 1);
+  --color-core-blue-france-active: rgba(35, 35, 255, 1);
+  --color-neutral-gray-900: rgba(14, 15, 12, 1);
+  --color-neutral-gray-800: rgba(59, 61, 57, 1);
+  --color-neutral-gray-700: rgba(69, 71, 69, 1);
+  --color-neutral-gray-600: rgba(106, 108, 106, 1);
+  --color-neutral-gray-500: rgba(134, 134, 133, 1);
+  --color-neutral-gray-400: rgba(176, 176, 175, 1);
+  --color-neutral-gray-300: rgba(204, 204, 204, 1);
+  --color-neutral-gray-200: rgba(221, 221, 221, 1);
+  --color-neutral-gray-100: rgba(245, 246, 244, 1);
+  --color-system-error: rgba(245, 8, 0, 1);
+  --color-system-error-light: rgba(255, 245, 245, 1);
+  --color-system-warning: rgba(214, 79, 0, 1);
+  --color-system-warning-light: rgba(255, 246, 245, 1);
+  --color-system-success: rgba(31, 142, 74, 1);
+  --color-system-success-light: rgba(225, 254, 232, 1);
+  --color-system-info: rgba(0, 122, 245, 1);
+  --color-system-info-light: rgba(245, 247, 255, 1);
+  --color-core-red-marianne-hover: rgba(255, 41, 47, 1);
+  --color-core-red-marianne-active: rgba(255, 67, 71, 1);
+  --color-system-error-dark: rgba(155, 4, 0, 1);
+  --color-system-warning-dark: rgba(128, 46, 0, 1);
+  --color-system-success-dark: rgba(15, 75, 38, 1);
+  --color-system-info-dark: rgba(0, 74, 152, 1);
+  --font-size-title-xs: 0.8750rem;
+  --font-size-title-s: 1.1250rem;
+  --font-size-title-m: 1.3750rem;
+  --font-size-title-l: 1.6250rem;
+  --font-size-title-xl: 1.8750rem;
+  --font-size-body-s: 0.7500rem;
+  --font-size-body-m: 0.8750rem;
+  --font-size-body-l: 1.0000rem;
+  --font-line-height-body-s: 1.2500rem;
+  --font-line-height-title-m: 1.7500rem;
+  --font-line-height-title-xs: 1.2500rem;
+  --font-line-height-body-m: 1.3750rem;
+  --font-line-height-title-xl: 2.2500rem;
+  --effects-black-5: rgba(0, 0, 0, 0.05);
+  --effects-black-10: rgba(0, 0, 0, 0.1);
+  --effects-black-15: rgba(0, 0, 0, 0.15);
+  --effects-black-20: rgba(0, 0, 0, 0.2);
+  --effects-black-25: rgba(0, 0, 0, 0.25);
+  --effects-black-50: rgba(0, 0, 0, 0.5);
+}
+
+ /* Aliases  */
+ :root {
+  --color-neutral-gray-1000: var(--color-core-black);
+  --color-neutral-gray-0: var(--color-core-white);
+  --text-content-primary: var(--color-neutral-gray-900);
+  --background-common-white: var(--color-core-white);
+  --outline-divider-primary: var(--color-neutral-gray-200);
+  --outline-interaction-primary: var(--color-core-blue-france);
+  --outline-interaction-secondary: var(--color-neutral-gray-300);
+  --outline-border-primary: var(--color-neutral-gray-200);
+  --outline-border-secondary: var(--color-neutral-gray-300);
+  --outline-interaction-primary-hover: var(--color-core-blue-france-hover);
+  --outline-interaction-secondary-hover: var(--color-neutral-gray-500);
+  --outline-interaction-primary-active: var(--color-core-blue-france-active);
+  --outline-interaction-secondary-active: var(--color-core-blue-france-active);
+  --background-system-error: var(--color-system-error);
+  --background-common-black: var(--color-neutral-gray-900);
+  --background-interaction-primary: var(--color-core-blue-france);
+  --background-interaction-primary-hover: var(--color-core-blue-france-hover);
+  --background-interaction-primary-active: var(--color-core-blue-france-active);
+  --outline-divider-secondary: var(--color-neutral-gray-300);
+  --background-interaction-disabled-cta: var(--color-neutral-gray-200);
+  --background-common-neutral: var(--color-neutral-gray-100);
+  --background-interaction-disabled-input: var(--color-neutral-gray-100);
+  --background-system-error-light: var(--color-system-error-light);
+  --background-system-warning: var(--color-system-warning);
+  --background-system-warning-light: var(--color-system-warning-light);
+  --background-system-success: var(--color-system-success);
+  --background-system-success-light: var(--color-system-success-light);
+  --background-system-info: var(--color-system-info);
+  --background-system-info-light: var(--color-system-info-light);
+  --outline-interaction-error: var(--color-system-error);
+  --outline-interaction-valid: var(--color-system-success);
+  --text-content-secondary: var(--color-neutral-gray-700);
+  --text-content-tertiary: var(--color-neutral-gray-600);
+  --text-interaction-link: var(--color-core-blue-france);
+  --text-interaction-link-hover: var(--color-core-blue-france-hover);
+  --text-interaction-link-visited: var(--color-core-blue-france-active);
+  --text-interaction-disabled-cta: var(--color-neutral-gray-700);
+  --text-interaction-disabled-input: var(--color-neutral-gray-600);
+  --text-system-error: var(--color-system-error-dark);
+  --text-system-warning: var(--color-system-warning-dark);
+  --text-system-success: var(--color-system-success-dark);
+  --text-system-info: var(--color-system-info-dark);
+  --text-content-white: var(--color-core-white);
+  --font-line-height-body-l: var(--size-base-1,5-rem);
+  --font-line-height-title-s: var(--size-base-1,5-rem);
+  --font-line-height-title-l: var(--size-base-2-rem);
+  --padding-extra-large: var(--size-base-2-rem);
+  --padding-large: var(--size-base-1,5-rem);
+  --padding-medium: var(--size-base-1-rem);
+  --padding-extra-small: var(--size-base-0,5-rem);
+  --space-h-between-chips-m: var(--size-base-0,75-rem);
+  --space-h-between-chips-s: var(--size-base-0,5-rem);
+  --space-h-between-cards-l: var(--size-base-2-rem);
+  --space-h-between-cards-m: var(--size-base-1,5-rem);
+  --space-h-between-components-s: var(--size-base-1-rem);
+  --space-h-between-cards-s: var(--size-base-1-rem);
+  --space-h-between-components-m: var(--size-base-2-rem);
+  --space-v-between-sections-s: var(--size-base-2-rem);
+  --space-v-content-to-action: var(--size-base-1,5-rem);
+  --space-v-content-to-component: var(--size-base-1-rem);
+  --space-v-between-sections-m: var(--size-base-2,5-rem);
+  --space-v-between-text: var(--size-base-0,5-rem);
+  --radius-large: var(--size-base-1-rem);
+  --radius-extra-large: var(--size-base-8-rem);
+  --radius-small: var(--size-base-0,5-rem);
+  --radius-medium: var(--size-base-0,75-rem);
+  --radius-extra-small: var(--size-base-0,25-rem);
+  --background-interaction-secondary: var(--color-neutral-gray-500);
+  --background-interaction-tertiary: var(--color-system-error);
+  --space-v-between-sections-l: var(--size-base-4-rem);
+  --padding-small: var(--size-base-0,75-rem);
+  --effects-white: var(--color-core-white);
+  --effects-focus: var(--color-system-info);
+  --background-icons-gray: var(--color-neutral-gray-400);
+  --background-icons-gray-hover: var(--color-neutral-gray-500);
+  --padding-extra-extra-small: var(--size-base-0,25-rem);
+  --outline-border-tertiary: var(--color-neutral-gray-900);
+}
+
+/* Text Styles  */
+.heading-xl {
+  font-family: Inter;
+  filter: blur(1.8750rem);
+  line-height: 2.2500rem;
+  letter-spacing: 0.0000%;
+  font-weight: 600;
+}
+
+.heading-l {
+  font-family: Inter;
+  filter: blur(1.6250rem);
+  line-height: 2.0000rem;
+  letter-spacing: 0.0000%;
+  font-weight: 600;
+}
+
+.heading-m {
+  font-family: Inter;
+  filter: blur(1.3750rem);
+  line-height: 1.7500rem;
+  letter-spacing: 0.0000%;
+  font-weight: 600;
+}
+
+.heading-s {
+  font-family: Inter;
+  filter: blur(1.1250rem);
+  line-height: 1.5000rem;
+  letter-spacing: 0.0000%;
+  font-weight: 600;
+}
+
+.heading-xs {
+  font-family: Inter;
+  filter: blur(0.8750rem);
+  line-height: 1.2500rem;
+  letter-spacing: 0.0000%;
+  font-weight: 600;
+}
+
+.body-small-regular {
+  font-family: Inter;
+  filter: blur(0.7500rem);
+  line-height: 1.2500rem;
+  letter-spacing: 0.0000%;
+  font-weight: 400;
+}
+
+.body-small-italic {
+  font-family: Inter;
+  filter: blur(0.7500rem);
+  line-height: 1.2500rem;
+  letter-spacing: 0.0000%;
+  font-weight: 400;
+}
+
+.body-small-bold {
+  font-family: Inter;
+  filter: blur(0.7500rem);
+  line-height: 1.2500rem;
+  letter-spacing: 0.0000%;
+  font-weight: 600;
+}
+
+.body-small-link {
+  font-family: Inter;
+  filter: blur(0.7500rem);
+  line-height: 1.2500rem;
+  letter-spacing: 0.0000%;
+  font-weight: 400;
+}
+
+.body-medium-regular {
+  font-family: Inter;
+  filter: blur(0.8750rem);
+  line-height: 1.3750rem;
+  letter-spacing: 0.0000%;
+  font-weight: 400;
+}
+
+.body-medium-italic {
+  font-family: Inter;
+  filter: blur(0.8750rem);
+  line-height: 1.3750rem;
+  letter-spacing: 0.0000%;
+  font-weight: 400;
+}
+
+.body-medium-bold {
+  font-family: Inter;
+  filter: blur(0.8750rem);
+  line-height: 1.3750rem;
+  letter-spacing: 0.0000%;
+  font-weight: 600;
+}
+
+.body-medium-link {
+  font-family: Inter;
+  filter: blur(0.8750rem);
+  line-height: 1.3750rem;
+  letter-spacing: 0.0000%;
+  font-weight: 400;
+}
+
+.body-large-regular {
+  font-family: Inter;
+  filter: blur(1.0000rem);
+  line-height: 1.5000rem;
+  letter-spacing: 0.0000%;
+  font-weight: 400;
+}
+
+.body-large-italic {
+  font-family: Inter;
+  filter: blur(1.0000rem);
+  line-height: 1.5000rem;
+  letter-spacing: 0.0000%;
+  font-weight: 400;
+}
+
+.body-large-bold {
+  font-family: Inter;
+  filter: blur(1.0000rem);
+  line-height: 1.5000rem;
+  letter-spacing: 0.0000%;
+  font-weight: 600;
+}
+
+.body-large-link {
+  font-family: Inter;
+  filter: blur(1.0000rem);
+  line-height: 1.5000rem;
+  letter-spacing: 0.0000%;
+  font-weight: 400;
+}
+
+/* Effect Styles  */
+.drop-shadow-small {
+  box-shadow: 0.0000rem 0.0000rem 0.0625rem 0rem rgba(0, 0, 0, 0.25), 0.0000rem 0.1250rem 0.0625rem 0rem rgba(0, 0, 0, 0.05);
+}
+
+.drop-shadow-medium {
+  box-shadow: 0.0000rem 0.1250rem 0.6250rem 0rem rgba(0, 0, 0, 0.1), 0.0000rem 0.0000rem 0.1250rem 0rem rgba(0, 0, 0, 0.2);
+}
+
+.drop-shadow-large {
+  box-shadow: 0.0000rem 0.2500rem 1.2500rem 0rem rgba(0, 0, 0, 0.15), 0.0000rem 0.0000rem 0.1875rem 0rem rgba(0, 0, 0, 0.1);
+}
+
+.interaction-focus {
+  box-shadow: 0.0000rem 0.0000rem 0.0000rem 0.2500rem rgba(0, 122, 245, 1), 0.0000rem 0.0000rem 0.0000rem 0.1250rem rgba(255, 255, 255, 1);
+}
+
