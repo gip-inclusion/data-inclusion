@@ -1,0 +1,48 @@
+{% from "components/card.html" import card with context %}
+{% from "components/pagination.html" import pagination with context %}
+<output id="results">
+    {% if results %}
+        <ul class="di-cards-grid"
+            id="results-grid"
+            style="grid-template-columns: repeat({{ x }}, 1fr)"
+            aria-live="polite"
+            aria-atomic="true">
+            {% for row in results | batch(x) %}
+                {% for result in row %}{{ card(result) }}{% endfor %}
+            {% endfor %}
+        </ul>
+    {% else %}
+        <div class="di-empty-results">
+            <img src="/widget/static/icons/search-line.svg"
+                 alt=""
+                 class="di-empty-results-icon"
+                 aria-hidden="true">
+            <h3 class="di-empty-results-title">Nous n'avons trouvé aucun résultat correspondant à votre recherche</h3>
+            <p class="di-empty-results-text">
+                Il se peut que vos filtres soient trop restrictifs. N'hésitez pas à les modifier ou à les élargir pour découvrir davantage de solutions.
+            </p>
+        </div>
+    {% endif %}
+    <div class="di-results-footer">
+        <div class="di-results-footer-left">
+            <a href="https://data.inclusion.gouv.fr/"
+               target="_blank"
+               class="di-logo-link">
+                <img src="/widget/static/logo-di.svg" alt="data·inclusion">
+            </a>
+        </div>
+        <div class="di-results-footer-center">
+            {% if results %}{{ pagination() }}{% endif %}
+        </div>
+        <div class="di-results-footer-right">
+            <a href="https://tally.so/r/nWZBrv?produit={{ (token_sub or '')|urlencode }}&issue_url={{ current_url|urlencode }}"
+               target="_blank"
+               class="di-report-link">
+                Signaler un problème
+                <img src="/widget/static/icon-arrow-right-up-line.svg"
+                     alt=""
+                     aria-hidden="true">
+            </a>
+        </div>
+    </div>
+</output>

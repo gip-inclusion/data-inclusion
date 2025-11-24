@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+{% from "components/combobox.html" import combobox %}
+{% from "components/select.html" import select %}
+{% block content %}
+    <main>
+        {% if display_form %}
+            <form aria-label="Rechercher des services"
+                  hx-get="/widget/"
+                  hx-target="#results"
+                  hx-swap="outerHTML"
+                  hx-trigger="change from:select, commune-selected"
+                  hx-push-url="true">
+                <input type="hidden" name="x" value="{{ query_params_x }}">
+                <input type="hidden" name="y" value="{{ query_params_y }}">
+                <input type="hidden"
+                       name="score_qualite_minimum"
+                       value="{{ query_params_score_qualite_minimum }}">
+                <input type="hidden"
+                       name="display_form"
+                       value="{{ query_params_display_form|lower }}">
+                <input type="hidden"
+                       name="display_communes_filter"
+                       value="{{ query_params_display_communes_filter|lower }}">
+                <input type="hidden"
+                       name="display_categories_filter"
+                       value="{{ query_params_display_categories_filter|lower }}">
+                <input type="hidden"
+                       name="display_publics_filter"
+                       value="{{ query_params_display_publics_filter|lower }}">
+                <input type="hidden" name="token" value="{{ token }}">
+                <div class="di-filters-grid">
+                    {% if display_communes_filter %}{{ combobox(query_params_commune_code, query_params_commune_label) }}{% endif %}
+                    {% if display_categories_filter %}
+                        {{ select("categories", "Thématiques", "Choisir une thématique", schema_categories, query_params_categories) }}
+                    {% endif %}
+                    {% if display_publics_filter %}
+                        {{ select("publics", "Publics", "Choisir un public", schema_publics, query_params_publics) }}
+                    {% endif %}
+                </div>
+            </form>
+        {% endif %}
+        {% include "fragments/results.html" %}
+    </main>
+{% endblock %}

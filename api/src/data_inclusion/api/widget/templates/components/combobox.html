@@ -1,0 +1,17 @@
+{% macro combobox(selected_code, selected_label) -%}
+    <div class="input-group">
+        <label for="input-commune">Lieu</label>
+        <input type="hidden"
+               name="code_commune"
+               id="hidden-code_commune"
+               value="{{ selected_code or '' }}">
+        <input autocomplete="off"
+               list="suggestions"
+               id="input-commune"
+               type="text"
+               placeholder="Choisir un lieu"
+               value="{{ selected_label or '' }}"
+               _="on input repeat for option in #suggestions.options if option.value == my value then set #hidden-code_commune.value to option.dataset.code send `commune-selected` to closest <form/> exit end end if my value.length > 1 then set nom to my value set url to encodeURI(`https://geo.api.gouv.fr/communes?type=commune-actuelle&boost=population&limit=10&nom=${nom}`) fetch `${url}` as json then remove <option/> from #suggestions repeat for commune in it make an <option/> set its @value to `${commune.nom} (${commune.codesPostaux[0]})` set its @data-code to commune.code append it to #suggestions end end end ">
+        <datalist id="suggestions"></datalist>
+    </div>
+{%- endmacro %}

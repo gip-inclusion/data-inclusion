@@ -13,9 +13,7 @@
 		"[python]": {
 			"editor.defaultFormatter": "charliermarsh.ruff"
 		},
-		"python.analysis.typeCheckingMode": "basic",
-		"python.testing.pytestEnabled": true,
-		"python.testing.unittestEnabled": false,
+		"python.analysis.typeCheckingMode": "standard",
 		"python.defaultInterpreterPath": ".venv/bin/python",
 		"files.trimTrailingWhitespace": true,
 		"files.insertFinalNewline": true,

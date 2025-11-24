@@ -1,0 +1,563 @@
+# serializer version: 1
+# name: test_widget_rendering_empty_results
+  '''
+  <!DOCTYPE html>
+  <html lang="fr">
+  
+  <head>
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1">
+      <title>Widget data·inclusion</title>
+  
+      <link rel="stylesheet" href="/widget/static/reset.css">
+      <link rel="stylesheet" href="/widget/static/styles.css">
+  
+      <script src="https://cdn.jsdelivr.net/npm/htmx.org@2.0.6/dist/htmx.min.js"
+          integrity="sha384-Akqfrbj/HpNVo8k11SXBb6TlBWmXXlYQrCSqEWmyKJe+hDm3Z/B2WVG4smwBkRVm" crossorigin="anonymous"
+          defer>
+          </script>
+      <script src="https://cdn.jsdelivr.net/npm/hyperscript.org@0.9.14/dist/_hyperscript.min.js"
+          integrity="sha384-NzchC8z9HmP/Ed8cheGl9XuSrFSkDNHPiDl+ujbHE0F0I7tWC4rUnwPXP+7IvVZv" crossorigin="anonymous">
+          </script>
+  </head>
+  
+  <body>
+      
+      <main>
+          
+              <form aria-label="Rechercher des services"
+                    hx-get="/widget/"
+                    hx-target="#results"
+                    hx-swap="outerHTML"
+                    hx-trigger="change from:select, commune-selected"
+                    hx-push-url="true">
+                  <input type="hidden" name="x" value="2">
+                  <input type="hidden" name="y" value="1">
+                  <input type="hidden"
+                         name="score_qualite_minimum"
+                         value="0.8">
+                  <input type="hidden"
+                         name="display_form"
+                         value="true">
+                  <input type="hidden"
+                         name="display_communes_filter"
+                         value="true">
+                  <input type="hidden"
+                         name="display_categories_filter"
+                         value="true">
+                  <input type="hidden"
+                         name="display_publics_filter"
+                         value="true">
+                  <input type="hidden" name="token" value="test-token">
+                  <div class="di-filters-grid">
+                      <div class="input-group">
+          <label for="input-commune">Lieu</label>
+          <input type="hidden"
+                 name="code_commune"
+                 id="hidden-code_commune"
+                 value="">
+          <input autocomplete="off"
+                 list="suggestions"
+                 id="input-commune"
+                 type="text"
+                 placeholder="Choisir un lieu"
+                 value=""
+                 _="on input repeat for option in #suggestions.options if option.value == my value then set #hidden-code_commune.value to option.dataset.code send `commune-selected` to closest <form/> exit end end if my value.length > 1 then set nom to my value set url to encodeURI(`https://geo.api.gouv.fr/communes?type=commune-actuelle&boost=population&limit=10&nom=${nom}`) fetch `${url}` as json then remove <option/> from #suggestions repeat for commune in it make an <option/> set its @value to `${commune.nom} (${commune.codesPostaux[0]})` set its @data-code to commune.code append it to #suggestions end end end ">
+          <datalist id="suggestions"></datalist>
+      </div>
+                      
+                          <div class="input-group">
+      <label for="input-categories">Thématiques</label>
+      <select name="categories" id="input-categories">
+          <option value="" disabled selected>Choisir une thématique</option>
+          
+          <option value="choisir-un-metier" >Choisir un métier</option>
+          
+          <option value="creer-une-entreprise" >Créer une entreprise</option>
+          
+          <option value="difficultes-administratives-ou-juridiques" >Difficultés administratives ou juridiques</option>
+          
+          <option value="difficultes-financieres" >Difficultés financières</option>
+          
+          <option value="equipement-et-alimentation" >Équipement et alimentation</option>
+          
+          <option value="famille" >Famille</option>
+          
+          <option value="lecture-ecriture-calcul" >Lecture, écriture et calcul</option>
+          
+          <option value="logement-hebergement" >Logement et hébergement</option>
+          
+          <option value="mobilite" >Mobilité</option>
+          
+          <option value="numerique" >Numérique</option>
+          
+          <option value="preparer-sa-candidature" >Préparer sa candidature</option>
+          
+          <option value="remobilisation" >Remobilisation</option>
+          
+          <option value="sante" >Santé</option>
+          
+          <option value="se-former" >Se former</option>
+          
+          <option value="souvrir-a-linternational" >S’ouvrir à l’international</option>
+          
+          <option value="trouver-un-emploi" >Trouver un emploi</option>
+          
+      </select>
+  </div>
+                      
+                      
+                          <div class="input-group">
+      <label for="input-publics">Publics</label>
+      <select name="publics" id="input-publics">
+          <option value="" disabled >Choisir un public</option>
+          
+          <option value="tous-publics" selected>Tous publics</option>
+          
+          <option value="actifs" >Actifs</option>
+          
+          <option value="beneficiaires-des-minimas-sociaux" >Bénéficiaires des minimas sociaux</option>
+          
+          <option value="demandeurs-emploi" >Demandeurs d’emploi</option>
+          
+          <option value="etudiants" >Étudiants</option>
+          
+          <option value="familles" >Familles</option>
+          
+          <option value="femmes" >Femmes</option>
+          
+          <option value="jeunes" >Jeunes</option>
+          
+          <option value="personnes-en-situation-de-handicap" >Personnes en situation de handicap</option>
+          
+          <option value="personnes-en-situation-durgence" >Personnes en situation d’urgence</option>
+          
+          <option value="personnes-en-situation-juridique-specifique" >Personnes en situation juridique spécifique</option>
+          
+          <option value="personnes-exilees" >Personnes exilées</option>
+          
+          <option value="residents-qpv-frr" >Résidents en QPV ou FRR</option>
+          
+          <option value="seniors" >Séniors</option>
+          
+      </select>
+  </div>
+                      
+                  </div>
+              </form>
+          
+          
+  
+  <output id="results">
+      
+          <div class="di-empty-results">
+              <img src="/widget/static/icons/search-line.svg"
+                   alt=""
+                   class="di-empty-results-icon"
+                   aria-hidden="true">
+              <h3 class="di-empty-results-title">Nous n'avons trouvé aucun résultat correspondant à votre recherche</h3>
+              <p class="di-empty-results-text">
+                  Il se peut que vos filtres soient trop restrictifs. N'hésitez pas à les modifier ou à les élargir pour découvrir davantage de solutions.
+              </p>
+          </div>
+      
+      <div class="di-results-footer">
+          <div class="di-results-footer-left">
+              <a href="https://data.inclusion.gouv.fr/"
+                 target="_blank"
+                 class="di-logo-link">
+                  <img src="/widget/static/logo-di.svg" alt="data·inclusion">
+              </a>
+          </div>
+          <div class="di-results-footer-center">
+              
+          </div>
+          <div class="di-results-footer-right">
+              <a href="https://tally.so/r/nWZBrv?produit=test_user&issue_url=http%3A//testserver/widget/%3Ftoken%3Dtest-token%26x%3D2%26y%3D1"
+                 target="_blank"
+                 class="di-report-link">
+                  Signaler un problème
+                  <img src="/widget/static/icon-arrow-right-up-line.svg"
+                       alt=""
+                       aria-hidden="true">
+              </a>
+          </div>
+      </div>
+  </output>
+      </main>
+  
+  </body>
+  
+  </html>
+  '''
+# ---
+# name: test_widget_rendering_with_results
+  '''
+  <!DOCTYPE html>
+  <html lang="fr">
+  
+  <head>
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1">
+      <title>Widget data·inclusion</title>
+  
+      <link rel="stylesheet" href="/widget/static/reset.css">
+      <link rel="stylesheet" href="/widget/static/styles.css">
+  
+      <script src="https://cdn.jsdelivr.net/npm/htmx.org@2.0.6/dist/htmx.min.js"
+          integrity="sha384-Akqfrbj/HpNVo8k11SXBb6TlBWmXXlYQrCSqEWmyKJe+hDm3Z/B2WVG4smwBkRVm" crossorigin="anonymous"
+          defer>
+          </script>
+      <script src="https://cdn.jsdelivr.net/npm/hyperscript.org@0.9.14/dist/_hyperscript.min.js"
+          integrity="sha384-NzchC8z9HmP/Ed8cheGl9XuSrFSkDNHPiDl+ujbHE0F0I7tWC4rUnwPXP+7IvVZv" crossorigin="anonymous">
+          </script>
+  </head>
+  
+  <body>
+      
+      <main>
+          
+              <form aria-label="Rechercher des services"
+                    hx-get="/widget/"
+                    hx-target="#results"
+                    hx-swap="outerHTML"
+                    hx-trigger="change from:select, commune-selected"
+                    hx-push-url="true">
+                  <input type="hidden" name="x" value="2">
+                  <input type="hidden" name="y" value="1">
+                  <input type="hidden"
+                         name="score_qualite_minimum"
+                         value="0.8">
+                  <input type="hidden"
+                         name="display_form"
+                         value="true">
+                  <input type="hidden"
+                         name="display_communes_filter"
+                         value="true">
+                  <input type="hidden"
+                         name="display_categories_filter"
+                         value="true">
+                  <input type="hidden"
+                         name="display_publics_filter"
+                         value="true">
+                  <input type="hidden" name="token" value="test-token">
+                  <div class="di-filters-grid">
+                      <div class="input-group">
+          <label for="input-commune">Lieu</label>
+          <input type="hidden"
+                 name="code_commune"
+                 id="hidden-code_commune"
+                 value="">
+          <input autocomplete="off"
+                 list="suggestions"
+                 id="input-commune"
+                 type="text"
+                 placeholder="Choisir un lieu"
+                 value=""
+                 _="on input repeat for option in #suggestions.options if option.value == my value then set #hidden-code_commune.value to option.dataset.code send `commune-selected` to closest <form/> exit end end if my value.length > 1 then set nom to my value set url to encodeURI(`https://geo.api.gouv.fr/communes?type=commune-actuelle&boost=population&limit=10&nom=${nom}`) fetch `${url}` as json then remove <option/> from #suggestions repeat for commune in it make an <option/> set its @value to `${commune.nom} (${commune.codesPostaux[0]})` set its @data-code to commune.code append it to #suggestions end end end ">
+          <datalist id="suggestions"></datalist>
+      </div>
+                      
+                          <div class="input-group">
+      <label for="input-categories">Thématiques</label>
+      <select name="categories" id="input-categories">
+          <option value="" disabled selected>Choisir une thématique</option>
+          
+          <option value="choisir-un-metier" >Choisir un métier</option>
+          
+          <option value="creer-une-entreprise" >Créer une entreprise</option>
+          
+          <option value="difficultes-administratives-ou-juridiques" >Difficultés administratives ou juridiques</option>
+          
+          <option value="difficultes-financieres" >Difficultés financières</option>
+          
+          <option value="equipement-et-alimentation" >Équipement et alimentation</option>
+          
+          <option value="famille" >Famille</option>
+          
+          <option value="lecture-ecriture-calcul" >Lecture, écriture et calcul</option>
+          
+          <option value="logement-hebergement" >Logement et hébergement</option>
+          
+          <option value="mobilite" >Mobilité</option>
+          
+          <option value="numerique" >Numérique</option>
+          
+          <option value="preparer-sa-candidature" >Préparer sa candidature</option>
+          
+          <option value="remobilisation" >Remobilisation</option>
+          
+          <option value="sante" >Santé</option>
+          
+          <option value="se-former" >Se former</option>
+          
+          <option value="souvrir-a-linternational" >S’ouvrir à l’international</option>
+          
+          <option value="trouver-un-emploi" >Trouver un emploi</option>
+          
+      </select>
+  </div>
+                      
+                      
+                          <div class="input-group">
+      <label for="input-publics">Publics</label>
+      <select name="publics" id="input-publics">
+          <option value="" disabled >Choisir un public</option>
+          
+          <option value="tous-publics" selected>Tous publics</option>
+          
+          <option value="actifs" >Actifs</option>
+          
+          <option value="beneficiaires-des-minimas-sociaux" >Bénéficiaires des minimas sociaux</option>
+          
+          <option value="demandeurs-emploi" >Demandeurs d’emploi</option>
+          
+          <option value="etudiants" >Étudiants</option>
+          
+          <option value="familles" >Familles</option>
+          
+          <option value="femmes" >Femmes</option>
+          
+          <option value="jeunes" >Jeunes</option>
+          
+          <option value="personnes-en-situation-de-handicap" >Personnes en situation de handicap</option>
+          
+          <option value="personnes-en-situation-durgence" >Personnes en situation d’urgence</option>
+          
+          <option value="personnes-en-situation-juridique-specifique" >Personnes en situation juridique spécifique</option>
+          
+          <option value="personnes-exilees" >Personnes exilées</option>
+          
+          <option value="residents-qpv-frr" >Résidents en QPV ou FRR</option>
+          
+          <option value="seniors" >Séniors</option>
+          
+      </select>
+  </div>
+                      
+                  </div>
+              </form>
+          
+          
+  
+  <output id="results">
+      
+          <ul class="di-cards-grid"
+              id="results-grid"
+              style="grid-template-columns: repeat(2, 1fr)"
+              aria-live="polite"
+              aria-atomic="true">
+              
+                  <li class="di-card">
+          <div class="di-card-header">
+              <h2>Chevallier Cousin et Fils</h2>
+              <h3>
+                  <a href="https://dora.fr/dora--never-voice-party"
+                     target="_blank">Service sans commune</a>
+              </h3>
+              <span>
+                  
+                      <svg class="di-globe-icon"
+                           xmlns="http://www.w3.org/2000/svg"
+                           viewBox="0 0 24 24"
+                           fill="none"
+                           stroke="currentColor"
+                           stroke-width="2"
+                           stroke-linecap="round"
+                           stroke-linejoin="round">
+                          <circle cx="12" cy="12" r="10"></circle><line x1="2" y1="12" x2="22" y2="12"></line>
+                          <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path>
+                      </svg>
+                      À distance
+                  
+              </span>
+          </div>
+          <p>
+              
+                  Séniors
+              
+          </p>
+          <div class="di-card-footer">
+              <a href="https://dora.fr/dora--never-voice-party"
+                 target="_blank">dora</a>
+          </div>
+      </li><li class="di-card">
+          <div class="di-card-header">
+              <h2>Bodin Joly SARL</h2>
+              <h3>
+                  <a href="https://dora.fr/dora--professor"
+                     target="_blank">Service de formation professionnelle</a>
+              </h3>
+              <span>
+                  
+                      59000
+                      Lille
+                  
+              </span>
+          </div>
+          <p>
+              
+                  Femmes
+              
+          </p>
+          <div class="di-card-footer">
+              <a href="https://dora.fr/dora--professor"
+                 target="_blank">dora</a>
+          </div>
+      </li>
+              
+          </ul>
+      
+      <div class="di-results-footer">
+          <div class="di-results-footer-left">
+              <a href="https://data.inclusion.gouv.fr/"
+                 target="_blank"
+                 class="di-logo-link">
+                  <img src="/widget/static/logo-di.svg" alt="data·inclusion">
+              </a>
+          </div>
+          <div class="di-results-footer-center">
+              <nav class="di-pagination">
+          <div class="di-pagination-arrow di-pagination-arrow-left">
+              
+                  <span class="disabled">&lt;</span>
+              
+          </div>
+          <div class="di-pagination-numbers">
+              <ul>
+                  
+                  
+                      <li>
+                          <a href="#"
+                             hx-get="/widget/?token=test-token&amp;x=2&amp;y=1&amp;page=1"
+                             hx-push-url="true"
+                             hx-target="#results"
+                             hx-swap="outerHTML"
+                             title="Page 1"
+                             aria-current="page">1</a>
+                      </li>
+                  
+                      <li>
+                          <a href="#"
+                             hx-get="/widget/?token=test-token&amp;x=2&amp;y=1&amp;page=2"
+                             hx-push-url="true"
+                             hx-target="#results"
+                             hx-swap="outerHTML"
+                             title="Page 2"
+                             >2</a>
+                      </li>
+                  
+                  
+              </ul>
+          </div>
+          <div class="di-pagination-arrow di-pagination-arrow-right">
+              
+                  <a href="#"
+                     hx-get="/widget/?token=test-token&amp;x=2&amp;y=1&amp;page=2"
+                     hx-push-url="true"
+                     hx-target="#results"
+                     hx-swap="outerHTML"
+                     title="Page suivante">&gt;</a>
+              
+          </div>
+      </nav>
+          </div>
+          <div class="di-results-footer-right">
+              <a href="https://tally.so/r/nWZBrv?produit=test_user&issue_url=http%3A//testserver/widget/%3Ftoken%3Dtest-token%26x%3D2%26y%3D1"
+                 target="_blank"
+                 class="di-report-link">
+                  Signaler un problème
+                  <img src="/widget/static/icon-arrow-right-up-line.svg"
+                       alt=""
+                       aria-hidden="true">
+              </a>
+          </div>
+      </div>
+  </output>
+      </main>
+  
+  </body>
+  
+  </html>
+  '''
+# ---
+# name: test_widget_rendering_with_results.1
+  '''
+  <output id="results">
+      
+          <div class="di-empty-results">
+              <img src="/widget/static/icons/search-line.svg"
+                   alt=""
+                   class="di-empty-results-icon"
+                   aria-hidden="true">
+              <h3 class="di-empty-results-title">Nous n'avons trouvé aucun résultat correspondant à votre recherche</h3>
+              <p class="di-empty-results-text">
+                  Il se peut que vos filtres soient trop restrictifs. N'hésitez pas à les modifier ou à les élargir pour découvrir davantage de solutions.
+              </p>
+          </div>
+      
+      <div class="di-results-footer">
+          <div class="di-results-footer-left">
+              <a href="https://data.inclusion.gouv.fr/"
+                 target="_blank"
+                 class="di-logo-link">
+                  <img src="/widget/static/logo-di.svg" alt="data·inclusion">
+              </a>
+          </div>
+          <div class="di-results-footer-center">
+              
+          </div>
+          <div class="di-results-footer-right">
+              <a href="https://tally.so/r/nWZBrv?produit=test_user&issue_url=http%3A//testserver/widget/%3Ftoken%3Dtest-token%26x%3D2%26y%3D1%26code_commune%3D59350%26categories%3Dfamille"
+                 target="_blank"
+                 class="di-report-link">
+                  Signaler un problème
+                  <img src="/widget/static/icon-arrow-right-up-line.svg"
+                       alt=""
+                       aria-hidden="true">
+              </a>
+          </div>
+      </div>
+  </output>
+  '''
+# ---
+# name: test_widget_rendering_with_results.2
+  '''
+  <output id="results">
+      
+          <div class="di-empty-results">
+              <img src="/widget/static/icons/search-line.svg"
+                   alt=""
+                   class="di-empty-results-icon"
+                   aria-hidden="true">
+              <h3 class="di-empty-results-title">Nous n'avons trouvé aucun résultat correspondant à votre recherche</h3>
+              <p class="di-empty-results-text">
+                  Il se peut que vos filtres soient trop restrictifs. N'hésitez pas à les modifier ou à les élargir pour découvrir davantage de solutions.
+              </p>
+          </div>
+      
+      <div class="di-results-footer">
+          <div class="di-results-footer-left">
+              <a href="https://data.inclusion.gouv.fr/"
+                 target="_blank"
+                 class="di-logo-link">
+                  <img src="/widget/static/logo-di.svg" alt="data·inclusion">
+              </a>
+          </div>
+          <div class="di-results-footer-center">
+              
+          </div>
+          <div class="di-results-footer-right">
+              <a href="https://tally.so/r/nWZBrv?produit=test_user&issue_url=http%3A//testserver/widget/%3Ftoken%3Dtest-token%26x%3D2%26y%3D1%26code_commune%3D75056%26categories%3Dfamille"
+                 target="_blank"
+                 class="di-report-link">
+                  Signaler un problème
+                  <img src="/widget/static/icon-arrow-right-up-line.svg"
+                       alt=""
+                       aria-hidden="true">
+              </a>
+          </div>
+      </div>
+  </output>
+  '''
+# ---

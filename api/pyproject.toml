@@ -51,6 +51,7 @@ test = [
     "locust>=2.33.2",
     "pytest>=8.3.5",
     "pytest-dotenv>=0.5.2",
+    "pytest-playwright>=0.7.1",
     "syrupy>=4.9.1",
 ]
 
@@ -67,6 +68,7 @@ namespaces = true
 
 [tool.setuptools.package-data]
 "*" = ["*.md", "*.json"]
+"data_inclusion.api.widget" = ["static/**/*", "templates/**/*"]
 
 [tool.ruff.lint]
 # see prefixes in https://beta.ruff.rs/docs/rules/

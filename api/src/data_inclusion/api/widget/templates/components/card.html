@@ -1,0 +1,41 @@
+{% macro card(result) -%}
+    <li class="di-card">
+        <div class="di-card-header">
+            <h2>{{ result.service.structure.nom }}</h2>
+            <h3>
+                <a href="{{ result.service.lien_source|default('https://dora.inclusion.gouv.fr/services/di--' + result.service.id, True) }}"
+                   target="_blank">{{ result.service.nom }}</a>
+            </h3>
+            <span>
+                {% if result.service.commune %}
+                    {% if result.service.code_postal %}{{ result.service.code_postal }}{% endif %}
+                    {{ result.service.commune }}
+                {% else %}
+                    <svg class="di-globe-icon"
+                         xmlns="http://www.w3.org/2000/svg"
+                         viewBox="0 0 24 24"
+                         fill="none"
+                         stroke="currentColor"
+                         stroke-width="2"
+                         stroke-linecap="round"
+                         stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="10"></circle><line x1="2" y1="12" x2="22" y2="12"></line>
+                        <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path>
+                    </svg>
+                    À distance
+                {% endif %}
+            </span>
+        </div>
+        <p>
+            {% if result.service.publics is not none %}
+                {{ schema_publics | selectattr('value', 'in', result.service.publics) | map(attribute='label') | join(', ') }}
+            {% else %}
+                Tous les publics
+            {% endif %}
+        </p>
+        <div class="di-card-footer">
+            <a href="{{ result.service.lien_source|default('https://dora.inclusion.gouv.fr/services/di--' + result.service.id, True) }}"
+               target="_blank">{{ result.service.source }}</a>
+        </div>
+    </li>
+{%- endmacro %}

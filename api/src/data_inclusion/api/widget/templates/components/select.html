@@ -1,0 +1,11 @@
+{% macro select(name, label, placeholder, options, selected) -%}
+<div class="input-group">
+    <label for="input-{{ name }}">{{ label }}</label>
+    <select name="{{ name }}" id="input-{{ name }}">
+        <option value="" disabled {% if not selected %}selected{% endif %}>{{ placeholder }}</option>
+        {% for option in options %}
+        <option value="{{ option.value }}" {% if selected == option.value %}selected{% endif %}>{{ option.label }}</option>
+        {% endfor %}
+    </select>
+</div>
+{%- endmacro %}

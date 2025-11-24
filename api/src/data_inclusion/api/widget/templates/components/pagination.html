@@ -1,0 +1,53 @@
+{% macro pagination() -%}
+    <nav class="di-pagination">
+        <div class="di-pagination-arrow di-pagination-arrow-left">
+            {% if page > 1 %}
+                <a href="#"
+                   hx-get="/widget/?{{ request.url.include_query_params(page=page-1).query }}"
+                   hx-push-url="true"
+                   hx-target="#results"
+                   hx-swap="outerHTML"
+                   title="Page précédente">&lt;</a>
+            {% else %}
+                <span class="disabled">&lt;</span>
+            {% endif %}
+        </div>
+        <div class="di-pagination-numbers">
+            <ul>
+                {% if page - 1 > 1 %}
+                    <li>
+                        <span>…</span>
+                    </li>
+                {% endif %}
+                {% for i in range([page - 1, 1]|max, [page + 1, pages]|min + 1) %}
+                    <li>
+                        <a href="#"
+                           hx-get="/widget/?{{ request.url.include_query_params(page=i).query }}"
+                           hx-push-url="true"
+                           hx-target="#results"
+                           hx-swap="outerHTML"
+                           title="Page {{ i }}"
+                           {% if i == page %}aria-current="page"{% endif %}>{{ i }}</a>
+                    </li>
+                {% endfor %}
+                {% if pages - page > 1 %}
+                    <li>
+                        <span>…</span>
+                    </li>
+                {% endif %}
+            </ul>
+        </div>
+        <div class="di-pagination-arrow di-pagination-arrow-right">
+            {% if pages - page > 0 %}
+                <a href="#"
+                   hx-get="/widget/?{{ request.url.include_query_params(page=page+1).query }}"
+                   hx-push-url="true"
+                   hx-target="#results"
+                   hx-swap="outerHTML"
+                   title="Page suivante">&gt;</a>
+            {% else %}
+                <span class="disabled">&gt;</span>
+            {% endif %}
+        </div>
+    </nav>
+{%- endmacro %}
