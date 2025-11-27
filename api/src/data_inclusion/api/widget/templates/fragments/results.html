@@ -1,0 +1,19 @@
+{% from "components/card.html" import card with context %}
+{% from "components/pagination.html" import pagination with context %}
+
+<style>
+    #results ul {
+        display: grid;
+        grid-template-columns: 1fr 1fr 1fr;
+        gap: 20px;
+        list-style: none;
+        padding: 0;
+    }
+</style>
+
+<output id="results">
+    <ul>
+        {% for result in results %}{{ card(result) }}{% endfor %}
+    </ul>
+    {{ pagination() }}
+</output>

@@ -1,0 +1,36 @@
+{% macro card(result) -%}
+<style>
+    .card {
+        display: flex;
+        padding: var(--padding-large, 24px) var(--padding-large, 24px) var(--padding-medium, 16px) var(--padding-large, 24px);
+        flex-direction: column;
+        align-items: flex-start;
+        gap: var(--padding-extra-large, 32px);
+
+        border-radius: var(--radius-small, 8px);
+        border: 1px solid var(--outline-border-primary, #DDD);
+        background: var(--background-common-white, #FFF);
+    }
+</style>
+<li class="card">
+    <article>
+        <div>
+            <div>{{ result.service.structure.nom }}</div>
+            <h3>
+                <a href="{{ result.service.lien_source|default('https://dora.inclusion.gouv.fr/services/di--' + result.service.id, True) }}"
+                    target="_blank">{{ result.service.nom }}</a>
+            </h3>
+            <div>{{ result.service.commune|d('') }}</div>
+        </div>
+        <div>
+            <p style="font-style: italic;">
+                {% if result.service.publics is not none %}
+                {{ schema_publics | selectattr('value', 'in', result.service.publics) | map(attribute='label') | join(',
+                ') }}
+                {% endif %}
+                <hr />
+            <div>{{ result.service.source }}</div>
+        </div>
+    </article>
+</li>
+{%- endmacro %}

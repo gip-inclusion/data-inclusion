@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+
+{% from "components/combobox.html" import combobox %}
+{% from "components/select.html" import select %}
+
+{% block content %}
+<main>
+    <h2>Identifiez l'offre d'insertion à proximité</h2>
+    <form aria-label="Rechercher des services" style="display: grid; grid-template-columns: 1fr 1fr 1fr;" hx-get="/widget/" hx-target="#results" hx-swap="outerHTML" hx-trigger="change" hx-push-url="true">
+        {{ combobox(query_params_commune) }}
+        {{ select("categories", "Thématiques", "Choisir une thématique", schema_categories, query_params_categories) }}
+        {{ select("publics", "Publics", "Choisir un public", schema_publics, query_params_publics) }}
+    </form>
+    {% include "fragments/results.html" %}
+</main>
+<footer style="display: flex; flex-direction: column; align-items: center;">
+    <hr>
+    <p>Widget proposé par <a href="https://data.inclusion.gouv.fr/" target="_blank">data·inclusion</a>, une initiative de la <a href="https://inclusion.gouv.fr/" target="_blank">Plateforme de l’Inclusion</a></p>
+</footer>
+{% endblock %}
