@@ -16,3 +16,154 @@ models:
           - unique
           - not_null
           - dbt_utils.not_empty_string
+
+  - name: stg_action_logement__services_v1
+    columns:
+      - name: id
+        data_tests:
+          - unique
+          - not_null
+          - dbt_utils.not_empty_string
+          - dbt_utils.not_constant
+      - name: date_maj
+        data_tests:
+          - not_null
+      - name: nom
+        data_tests:
+          - not_null
+          - dbt_utils.not_empty_string
+          - dbt_utils.not_constant
+      - name: description
+        data_tests:
+          - not_null
+          - dbt_utils.not_empty_string
+          - dbt_utils.not_constant
+      - name: lien_source
+        data_tests:
+          - dbt_utils.not_null_proportion:
+              arguments:
+                at_least: 0.9
+          - dbt_utils.not_empty_string
+          - dbt_utils.not_constant
+      - name: type
+        data_tests:
+          - not_null
+          - dbt_utils.not_empty_string
+          - dbt_utils.not_constant
+      - name: thematiques
+        data_tests:
+          - not_null
+          - dbt_utils.not_constant
+      - name: frais
+        data_tests:
+          - not_null
+          - dbt_utils.not_empty_string
+      - name: frais_precisions
+        data_tests:
+          - dbt_utils.not_empty_string
+      - name: publics
+        data_tests:
+          - not_null
+          - dbt_utils.not_constant
+      - name: publics_precisions
+        data_tests:
+          - dbt_utils.not_null_proportion:
+              arguments:
+                at_least: 0.6
+          - dbt_utils.not_empty_string
+          - dbt_utils.not_constant
+      - name: conditions_acces
+        data_tests:
+          - dbt_utils.not_null_proportion:
+              arguments:
+                at_least: 0.9
+          - dbt_utils.not_empty_string
+          - dbt_utils.not_constant
+      - name: telephone
+        data_tests:
+          - not_null
+          - dbt_utils.not_empty_string
+      - name: modes_accueil
+        data_tests:
+          - not_null
+      - name: modes_mobilisation
+        data_tests:
+          - not_null
+      - name: lien_mobilisation
+        data_tests:
+          - not_null
+          - dbt_utils.not_empty_string
+          - dbt_utils.not_constant
+      - name: mobilisable_par
+        data_tests:
+          - not_null
+
+  - name: stg_action_logement__structures_v1
+    columns:
+      - name: id
+        data_tests:
+          - unique
+          - not_null
+          - dbt_utils.not_empty_string
+          - dbt_utils.not_constant
+      - name: date_maj
+        data_tests:
+          - not_null
+      - name: nom
+        data_tests:
+          - not_null
+          - dbt_utils.not_empty_string
+      - name: siret
+        data_tests:
+          - dbt_utils.not_null_proportion:
+              arguments:
+                at_least: 0.45
+          - dbt_utils.not_empty_string
+          - dbt_utils.not_constant
+      - name: description
+        data_tests:
+          - not_null
+          - dbt_utils.not_empty_string
+      - name: adresse
+        data_tests:
+          - not_null
+          - dbt_utils.not_empty_string
+          - dbt_utils.not_constant
+      - name: complement_adresse
+        data_tests:
+          - dbt_utils.not_null_proportion:
+              arguments:
+                at_least: 0.3
+          - dbt_utils.not_constant
+          - dbt_utils.not_empty_string
+      - name: code_postal
+        data_tests:
+          - not_null
+          - dbt_utils.not_empty_string
+          - dbt_utils.not_constant
+      - name: commune
+        data_tests:
+          - not_null
+          - dbt_utils.not_empty_string
+          - dbt_utils.not_constant
+      - name: telephone
+        data_tests:
+          - not_null
+          - dbt_utils.not_empty_string
+      - name: lien_source
+        data_tests:
+          - not_null
+          - dbt_utils.not_empty_string
+          - dbt_utils.not_constant
+      - name: site_web
+        data_tests:
+          - not_null
+          - dbt_utils.not_empty_string
+          - dbt_utils.not_constant
+      - name: horaires_accueil
+        data_tests:
+          - not_null
+          - dbt_utils.not_empty_string
+      - name: reseaux_porteurs
+        data_tests:
+          - not_null
