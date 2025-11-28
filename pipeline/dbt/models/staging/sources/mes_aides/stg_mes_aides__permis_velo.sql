@@ -1,6 +1,5 @@
 WITH source AS (
-    {{ stg_source_header('mes_aides', 'permis_velo') }}
-),
+    {{ stg_source_header('mes_aides', 'permis_velo') }}),
 
 final AS (
     SELECT

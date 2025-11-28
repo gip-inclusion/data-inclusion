@@ -12,3 +12,6 @@ sources:
       - name: permis_velo
         meta:
           kind: structure
+      - name: aides
+        meta:
+          kind: structure
