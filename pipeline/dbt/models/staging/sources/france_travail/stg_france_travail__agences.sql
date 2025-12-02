@@ -1,24 +1,22 @@
 WITH source AS (
-    {{ stg_source_header('france_travail', 'agences') }}
-),
+    {{ stg_source_header('france_travail', 'agences') }}),
 
 final AS (
     SELECT
-        CURRENT_DATE                                                                                                                                           AS "date_maj",
-        CASE WHEN data ->> 'dispositifADEDA' = 'true' THEN 'https://www.francetravail.fr/actualites/a-laffiche/2022/adeda-un-dispositif-pour-mieux-a.html' END AS "accessibilite",
-        CAST(data #>> '{adressePrincipale,gpsLat}' AS FLOAT)                                                                                                   AS "latitude",
-        CAST(data #>> '{adressePrincipale,gpsLon}' AS FLOAT)                                                                                                   AS "longitude",
-        data #>> '{adressePrincipale,ligne4}'                                                                                                                  AS "adresse",
-        data #>> '{adressePrincipale,ligne3}'                                                                                                                  AS "complement_adresse",
-        data #>> '{adressePrincipale,communeImplantation}'                                                                                                     AS "code_insee",
-        data #>> '{adressePrincipale,bureauDistributeur}'                                                                                                      AS "code_postal",
-        data #>> '{contact,email}'                                                                                                                             AS "courriel",
-        data ->> 'horaires_open_street_map'                                                                                                                    AS "horaires_open_street_map",
-        data #>> '{contact,telephonePublic}'                                                                                                                   AS "telephone",
-        data ->> 'code'                                                                                                                                        AS "id",
-        data ->> 'libelleEtendu'                                                                                                                               AS "nom",
-        data ->> 'siret'                                                                                                                                       AS "siret",
-        data ->> 'type'                                                                                                                                        AS "typologie"
+        CAST(data ->> 'dispositifADEDA' AS BOOLEAN)                AS "dispositif_adeda",
+        CAST(data -> 'adressePrincipale' ->> 'gpsLat' AS FLOAT)    AS "adresse_principale__gps_lat",
+        CAST(data -> 'adressePrincipale' ->> 'gpsLon' AS FLOAT)    AS "adresse_principale__gps_lon",
+        NULLIF(TRIM(data -> 'adressePrincipale' ->> 'ligne4'), '') AS "adresse_principale__ligne_4",
+        NULLIF(TRIM(data -> 'adressePrincipale' ->> 'ligne3'), '') AS "adresse_principale__ligne_3",
+        data -> 'adressePrincipale' ->> 'communeImplantation'      AS "adresse_principale__commune_implantation",
+        data -> 'adressePrincipale' ->> 'bureauDistributeur'       AS "adresse_principale__bureau_distributeur",
+        NULLIF(TRIM(data -> 'contact' ->> 'email'), '')            AS "contact__email",
+        NULLIF(TRIM(data -> 'contact' ->> 'telephonePublic'), '')  AS "contact__telephone_public",
+        data -> 'horaires'                                         AS "horaires",
+        data ->> 'code'                                            AS "code",
+        NULLIF(TRIM(data ->> 'libelleEtendu'), '')                 AS "libelle_etendu",
+        NULLIF(TRIM(data ->> 'siret'), '')                         AS "siret",
+        data ->> 'type'                                            AS "type"
     FROM source
 )
 

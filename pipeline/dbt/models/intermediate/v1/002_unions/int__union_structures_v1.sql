@@ -5,6 +5,7 @@
             ref('int_agefiph__structures_v1'),
             ref('int_carif_oref__structures_v1'),
             ref('int_emplois_de_linclusion__structures_v1'),
+            ref('int_france_travail__structures_v1'),
             ref('int_soliguide__structures_v1'),
             ref('int_monenfant__structures_v1'),
         ],
