@@ -406,7 +406,6 @@ test = [
     { name = "locust", specifier = ">=2.33.2" },
     { name = "pytest", specifier = ">=8.3.5" },
     { name = "pytest-dotenv", specifier = ">=0.5.2" },
-    { name = "pytest-playwright", specifier = ">=0.7.1" },
     { name = "syrupy", specifier = ">=4.9.1" },
 ]
 
