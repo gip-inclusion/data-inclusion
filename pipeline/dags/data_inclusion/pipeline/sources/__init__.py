@@ -198,11 +198,10 @@ SOURCES_CONFIGS = {
                 # the "request token" is the client_id:client_secret string.
                 "token": Variable.get("FT_API_TOKEN", None),
                 "extractor": france_travail.extract,
-                "reader": france_travail.read,
             },
             "services": {
-                "filename": "services.json",
-                "url": "https://docs.google.com/spreadsheets/d/e/2PACX-1vR0yWGydubfpeoC6uDSlWrvsNE3lq0KiC-i4Qg2IwJXYAGgxrCP6G-iTv4m7Z668LcAbqvAeV4CQztz/pub?gid=1682557473&single=true&output=csv",
+                "filename": "services.csv",
+                "url": "https://docs.google.com/spreadsheets/d/1g5p4CAxVnXk5kTTTjL_v9cDpewE57bg0bcXR9uTR5QM/export?gid=636818394&format=csv",
                 "reader": lambda path: utils.read_csv(path, sep=","),
             },
         },

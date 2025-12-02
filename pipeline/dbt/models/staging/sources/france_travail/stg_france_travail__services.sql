@@ -1,35 +1,35 @@
 WITH source AS (
-    {{ stg_source_header('france_travail', 'services') }}
-),
+    {{ stg_source_header('france_travail', 'services') }}),
 
 final AS (
     SELECT
-        data ->> 'id'                                                                                                          AS "id",
-        CURRENT_DATE AT TIME ZONE 'Europe/Paris'                                                                               AS "date_maj",
-        ARRAY_REMOVE(ARRAY(SELECT value FROM JSONB_EACH_TEXT(data) WHERE key ~* 'modes_accueil.\d+'), NULL)                    AS "modes_accueil",
-        ARRAY_REMOVE(ARRAY(SELECT value FROM JSONB_EACH_TEXT(data) WHERE key ~* 'profils.\d+'), NULL)                          AS "profils",
-        ARRAY_REMOVE(ARRAY(SELECT value FROM JSONB_EACH_TEXT(data) WHERE key ~* 'thematiques.\d+'), NULL)                      AS "thematiques",
-        ARRAY_REMOVE(ARRAY(SELECT value FROM JSONB_EACH_TEXT(data) WHERE key ~* 'types.\d+'), NULL)                            AS "types",
-        ARRAY_REMOVE(ARRAY(SELECT value FROM JSONB_EACH_TEXT(data) WHERE key ~* 'justificatifs.\d+'), NULL)                    AS "justificatifs",
-        ARRAY_REMOVE(ARRAY(SELECT value FROM JSONB_EACH_TEXT(data) WHERE key ~* 'pre_requis.\d+'), NULL)                       AS "pre_requis",
-        ARRAY_REMOVE(ARRAY(SELECT value FROM JSONB_EACH_TEXT(data) WHERE key ~* 'modes_orientation_accompagnateur.\d+'), NULL) AS "modes_orientation_accompagnateur",
-        ARRAY_REMOVE(ARRAY(SELECT value FROM JSONB_EACH_TEXT(data) WHERE key ~* 'modes_orientation_beneficiaire.\d+'), NULL)   AS "modes_orientation_beneficiaire",
-        ARRAY_REMOVE(ARRAY(SELECT value FROM JSONB_EACH_TEXT(data) WHERE key ~* 'frais.\d+'), NULL)                            AS "frais",
-        data ->> 'modes_orientation_accompagnateur_autres'                                                                     AS "modes_orientation_accompagnateur_autres",
-        data ->> 'modes_orientation_beneficiaire_autres'                                                                       AS "modes_orientation_beneficiaire_autres",
-        data ->> 'formulaire_en_ligne'                                                                                         AS "formulaire_en_ligne",
-        data ->> 'frais_autres'                                                                                                AS "frais_autres",
-        data ->> 'nom'                                                                                                         AS "nom",
-        data ->> 'presentation_resume'                                                                                         AS "presentation_resume",
-        data ->> 'presentation_detail'                                                                                         AS "presentation_detail",
-        data ->> 'prise_rdv'                                                                                                   AS "prise_rdv",
-        data ->> 'recurrence'                                                                                                  AS "recurrence",
-        NULLIF(TRIM(data ->> 'zone_diffusion_code'), '')                                                                       AS "zone_diffusion_code",
-        NULLIF(TRIM(data ->> 'zone_diffusion_nom'), '')                                                                        AS "zone_diffusion_nom",
-        data ->> 'zone_diffusion_type'                                                                                         AS "zone_diffusion_type"
+        source.data ->> 'id'                                         AS "id",
+        CAST(source.data ->> 'date_maj' AS DATE)                     AS "date_maj",
+        source.data ->> 'nom'                                        AS "nom",
+        source.data ->> 'description'                                AS "description",
+        source.data ->> 'lien_source'                                AS "lien_source",
+        source.data ->> 'type'                                       AS "type",
+        STRING_TO_ARRAY(source.data ->> 'thematiques', ', ')         AS "thematiques",
+        source.data ->> 'frais'                                      AS "frais",
+        source.data ->> 'frais_precisions'                           AS "frais_precisions",
+        STRING_TO_ARRAY(source.data ->> 'publics', ', ')             AS "publics",
+        source.data ->> 'publics_precisions'                         AS "publics_precisions",
+        source.data ->> 'conditions_acces'                           AS "conditions_acces",
+        source.data ->> 'telephone'                                  AS "telephone",
+        source.data ->> 'courriel'                                   AS "courriel",
+        NULLIF(TRIM(source.data ->> 'contact_nom_prenom'), '')       AS "contact_nom_prenom",
+        STRING_TO_ARRAY(source.data ->> 'modes_accueil', ', ')       AS "modes_accueil",
+        STRING_TO_ARRAY(source.data ->> 'modes_mobilisation', ', ')  AS "modes_mobilisation",
+        source.data ->> 'lien_mobilisation'                          AS "lien_mobilisation",
+        source.data ->> 'mobilisation_precisions'                    AS "mobilisation_precisions",
+        STRING_TO_ARRAY(source.data ->> 'mobilisable_par', ', ')     AS "mobilisable_par",
+        STRING_TO_ARRAY(source.data ->> 'zone_eligibilite', ', ')    AS "zone_eligibilite",
+        CAST(source.data ->> 'volume_horaire_hebdomadaire' AS FLOAT) AS "volume_horaire_hebdomadaire",
+        CAST(source.data ->> 'nombre_semaines' AS INT)               AS "nombre_semaines",
+        source.data ->> 'horaires_accueil'                           AS "horaires_accueil"
     FROM source
     WHERE
-        NOT COALESCE(CAST(data ->> '__ignore__' AS BOOLEAN), FALSE)
+        NOT COALESCE(CAST(source.data ->> '__ignore__' AS BOOLEAN), FALSE)
 )
 
 SELECT * FROM final
