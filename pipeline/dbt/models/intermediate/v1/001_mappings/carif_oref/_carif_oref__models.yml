@@ -7,7 +7,10 @@ models:
         data_tests:
           - not_null
           - dbt_utils.not_constant
-          - dbt_utils.not_empty_string
+          - relationships:
+              arguments:
+                to: ref('stg_carif_oref__formacode_v14__publics')
+                field: code
       - name: public
         data_tests:
           - dbt_utils.not_constant
@@ -15,6 +18,25 @@ models:
           - relationships:
               arguments:
                 to: ref('publics_v1')
+                field: value
+
+  - name: _map_carif_oref__thematiques
+    columns:
+      - name: formacode_v14
+        data_tests:
+          - not_null
+          - dbt_utils.not_constant
+          - relationships:
+              arguments:
+                to: ref('stg_carif_oref__formacode_v14__domaines')
+                field: code
+      - name: thematique
+        data_tests:
+          - dbt_utils.not_constant
+          - dbt_utils.not_empty_string
+          - relationships:
+              arguments:
+                to: ref('thematiques_v1')
                 field: value
 
   - name: int_carif_oref__adresses_v1

@@ -23,7 +23,7 @@ models:
           - not_null
           - relationships:
               arguments:
-                to: ref('stg_carif_oref__formacode_v14')
+                to: ref('stg_carif_oref__formacode_v14__publics')
                 field: code
       - name: version_formacode
         data_tests:
@@ -169,7 +169,7 @@ models:
           - not_null
           - dbt_utils.expression_is_true:
               arguments:
-                expression: "&& ARRAY['15040', '15043', '15235']"
+                expression: "&& ARRAY(SELECT code FROM {{ ref('stg_carif_oref__formacode_v14__domaines') }} WHERE selected)"
       - name: url_formation
         data_tests:
           - dbt_utils.not_null_proportion:
@@ -206,11 +206,31 @@ models:
               arguments:
                 to: ref('stg_carif_oref__coordonnees')
                 field: hash_
-  - name: stg_carif_oref__formacode_v14
+
+  - name: stg_carif_oref__formacode_v14__domaines
+    description: |
+      This model contains the domaine subset of the formacode (v14).
+    columns:
+      - name: code
+        data_tests:
+          - unique
+          - not_null
+          - dbt_utils.not_empty_string
+      - name: selected
+        description: Whether this domaine is among those we target.
+        data_tests:
+          - not_null
+          - accepted_values:
+              arguments:
+                values: [true, false]
+      - name: libelle
+        data_tests:
+          - not_null
+          - dbt_utils.not_empty_string
+
+  - name: stg_carif_oref__formacode_v14__publics
     description: |
       This model contains the public subset of the formacode (v14).
-
-      https://www.data.gouv.fr/en/datasets/formacode-r-version-14-thesaurus-de-loffre-de-formation-et-de-certification/
     columns:
       - name: code
         data_tests:
