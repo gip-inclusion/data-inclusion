@@ -54,6 +54,8 @@ last_successions AS (
 
 SELECT
     structures._di_surrogate_id,
+    structures.id,
+    structures.source,
     structures.siret,
     CASE
         WHEN
