@@ -5,6 +5,7 @@ FROM (
     ('action-logement'),
     ('agefiph'),
     ('carif-oref'),
+    ('cd35'),
     ('dora'),
     ('emplois-de-linclusion'),
     ('france-travail'),
