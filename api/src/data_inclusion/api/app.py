@@ -18,7 +18,11 @@ API_DESCRIPTION_PATH = Path(__file__).parent / "api_description.md"
 
 
 def setup_debug_toolbar_middleware(app: fastapi.FastAPI) -> None:
-    from debug_toolbar.middleware import DebugToolbarMiddleware
+    try:
+        from debug_toolbar.middleware import DebugToolbarMiddleware
+    except ImportError:
+        # some tests force the "dev" env, with debug toolbar not installed
+        return
 
     app.add_middleware(
         DebugToolbarMiddleware,
