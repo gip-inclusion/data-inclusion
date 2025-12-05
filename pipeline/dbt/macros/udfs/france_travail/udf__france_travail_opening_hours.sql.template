@@ -1,0 +1,15 @@
+{% macro udf__france_travail_opening_hours() %}
+
+DROP FUNCTION IF EXISTS processings.france_travail_opening_hours;
+
+CREATE OR REPLACE FUNCTION processings.france_travail_opening_hours(data JSONB)
+RETURNS TEXT
+AS $$
+
+#INLINE#
+
+return to_osm(data)
+
+$$ LANGUAGE plpython3u;
+
+{% endmacro %}

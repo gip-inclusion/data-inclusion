@@ -19,6 +19,7 @@ CREATE SCHEMA IF NOT EXISTS processings;
 {{ udf__score() }}
 {{ udf__soliguide_opening_hours() }}
 {{ udf__monenfant_opening_hours() }}
+{{ udf__france_travail_opening_hours() }}
 {{ udf__model_validate() }}
 {{ udf__slugify() }}
 
