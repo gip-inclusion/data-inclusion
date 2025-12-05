@@ -59,9 +59,6 @@ models:
         data_tests:
           - dbt_utils.not_constant
           - dbt_utils.not_empty_string
-      - name: profils
-        data_tests:
-          - dbt_utils.not_constant
       - name: sigle
         data_tests:
           - dbt_utils.not_constant
@@ -74,6 +71,84 @@ models:
         data_tests:
           - dbt_utils.not_constant
           - dbt_utils.not_empty_string
-      - name: thematiques
+
+  - name: stg_cd35__organisations__profils
+    columns:
+      - name: structure_id
         data_tests:
-          - dbt_utils.not_constant
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('stg_cd35__organisations')
+                field: id
+      - name: raw_value
+        data_tests:
+          - not_null
+          - dbt_utils.not_empty_string
+      - name: value
+        data_tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('stg_cd35__profils')
+                field: value
+
+  - name: stg_cd35__organisations__thematiques
+    data_tests:
+      - unique:
+          arguments:
+            column_name: structure_id || '--' || raw_index
+    columns:
+      - name: structure_id
+        data_tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('stg_cd35__organisations')
+                field: id
+      - name: raw_value
+        data_tests:
+          - not_null
+          - dbt_utils.not_empty_string
+      - name: raw_index
+        data_tests:
+          - not_null
+          - dbt_utils.accepted_range:
+              arguments:
+                min_value: 1
+                max_value: 100
+      - name: value
+        data_tests:
+          - dbt_utils.not_null_proportion:
+              arguments:
+                at_least: 0.3
+          - relationships:
+              arguments:
+                to: ref('stg_cd35__thematiques')
+                field: value
+
+  - name: stg_cd35__profils
+    columns:
+      - name: raw
+        data_tests:
+          - unique
+          - not_null
+          - dbt_utils.not_empty_string
+      - name: value
+        data_tests:
+          - unique
+          - not_null
+          - dbt_utils.not_empty_string
+
+  - name: stg_cd35__thematiques
+    columns:
+      - name: raw
+        data_tests:
+          - unique
+          - not_null
+          - dbt_utils.not_empty_string
+      - name: value
+        data_tests:
+          - unique
+          - not_null
+          - dbt_utils.not_empty_string
