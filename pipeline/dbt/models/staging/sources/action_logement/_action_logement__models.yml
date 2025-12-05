@@ -65,12 +65,12 @@ models:
 
   - name: stg_action_logement__structures__reseaux_porteurs
     columns:
-      - name: service_id
+      - name: structure_id
         data_tests:
           - not_null
           - relationships:
               arguments:
-                to: ref('stg_action_logement__services')
+                to: ref('stg_action_logement__structures')
                 field: id
       - name: value
         data_tests:

@@ -3,7 +3,7 @@ WITH source AS (
 
 final AS (
     SELECT
-        source.data ->> 'id'                                              AS "service_id",
+        source.data ->> 'id'                                              AS "structure_id",
         UNNEST(STRING_TO_ARRAY(source.data ->> 'reseaux_porteurs', ', ')) AS "value"
     FROM source
     WHERE
