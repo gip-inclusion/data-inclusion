@@ -22,6 +22,15 @@ repos:
           - --fixable=I
         files: ^api
         types_or: [python]
+  - repo: https://github.com/djlint/djLint
+    rev: v1.36.4
+    hooks:
+      - id: djlint-reformat-jinja
+        args: [--config=api/pyproject.toml]
+        files: ^api
+      - id: djlint-jinja
+        args: [--config=api/pyproject.toml]
+        files: ^api
 
   # deployment
   - repo: https://github.com/antonbabenko/pre-commit-terraform
