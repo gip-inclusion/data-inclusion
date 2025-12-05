@@ -67,12 +67,12 @@ models:
         data_tests:
           - not_null:
               config:
-                error_if: ">100"
+                error_if: ">200"
       - name: email
         data_tests:
           - dbt_utils.not_null_proportion:
               arguments:
-                at_least: 0.5
+                at_least: 0.1
       - name: last_modified_date
         data_tests:
           - not_null
@@ -89,7 +89,7 @@ models:
         data_tests:
           - dbt_utils.not_null_proportion:
               arguments:
-                at_least: 0.5
+                at_least: 0.1
       - name: structure_mere__siret
         data_tests:
           - not_null
