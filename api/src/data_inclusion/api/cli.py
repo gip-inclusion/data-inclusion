@@ -44,12 +44,24 @@ def cli(ctx: click.Context, verbose: int):
     default=False,
     help="Generate an admin token",
 )
+@click.option(
+    "--allowed-origin",
+    "allowed_origins",
+    multiple=True,
+    help="Add an allowed origin for widget tokens (can be used multiple times)",
+)
 def _generate_token_for_user(
     email: str,
     admin: bool,
+    allowed_origins: tuple[str, ...],
 ):
     """Generate a token associated with the given email."""
-    click.echo(auth.create_access_token(subject=email, admin=admin))
+    allowed_origins_list = list(allowed_origins) if allowed_origins else None
+    click.echo(
+        auth.create_access_token(
+            subject=email, admin=admin, allowed_origins=allowed_origins_list
+        )
+    )
 
 
 def get_path(value: str, version: Literal["v0", "v1"]) -> Path:

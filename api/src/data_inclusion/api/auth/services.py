@@ -12,12 +12,16 @@ logger = logging.getLogger(__name__)
 def create_access_token(
     subject,
     admin: bool | None = False,
+    allowed_origins: list[str] | None = None,
 ) -> str:
+    payload = {
+        "sub": str(subject),
+        "admin": admin,
+    }
+    if allowed_origins is not None:
+        payload["allowed_origins"] = allowed_origins
     encoded_jwt = jwt.encode(
-        payload={
-            "sub": str(subject),
-            "admin": admin,
-        },
+        payload=payload,
         key=settings.SECRET_KEY,
         algorithm=ALGORITHM,
     )
