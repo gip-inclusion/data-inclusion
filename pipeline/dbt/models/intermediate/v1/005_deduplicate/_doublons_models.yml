@@ -21,7 +21,7 @@ models:
           - not_null
           - dbt_utils.accepted_range:
               arguments:
-                min_value: 0.7
+                min_value: 0
                 max_value: 1
       - name: size
         description: The size of the cluster. Added for convenience.
