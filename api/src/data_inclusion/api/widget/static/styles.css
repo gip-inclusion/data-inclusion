@@ -465,6 +465,7 @@ a:visited {
   align-items: center;
   justify-content: center;
   gap: 0.5rem;
+  flex-wrap: nowrap;
 }
 
 .di-pagination-arrow {
@@ -493,9 +494,11 @@ a:visited {
 }
 
 .di-pagination-numbers {
-  width: calc(2rem * 4 + 0.25rem * 3);
+  flex-shrink: 1;
+  min-width: 0;
   display: flex;
   justify-content: center;
+  overflow: hidden;
 }
 
 .di-pagination-numbers ul {
@@ -506,6 +509,8 @@ a:visited {
   justify-content: center;
   gap: 0.25rem;
   width: 100%;
+  min-width: 0;
+  flex-shrink: 1;
 }
 
 .di-pagination-numbers a,
@@ -534,6 +539,13 @@ a:visited {
 .di-pagination a[aria-current="page"] {
   background-color: var(--background-common-neutral);
   border: 1px solid var(--outline-interaction-primary);
+}
+
+/* Hide pagination numbers when space is very constrained */
+@media (max-width: 300px) {
+  .di-pagination-numbers {
+    display: none;
+  }
 }
 
 /* Results Footer */
