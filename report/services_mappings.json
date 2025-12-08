@@ -1,0 +1,12 @@
+{
+  "presentation_detail": "description",
+  "types": "type",
+  "profils": "publics",
+  "pre_requis": "conditions_acces",
+  "frais_autres": "frais_precisions",
+  "formulaire_en_ligne": "lien_mobilisation",
+  "zone_diffusion_type": "zone_eligibilite",
+  "modes_orientation_accompagnateur": "mobilisable_par",
+  "modes_orientation_beneficiaire": "modes_mobilisation",
+  "recurrence": "volume_horaire_hebdomadaire"
+}
