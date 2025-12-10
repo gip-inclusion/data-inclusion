@@ -16,7 +16,8 @@ communes AS (
         "codeRegion"               AS "code_region",
         "codeDepartement"          AS "code_departement",
         "codeEpci"                 AS "code_epci",
-        ST_GEOMFROMGEOJSON(centre) AS "centre"
+        ST_GEOMFROMGEOJSON(centre) AS "centre",
+        "chefLieu"                 AS "chef_lieu"
     FROM source
     ORDER BY code
 ),
