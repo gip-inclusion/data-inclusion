@@ -115,6 +115,15 @@ models:
           - not_null
           - dbt_utils.not_constant
           - dbt_utils.not_empty_string
+      - name: chef_lieu
+        data_tests:
+          - not_null
+          - dbt_utils.not_constant
+          - relationships:
+              arguments:
+                to: ref('stg_decoupage_administratif__communes')
+                field: code
+
 
   - name: stg_decoupage_administratif__communes
     config:
