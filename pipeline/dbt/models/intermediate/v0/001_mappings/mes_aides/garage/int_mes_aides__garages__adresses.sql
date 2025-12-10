@@ -1,19 +1,4 @@
-WITH garages AS (
-    SELECT * FROM {{ ref('stg_mes_aides__garages') }}
-),
+-- this model is deprecated
+-- reuse the already computed data
 
-final AS (
-    SELECT
-        id          AS "id",
-        ville_nom   AS "commune",
-        code_postal AS "code_postal",
-        code_insee  AS "code_insee",
-        adresse     AS "adresse",
-        NULL        AS "complement_adresse",
-        longitude   AS "longitude",
-        latitude    AS "latitude",
-        'mes-aides' AS "source"
-    FROM garages
-)
-
-SELECT * FROM final
+SELECT * FROM public_intermediate.int_mes_aides__garages__adresses  -- noqa: ambiguous.column_count

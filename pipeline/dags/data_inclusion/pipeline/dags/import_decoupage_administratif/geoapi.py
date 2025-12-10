@@ -13,6 +13,7 @@ COMMUNES_FIELDS = [
     "codeEpci",
     "codeDepartement",
     "codeRegion",
+    "chefLieu",  # for communes associées déléguées
 ]
 
 
