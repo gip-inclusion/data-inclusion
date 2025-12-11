@@ -57,6 +57,12 @@ class Structure(HasAddress, Base):
     __table_args__ = (
         sqla.Index(None, "source"),
         sqla.Index(None, "_cluster_id"),
+        sqla.Index(
+            "ix_api__structures_v1__cluster_dedup",
+            "_cluster_id",
+            sqla.desc("score_qualite"),
+            sqla.desc("date_maj"),
+        ),
     )
 
     def __repr__(self) -> str:
@@ -67,6 +73,7 @@ Structure.doublons = relationship(
     Structure,
     primaryjoin=sqla.and_(
         orm.foreign(Structure._cluster_id) == orm.remote(Structure._cluster_id),
+        orm.remote(Structure._cluster_id).isnot(None),
         orm.foreign(Structure.id) != orm.remote(Structure.id),
     ),
     uselist=True,
