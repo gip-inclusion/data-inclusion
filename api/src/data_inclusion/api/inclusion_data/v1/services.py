@@ -72,15 +72,18 @@ def list_structures_query(
         )
 
     if params.exclure_doublons:
-        query = query.filter(
-            sqla.or_(
-                models.Structure._cluster_id.is_(None),
-                models.Structure._is_best_duplicate.is_(True),
-            )
+        cluster_key = sqla.func.coalesce(
+            models.Structure._cluster_id,
+            models.Structure.id,
         )
-
-    query = query.order_by(models.Structure.id)
-
+        query = query.distinct(cluster_key).order_by(
+            cluster_key,
+            models.Structure.score_qualite.desc(),
+            models.Structure.date_maj.desc().nulls_last(),
+            models.Structure.id,
+        )
+    else:
+        query = query.order_by(models.Structure.id)
     return query
 
 
@@ -311,10 +314,25 @@ def search_services_query(
     query = filter_services(query=query, params=params)
 
     if params.exclure_doublons:
-        query = query.filter(
-            sqla.or_(
-                models.Structure._cluster_id.is_(None),
-                models.Structure._is_best_duplicate.is_(True),
+        cluster_key = sqla.func.coalesce(
+            models.Structure._cluster_id,
+            models.Structure.id,
+        )
+        structure_rank = (
+            sqla.func.dense_rank()
+            .over(
+                partition_by=cluster_key,
+                order_by=[
+                    models.Structure.score_qualite.desc(),
+                    models.Structure.date_maj.desc().nulls_last(),
+                ],
+            )
+            .label("_structure_rank")
+        )
+        ranked_subq = query.add_columns(structure_rank).subquery()
+        query = query.where(
+            models.Service.id.in_(
+                sqla.select(ranked_subq.c.id).where(ranked_subq.c._structure_rank == 1)
             )
         )
 
