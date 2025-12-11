@@ -2106,6 +2106,263 @@ def test_search_services_deduplicate_flag(
     }
 
 
+@pytest.mark.parametrize("schema_version", ["v0", "v1"])
+@pytest.mark.parametrize("path", ["/structures"])
+@pytest.mark.with_token
+def test_list_structures_deduplicate(api_client, url, structure_factory):
+    best_in_cluster_1_for_src_1 = structure_factory(
+        source="src_1",
+        id="src_1--best",
+        cluster_id="cluster_1",
+        is_best_duplicate=False,
+        score_qualite=0.5,
+    )
+    structure_factory(
+        source="src_1",
+        id="src_1--lower",
+        cluster_id="cluster_1",
+        is_best_duplicate=False,
+        score_qualite=0.3,
+    )
+    best_in_cluster_1_global = structure_factory(
+        source="src_2",
+        id="src_2--best",
+        cluster_id="cluster_1",
+        is_best_duplicate=True,
+        score_qualite=0.9,
+    )
+    best_in_cluster_2 = structure_factory(
+        source="src_1",
+        id="src_1--latest",
+        cluster_id="cluster_2",
+        score_qualite=0.6,
+        date_maj="2024-06-01",
+    )
+    structure_factory(
+        source="src_1",
+        id="src_1--older",
+        cluster_id="cluster_2",
+        score_qualite=0.6,
+        date_maj="2020-01-01",
+    )
+    no_cluster = structure_factory(
+        source="src_1",
+        id="src_1--no-cluster",
+        score_qualite=0.8,
+        cluster_id=None,
+        is_best_duplicate=None,
+    )
+
+    response = api_client.get(
+        url,
+        params={"sources": ["src_1"], "exclure_doublons": True},
+    )
+    assert_paginated_response_data(response.json(), total=3)
+    assert {d["id"] for d in response.json()["items"]} == {
+        best_in_cluster_1_for_src_1.id,
+        best_in_cluster_2.id,
+        no_cluster.id,
+    }
+
+    response = api_client.get(
+        url,
+        params={"exclure_doublons": True},
+    )
+    assert_paginated_response_data(response.json(), total=3)
+    assert {d["id"] for d in response.json()["items"]} == {
+        best_in_cluster_1_global.id,
+        best_in_cluster_2.id,
+        no_cluster.id,
+    }
+
+
+@pytest.mark.parametrize("schema_version", ["v0", "v1"])
+@pytest.mark.parametrize("path", ["/search/services"])
+@pytest.mark.with_token
+def test_search_services_deduplicate(
+    api_client, url, structure_factory, service_factory
+):
+    best_in_cluster_1_for_src_1 = structure_factory(
+        source="src_1",
+        id="src_1--best",
+        cluster_id="cluster_1",
+        is_best_duplicate=False,
+        score_qualite=0.5,
+    )
+    lower_in_cluster_1 = structure_factory(
+        source="src_1",
+        id="src_1--lower",
+        cluster_id="cluster_1",
+        is_best_duplicate=False,
+        score_qualite=0.3,
+    )
+    best_in_cluster_1_global = structure_factory(
+        source="src_2",
+        id="src_2--best",
+        cluster_id="cluster_1",
+        is_best_duplicate=True,
+        score_qualite=0.9,
+    )
+    latest_in_cluster_2 = structure_factory(
+        source="src_1",
+        id="src_1--latest",
+        cluster_id="cluster_2",
+        score_qualite=0.6,
+        date_maj="2024-06-01",
+    )
+    older_in_cluster_2 = structure_factory(
+        source="src_1",
+        id="src_1--older",
+        cluster_id="cluster_2",
+        score_qualite=0.6,
+        date_maj="2020-01-01",
+    )
+    no_cluster = structure_factory(
+        source="src_1",
+        id="src_1--no-cluster",
+        cluster_id=None,
+        is_best_duplicate=None,
+        score_qualite=0.4,
+    )
+
+    best_structure_svc_a = service_factory(
+        source="src_1",
+        id="src_1--svc-a",
+        structure=best_in_cluster_1_for_src_1,
+        thematiques=["famille--garde-denfants"],
+    )
+    best_structure_svc_b = service_factory(
+        source="src_1",
+        id="src_1--svc-b",
+        structure=best_in_cluster_1_for_src_1,
+        thematiques=["mobilite--acceder-a-un-vehicule"],
+    )
+    service_factory(
+        source="src_1",
+        id="src_1--svc-excluded",
+        structure=lower_in_cluster_1,
+        thematiques=["famille--garde-denfants"],
+    )
+    latest_structure_svc = service_factory(
+        source="src_1",
+        id="src_1--svc-latest",
+        structure=latest_in_cluster_2,
+        thematiques=["famille--garde-denfants"],
+    )
+    service_factory(
+        source="src_1",
+        id="src_1--svc-older",
+        structure=older_in_cluster_2,
+        thematiques=["famille--garde-denfants"],
+    )
+    no_cluster_structure_svc = service_factory(
+        source="src_1",
+        id="src_1--svc-no-cluster",
+        structure=no_cluster,
+        thematiques=["mobilite--acceder-a-un-vehicule"],
+    )
+    global_best_structure_svc = service_factory(
+        source="src_2",
+        id="src_2--svc-global-best",
+        structure=best_in_cluster_1_global,
+        thematiques=["famille--garde-denfants"],
+    )
+
+    response = api_client.get(
+        url,
+        params={"sources": ["src_1"], "exclure_doublons": True},
+    )
+    assert_paginated_response_data(response.json(), total=4)
+    assert {d["service"]["id"] for d in response.json()["items"]} == {
+        best_structure_svc_a.id,
+        best_structure_svc_b.id,
+        latest_structure_svc.id,
+        no_cluster_structure_svc.id,
+    }
+
+    response = api_client.get(
+        url,
+        params={"exclure_doublons": True},
+    )
+    assert_paginated_response_data(response.json(), total=3)
+    assert {d["service"]["id"] for d in response.json()["items"]} == {
+        global_best_structure_svc.id,
+        latest_structure_svc.id,
+        no_cluster_structure_svc.id,
+    }
+
+    response = api_client.get(
+        url,
+        params={
+            "sources": ["src_1"],
+            "thematiques": ["famille--garde-denfants"],
+            "exclure_doublons": True,
+        },
+    )
+    assert_paginated_response_data(response.json(), total=2)
+    assert {d["service"]["id"] for d in response.json()["items"]} == {
+        best_structure_svc_a.id,
+        latest_structure_svc.id,
+    }
+
+    response = api_client.get(
+        url,
+        params={"thematiques": ["famille--garde-denfants"], "exclure_doublons": True},
+    )
+    assert_paginated_response_data(response.json(), total=2)
+    assert {d["service"]["id"] for d in response.json()["items"]} == {
+        global_best_structure_svc.id,
+        latest_structure_svc.id,
+    }
+
+    response = api_client.get(
+        url,
+        params={
+            "sources": ["src_1"],
+            "thematiques": ["mobilite--acceder-a-un-vehicule"],
+            "exclure_doublons": True,
+        },
+    )
+    assert_paginated_response_data(response.json(), total=2)
+    assert {d["service"]["id"] for d in response.json()["items"]} == {
+        best_structure_svc_b.id,
+        no_cluster_structure_svc.id,
+    }
+
+
+@pytest.mark.parametrize("schema_version", ["v0", "v1"])
+@pytest.mark.parametrize("path", ["/search/services"])
+@pytest.mark.with_token
+def test_search_services_deduplicate_best_structure_has_no_service(
+    api_client, url, structure_factory, service_factory
+):
+    structure_factory(
+        source="src_1",
+        id="src_1--best-no-service",
+        cluster_id="cluster_1",
+        score_qualite=0.9,
+    )
+    lower_structure_with_service = structure_factory(
+        source="src_1",
+        id="src_1--lower-with-service",
+        cluster_id="cluster_1",
+        score_qualite=0.7,
+    )
+    service_on_lower_structure = service_factory(
+        source="src_1",
+        id="src_1--svc",
+        structure=lower_structure_with_service,
+        thematiques=["famille--garde-denfants"],
+    )
+
+    response = api_client.get(url, params={"exclure_doublons": True})
+
+    assert response.status_code == 200
+    assert {d["service"]["id"] for d in response.json()["items"]} == {
+        service_on_lower_structure.id,
+    }
+
+
 @pytest.mark.parametrize("schema_version", ["v0"])
 @pytest.mark.parametrize("path", ["/search/services", "/services", "/structures"])
 @pytest.mark.with_token
