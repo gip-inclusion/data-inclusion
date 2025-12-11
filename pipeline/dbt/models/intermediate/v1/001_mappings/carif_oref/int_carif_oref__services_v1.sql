@@ -105,7 +105,7 @@ final AS (
         thematiques.thematiques                         AS "thematiques",
         CASE
             WHEN actions.prix_total_ttc = 0 THEN 'gratuit'
-            ELSE 'payant'
+            WHEN actions.prix_total_ttc > 0 THEN 'payant'
         END                                             AS "frais",
         CASE
             WHEN actions.detail_conditions_prise_en_charge IS NOT NULL
