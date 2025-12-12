@@ -16,11 +16,9 @@ class StructureFactory(factory.alchemy.SQLAlchemyModelFactory):
         # attributes starting with an underscore ignored by default
         # the recommended way is to use the `rename` dict
         rename = {
-            "is_best_duplicate": "_is_best_duplicate",
             "cluster_id": "_cluster_id",
         }
 
-    is_best_duplicate = None
     cluster_id = None
 
     id = factory.LazyAttribute(lambda o: f"{o.source}--{fake.slug()}")

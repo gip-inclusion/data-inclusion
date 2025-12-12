@@ -1781,13 +1781,9 @@ def test_retrieve_service_v1(api_client, url, service_factory):
 @pytest.mark.parametrize("path", ["/structures"])
 @pytest.mark.with_token
 def test_retrieve_structure_v0(api_client, url, structure_factory, service_factory):
-    structure_1 = structure_factory(
-        source="foo", id="1", cluster_id="1", is_best_duplicate=True
-    )
+    structure_1 = structure_factory(source="foo", id="1", cluster_id="1")
     service_1 = service_factory(structure=structure_1)
-    structure_2 = structure_factory(
-        source="bar", id="1", cluster_id="1", is_best_duplicate=False
-    )
+    structure_2 = structure_factory(source="bar", id="1", cluster_id="1")
     service_factory(structure=structure_2)
     structure_3 = structure_factory(source="foo", id="2")
 
@@ -1811,13 +1807,9 @@ def test_retrieve_structure_v0(api_client, url, structure_factory, service_facto
 @pytest.mark.parametrize("path", ["/structures"])
 @pytest.mark.with_token
 def test_retrieve_structure_v1(api_client, url, structure_factory, service_factory):
-    structure_1 = structure_factory(
-        source="foo", id="foo--1", cluster_id="1", is_best_duplicate=True
-    )
+    structure_1 = structure_factory(source="foo", id="foo--1", cluster_id="1")
     service_1 = service_factory(structure=structure_1)
-    structure_2 = structure_factory(
-        source="bar", id="bar--1", cluster_id="1", is_best_duplicate=False
-    )
+    structure_2 = structure_factory(source="bar", id="bar--1", cluster_id="1")
     service_factory(structure=structure_2)
 
     response = api_client.get(url + f"/{structure_1.id}")
@@ -1919,181 +1911,24 @@ def test_retrieve_service_and_notify_soliguide(
 
 @pytest.mark.parametrize("schema_version", ["v0", "v1"])
 @pytest.mark.parametrize("path", ["/structures"])
-@pytest.mark.parametrize(
-    ("exclure_doublons", "expected_ids"),
-    [
-        (False, {"src_1--first", "src_2--second", "src_2--third", "src_3--fourth"}),
-        (True, {"src_2--second", "src_3--fourth"}),
-    ],
-)
-@pytest.mark.with_token
-def test_list_structures_deduplicate_flag(
-    api_client, url, exclure_doublons, expected_ids, structure_factory
-):
-    structure_factory(
-        source="src_1",
-        id="src_1--first",
-        cluster_id="cluster_1",
-        is_best_duplicate=False,
-        score_qualite=0.5,
-    )
-    structure_factory(
-        source="src_2",
-        id="src_2--second",
-        cluster_id="cluster_1",
-        is_best_duplicate=True,
-        score_qualite=0.9,
-    )
-    structure_factory(
-        source="src_2",
-        id="src_2--third",
-        cluster_id="cluster_1",
-        is_best_duplicate=False,
-        score_qualite=0.3,
-    )
-    structure_factory(
-        source="src_3",
-        id="src_3--fourth",
-        score_qualite=0.8,
-        cluster_id=None,
-        is_best_duplicate=None,
-    )
-
-    response = api_client.get(url, params={"exclure_doublons": exclure_doublons})
-
-    assert_paginated_response_data(response.json(), total=len(expected_ids))
-    assert {d["id"] for d in response.json()["items"]} == expected_ids
-
-
-@pytest.mark.parametrize("schema_version", ["v0", "v1"])
-@pytest.mark.parametrize("path", ["/structures"])
-@pytest.mark.with_token
-def test_list_structures_deduplicate_flag_equal(api_client, url, structure_factory):
-    # all these structiures have no services so we assume they have a score of 0
-    structure_factory(
-        date_maj="2020-01-01",
-        source="src_1",
-        id="src_1--first",
-        cluster_id="cluster_1",
-        is_best_duplicate=False,
-    )
-    structure_factory(
-        date_maj="2024-01-01",  # the latest update
-        source="src_2",
-        id="src_2--second",
-        cluster_id="cluster_1",
-        is_best_duplicate=True,
-    )
-    structure_factory(
-        date_maj="2008-01-01",
-        source="src_3",
-        id="src_3--third",
-        cluster_id="cluster_1",
-        is_best_duplicate=False,
-    )
-    structure_factory(
-        source="src_3",
-        id="src_3--fourth",
-        cluster_id=None,
-        is_best_duplicate=None,
-    )
-
-    response = api_client.get(url, params={"exclure_doublons": True})
-
-    assert_paginated_response_data(response.json(), total=2)
-    assert {d["id"] for d in response.json()["items"]} == {
-        "src_2--second",
-        "src_3--fourth",
-    }
-
-
-@pytest.mark.parametrize("schema_version", ["v0", "v1"])
-@pytest.mark.parametrize("path", ["/search/services"])
-@pytest.mark.with_token
-def test_search_services_deduplicate_flag(
-    api_client, url, structure_factory, service_factory
-):
-    s1 = structure_factory(
-        date_maj="2020-01-01",
-        source="src_1",
-        id="src_1--first",
-        cluster_id="cluster_1",
-        is_best_duplicate=False,
-    )
-    s2 = structure_factory(
-        date_maj="2024-01-01",  # the latest update
-        source="src_2",
-        id="src_2--second",
-        cluster_id="cluster_1",
-        is_best_duplicate=True,
-    )
-    s3 = structure_factory(
-        date_maj="2008-01-01",
-        source="src_3",
-        id="src_3--third",
-        cluster_id="cluster_1",
-        is_best_duplicate=False,
-    )
-    s4 = structure_factory(
-        source="src_3",
-        id="src_3--fourth",
-        cluster_id=None,
-        is_best_duplicate=None,
-    )
-
-    service_factory(
-        source="src_1",
-        id="src_1--first",
-        structure=s1,
-    )
-    service_factory(
-        source="src_2",
-        id="src_2--second",
-        structure=s2,
-    )
-    service_factory(
-        source="src_2",
-        id="src_2--third",
-        structure=s3,
-    )
-    service_factory(
-        source="src_3",
-        id="src_3--fourth",
-        structure=s4,
-    )
-
-    response = api_client.get(url, params={"exclure_doublons": True})
-
-    assert_paginated_response_data(response.json(), total=2)
-    assert {d["service"]["id"] for d in response.json()["items"]} == {
-        "src_2--second",
-        "src_3--fourth",
-    }
-
-
-@pytest.mark.parametrize("schema_version", ["v0", "v1"])
-@pytest.mark.parametrize("path", ["/structures"])
 @pytest.mark.with_token
 def test_list_structures_deduplicate(api_client, url, structure_factory):
     best_in_cluster_1_for_src_1 = structure_factory(
         source="src_1",
         id="src_1--best",
         cluster_id="cluster_1",
-        is_best_duplicate=False,
         score_qualite=0.5,
     )
     structure_factory(
         source="src_1",
         id="src_1--lower",
         cluster_id="cluster_1",
-        is_best_duplicate=False,
         score_qualite=0.3,
     )
     best_in_cluster_1_global = structure_factory(
         source="src_2",
         id="src_2--best",
         cluster_id="cluster_1",
-        is_best_duplicate=True,
         score_qualite=0.9,
     )
     best_in_cluster_2 = structure_factory(
@@ -2115,7 +1950,6 @@ def test_list_structures_deduplicate(api_client, url, structure_factory):
         id="src_1--no-cluster",
         score_qualite=0.8,
         cluster_id=None,
-        is_best_duplicate=None,
     )
 
     response = api_client.get(
@@ -2151,21 +1985,18 @@ def test_search_services_deduplicate(
         source="src_1",
         id="src_1--best",
         cluster_id="cluster_1",
-        is_best_duplicate=False,
         score_qualite=0.5,
     )
     lower_in_cluster_1 = structure_factory(
         source="src_1",
         id="src_1--lower",
         cluster_id="cluster_1",
-        is_best_duplicate=False,
         score_qualite=0.3,
     )
     best_in_cluster_1_global = structure_factory(
         source="src_2",
         id="src_2--best",
         cluster_id="cluster_1",
-        is_best_duplicate=True,
         score_qualite=0.9,
     )
     latest_in_cluster_2 = structure_factory(
@@ -2186,7 +2017,6 @@ def test_search_services_deduplicate(
         source="src_1",
         id="src_1--no-cluster",
         cluster_id=None,
-        is_best_duplicate=None,
         score_qualite=0.4,
     )
 
