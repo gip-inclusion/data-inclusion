@@ -15,7 +15,6 @@ WITH structures AS (
                 ref('int_mediation_numerique__structures'),
                 ref('int_mes_aides__structures'),
                 ref('int_monenfant__structures'),
-                ref('int_odspep__structures'),
                 ref('int_reseau_alpha__structures'),
                 ref('int_soliguide__structures'),
             ],
