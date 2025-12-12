@@ -46,8 +46,6 @@ services_with_valid_structure AS (
 
 -- For some providers, zone_diffusion_code can not be set at the source mapping level for lack of proper codification.
 -- Now that the data has been geocoded, it can be set, according to the mapped zone_diffusion_type.
--- FIXME(vperron) : ODSPEP services have such a catastrophic adress columns quality
--- that trying to reuse them for the zone diffusion makes the situation worse.
 zones_diffusion AS (
     SELECT
         services._di_surrogate_id    AS "_di_surrogate_id",

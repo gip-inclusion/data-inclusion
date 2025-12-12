@@ -232,7 +232,6 @@ SOURCES_CONFIGS = {
             }
         },
     },
-    "odspep": {},
     "monenfant": {},
     "mission-locale": {
         "schedule": "@daily",

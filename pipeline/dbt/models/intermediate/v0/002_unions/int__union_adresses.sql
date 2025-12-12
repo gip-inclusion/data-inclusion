@@ -15,7 +15,6 @@ WITH adresses AS (
                 ref('int_mediation_numerique__adresses'),
                 ref('int_mes_aides__adresses'),
                 ref('int_monenfant__adresses'),
-                ref('int_odspep__adresses'),
                 ref('int_reseau_alpha__adresses'),
                 ref('int_soliguide__adresses'),
             ],

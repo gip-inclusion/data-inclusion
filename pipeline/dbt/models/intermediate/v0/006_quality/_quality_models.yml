@@ -31,7 +31,6 @@ models:
                   - mediation_numerique
                   - mes_aides
                   - monenfant
-                  - odspep
                   - reseau_alpha
                   - soliguide
 
@@ -44,7 +43,6 @@ models:
                 values:
                   - agences
                   - creches
-                  - DD009_RES_PARTENARIALE
                   - formations
                   - garages
                   - lieux
