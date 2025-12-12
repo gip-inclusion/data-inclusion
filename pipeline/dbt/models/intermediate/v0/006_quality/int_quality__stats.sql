@@ -42,8 +42,6 @@
 -- depends_on: {{ ref('int_mes_aides__structures') }}
 -- depends_on: {{ ref('stg_monenfant__creches') }}
 -- depends_on: {{ ref('int_monenfant__structures') }}
--- depends_on: {{ ref('stg_odspep__res_partenariales') }}
--- depends_on: {{ ref('int_odspep__services') }}
 -- depends_on: {{ ref('stg_reseau_alpha__formations') }}
 -- depends_on: {{ ref('stg_reseau_alpha__structures') }}
 -- depends_on: {{ ref('int_reseau_alpha__services') }}
