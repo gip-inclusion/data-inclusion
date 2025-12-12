@@ -25,7 +25,6 @@ class HasAddress:
 class Structure(HasAddress, Base):
     # internal metadata
     _di_surrogate_id: Mapped[str] = mapped_column(primary_key=True)
-    _is_best_duplicate: Mapped[bool | None]
     _cluster_id: Mapped[str | None]
 
     # structure data
