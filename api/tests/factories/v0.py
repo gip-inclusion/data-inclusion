@@ -17,12 +17,10 @@ class StructureFactory(factory.alchemy.SQLAlchemyModelFactory):
         # the recommended way is to use the `rename` dict
         rename = {
             "di_surrogate_id": "_di_surrogate_id",
-            "is_best_duplicate": "_is_best_duplicate",
             "cluster_id": "_cluster_id",
         }
 
     di_surrogate_id = factory.LazyAttribute(lambda o: f"{o.source}-{o.id}")
-    is_best_duplicate = None
     cluster_id = None
 
     id = factory.Faker("slug", locale="fr_FR")

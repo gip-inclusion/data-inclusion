@@ -28,7 +28,6 @@ class Structure(HasAddress, Base):
     __tablename__ = "api__structures_v1"
 
     # internal metadata
-    _is_best_duplicate: Mapped[bool | None]
     _cluster_id: Mapped[str | None]
 
     # structure data

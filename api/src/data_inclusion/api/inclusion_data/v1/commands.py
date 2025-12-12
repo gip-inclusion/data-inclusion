@@ -86,17 +86,6 @@ def prepare_dataset(
         score_qualite=structures_df["id"].map(service_scores).astype(float).fillna(0.0)
     )
 
-    structures_df = structures_df.assign(
-        _is_best_duplicate=pd.Series(
-            structures_df.index.isin(
-                structures_df.sort_values("date_maj", ascending=False)
-                .sort_values("score_qualite")
-                .groupby("_cluster_id")["score_qualite"]
-                .idxmax()
-            )
-        ).where(structures_df["_cluster_id"].notna(), other=None)
-    )
-
     return structures_df, services_df
 
 
