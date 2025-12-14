@@ -1,23 +1,32 @@
+-- mediation-numerique source filtering (Dec 2025)
+-- See stg_mediation_numerique__structures.sql for details on source selection.
+
 WITH source AS (
-    {{ stg_source_header('mediation_numerique', 'services') }}
-),
+    {{ stg_source_header('mediation_numerique', 'services') }}),
 
 final AS (
     SELECT
-        CAST(ARRAY(SELECT * FROM JSONB_ARRAY_ELEMENTS_TEXT(NULLIF(data -> 'types', 'null'))) AS TEXT [])       AS "types",
-        CAST(ARRAY(SELECT * FROM JSONB_ARRAY_ELEMENTS_TEXT(NULLIF(data -> 'profils', 'null'))) AS TEXT [])     AS "profils",
-        CAST(ARRAY(SELECT * FROM JSONB_ARRAY_ELEMENTS_TEXT(NULLIF(data -> 'thematiques', 'null'))) AS TEXT []) AS "thematiques",
-        CAST(ARRAY(SELECT * FROM JSONB_ARRAY_ELEMENTS_TEXT(NULLIF(data -> 'frais', 'null'))) AS TEXT [])       AS "frais",
-        CAST((data ->> 'longitude') AS FLOAT)                                                                  AS "longitude",
-        CAST((data ->> 'latitude') AS FLOAT)                                                                   AS "latitude",
-        data ->> 'id'                                                                                          AS "id",
-        data ->> 'structure_id'                                                                                AS "structure_id",
-        data ->> 'nom'                                                                                         AS "nom",
-        data ->> 'source'                                                                                      AS "source",
-        data ->> 'prise_rdv'                                                                                   AS "prise_rdv"
+        CAST(ARRAY(SELECT d.* FROM JSONB_ARRAY_ELEMENTS_TEXT(NULLIF(source.data -> 'types', 'null')) AS d) AS TEXT [])       AS "types",
+        CAST(ARRAY(SELECT d.* FROM JSONB_ARRAY_ELEMENTS_TEXT(NULLIF(source.data -> 'profils', 'null')) AS d) AS TEXT [])     AS "profils",
+        CAST(ARRAY(SELECT d.* FROM JSONB_ARRAY_ELEMENTS_TEXT(NULLIF(source.data -> 'thematiques', 'null')) AS d) AS TEXT []) AS "thematiques",
+        CAST(ARRAY(SELECT d.* FROM JSONB_ARRAY_ELEMENTS_TEXT(NULLIF(source.data -> 'frais', 'null')) AS d) AS TEXT [])       AS "frais",
+        CAST((source.data ->> 'longitude') AS FLOAT)                                                                         AS "longitude",
+        CAST((source.data ->> 'latitude') AS FLOAT)                                                                          AS "latitude",
+        source.data ->> 'id'                                                                                                 AS "id",
+        source.data ->> 'structure_id'                                                                                       AS "structure_id",
+        source.data ->> 'nom'                                                                                                AS "nom",
+        source.data ->> 'source'                                                                                             AS "source",
+        source.data ->> 'prise_rdv'                                                                                          AS "prise_rdv"
     FROM source
     WHERE
-        data ->> 'source' != 'dora'
+        source.data ->> 'source' IN (
+            'France Services',
+            'Coop numérique',
+            'Hinaura',
+            'SIILAB',
+            'Hub Bretagne',
+            'Conseiller Numerique'
+        )
 )
 
 SELECT * FROM final
