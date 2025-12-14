@@ -44,8 +44,6 @@ def _format_phonenumber(s):
 def deduplicate(data: list[DeduplicateInput]) -> pd.DataFrame:
     df = pd.DataFrame.from_records(data)
 
-    df = df.loc[~df["source"].isin(["mes-aides", "mediation-numerique"])]
-
     # exclude structures with long surrogate_id (mednum...)
     df = df.loc[df["_di_surrogate_id"].str.len() <= 256]
 
