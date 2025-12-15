@@ -48,7 +48,7 @@ final AS (
             E'\n\n'
         )                                                 AS "description",
         CASE
-            WHEN lieux.temp_infos__closure__actif THEN 'closed'
+            WHEN lieux.temp_infos__closure__actif THEN 'closed "fermeture temporaire"'
             WHEN lieux.temp_infos__hours__actif AND lieux.temp_infos__hours__hours IS NOT NULL
                 THEN processings.soliguide_opening_hours(lieux.temp_infos__hours__hours)
             WHEN lieux.newhours IS NOT NULL

@@ -137,7 +137,7 @@ final AS (
         CAST(NULL AS FLOAT)                                                                   AS "volume_horaire_hebdomadaire",
         CAST(NULL AS INTEGER)                                                                 AS "nombre_semaines",
         CASE
-            WHEN lieux.temp_infos__closure__actif THEN 'closed'
+            WHEN lieux.temp_infos__closure__actif THEN 'closed "fermeture temporaire"'
             WHEN services.different_hours THEN processings.soliguide_opening_hours(services.hours)
             WHEN lieux.temp_infos__hours__actif THEN processings.soliguide_opening_hours(lieux.temp_infos__hours__hours)
             WHEN lieux.newhours IS NOT NULL THEN processings.soliguide_opening_hours(lieux.newhours)
