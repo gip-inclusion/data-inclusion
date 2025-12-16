@@ -29,8 +29,8 @@ final AS (
         structures.horaires_ouverture     AS "horaires_accueil",
         structures.lien_source            AS "lien_source",
         CASE
-            WHEN LENGTH(structures.presentation_detail) >= 2000
-                THEN LEFT(structures.presentation_detail, 1999) || '…'
+            WHEN LENGTH(structures.presentation_detail) >= 10000
+                THEN LEFT(structures.presentation_detail, 9999) || '…'
             ELSE COALESCE(structures.presentation_detail, structures.presentation_resume)
         END                               AS "description",
         structures.siret                  AS "siret",
