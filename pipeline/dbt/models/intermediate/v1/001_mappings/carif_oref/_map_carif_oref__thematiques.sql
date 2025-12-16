@@ -6,12 +6,12 @@ SELECT
 FROM (
     VALUES
     (
-        '15022', -- lutte contre l'illettrisme
-        'lecture-ecriture-calcul--maitriser-le-francais'
-    ),
-    (
         '11083', -- mathématiques mise à niveau
         'lecture-ecriture-calcul--maitriser-le-calcul'
+    ),
+    (
+        '15022', -- lutte contre l'illettrisme
+        'lecture-ecriture-calcul--maitriser-le-francais'
     ),
     (
         '15030', -- calcul mise à niveau
@@ -35,11 +35,11 @@ FROM (
     ),
     (
         '15050', -- mise à niveau numérique
-        'lecture-ecriture-calcul--maitriser-le-calcul'
+        'numerique--maitriser-les-fondamentaux-du-numerique'
     ),
     (
         '15061', -- accompagnement vers emploi
-        'remobilisation--bien-etre-confiance-en-soi'
+        'preparer-sa-candidature--organiser-ses-demarches-de-recherche-demploi'
     ),
     (
         '15084', -- préparation entrée formation
