@@ -3,10 +3,10 @@ WITH source AS (
 
 final AS (
     SELECT
-        source.data ->> 'idStructure'     AS "id_structure",
-        situation.data ->> 'idSituation'  AS "id_situation",
-        situation.data ->> 'nomSituation' AS "nom_situation",
-        situation.data ->> 'idProfil'     AS "id_profil"
+        source.data ->> 'idStructure'                 AS "id_structure",
+        CAST(situation.data ->> 'idSituation' AS INT) AS "id_situation",
+        situation.data ->> 'nomSituation'             AS "nom_situation",
+        CAST(situation.data ->> 'idProfil' AS INT)    AS "id_profil"
     FROM
         source,
         JSONB_PATH_QUERY(source.data, '$.situations[*]') AS situation (data)
