@@ -1,0 +1,99 @@
+version: 2
+
+models:
+  - name: int_ma_boussole_aidants__adresses_v1
+    columns:
+      - name: id
+        data_tests:
+          - unique
+          - not_null
+          - dbt_utils.not_empty_string
+
+  - name: int_ma_boussole_aidants__structures_v1
+    data_tests:
+      - model_validate:
+          config:
+            enabled: "{{ env_var('DBT_ENV', 'prod') == 'dev' }}"
+          arguments:
+            model_class: data_inclusion.schema.v1.Structure
+    columns:
+      - name: id
+        data_tests:
+          - unique
+          - not_null
+          - dbt_utils.not_empty_string
+      - name: adresse_id
+        data_tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('int_ma_boussole_aidants__adresses_v1')
+                field: id
+
+  - name: int_ma_boussole_aidants__services_v1
+    data_tests:
+      - model_validate:
+          config:
+            enabled: "{{ env_var('DBT_ENV', 'prod') == 'dev' }}"
+          arguments:
+            model_class: data_inclusion.schema.v1.Service
+    columns:
+      - name: id
+        data_tests:
+          - unique
+          - not_null
+          - dbt_utils.not_empty_string
+      - name: structure_id
+        data_tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('int_ma_boussole_aidants__structures_v1')
+                field: id
+      - name: adresse_id
+        data_tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('int_ma_boussole_aidants__adresses_v1')
+                field: id
+
+  - name: _map_ma_boussole_aidants__publics
+    columns:
+      - name: situation_id
+        data_tests:
+          - not_null
+      - name: public
+        data_tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('publics_v1')
+                field: value
+
+  - name: _map_ma_boussole_aidants__thematiques
+    columns:
+      - name: solution_id
+        data_tests:
+          - not_null
+      - name: thematique
+        data_tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('thematiques_v1')
+                field: value
+
+  - name: _map_ma_boussole_aidants__types
+    columns:
+      - name: solution_id
+        data_tests:
+          - not_null
+      - name: type
+        data_tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('types_v1')
+                field: value
+
