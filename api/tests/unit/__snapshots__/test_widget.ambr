@@ -50,6 +50,12 @@
                   <input type="hidden"
                          name="display_publics_filter"
                          value="true">
+                  <input type="hidden"
+                         name="include_online_services"
+                         value="false">
+                  
+                  
+                  
                   <input type="hidden" name="token" value="test-token">
                   <div class="di-filters-grid">
                       <div class="input-group">
@@ -64,14 +70,45 @@
                  type="text"
                  placeholder="Choisir un lieu"
                  value=""
-                 _="on input repeat for option in #suggestions.options if option.value == my value then set #hidden-code_commune.value to option.dataset.code send `commune-selected` to closest <form/> exit end end if my value.length > 1 then set nom to my value set url to encodeURI(`https://geo.api.gouv.fr/communes?type=commune-actuelle&boost=population&limit=10&nom=${nom}`) fetch `${url}` as json then remove <option/> from #suggestions repeat for commune in it make an <option/> set its @value to `${commune.nom} (${commune.codesPostaux[0]})` set its @data-code to commune.code append it to #suggestions end end end ">
+                 _="on input
+                      repeat for option in #suggestions.options
+                        if option.value == my value then
+                          set #hidden-code_commune.value to option.dataset.code
+                          send `commune-selected` to closest <form/>
+                          exit
+                        end
+                      end
+                      if my value.length > 1 then
+                        set nom to my value
+                        set url to encodeURI(`https://geo.api.gouv.fr/communes?type=commune-actuelle&boost=population&limit=10&nom=${nom}`)
+                        fetch `${url}` as json then
+                          remove <option/> from #suggestions
+                          repeat for commune in it
+                            make an <option/>
+                            set its @value to commune.nom
+                            set its @data-code to commune.code
+                            set its textContent to `${commune.nom} (${commune.codesPostaux[0]})`
+                            append it to #suggestions
+                          end
+                        end
+                      end
+                    ">
           <datalist id="suggestions"></datalist>
       </div>
                       
                           <div class="input-group">
       <label for="input-categories">Thématiques</label>
-      <select name="categories" id="input-categories">
-          <option value="" disabled selected>Choisir une thématique</option>
+      <select id="input-categories" 
+          _="on change
+               if my value then
+                 set @name of me to 'categories'
+               else
+                 remove @name
+               end
+             ">
+          
+          <option value="" selected>Toutes thématiques</option>
+          
           
           <option value="choisir-un-metier" >Choisir un métier</option>
           
@@ -111,10 +148,17 @@
                       
                           <div class="input-group">
       <label for="input-publics">Publics</label>
-      <select name="publics" id="input-publics">
-          <option value="" disabled >Choisir un public</option>
+      <select id="input-publics" 
+          _="on change
+               if my value then
+                 set @name of me to 'publics'
+               end
+             ">
           
-          <option value="tous-publics" selected>Tous publics</option>
+          <option value="" disabled selected>Choisir un public</option>
+          
+          
+          <option value="tous-publics" >Tous publics</option>
           
           <option value="actifs" >Actifs</option>
           
@@ -193,7 +237,156 @@
   </html>
   '''
 # ---
-# name: test_widget_rendering_with_results
+# name: test_widget_rendering_with_results[HTMX results for Lille & famille]
+  '''
+  <output id="results">
+      
+          
+          <ul class="di-cards-grid"
+              id="results-grid"
+              style="grid-template-columns: repeat(2, 1fr)"
+              aria-live="polite"
+              aria-atomic="true">
+              
+                  <li class="di-card">
+          <div class="di-card-header">
+              <h2>Structure Formation</h2>
+              <h3>
+                  <a href="https://dora.fr/dora--market"
+                     target="_blank">Service de formation professionnelle</a>
+              </h3>
+              <div class="di-card-location-row">
+                  
+                      
+                      <a class="di-card-location" href="https://www.google.com/maps/place/rue%20Beno%C3%AEt%20Le%20Gall%2C%2059000%20Lille/@50.6292,3.0573,17z" target="_blank">
+                          <img src="/widget/static/icons/map-pin-line.svg" alt="" class="di-icon" aria-hidden="true">
+                          Lille
+                      </a>
+                      
+                      
+                          <span class="di-card-spacer" aria-hidden="true"></span>
+                          <span class="di-card-distance">
+                              <img src="/widget/static/icons/route-line.svg" alt="" class="di-icon" aria-hidden="true">
+                              1 km
+                          </span>
+                      
+                  
+              </div>
+              
+                  <div class="di-card-categories">
+                      
+                          <span class="di-badge">Famille</span>
+                      
+                  </div>
+              
+          </div>
+          <p>
+              
+                  Femmes
+              
+          </p>
+          <div class="di-card-footer">
+              <span class="di-card-source">Source : dora</span>
+          </div>
+      </li>
+              
+          </ul>
+          
+      
+      <div class="di-results-footer">
+          <div class="di-results-footer-left">
+              <a href="https://data.inclusion.gouv.fr/"
+                 target="_blank"
+                 class="di-logo-link">
+                  <img src="/widget/static/logo-di.svg" alt="data·inclusion">
+              </a>
+          </div>
+          <div class="di-results-footer-center">
+              <nav class="di-pagination">
+          <div class="di-pagination-arrow di-pagination-arrow-left">
+              
+                  <span class="disabled">&lt;</span>
+              
+          </div>
+          <div class="di-pagination-numbers">
+              <ul>
+                  
+                  
+                      <li>
+                          <a href="#"
+                             hx-get="/widget/?token=test-token&amp;x=2&amp;y=1&amp;code_commune=59350&amp;categories=famille&amp;page=1"
+                             hx-push-url="true"
+                             hx-target="#results"
+                             hx-swap="outerHTML"
+                             title="Page 1"
+                             aria-current="page">1</a>
+                      </li>
+                  
+                  
+              </ul>
+          </div>
+          <div class="di-pagination-arrow di-pagination-arrow-right">
+              
+                  <span class="disabled">&gt;</span>
+              
+          </div>
+      </nav>
+          </div>
+          <div class="di-results-footer-right">
+              <a href="https://tally.so/r/nWZBrv?produit=test_user&issue_url=http%3A//testserver/widget/%3Ftoken%3Dtest-token%26x%3D2%26y%3D1%26code_commune%3D59350%26categories%3Dfamille"
+                 target="_blank"
+                 class="di-report-link">
+                  Signaler un problème
+                  <img src="/widget/static/icon-arrow-right-up-line.svg"
+                       alt=""
+                       aria-hidden="true">
+              </a>
+          </div>
+      </div>
+  </output>
+  '''
+# ---
+# name: test_widget_rendering_with_results[HTMX results for Paris & famille]
+  '''
+  <output id="results">
+      
+          <div class="di-empty-results">
+              <img src="/widget/static/icons/search-line.svg"
+                   alt=""
+                   class="di-empty-results-icon"
+                   aria-hidden="true">
+              <h3 class="di-empty-results-title">Nous n'avons trouvé aucun résultat correspondant à votre recherche</h3>
+              <p class="di-empty-results-text">
+                  Il se peut que vos filtres soient trop restrictifs. N'hésitez pas à les modifier ou à les élargir pour découvrir davantage de solutions.
+              </p>
+          </div>
+      
+      <div class="di-results-footer">
+          <div class="di-results-footer-left">
+              <a href="https://data.inclusion.gouv.fr/"
+                 target="_blank"
+                 class="di-logo-link">
+                  <img src="/widget/static/logo-di.svg" alt="data·inclusion">
+              </a>
+          </div>
+          <div class="di-results-footer-center">
+              
+          </div>
+          <div class="di-results-footer-right">
+              <a href="https://tally.so/r/nWZBrv?produit=test_user&issue_url=http%3A//testserver/widget/%3Ftoken%3Dtest-token%26x%3D2%26y%3D1%26code_commune%3D75056%26categories%3Dfamille"
+                 target="_blank"
+                 class="di-report-link">
+                  Signaler un problème
+                  <img src="/widget/static/icon-arrow-right-up-line.svg"
+                       alt=""
+                       aria-hidden="true">
+              </a>
+          </div>
+      </div>
+  </output>
+  '''
+# ---
+# name: test_widget_rendering_with_results[render all results]
   '''
   <!DOCTYPE html>
   <html lang="fr">
@@ -244,6 +437,12 @@
                   <input type="hidden"
                          name="display_publics_filter"
                          value="true">
+                  <input type="hidden"
+                         name="include_online_services"
+                         value="false">
+                  
+                  
+                  
                   <input type="hidden" name="token" value="test-token">
                   <div class="di-filters-grid">
                       <div class="input-group">
@@ -258,14 +457,45 @@
                  type="text"
                  placeholder="Choisir un lieu"
                  value=""
-                 _="on input repeat for option in #suggestions.options if option.value == my value then set #hidden-code_commune.value to option.dataset.code send `commune-selected` to closest <form/> exit end end if my value.length > 1 then set nom to my value set url to encodeURI(`https://geo.api.gouv.fr/communes?type=commune-actuelle&boost=population&limit=10&nom=${nom}`) fetch `${url}` as json then remove <option/> from #suggestions repeat for commune in it make an <option/> set its @value to `${commune.nom} (${commune.codesPostaux[0]})` set its @data-code to commune.code append it to #suggestions end end end ">
+                 _="on input
+                      repeat for option in #suggestions.options
+                        if option.value == my value then
+                          set #hidden-code_commune.value to option.dataset.code
+                          send `commune-selected` to closest <form/>
+                          exit
+                        end
+                      end
+                      if my value.length > 1 then
+                        set nom to my value
+                        set url to encodeURI(`https://geo.api.gouv.fr/communes?type=commune-actuelle&boost=population&limit=10&nom=${nom}`)
+                        fetch `${url}` as json then
+                          remove <option/> from #suggestions
+                          repeat for commune in it
+                            make an <option/>
+                            set its @value to commune.nom
+                            set its @data-code to commune.code
+                            set its textContent to `${commune.nom} (${commune.codesPostaux[0]})`
+                            append it to #suggestions
+                          end
+                        end
+                      end
+                    ">
           <datalist id="suggestions"></datalist>
       </div>
                       
                           <div class="input-group">
       <label for="input-categories">Thématiques</label>
-      <select name="categories" id="input-categories">
-          <option value="" disabled selected>Choisir une thématique</option>
+      <select id="input-categories" 
+          _="on change
+               if my value then
+                 set @name of me to 'categories'
+               else
+                 remove @name
+               end
+             ">
+          
+          <option value="" selected>Toutes thématiques</option>
+          
           
           <option value="choisir-un-metier" >Choisir un métier</option>
           
@@ -305,10 +535,17 @@
                       
                           <div class="input-group">
       <label for="input-publics">Publics</label>
-      <select name="publics" id="input-publics">
-          <option value="" disabled >Choisir un public</option>
+      <select id="input-publics" 
+          _="on change
+               if my value then
+                 set @name of me to 'publics'
+               end
+             ">
           
-          <option value="tous-publics" selected>Tous publics</option>
+          <option value="" disabled selected>Choisir un public</option>
+          
+          
+          <option value="tous-publics" >Tous publics</option>
           
           <option value="actifs" >Actifs</option>
           
@@ -355,15 +592,15 @@
               
                   <li class="di-card">
           <div class="di-card-header">
-              <h2>Bodin Joly SARL</h2>
+              <h2>Structure Formation</h2>
               <h3>
-                  <a href="https://dora.fr/dora--professor"
+                  <a href="https://dora.fr/dora--market"
                      target="_blank">Service de formation professionnelle</a>
               </h3>
               <div class="di-card-location-row">
                   
                       
-                      <a class="di-card-location" href="https://www.google.com/maps/place/760%2C%20boulevard%20de%20Humbert%2C%2059000%20Lille/@-77.4426735,175.513708,17z" target="_blank">
+                      <a class="di-card-location" href="https://www.google.com/maps/place/rue%20Beno%C3%AEt%20Le%20Gall%2C%2059000%20Lille/@50.6292,3.0573,17z" target="_blank">
                           <img src="/widget/static/icons/map-pin-line.svg" alt="" class="di-icon" aria-hidden="true">
                           Lille
                       </a>
@@ -375,8 +612,6 @@
                   <div class="di-card-categories">
                       
                           <span class="di-badge">Famille</span>
-                      
-                          <span class="di-badge di-badge-overflow">etc.…</span>
                       
                   </div>
               
@@ -391,15 +626,15 @@
           </div>
       </li><li class="di-card">
           <div class="di-card-header">
-              <h2>Roche</h2>
+              <h2>Structure Emploi</h2>
               <h3>
-                  <a href="https://emplois-de-linclusion.fr/emplois-de-linclusion--by-modern"
+                  <a href="https://dora.fr/dora--time-care-which"
                      target="_blank">Accompagnement à l&#39;emploi</a>
               </h3>
               <div class="di-card-location-row">
                   
                       
-                      <a class="di-card-location" href="https://www.google.com/maps/place/boulevard%20de%20Payet%2C%2075001%20Paris/@-3.050708,158.210579,17z" target="_blank">
+                      <a class="di-card-location" href="https://www.google.com/maps/place/706%2C%20avenue%20Petitjean%2C%2075001%20Paris/@48.8566,2.3522,17z" target="_blank">
                           <img src="/widget/static/icons/map-pin-line.svg" alt="" class="di-icon" aria-hidden="true">
                           Paris
                       </a>
@@ -412,8 +647,6 @@
                       
                           <span class="di-badge">Mobilité</span>
                       
-                          <span class="di-badge di-badge-overflow">etc.…</span>
-                      
                   </div>
               
           </div>
@@ -423,7 +656,7 @@
               
           </p>
           <div class="di-card-footer">
-              <span class="di-card-source">Source : emplois-de-linclusion</span>
+              <span class="di-card-source">Source : dora</span>
           </div>
       </li>
               
@@ -459,27 +692,12 @@
                              aria-current="page">1</a>
                       </li>
                   
-                      <li>
-                          <a href="#"
-                             hx-get="/widget/?token=test-token&amp;x=2&amp;y=1&amp;page=2"
-                             hx-push-url="true"
-                             hx-target="#results"
-                             hx-swap="outerHTML"
-                             title="Page 2"
-                             >2</a>
-                      </li>
-                  
                   
               </ul>
           </div>
           <div class="di-pagination-arrow di-pagination-arrow-right">
               
-                  <a href="#"
-                     hx-get="/widget/?token=test-token&amp;x=2&amp;y=1&amp;page=2"
-                     hx-push-url="true"
-                     hx-target="#results"
-                     hx-swap="outerHTML"
-                     title="Page suivante">&gt;</a>
+                  <span class="disabled">&gt;</span>
               
           </div>
       </nav>
@@ -501,159 +719,5 @@
   </body>
   
   </html>
-  '''
-# ---
-# name: test_widget_rendering_with_results.1
-  '''
-  <output id="results">
-      
-          
-          <ul class="di-cards-grid"
-              id="results-grid"
-              style="grid-template-columns: repeat(2, 1fr)"
-              aria-live="polite"
-              aria-atomic="true">
-              
-                  <li class="di-card">
-          <div class="di-card-header">
-              <h2>Bodin Joly SARL</h2>
-              <h3>
-                  <a href="https://dora.fr/dora--professor"
-                     target="_blank">Service de formation professionnelle</a>
-              </h3>
-              <div class="di-card-location-row">
-                  
-                      
-                      <a class="di-card-location" href="https://www.google.com/maps/place/760%2C%20boulevard%20de%20Humbert%2C%2059000%20Lille/@-77.4426735,175.513708,17z" target="_blank">
-                          <img src="/widget/static/icons/map-pin-line.svg" alt="" class="di-icon" aria-hidden="true">
-                          Lille
-                      </a>
-                      
-                      
-                  
-              </div>
-              
-                  <div class="di-card-categories">
-                      
-                          <span class="di-badge">Famille</span>
-                      
-                          <span class="di-badge di-badge-overflow">etc.…</span>
-                      
-                  </div>
-              
-          </div>
-          <p>
-              
-                  Femmes
-              
-          </p>
-          <div class="di-card-footer">
-              <span class="di-card-source">Source : dora</span>
-          </div>
-      </li>
-              
-          </ul>
-          
-      
-      <div class="di-results-footer">
-          <div class="di-results-footer-left">
-              <a href="https://data.inclusion.gouv.fr/"
-                 target="_blank"
-                 class="di-logo-link">
-                  <img src="/widget/static/logo-di.svg" alt="data·inclusion">
-              </a>
-          </div>
-          <div class="di-results-footer-center">
-              
-          </div>
-          <div class="di-results-footer-right">
-              <a href="https://tally.so/r/nWZBrv?produit=test_user&issue_url=http%3A//testserver/widget/%3Ftoken%3Dtest-token%26x%3D2%26y%3D1%26code_commune%3D59350%26categories%3Dfamille"
-                 target="_blank"
-                 class="di-report-link">
-                  Signaler un problème
-                  <img src="/widget/static/icon-arrow-right-up-line.svg"
-                       alt=""
-                       aria-hidden="true">
-              </a>
-          </div>
-      </div>
-  </output>
-  '''
-# ---
-# name: test_widget_rendering_with_results.2
-  '''
-  <output id="results">
-      
-          
-          <ul class="di-cards-grid"
-              id="results-grid"
-              style="grid-template-columns: repeat(2, 1fr)"
-              aria-live="polite"
-              aria-atomic="true">
-              
-                  <li class="di-card">
-          <div class="di-card-header">
-              <h2>Bodin Joly SARL</h2>
-              <h3>
-                  <a href="https://dora.fr/dora--professor"
-                     target="_blank">Service de formation professionnelle</a>
-              </h3>
-              <div class="di-card-location-row">
-                  
-                      
-                      <a class="di-card-location" href="https://www.google.com/maps/place/760%2C%20boulevard%20de%20Humbert%2C%2059000%20Lille/@-77.4426735,175.513708,17z" target="_blank">
-                          <img src="/widget/static/icons/map-pin-line.svg" alt="" class="di-icon" aria-hidden="true">
-                          Lille
-                      </a>
-                      
-                      
-                  
-              </div>
-              
-                  <div class="di-card-categories">
-                      
-                          <span class="di-badge">Famille</span>
-                      
-                          <span class="di-badge di-badge-overflow">etc.…</span>
-                      
-                  </div>
-              
-          </div>
-          <p>
-              
-                  Femmes
-              
-          </p>
-          <div class="di-card-footer">
-              <span class="di-card-source">Source : dora</span>
-          </div>
-      </li>
-              
-          </ul>
-          
-      
-      <div class="di-results-footer">
-          <div class="di-results-footer-left">
-              <a href="https://data.inclusion.gouv.fr/"
-                 target="_blank"
-                 class="di-logo-link">
-                  <img src="/widget/static/logo-di.svg" alt="data·inclusion">
-              </a>
-          </div>
-          <div class="di-results-footer-center">
-              
-          </div>
-          <div class="di-results-footer-right">
-              <a href="https://tally.so/r/nWZBrv?produit=test_user&issue_url=http%3A//testserver/widget/%3Ftoken%3Dtest-token%26x%3D2%26y%3D1%26code_commune%3D75056%26categories%3Dfamille"
-                 target="_blank"
-                 class="di-report-link">
-                  Signaler un problème
-                  <img src="/widget/static/icon-arrow-right-up-line.svg"
-                       alt=""
-                       aria-hidden="true">
-              </a>
-          </div>
-      </div>
-  </output>
   '''
 # ---

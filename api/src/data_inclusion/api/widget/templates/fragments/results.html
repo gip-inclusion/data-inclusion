@@ -2,6 +2,14 @@
 {% from "components/pagination.html" import pagination with context %}
 <output id="results">
     {% if results %}
+        {% if inline_mode %}
+        <ul class="di-cards-inline"
+            id="results-grid"
+            aria-live="polite"
+            aria-atomic="true">
+            {% for result in results %}{{ card(result) }}{% endfor %}
+        </ul>
+        {% else %}
         <ul class="di-cards-grid"
             id="results-grid"
             style="grid-template-columns: repeat({{ x }}, 1fr)"
@@ -11,6 +19,7 @@
                 {% for result in row %}{{ card(result) }}{% endfor %}
             {% endfor %}
         </ul>
+        {% endif %}
     {% else %}
         <div class="di-empty-results">
             <img src="/widget/static/icons/search-line.svg"
@@ -32,7 +41,7 @@
             </a>
         </div>
         <div class="di-results-footer-center">
-            {% if results %}{{ pagination() }}{% endif %}
+            {% if results and not inline_mode %}{{ pagination() }}{% endif %}
         </div>
         <div class="di-results-footer-right">
             <a href="https://tally.so/r/nWZBrv?produit={{ (token_sub or '')|urlencode }}&issue_url={{ current_url|urlencode }}"

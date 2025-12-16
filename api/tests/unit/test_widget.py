@@ -92,7 +92,6 @@ def test_widget_token_validation(allowed_origins, request_headers, status_code, 
         assert exc_info.value.detail == detail
 
 
-@pytest.mark.settings(TOKEN_ENABLED=False)
 def test_widget_rendering_empty_results(api_client, snapshot, monkeypatch):
     from data_inclusion.api.widget.routes import settings as widget_settings
 
@@ -103,61 +102,269 @@ def test_widget_rendering_empty_results(api_client, snapshot, monkeypatch):
     assert response.text.strip() == snapshot
 
 
-@pytest.mark.settings(TOKEN_ENABLED=False)
 def test_widget_rendering_with_results(api_client, db_session, snapshot, monkeypatch):
     from data_inclusion.api.widget.routes import settings as widget_settings
 
     monkeypatch.setattr(widget_settings, "TOKEN_ENABLED", False)
 
-    service1 = factories.v1.ServiceFactory(
+    factories.v1.ServiceFactory(
+        source="dora",
+        structure__nom="Structure Formation",
         nom="Service de formation professionnelle",
         commune="Lille",
         code_postal="59000",
         code_insee="59350",
+        latitude=50.6292,
+        longitude=3.0573,
+        modes_accueil=[v1.ModeAccueil.EN_PRESENTIEL.value],
         publics=[v1.Public.FEMMES.value],
         thematiques=[v1.Thematique.FAMILLE__GARDE_DENFANTS.value],
         score_qualite=0.9,
     )
-    service2 = factories.v1.ServiceFactory(
+    factories.v1.ServiceFactory(
+        source="dora",
+        structure__nom="Structure Emploi",
         nom="Accompagnement à l'emploi",
         commune="Paris",
         code_postal="75001",
         code_insee="75056",
+        latitude=48.8566,
+        longitude=2.3522,
+        modes_accueil=[v1.ModeAccueil.EN_PRESENTIEL.value],
         publics=[v1.Public.JEUNES.value],
         thematiques=[
-            v1.Thematique.MOBILITE__ETRE_ACCOMPAGNE_DANS_SON_PARCOURS_MOBILITE.value  # noqa: E501
+            v1.Thematique.MOBILITE__ETRE_ACCOMPAGNE_DANS_SON_PARCOURS_MOBILITE.value
         ],
         score_qualite=0.85,
     )
-    service3 = factories.v1.ServiceFactory(
+    factories.v1.ServiceFactory(
+        source="emplois-de-linclusion",
+        structure__nom="Structure Sans Commune",
         nom="Service sans commune",
         commune=None,
         code_postal=None,
+        latitude=None,
+        longitude=None,
+        modes_accueil=[v1.ModeAccueil.A_DISTANCE.value],
         publics=[v1.Public.SENIORS.value],
         thematiques=[v1.Thematique.FAMILLE__GARDE_DENFANTS.value],
         score_qualite=0.8,
     )
 
-    db_session.add_all([service1, service2, service3])
-    db_session.commit()
-
-    # test initial request
     response = api_client.get("/widget/?token=test-token&x=2&y=1")
     assert response.status_code == 200
-    assert response.text.strip() == snapshot
+    assert response.text.strip() == snapshot(name="render all results")
 
-    # test updating the filters
     response = api_client.get(
         "/widget/?token=test-token&x=2&y=1&code_commune=59350&categories=famille",
         headers={"HX-Request": "true"},
     )
     assert response.status_code == 200
-    assert response.text.strip() == snapshot
+    assert response.text.strip() == snapshot(name="HTMX results for Lille & famille")
 
-    # no results (looking in Paris & famille)
     response = api_client.get(
         "/widget/?token=test-token&x=2&y=1&code_commune=75056&categories=famille",
         headers={"HX-Request": "true"},
     )
     assert response.status_code == 200
-    assert response.text.strip() == snapshot
+    assert response.text.strip() == snapshot(name="HTMX results for Paris & famille")
+
+
+def test_widget_filter_sources(api_client, db_session, monkeypatch):
+    from data_inclusion.api.widget.routes import settings as widget_settings
+
+    monkeypatch.setattr(widget_settings, "TOKEN_ENABLED", False)
+
+    factories.v1.ServiceFactory(
+        source="dora",
+        structure__nom="Structure Dora",
+        nom="Service Dora",
+        commune="Lille",
+        code_postal="59000",
+        code_insee="59350",
+        score_qualite=0.9,
+    )
+    factories.v1.ServiceFactory(
+        source="emplois-de-linclusion",
+        structure__nom="Structure Emplois",
+        nom="Service Emplois",
+        commune="Lille",
+        code_postal="59000",
+        code_insee="59350",
+        score_qualite=0.9,
+    )
+    factories.v1.ServiceFactory(
+        source="mes-aides",
+        structure__nom="Structure MesAides",
+        nom="Service MesAides",
+        commune="Lille",
+        code_postal="59000",
+        code_insee="59350",
+        score_qualite=0.9,
+    )
+
+    response = api_client.get("/widget/?token=test-token&sources=dora")
+    assert response.status_code == 200
+    assert "Service Dora" in response.text
+    assert "Service Emplois" not in response.text
+    assert "Service MesAides" not in response.text
+
+    response = api_client.get(
+        "/widget/?token=test-token&sources=dora&sources=mes-aides"
+    )
+    assert response.status_code == 200
+    assert "Service Dora" in response.text
+    assert "Service Emplois" not in response.text
+    assert "Service MesAides" in response.text
+
+
+def test_widget_filter_thematiques(api_client, db_session, monkeypatch):
+    from data_inclusion.api.widget.routes import settings as widget_settings
+
+    monkeypatch.setattr(widget_settings, "TOKEN_ENABLED", False)
+
+    factories.v1.ServiceFactory(
+        source="dora",
+        structure__nom="Structure Famille",
+        nom="Service Garde Enfants",
+        commune="Lille",
+        code_postal="59000",
+        code_insee="59350",
+        thematiques=[v1.Thematique.FAMILLE__GARDE_DENFANTS.value],
+        score_qualite=0.9,
+    )
+    factories.v1.ServiceFactory(
+        source="dora",
+        structure__nom="Structure Mobilite",
+        nom="Service Mobilite",
+        commune="Lille",
+        code_postal="59000",
+        code_insee="59350",
+        thematiques=[
+            v1.Thematique.MOBILITE__ETRE_ACCOMPAGNE_DANS_SON_PARCOURS_MOBILITE.value
+        ],
+        score_qualite=0.9,
+    )
+    factories.v1.ServiceFactory(
+        source="dora",
+        structure__nom="Structure Logement",
+        nom="Service Logement",
+        commune="Lille",
+        code_postal="59000",
+        code_insee="59350",
+        thematiques=[v1.Thematique.LOGEMENT_HEBERGEMENT__LOUER_UN_LOGEMENT.value],
+        score_qualite=0.9,
+    )
+
+    response = api_client.get(
+        "/widget/?token=test-token&thematiques=famille--garde-denfants"
+    )
+    assert response.status_code == 200
+    assert "Service Garde Enfants" in response.text
+    assert "Service Mobilite" not in response.text
+    assert "Service Logement" not in response.text
+
+    response = api_client.get(
+        "/widget/?token=test-token"
+        "&thematiques=famille--garde-denfants"
+        "&thematiques=logement-hebergement--louer-un-logement"
+    )
+    assert response.status_code == 200
+    assert "Service Garde Enfants" in response.text
+    assert "Service Mobilite" not in response.text
+    assert "Service Logement" in response.text
+
+
+def test_widget_filter_include_online_services(api_client, db_session, monkeypatch):
+    from data_inclusion.api.widget.routes import settings as widget_settings
+
+    monkeypatch.setattr(widget_settings, "TOKEN_ENABLED", False)
+
+    factories.v1.ServiceFactory(
+        source="dora",
+        structure__nom="Structure Presentiel",
+        nom="Service Presentiel",
+        commune="Lille",
+        code_postal="59000",
+        code_insee="59350",
+        modes_accueil=[v1.ModeAccueil.EN_PRESENTIEL.value],
+        score_qualite=0.9,
+    )
+    factories.v1.ServiceFactory(
+        source="dora",
+        structure__nom="Structure En Ligne",
+        nom="Service En Ligne",
+        commune=None,
+        code_postal=None,
+        code_insee=None,
+        latitude=None,
+        longitude=None,
+        modes_accueil=[v1.ModeAccueil.A_DISTANCE.value],
+        score_qualite=0.9,
+    )
+
+    response = api_client.get("/widget/?token=test-token")
+    assert response.status_code == 200
+    assert "Service Presentiel" in response.text
+    assert "Service En Ligne" not in response.text
+
+    response = api_client.get("/widget/?token=test-token&include_online_services=true")
+    assert response.status_code == 200
+    assert "Service Presentiel" in response.text
+    assert "Service En Ligne" in response.text
+
+    response = api_client.get("/widget/?token=test-token&include_online_services=false")
+    assert response.status_code == 200
+    assert "Service Presentiel" in response.text
+    assert "Service En Ligne" not in response.text
+
+
+def test_widget_filter_publics(api_client, db_session, monkeypatch):
+    from data_inclusion.api.widget.routes import settings as widget_settings
+
+    monkeypatch.setattr(widget_settings, "TOKEN_ENABLED", False)
+
+    factories.v1.ServiceFactory(
+        source="dora",
+        structure__nom="Structure Femmes",
+        nom="Service Pour Femmes",
+        commune="Lille",
+        code_postal="59000",
+        code_insee="59350",
+        publics=[v1.Public.FEMMES.value],
+        score_qualite=0.9,
+    )
+    factories.v1.ServiceFactory(
+        source="dora",
+        structure__nom="Structure Jeunes",
+        nom="Service Pour Jeunes",
+        commune="Lille",
+        code_postal="59000",
+        code_insee="59350",
+        publics=[v1.Public.JEUNES.value],
+        score_qualite=0.9,
+    )
+    factories.v1.ServiceFactory(
+        source="dora",
+        structure__nom="Structure Seniors",
+        nom="Service Pour Seniors",
+        commune="Lille",
+        code_postal="59000",
+        code_insee="59350",
+        publics=[v1.Public.SENIORS.value],
+        score_qualite=0.9,
+    )
+
+    response = api_client.get("/widget/?token=test-token&publics=femmes")
+    assert response.status_code == 200
+    assert "Service Pour Femmes" in response.text
+    assert "Service Pour Jeunes" not in response.text
+    assert "Service Pour Seniors" not in response.text
+
+    response = api_client.get(
+        "/widget/?token=test-token&publics=femmes&publics=seniors"
+    )
+    assert response.status_code == 200
+    assert "Service Pour Femmes" in response.text
+    assert "Service Pour Jeunes" not in response.text
+    assert "Service Pour Seniors" in response.text

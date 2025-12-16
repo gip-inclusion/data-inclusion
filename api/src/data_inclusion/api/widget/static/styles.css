@@ -331,6 +331,18 @@ a:visited {
   }
 }
 
+.di-cards-inline {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--padding-l);
+  margin-bottom: var(--padding-l);
+}
+
+.di-cards-inline .di-card {
+  flex: 0 1 280px;
+  min-width: 200px;
+}
+
 .di-card {
   display: grid;
   grid-template-rows: 1fr auto auto;
