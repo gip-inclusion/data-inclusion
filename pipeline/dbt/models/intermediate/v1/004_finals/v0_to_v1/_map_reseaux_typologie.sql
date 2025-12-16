@@ -5,10 +5,10 @@ SELECT
 FROM (
     VALUES
     -- noqa: disable=layout.spacing
-    ('ACI',          'siae'),
-    ('ACIPHC',       'siae'),
+    ('ACI',          'aci'),
+    ('ACIPHC',       'aci'),
     ('AFPA',         'afpa'),
-    ('AI',           'siae'),
+    ('AI',           NULL),
     ('ASE',          'ase'),
     ('ASSO_CHOMEUR', NULL),
     ('ASSO',         NULL),
@@ -44,8 +44,8 @@ FROM (
     ('E2C',          'ecoles-de-la-deuxieme-chance'),
     ('EA',           'unea'),
     ('EATT',         'unea'),
-    ('EI',           'siae'),
-    ('EITI',         'siae'),
+    ('EI',           'ei'),
+    ('EITI',         'eiti'),
     ('ENM',          'espaces-publics-numeriques'),
     ('EPCI',         'communes'),
     ('EPI',          'espaces-publics-numeriques'),
@@ -56,7 +56,7 @@ FROM (
     ('ETABL_PRI',    NULL),
     ('ETABL_PUB',    NULL),
     ('ETAT',         NULL),
-    ('ETTI',         'siae'),
+    ('ETTI',         'etti'),
     ('EVS',          'caf'),
     ('FABLAB',       NULL),
     ('FAIS',         'federation-des-acteurs-de-la-solidarite'),
