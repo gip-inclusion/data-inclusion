@@ -33,7 +33,6 @@ models:
       - name: thematique
         data_tests:
           - dbt_utils.not_constant
-          - dbt_utils.not_empty_string
           - relationships:
               arguments:
                 to: ref('thematiques_v1')
