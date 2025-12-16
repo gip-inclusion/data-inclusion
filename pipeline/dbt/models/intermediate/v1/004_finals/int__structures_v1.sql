@@ -3,11 +3,7 @@ WITH structures AS (
 ),
 
 structures_v0_to_v1 AS (
-    SELECT *
-    FROM {{ ref('int__structures_v0_to_v1') }}
-    WHERE source NOT IN (
-        SELECT DISTINCT structures.source FROM structures
-    )
+    SELECT * FROM {{ ref('int__structures_v0_to_v1') }}
 ),
 
 adresses AS (
