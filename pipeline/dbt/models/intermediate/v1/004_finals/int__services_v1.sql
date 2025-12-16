@@ -3,11 +3,7 @@ WITH services AS (
 ),
 
 services_v0_to_v1 AS (
-    SELECT *
-    FROM {{ ref('int__services_v0_to_v1') }}
-    WHERE source NOT IN (
-        SELECT DISTINCT services.source FROM services
-    )
+    SELECT * FROM {{ ref('int__services_v0_to_v1') }}
 ),
 
 structures AS (
