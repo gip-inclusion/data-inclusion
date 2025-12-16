@@ -128,13 +128,6 @@ models:
         data_tests:
           - dbt_utils.not_constant
           - dbt_utils.not_empty_string
-      - name: thematiques
-        data_tests:
-          - dbt_utils.expression_is_true:
-              config:
-                severity: warn
-              arguments:
-                expression: "<@ ARRAY(SELECT value FROM {{ ref('thematiques') }})"
       - name: types
         data_tests:
           - dbt_utils.expression_is_true:
@@ -155,6 +148,26 @@ models:
           - accepted_values:
               arguments:
                 values: [commune, epci, departement, region, pays]
+
+  - name: stg_dora__services__thematiques
+    columns:
+      - name: service_id
+        data_tests:
+          - not_null
+          - relationships:
+              config:
+                error_if: ">1000"
+              arguments:
+                to: ref('stg_dora__services')
+                field: id
+      - name: item
+        data_tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('thematiques_v1')
+                field: value
+
 
   - name: stg_dora__structures
     columns:

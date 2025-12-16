@@ -14,7 +14,6 @@ services AS (
         CAST((data ->> 'temps_passe_duree_hebdomadaire') AS FLOAT)                                            AS "temps_passe_duree_hebdomadaire",
         ARRAY(SELECT * FROM JSONB_ARRAY_ELEMENTS_TEXT(data -> 'modes_accueil'))                               AS "modes_accueil",
         ARRAY(SELECT * FROM JSONB_ARRAY_ELEMENTS_TEXT(data -> 'profils'))                                     AS "profils",
-        ARRAY(SELECT * FROM JSONB_ARRAY_ELEMENTS_TEXT(data -> 'thematiques'))                                 AS "thematiques",
         ARRAY(SELECT * FROM JSONB_ARRAY_ELEMENTS_TEXT(data -> 'types'))                                       AS "types",
         ARRAY(SELECT * FROM JSONB_ARRAY_ELEMENTS_TEXT(data -> 'justificatifs'))                               AS "justificatifs",
         ARRAY(SELECT * FROM JSONB_ARRAY_ELEMENTS_TEXT(data -> 'pre_requis'))                                  AS "pre_requis",
