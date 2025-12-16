@@ -6,25 +6,40 @@
                 <a href="{{ result.service.lien_source|default('https://dora.inclusion.gouv.fr/services/di--' + result.service.id, True) }}"
                    target="_blank">{{ result.service.nom }}</a>
             </h3>
-            <span>
+            <div class="di-card-location-row">
                 {% if result.service.commune %}
-                    {% if result.service.code_postal %}{{ result.service.code_postal }}{% endif %}
-                    {{ result.service.commune }}
+                    {% if result.service.latitude and result.service.longitude %}
+                    <a class="di-card-location" href="https://www.google.com/maps/place/{{ (result.service.adresse ~ ', ' ~ result.service.code_postal ~ ' ' ~ result.service.commune)|urlencode }}/@{{ result.service.latitude }},{{ result.service.longitude }},17z" target="_blank">
+                        <img src="/widget/static/icons/map-pin-line.svg" alt="" class="di-icon" aria-hidden="true">
+                        {{ result.service.commune }}
+                    </a>
+                    {% else %}
+                    <span class="di-card-location">
+                        <img src="/widget/static/icons/map-pin-line.svg" alt="" class="di-icon" aria-hidden="true">
+                        {{ result.service.commune }}
+                    </span>
+                    {% endif %}
+                    {% if result.distance is not none %}
+                        <span class="di-card-spacer" aria-hidden="true"></span>
+                        <span class="di-card-distance">
+                            <img src="/widget/static/icons/route-line.svg" alt="" class="di-icon" aria-hidden="true">
+                            {{ (result.distance) | round(0) | int }} km
+                        </span>
+                    {% endif %}
                 {% else %}
-                    <svg class="di-globe-icon"
-                         xmlns="http://www.w3.org/2000/svg"
-                         viewBox="0 0 24 24"
-                         fill="none"
-                         stroke="currentColor"
-                         stroke-width="2"
-                         stroke-linecap="round"
-                         stroke-linejoin="round">
-                        <circle cx="12" cy="12" r="10"></circle><line x1="2" y1="12" x2="22" y2="12"></line>
-                        <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path>
-                    </svg>
-                    À distance
+                    <span class="di-card-location">
+                        <img src="/widget/static/icons/global-line.svg" alt="" class="di-icon" aria-hidden="true">
+                        À distance
+                    </span>
                 {% endif %}
-            </span>
+            </div>
+            {% if result.service.thematiques %}
+                <div class="di-card-categories">
+                    {% for item in result.service.thematiques | thematiques_filter(query_params_categories[0].value if query_params_categories else None) %}
+                        <span class="di-badge{% if item.is_overflow %} di-badge-overflow{% endif %}">{{ item.label }}</span>
+                    {% endfor %}
+                </div>
+            {% endif %}
         </div>
         <p>
             {% if result.service.publics is not none %}
@@ -34,8 +49,7 @@
             {% endif %}
         </p>
         <div class="di-card-footer">
-            <a href="{{ result.service.lien_source|default('https://dora.inclusion.gouv.fr/services/di--' + result.service.id, True) }}"
-               target="_blank">{{ result.service.source }}</a>
+            <span class="di-card-source">Source : {{ result.service.source }}</span>
         </div>
     </li>
 {%- endmacro %}
