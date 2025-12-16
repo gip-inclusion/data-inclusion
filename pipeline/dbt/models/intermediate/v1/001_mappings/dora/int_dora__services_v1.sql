@@ -69,8 +69,8 @@ SELECT
     )                                                                                                         AS "conditions_acces",
     services.date_maj                                                                                         AS "date_maj",
     CASE
-        WHEN LENGTH(services.presentation_detail) >= 2000
-            THEN LEFT(services.presentation_detail, 1999) || '…'
+        WHEN LENGTH(services.presentation_detail) >= 10000
+            THEN LEFT(services.presentation_detail, 9999) || '…'
         ELSE COALESCE(services.presentation_detail, services.presentation_resume)
     END                                                                                                       AS "description",
     thematiques.thematiques                                                                                   AS "thematiques",

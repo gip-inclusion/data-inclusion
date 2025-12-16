@@ -28,8 +28,8 @@ SELECT
     structures.id                                         AS "id",
     structures.lien_source                                AS "lien_source",
     CASE
-        WHEN LENGTH(structures.description) > 2000
-            THEN LEFT(structures.description, 1999) || '…'
+        WHEN LENGTH(structures.description) > 10000
+            THEN LEFT(structures.description, 9999) || '…'
         ELSE structures.description
     END                                                   AS "description",
     CASE

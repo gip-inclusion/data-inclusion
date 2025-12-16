@@ -49,7 +49,7 @@ SELECT
     services.date_maj                    AS "date_maj",
     services.id                          AS "id",
     CASE
-        WHEN LENGTH(services.description) > 2000 THEN LEFT(services.description, 1999) || '…'
+        WHEN LENGTH(services.description) > 10000 THEN LEFT(services.description, 9999) || '…'
         ELSE services.description
     END                                  AS "description",
     CASE
