@@ -3,7 +3,7 @@ WITH source AS (
 
 final AS (
     SELECT
-        CAST(source.data ->> 'date_maj' AS DATE)                  AS "date_maj",
+        TO_DATE(source.data ->> 'date_maj', 'DD/MM/YYYY')         AS "date_maj",
         source.data ->> 'id'                                      AS "id",
         source.data ->> 'nom'                                     AS "nom",
         source.data ->> 'siret'                                   AS "siret",

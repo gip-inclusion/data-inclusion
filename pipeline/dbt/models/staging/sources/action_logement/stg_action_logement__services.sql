@@ -4,7 +4,7 @@ WITH source AS (
 final AS (
     SELECT
         source.data ->> 'id'                                         AS "id",
-        CAST(source.data ->> 'date_maj' AS DATE)                     AS "date_maj",
+        TO_DATE(source.data ->> 'date_maj', 'DD/MM/YYYY')            AS "date_maj",
         source.data ->> 'nom'                                        AS "nom",
         source.data ->> 'description'                                AS "description",
         source.data ->> 'lien_source'                                AS "lien_source",
