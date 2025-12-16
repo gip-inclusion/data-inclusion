@@ -12,7 +12,7 @@ from data_inclusion.api.auth.services import verify_token
 from data_inclusion.api.config import settings
 from data_inclusion.api.core import db
 from data_inclusion.api.decoupage_administratif.models import Commune
-from data_inclusion.api.inclusion_data.v1 import parameters, services
+from data_inclusion.api.inclusion_data.v1 import models, parameters, services
 from data_inclusion.api.utils import pagination
 from data_inclusion.schema import v1
 
@@ -105,18 +105,21 @@ def validate_widget_token(request: fastapi.Request, token: str) -> str | None:
 def get_results(
     db_session,
     size: int,
-    publics: list[v1.Public],
     score_qualite_minimum: float,
+    publics: list[v1.Public] | None = None,
     thematiques: list[v1.Thematique] | None = None,
     page: int = 1,
     code_commune: str | None = None,
+    sources: list[str] | None = None,
+    include_online_services: bool = False,
 ):
     params = parameters.SearchServicesQueryParams(
-        code_commune=code_commune,
+        code_commune=code_commune or None,
         thematiques=thematiques,
         publics=publics,
         score_qualite_minimum=score_qualite_minimum,
         exclure_doublons=True,
+        sources=sources,
     )
 
     commune_instance = None
@@ -134,6 +137,9 @@ def get_results(
         commune_instance=commune_instance,
     )
 
+    if not include_online_services:
+        query = query.filter(models.Service.commune.isnot(None))
+
     return pagination.paginate(
         db_session=db_session,
         query=query,
@@ -143,24 +149,94 @@ def get_results(
     )
 
 
-def list_thematiques(category: v1.Categorie) -> list[v1.Thematique]:
-    return sorted(t for t in v1.Thematique if t.value.startswith(category.value))
+def list_thematiques(categories: list[v1.Categorie]) -> list[v1.Thematique]:
+    return sorted(
+        t for t in v1.Thematique if any(t.value.startswith(c.value) for c in categories)
+    )
 
 
 @app.get(path="/")
 def widget(
     request: fastapi.Request,
-    token: Annotated[str, fastapi.Query(description="Widget authentication token")],
-    display_form: bool = True,
-    display_communes_filter: bool = True,
-    display_categories_filter: bool = True,
-    display_publics_filter: bool = True,
-    code_commune: str | None = None,
-    categories: v1.Categorie | None = None,
-    publics: v1.Public = v1.Public.TOUS_PUBLICS,
-    score_qualite_minimum: float = 0.8,
-    x: int = 5,
-    y: int = 2,
+    token: Annotated[
+        str,
+        fastapi.Query(description="Token d'authentification du widget (obligatoire)"),
+    ],
+    display_form: Annotated[
+        bool,
+        fastapi.Query(description="Affiche ou masque le formulaire de recherche"),
+    ] = True,
+    display_communes_filter: Annotated[
+        bool,
+        fastapi.Query(description="Affiche ou masque le filtre par commune"),
+    ] = True,
+    display_categories_filter: Annotated[
+        bool,
+        fastapi.Query(
+            description="Affiche ou masque le filtre par catégorie/thématique"
+        ),
+    ] = True,
+    display_publics_filter: Annotated[
+        bool,
+        fastapi.Query(description="Affiche ou masque le filtre par public cible"),
+    ] = True,
+    code_commune: Annotated[
+        str | None,
+        fastapi.Query(
+            description="Code INSEE de la commune pour pré-filtrer les résultats"
+        ),
+    ] = None,
+    categories: Annotated[
+        list[v1.Categorie] | None,
+        fastapi.Query(description="Catégories pour pré-filtrer les résultats"),
+    ] = None,
+    thematiques: Annotated[
+        list[v1.Thematique] | None,
+        fastapi.Query(
+            description="Thématiques pour pré-filtrer. "
+            "Si fourni, les catégories sont ignorées et le filtre catégories"
+            " est masqué."
+        ),
+    ] = None,
+    publics: Annotated[
+        list[v1.Public] | None,
+        fastapi.Query(
+            description="Publics cibles pour pré-filtrer les résultats",
+        ),
+    ] = None,
+    score_qualite_minimum: Annotated[
+        float,
+        fastapi.Query(
+            description="Score de qualité minimum des services (0 à 1)",
+        ),
+    ] = 0.8,
+    sources: Annotated[
+        list[str] | None,
+        fastapi.Query(
+            description="Liste blanche d'identifiants de sources à inclure",
+        ),
+    ] = None,
+    include_online_services: Annotated[
+        bool,
+        fastapi.Query(
+            description="Inclure les services en ligne (sans commune associée)"
+        ),
+    ] = False,
+    size: Annotated[
+        int | None,
+        fastapi.Query(
+            description="Nombre de services par ligne, sans pagination. "
+            "Si non défini, utilise la grille x*y."
+        ),
+    ] = None,
+    x: Annotated[
+        int,
+        fastapi.Query(description="Nombre de colonnes de résultats"),
+    ] = 5,
+    y: Annotated[
+        int,
+        fastapi.Query(description="Nombre de lignes de résultats"),
+    ] = 2,
     hx_request: Annotated[bool, fastapi.Header()] = False,
     page: Annotated[int, pydantic.Field(ge=1)] = 1,
     db_session=fastapi.Depends(db.get_session),
@@ -171,22 +247,34 @@ def widget(
         token_sub = "test_user"
 
     commune_instance = None
-    if code_commune is not None:
+    if code_commune:
         commune_instance = db_session.get(Commune, code_commune)
 
-    thematiques = list_thematiques(categories) if categories else None
-    size = x * y
+    if thematiques:
+        display_categories_filter = False
+        thematiques_for_query = thematiques
+    else:
+        thematiques_for_query = list_thematiques(categories) if categories else None
+
+    inline_mode = size is not None
+    effective_size = size if size is not None else x * y
     results = get_results(
         db_session=db_session,
         page=page,
         code_commune=code_commune,
-        publics=[publics],
-        thematiques=thematiques,
+        publics=publics,
+        thematiques=thematiques_for_query,
         score_qualite_minimum=score_qualite_minimum,
-        size=size,
+        size=effective_size,
+        sources=sources,
+        include_online_services=include_online_services,
     )
 
     current_url = str(request.url)
+
+    commune_label = None
+    if commune_instance is not None:
+        commune_label = commune_instance.nom
 
     if hx_request:
         return templates.TemplateResponse(
@@ -198,18 +286,15 @@ def widget(
                 "token_sub": token_sub,
                 "current_url": current_url,
                 "schema_publics": v1.Public,
+                "query_params_categories": categories,
+                "commune_label": commune_label,
                 "results": results["items"],
                 "page": results["page"],
                 "pages": results["pages"],
                 "x": x,
+                "inline_mode": inline_mode,
             },
         )
-
-    commune_label = None
-    if commune_instance is not None:
-        codes_postaux = commune_instance.codes_postaux
-        code_postal = codes_postaux[0] if codes_postaux else None
-        commune_label = f"{commune_instance.nom} ({code_postal})"
 
     return templates.TemplateResponse(
         request=request,
@@ -218,11 +303,13 @@ def widget(
             "request": request,
             "token": token,
             "token_sub": token_sub,
+            "token_enabled": settings.TOKEN_ENABLED,
             "current_url": current_url,
             "schema_categories": v1.Categorie,
             "schema_publics": v1.Public,
             "query_params_commune_code": code_commune,
             "query_params_commune_label": commune_label,
+            "commune_label": commune_label,
             "query_params_publics": publics,
             "query_params_categories": categories,
             "query_params_x": x,
@@ -232,6 +319,9 @@ def widget(
             "query_params_display_communes_filter": display_communes_filter,
             "query_params_display_categories_filter": display_categories_filter,
             "query_params_display_publics_filter": display_publics_filter,
+            "query_params_sources": sources,
+            "query_params_thematiques": thematiques,
+            "query_params_include_online_services": include_online_services,
             "results": results["items"],
             "display_form": display_form,
             "display_communes_filter": display_communes_filter,
@@ -240,6 +330,7 @@ def widget(
             "page": results["page"],
             "pages": results["pages"],
             "x": x,
+            "inline_mode": inline_mode,
         },
     )
 

@@ -1,8 +1,19 @@
-{% macro select(name, label, placeholder, options, selected) -%}
+{% macro select(name, label, placeholder, options, selected, all_option_label=None) -%}
 <div class="input-group">
     <label for="input-{{ name }}">{{ label }}</label>
-    <select name="{{ name }}" id="input-{{ name }}">
+    <select id="input-{{ name }}" {% if selected %}name="{{ name }}"{% endif %}
+        _="on change
+             if my value then
+               set @name of me to '{{ name }}'
+             {% if all_option_label %}else
+               remove @name
+             {% endif %}end
+           ">
+        {% if all_option_label %}
+        <option value="" {% if not selected %}selected{% endif %}>{{ all_option_label }}</option>
+        {% else %}
         <option value="" disabled {% if not selected %}selected{% endif %}>{{ placeholder }}</option>
+        {% endif %}
         {% for option in options %}
         <option value="{{ option.value }}" {% if selected == option.value %}selected{% endif %}>{{ option.label }}</option>
         {% endfor %}

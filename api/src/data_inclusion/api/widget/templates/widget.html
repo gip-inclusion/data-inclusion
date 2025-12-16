@@ -27,14 +27,36 @@
                 <input type="hidden"
                        name="display_publics_filter"
                        value="{{ query_params_display_publics_filter|lower }}">
+                <input type="hidden"
+                       name="include_online_services"
+                       value="{{ query_params_include_online_services|lower }}">
+                {% if query_params_sources %}
+                    {% for source in query_params_sources %}
+                        <input type="hidden" name="sources" value="{{ source }}">
+                    {% endfor %}
+                {% endif %}
+                {% if query_params_thematiques %}
+                    {% for thematique in query_params_thematiques %}
+                        <input type="hidden" name="thematiques" value="{{ thematique.value }}">
+                    {% endfor %}
+                {% elif not display_categories_filter and query_params_categories %}
+                    {% for category in query_params_categories %}
+                        <input type="hidden" name="categories" value="{{ category.value }}">
+                    {% endfor %}
+                {% endif %}
+                {% if not display_publics_filter and query_params_publics %}
+                    {% for public in query_params_publics %}
+                        <input type="hidden" name="publics" value="{{ public.value }}">
+                    {% endfor %}
+                {% endif %}
                 <input type="hidden" name="token" value="{{ token }}">
                 <div class="di-filters-grid">
                     {% if display_communes_filter %}{{ combobox(query_params_commune_code, query_params_commune_label) }}{% endif %}
                     {% if display_categories_filter %}
-                        {{ select("categories", "Thématiques", "Choisir une thématique", schema_categories, query_params_categories) }}
+                        {{ select("categories", "Thématiques", "Choisir une thématique", schema_categories, query_params_categories[0].value if query_params_categories else None, "Toutes thématiques") }}
                     {% endif %}
                     {% if display_publics_filter %}
-                        {{ select("publics", "Publics", "Choisir un public", schema_publics, query_params_publics) }}
+                        {{ select("publics", "Publics", "Choisir un public", schema_publics, query_params_publics[0].value if query_params_publics else None) }}
                     {% endif %}
                 </div>
             </form>
