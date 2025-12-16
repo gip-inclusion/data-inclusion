@@ -8,6 +8,7 @@ FROM (
     ('dora'),
     ('emplois-de-linclusion'),
     ('france-travail'),
+    ('ma-boussole-aidants'),
     ('monenfant'),
     ('soliguide')
 ) AS x (source)
