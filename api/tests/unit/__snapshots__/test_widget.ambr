@@ -346,6 +346,7 @@
   
   <output id="results">
       
+          
           <ul class="di-cards-grid"
               id="results-grid"
               style="grid-template-columns: repeat(2, 1fr)"
@@ -354,50 +355,31 @@
               
                   <li class="di-card">
           <div class="di-card-header">
-              <h2>Chevallier Cousin et Fils</h2>
-              <h3>
-                  <a href="https://dora.fr/dora--never-voice-party"
-                     target="_blank">Service sans commune</a>
-              </h3>
-              <span>
-                  
-                      <svg class="di-globe-icon"
-                           xmlns="http://www.w3.org/2000/svg"
-                           viewBox="0 0 24 24"
-                           fill="none"
-                           stroke="currentColor"
-                           stroke-width="2"
-                           stroke-linecap="round"
-                           stroke-linejoin="round">
-                          <circle cx="12" cy="12" r="10"></circle><line x1="2" y1="12" x2="22" y2="12"></line>
-                          <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path>
-                      </svg>
-                      À distance
-                  
-              </span>
-          </div>
-          <p>
-              
-                  Séniors
-              
-          </p>
-          <div class="di-card-footer">
-              <a href="https://dora.fr/dora--never-voice-party"
-                 target="_blank">dora</a>
-          </div>
-      </li><li class="di-card">
-          <div class="di-card-header">
               <h2>Bodin Joly SARL</h2>
               <h3>
                   <a href="https://dora.fr/dora--professor"
                      target="_blank">Service de formation professionnelle</a>
               </h3>
-              <span>
+              <div class="di-card-location-row">
                   
-                      59000
-                      Lille
+                      
+                      <a class="di-card-location" href="https://www.google.com/maps/place/760%2C%20boulevard%20de%20Humbert%2C%2059000%20Lille/@-77.4426735,175.513708,17z" target="_blank">
+                          <img src="/widget/static/icons/map-pin-line.svg" alt="" class="di-icon" aria-hidden="true">
+                          Lille
+                      </a>
+                      
+                      
                   
-              </span>
+              </div>
+              
+                  <div class="di-card-categories">
+                      
+                          <span class="di-badge">Famille</span>
+                      
+                          <span class="di-badge di-badge-overflow">etc.…</span>
+                      
+                  </div>
+              
           </div>
           <p>
               
@@ -405,12 +387,48 @@
               
           </p>
           <div class="di-card-footer">
-              <a href="https://dora.fr/dora--professor"
-                 target="_blank">dora</a>
+              <span class="di-card-source">Source : dora</span>
+          </div>
+      </li><li class="di-card">
+          <div class="di-card-header">
+              <h2>Roche</h2>
+              <h3>
+                  <a href="https://emplois-de-linclusion.fr/emplois-de-linclusion--by-modern"
+                     target="_blank">Accompagnement à l&#39;emploi</a>
+              </h3>
+              <div class="di-card-location-row">
+                  
+                      
+                      <a class="di-card-location" href="https://www.google.com/maps/place/boulevard%20de%20Payet%2C%2075001%20Paris/@-3.050708,158.210579,17z" target="_blank">
+                          <img src="/widget/static/icons/map-pin-line.svg" alt="" class="di-icon" aria-hidden="true">
+                          Paris
+                      </a>
+                      
+                      
+                  
+              </div>
+              
+                  <div class="di-card-categories">
+                      
+                          <span class="di-badge">Mobilité</span>
+                      
+                          <span class="di-badge di-badge-overflow">etc.…</span>
+                      
+                  </div>
+              
+          </div>
+          <p>
+              
+                  Jeunes
+              
+          </p>
+          <div class="di-card-footer">
+              <span class="di-card-source">Source : emplois-de-linclusion</span>
           </div>
       </li>
               
           </ul>
+          
       
       <div class="di-results-footer">
           <div class="di-results-footer-left">
@@ -489,16 +507,53 @@
   '''
   <output id="results">
       
-          <div class="di-empty-results">
-              <img src="/widget/static/icons/search-line.svg"
-                   alt=""
-                   class="di-empty-results-icon"
-                   aria-hidden="true">
-              <h3 class="di-empty-results-title">Nous n'avons trouvé aucun résultat correspondant à votre recherche</h3>
-              <p class="di-empty-results-text">
-                  Il se peut que vos filtres soient trop restrictifs. N'hésitez pas à les modifier ou à les élargir pour découvrir davantage de solutions.
-              </p>
+          
+          <ul class="di-cards-grid"
+              id="results-grid"
+              style="grid-template-columns: repeat(2, 1fr)"
+              aria-live="polite"
+              aria-atomic="true">
+              
+                  <li class="di-card">
+          <div class="di-card-header">
+              <h2>Bodin Joly SARL</h2>
+              <h3>
+                  <a href="https://dora.fr/dora--professor"
+                     target="_blank">Service de formation professionnelle</a>
+              </h3>
+              <div class="di-card-location-row">
+                  
+                      
+                      <a class="di-card-location" href="https://www.google.com/maps/place/760%2C%20boulevard%20de%20Humbert%2C%2059000%20Lille/@-77.4426735,175.513708,17z" target="_blank">
+                          <img src="/widget/static/icons/map-pin-line.svg" alt="" class="di-icon" aria-hidden="true">
+                          Lille
+                      </a>
+                      
+                      
+                  
+              </div>
+              
+                  <div class="di-card-categories">
+                      
+                          <span class="di-badge">Famille</span>
+                      
+                          <span class="di-badge di-badge-overflow">etc.…</span>
+                      
+                  </div>
+              
           </div>
+          <p>
+              
+                  Femmes
+              
+          </p>
+          <div class="di-card-footer">
+              <span class="di-card-source">Source : dora</span>
+          </div>
+      </li>
+              
+          </ul>
+          
       
       <div class="di-results-footer">
           <div class="di-results-footer-left">
@@ -529,16 +584,53 @@
   '''
   <output id="results">
       
-          <div class="di-empty-results">
-              <img src="/widget/static/icons/search-line.svg"
-                   alt=""
-                   class="di-empty-results-icon"
-                   aria-hidden="true">
-              <h3 class="di-empty-results-title">Nous n'avons trouvé aucun résultat correspondant à votre recherche</h3>
-              <p class="di-empty-results-text">
-                  Il se peut que vos filtres soient trop restrictifs. N'hésitez pas à les modifier ou à les élargir pour découvrir davantage de solutions.
-              </p>
+          
+          <ul class="di-cards-grid"
+              id="results-grid"
+              style="grid-template-columns: repeat(2, 1fr)"
+              aria-live="polite"
+              aria-atomic="true">
+              
+                  <li class="di-card">
+          <div class="di-card-header">
+              <h2>Bodin Joly SARL</h2>
+              <h3>
+                  <a href="https://dora.fr/dora--professor"
+                     target="_blank">Service de formation professionnelle</a>
+              </h3>
+              <div class="di-card-location-row">
+                  
+                      
+                      <a class="di-card-location" href="https://www.google.com/maps/place/760%2C%20boulevard%20de%20Humbert%2C%2059000%20Lille/@-77.4426735,175.513708,17z" target="_blank">
+                          <img src="/widget/static/icons/map-pin-line.svg" alt="" class="di-icon" aria-hidden="true">
+                          Lille
+                      </a>
+                      
+                      
+                  
+              </div>
+              
+                  <div class="di-card-categories">
+                      
+                          <span class="di-badge">Famille</span>
+                      
+                          <span class="di-badge di-badge-overflow">etc.…</span>
+                      
+                  </div>
+              
           </div>
+          <p>
+              
+                  Femmes
+              
+          </p>
+          <div class="di-card-footer">
+              <span class="di-card-source">Source : dora</span>
+          </div>
+      </li>
+              
+          </ul>
+          
       
       <div class="di-results-footer">
           <div class="di-results-footer-left">

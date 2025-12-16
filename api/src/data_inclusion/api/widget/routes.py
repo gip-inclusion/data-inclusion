@@ -29,6 +29,46 @@ app.mount(
 templates = templating.Jinja2Templates(directory=TEMPLATES_DIR)
 
 
+def thematiques_filter(
+    thematiques: list[str] | None, selected_category: str | None = None
+) -> list[dict]:
+    if not thematiques:
+        return []
+
+    def _category_from_prefix(prefix: str) -> str:
+        for cat in v1.Categorie:
+            if cat.value == prefix:
+                return cat.label
+        return prefix
+
+    prefixes = set()
+    for t in thematiques:
+        if "--" in t:
+            prefixes.add(t.split("--")[0])
+
+    sorted_prefixes = sorted(prefixes)
+
+    if selected_category and selected_category in sorted_prefixes:
+        sorted_prefixes.remove(selected_category)
+        sorted_prefixes = [selected_category] + sorted_prefixes
+
+    result = []
+    for p in sorted_prefixes[:3]:
+        result.append(
+            {
+                "label": _category_from_prefix(p),
+                "is_overflow": False,
+            }
+        )
+    if len(sorted_prefixes) > 3:
+        result.append({"label": "etc.…", "is_overflow": True})
+
+    return result
+
+
+templates.env.filters["thematiques_filter"] = thematiques_filter
+
+
 def validate_widget_token(request: fastapi.Request, token: str) -> str | None:
     payload = verify_token(token)
     if payload is None:
