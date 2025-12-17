@@ -2,10 +2,6 @@ WITH services AS (
     SELECT * FROM {{ ref('int__union_services') }}
 ),
 
-structures AS (
-    SELECT * FROM {{ ref('int__structures') }}
-),
-
 departements AS (
     SELECT * FROM {{ ref('stg_decoupage_administratif__departements') }}
 ),
@@ -35,13 +31,6 @@ adresses_with_code_region AS (
     FROM adresses_with_code_departement AS adresses
     LEFT JOIN departements
         ON adresses.code_departement = departements.code
-),
-
-services_with_valid_structure AS (
-    SELECT services.*
-    FROM services
-    INNER JOIN structures
-        ON services._di_structure_surrogate_id = structures._di_surrogate_id
 ),
 
 -- For some providers, zone_diffusion_code can not be set at the source mapping level for lack of proper codification.
@@ -129,7 +118,7 @@ SELECT
     adresses.adresse                                 AS "adresse",
     adresses.code_postal                             AS "code_postal",
     adresses.code_insee                              AS "code_insee"
-FROM services_with_valid_structure AS services
+FROM services
 LEFT JOIN zones_diffusion
     ON services._di_surrogate_id = zones_diffusion._di_surrogate_id
 LEFT JOIN contacts
