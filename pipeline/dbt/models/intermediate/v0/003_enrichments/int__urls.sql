@@ -33,7 +33,7 @@ next_batch AS (
     LIMIT 1000
 ),
 
-resolved_batch AS (
+final AS (
     SELECT
         next_batch.last_checked_at,
         results.input_url,
@@ -50,17 +50,6 @@ resolved_batch AS (
             (SELECT JSONB_AGG(next_batch.url) FROM next_batch)
         ) AS results
         ON next_batch.url = results.input_url
-),
-
-final AS (
-    {% if is_incremental() %}
-        SELECT *
-        FROM {{ this }}
-        WHERE input_url NOT IN (SELECT resolved_batch.input_url FROM resolved_batch)
-        UNION ALL
-    {% endif %}
-    SELECT *
-    FROM resolved_batch
 )
 
 SELECT * FROM final
