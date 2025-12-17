@@ -28,7 +28,7 @@ resource "scaleway_instance_server" "main" {
   security_group_id = scaleway_instance_security_group.main.id
 
   root_volume {
-    size_in_gb            = 200
+    size_in_gb            = 300
     delete_on_termination = false
   }
 
