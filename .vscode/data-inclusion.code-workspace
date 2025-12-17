@@ -26,9 +26,6 @@
 			"path": "../pipeline"
 		},
 		{
-			"path": "../analyse"
-		},
-		{
 			"path": "../deployment"
 		},
 		{
