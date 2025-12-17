@@ -2,6 +2,7 @@
     config(
         materialized="incremental",
         unique_key="input_url",
+        post_hook="DELETE FROM {{ this }} t WHERE NOT EXISTS (SELECT 1 FROM {{ ref('int__union_urls_v1') }} u WHERE u.url = t.input_url)"
     )
 }}
 
