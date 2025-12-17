@@ -12,6 +12,9 @@ models:
   - name: int__union_urls_v1
     description: |
       This model contains all the potential URLs that we want to validate.
+    config:
+      indexes:
+        - columns: ['url']
     columns:
       - name: url
         data_tests:

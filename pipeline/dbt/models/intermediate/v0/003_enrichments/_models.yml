@@ -121,6 +121,10 @@ models:
     description: |
       Contains the validation statuses, eventual error messages, and attempts for each URL
       for which we attempted a validation.
+    config:
+      indexes:
+        - columns: ['input_url']
+        - columns: ['url']
     columns:
       - name: last_checked_at
         description: |
