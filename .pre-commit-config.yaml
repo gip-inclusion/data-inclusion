@@ -7,7 +7,7 @@ repos:
 
   # api
   - repo: https://github.com/astral-sh/ruff-pre-commit
-    rev: v0.13.0
+    rev: v0.14.9
     hooks:
       - id: ruff-format
         name: api|ruff-format
@@ -34,7 +34,7 @@ repos:
 
   # deployment
   - repo: https://github.com/antonbabenko/pre-commit-terraform
-    rev: v1.100.0
+    rev: v1.104.0
     hooks:
       - id: terraform_fmt
         name: deployment|terraform-fmt
@@ -42,7 +42,7 @@ repos:
 
   # pipeline
   - repo: https://github.com/astral-sh/ruff-pre-commit
-    rev: v0.13.0
+    rev: v0.14.9
     hooks:
       - id: ruff-format
         name: pipeline|ruff-format
@@ -59,14 +59,14 @@ repos:
         types_or: [python]
 
   - repo: https://github.com/sqlfluff/sqlfluff
-    rev: 3.4.2
+    rev: 3.5.0
     hooks:
       - id: sqlfluff-fix
         name: pipeline|sqlfluff-fix
         files: ^pipeline
         types: [sql]
         additional_dependencies:
-          - sqlfluff-templater-dbt==3.4.2
+          - sqlfluff-templater-dbt==3.5.0
           - dbt-core>=1.10.11
           - dbt-postgres>=1.9
         args:
@@ -74,7 +74,7 @@ repos:
 
   # processings
   - repo: https://github.com/astral-sh/ruff-pre-commit
-    rev: v0.13.0
+    rev: v0.14.9
     hooks:
       - id: ruff-format
         name: processings|ruff-format
