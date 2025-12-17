@@ -6,23 +6,12 @@ services_v0_to_v1 AS (
     SELECT * FROM {{ ref('int__services_v0_to_v1') }}
 ),
 
-structures AS (
-    SELECT * FROM {{ ref('int__structures_v1') }}
-),
-
 contacts AS (
     SELECT * FROM {{ ref('int__contacts_v1') }}
 ),
 
 adresses AS (
     SELECT * FROM {{ ref('int__adresses_v1') }}
-),
-
-services_with_valid_structure AS (
-    SELECT services.*
-    FROM services
-    INNER JOIN structures
-        ON services.structure_id = structures.id
 ),
 
 urls AS (
@@ -96,7 +85,7 @@ SELECT
     adresses.adresse                     AS "adresse",
     adresses.code_postal                 AS "code_postal",
     adresses.code_insee                  AS "code_insee"
-FROM services_with_valid_structure AS services
+FROM services
 LEFT JOIN contacts
     ON services.id = contacts.id
 LEFT JOIN adresses
