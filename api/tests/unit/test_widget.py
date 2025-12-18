@@ -92,21 +92,13 @@ def test_widget_token_validation(allowed_origins, request_headers, status_code, 
         assert exc_info.value.detail == detail
 
 
-def test_widget_rendering_empty_results(api_client, snapshot, monkeypatch):
-    from data_inclusion.api.widget.routes import settings as widget_settings
-
-    monkeypatch.setattr(widget_settings, "TOKEN_ENABLED", False)
-
+def test_widget_rendering_empty_results(api_client, snapshot, auth_disabled):  # noqa: ARG001
     response = api_client.get("/widget/?token=test-token&x=2&y=1")
     assert response.status_code == 200
     assert response.text.strip() == snapshot
 
 
-def test_widget_rendering_with_results(api_client, db_session, snapshot, monkeypatch):
-    from data_inclusion.api.widget.routes import settings as widget_settings
-
-    monkeypatch.setattr(widget_settings, "TOKEN_ENABLED", False)
-
+def test_widget_rendering_with_results(api_client, db_session, snapshot, auth_disabled):  # noqa: ARG001
     factories.v1.ServiceFactory(
         source="dora",
         structure__nom="Structure Formation",
@@ -170,11 +162,7 @@ def test_widget_rendering_with_results(api_client, db_session, snapshot, monkeyp
     assert response.text.strip() == snapshot(name="HTMX results for Paris & famille")
 
 
-def test_widget_filter_sources(api_client, db_session, monkeypatch):
-    from data_inclusion.api.widget.routes import settings as widget_settings
-
-    monkeypatch.setattr(widget_settings, "TOKEN_ENABLED", False)
-
+def test_widget_filter_sources(api_client, db_session, auth_disabled):  # noqa: ARG001
     factories.v1.ServiceFactory(
         source="dora",
         structure__nom="Structure Dora",
@@ -218,11 +206,7 @@ def test_widget_filter_sources(api_client, db_session, monkeypatch):
     assert "Service MesAides" in response.text
 
 
-def test_widget_filter_thematiques(api_client, db_session, monkeypatch):
-    from data_inclusion.api.widget.routes import settings as widget_settings
-
-    monkeypatch.setattr(widget_settings, "TOKEN_ENABLED", False)
-
+def test_widget_filter_thematiques(api_client, db_session, auth_disabled):  # noqa: ARG001
     factories.v1.ServiceFactory(
         source="dora",
         structure__nom="Structure Famille",
@@ -275,11 +259,7 @@ def test_widget_filter_thematiques(api_client, db_session, monkeypatch):
     assert "Service Logement" in response.text
 
 
-def test_widget_filter_include_online_services(api_client, db_session, monkeypatch):
-    from data_inclusion.api.widget.routes import settings as widget_settings
-
-    monkeypatch.setattr(widget_settings, "TOKEN_ENABLED", False)
-
+def test_widget_filter_include_online_services(api_client, db_session, auth_disabled):  # noqa: ARG001
     factories.v1.ServiceFactory(
         source="dora",
         structure__nom="Structure Presentiel",
@@ -319,11 +299,7 @@ def test_widget_filter_include_online_services(api_client, db_session, monkeypat
     assert "Service En Ligne" not in response.text
 
 
-def test_widget_filter_publics(api_client, db_session, monkeypatch):
-    from data_inclusion.api.widget.routes import settings as widget_settings
-
-    monkeypatch.setattr(widget_settings, "TOKEN_ENABLED", False)
-
+def test_widget_filter_publics(api_client, db_session, auth_disabled):  # noqa: ARG001
     factories.v1.ServiceFactory(
         source="dora",
         structure__nom="Structure Femmes",
