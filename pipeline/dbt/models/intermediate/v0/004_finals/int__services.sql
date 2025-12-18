@@ -57,7 +57,7 @@ zones_diffusion AS (
                 THEN departements.nom
             ELSE services.zone_diffusion_nom
         END                          AS "zone_diffusion_nom"
-    FROM services_with_valid_structure AS services
+    FROM services
     LEFT JOIN adresses_with_code_departement AS adresses
         ON services._di_adresse_surrogate_id = adresses._di_surrogate_id
     LEFT JOIN departements
