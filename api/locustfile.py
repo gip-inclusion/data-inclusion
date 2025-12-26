@@ -7,7 +7,7 @@ from dotenv import load_dotenv
 load_dotenv()
 
 LOCUST_API_TOKEN = os.environ.get("LOCUST_API_TOKEN", None)
-LOCUST_API_VERSION = os.environ.get("LOCUST_API_VERSION", "v0")
+LOCUST_API_VERSION = os.environ.get("LOCUST_API_VERSION", "v1")
 
 
 class APIUser(locust.HttpUser):
@@ -35,25 +35,6 @@ class APIUser(locust.HttpUser):
                     next_url.args["page"] = current_page + 1
 
     @locust.task
-    @locust.tag("list_structures")
-    def list_structures(self):
-        self._list_paginated_endpoint(
-            furl.furl(f"/api/{LOCUST_API_VERSION}/structures")
-        )
-
-    @locust.task
-    @locust.tag("list_structures_deduplicate")
-    def list_structures_deduplicate(self):
-        self._list_paginated_endpoint(
-            furl.furl(f"/api/{LOCUST_API_VERSION}/structures?exclure_doublons=True")
-        )
-
-    @locust.task
-    @locust.tag("list_services")
-    def list_services(self):
-        self._list_paginated_endpoint(furl.furl(f"/api/{LOCUST_API_VERSION}/services"))
-
-    @locust.task
     @locust.tag("search_services")
     def search_services(self):
         self._list_paginated_endpoint(
@@ -75,7 +56,7 @@ class APIUser(locust.HttpUser):
                 {
                     "code_insee": "59350",
                     "thematiques": "sante",
-                    "exclure_doublons": "True",
+                    "exclure_doublons": "thematiques",
                 },
             )
         )
