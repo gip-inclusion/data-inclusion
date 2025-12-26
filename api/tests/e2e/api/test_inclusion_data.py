@@ -1978,9 +1978,11 @@ def test_list_structures_deduplicate(api_client, url, structure_factory):
 @pytest.mark.parametrize("schema_version", ["v0", "v1"])
 @pytest.mark.parametrize("path", ["/search/services"])
 @pytest.mark.with_token
-def test_search_services_deduplicate(
-    api_client, url, structure_factory, service_factory
+def test_search_services_deduplicate_strict(
+    api_client, url, structure_factory, service_factory, schema_version
 ):
+    exclure_doublons = "strict" if schema_version == "v1" else True
+
     best_in_cluster_1_for_src_1 = structure_factory(
         source="src_1",
         id="src_1--best",
@@ -2065,7 +2067,7 @@ def test_search_services_deduplicate(
 
     response = api_client.get(
         url,
-        params={"sources": ["src_1"], "exclure_doublons": True},
+        params={"sources": ["src_1"], "exclure_doublons": exclure_doublons},
     )
     assert_paginated_response_data(response.json(), total=4)
     assert {d["service"]["id"] for d in response.json()["items"]} == {
@@ -2077,7 +2079,7 @@ def test_search_services_deduplicate(
 
     response = api_client.get(
         url,
-        params={"exclure_doublons": True},
+        params={"exclure_doublons": exclure_doublons},
     )
     assert_paginated_response_data(response.json(), total=3)
     assert {d["service"]["id"] for d in response.json()["items"]} == {
@@ -2091,7 +2093,7 @@ def test_search_services_deduplicate(
         params={
             "sources": ["src_1"],
             "thematiques": ["famille--garde-denfants"],
-            "exclure_doublons": True,
+            "exclure_doublons": exclure_doublons,
         },
     )
     assert_paginated_response_data(response.json(), total=2)
@@ -2102,7 +2104,10 @@ def test_search_services_deduplicate(
 
     response = api_client.get(
         url,
-        params={"thematiques": ["famille--garde-denfants"], "exclure_doublons": True},
+        params={
+            "thematiques": ["famille--garde-denfants"],
+            "exclure_doublons": exclure_doublons,
+        },
     )
     assert_paginated_response_data(response.json(), total=2)
     assert {d["service"]["id"] for d in response.json()["items"]} == {
@@ -2115,13 +2120,83 @@ def test_search_services_deduplicate(
         params={
             "sources": ["src_1"],
             "thematiques": ["mobilite--acceder-a-un-vehicule"],
-            "exclure_doublons": True,
+            "exclure_doublons": exclure_doublons,
         },
     )
     assert_paginated_response_data(response.json(), total=2)
     assert {d["service"]["id"] for d in response.json()["items"]} == {
         best_structure_svc_b.id,
         no_cluster_structure_svc.id,
+    }
+
+
+@pytest.mark.parametrize("schema_version", ["v1"])
+@pytest.mark.parametrize("path", ["/search/services"])
+@pytest.mark.with_token
+def test_search_services_deduplicate_by_thematiques(
+    api_client, url, structure_factory, service_factory
+):
+    low_quality_structure = structure_factory(
+        source="src_1",
+        id="src_1--low-quality",
+        cluster_id="cluster_1",
+        score_qualite=0.3,
+    )
+    high_quality_structure = structure_factory(
+        source="src_1",
+        id="src_1--high-quality",
+        cluster_id="cluster_1",
+        score_qualite=0.9,
+    )
+
+    service_factory(
+        source="src_1",
+        id="src_1--low-svc-famille",
+        structure=low_quality_structure,
+        thematiques=[v1.Thematique.FAMILLE__GARDE_DENFANTS.value],
+        score_qualite=0.8,
+    )
+    service_factory(
+        source="src_1",
+        id="src_1--low-svc-mobilite",
+        structure=low_quality_structure,
+        thematiques=[v1.Thematique.MOBILITE__ACCEDER_A_UN_VEHICULE.value],
+        score_qualite=0.6,
+    )
+    low_quality_svc_logement = service_factory(
+        source="src_1",
+        id="src_1--low-svc-logement",
+        structure=low_quality_structure,
+        thematiques=[v1.Thematique.LOGEMENT_HEBERGEMENT__LOUER_UN_LOGEMENT.value],
+        score_qualite=0.9,
+    )
+
+    high_quality_svc_famille = service_factory(
+        source="src_1",
+        id="src_1--high-svc-famille",
+        structure=high_quality_structure,
+        thematiques=[v1.Thematique.FAMILLE__GARDE_DENFANTS.value],
+        score_qualite=0.4,
+    )
+    high_quality_svc_mobilite = service_factory(
+        source="src_1",
+        id="src_1--high-svc-mobilite",
+        structure=high_quality_structure,
+        thematiques=[v1.Thematique.MOBILITE__ACCEDER_A_UN_VEHICULE.value],
+        score_qualite=0.5,
+    )
+
+    response = api_client.get(
+        url,
+        params={"exclure_doublons": "thematiques"},
+    )
+
+    assert response.status_code == 200
+    assert_paginated_response_data(response.json(), total=3)
+    assert {d["service"]["id"] for d in response.json()["items"]} == {
+        high_quality_svc_famille.id,
+        high_quality_svc_mobilite.id,
+        low_quality_svc_logement.id,
     }
 
 

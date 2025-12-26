@@ -244,7 +244,7 @@ def test_search_services_event_saved(
         "types": ["accompagnement"],
         "lat": 45.0,
         "lon": 5.0,
-        "exclure_doublons": True,
+        "exclure_doublons": "strict" if schema_version == "v1" else True,
         "recherche_public": "test",
         "score_qualite_minimum": 0.5,
     }
