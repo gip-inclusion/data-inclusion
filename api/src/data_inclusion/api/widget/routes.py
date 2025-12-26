@@ -12,6 +12,7 @@ from data_inclusion.api.auth.services import verify_token
 from data_inclusion.api.config import settings
 from data_inclusion.api.core import db
 from data_inclusion.api.decoupage_administratif.models import Commune
+from data_inclusion.api.inclusion_data.common.filters import ExclureDoublonsServicesMode
 from data_inclusion.api.inclusion_data.v1 import models, parameters, services
 from data_inclusion.api.utils import pagination
 from data_inclusion.schema import v1
@@ -118,7 +119,7 @@ def get_results(
         thematiques=thematiques,
         publics=publics,
         score_qualite_minimum=score_qualite_minimum,
-        exclure_doublons=True,
+        exclure_doublons=ExclureDoublonsServicesMode.STRICT,
         sources=sources,
     )
 

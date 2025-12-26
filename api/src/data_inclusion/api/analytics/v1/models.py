@@ -74,4 +74,4 @@ class SearchServicesEvent(db.Base):
     types: Mapped[list[str] | None]
     recherche_public: Mapped[str | None]
     score_qualite_minimum: Mapped[float | None]
-    exclure_doublons: Mapped[bool | None]
+    exclure_doublons: Mapped[str | None]
