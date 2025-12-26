@@ -5,6 +5,7 @@
             ref('int_agefiph__adresses_v1'),
             ref('int_carif_oref__adresses_v1'),
             ref('int_dora__adresses_v1'),
+            ref('int_cd35__adresses_v1'),
             ref('int_emplois_de_linclusion__adresses_v1'),
             ref('int_france_travail__adresses_v1'),
             ref('int_soliguide__adresses_v1'),
