@@ -1,1027 +1,1027 @@
 [
     {
-        "left":"soliguide-25819",
-        "right":"soliguide-25740",
-        "label":"distinct"
+        "left": "soliguide--25819",
+        "right": "soliguide--25740",
+        "label": "distinct"
     },
     {
-        "left":"soliguide-28286",
-        "right":"soliguide-35345",
-        "label":"distinct"
+        "left": "soliguide--28286",
+        "right": "soliguide--35345",
+        "label": "distinct"
     },
     {
-        "left":"soliguide-28286",
-        "right":"soliguide-35345",
-        "label":"distinct"
+        "left": "soliguide--28286",
+        "right": "soliguide--35345",
+        "label": "distinct"
     },
     {
-        "left":"soliguide-28286",
-        "right":"soliguide-35335",
-        "label":"distinct"
+        "left": "soliguide--28286",
+        "right": "soliguide--35335",
+        "label": "distinct"
     },
     {
-        "left":"soliguide-35335",
-        "right":"soliguide-35345",
-        "label":"distinct"
+        "left": "soliguide--35335",
+        "right": "soliguide--35345",
+        "label": "distinct"
     },
     {
-        "left":"soliguide-27470",
-        "right":"soliguide-27936",
-        "label":"distinct"
+        "left": "soliguide--27470",
+        "right": "soliguide--27936",
+        "label": "distinct"
     },
     {
-        "left":"soliguide-27470",
-        "right":"soliguide-35348",
-        "label":"distinct"
+        "left": "soliguide--27470",
+        "right": "soliguide--35348",
+        "label": "distinct"
     },
     {
-        "left":"soliguide-27936",
-        "right":"soliguide-35348",
-        "label":"distinct"
+        "left": "soliguide--27936",
+        "right": "soliguide--35348",
+        "label": "distinct"
     },
     {
-        "left":"dora-60e2a025-9cde-4cb6-b0d2-14655acd818b",
-        "right":"emplois-de-linclusion-a5110f39-7d92-473d-8e68-dfb2408b304b",
-        "label":"distinct"
+        "left": "dora--60e2a025-9cde-4cb6-b0d2-14655acd818b",
+        "right": "emplois-de-linclusion--a5110f39-7d92-473d-8e68-dfb2408b304b",
+        "label": "distinct"
     },
     {
-        "left":"monenfant-13066447",
-        "right":"monenfant-61750377",
-        "label":"distinct"
+        "left": "monenfant--13066447",
+        "right": "monenfant--61750377",
+        "label": "distinct"
     },
     {
-        "left":"dora-baf012c1-43c4-4283-b5c9-d07b787817da",
-        "right":"soliguide-28089",
-        "label":"distinct"
+        "left": "dora--baf012c1-43c4-4283-b5c9-d07b787817da",
+        "right": "soliguide--28089",
+        "label": "distinct"
     },
     {
-        "left":"cd35-2555",
-        "right":"cd35-3553",
-        "label":"distinct"
+        "left": "cd35--2555",
+        "right": "cd35--3553",
+        "label": "distinct"
     },
     {
-        "left":"soliguide-12727",
-        "right":"soliguide-2652",
-        "label":"distinct"
+        "left": "soliguide--12727",
+        "right": "soliguide--2652",
+        "label": "distinct"
     },
     {
-        "left":"dora-5989daa3-cb25-41c2-8099-aeb35be21ea7",
-        "right":"soliguide-49532",
-        "label":"distinct"
+        "left": "dora--5989daa3-cb25-41c2-8099-aeb35be21ea7",
+        "right": "soliguide--49532",
+        "label": "distinct"
     },
     {
-        "left":"soliguide-11334",
-        "right":"soliguide-9856",
-        "label":"distinct"
+        "left": "soliguide--11334",
+        "right": "soliguide--9856",
+        "label": "distinct"
     },
     {
-        "left":"fredo-11194",
-        "right":"fredo-9156",
-        "label":"distinct"
+        "left": "fredo--11194",
+        "right": "fredo--9156",
+        "label": "distinct"
     },
     {
-        "left":"fredo-11194",
-        "right":"fredo-9540",
-        "label":"distinct"
+        "left": "fredo--11194",
+        "right": "fredo--9540",
+        "label": "distinct"
     },
     {
-        "left":"soliguide-30934",
-        "right":"soliguide-42595",
-        "label":"distinct"
+        "left": "soliguide--30934",
+        "right": "soliguide--42595",
+        "label": "distinct"
     },
     {
-        "left":"soliguide-4761",
-        "right":"soliguide-6293",
-        "label":"distinct"
+        "left": "soliguide--4761",
+        "right": "soliguide--6293",
+        "label": "distinct"
     },
     {
-        "left":"cd35-3755",
-        "right":"dora-1de7410b-b784-4864-a253-6924c0b8e863",
-        "label":"unsure"
+        "left": "cd35--3755",
+        "right": "dora--1de7410b-b784-4864-a253-6924c0b8e863",
+        "label": "unsure"
     },
     {
-        "left":"emplois-de-linclusion-f122c04d-7f6f-4a4c-a9f6-7069db154a08",
-        "right":"emplois-de-linclusion-f44f619b-0ef0-495c-8619-706caf398500",
-        "label":"unsure"
+        "left": "emplois-de-linclusion--f122c04d-7f6f-4a4c-a9f6-7069db154a08",
+        "right": "emplois-de-linclusion--f44f619b-0ef0-495c-8619-706caf398500",
+        "label": "unsure"
     },
     {
-        "left":"dora-6310cec4-b518-484d-afb8-21a181535555",
-        "right":"emplois-de-linclusion-211c5e15-107a-43e7-886e-3ee501d0c03e",
-        "label":"distinct"
+        "left": "dora--6310cec4-b518-484d-afb8-21a181535555",
+        "right": "emplois-de-linclusion--211c5e15-107a-43e7-886e-3ee501d0c03e",
+        "label": "distinct"
     },
     {
-        "left":"cd35-409",
-        "right":"soliguide-5055",
-        "label":"distinct"
+        "left": "cd35--409",
+        "right": "soliguide--5055",
+        "label": "distinct"
     },
     {
-        "left":"cd35-1838",
-        "right":"cd35-491",
-        "label":"distinct"
+        "left": "cd35--1838",
+        "right": "cd35--491",
+        "label": "distinct"
     },
     {
-        "left":"monenfant-33734023",
-        "right":"monenfant-33739028",
-        "label":"distinct"
+        "left": "monenfant--33734023",
+        "right": "monenfant--33739028",
+        "label": "distinct"
     },
     {
-        "left":"monenfant-12499760",
-        "right":"monenfant-32063866",
-        "label":"distinct"
+        "left": "monenfant--12499760",
+        "right": "monenfant--32063866",
+        "label": "distinct"
     },
     {
-        "left":"fredo-12171",
-        "right":"fredo-12334",
-        "label":"distinct"
+        "left": "fredo--12171",
+        "right": "fredo--12334",
+        "label": "distinct"
     },
     {
-        "left":"soliguide-17186",
-        "right":"soliguide-34082",
-        "label":"distinct"
+        "left": "soliguide--17186",
+        "right": "soliguide--34082",
+        "label": "distinct"
     },
     {
-        "left":"soliguide-47949",
-        "right":"soliguide-47956",
-        "label":"distinct"
+        "left": "soliguide--47949",
+        "right": "soliguide--47956",
+        "label": "distinct"
     },
     {
-        "left":"soliguide-34958",
-        "right":"soliguide-8669",
-        "label":"distinct"
+        "left": "soliguide--34958",
+        "right": "soliguide--8669",
+        "label": "distinct"
     },
     {
-        "left":"emplois-de-linclusion-a6fd2edb-1e81-4de4-b589-5f8db6686137",
-        "right":"emplois-de-linclusion-cf58cabd-454f-4f76-b5ed-afc96ca5245f",
-        "label":"unsure"
+        "left": "emplois-de-linclusion--a6fd2edb-1e81-4de4-b589-5f8db6686137",
+        "right": "emplois-de-linclusion--cf58cabd-454f-4f76-b5ed-afc96ca5245f",
+        "label": "unsure"
     },
     {
-        "left":"soliguide-12344",
-        "right":"soliguide-35828",
-        "label":"distinct"
+        "left": "soliguide--12344",
+        "right": "soliguide--35828",
+        "label": "distinct"
     },
     {
-        "left":"fredo-11734",
-        "right":"fredo-9605",
-        "label":"distinct"
+        "left": "fredo--11734",
+        "right": "fredo--9605",
+        "label": "distinct"
     },
     {
-        "left":"cd35-3234",
-        "right":"cd35-3651",
-        "label":"distinct"
+        "left": "cd35--3234",
+        "right": "cd35--3651",
+        "label": "distinct"
     },
     {
-        "left":"monenfant-60034730",
-        "right":"monenfant-60036490",
-        "label":"distinct"
+        "left": "monenfant--60034730",
+        "right": "monenfant--60036490",
+        "label": "distinct"
     },
     {
-        "left":"monenfant-12679422",
-        "right":"monenfant-12679508",
-        "label":"unsure"
+        "left": "monenfant--12679422",
+        "right": "monenfant--12679508",
+        "label": "unsure"
     },
     {
-        "left":"monenfant-12867263",
-        "right":"monenfant-12867306",
-        "label":"distinct"
+        "left": "monenfant--12867263",
+        "right": "monenfant--12867306",
+        "label": "distinct"
     },
     {
-        "left":"fredo-8745",
-        "right":"fredo-9380",
-        "label":"unsure"
+        "left": "fredo--8745",
+        "right": "fredo--9380",
+        "label": "unsure"
     },
     {
-        "left":"monenfant-12499373",
-        "right":"monenfant-32063866",
-        "label":"unsure"
+        "left": "monenfant--12499373",
+        "right": "monenfant--32063866",
+        "label": "unsure"
     },
     {
-        "left":"monenfant-12596768",
-        "right":"soliguide-6506",
-        "label":"unsure"
+        "left": "monenfant--12596768",
+        "right": "soliguide--6506",
+        "label": "unsure"
     },
     {
-        "left":"emplois-de-linclusion-039576e1-bce4-4c8f-bc28-ab2e2844865a",
-        "right":"emplois-de-linclusion-1f2d31a3-765c-4247-be65-3d9a7869028c",
-        "label":"distinct"
+        "left": "emplois-de-linclusion--039576e1-bce4-4c8f-bc28-ab2e2844865a",
+        "right": "emplois-de-linclusion--1f2d31a3-765c-4247-be65-3d9a7869028c",
+        "label": "distinct"
     },
     {
-        "left":"soliguide-47899",
-        "right":"soliguide-47956",
-        "label":"distinct"
+        "left": "soliguide--47899",
+        "right": "soliguide--47956",
+        "label": "distinct"
     },
     {
-        "left":"cd35-2038",
-        "right":"cd35-3047",
-        "label":"distinct"
+        "left": "cd35--2038",
+        "right": "cd35--3047",
+        "label": "distinct"
     },
     {
-        "left":"monenfant-12499373",
-        "right":"monenfant-12499760",
-        "label":"unsure"
+        "left": "monenfant--12499373",
+        "right": "monenfant--12499760",
+        "label": "unsure"
     },
     {
-        "left":"reseau-alpha-1393",
-        "right":"soliguide-88",
-        "label":"distinct"
+        "left": "reseau-alpha--1393",
+        "right": "soliguide--88",
+        "label": "distinct"
     },
     {
-        "left":"soliguide-47899",
-        "right":"soliguide-47949",
-        "label":"distinct"
+        "left": "soliguide--47899",
+        "right": "soliguide--47949",
+        "label": "distinct"
     },
     {
-        "left":"reseau-alpha-1264",
-        "right":"soliguide-10399",
-        "label":"distinct"
+        "left": "reseau-alpha--1264",
+        "right": "soliguide--10399",
+        "label": "distinct"
     },
     {
-        "left":"emplois-de-linclusion-c13b9cb1-5fa5-4661-8a5e-e9143573fe7a",
-        "right":"soliguide-24494",
-        "label":"distinct"
+        "left": "emplois-de-linclusion--c13b9cb1-5fa5-4661-8a5e-e9143573fe7a",
+        "right": "soliguide--24494",
+        "label": "distinct"
     },
     {
-        "left":"dora-f87991df-5a2b-4482-943f-4e322191fedc",
-        "right":"emplois-de-linclusion-4a34913a-48b8-485f-82a2-11746a890a7d",
-        "label":"distinct"
+        "left": "dora--f87991df-5a2b-4482-943f-4e322191fedc",
+        "right": "emplois-de-linclusion--4a34913a-48b8-485f-82a2-11746a890a7d",
+        "label": "distinct"
     },
     {
-        "left":"emplois-de-linclusion-19108747-9010-43dc-88f1-746db2bc3981",
-        "right":"emplois-de-linclusion-2822d3f1-37d1-4fd8-8914-f767d6e264ea",
-        "label":"distinct"
+        "left": "emplois-de-linclusion--19108747-9010-43dc-88f1-746db2bc3981",
+        "right": "emplois-de-linclusion--2822d3f1-37d1-4fd8-8914-f767d6e264ea",
+        "label": "distinct"
     },
     {
-        "left":"monenfant-12846537",
-        "right":"monenfant-33739028",
-        "label":"distinct"
+        "left": "monenfant--12846537",
+        "right": "monenfant--33739028",
+        "label": "distinct"
     },
     {
-        "left":"dora-64a1bc77-dddf-46f7-b680-061cdfb2d571",
-        "right":"emplois-de-linclusion-f794452b-caaa-47e1-a2fc-05f8426c7be7",
-        "label":"distinct"
+        "left": "dora--64a1bc77-dddf-46f7-b680-061cdfb2d571",
+        "right": "emplois-de-linclusion--f794452b-caaa-47e1-a2fc-05f8426c7be7",
+        "label": "distinct"
     },
     {
-        "left":"monenfant-12766033",
-        "right":"monenfant-12766678",
-        "label":"distinct"
+        "left": "monenfant--12766033",
+        "right": "monenfant--12766678",
+        "label": "distinct"
     },
     {
-        "left":"emplois-de-linclusion-1d4b998f-1e38-4bae-b21f-c4a3c50f6870",
-        "right":"emplois-de-linclusion-e85066fb-bbc5-443a-bf6b-0d159b2bc48b",
-        "label":"distinct"
+        "left": "emplois-de-linclusion--1d4b998f-1e38-4bae-b21f-c4a3c50f6870",
+        "right": "emplois-de-linclusion--e85066fb-bbc5-443a-bf6b-0d159b2bc48b",
+        "label": "distinct"
     },
     {
-        "left":"monenfant-33618086",
-        "right":"monenfant-33739028",
-        "label":"distinct"
+        "left": "monenfant--33618086",
+        "right": "monenfant--33739028",
+        "label": "distinct"
     },
     {
-        "left":"emplois-de-linclusion-4ca5614b-1351-4cde-b10c-2c18ffe7e1d2",
-        "right":"emplois-de-linclusion-b694e07a-7874-492a-b9db-fd2fd5a62e86",
-        "label":"distinct"
+        "left": "emplois-de-linclusion--4ca5614b-1351-4cde-b10c-2c18ffe7e1d2",
+        "right": "emplois-de-linclusion--b694e07a-7874-492a-b9db-fd2fd5a62e86",
+        "label": "distinct"
     },
     {
-        "left":"emplois-de-linclusion-291126bd-147c-4fe9-94c9-ef999463e165",
-        "right":"emplois-de-linclusion-5f9f01b0-2a76-4bea-b008-dcbe3bb40586",
-        "label":"distinct"
+        "left": "emplois-de-linclusion--291126bd-147c-4fe9-94c9-ef999463e165",
+        "right": "emplois-de-linclusion--5f9f01b0-2a76-4bea-b008-dcbe3bb40586",
+        "label": "distinct"
     },
     {
-        "left":"monenfant-12570022",
-        "right":"monenfant-12570495",
-        "label":"distinct"
+        "left": "monenfant--12570022",
+        "right": "monenfant--12570495",
+        "label": "distinct"
     },
     {
-        "left":"monenfant-33733787",
-        "right":"monenfant-33739028",
-        "label":"distinct"
+        "left": "monenfant--33733787",
+        "right": "monenfant--33739028",
+        "label": "distinct"
     },
     {
-        "left":"monenfant-12878314",
-        "right":"monenfant-33739028",
-        "label":"distinct"
+        "left": "monenfant--12878314",
+        "right": "monenfant--33739028",
+        "label": "distinct"
     },
     {
-        "left":"dora-5ca79f2c-abb4-4786-871e-cff258392fa0",
-        "right":"emplois-de-linclusion-b42f967e-5125-406c-9d63-1d3a744f815d",
-        "label":"distinct"
+        "left": "dora--5ca79f2c-abb4-4786-871e-cff258392fa0",
+        "right": "emplois-de-linclusion--b42f967e-5125-406c-9d63-1d3a744f815d",
+        "label": "distinct"
     },
     {
-        "left":"soliguide-15794",
-        "right":"soliguide-25544",
-        "label":"distinct"
+        "left": "soliguide--15794",
+        "right": "soliguide--25544",
+        "label": "distinct"
     },
     {
-        "left":"dora-66c63faa-16b2-48b9-ae79-59b75a791e7f",
-        "right":"emplois-de-linclusion-45af4c30-9955-47a5-922a-db219ff68d1b",
-        "label":"distinct"
+        "left": "dora--66c63faa-16b2-48b9-ae79-59b75a791e7f",
+        "right": "emplois-de-linclusion--45af4c30-9955-47a5-922a-db219ff68d1b",
+        "label": "distinct"
     },
     {
-        "left":"soliguide-24494",
-        "right":"soliguide-24804",
-        "label":"distinct"
+        "left": "soliguide--24494",
+        "right": "soliguide--24804",
+        "label": "distinct"
     },
     {
-        "left":"emplois-de-linclusion-4cbc2870-97a1-4951-9399-dee14569a51e",
-        "right":"emplois-de-linclusion-b3afc32c-f412-4251-8e0d-34ab04b705ef",
-        "label":"distinct"
+        "left": "emplois-de-linclusion--4cbc2870-97a1-4951-9399-dee14569a51e",
+        "right": "emplois-de-linclusion--b3afc32c-f412-4251-8e0d-34ab04b705ef",
+        "label": "distinct"
     },
     {
-        "left":"emplois-de-linclusion-1abd889c-8993-4a5c-b72b-c3c55a61aa5d",
-        "right":"emplois-de-linclusion-b1ba73a2-9f16-4510-be1b-5293423e7f0a",
-        "label":"distinct"
+        "left": "emplois-de-linclusion--1abd889c-8993-4a5c-b72b-c3c55a61aa5d",
+        "right": "emplois-de-linclusion--b1ba73a2-9f16-4510-be1b-5293423e7f0a",
+        "label": "distinct"
     },
     {
-        "left":"cd35-2555",
-        "right":"dora-1de7410b-b784-4864-a253-6924c0b8e863",
-        "label":"distinct"
+        "left": "cd35--2555",
+        "right": "dora--1de7410b-b784-4864-a253-6924c0b8e863",
+        "label": "distinct"
     },
     {
-        "left":"cd35-2555",
-        "right":"cd35-3755",
-        "label":"distinct"
+        "left": "cd35--2555",
+        "right": "cd35--3755",
+        "label": "distinct"
     },
     {
-        "left":"soliguide-20604",
-        "right":"soliguide-45866",
-        "label":"distinct"
+        "left": "soliguide--20604",
+        "right": "soliguide--45866",
+        "label": "distinct"
     },
     {
-        "left":"monenfant-33618086",
-        "right":"monenfant-33733787",
-        "label":"distinct"
+        "left": "monenfant--33618086",
+        "right": "monenfant--33733787",
+        "label": "distinct"
     },
     {
-        "left":"monenfant-12838703",
-        "right":"monenfant-12871348",
-        "label":"distinct"
+        "left": "monenfant--12838703",
+        "right": "monenfant--12871348",
+        "label": "distinct"
     },
     {
-        "left":"cd35-1260",
-        "right":"cd35-2890",
-        "label":"distinct"
+        "left": "cd35--1260",
+        "right": "cd35--2890",
+        "label": "distinct"
     },
     {
-        "left":"dora-ad82580d-bd72-41a7-84f4-6c881deb8393",
-        "right":"soliguide-23626",
-        "label":"distinct"
+        "left": "dora--ad82580d-bd72-41a7-84f4-6c881deb8393",
+        "right": "soliguide--23626",
+        "label": "distinct"
     },
     {
-        "left":"monenfant-12765646",
-        "right":"monenfant-31912763",
-        "label":"distinct"
+        "left": "monenfant--12765646",
+        "right": "monenfant--31912763",
+        "label": "distinct"
     },
     {
-        "left":"cd35-1302",
-        "right":"cd35-2555",
-        "label":"distinct"
+        "left": "cd35--1302",
+        "right": "cd35--2555",
+        "label": "distinct"
     },
     {
-        "left":"soliguide-15760",
-        "right":"soliguide-25544",
-        "label":"distinct"
+        "left": "soliguide--15760",
+        "right": "soliguide--25544",
+        "label": "distinct"
     },
     {
-        "left":"monenfant-12626825",
-        "right":"monenfant-31912763",
-        "label":"distinct"
+        "left": "monenfant--12626825",
+        "right": "monenfant--31912763",
+        "label": "distinct"
     },
     {
-        "left":"dora-dee969d9-eb50-426e-b269-22ca1ed96eec",
-        "right":"soliguide-15642",
-        "label":"distinct"
+        "left": "dora--dee969d9-eb50-426e-b269-22ca1ed96eec",
+        "right": "soliguide--15642",
+        "label": "distinct"
     },
     {
-        "left":"dora-f74e3975-ebd7-4be2-a707-1a309145f570",
-        "right":"emplois-de-linclusion-0facf250-e6a1-4674-bf1d-ca868a821059",
-        "label":"distinct"
+        "left": "dora--f74e3975-ebd7-4be2-a707-1a309145f570",
+        "right": "emplois-de-linclusion--0facf250-e6a1-4674-bf1d-ca868a821059",
+        "label": "distinct"
     },
     {
-        "left":"monenfant-12824513",
-        "right":"monenfant-12824556",
-        "label":"distinct"
+        "left": "monenfant--12824513",
+        "right": "monenfant--12824556",
+        "label": "distinct"
     },
     {
-        "left":"emplois-de-linclusion-67438604-55d7-44e0-9aa8-da6d4d15a850",
-        "right":"emplois-de-linclusion-aae7abb0-ba3f-4fa7-b510-9d1e8f2290ab",
-        "label":"distinct"
+        "left": "emplois-de-linclusion--67438604-55d7-44e0-9aa8-da6d4d15a850",
+        "right": "emplois-de-linclusion--aae7abb0-ba3f-4fa7-b510-9d1e8f2290ab",
+        "label": "distinct"
     },
     {
-        "left":"cd35-3259",
-        "right":"monenfant-12646906",
-        "label":"distinct"
+        "left": "cd35--3259",
+        "right": "monenfant--12646906",
+        "label": "distinct"
     },
     {
-        "left":"dora-e54f9252-24f6-4277-b9a0-74ae59139374",
-        "right":"emplois-de-linclusion-b42f967e-5125-406c-9d63-1d3a744f815d",
-        "label":"distinct"
+        "left": "dora--e54f9252-24f6-4277-b9a0-74ae59139374",
+        "right": "emplois-de-linclusion--b42f967e-5125-406c-9d63-1d3a744f815d",
+        "label": "distinct"
     },
     {
-        "left":"dora-cf9bec33-5f23-46bd-833d-aa135460e7c2",
-        "right":"emplois-de-linclusion-9b31b3ce-e277-4c38-85d1-e62471697839",
-        "label":"distinct"
+        "left": "dora--cf9bec33-5f23-46bd-833d-aa135460e7c2",
+        "right": "emplois-de-linclusion--9b31b3ce-e277-4c38-85d1-e62471697839",
+        "label": "distinct"
     },
     {
-        "left":"emplois-de-linclusion-aae7abb0-ba3f-4fa7-b510-9d1e8f2290ab",
-        "right":"emplois-de-linclusion-b42f967e-5125-406c-9d63-1d3a744f815d",
-        "label":"distinct"
+        "left": "emplois-de-linclusion--aae7abb0-ba3f-4fa7-b510-9d1e8f2290ab",
+        "right": "emplois-de-linclusion--b42f967e-5125-406c-9d63-1d3a744f815d",
+        "label": "distinct"
     },
     {
-        "left":"dora-f43fa9c4-13ab-4102-b1e3-16e55b8ec95f",
-        "right":"emplois-de-linclusion-71d93cd9-4da3-4681-b4c8-a7b31d2fa917",
-        "label":"distinct"
+        "left": "dora--f43fa9c4-13ab-4102-b1e3-16e55b8ec95f",
+        "right": "emplois-de-linclusion--71d93cd9-4da3-4681-b4c8-a7b31d2fa917",
+        "label": "distinct"
     },
     {
-        "left":"emplois-de-linclusion-a60ab5bb-4346-45bd-bc0e-eead44a5c0c6",
-        "right":"emplois-de-linclusion-febc6b77-efbd-4f2e-9cda-6867fedc5164",
-        "label":"distinct"
+        "left": "emplois-de-linclusion--a60ab5bb-4346-45bd-bc0e-eead44a5c0c6",
+        "right": "emplois-de-linclusion--febc6b77-efbd-4f2e-9cda-6867fedc5164",
+        "label": "distinct"
     },
     {
-        "left":"monenfant-12646906",
-        "right":"monenfant-37661514",
-        "label":"distinct"
+        "left": "monenfant--12646906",
+        "right": "monenfant--37661514",
+        "label": "distinct"
     },
     {
-        "left":"emplois-de-linclusion-0facf250-e6a1-4674-bf1d-ca868a821059",
-        "right":"emplois-de-linclusion-b1ba73a2-9f16-4510-be1b-5293423e7f0a",
-        "label":"distinct"
+        "left": "emplois-de-linclusion--0facf250-e6a1-4674-bf1d-ca868a821059",
+        "right": "emplois-de-linclusion--b1ba73a2-9f16-4510-be1b-5293423e7f0a",
+        "label": "distinct"
     },
     {
-        "left":"emplois-de-linclusion-0facf250-e6a1-4674-bf1d-ca868a821059",
-        "right":"emplois-de-linclusion-1abd889c-8993-4a5c-b72b-c3c55a61aa5d",
-        "label":"distinct"
+        "left": "emplois-de-linclusion--0facf250-e6a1-4674-bf1d-ca868a821059",
+        "right": "emplois-de-linclusion--1abd889c-8993-4a5c-b72b-c3c55a61aa5d",
+        "label": "distinct"
     },
     {
-        "left":"dora-5ca79f2c-abb4-4786-871e-cff258392fa0",
-        "right":"emplois-de-linclusion-aae7abb0-ba3f-4fa7-b510-9d1e8f2290ab",
-        "label":"distinct"
+        "left": "dora--5ca79f2c-abb4-4786-871e-cff258392fa0",
+        "right": "emplois-de-linclusion--aae7abb0-ba3f-4fa7-b510-9d1e8f2290ab",
+        "label": "distinct"
     },
     {
-        "left":"emplois-de-linclusion-67438604-55d7-44e0-9aa8-da6d4d15a850",
-        "right":"emplois-de-linclusion-b42f967e-5125-406c-9d63-1d3a744f815d",
-        "label":"distinct"
+        "left": "emplois-de-linclusion--67438604-55d7-44e0-9aa8-da6d4d15a850",
+        "right": "emplois-de-linclusion--b42f967e-5125-406c-9d63-1d3a744f815d",
+        "label": "distinct"
     },
     {
-        "left":"monenfant-23050158",
-        "right":"monenfant-33739028",
-        "label":"distinct"
+        "left": "monenfant--23050158",
+        "right": "monenfant--33739028",
+        "label": "distinct"
     },
     {
-        "left":"emplois-de-linclusion-0facf250-e6a1-4674-bf1d-ca868a821059",
-        "right":"emplois-de-linclusion-febc6b77-efbd-4f2e-9cda-6867fedc5164",
-        "label":"distinct"
+        "left": "emplois-de-linclusion--0facf250-e6a1-4674-bf1d-ca868a821059",
+        "right": "emplois-de-linclusion--febc6b77-efbd-4f2e-9cda-6867fedc5164",
+        "label": "distinct"
     },
     {
-        "left":"emplois-de-linclusion-7dc36c3e-7135-4e70-a073-387ded480a60",
-        "right":"soliguide-23626",
-        "label":"distinct"
+        "left": "emplois-de-linclusion--7dc36c3e-7135-4e70-a073-387ded480a60",
+        "right": "soliguide--23626",
+        "label": "distinct"
     },
     {
-        "left":"dora-f74e3975-ebd7-4be2-a707-1a309145f570",
-        "right":"emplois-de-linclusion-a60ab5bb-4346-45bd-bc0e-eead44a5c0c6",
-        "label":"distinct"
+        "left": "dora--f74e3975-ebd7-4be2-a707-1a309145f570",
+        "right": "emplois-de-linclusion--a60ab5bb-4346-45bd-bc0e-eead44a5c0c6",
+        "label": "distinct"
     },
     {
-        "left":"dora-f74e3975-ebd7-4be2-a707-1a309145f570",
-        "right":"emplois-de-linclusion-1abd889c-8993-4a5c-b72b-c3c55a61aa5d",
-        "label":"distinct"
+        "left": "dora--f74e3975-ebd7-4be2-a707-1a309145f570",
+        "right": "emplois-de-linclusion--1abd889c-8993-4a5c-b72b-c3c55a61aa5d",
+        "label": "distinct"
     },
     {
-        "left":"emplois-de-linclusion-0facf250-e6a1-4674-bf1d-ca868a821059",
-        "right":"emplois-de-linclusion-a60ab5bb-4346-45bd-bc0e-eead44a5c0c6",
-        "label":"distinct"
+        "left": "emplois-de-linclusion--0facf250-e6a1-4674-bf1d-ca868a821059",
+        "right": "emplois-de-linclusion--a60ab5bb-4346-45bd-bc0e-eead44a5c0c6",
+        "label": "distinct"
     },
     {
-        "left":"emplois-de-linclusion-a60ab5bb-4346-45bd-bc0e-eead44a5c0c6",
-        "right":"emplois-de-linclusion-cf2b8c27-a37a-40a0-a0fb-fa7baf7dc25b",
-        "label":"distinct"
+        "left": "emplois-de-linclusion--a60ab5bb-4346-45bd-bc0e-eead44a5c0c6",
+        "right": "emplois-de-linclusion--cf2b8c27-a37a-40a0-a0fb-fa7baf7dc25b",
+        "label": "distinct"
     },
     {
-        "left":"cd35-3259",
-        "right":"monenfant-33739028",
-        "label":"distinct"
+        "left": "cd35--3259",
+        "right": "monenfant--33739028",
+        "label": "distinct"
     },
     {
-        "left":"emplois-de-linclusion-1abd889c-8993-4a5c-b72b-c3c55a61aa5d",
-        "right":"emplois-de-linclusion-febc6b77-efbd-4f2e-9cda-6867fedc5164",
-        "label":"distinct"
+        "left": "emplois-de-linclusion--1abd889c-8993-4a5c-b72b-c3c55a61aa5d",
+        "right": "emplois-de-linclusion--febc6b77-efbd-4f2e-9cda-6867fedc5164",
+        "label": "distinct"
     },
     {
-        "left":"emplois-de-linclusion-a60ab5bb-4346-45bd-bc0e-eead44a5c0c6",
-        "right":"emplois-de-linclusion-b1ba73a2-9f16-4510-be1b-5293423e7f0a",
-        "label":"distinct"
+        "left": "emplois-de-linclusion--a60ab5bb-4346-45bd-bc0e-eead44a5c0c6",
+        "right": "emplois-de-linclusion--b1ba73a2-9f16-4510-be1b-5293423e7f0a",
+        "label": "distinct"
     },
     {
-        "left":"monenfant-33739028",
-        "right":"monenfant-46378804",
-        "label":"distinct"
+        "left": "monenfant--33739028",
+        "right": "monenfant--46378804",
+        "label": "distinct"
     },
     {
-        "left":"emplois-de-linclusion-0facf250-e6a1-4674-bf1d-ca868a821059",
-        "right":"emplois-de-linclusion-cf2b8c27-a37a-40a0-a0fb-fa7baf7dc25b",
-        "label":"distinct"
+        "left": "emplois-de-linclusion--0facf250-e6a1-4674-bf1d-ca868a821059",
+        "right": "emplois-de-linclusion--cf2b8c27-a37a-40a0-a0fb-fa7baf7dc25b",
+        "label": "distinct"
     },
     {
-        "left":"emplois-de-linclusion-41b68bad-ba40-4954-ac18-12421de6b909",
-        "right":"emplois-de-linclusion-b42f967e-5125-406c-9d63-1d3a744f815d",
-        "label":"distinct"
+        "left": "emplois-de-linclusion--41b68bad-ba40-4954-ac18-12421de6b909",
+        "right": "emplois-de-linclusion--b42f967e-5125-406c-9d63-1d3a744f815d",
+        "label": "distinct"
     },
     {
-        "left":"monenfant-33739028",
-        "right":"monenfant-37661514",
-        "label":"distinct"
+        "left": "monenfant--33739028",
+        "right": "monenfant--37661514",
+        "label": "distinct"
     },
     {
-        "left":"soliguide-32252",
-        "right":"soliguide-44870",
-        "label":"distinct"
+        "left": "soliguide--32252",
+        "right": "soliguide--44870",
+        "label": "distinct"
     },
     {
-        "left":"emplois-de-linclusion-43e84748-29ea-495f-ae4b-c5521964b34d",
-        "right":"emplois-de-linclusion-a60ab5bb-4346-45bd-bc0e-eead44a5c0c6",
-        "label":"distinct"
+        "left": "emplois-de-linclusion--43e84748-29ea-495f-ae4b-c5521964b34d",
+        "right": "emplois-de-linclusion--a60ab5bb-4346-45bd-bc0e-eead44a5c0c6",
+        "label": "distinct"
     },
     {
-        "left":"monenfant-33739028",
-        "right":"monenfant-40390301",
-        "label":"distinct"
+        "left": "monenfant--33739028",
+        "right": "monenfant--40390301",
+        "label": "distinct"
     },
     {
-        "left":"emplois-de-linclusion-12b6c7da-53aa-4e04-aaf1-a7850abee613",
-        "right":"emplois-de-linclusion-aae7abb0-ba3f-4fa7-b510-9d1e8f2290ab",
-        "label":"distinct"
+        "left": "emplois-de-linclusion--12b6c7da-53aa-4e04-aaf1-a7850abee613",
+        "right": "emplois-de-linclusion--aae7abb0-ba3f-4fa7-b510-9d1e8f2290ab",
+        "label": "distinct"
     },
     {
-        "left":"monenfant-12871348",
-        "right":"soliguide-8669",
-        "label":"distinct"
+        "left": "monenfant--12871348",
+        "right": "soliguide--8669",
+        "label": "distinct"
     },
     {
-        "left":"emplois-de-linclusion-4ad2c83a-2a6b-4ef0-9f4b-996891ec8ccc",
-        "right":"emplois-de-linclusion-a60ab5bb-4346-45bd-bc0e-eead44a5c0c6",
-        "label":"distinct"
+        "left": "emplois-de-linclusion--4ad2c83a-2a6b-4ef0-9f4b-996891ec8ccc",
+        "right": "emplois-de-linclusion--a60ab5bb-4346-45bd-bc0e-eead44a5c0c6",
+        "label": "distinct"
     },
     {
-        "left":"emplois-de-linclusion-41b68bad-ba40-4954-ac18-12421de6b909",
-        "right":"emplois-de-linclusion-aae7abb0-ba3f-4fa7-b510-9d1e8f2290ab",
-        "label":"distinct"
+        "left": "emplois-de-linclusion--41b68bad-ba40-4954-ac18-12421de6b909",
+        "right": "emplois-de-linclusion--aae7abb0-ba3f-4fa7-b510-9d1e8f2290ab",
+        "label": "distinct"
     },
     {
-        "left":"emplois-de-linclusion-1abd889c-8993-4a5c-b72b-c3c55a61aa5d",
-        "right":"emplois-de-linclusion-a60ab5bb-4346-45bd-bc0e-eead44a5c0c6",
-        "label":"distinct"
+        "left": "emplois-de-linclusion--1abd889c-8993-4a5c-b72b-c3c55a61aa5d",
+        "right": "emplois-de-linclusion--a60ab5bb-4346-45bd-bc0e-eead44a5c0c6",
+        "label": "distinct"
     },
     {
-        "left":"monenfant-12646906",
-        "right":"monenfant-12846537",
-        "label":"distinct"
+        "left": "monenfant--12646906",
+        "right": "monenfant--12846537",
+        "label": "distinct"
     },
     {
-        "left":"monenfant-12646906",
-        "right":"monenfant-33618086",
-        "label":"distinct"
+        "left": "monenfant--12646906",
+        "right": "monenfant--33618086",
+        "label": "distinct"
     },
     {
-        "left":"emplois-de-linclusion-8cf1fbec-08b0-48b8-9ba1-db2021d4a691",
-        "right":"emplois-de-linclusion-a60ab5bb-4346-45bd-bc0e-eead44a5c0c6",
-        "label":"distinct"
+        "left": "emplois-de-linclusion--8cf1fbec-08b0-48b8-9ba1-db2021d4a691",
+        "right": "emplois-de-linclusion--a60ab5bb-4346-45bd-bc0e-eead44a5c0c6",
+        "label": "distinct"
     },
     {
-        "left":"monenfant-33618086",
-        "right":"monenfant-33734023",
-        "label":"distinct"
+        "left": "monenfant--33618086",
+        "right": "monenfant--33734023",
+        "label": "distinct"
     },
     {
-        "left":"monenfant-12646906",
-        "right":"monenfant-12878314",
-        "label":"distinct"
+        "left": "monenfant--12646906",
+        "right": "monenfant--12878314",
+        "label": "distinct"
     },
     {
-        "left":"monenfant-12646906",
-        "right":"monenfant-33739028",
-        "label":"distinct"
+        "left": "monenfant--12646906",
+        "right": "monenfant--33739028",
+        "label": "distinct"
     },
     {
-        "left":"dora-3278a5fb-01af-47ad-aa6c-bab4cd5b05e2",
-        "right":"emplois-de-linclusion-a60ab5bb-4346-45bd-bc0e-eead44a5c0c6",
-        "label":"distinct"
+        "left": "dora--3278a5fb-01af-47ad-aa6c-bab4cd5b05e2",
+        "right": "emplois-de-linclusion--a60ab5bb-4346-45bd-bc0e-eead44a5c0c6",
+        "label": "distinct"
     },
     {
-        "left":"monenfant-12646906",
-        "right":"monenfant-33734023",
-        "label":"distinct"
+        "left": "monenfant--12646906",
+        "right": "monenfant--33734023",
+        "label": "distinct"
     },
     {
-        "left":"monenfant-12646906",
-        "right":"monenfant-33733787",
-        "label":"distinct"
+        "left": "monenfant--12646906",
+        "right": "monenfant--33733787",
+        "label": "distinct"
     },
     {
-        "left":"emplois-de-linclusion-0facf250-e6a1-4674-bf1d-ca868a821059",
-        "right":"emplois-de-linclusion-43e84748-29ea-495f-ae4b-c5521964b34d",
-        "label":"distinct"
+        "left": "emplois-de-linclusion--0facf250-e6a1-4674-bf1d-ca868a821059",
+        "right": "emplois-de-linclusion--43e84748-29ea-495f-ae4b-c5521964b34d",
+        "label": "distinct"
     },
     {
-        "left":"monenfant-12646906",
-        "right":"monenfant-46378804",
-        "label":"distinct"
+        "left": "monenfant--12646906",
+        "right": "monenfant--46378804",
+        "label": "distinct"
     },
     {
-        "left":"monenfant-12646906",
-        "right":"monenfant-23050158",
-        "label":"distinct"
+        "left": "monenfant--12646906",
+        "right": "monenfant--23050158",
+        "label": "distinct"
     },
     {
-        "left":"france-travail-BRE0032",
-        "right":"monenfant-12871348",
-        "label":"distinct"
+        "left": "france-travail--BRE0032",
+        "right": "monenfant--12871348",
+        "label": "distinct"
     },
     {
-        "left":"emplois-de-linclusion-a60ab5bb-4346-45bd-bc0e-eead44a5c0c6",
-        "right":"emplois-de-linclusion-d8412211-abf3-4ac7-98b9-276c92083c93",
-        "label":"distinct"
+        "left": "emplois-de-linclusion--a60ab5bb-4346-45bd-bc0e-eead44a5c0c6",
+        "right": "emplois-de-linclusion--d8412211-abf3-4ac7-98b9-276c92083c93",
+        "label": "distinct"
     },
     {
-        "left":"dora-ab985671-4991-460e-aa81-b201d2395324",
-        "right":"emplois-de-linclusion-2367cef7-10c9-46e7-93ae-af5007fc48a2",
-        "label":"distinct"
+        "left": "dora--ab985671-4991-460e-aa81-b201d2395324",
+        "right": "emplois-de-linclusion--2367cef7-10c9-46e7-93ae-af5007fc48a2",
+        "label": "distinct"
     },
     {
-        "left":"emplois-de-linclusion-12b6c7da-53aa-4e04-aaf1-a7850abee613",
-        "right":"emplois-de-linclusion-b42f967e-5125-406c-9d63-1d3a744f815d",
-        "label":"distinct"
+        "left": "emplois-de-linclusion--12b6c7da-53aa-4e04-aaf1-a7850abee613",
+        "right": "emplois-de-linclusion--b42f967e-5125-406c-9d63-1d3a744f815d",
+        "label": "distinct"
     },
     {
-        "left":"emplois-de-linclusion-1abd889c-8993-4a5c-b72b-c3c55a61aa5d",
-        "right":"emplois-de-linclusion-43e84748-29ea-495f-ae4b-c5521964b34d",
-        "label":"distinct"
+        "left": "emplois-de-linclusion--1abd889c-8993-4a5c-b72b-c3c55a61aa5d",
+        "right": "emplois-de-linclusion--43e84748-29ea-495f-ae4b-c5521964b34d",
+        "label": "distinct"
     },
     {
-        "left":"emplois-de-linclusion-2367cef7-10c9-46e7-93ae-af5007fc48a2",
-        "right":"emplois-de-linclusion-5895f206-e85b-4d8f-953c-37e9b4b9d27c",
-        "label":"distinct"
+        "left": "emplois-de-linclusion--2367cef7-10c9-46e7-93ae-af5007fc48a2",
+        "right": "emplois-de-linclusion--5895f206-e85b-4d8f-953c-37e9b4b9d27c",
+        "label": "distinct"
     },
     {
-        "left":"emplois-de-linclusion-2367cef7-10c9-46e7-93ae-af5007fc48a2",
-        "right":"emplois-de-linclusion-8f0f63fe-5b02-465f-969e-6f6e1ca89502",
-        "label":"distinct"
+        "left": "emplois-de-linclusion--2367cef7-10c9-46e7-93ae-af5007fc48a2",
+        "right": "emplois-de-linclusion--8f0f63fe-5b02-465f-969e-6f6e1ca89502",
+        "label": "distinct"
     },
     {
-        "left":"emplois-de-linclusion-20bd6dae-752b-442b-927c-2537ef397b19",
-        "right":"emplois-de-linclusion-a60ab5bb-4346-45bd-bc0e-eead44a5c0c6",
-        "label":"distinct"
+        "left": "emplois-de-linclusion--20bd6dae-752b-442b-927c-2537ef397b19",
+        "right": "emplois-de-linclusion--a60ab5bb-4346-45bd-bc0e-eead44a5c0c6",
+        "label": "distinct"
     },
     {
-        "left":"monenfant-12846537",
-        "right":"monenfant-33733787",
-        "label":"distinct"
+        "left": "monenfant--12846537",
+        "right": "monenfant--33733787",
+        "label": "distinct"
     },
     {
-        "left":"emplois-de-linclusion-0facf250-e6a1-4674-bf1d-ca868a821059",
-        "right":"emplois-de-linclusion-8cf1fbec-08b0-48b8-9ba1-db2021d4a691",
-        "label":"distinct"
+        "left": "emplois-de-linclusion--0facf250-e6a1-4674-bf1d-ca868a821059",
+        "right": "emplois-de-linclusion--8cf1fbec-08b0-48b8-9ba1-db2021d4a691",
+        "label": "distinct"
     },
     {
-        "left":"emplois-de-linclusion-0facf250-e6a1-4674-bf1d-ca868a821059",
-        "right":"emplois-de-linclusion-ef0d7ce5-0a2f-41c5-804c-842fe538f075",
-        "label":"distinct"
+        "left": "emplois-de-linclusion--0facf250-e6a1-4674-bf1d-ca868a821059",
+        "right": "emplois-de-linclusion--ef0d7ce5-0a2f-41c5-804c-842fe538f075",
+        "label": "distinct"
     },
     {
-        "left":"emplois-de-linclusion-0facf250-e6a1-4674-bf1d-ca868a821059",
-        "right":"emplois-de-linclusion-4ad2c83a-2a6b-4ef0-9f4b-996891ec8ccc",
-        "label":"distinct"
+        "left": "emplois-de-linclusion--0facf250-e6a1-4674-bf1d-ca868a821059",
+        "right": "emplois-de-linclusion--4ad2c83a-2a6b-4ef0-9f4b-996891ec8ccc",
+        "label": "distinct"
     },
     {
-        "left":"dora-d531480e-03dc-429f-9e5d-35eff2a5dacc",
-        "right":"soliguide-23626",
-        "label":"distinct"
+        "left": "dora--d531480e-03dc-429f-9e5d-35eff2a5dacc",
+        "right": "soliguide--23626",
+        "label": "distinct"
     },
     {
-        "left":"cd35-1260",
-        "right":"dora-c1139066-b2a0-484d-b2aa-64cf616c69d9",
-        "label":"distinct"
+        "left": "cd35--1260",
+        "right": "dora--c1139066-b2a0-484d-b2aa-64cf616c69d9",
+        "label": "distinct"
     },
     {
-        "left":"monenfant-12646906",
-        "right":"monenfant-40390301",
-        "label":"distinct"
+        "left": "monenfant--12646906",
+        "right": "monenfant--40390301",
+        "label": "distinct"
     },
     {
-        "left":"dora-3278a5fb-01af-47ad-aa6c-bab4cd5b05e2",
-        "right":"emplois-de-linclusion-0facf250-e6a1-4674-bf1d-ca868a821059",
-        "label":"distinct"
+        "left": "dora--3278a5fb-01af-47ad-aa6c-bab4cd5b05e2",
+        "right": "emplois-de-linclusion--0facf250-e6a1-4674-bf1d-ca868a821059",
+        "label": "distinct"
     },
     {
-        "left":"monenfant-12512488",
-        "right":"monenfant-37621085",
-        "label":"distinct"
+        "left": "monenfant--12512488",
+        "right": "monenfant--37621085",
+        "label": "distinct"
     },
     {
-        "left":"emplois-de-linclusion-1abd889c-8993-4a5c-b72b-c3c55a61aa5d",
-        "right":"emplois-de-linclusion-8cf1fbec-08b0-48b8-9ba1-db2021d4a691",
-        "label":"distinct"
+        "left": "emplois-de-linclusion--1abd889c-8993-4a5c-b72b-c3c55a61aa5d",
+        "right": "emplois-de-linclusion--8cf1fbec-08b0-48b8-9ba1-db2021d4a691",
+        "label": "distinct"
     },
     {
-        "left":"cd35-1346",
-        "right":"cd35-417",
-        "label":"distinct"
+        "left": "cd35--1346",
+        "right": "cd35--417",
+        "label": "distinct"
     },
     {
-        "left":"emplois-de-linclusion-1abd889c-8993-4a5c-b72b-c3c55a61aa5d",
-        "right":"emplois-de-linclusion-4ad2c83a-2a6b-4ef0-9f4b-996891ec8ccc",
-        "label":"distinct"
+        "left": "emplois-de-linclusion--1abd889c-8993-4a5c-b72b-c3c55a61aa5d",
+        "right": "emplois-de-linclusion--4ad2c83a-2a6b-4ef0-9f4b-996891ec8ccc",
+        "label": "distinct"
     },
     {
-        "left":"monenfant-33733787",
-        "right":"monenfant-33734023",
-        "label":"distinct"
+        "left": "monenfant--33733787",
+        "right": "monenfant--33734023",
+        "label": "distinct"
     },
     {
-        "left":"emplois-de-linclusion-1abd889c-8993-4a5c-b72b-c3c55a61aa5d",
-        "right":"emplois-de-linclusion-ef0d7ce5-0a2f-41c5-804c-842fe538f075",
-        "label":"distinct"
+        "left": "emplois-de-linclusion--1abd889c-8993-4a5c-b72b-c3c55a61aa5d",
+        "right": "emplois-de-linclusion--ef0d7ce5-0a2f-41c5-804c-842fe538f075",
+        "label": "distinct"
     },
     {
-        "left":"dora-3278a5fb-01af-47ad-aa6c-bab4cd5b05e2",
-        "right":"emplois-de-linclusion-1abd889c-8993-4a5c-b72b-c3c55a61aa5d",
-        "label":"distinct"
+        "left": "dora--3278a5fb-01af-47ad-aa6c-bab4cd5b05e2",
+        "right": "emplois-de-linclusion--1abd889c-8993-4a5c-b72b-c3c55a61aa5d",
+        "label": "distinct"
     },
     {
-        "left":"emplois-de-linclusion-0facf250-e6a1-4674-bf1d-ca868a821059",
-        "right":"emplois-de-linclusion-c9764d67-5163-44c1-85b1-4ca649cd5840",
-        "label":"distinct"
+        "left": "emplois-de-linclusion--0facf250-e6a1-4674-bf1d-ca868a821059",
+        "right": "emplois-de-linclusion--c9764d67-5163-44c1-85b1-4ca649cd5840",
+        "label": "distinct"
     },
     {
-        "left":"emplois-de-linclusion-1abd889c-8993-4a5c-b72b-c3c55a61aa5d",
-        "right":"emplois-de-linclusion-c9764d67-5163-44c1-85b1-4ca649cd5840",
-        "label":"distinct"
+        "left": "emplois-de-linclusion--1abd889c-8993-4a5c-b72b-c3c55a61aa5d",
+        "right": "emplois-de-linclusion--c9764d67-5163-44c1-85b1-4ca649cd5840",
+        "label": "distinct"
     },
     {
-        "left":"emplois-de-linclusion-1abd889c-8993-4a5c-b72b-c3c55a61aa5d",
-        "right":"emplois-de-linclusion-d8412211-abf3-4ac7-98b9-276c92083c93",
-        "label":"distinct"
+        "left": "emplois-de-linclusion--1abd889c-8993-4a5c-b72b-c3c55a61aa5d",
+        "right": "emplois-de-linclusion--d8412211-abf3-4ac7-98b9-276c92083c93",
+        "label": "distinct"
     },
     {
-        "left":"emplois-de-linclusion-0facf250-e6a1-4674-bf1d-ca868a821059",
-        "right":"emplois-de-linclusion-20bd6dae-752b-442b-927c-2537ef397b19",
-        "label":"distinct"
+        "left": "emplois-de-linclusion--0facf250-e6a1-4674-bf1d-ca868a821059",
+        "right": "emplois-de-linclusion--20bd6dae-752b-442b-927c-2537ef397b19",
+        "label": "distinct"
     },
     {
-        "left":"soliguide-19940",
-        "right":"soliguide-20254",
-        "label":"distinct"
+        "left": "soliguide--19940",
+        "right": "soliguide--20254",
+        "label": "distinct"
     },
     {
-        "left":"emplois-de-linclusion-d5dacae9-fb99-4f15-97e4-5ad89302f401",
-        "right":"soliguide-26462",
-        "label":"distinct"
+        "left": "emplois-de-linclusion--d5dacae9-fb99-4f15-97e4-5ad89302f401",
+        "right": "soliguide--26462",
+        "label": "distinct"
     },
     {
-        "left":"monenfant-33733787",
-        "right":"monenfant-46378804",
-        "label":"distinct"
+        "left": "monenfant--33733787",
+        "right": "monenfant--46378804",
+        "label": "distinct"
     },
     {
-        "left":"emplois-de-linclusion-1abd889c-8993-4a5c-b72b-c3c55a61aa5d",
-        "right":"emplois-de-linclusion-20bd6dae-752b-442b-927c-2537ef397b19",
-        "label":"distinct"
+        "left": "emplois-de-linclusion--1abd889c-8993-4a5c-b72b-c3c55a61aa5d",
+        "right": "emplois-de-linclusion--20bd6dae-752b-442b-927c-2537ef397b19",
+        "label": "distinct"
     },
     {
-        "left":"monenfant-23050158",
-        "right":"monenfant-46378804",
-        "label":"distinct"
+        "left": "monenfant--23050158",
+        "right": "monenfant--46378804",
+        "label": "distinct"
     },
     {
-        "left":"monenfant-23050158",
-        "right":"monenfant-33734023",
-        "label":"distinct"
+        "left": "monenfant--23050158",
+        "right": "monenfant--33734023",
+        "label": "distinct"
     },
     {
-        "left":"monenfant-57620818",
-        "right":"monenfant-62515189",
-        "label":"distinct"
+        "left": "monenfant--57620818",
+        "right": "monenfant--62515189",
+        "label": "distinct"
     },
     {
-        "left":"dora-ad82580d-bd72-41a7-84f4-6c881deb8393",
-        "right":"emplois-de-linclusion-7dc36c3e-7135-4e70-a073-387ded480a60",
-        "label":"distinct"
+        "left": "dora--ad82580d-bd72-41a7-84f4-6c881deb8393",
+        "right": "emplois-de-linclusion--7dc36c3e-7135-4e70-a073-387ded480a60",
+        "label": "distinct"
     },
     {
-        "left":"dora-5ca79f2c-abb4-4786-871e-cff258392fa0",
-        "right":"emplois-de-linclusion-12b6c7da-53aa-4e04-aaf1-a7850abee613",
-        "label":"distinct"
+        "left": "dora--5ca79f2c-abb4-4786-871e-cff258392fa0",
+        "right": "emplois-de-linclusion--12b6c7da-53aa-4e04-aaf1-a7850abee613",
+        "label": "distinct"
     },
     {
-        "left":"monenfant-12846537",
-        "right":"monenfant-37661514",
-        "label":"distinct"
+        "left": "monenfant--12846537",
+        "right": "monenfant--37661514",
+        "label": "distinct"
     },
     {
-        "left":"monenfant-12666565",
-        "right":"soliguide-4480",
-        "label":"distinct"
+        "left": "monenfant--12666565",
+        "right": "soliguide--4480",
+        "label": "distinct"
     },
     {
-        "left":"monenfant-12751542",
-        "right":"monenfant-12834876",
-        "label":"distinct"
+        "left": "monenfant--12751542",
+        "right": "monenfant--12834876",
+        "label": "distinct"
     },
     {
-        "left":"monenfant-37661514",
-        "right":"monenfant-46378804",
-        "label":"distinct"
+        "left": "monenfant--37661514",
+        "right": "monenfant--46378804",
+        "label": "distinct"
     },
     {
-        "left":"monenfant-33618086",
-        "right":"monenfant-37661514",
-        "label":"distinct"
+        "left": "monenfant--33618086",
+        "right": "monenfant--37661514",
+        "label": "distinct"
     },
     {
-        "left":"monenfant-12878314",
-        "right":"monenfant-33733787",
-        "label":"distinct"
+        "left": "monenfant--12878314",
+        "right": "monenfant--33733787",
+        "label": "distinct"
     },
     {
-        "left":"monenfant-12846537",
-        "right":"monenfant-33618086",
-        "label":"distinct"
+        "left": "monenfant--12846537",
+        "right": "monenfant--33618086",
+        "label": "distinct"
     },
     {
-        "left":"emplois-de-linclusion-51c04783-2204-4907-a623-ef3e64877088",
-        "right":"emplois-de-linclusion-e0966db9-967b-41c7-a5fb-072f2016fc95",
-        "label":"distinct"
+        "left": "emplois-de-linclusion--51c04783-2204-4907-a623-ef3e64877088",
+        "right": "emplois-de-linclusion--e0966db9-967b-41c7-a5fb-072f2016fc95",
+        "label": "distinct"
     },
     {
-        "left":"cd35-2590",
-        "right":"monenfant-62886526",
-        "label":"distinct"
+        "left": "cd35--2590",
+        "right": "monenfant--62886526",
+        "label": "distinct"
     },
     {
-        "left":"soliguide-25740",
-        "right":"soliguide-25819",
-        "label":"distinct"
+        "left": "soliguide--25740",
+        "right": "soliguide--25819",
+        "label": "distinct"
     },
     {
-        "left":"soliguide-27768",
-        "right":"soliguide-40109",
-        "label":"distinct"
+        "left": "soliguide--27768",
+        "right": "soliguide--40109",
+        "label": "distinct"
     },
     {
-        "left":"soliguide-27466",
-        "right":"soliguide-27964",
-        "label":"distinct"
+        "left": "soliguide--27466",
+        "right": "soliguide--27964",
+        "label": "distinct"
     },
     {
-        "left":"soliguide-26534",
-        "right":"soliguide-26535",
-        "label":"distinct"
+        "left": "soliguide--26534",
+        "right": "soliguide--26535",
+        "label": "distinct"
     },
     {
-        "left":"soliguide-37174",
-        "right":"soliguide-41458",
-        "label":"distinct"
+        "left": "soliguide--37174",
+        "right": "soliguide--41458",
+        "label": "distinct"
     },
     {
-        "left":"emplois-de-linclusion-bbade634-e001-4c4b-bbf1-1d0cc7e78e54",
-        "right":"france-travail-IDF0373",
-        "label":"match"
+        "left": "emplois-de-linclusion--bbade634-e001-4c4b-bbf1-1d0cc7e78e54",
+        "right": "france-travail--IDF0373",
+        "label": "match"
     },
     {
-        "left":"dora-502ca0a8-1b83-47a5-8a51-6fd109903921",
-        "right":"france-travail-MAR0009",
-        "label":"match"
+        "left": "dora--502ca0a8-1b83-47a5-8a51-6fd109903921",
+        "right": "france-travail--MAR0009",
+        "label": "match"
     },
     {
-        "left":"emplois-de-linclusion-7b238c73-ca2d-4711-b7cd-c722644ebdc1",
-        "right":"emplois-de-linclusion-f5bcc4c3-7332-4671-966d-e40b5943d9c5",
-        "label":"match"
+        "left": "emplois-de-linclusion--7b238c73-ca2d-4711-b7cd-c722644ebdc1",
+        "right": "emplois-de-linclusion--f5bcc4c3-7332-4671-966d-e40b5943d9c5",
+        "label": "match"
     },
     {
-        "left":"dora-3f365f5f-564d-44db-b054-bc1d5e606f84",
-        "right":"emplois-de-linclusion-28a3e4d8-2c72-4245-a46f-aca57dbc1917",
-        "label":"match"
+        "left": "dora--3f365f5f-564d-44db-b054-bc1d5e606f84",
+        "right": "emplois-de-linclusion--28a3e4d8-2c72-4245-a46f-aca57dbc1917",
+        "label": "match"
     },
     {
-        "left":"dora-e54f9252-24f6-4277-b9a0-74ae59139374",
-        "right":"emplois-de-linclusion-aae7abb0-ba3f-4fa7-b510-9d1e8f2290ab",
-        "label":"match"
+        "left": "dora--e54f9252-24f6-4277-b9a0-74ae59139374",
+        "right": "emplois-de-linclusion--aae7abb0-ba3f-4fa7-b510-9d1e8f2290ab",
+        "label": "match"
     },
     {
-        "left":"soliguide-12054",
-        "right":"soliguide-45591",
-        "label":"match"
+        "left": "soliguide--12054",
+        "right": "soliguide--45591",
+        "label": "match"
     },
     {
-        "left":"cd35-2546",
-        "right":"cd35-879",
-        "label":"match"
+        "left": "cd35--2546",
+        "right": "cd35--879",
+        "label": "match"
     },
     {
-        "left":"soliguide-20840",
-        "right":"soliguide-26654",
-        "label":"match"
+        "left": "soliguide--20840",
+        "right": "soliguide--26654",
+        "label": "match"
     },
     {
-        "left":"dora-baf012c1-43c4-4283-b5c9-d07b787817da",
-        "right":"soliguide-27874",
-        "label":"match"
+        "left": "dora--baf012c1-43c4-4283-b5c9-d07b787817da",
+        "right": "soliguide--27874",
+        "label": "match"
     },
     {
-        "left":"dora-461b45a5-d2f7-4faa-a13f-ad5ca91245d7",
-        "right":"france-travail-IDF0039",
-        "label":"match"
+        "left": "dora--461b45a5-d2f7-4faa-a13f-ad5ca91245d7",
+        "right": "france-travail--IDF0039",
+        "label": "match"
     },
     {
-        "left":"dora-7144b716-9c2e-428d-ba35-f639653caaa8",
-        "right":"soliguide-40153",
-        "label":"match"
+        "left": "dora--7144b716-9c2e-428d-ba35-f639653caaa8",
+        "right": "soliguide--40153",
+        "label": "match"
     },
     {
-        "left":"emplois-de-linclusion-0d48e66c-693d-473f-9e72-7ab5f902cb2e",
-        "right":"emplois-de-linclusion-965eb5a4-9050-461c-85a3-b10b0e856dcd",
-        "label":"match"
+        "left": "emplois-de-linclusion--0d48e66c-693d-473f-9e72-7ab5f902cb2e",
+        "right": "emplois-de-linclusion--965eb5a4-9050-461c-85a3-b10b0e856dcd",
+        "label": "match"
     },
     {
-        "left":"monenfant-62599975",
-        "right":"monenfant-62600023",
-        "label":"match"
+        "left": "monenfant--62599975",
+        "right": "monenfant--62600023",
+        "label": "match"
     },
     {
-        "left":"cd35-2310",
-        "right":"cd35-570",
-        "label":"match"
+        "left": "cd35--2310",
+        "right": "cd35--570",
+        "label": "distinct"
     },
     {
-        "left":"soliguide-21344",
-        "right":"soliguide-22991",
-        "label":"match"
+        "left": "soliguide--21344",
+        "right": "soliguide--22991",
+        "label": "match"
     },
     {
-        "left":"soliguide-15794",
-        "right":"soliguide-25664",
-        "label":"match"
+        "left": "soliguide--15794",
+        "right": "soliguide--25664",
+        "label": "match"
     },
     {
-        "left":"dora-3c421438-bb55-4d78-acad-e1749c892f2c",
-        "right":"emplois-de-linclusion-c1af53bf-7be8-4c75-91eb-76f5acbe8917",
-        "label":"match"
+        "left": "dora--3c421438-bb55-4d78-acad-e1749c892f2c",
+        "right": "emplois-de-linclusion--c1af53bf-7be8-4c75-91eb-76f5acbe8917",
+        "label": "match"
     },
     {
-        "left":"dora-34e82d15-ad88-4fb3-8b78-2da74d2f94f2",
-        "right":"emplois-de-linclusion-3df8bc0c-2139-4477-8420-bbedb4c44566",
-        "label":"match"
+        "left": "dora--34e82d15-ad88-4fb3-8b78-2da74d2f94f2",
+        "right": "emplois-de-linclusion--3df8bc0c-2139-4477-8420-bbedb4c44566",
+        "label": "match"
     },
     {
-        "left":"dora-29861c77-7f7e-4bed-a19d-1cdf52584ba0",
-        "right":"emplois-de-linclusion-358ceb64-d34c-4fc6-a8a0-0bc64af04c8b",
-        "label":"match"
+        "left": "dora--29861c77-7f7e-4bed-a19d-1cdf52584ba0",
+        "right": "emplois-de-linclusion--358ceb64-d34c-4fc6-a8a0-0bc64af04c8b",
+        "label": "match"
     },
     {
-        "left":"emplois-de-linclusion-e0694a71-4412-45b6-8c47-09dce626f056",
-        "right":"monenfant-12927979",
-        "label":"match"
+        "left": "emplois-de-linclusion--e0694a71-4412-45b6-8c47-09dce626f056",
+        "right": "monenfant--12927979",
+        "label": "match"
     },
     {
-        "left":"reseau-alpha-127",
-        "right":"soliguide-3289",
-        "label":"match"
+        "left": "reseau-alpha--127",
+        "right": "soliguide--3289",
+        "label": "match"
     },
     {
-        "left":"soliguide-28904",
-        "right":"soliguide-36190",
-        "label":"match"
+        "left": "soliguide--28904",
+        "right": "soliguide--36190",
+        "label": "match"
     },
     {
-        "left":"dora-1ca41d49-4094-48d2-b8e6-c50980148654",
-        "right":"emplois-de-linclusion-22731384-7bcb-490e-b29e-caa7a56e2341",
-        "label":"match"
+        "left": "dora--1ca41d49-4094-48d2-b8e6-c50980148654",
+        "right": "emplois-de-linclusion--22731384-7bcb-490e-b29e-caa7a56e2341",
+        "label": "distinct"
     },
     {
-        "left":"cd35-2142",
-        "right":"dora-1a980e4a-3d08-4f4b-945d-4b9ab28e57b8",
-        "label":"match"
+        "left": "cd35--2142",
+        "right": "dora--1a980e4a-3d08-4f4b-945d-4b9ab28e57b8",
+        "label": "match"
     },
     {
-        "left":"emplois-de-linclusion-a0549552-4e39-4237-858a-37fe2591aae7",
-        "right":"soliguide-20930",
-        "label":"match"
+        "left": "emplois-de-linclusion--a0549552-4e39-4237-858a-37fe2591aae7",
+        "right": "soliguide--20930",
+        "label": "match"
     },
     {
-        "left":"dora-2c52f193-062f-4ad9-a436-d16826e0ef53",
-        "right":"dora-a9dd81a5-3af4-4825-971f-1cd612777f7e",
-        "label":"match"
+        "left": "dora--2c52f193-062f-4ad9-a436-d16826e0ef53",
+        "right": "dora--a9dd81a5-3af4-4825-971f-1cd612777f7e",
+        "label": "match"
     },
     {
-        "left":"monenfant-12557939",
-        "right":"soliguide-7516",
-        "label":"match"
+        "left": "monenfant--12557939",
+        "right": "soliguide--7516",
+        "label": "match"
     },
     {
-        "left":"mes-aides-recbcLHCH4JSh4XJJ",
-        "right":"mes-aides-recqqEXJrb0aU29qE",
-        "label":"match"
+        "left": "mes-aides--recbcLHCH4JSh4XJJ",
+        "right": "mes-aides--recqqEXJrb0aU29qE",
+        "label": "match"
     },
     {
-        "left":"mes-aides-recU7683Njtp9trAE",
-        "right":"mes-aides-recvGUtwuF6sP5ZZT",
-        "label":"match"
+        "left": "mes-aides--recU7683Njtp9trAE",
+        "right": "mes-aides--recvGUtwuF6sP5ZZT",
+        "label": "match"
     }
 ]
