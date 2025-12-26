@@ -9,6 +9,7 @@ from sqlalchemy import orm
 
 from data_inclusion.api.decoupage_administratif import constants
 from data_inclusion.api.decoupage_administratif.models import Commune
+from data_inclusion.api.inclusion_data.common.filters import ExclureDoublonsServicesMode
 from data_inclusion.api.inclusion_data.v1 import models, parameters
 from data_inclusion.schema import v1
 
@@ -313,28 +314,84 @@ def search_services_query(
 
     query = filter_services(query=query, params=params)
 
-    if params.exclure_doublons:
+    if params.exclure_doublons is not None:
         cluster_key = sqla.func.coalesce(
             models.Structure._cluster_id,
             models.Structure.id,
         )
-        structure_rank = (
-            sqla.func.dense_rank()
-            .over(
-                partition_by=cluster_key,
-                order_by=[
-                    models.Structure.score_qualite.desc(),
-                    models.Structure.date_maj.desc().nulls_last(),
-                ],
+
+        if params.exclure_doublons == ExclureDoublonsServicesMode.STRICT:
+            # In this mode, in case of equality of both scores and date_maj,
+            # services from both (or more) structures of a cluster would be returned.
+            # We decided not to overengineer further.
+            structure_rank = (
+                sqla.func.dense_rank()
+                .over(
+                    partition_by=cluster_key,
+                    order_by=[
+                        models.Structure.score_qualite.desc(),
+                        models.Structure.date_maj.desc().nulls_last(),
+                    ],
+                )
+                .label("_structure_rank")
             )
-            .label("_structure_rank")
-        )
-        ranked_subq = query.add_columns(structure_rank).subquery()
-        query = query.where(
-            models.Service.id.in_(
-                sqla.select(ranked_subq.c.id).where(ranked_subq.c._structure_rank == 1)
+            ranked_subq = query.add_columns(structure_rank).subquery()
+            query = query.where(
+                models.Service.id.in_(
+                    sqla.select(ranked_subq.c.id).where(
+                        ranked_subq.c._structure_rank == 1
+                    )
+                )
             )
-        )
+
+        elif params.exclure_doublons == ExclureDoublonsServicesMode.THEMATIQUES:
+            # Return only one service per category if possible.
+            category_expr = sqla.func.split_part(
+                sqla.func.unnest(models.Service.thematiques), "--", 1
+            ).label("_category")
+
+            service_with_categories = (
+                sqla.select(
+                    models.Service.id.label("service_id"),
+                    cluster_key.label("cluster_key"),
+                    category_expr,
+                    models.Structure.score_qualite,
+                    models.Structure.date_maj,
+                )
+                .select_from(models.Service)
+                .join(models.Structure)
+            ).subquery()
+
+            category_rank = (
+                sqla.func.row_number()
+                .over(
+                    partition_by=[
+                        service_with_categories.c.cluster_key,
+                        service_with_categories.c._category,
+                    ],
+                    order_by=[
+                        service_with_categories.c.score_qualite.desc(),
+                        service_with_categories.c.date_maj.desc().nulls_last(),
+                        service_with_categories.c.service_id,
+                    ],
+                )
+                .label("_category_rank")
+            )
+
+            ranked_categories = (
+                sqla.select(
+                    service_with_categories.c.service_id,
+                    category_rank,
+                )
+            ).subquery()
+
+            best_service_ids = (
+                sqla.select(ranked_categories.c.service_id)
+                .where(ranked_categories.c._category_rank == 1)
+                .distinct()
+            )
+
+            query = query.where(models.Service.id.in_(best_service_ids))
 
     query = query.order_by(
         sqla.column("distance").nulls_last(),

@@ -98,7 +98,7 @@ class SearchServicesQueryParams(pydantic.BaseModel, pagination.get_pagination_pa
     recherche_public: filters.RecherchePublicFilter = None
     types: filters.ServiceTypesFilter[schema.TypeService] = None
     score_qualite_minimum: filters.ScoreQualiteMinimumFilter = None
-    exclure_doublons: filters.ExclureDoublonsServicesFilter = False
+    exclure_doublons: filters.ExclureDoublonsServicesFilterV1 = None
 
     @pydantic.model_validator(mode="after")
     def validate_lat_lon(self) -> Self:
