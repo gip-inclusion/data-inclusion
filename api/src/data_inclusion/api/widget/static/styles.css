@@ -319,11 +319,13 @@ a:visited {
   flex-wrap: wrap;
   gap: var(--padding-l);
   margin-bottom: var(--padding-l);
+  justify-content: space-evenly;
+  align-content: center;
 }
 
 .di-cards-inline .di-card {
   flex: 0 1 280px;
-  min-width: 200px;
+  min-width: 300px;
 }
 
 .di-card {
