@@ -1,0 +1,19 @@
+# Dependencies
+node_modules/
+vendor/
+venv/
+
+# Build
+dist/
+build/
+*.pyc
+__pycache__/
+
+# Large data files
+*.csv
+*.db
+*.sqlite
+*.parquet
+
+# Logs
+*.log
