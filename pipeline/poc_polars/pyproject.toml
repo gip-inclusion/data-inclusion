@@ -1,0 +1,34 @@
+[build-system]
+build-backend = "hatchling.build"
+requires = ["hatchling"]
+
+[project]
+name = "poc-polars-pipeline"
+version = "0.1.0"
+requires-python = ">=3.12"
+dependencies = [
+    "data-inclusion-processings",
+    "data-inclusion-schema>=1.0.0",
+    "polars>=1.0.0",
+    "psycopg2-binary>=2.9.0",
+    "sqlalchemy>=2.0.0",
+    "connectorx>=0.3.0",
+    "pandas>=2.0.0",
+    "pyarrow>=14.0.0",
+]
+
+[tool.hatch.build.targets.wheel]
+packages = ["."]
+
+[tool.uv.sources]
+data-inclusion-processings = { path = "../../datawarehouse/processings", editable = true }
+
+[project.optional-dependencies]
+dev = ["pytest>=8.0.0", "ruff>=0.4.0"]
+
+[tool.ruff.lint]
+select = ["F", "E", "W", "I", "UP"]
+
+[tool.ruff.lint.isort]
+combine-as-imports = true
+known-first-party = ["data_inclusion"]
