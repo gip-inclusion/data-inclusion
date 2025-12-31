@@ -1,3 +1,4 @@
+from enum import Enum
 from typing import Annotated, TypeVar
 
 import pydantic
@@ -6,6 +7,12 @@ from data_inclusion.api.decoupage_administratif.constants import (
     DepartementCodeEnum,
     RegionCodeEnum,
 )
+
+
+class ExclureDoublonsServicesMode(str, Enum):
+    STRICT = "strict"
+    THEMATIQUES = "thematiques"
+
 
 S = TypeVar("S")
 
@@ -109,6 +116,20 @@ ExclureDoublonsServicesFilter = Annotated[
             "[BETA] Mode qui ne retourne, parmi les services attachés à des "
             "structures en doublon, que ceux attachés à la structure la plus "
             "qualitative (voir [documentation](https://gip-inclusion.notion.site/Syst-me-de-d-duplication-des-donn-es-17d5f321b60480f99f6cf65522a83c8b?pvs=4))."
+        )
+    ),
+]
+
+ExclureDoublonsServicesFilterV1 = Annotated[
+    ExclureDoublonsServicesMode | None,
+    pydantic.Field(
+        description=(
+            "[BETA] Mode de déduplication des services. "
+            "'strict' : ne retourne, parmi les services attachés à des structures "
+            "en doublon, que ceux attachés à la structure la plus qualitative. "
+            "'thematiques' : ne retourne qu'un service (le plus qualitatif) par "
+            "cluster de structures en doublon et par thématique. "
+            "Voir [documentation](https://gip-inclusion.notion.site/Syst-me-de-d-duplication-des-donn-es-17d5f321b60480f99f6cf65522a83c8b?pvs=4)."
         )
     ),
 ]
