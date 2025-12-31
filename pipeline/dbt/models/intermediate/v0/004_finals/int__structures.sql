@@ -55,5 +55,5 @@ SELECT
 FROM structures
 LEFT JOIN urls AS urls_site_web ON structures.site_web = urls_site_web.input_url
 LEFT JOIN urls AS urls_accessibilite ON structures.accessibilite = urls_accessibilite.input_url
-LEFT JOIN adresses ON structures._di_adresse_surrogate_id = adresses._di_surrogate_id
+INNER JOIN adresses ON structures._di_adresse_surrogate_id = adresses._di_surrogate_id
 LEFT JOIN sirets ON structures._di_surrogate_id = sirets._di_surrogate_id

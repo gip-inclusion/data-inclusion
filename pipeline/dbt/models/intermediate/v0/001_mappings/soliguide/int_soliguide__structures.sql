@@ -22,7 +22,7 @@ lieux_with_description AS (
 ),
 
 final AS (
-    SELECT
+    SELECT DISTINCT ON (lieux.lieu_id)
         lieux.lieu_id                                       AS "id",
         lieux.lieu_id                                       AS "adresse_id",
         NULL                                                AS "rna",
@@ -43,7 +43,7 @@ final AS (
         lieux.description_courte                            AS "presentation_resume",
         lieux.description_longue                            AS "presentation_detail"
     FROM lieux_with_description AS lieux
-    ORDER BY 1
+    ORDER BY lieux.lieu_id ASC, lieux.updated_at DESC NULLS LAST
 )
 
 SELECT * FROM final

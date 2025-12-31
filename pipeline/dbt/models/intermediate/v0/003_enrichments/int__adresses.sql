@@ -24,10 +24,10 @@ final AS (
         COALESCE(geocodages.code_commune, adresses.code_insee) AS "code_insee",
         geocodages.score                                       AS "score_geocodage"
     FROM adresses
-    LEFT JOIN geocodages
+    INNER JOIN geocodages
         ON
             adresses._di_surrogate_id = geocodages.adresse_id
-            AND geocodages.score >= 0.765
+            AND geocodages.score >= 0.75
 )
 
 SELECT * FROM final

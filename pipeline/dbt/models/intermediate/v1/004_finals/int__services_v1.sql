@@ -92,6 +92,13 @@ LEFT JOIN adresses
     ON services.adresse_id = adresses.id
 LEFT JOIN urls
     ON services.lien_mobilisation = urls.input_url
+WHERE
+    NOT ('se-presenter' = ANY(services.modes_mobilisation))
+    OR (
+        'se-presenter' = ANY(services.modes_mobilisation)
+        AND adresses.score_geocodage IS NOT NULL
+        AND adresses.score_geocodage >= 0.75
+    )
 UNION ALL
 SELECT
     services_v0_to_v1.lien_mobilisation,
@@ -128,3 +135,6 @@ SELECT
     services_v0_to_v1.code_postal,
     services_v0_to_v1.code_insee
 FROM services_v0_to_v1
+WHERE
+    NOT ('se-presenter' = ANY(services_v0_to_v1.modes_mobilisation))
+    OR services_v0_to_v1.score_geocodage >= 0.75

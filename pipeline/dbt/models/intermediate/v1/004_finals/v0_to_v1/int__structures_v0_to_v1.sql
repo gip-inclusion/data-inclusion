@@ -51,3 +51,6 @@ SELECT
     structures.code_insee                      AS "code_insee"
 FROM structures
 LEFT JOIN reseaux_porteurs ON structures._di_surrogate_id = reseaux_porteurs._di_surrogate_id
+WHERE
+    structures.score_geocodage IS NOT NULL
+    AND structures.score_geocodage >= 0.75

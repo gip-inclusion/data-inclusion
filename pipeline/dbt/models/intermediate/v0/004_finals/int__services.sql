@@ -58,7 +58,7 @@ zones_diffusion AS (
             ELSE services.zone_diffusion_nom
         END                          AS "zone_diffusion_nom"
     FROM services
-    LEFT JOIN adresses_with_code_departement AS adresses
+    INNER JOIN adresses_with_code_departement AS adresses
         ON services._di_adresse_surrogate_id = adresses._di_surrogate_id
     LEFT JOIN departements
         ON adresses.code_departement = departements.code
@@ -123,7 +123,7 @@ LEFT JOIN zones_diffusion
     ON services._di_surrogate_id = zones_diffusion._di_surrogate_id
 LEFT JOIN contacts
     ON services._di_surrogate_id = contacts._di_surrogate_id
-LEFT JOIN adresses_with_code_region AS adresses
+INNER JOIN adresses_with_code_region AS adresses
     ON services._di_adresse_surrogate_id = adresses._di_surrogate_id
 LEFT JOIN urls AS urls_prise_rdv
     ON services.prise_rdv = urls_prise_rdv.input_url
