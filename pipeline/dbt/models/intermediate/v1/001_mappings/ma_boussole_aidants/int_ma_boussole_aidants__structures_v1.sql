@@ -30,7 +30,11 @@ final AS (
         description_structure                   AS "description",
         NULL                                    AS "horaires_accueil",
         NULL                                    AS "accessibilite_lieu",
-        CAST(NULL AS TEXT [])                   AS "reseaux_porteurs"
+        CASE
+            WHEN id_type_structure = '15' THEN 'ccas-cias'
+            WHEN id_type_structure = '53' THEN 'maison-departementale-de-lautonomie'
+            WHEN id_type_structure = '127' THEN 'maisons-des-solidarites'
+        END                                     AS "reseaux_porteurs"
     FROM structures
 )
 
