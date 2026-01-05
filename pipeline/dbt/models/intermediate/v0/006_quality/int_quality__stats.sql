@@ -16,6 +16,7 @@
 -- depends_on: {{ ref('stg_dora__structures') }}
 -- depends_on: {{ ref('int_dora__services') }}
 -- depends_on: {{ ref('int_dora__structures') }}
+-- depends_on: {{ ref('stg_emplois_de_linclusion__siaes') }}
 -- depends_on: {{ ref('stg_emplois_de_linclusion__organisations') }}
 -- depends_on: {{ ref('int_emplois_de_linclusion__structures') }}
 -- depends_on: {{ ref('stg_france_travail__agences') }}
