@@ -31,9 +31,9 @@ final AS (
         NULL                                    AS "horaires_accueil",
         NULL                                    AS "accessibilite_lieu",
         CASE
-            WHEN id_type_structure = '15' THEN 'ccas-cias'
-            WHEN id_type_structure = '53' THEN 'maison-departementale-de-lautonomie'
-            WHEN id_type_structure = '127' THEN 'maisons-des-solidarites'
+            WHEN id_type_structure = '15' THEN ARRAY['ccas-cias']
+            WHEN id_type_structure = '53' THEN ARRAY['maison-departementale-de-lautonomie']
+            WHEN id_type_structure = '127' THEN ARRAY['maisons-des-solidarites']
         END                                     AS "reseaux_porteurs"
     FROM structures
 )
