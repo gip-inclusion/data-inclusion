@@ -8,54 +8,71 @@ models:
           - unique
           - not_null
           - dbt_utils.not_empty_string
-
+      - name: last_update
+        data_tests:
+          - not_null
       - name: adresse
         data_tests:
-          - not_null:
-              config:
-                severity: warn
+          - dbt_utils.not_null_proportion:
+              arguments:
+                at_least: 0.9
           - dbt_utils.not_empty_string
       - name: code_postal
         data_tests:
-          - not_null:
-              config:
-                severity: warn
+          - dbt_utils.not_null_proportion:
+              arguments:
+                at_least: 0.5
           - dbt_utils.not_empty_string
       - name: commune
         data_tests:
-          - not_null:
-              config:
-                severity: warn
-          - dbt_utils.not_empty_string
-      - name: frais
-        data_tests:
+          - dbt_utils.not_null_proportion:
+              arguments:
+                at_least: 0.5
           - dbt_utils.not_empty_string
       - name: horaires_ouverture
         data_tests:
+          - dbt_utils.at_least_one
           - dbt_utils.not_empty_string
-      - name: site_web
+      - name: latitude
         data_tests:
+          - dbt_utils.at_least_one
+      - name: lien_source
+        data_tests:
+          - dbt_utils.at_least_one
           - dbt_utils.not_empty_string
+      - name: longitude
+        data_tests:
+          - dbt_utils.at_least_one
       - name: nom
         data_tests:
           - not_null
           - dbt_utils.not_empty_string
       - name: presentation_resume
         data_tests:
+          - not_null:
+              config:
+                error_if: ">100"
           - dbt_utils.not_empty_string
       - name: siret
         data_tests:
+          - dbt_utils.at_least_one
           - dbt_utils.not_empty_string
-      - name: telephone
-      - name: latitude
-      - name: longitude
-      - name: categories
-      - name: publics
-      - name: quartiers
-      - name: services
-      - name: type_structure
 
   - name: stg_fredo__categories
+    columns:
+      - name: structure_id
+        data_tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('stg_fredo__structures')
+                field: id
+      - name: value
+        data_tests:
+          - not_null
+          - dbt_utils.not_empty_string
+
+  - name: stg_fredo__emails
     columns:
       - name: structure_id
         data_tests:
@@ -80,14 +97,9 @@ models:
                 field: id
       - name: value
         data_tests:
-          - not_null
+          - dbt_utils.at_least_one
           - dbt_utils.not_empty_string
-          - accepted_values:
-              config:
-                severity: warn
 
-              arguments:
-                values: ['gratuit', 'payant', 'sur-rendez-vous', 'sans-rendez-vous']
   - name: stg_fredo__publics
     columns:
       - name: structure_id
@@ -100,9 +112,27 @@ models:
       - name: value
         data_tests:
           - not_null
-          - dbt_utils.not_empty_string
+          - accepted_values:
+              arguments:
+                values:
+                  - adulte
+                  - détenu ou sortant de détention
+                  - enfant
+                  - etudiant
+                  - femme
+                  - jeune
+                  - personne âgée
+                  - personne de nationalité étrangère
+                  - personne dépendante
+                  - porteur de handicap
+                  - salarié
+                  - sans domicile fixe
+                  - sortant ase
+                  - tout public
+                  - travailleur en situation de handicap
+                  - victime
 
-  - name: stg_fredo__quartiers
+  - name: stg_fredo__services
     columns:
       - name: structure_id
         data_tests:
@@ -114,9 +144,28 @@ models:
       - name: value
         data_tests:
           - not_null
-          - dbt_utils.not_empty_string
+          - accepted_values:
+              arguments:
+                values:
+                  - accès aux droits
+                  - accompagnement dans les démarches via le numérique
+                  - accompagnement dans les démarches
+                  - accompagnement global
+                  - accompagnement psychologique
+                  - activités / ateliers
+                  - aide à la personne
+                  - aide financière
+                  - aide logistique
+                  - apprentissage de la langue française
+                  - dispositif
+                  - ecoute / soutien
+                  - emploi
+                  - immersion/ découverte
+                  - information / orientation
+                  - initiation
+                  - soins
 
-  - name: stg_fredo__services
+  - name: stg_fredo__telephones
     columns:
       - name: structure_id
         data_tests:
@@ -142,4 +191,15 @@ models:
       - name: value
         data_tests:
           - not_null
-          - dbt_utils.not_empty_string
+          - accepted_values:
+              arguments:
+                values:
+                  - association
+                  - collectivité territoriale
+                  - collectivité territoriale de la région
+                  - collectivité territoriale de la ville
+                  - collectivité territoriale du département
+                  - entreprise
+                  - etablissement privé
+                  - etablissement public
+                  - services de l''etat

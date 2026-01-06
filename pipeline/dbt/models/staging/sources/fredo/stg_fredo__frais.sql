@@ -4,8 +4,8 @@ WITH source AS (
 
 final AS (
     SELECT
-        data ->> 'id'                                             AS "structure_id",
-        REPLACE(LOWER(TRIM(frais)), 'rendez vous', 'rendez-vous') AS "value"
+        data ->> 'id'      AS "structure_id",
+        LOWER(TRIM(frais)) AS "value"
     FROM
         source,
         LATERAL UNNEST(STRING_TO_ARRAY(TRIM(TRIM(data ->> 'frais'), '/'), '/')) AS frais
