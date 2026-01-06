@@ -31,7 +31,7 @@ templates = templating.Jinja2Templates(directory=TEMPLATES_DIR)
 
 def thematiques_filter(
     thematiques: list[str] | None, selected_category: str | None = None
-) -> list[dict]:
+) -> list[str]:
     if not thematiques:
         return []
 
@@ -54,14 +54,7 @@ def thematiques_filter(
 
     result = []
     for p in sorted_prefixes[:3]:
-        result.append(
-            {
-                "label": _category_from_prefix(p),
-                "is_overflow": False,
-            }
-        )
-    if len(sorted_prefixes) > 3:
-        result.append({"label": "etc.…", "is_overflow": True})
+        result.append(_category_from_prefix(p))
 
     return result
 

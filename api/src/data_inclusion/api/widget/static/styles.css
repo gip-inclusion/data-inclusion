@@ -142,26 +142,58 @@
 
 /* Typography */
 :root {
-  font-family: Inter, sans-serif;
+  font-family: Marianne, sans-serif;
   font-feature-settings: "liga" 1, "calt" 1;
   /* fix for Chrome */
   font-optical-sizing: auto;
 }
 
 @font-face {
-  font-family: Inter;
+  font-family: Marianne;
   font-style: normal;
-  font-weight: 100 900;
+  font-weight: 400;
   font-display: swap;
-  src: url("InterVariable.woff2") format("woff2");
+  src: url("marianne/Marianne-Regular.woff2") format("woff2");
 }
 
 @font-face {
-  font-family: Inter;
+  font-family: Marianne;
   font-style: italic;
-  font-weight: 100 900;
+  font-weight: 400;
   font-display: swap;
-  src: url("InterVariable-Italic.woff2") format("woff2");
+  src: url("marianne/Marianne-Regular_Italic.woff2") format("woff2");
+}
+
+@font-face {
+  font-family: Marianne;
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+  src: url("marianne/Marianne-Medium.woff2") format("woff2");
+}
+
+@font-face {
+  font-family: Marianne;
+  font-style: italic;
+  font-weight: 600;
+  font-display: swap;
+  src: url("marianne/Marianne-Medium_Italic.woff2") format("woff2");
+}
+
+@font-face {
+  font-family: Marianne;
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url("marianne/Marianne-Bold.woff2") format("woff2");
+}
+
+@font-face {
+  font-family: Marianne;
+  font-style: italic;
+  font-weight: 700;
+  font-display: swap;
+  src: url("marianne/Marianne-Bold_Italic.woff2") format("woff2");
 }
 
 /* Main Styles */
@@ -336,7 +368,7 @@ a:visited {
   transition: box-shadow 0.15s ease-in;
   color: var(--text-content-tertiary);
   padding: var(--padding-l) var(--padding-l) var(--padding-m) var(--padding-l);
-  min-height: 270px;
+  min-height: 293px;
 }
 
 @media (min-width: 1024px) {
@@ -382,13 +414,10 @@ a:visited {
   padding: 0.2em 0.6em 0.1em 0.6em;
   border-radius: 0.25rem;
   line-height: 1.5;
-}
-
-.di-badge-overflow {
-  background-color: transparent;
-  color: var(--text-content-tertiary);
-  font-style: italic;
-  text-transform: none;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 100%;
 }
 
 .di-card-footer {

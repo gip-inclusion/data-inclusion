@@ -36,7 +36,7 @@
             {% if result.service.thematiques %}
                 <div class="di-card-categories">
                     {% for item in result.service.thematiques | thematiques_filter(query_params_categories[0].value if query_params_categories else None) %}
-                        <span class="di-badge{% if item.is_overflow %} di-badge-overflow{% endif %}">{{ item.label }}</span>
+                        <span class="di-badge">{{ item }}</span>
                     {% endfor %}
                 </div>
             {% endif %}
