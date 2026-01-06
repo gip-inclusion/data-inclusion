@@ -21,3 +21,7 @@ build/
 
 #pyenv
 *.python-version
+*.dump
+*.sh
+.vscode/
+report/
