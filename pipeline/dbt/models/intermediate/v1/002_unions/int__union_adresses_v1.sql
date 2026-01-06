@@ -8,6 +8,7 @@
             ref('int_cd35__adresses_v1'),
             ref('int_emplois_de_linclusion__adresses_v1'),
             ref('int_france_travail__adresses_v1'),
+            ref('int_fredo__adresses_v1'),
             ref('int_soliguide__adresses_v1'),
             ref('int_ma_boussole_aidants__adresses_v1'),
             ref('int_monenfant__adresses_v1'),

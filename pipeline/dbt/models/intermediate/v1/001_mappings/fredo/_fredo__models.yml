@@ -1,0 +1,126 @@
+version: 2
+
+models:
+  - name: _map_fredo__publics
+    columns:
+      - name: public_fredo
+        data_tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('stg_fredo__publics')
+                field: value
+      - name: public_di
+        data_tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('publics_v1')
+                field: value
+
+  - name: _map_fredo__reseaux_porteurs
+    columns:
+      - name: type_structure
+        data_tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('stg_fredo__types')
+                field: value
+      - name: reseau_porteur
+        data_tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('reseaux_porteurs_v1')
+                field: value
+
+  - name: _map_fredo__thematiques
+    columns:
+      - name: category
+        data_tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('stg_fredo__categories')
+                field: value
+      - name: thematique
+        data_tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('thematiques_v1')
+                field: value
+
+  - name: _map_fredo__types
+    columns:
+      - name: service
+        data_tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('stg_fredo__services')
+                field: value
+      - name: type
+        data_tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('types_de_services_v1')
+                field: value
+  - name: int_fredo__adresses_v1
+    columns:
+      - name: id
+        data_tests:
+          - unique
+          - not_null
+          - dbt_utils.not_empty_string
+
+  - name: int_fredo__structures_v1
+    data_tests:
+      - model_validate:
+          config:
+            enabled: "{{ env_var('DBT_ENV', 'prod') == 'dev' }}"
+          arguments:
+            model_class: data_inclusion.schema.v1.Structure
+    columns:
+      - name: id
+        data_tests:
+          - unique
+          - not_null
+          - dbt_utils.not_empty_string
+      - name: adresse_id
+        data_tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('int_fredo__adresses_v1')
+                field: id
+
+  - name: int_fredo__services_v1
+    data_tests:
+      - model_validate:
+          config:
+            enabled: "{{ env_var('DBT_ENV', 'prod') == 'dev' }}"
+          arguments:
+            model_class: data_inclusion.schema.v1.Service
+    columns:
+      - name: id
+        data_tests:
+          - unique
+          - not_null
+          - dbt_utils.not_empty_string
+      - name: structure_id
+        data_tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('int_fredo__structures_v1')
+                field: id
+      - name: adresse_id
+        data_tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('int_fredo__adresses_v1')
+                field: id
