@@ -83,11 +83,15 @@ def deduplicate(data: list[DeduplicateInput]) -> pd.DataFrame:
             "siren",
             "telephone",
             "courriel",
+            "date_maj",
         ]
     ]
 
     # dedupe does not handle empty values, only None
     df = df.replace("", None)
+    # ensure date_maj exists (model expects it)
+    if "date_maj" not in df.columns:
+        df["date_maj"] = None
 
     dir_path = os.path.dirname(os.path.realpath(__file__))
     with open(f"{dir_path}/deduplicate-model.bin", "rb") as f:
