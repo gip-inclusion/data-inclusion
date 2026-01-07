@@ -30,7 +30,10 @@ class SortedTextArray(types.TypeDecorator):
     cache_ok = True
 
     def process_bind_param(self, value, dialect):
-        return sorted(value) if value is not None else None
+        if value is None:
+            return None
+        filtered = [v for v in value if v is not None]
+        return sorted(filtered) if filtered else []
 
 
 class Base(orm.DeclarativeBase):
