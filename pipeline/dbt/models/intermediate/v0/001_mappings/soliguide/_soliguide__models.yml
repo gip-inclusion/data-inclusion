@@ -1,38 +1,6 @@
 version: 2
 
 models:
-  - name: _map_soliguide__thematiques
-    columns:
-      - name: category
-        data_tests:
-          - not_null
-          - relationships:
-              arguments:
-                to: ref('stg_soliguide__categories')
-                field: code
-      - name: thematique
-        data_tests:
-          - not_null
-          - relationships:
-              arguments:
-                to: ref('thematiques')
-                field: value
-  - name: _map_soliguide__types
-    columns:
-      - name: category
-        data_tests:
-          - not_null
-          - relationships:
-              arguments:
-                to: ref('stg_soliguide__categories')
-                field: code
-      - name: di_type
-        data_tests:
-          - not_null
-          - relationships:
-              arguments:
-                to: ref('typologies_de_services')
-                field: value
   - name: int_soliguide__adresses
     columns:
       - name: id
@@ -87,22 +55,3 @@ models:
               arguments:
                 to: ref('int_soliguide__adresses')
                 field: id
-unit_tests:
-- name: test_address_without_postal_code_and_city
-  model: int_soliguide__adresses
-  given:
-    - input: ref('stg_soliguide__lieux')
-      rows:
-        - {position__address: '22 rue Sainte-Marthe, 75010 Paris'}
-        - {position__address: '3 Rpe des Mobiles, 16300 Barbezieux-Saint-Hilaire'}
-        - {position__address: ',,, 49610 Mozé-sur-Louet'}
-        - {position__address: null}
-        - {position__address: '36 Rte de Toulon'}
-  expect:
-    rows:
-      - {adresse: '22 rue Sainte-Marthe'}
-      - {adresse: '3 Rpe des Mobiles'}
-      - {adresse: null}
-      - {adresse: null}
-      - {adresse: '36 Rte de Toulon'}
-

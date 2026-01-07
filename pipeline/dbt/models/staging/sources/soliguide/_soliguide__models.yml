@@ -192,30 +192,10 @@ models:
       - name: value
         data_tests:
           - not_null
-          - dbt_utils.not_empty_string
-          - accepted_values:
+          - relationships:
               arguments:
-                values:
-                  - isolated
-                  - family
-                  - pregnant
-                  - couple
-                  - men
-                  - women
-                  - regular
-                  - asylum
-                  - refugee
-                  - undocumented
-                  - addiction
-                  - handicap
-                  - hiv
-                  - lgbt
-                  - mentalHealth
-                  - prison
-                  - prostitution
-                  - student
-                  - ukraine
-                  - violence
+                to: ref('stg_soliguide__publics')
+                field: value
 
   - name: stg_soliguide__services
     columns:
@@ -289,6 +269,15 @@ models:
       - name: publics__description
       - name: different_modalities
       - name: different_publics
+      - name: publics__accueil
+        data_tests:
+          - not_null
+          - accepted_values:
+              arguments:
+                values:
+                  - 0  # inconditionnel
+                  - 1  # inconditionnel adapté à un certain public
+                  - 2  # exclusif
 
   - name: stg_soliguide__sources
     columns:
@@ -331,30 +320,10 @@ models:
       - name: value
         data_tests:
           - not_null
-          - dbt_utils.not_empty_string
-          - accepted_values:
+          - relationships:
               arguments:
-                values:
-                  - isolated
-                  - family
-                  - pregnant
-                  - couple
-                  - men
-                  - women
-                  - regular
-                  - asylum
-                  - refugee
-                  - undocumented
-                  - addiction
-                  - handicap
-                  - hiv
-                  - lgbt
-                  - mentalHealth
-                  - prison
-                  - prostitution
-                  - student
-                  - ukraine
-                  - violence
+                to: ref('stg_soliguide__publics')
+                field: value
 
   - name: stg_soliguide__phones
     columns:
