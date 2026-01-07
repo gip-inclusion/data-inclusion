@@ -5,6 +5,7 @@ import pytest
 
 from data_inclusion.api.decoupage_administratif import constants
 from data_inclusion.api.decoupage_administratif.constants import RegionEnum
+from data_inclusion.api.decoupage_administratif.models import Commune
 from data_inclusion.api.inclusion_data.v0 import models as models_v0
 from data_inclusion.api.inclusion_data.v1 import models as models_v1
 from data_inclusion.api.utils import soliguide
@@ -1650,6 +1651,40 @@ def test_search_services_with_bad_code_commune(api_client, url, service_factory)
     )
 
     assert response.status_code == 422
+
+
+@pytest.mark.parametrize("schema_version", ["v1"])
+@pytest.mark.parametrize("path", ["/search/services"])
+@pytest.mark.with_token
+def test_search_services_with_commune_without_epci(
+    api_client, url, service_factory, db_session
+):
+    commune_code = "97801"
+    commune_without_epci = Commune(
+        code=commune_code,
+        nom="Cayenne",
+        departement="973",
+        region="03",
+        siren_epci=None,
+        codes_postaux=["97300"],
+        centre="POINT (-52.3333 4.9333)",
+    )
+    db_session.add(commune_without_epci)
+    db_session.commit()
+
+    service_factory(
+        commune="Cayenne",
+        code_insee=commune_code,
+        latitude=4.9333,
+        longitude=-52.3333,
+        modes_accueil=[v1.ModeAccueil.EN_PRESENTIEL.value],
+    )
+
+    response = api_client.get(url, params={"code_commune": commune_code})
+
+    assert response.status_code == 200
+    resp_data = response.json()
+    assert resp_data["total"] >= 0
 
 
 @pytest.mark.parametrize("schema_version", ["v0", "v1"])
