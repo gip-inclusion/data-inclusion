@@ -23,6 +23,9 @@ from data_inclusion.processings.phonenumbers import format_phone_number
         ("33.33", "3333"),
         ("33  33", "3333"),
         ("116 000", "116000"),
+        # Numéros courts SVA (Services à Valeur Ajoutée)
+        pytest.param("3631", "3631", id="sva-la-poste"),
+        pytest.param("3939", "3939", id="sva-service-public"),
         # Guadeloupe, Saint-Barthélemy et Saint-Martin
         pytest.param("05 90 00 00 00", "+590590000000", id="guadeloupe-fixed-0590"),
         pytest.param("06 90 00 00 00", "+590690000000", id="guadeloupe-mobile-0690"),
@@ -48,7 +51,7 @@ from data_inclusion.processings.phonenumbers import format_phone_number
         pytest.param("02 63 00 00 00", "+262263000000", id="reunion-fixed-0263"),
         pytest.param("06 92 00 00 00", "+262692000000", id="reunion-mobile-0692"),
         pytest.param("06 93 00 00 00", "+262693000000", id="reunion-mobile-0693"),
-        # DOM-TOM numbers using the +33 prefix
+        # DOM-TOM numbers using the +33 prefix
         pytest.param(
             "+33 5 90 00 00 00", "+590590000000", id="guadeloupe-fixed-+33-prefix"
         ),
@@ -58,7 +61,21 @@ from data_inclusion.processings.phonenumbers import format_phone_number
         pytest.param(
             "+33 2 62 00 00 00", "+262262000000", id="mayotte-fixed-+33-prefix"
         ),
+        # Numéros spéciaux français (08/09) - doivent rester en +33
+        pytest.param(" 08 00 01 31 40", "+33800013140", id="france-toll-free-0800"),
+        pytest.param("08 00 01 31 40", "+33800013140", id="france-toll-free-0800-2"),
+        pytest.param("09 12 34 56 78", "+33912345678", id="france-voip-09"),
+        # Saint-Pierre-et-Miquelon
+        pytest.param("05 08 41 10 50", "+508508411050", id="spm-fixed-0508"),
+        # Wallis-et-Futuna
+        pytest.param("06 81 00 00 00", "+681681000000", id="wallis-0681"),
+        # Polynésie française
+        pytest.param("06 89 00 00 00", "+689689000000", id="polynesie-0689"),
+        # Nouvelle-Calédonie
+        pytest.param("06 87 00 00 00", "+687687000000", id="nouvelle-caledonie-0687"),
+        # None input
+        (None, None),
     ],
 )
-def test_format_phone_number(phone_number: str, expected: bool):
+def test_format_phone_number(phone_number: str, expected: str | None):
     assert format_phone_number(phone_number) == expected
