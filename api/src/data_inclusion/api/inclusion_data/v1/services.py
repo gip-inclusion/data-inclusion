@@ -240,19 +240,20 @@ def search_services_query(
         query = query.filter(models.Structure.source != "soliguide")
 
     if commune_instance is not None:
+        zone_eligibilite_codes = [
+            commune_instance.code,
+            commune_instance.departement,
+            constants.PaysEnum.FRANCE.value.code,
+            constants.PaysEnum.FRANCE.value.slug,
+        ]
+        if commune_instance.siren_epci is not None:
+            zone_eligibilite_codes.append(commune_instance.siren_epci)
+
         query = query.filter(
             sqla.or_(
                 models.Service.zone_eligibilite.is_(None),
                 models.Service.zone_eligibilite.op("&&")(
-                    sqla.literal(
-                        [
-                            commune_instance.code,
-                            commune_instance.departement,
-                            commune_instance.siren_epci,
-                            constants.PaysEnum.FRANCE.value.code,
-                            constants.PaysEnum.FRANCE.value.slug,
-                        ]
-                    )
+                    sqla.literal(zone_eligibilite_codes)
                 ),
             )
         )
