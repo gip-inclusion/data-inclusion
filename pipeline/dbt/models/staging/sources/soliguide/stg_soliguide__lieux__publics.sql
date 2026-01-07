@@ -5,41 +5,24 @@ lieux AS (
     SELECT * FROM {{ ref('stg_soliguide__lieux') }}
 ),
 
-administrative AS (
-    SELECT
-        data ->> 'lieu_id'                                                     AS "lieu_id",
-        TRIM(JSONB_ARRAY_ELEMENTS_TEXT(data -> 'publics' -> 'administrative')) AS "value"
-    FROM source
-    WHERE
-        data -> 'publics' -> 'administrative' IS NOT NULL
-),
-
-familiale AS (
-    SELECT
-        data ->> 'lieu_id'                                                 AS "lieu_id",
-        TRIM(JSONB_ARRAY_ELEMENTS_TEXT(data -> 'publics' -> 'familialle')) AS "value"
-    FROM source
-    WHERE
-        data -> 'publics' -> 'familialle' IS NOT NULL
-),
-
-gender AS (
-    SELECT
-        data ->> 'lieu_id'                                             AS "lieu_id",
-        TRIM(JSONB_ARRAY_ELEMENTS_TEXT(data -> 'publics' -> 'gender')) AS "value"
-    FROM source
-    WHERE
-        data -> 'publics' -> 'gender' IS NOT NULL
-),
-
-other AS (
-    SELECT
-        data ->> 'lieu_id'                                            AS "lieu_id",
-        TRIM(JSONB_ARRAY_ELEMENTS_TEXT(data -> 'publics' -> 'other')) AS "value"
-    FROM source
-    WHERE
-        data -> 'publics' -> 'other' IS NOT NULL
-),
+-- Iterate over each dimension of publics
+{% for dimension in ['administrative', 'familiale', 'gender', 'other'] %}
+    {{ dimension }} AS (
+        SELECT
+            data ->> 'lieu_id'                                                      AS "lieu_id",
+            TRIM(JSONB_ARRAY_ELEMENTS_TEXT(data -> 'publics' -> '{{ dimension }}')) AS "value"
+        FROM source
+        WHERE
+        -- Ignore publics values when access is unconditional
+            CAST(data -> 'publics' -> 'accueil' AS INT) = 2
+            -- Ignore dimensions that are irrelevant (i.e. all possible values are present)
+            AND CARDINALITY(ARRAY(SELECT TRIM(JSONB_ARRAY_ELEMENTS_TEXT(data -> 'publics' -> '{{ dimension }}'))))
+            < (
+                SELECT COUNT(*) FROM {{ ref('stg_soliguide__publics') }} AS publics
+                WHERE publics.dimension = '{{ dimension }}'
+            )
+    ),
+{% endfor %}
 
 final AS (
     SELECT * FROM administrative

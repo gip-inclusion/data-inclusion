@@ -31,6 +31,7 @@ services AS (
         CAST(services.data #>> '{modalities,orientation,checked}' AS BOOLEAN)                                             AS "modalities__orientation__checked",
         NULLIF(TRIM(services.data #>> '{modalities,orientation,precisions}'), '')                                         AS "modalities__orientation__precisions",
         NULLIF(TRIM(services.data #>> '{publics,description}'), '')                                                       AS "publics__description",
+        CAST(services.data #>> '{publics,accueil}' AS INT)                                                                AS "publics__accueil",
         CAST(services.data #>> '{differentModalities}' AS BOOLEAN)                                                        AS "different_modalities",
         CAST(services.data #>> '{differentPublics}' AS BOOLEAN)                                                           AS "different_publics"
     FROM

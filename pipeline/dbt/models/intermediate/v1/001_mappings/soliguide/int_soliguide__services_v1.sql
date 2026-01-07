@@ -14,10 +14,6 @@ phones AS (
     SELECT * FROM {{ ref('stg_soliguide__phones') }}
 ),
 
-services__publics AS (
-    SELECT * FROM {{ ref('stg_soliguide__services__publics') }}
-),
-
 filtered_phones AS (
     -- FIXME: di schema only allows a single phone number, but soliguide can have more
     SELECT DISTINCT ON (lieu_id) *
@@ -37,21 +33,34 @@ thematiques AS (
     HAVING COUNT(DISTINCT mapping_.thematique) > 0
 ),
 
+-- These are the soliguide publics values applicable to a given service,
+-- taking into account values possibly inherited from lieu.
+actual_publics AS (
+    SELECT
+        services__publics.service_id,
+        services__publics.value
+    FROM {{ ref('stg_soliguide__services__publics') }} AS services__publics
+    UNION ALL
+    SELECT
+        services.id AS "service_id",
+        lieux__publics.value
+    FROM services
+    LEFT JOIN {{ ref('stg_soliguide__lieux__publics') }} AS lieux__publics
+        ON services.lieu_id = lieux__publics.lieu_id
+    WHERE NOT services.different_publics
+),
+
+-- These are the corresponding values in the di schema.
+-- Any services without mapped publics can be considered as "tous-publics".
 publics AS (
     SELECT
-        services__publics.lieu_id,
-        CASE
-            WHEN lieux.publics__accueil IN (0, 1)
-                THEN ARRAY['tous-publics']
-            ELSE ARRAY_AGG(DISTINCT mapping_.public_datainclusion)
-        END AS "publics"
-    FROM
-        services__publics
-    INNER JOIN lieux ON services__publics.lieu_id = lieux.id
-    INNER JOIN {{ ref('_map_soliguide__publics_v1') }} AS mapping_
-        ON services__publics.value = mapping_.public_soliguide
-    WHERE mapping_.public_datainclusion IS NOT NULL
-    GROUP BY services__publics.lieu_id, lieux.publics__accueil
+        actual_publics.service_id,
+        ARRAY_AGG(DISTINCT mapping.public_datainclusion) AS "publics"
+    FROM actual_publics
+    INNER JOIN {{ ref('_map_soliguide__publics_v1') }} AS "mapping"
+        ON actual_publics.value = mapping.public_soliguide
+    WHERE mapping.public_datainclusion IS NOT NULL
+    GROUP BY actual_publics.service_id
 ),
 
 final AS (
@@ -87,7 +96,7 @@ final AS (
             ELSE 'gratuit'
         END                                                                                   AS "frais",
         COALESCE(services.modalities__price__precisions, lieux.modalities__price__precisions) AS "frais_precisions",
-        publics.publics                                                                       AS "publics",
+        COALESCE(publics.publics, ARRAY['tous-publics'])                                      AS "publics",
         ARRAY_TO_STRING(
             ARRAY[
                 COALESCE(services.publics__description, lieux.publics__description),
@@ -144,7 +153,7 @@ final AS (
         END                                                                                   AS "horaires_accueil"
     FROM services
     LEFT JOIN lieux ON services.lieu_id = lieux.id
-    LEFT JOIN publics ON services.lieu_id = publics.lieu_id
+    LEFT JOIN publics ON services.id = publics.service_id
     LEFT JOIN categories ON services.category = categories.code
     LEFT JOIN {{ ref('_map_soliguide__types_v1') }} AS mappings_types ON services.category = mappings_types.category
     LEFT JOIN thematiques ON services.id = thematiques.id
