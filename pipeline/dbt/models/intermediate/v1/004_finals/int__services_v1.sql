@@ -23,6 +23,7 @@ urls AS (
 )
 
 SELECT
+    services.adresse_id                  AS "adresse_id",
     urls.url                             AS "lien_mobilisation",
     services.horaires_accueil            AS "horaires_accueil",
     services.source                      AS "source",
@@ -94,6 +95,7 @@ LEFT JOIN urls
     ON services.lien_mobilisation = urls.input_url
 UNION ALL
 SELECT
+    services_v0_to_v1.adresse_id,
     services_v0_to_v1.lien_mobilisation,
     services_v0_to_v1.horaires_accueil,
     services_v0_to_v1.source,
