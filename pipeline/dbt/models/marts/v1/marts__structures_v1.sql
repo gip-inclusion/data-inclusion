@@ -37,6 +37,14 @@ sirets AS (
     )
 ),
 
+adresses AS (
+    SELECT id
+    FROM {{ ref('int__adresses_v1') }}
+    UNION
+    SELECT _di_surrogate_id AS id
+    FROM {{ ref('int__adresses') }}
+),
+
 final AS (
     SELECT
         {{
@@ -49,6 +57,7 @@ final AS (
             )
         }},
         doublons.cluster_id                                                  AS "_cluster_id",
+        adresses.id IS NOT NULL                                              AS "_has_valid_address",
         courriels_personnels.courriel IS NOT NULL                            AS "_has_pii",
         structures.source NOT IN ('soliguide', 'agefiph')                    AS "_in_opendata",
         erreurs.id IS NULL                                                   AS "_is_valid",
@@ -58,6 +67,7 @@ final AS (
     LEFT JOIN courriels_personnels ON structures.courriel = courriels_personnels.courriel
     LEFT JOIN sirets ON structures.id = sirets.id
     LEFT JOIN erreurs ON structures.id = erreurs.id
+    LEFT JOIN adresses ON structures.adresse_id = adresses.id
 )
 
 SELECT * FROM final

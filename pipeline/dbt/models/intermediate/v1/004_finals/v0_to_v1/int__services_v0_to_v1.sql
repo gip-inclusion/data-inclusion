@@ -72,6 +72,7 @@ thematiques_v1 AS (
 
 SELECT
     services.source || '--' || services.id                                                                    AS "id",
+    services._di_adresse_surrogate_id                                                                         AS "adresse_id",
     services.source || '--' || REPLACE(services._di_structure_surrogate_id, services.source || '-', '')       AS "structure_id",
     COALESCE(services.prise_rdv, services.formulaire_en_ligne, services.page_web)                             AS "lien_mobilisation",
     services.recurrence                                                                                       AS "horaires_accueil",
