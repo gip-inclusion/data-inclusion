@@ -75,6 +75,7 @@ urls AS (
 SELECT
     services._di_surrogate_id                        AS "_di_surrogate_id",
     services._di_structure_surrogate_id              AS "_di_structure_surrogate_id",
+    services._di_adresse_surrogate_id                AS "_di_adresse_surrogate_id",
     urls_formulaire_en_ligne.url                     AS "formulaire_en_ligne",
     services.frais_autres                            AS "frais_autres",
     services.justificatifs                           AS "justificatifs",
