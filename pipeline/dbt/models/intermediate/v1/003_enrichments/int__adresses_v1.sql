@@ -29,7 +29,7 @@ adresses_geocodees AS (
     LEFT JOIN geocodages
         ON
             adresses.id = geocodages.adresse_id
-            AND geocodages.score >= 0.765
+            AND geocodages.score >= 0.75
 ),
 
 final AS (
