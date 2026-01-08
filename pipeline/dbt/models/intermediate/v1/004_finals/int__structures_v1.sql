@@ -23,6 +23,7 @@ urls AS (
 )
 
 SELECT
+    structures.adresse_id                                 AS "adresse_id",
     structures.courriel                                   AS "courriel",
     structures.horaires_accueil                           AS "horaires_accueil",
     structures.id                                         AS "id",
@@ -61,6 +62,7 @@ LEFT JOIN adresses ON structures.adresse_id = adresses.id
 LEFT JOIN sirets ON structures.id = sirets.id
 UNION ALL
 SELECT
+    structures_v0_to_v1.adresse_id,
     structures_v0_to_v1.courriel,
     structures_v0_to_v1.horaires_accueil,
     structures_v0_to_v1.id,
