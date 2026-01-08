@@ -86,6 +86,11 @@ def validate_widget_token(request: fastapi.Request, token: str) -> str | None:
         req_origin = furl.furl(request_url).origin
 
     origin = furl.furl(req_origin).origin
+
+    widget_host_origin = furl.furl(settings.BASE_URL).origin
+    if origin == widget_host_origin:
+        return payload.get("sub")
+
     if not any(fnmatch.fnmatch(origin, p) for p in allowed_origins):
         raise fastapi.HTTPException(
             status_code=fastapi.status.HTTP_403_FORBIDDEN,

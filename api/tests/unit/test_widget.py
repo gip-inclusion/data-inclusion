@@ -75,6 +75,12 @@ def test_widget_token_validation_invalid_token():
             200,
             None,
         ),
+        (
+            ["https://some-other-domain.com"],
+            {"origin": "http://testserver"},
+            200,
+            None,
+        ),
     ],
 )
 def test_widget_token_validation(allowed_origins, request_headers, status_code, detail):
