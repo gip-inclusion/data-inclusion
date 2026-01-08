@@ -19,7 +19,7 @@ DIR = Path(__file__).parent
 
 
 @pytest.fixture(scope="function", autouse=True)
-def settings(request):
+def settings(request, monkeypatch):
     from data_inclusion.api import config
 
     settings_kwargs = {
@@ -27,6 +27,8 @@ def settings(request):
         "BASE_URL": "http://testserver",
         "ENV": "test",
     }
+    for key, value in settings_kwargs.items():
+        monkeypatch.setattr(config.settings, key, value)
 
     if mark := request.node.get_closest_marker("settings"):
         if len(mark.args) > 0:
@@ -38,7 +40,7 @@ def settings(request):
 
         settings_kwargs |= settings_from_mark
 
-    yield config.Settings(**settings_kwargs)
+    yield config.settings
 
 
 @pytest.fixture(scope="function")
