@@ -9,6 +9,7 @@ WITH services AS (
                 ref('int_dora__services_v1'),
                 ref('int_emplois_de_linclusion__structures_v1'),
                 ref('int_france_travail__services_v1'),
+                ref('int_fredo__services_v1'),
                 ref('int_soliguide__services_v1'),
                 ref('int_ma_boussole_aidants__services_v1'),
                 ref('int_monenfant__services_v1'),
