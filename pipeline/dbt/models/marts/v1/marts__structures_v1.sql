@@ -37,6 +37,18 @@ sirets AS (
     )
 ),
 
+geocodages AS (
+    SELECT
+        adresse_id,
+        score
+    FROM {{ ref('int__geocodages_v1') }}
+    UNION ALL
+    SELECT
+        adresse_id,
+        score
+    FROM {{ ref('int__geocodages') }}
+),
+
 final AS (
     SELECT
         {{
@@ -49,6 +61,7 @@ final AS (
             )
         }},
         doublons.cluster_id                                                  AS "_cluster_id",
+        geocodages.score IS NOT NULL AND geocodages.score >= 0.75            AS "_is_address_valid",
         courriels_personnels.courriel IS NOT NULL                            AS "_has_pii",
         structures.source NOT IN ('soliguide', 'agefiph')                    AS "_in_opendata",
         erreurs.id IS NULL                                                   AS "_is_valid",
@@ -58,6 +71,7 @@ final AS (
     LEFT JOIN courriels_personnels ON structures.courriel = courriels_personnels.courriel
     LEFT JOIN sirets ON structures.id = sirets.id
     LEFT JOIN erreurs ON structures.id = erreurs.id
+    LEFT JOIN geocodages ON structures.adresse_id = geocodages.adresse_id
 )
 
 SELECT * FROM final
