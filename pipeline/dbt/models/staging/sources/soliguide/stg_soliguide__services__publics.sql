@@ -17,7 +17,7 @@ lieux AS (
             LATERAL JSONB_PATH_QUERY(source.data, '$.services_all[*]') AS services (data)
         WHERE
         -- Ignore publics values which do not override those define at the lieu level
-            CAST(services.data ->> 'different_publics' AS BOOLEAN)
+            CAST(services.data ->> 'differentPublics' AS BOOLEAN)
             -- Ignore publics values when access is unconditional
             AND CAST(services.data -> 'publics' -> 'accueil' AS INT) = 2
             -- Ignore dimensions that are irrelevant (i.e. all possible values are present)
