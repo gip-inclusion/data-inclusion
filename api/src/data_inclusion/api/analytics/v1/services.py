@@ -100,7 +100,7 @@ def save_event(
                 types=params.types,
                 recherche_public=params.recherche_public,
                 score_qualite_minimum=params.score_qualite_minimum,
-                exclure_doublons=params.exclure_doublons,
+                exclure_doublons=getattr(params.exclure_doublons, "value", None),
             )
         case _:
             raise ValueError(f"Unsupported parameters type: {type(params)}")
