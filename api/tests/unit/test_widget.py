@@ -81,6 +81,30 @@ def test_widget_token_validation_invalid_token():
             200,
             None,
         ),
+        (
+            ["https://some-other-domain.com"],
+            {"origin": "http://localhost:3000"},
+            200,
+            None,
+        ),
+        (
+            ["https://some-other-domain.com"],
+            {"origin": "http://localhost:8080"},
+            200,
+            None,
+        ),
+        (
+            ["https://some-other-domain.com"],
+            {"origin": "http://127.0.0.1:5000"},
+            200,
+            None,
+        ),
+        (
+            ["https://some-other-domain.com"],
+            {"origin": "http://127.0.0.1"},
+            200,
+            None,
+        ),
     ],
 )
 def test_widget_token_validation(allowed_origins, request_headers, status_code, detail):
