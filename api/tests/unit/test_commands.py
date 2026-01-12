@@ -38,17 +38,17 @@ def test_validate_dataset(db_session, schema_version, column, value):
             date_maj=datetime(2025, 1, 1),
         )
 
+    structure_data = {
+        "_di_surrogate_id": "foo-1",
+        **valid_structure.model_dump(),
+        "_is_closed": False,
+        column: value,
+    }
+    if schema_version == "v1":
+        structure_data["_has_valid_address"] = True
+
     validate_dataset(
         db_session=db_session,
-        structures_df=pd.DataFrame(
-            [
-                {
-                    "_di_surrogate_id": "foo-1",
-                    **valid_structure.model_dump(),
-                    "_is_closed": False,
-                    column: value,
-                }
-            ]
-        ),
+        structures_df=pd.DataFrame([structure_data]),
         services_df=pd.DataFrame(),
     )
