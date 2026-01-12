@@ -1772,6 +1772,29 @@ def test_search_services_with_code_commune_a_distance(api_client, url, service_f
     assert resp_data["items"][1]["distance"] is None
 
 
+@pytest.mark.parametrize("schema_version", ["v1"])
+@pytest.mark.parametrize("path", ["/search/services"])
+@pytest.mark.with_token
+def test_search_services_with_code_commune_mixed_modes_far_away(
+    api_client, url, service_factory
+):
+    service_factory(
+        commune="Paris",
+        **PARIS,
+        modes_accueil=[
+            v0.ModeAccueil.EN_PRESENTIEL.value,
+            v0.ModeAccueil.A_DISTANCE.value,
+        ],
+    )
+
+    response = api_client.get(url, params={"code_commune": LILLE["code_insee"]})
+
+    assert response.status_code == 200
+    resp_data = response.json()
+    assert_paginated_response_data(resp_data, total=1)
+    assert resp_data["items"][0]["distance"] is None
+
+
 @pytest.mark.parametrize("schema_version", ["v0"])
 @pytest.mark.parametrize("path", ["/services"])
 @pytest.mark.with_token

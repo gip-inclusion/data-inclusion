@@ -51,7 +51,7 @@
                          name="display_publics_filter"
                          value="true">
                   <input type="hidden"
-                         name="include_online_services"
+                         name="include_remote_services"
                          value="false">
                   
                   
@@ -438,7 +438,7 @@
                          name="display_publics_filter"
                          value="true">
                   <input type="hidden"
-                         name="include_online_services"
+                         name="include_remote_services"
                          value="false">
                   
                   
@@ -692,12 +692,27 @@
                              aria-current="page">1</a>
                       </li>
                   
+                      <li>
+                          <a href="#"
+                             hx-get="/widget/?token=test-token&amp;x=2&amp;y=1&amp;page=2"
+                             hx-push-url="true"
+                             hx-target="#results"
+                             hx-swap="outerHTML"
+                             title="Page 2"
+                             >2</a>
+                      </li>
+                  
                   
               </ul>
           </div>
           <div class="di-pagination-arrow di-pagination-arrow-right">
               
-                  <span class="disabled">&gt;</span>
+                  <a href="#"
+                     hx-get="/widget/?token=test-token&amp;x=2&amp;y=1&amp;page=2"
+                     hx-push-url="true"
+                     hx-target="#results"
+                     hx-swap="outerHTML"
+                     title="Page suivante">&gt;</a>
               
           </div>
       </nav>
