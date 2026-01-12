@@ -12,7 +12,7 @@ final AS (
         raw.index               AS "raw_index",
         known_thematiques.value AS "value"
     FROM source,
-        REGEXP_SPLIT_TO_TABLE(source.data ->> 'THEMATIQUE', ',') WITH ORDINALITY AS "raw" ("value", "index"),
+        REGEXP_SPLIT_TO_TABLE(source.data ->> 'THEMATIQUES', ',') WITH ORDINALITY AS "raw" ("value", "index"),
         NULLIF(TRIM(raw.value), '') AS raw_value (trimmed)
     LEFT JOIN known_thematiques ON SIMILARITY(raw_value.trimmed, known_thematiques.raw) > 0.5
     WHERE raw_value.trimmed IS NOT NULL
