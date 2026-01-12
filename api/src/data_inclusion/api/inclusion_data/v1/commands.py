@@ -57,12 +57,17 @@ def validate_dataset(
         structures_df = structures_df.loc[
             structures_df["code_insee"].apply(lambda c: c is None or c in city_codes)
         ]
-        structures_df = structures_df.loc[~structures_df["_is_closed"]]
+        structures_df = structures_df.loc[structures_df["_is_closed"] == False]  # noqa: E712
+        structures_df = structures_df.loc[structures_df["_has_valid_address"] != False]  # noqa: E712
 
     if not services_df.empty:
         services_df = services_df.loc[is_valid(services_df, v1.Service)]
         services_df = services_df.loc[
             services_df["code_insee"].apply(lambda c: c is None or c in city_codes)
+        ]
+        # TODO: add further schema validation for services with "se-presenter" mode
+        services_df = services_df.loc[
+            (services_df["_has_valid_address"] != False)  # noqa: E712
         ]
         services_df = services_df.loc[
             services_df["structure_id"].isin(structures_df["id"])
