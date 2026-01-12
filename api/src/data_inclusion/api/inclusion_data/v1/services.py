@@ -231,6 +231,7 @@ def list_services_query(
 def search_services_query(
     params: parameters.SearchServicesQueryParams,
     include_soliguide: bool,
+    include_remote_services: bool = True,
     commune_instance: Commune | None = None,
 ) -> tuple[sqla.Select[tuple[models.Service, int]], tuple[str, str]]:
     query = (
@@ -273,39 +274,28 @@ def search_services_query(
         else:
             dest_geometry = commune_instance.centre
 
-        query = query.filter(
-            sqla.or_(
-                # either `en-presentiel` within a given distance
-                geoalchemy2.functions.ST_DWithin(
-                    src_geometry,
-                    dest_geometry,
-                    50_000,  # meters
-                ),
-                # or `a-distance`
-                models.Service.modes_accueil.contains(
-                    sqla.literal([v1.ModeAccueil.A_DISTANCE.value])
-                ),
-            )
+        is_within_range = geoalchemy2.functions.ST_DWithin(
+            src_geometry, dest_geometry, 50_000
+        )
+        is_available_on_site = models.Service.modes_accueil.contains(
+            sqla.literal([v1.ModeAccueil.EN_PRESENTIEL.value])
+        )
+        is_available_remotely = models.Service.modes_accueil.contains(
+            sqla.literal([v1.ModeAccueil.A_DISTANCE.value])
         )
 
-        # annotate distance
+        if include_remote_services:
+            query = query.filter(sqla.or_(is_within_range, is_available_remotely))
+        else:
+            query = query.filter(is_within_range, is_available_on_site)
+
+        distance_km = (
+            geoalchemy2.functions.ST_Distance(src_geometry, dest_geometry) / 1000
+        ).cast(sqla.Integer)
         query = query.add_columns(
-            (
-                sqla.case(
-                    (
-                        models.Service.modes_accueil.contains(
-                            sqla.literal([v1.ModeAccueil.EN_PRESENTIEL.value])
-                        ),
-                        (
-                            geoalchemy2.functions.ST_Distance(
-                                src_geometry,
-                                dest_geometry,
-                            )
-                            / 1000  # conversion to kms
-                        ).cast(sqla.Integer),
-                    ),
-                    else_=sqla.null().cast(sqla.Integer),
-                )
+            sqla.case(
+                (sqla.and_(is_available_on_site, is_within_range), distance_km),
+                else_=sqla.null().cast(sqla.Integer),
             ).label("distance")
         )
 
@@ -331,6 +321,7 @@ def search_services_query(
             .label("_structure_rank")
         )
         ranked_subq = query.add_columns(structure_rank).subquery()
+
         query = query.where(
             models.Service.id.in_(
                 sqla.select(ranked_subq.c.id).where(ranked_subq.c._structure_rank == 1)

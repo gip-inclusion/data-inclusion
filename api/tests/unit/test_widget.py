@@ -289,7 +289,7 @@ def test_widget_filter_thematiques(api_client, db_session, auth_disabled):  # no
     assert "Service Logement" in response.text
 
 
-def test_widget_filter_include_online_services(api_client, db_session, auth_disabled):  # noqa: ARG001
+def test_widget_filter_include_remote_services(api_client, db_session, auth_disabled):  # noqa: ARG001
     factories.v1.ServiceFactory(
         source="dora",
         structure__nom="Structure Presentiel",
@@ -297,6 +297,8 @@ def test_widget_filter_include_online_services(api_client, db_session, auth_disa
         commune="Lille",
         code_postal="59000",
         code_insee="59350",
+        latitude=50.6292,
+        longitude=3.0573,
         modes_accueil=[v1.ModeAccueil.EN_PRESENTIEL.value],
         score_qualite=0.9,
     )
@@ -312,21 +314,43 @@ def test_widget_filter_include_online_services(api_client, db_session, auth_disa
         modes_accueil=[v1.ModeAccueil.A_DISTANCE.value],
         score_qualite=0.9,
     )
+    factories.v1.ServiceFactory(
+        source="dora",
+        structure__nom="Structure Lointaine Mixte",
+        nom="Service Lointain Mixte",
+        commune="Paris",
+        code_postal="75001",
+        code_insee="75056",
+        latitude=48.8566,
+        longitude=2.3522,
+        modes_accueil=[
+            v1.ModeAccueil.EN_PRESENTIEL.value,
+            v1.ModeAccueil.A_DISTANCE.value,
+        ],
+        score_qualite=0.9,
+    )
 
     response = api_client.get("/widget/?token=test-token")
     assert response.status_code == 200
     assert "Service Presentiel" in response.text
-    assert "Service En Ligne" not in response.text
+    assert "Service En Ligne" in response.text
+    assert "Service Lointain Mixte" in response.text
 
-    response = api_client.get("/widget/?token=test-token&include_online_services=true")
+    response = api_client.get(
+        "/widget/?token=test-token&code_commune=59350&include_remote_services=true"
+    )
     assert response.status_code == 200
     assert "Service Presentiel" in response.text
     assert "Service En Ligne" in response.text
+    assert "Service Lointain Mixte" in response.text
 
-    response = api_client.get("/widget/?token=test-token&include_online_services=false")
+    response = api_client.get(
+        "/widget/?token=test-token&code_commune=59350&include_remote_services=false"
+    )
     assert response.status_code == 200
     assert "Service Presentiel" in response.text
     assert "Service En Ligne" not in response.text
+    assert "Service Lointain Mixte" not in response.text
 
 
 def test_widget_filter_publics(api_client, db_session, auth_disabled):  # noqa: ARG001

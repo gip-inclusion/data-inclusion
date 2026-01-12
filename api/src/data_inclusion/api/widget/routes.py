@@ -12,7 +12,7 @@ from data_inclusion.api.auth.services import verify_token
 from data_inclusion.api.config import settings
 from data_inclusion.api.core import db
 from data_inclusion.api.decoupage_administratif.models import Commune
-from data_inclusion.api.inclusion_data.v1 import models, parameters, services
+from data_inclusion.api.inclusion_data.v1 import parameters, services
 from data_inclusion.api.utils import pagination
 from data_inclusion.schema import v1
 
@@ -113,7 +113,7 @@ def get_results(
     page: int = 1,
     code_commune: str | None = None,
     sources: list[str] | None = None,
-    include_online_services: bool = False,
+    include_remote_services: bool = False,
 ):
     params = parameters.SearchServicesQueryParams(
         code_commune=code_commune or None,
@@ -136,11 +136,9 @@ def get_results(
     query, mapping = services.search_services_query(
         params=params,
         include_soliguide=False,
+        include_remote_services=include_remote_services or code_commune is None,
         commune_instance=commune_instance,
     )
-
-    if not include_online_services:
-        query = query.filter(models.Service.commune.isnot(None))
 
     return pagination.paginate(
         db_session=db_session,
@@ -218,7 +216,7 @@ def widget(
             description="Liste blanche d'identifiants de sources à inclure",
         ),
     ] = None,
-    include_online_services: Annotated[
+    include_remote_services: Annotated[
         bool,
         fastapi.Query(
             description="Inclure les services en ligne (sans commune associée)"
@@ -269,7 +267,7 @@ def widget(
         score_qualite_minimum=score_qualite_minimum,
         size=effective_size,
         sources=sources,
-        include_online_services=include_online_services,
+        include_remote_services=include_remote_services,
     )
 
     current_url = str(request.url)
@@ -323,7 +321,7 @@ def widget(
             "query_params_display_publics_filter": display_publics_filter,
             "query_params_sources": sources,
             "query_params_thematiques": thematiques,
-            "query_params_include_online_services": include_online_services,
+            "query_params_include_remote_services": include_remote_services,
             "results": results["items"],
             "display_form": display_form,
             "display_communes_filter": display_communes_filter,
