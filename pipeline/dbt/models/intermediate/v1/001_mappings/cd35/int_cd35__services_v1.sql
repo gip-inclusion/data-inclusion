@@ -37,7 +37,7 @@ final AS (
         organisations.courriel                                                  AS "courriel",
         NULL                                                                    AS "contact_nom_prenom",
         organisations.date_maj                                                  AS "date_maj",
-        organisations_thematiques.value                                         AS "nom",
+        organisations_thematiques.raw_value                                     AS "nom",
         organisations.presentation_detail                                       AS "description",
         organisations.lien_source                                               AS "lien_source",
         mapping_types.type                                                      AS "type",
