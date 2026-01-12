@@ -16,10 +16,10 @@ def dataset_path(structures_df, services_df, tmpdir):
 
 
 @pytest.mark.parametrize(
-    ("version", "structures_df", "services_df", "expected_exit_code"),
+    ("version", "structures_df", "services_df", "expected_exit_code", "expected_count"),
     [
-        ("v0", pd.DataFrame(), pd.DataFrame(), 1),
-        ("v1", pd.DataFrame(), pd.DataFrame(), 1),
+        ("v0", pd.DataFrame(), pd.DataFrame(), 1, 0),
+        ("v1", pd.DataFrame(), pd.DataFrame(), 1, 0),
         (
             "v0",
             pd.DataFrame(
@@ -61,6 +61,7 @@ def dataset_path(structures_df, services_df, tmpdir):
                 ]
             ),
             0,
+            1,
         ),
         (
             "v1",
@@ -69,6 +70,7 @@ def dataset_path(structures_df, services_df, tmpdir):
                     {
                         "_cluster_id": None,
                         "_is_closed": False,
+                        "_has_valid_address": True,
                         **v1.Structure(
                             source="foo",
                             id="1",
@@ -83,6 +85,7 @@ def dataset_path(structures_df, services_df, tmpdir):
                 [
                     {
                         "score_qualite": 0.8,
+                        "_has_valid_address": None,
                         **v1.Service(
                             source="foo",
                             id="1",
@@ -96,12 +99,57 @@ def dataset_path(structures_df, services_df, tmpdir):
                 ]
             ),
             0,
+            1,
+        ),
+        (
+            "v1",
+            pd.DataFrame(
+                [
+                    {
+                        "_cluster_id": None,
+                        "_is_closed": False,
+                        "_has_valid_address": False,
+                        **v1.Structure(
+                            source="foo",
+                            id="1",
+                            code_insee="59350",
+                            nom="ma structure",
+                            date_maj=datetime(2025, 1, 1),
+                        ).model_dump(),
+                    }
+                ]
+            ),
+            pd.DataFrame(
+                [
+                    {
+                        "score_qualite": 0.8,
+                        "_has_valid_address": False,
+                        **v1.Service(
+                            source="foo",
+                            id="1",
+                            description="." * 100,
+                            structure_id="1",
+                            code_insee="59350",
+                            nom="mon service",
+                            date_maj=datetime(2025, 1, 1),
+                        ).model_dump(),
+                    }
+                ]
+            ),
+            0,
+            0,
         ),
     ],
+    ids=["v0-empty", "v1-empty", "v0-valid", "v1-valid", "v1-invalid-address"],
 )
 @pytest.mark.with_token
 def test_load_inclusion_data(
-    version, api_client, cli_runner: CliRunner, dataset_path, expected_exit_code
+    version,
+    api_client,
+    cli_runner: CliRunner,
+    dataset_path,
+    expected_exit_code,
+    expected_count,
 ):
     result = cli_runner.invoke(
         cli,
@@ -124,4 +172,4 @@ def test_load_inclusion_data(
         for path in [f"/api/{version}/structures", f"/api/{version}/services"]:
             response = api_client.get(path)
             assert response.status_code == 200
-            assert len(response.json()["items"]) == 1
+            assert len(response.json()["items"]) == expected_count
