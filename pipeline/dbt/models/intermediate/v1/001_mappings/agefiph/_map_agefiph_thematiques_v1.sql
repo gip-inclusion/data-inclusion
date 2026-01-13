@@ -8,7 +8,6 @@ FROM (
     VALUES
     ('4e08047f-b0ed-431a-9182-61e8e61b1486', 'se-former--trouver-sa-formation'),
     ('907a8c33-5c56-49d3-bd64-a736a9ceac76', 'creer-une-entreprise--developper-son-entreprise'),
-    ('60c25ci7-61sc-89a9-ny54-126hslf808a2', 'trouver-un-emploi--maintien-dans-lemploi'),
     ('cb2c9fec-c190-4e2f-aeee-6da818109bf8', 'choisir-un-metier--confirmer-son-choix-de-metier'),
     ('78b28acb-803e-4b06-ab77-58dabfbd8571', 'creer-une-entreprise--definir-son-projet-de-creation-dentreprise'),
     ('fb5e6180-290b-4216-ba68-624d25defa3a', 'creer-une-entreprise--developper-son-entreprise'),
