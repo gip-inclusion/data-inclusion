@@ -12,7 +12,8 @@ models:
         data_tests:
           - not_null
           - accepted_values:
-              values: [true, false]
+              arguments:
+                values: [true, false]
       - name: adresse_principale__gps_lat
         data_tests:
           - not_null
