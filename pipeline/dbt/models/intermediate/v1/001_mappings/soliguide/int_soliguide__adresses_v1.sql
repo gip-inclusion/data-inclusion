@@ -14,6 +14,10 @@ final AS (
         lieux.position__postal_code            AS "code_postal",
         NULL                                   AS "code_insee"
     FROM lieux
+    WHERE
+        -- many soliguide services did have no street-level address info (e.g., town halls)
+        (lieux.position__address IS NOT NULL OR lieux.position__additional_information IS NOT NULL)
+        AND (lieux.position__city IS NOT NULL OR lieux.position__postal_code IS NOT NULL)
 )
 
 SELECT * FROM final
