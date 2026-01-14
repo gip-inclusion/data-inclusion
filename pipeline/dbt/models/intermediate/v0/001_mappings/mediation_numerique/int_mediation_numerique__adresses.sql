@@ -1,19 +1,4 @@
-WITH structures AS (
-    SELECT * FROM {{ ref('stg_mediation_numerique__structures') }}
-),
+-- this model is deprecated
+-- reuse the already computed data
 
-final AS (
-    SELECT
-        id                    AS "id",
-        commune               AS "commune",
-        code_postal           AS "code_postal",
-        code_insee            AS "code_insee",
-        adresse               AS "adresse",
-        NULL                  AS "complement_adresse",
-        longitude             AS "longitude",
-        latitude              AS "latitude",
-        'mediation-numerique' AS "source"
-    FROM structures
-)
-
-SELECT * FROM final
+SELECT * FROM public_intermediate.int_mediation_numerique__adresses  -- noqa: ambiguous.column_count
