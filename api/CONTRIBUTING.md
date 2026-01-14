@@ -36,18 +36,35 @@ uv run uvicorn data_inclusion.api.app:app --reload
 
 ### Prerequisites:
 
-1. Launch Docker Compose.
-2. Set up MinIO alias.
+1. Start the minio & datawarehouse instances (at least)
+   ```bash
+   cd data-inclusion/
+   docker compose up minio datawarehouse
+   ```
 
-Check the [Deployment Guide](../DEPLOYMENT.md) for more details.
+2. Make sure your `.env` has the minio settings (see `.template.env`):
+   ```bash
+   DATALAKE_BUCKET_NAME=data-inclusion-lake
+   AWS_ENDPOINT_URL=http://localhost:9000
+   AWS_ACCESS_KEY_ID=minioadmin
+   AWS_SECRET_ACCESS_KEY=minioadmin
+   ```
+
+3. To copy data from staging, setup a MinIO alias (see [Deployment Guide](../DEPLOYMENT.md)):
+   ```bash
+   mc alias set dev http://localhost:9000 minioadmin minioadmin
+   ```
+
+4. Copy staging (or production) data mart to your local MinIO instance:
+   ```bash
+   mc cp --recursive \
+       staging/data-inclusion-datalake-staging-sincere-buzzard/data/marts/2024-06-12/ \
+       dev/data-inclusion-lake/data/marts/2024-06-12
+   ```
+
+### Load data
 
 ```bash
-# (Optional) Copy staging (or production) data mart to your local MinIO instance
-mc cp --recursive \
-    staging/data-inclusion-datalake-staging-sincere-buzzard/data/marts/2024-06-12/ \
-    dev/data-inclusion-lake/data/marts/2024-06-12
-
-# Load data
 uv run data-inclusion-api import-communes
 uv run data-inclusion-api load-inclusion-data
 ```
