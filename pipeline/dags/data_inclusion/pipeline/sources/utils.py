@@ -1,6 +1,5 @@
 import logging
 from pathlib import Path
-from typing import Optional
 from urllib.parse import urljoin
 
 logger = logging.getLogger(__name__)
@@ -42,7 +41,7 @@ def read_csv(path: Path, sep: str):
     return df_clear_nan(df)
 
 
-def read_excel(path: Path, sheet_name: Optional[str | int] = 0):
+def read_excel(path: Path, sheet_name: str | int | None = 0):
     import pandas as pd
 
     df = pd.read_excel(path, sheet_name=sheet_name, dtype=str)
@@ -57,7 +56,7 @@ def extract_http_content(url: str, **kwargs) -> bytes:
     return response.content
 
 
-def html_to_markdown(s: Optional[str]) -> Optional[str]:
+def html_to_markdown(s: str | None) -> str | None:
     import trafilatura
 
     if s is None or s == "":
