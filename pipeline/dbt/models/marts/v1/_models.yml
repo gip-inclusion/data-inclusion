@@ -65,8 +65,6 @@ models:
         data_type: text
       - name: _has_valid_address
         data_type: boolean
-        constraints:
-          - type: not_null
       - name: _has_pii
         data_type: boolean
         constraints:
@@ -197,8 +195,6 @@ models:
         data_type: float
       - name: _has_valid_address
         data_type: boolean
-        constraints:
-          - type: not_null
       - name: _has_pii
         data_type: boolean
         constraints:

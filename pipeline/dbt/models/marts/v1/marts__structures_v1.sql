@@ -57,7 +57,7 @@ final AS (
             )
         }},
         doublons.cluster_id                                                  AS "_cluster_id",
-        adresses.id IS NOT NULL                                              AS "_has_valid_address",
+        CASE WHEN structures.adresse_id IS NOT NULL THEN adresses.id END     AS "_has_valid_address",
         courriels_personnels.courriel IS NOT NULL                            AS "_has_pii",
         structures.source NOT IN ('soliguide', 'agefiph')                    AS "_in_opendata",
         erreurs.id IS NULL                                                   AS "_is_valid",

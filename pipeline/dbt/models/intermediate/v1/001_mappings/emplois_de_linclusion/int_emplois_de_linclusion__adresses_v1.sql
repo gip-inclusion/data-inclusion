@@ -15,8 +15,10 @@ final AS (
         structures.commune                         AS "commune",
         structures.code_postal                     AS "code_postal",
         NULL                                       AS "code_insee"
-
     FROM structures
+    WHERE
+        (structures.adresse IS NOT NULL OR structures.complement_adresse IS NOT NULL)
+        AND (structures.commune IS NOT NULL OR structures.code_postal IS NOT NULL)
 )
 
 SELECT * FROM final
