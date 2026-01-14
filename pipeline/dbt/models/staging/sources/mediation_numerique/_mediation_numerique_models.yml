@@ -1,65 +1,6 @@
 version: 2
 
 models:
-  - name: stg_mediation_numerique__services
-    columns:
-      - name: id
-        data_tests:
-          - unique
-          - not_null
-          - dbt_utils.not_empty_string
-      - name: structure_id
-        data_tests:
-          - not_null
-          - relationships:
-              arguments:
-                to: ref('stg_mediation_numerique__structures')
-                field: id
-      - name: thematiques
-        data_tests:
-          - dbt_utils.expression_is_true:
-              arguments:
-                expression: "<@ ARRAY(SELECT value FROM {{ ref('thematiques') }})"
-      - name: profils
-        data_tests:
-          - dbt_utils.expression_is_true:
-              arguments:
-                expression: "<@ ARRAY(SELECT value FROM {{ ref('profils') }})"
-      - name: types
-        data_tests:
-          - dbt_utils.expression_is_true:
-              arguments:
-                expression: "<@ ARRAY(SELECT value FROM {{ ref('typologies_de_services') }})"
-      - name: frais
-        data_tests:
-          - dbt_utils.expression_is_true:
-              arguments:
-                expression: "<@ ARRAY(SELECT value FROM {{ ref('frais') }})"
-      - name: latitude
-        data_tests:
-          - dbt_utils.not_constant:
-              config:
-                severity: warn
-      - name: longitude
-        data_tests:
-          - dbt_utils.not_constant:
-              config:
-                severity: warn
-      - name: nom
-        data_tests:
-          - not_null
-          - dbt_utils.not_empty_string
-      - name: source
-        data_tests:
-          - not_null
-          - dbt_utils.not_empty_string
-      - name: prise_rdv
-        data_tests:
-          - dbt_utils.not_constant:
-              config:
-                severity: warn
-          - dbt_utils.not_empty_string
-
   - name: stg_mediation_numerique__structures
     columns:
       - name: id
@@ -67,82 +8,205 @@ models:
           - unique
           - not_null
           - dbt_utils.not_empty_string
-      - name: siret
-        data_tests:
-          - dbt_utils.not_empty_string
-          - dbt_utils.expression_is_true:
-              arguments:
-                expression: "!= REPEAT('0', 14)"
-      - name: source
-        data_tests:
-          - not_null
-          - dbt_utils.not_empty_string
       - name: nom
         data_tests:
           - not_null
           - dbt_utils.not_empty_string
-      - name: thematiques
+      - name: siret
         data_tests:
-          - dbt_utils.expression_is_true:
-              arguments:
-                expression: "<@ ARRAY(SELECT value FROM {{ ref('thematiques') }})"
-      - name: latitude
-        data_tests:
+          - dbt_utils.not_empty_string
+          - dbt_utils.at_least_one
           - dbt_utils.not_constant
-      - name: longitude
-        data_tests:
-          - dbt_utils.not_constant
-      - name: labels_nationaux
-        data_tests:
-          - dbt_utils.expression_is_true:
-              config:
-                severity: warn
-              arguments:
-                expression: "<@ ARRAY(SELECT value FROM {{ ref('labels_nationaux') }})"
-      - name: adresse
-        data_tests:
-          - not_null
-          - dbt_utils.not_empty_string
-      - name: commune
-        data_tests:
-          - not_null
-          - dbt_utils.not_empty_string
-      - name: courriel
-        data_tests:
-          - dbt_utils.not_constant:
-              config:
-                severity: warn
-          - dbt_utils.not_empty_string
-      - name: site_web
-        data_tests:
-          - dbt_utils.not_constant:
-              config:
-                severity: warn
-          - dbt_utils.not_empty_string
-      - name: telephone
-        data_tests:
-          - dbt_utils.not_constant:
-              config:
-                severity: warn
-          - dbt_utils.not_empty_string
-      - name: code_postal
-        data_tests:
-          - not_null
-          - dbt_utils.not_empty_string
-      - name: horaires_ouverture
-        data_tests:
-          - dbt_utils.not_constant:
-              config:
-                severity: warn
-          - dbt_utils.not_empty_string
       - name: date_maj
         data_tests:
           - not_null
-          - dbt_utils.not_constant:
-              config:
-                severity: warn
-          - dbt_utils.accepted_range:
-              config:
-                severity: warn
+      - name: latitude
+        data_tests:
+          - dbt_utils.not_constant
+          - dbt_utils.at_least_one
+      - name: longitude
+        data_tests:
+          - dbt_utils.not_constant
+          - dbt_utils.at_least_one
+      - name: adresse__commune
+        data_tests:
+          - dbt_utils.not_empty_string
+          - dbt_utils.not_null_proportion:
               arguments:
-                min_value: "now() - interval '10 years'"
+                at_least: 0.9
+      - name: adresse__code_postal
+        data_tests:
+          - dbt_utils.not_empty_string
+          - dbt_utils.not_null_proportion:
+              arguments:
+                at_least: 0.9
+      - name: adresse__code_insee
+        data_tests:
+          - dbt_utils.not_empty_string
+          - dbt_utils.not_null_proportion:
+              arguments:
+                at_least: 0.9
+
+  - name: stg_mediation_numerique__structures__services
+    columns:
+      - name: structure_id
+        data_tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('stg_mediation_numerique__structures')
+                field: id
+      - name: value
+        data_tests:
+          - not_null
+          - accepted_values:
+              arguments:
+                values:
+                  - Accès internet et matériel informatique
+                  - Acquisition de matériel informatique à prix solidaire
+                  - Aide aux démarches administratives
+                  - Compréhension du monde numérique
+                  - Insertion professionnelle via le numérique
+                  - Loisirs et créations numériques
+                  - Maîtrise des outils numériques du quotidien
+                  - Parentalité et éducation avec le numérique
+                  - Utilisation sécurisée du numérique
+
+  - name: stg_mediation_numerique__structures__frais
+    columns:
+      - name: structure_id
+        data_tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('stg_mediation_numerique__structures')
+                field: id
+      - name: value
+        data_tests:
+          - not_null
+          - accepted_values:
+              arguments:
+                values:
+                  - Gratuit
+                  - Gratuit sous condition
+                  - Payant
+
+  - name: stg_mediation_numerique__structures__modalites_acces
+    columns:
+      - name: structure_id
+        data_tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('stg_mediation_numerique__structures')
+                field: id
+      - name: value
+        data_tests:
+          - not_null
+          - accepted_values:
+              arguments:
+                values:
+                  - Contacter par mail
+                  - Envoyer un mail avec une fiche de prescription
+                  - Prendre un RDV en ligne
+                  - Se présenter
+                  - Téléphoner
+
+  - name: stg_mediation_numerique__structures__modalites_accompagnement
+    columns:
+      - name: structure_id
+        data_tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('stg_mediation_numerique__structures')
+                field: id
+      - name: value
+        data_tests:
+          - not_null
+          - accepted_values:
+              arguments:
+                values:
+                  - Accompagnement individuel
+                  - À distance
+                  - Dans un atelier collectif
+                  - En autonomie
+
+  - name: stg_mediation_numerique__structures__publics
+    columns:
+      - name: structure_id
+        data_tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('stg_mediation_numerique__structures')
+                field: id
+      - name: value
+        data_tests:
+          - not_null
+          - accepted_values:
+              arguments:
+                values:
+                  - Étudiants
+                  - Familles et/ou enfants
+                  - Femmes
+                  - Jeunes
+                  - Seniors
+
+  - name: stg_mediation_numerique__structures__prises_en_charge
+    columns:
+      - name: structure_id
+        data_tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('stg_mediation_numerique__structures')
+                field: id
+      - name: value
+        data_tests:
+          - not_null
+          - accepted_values:
+              arguments:
+                values:
+                  - Déficience visuelle
+                  - Handicaps mentaux
+                  - Handicaps moteurs
+                  - Illettrisme
+                  - Langues étrangères (anglais)
+                  - Langues étrangères (autres)
+                  - Surdité
+
+  - name: stg_mediation_numerique__structures__dispositifs
+    columns:
+      - name: structure_id
+        data_tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('stg_mediation_numerique__structures')
+                field: id
+      - name: value
+        data_tests:
+          - not_null
+          - accepted_values:
+              arguments:
+                values:
+                  - Aidants Connect
+                  - Bibliothèques numérique de référence
+                  - Certification PIX
+                  - Conseillers numériques
+                  - France Services
+                  - Grande école du numérique
+                  - La Croix Rouge
+                  - Point d''accès numérique CAF
+                  - Promeneurs du net
+
+  - name: stg_mediation_numerique__structures__mediateurs
+    columns:
+      - name: structure_id
+        data_tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('stg_mediation_numerique__structures')
+                field: id

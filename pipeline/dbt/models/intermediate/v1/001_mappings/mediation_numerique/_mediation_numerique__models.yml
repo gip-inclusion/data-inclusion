@@ -1,0 +1,137 @@
+version: 2
+
+models:
+  - name: int_mediation_numerique__adresses_v1
+    columns:
+      - name: id
+        data_tests:
+          - unique
+          - not_null
+          - dbt_utils.not_empty_string
+
+  - name: int_mediation_numerique__structures_v1
+    data_tests:
+      - model_validate:
+          config:
+            enabled: "{{ env_var('DBT_ENV', 'prod') == 'dev' }}"
+          arguments:
+            model_class: data_inclusion.schema.v1.Structure
+    columns:
+      - name: id
+        data_tests:
+          - unique
+          - not_null
+          - dbt_utils.not_empty_string
+      - name: adresse_id
+        data_tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('int_mediation_numerique__adresses_v1')
+                field: id
+
+  - name: int_mediation_numerique__services_v1
+    data_tests:
+      - model_validate:
+          config:
+            enabled: "{{ env_var('DBT_ENV', 'prod') == 'dev' }}"
+          arguments:
+            model_class: data_inclusion.schema.v1.Service
+    columns:
+      - name: id
+        data_tests:
+          - unique
+          - not_null
+          - dbt_utils.not_empty_string
+      - name: structure_id
+        data_tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('int_mediation_numerique__structures_v1')
+                field: id
+      - name: adresse_id
+        data_tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('int_mediation_numerique__adresses_v1')
+                field: id
+
+  - name: _map_mediation_numerique__modes_mobilisation
+    columns:
+      - name: modalite
+        data_tests:
+          - not_null
+      - name: mode_mobilisation
+        data_tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('modes_mobilisation_v1')
+                field: value
+
+  - name: _map_mediation_numerique__publics__prise_en_charge
+    columns:
+      - name: prise_en_charge
+        data_tests:
+          - not_null
+      - name: public
+        data_tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('publics_v1')
+                field: value
+
+  - name: _map_mediation_numerique__publics
+    columns:
+      - name: public_source
+        data_tests:
+          - not_null
+      - name: public
+        data_tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('publics_v1')
+                field: value
+
+  - name: _map_mediation_numerique__reseaux_porteurs
+    columns:
+      - name: dispositif
+        data_tests:
+          - not_null
+      - name: reseau_porteur
+        data_tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('reseaux_porteurs_v1')
+                field: value
+
+  - name: _map_mediation_numerique__thematiques
+    columns:
+      - name: service
+        data_tests:
+          - not_null
+      - name: thematique
+        data_tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('thematiques_v1')
+                field: value
+
+  - name: _map_mediation_numerique__types
+    columns:
+      - name: modalite
+        data_tests:
+          - not_null
+      - name: type
+        data_tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('types_v1')
+                field: value
