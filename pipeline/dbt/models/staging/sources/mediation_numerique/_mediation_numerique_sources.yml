@@ -9,6 +9,3 @@ sources:
       - name: structures
         meta:
           kind: structure
-      - name: services
-        meta:
-          kind: service
