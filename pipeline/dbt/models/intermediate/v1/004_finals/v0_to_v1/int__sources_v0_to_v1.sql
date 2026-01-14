@@ -11,6 +11,7 @@ FROM (
     ('france-travail'),
     ('fredo'),
     ('ma-boussole-aidants'),
+    ('mediation-numerique'),
     ('monenfant'),
     ('soliguide')
 ) AS x (source)
