@@ -1,0 +1,15 @@
+{% macro udf__html_to_markdown() %}
+
+DROP FUNCTION IF EXISTS processings.html_to_markdown;
+
+CREATE OR REPLACE FUNCTION processings.html_to_markdown(input TEXT)
+RETURNS TEXT
+AS $$
+
+#INLINE#
+
+return html_to_markdown(input)
+
+$$ LANGUAGE plpython3u;
+
+{% endmacro %}
