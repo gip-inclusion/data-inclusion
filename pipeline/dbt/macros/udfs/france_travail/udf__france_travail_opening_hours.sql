@@ -1,4 +1,4 @@
-{# THIS FILE IS AUTO-GENERATED. DO NOT EDIT MANUALLY. #}
+{# !!! THIS FILE IS AUTO-GENERATED. DO NOT EDIT MANUALLY. !!! #}
 
 {% macro udf__france_travail_opening_hours() %}
 
@@ -8,10 +8,10 @@ CREATE OR REPLACE FUNCTION processings.france_travail_opening_hours(data JSONB)
 RETURNS TEXT
 AS $$
 
-"""Conversion des horaires monenfant vers le format OpenStreetMap.
+"""Conversion des horaires france travail vers le format OpenStreetMap.
 
 Les models pydantic suivant décrivent la structure des données d'horaires
-fournies par monenfant.fr et permettent de les convertir au format
+fournies par france travail et permettent de les convertir au format
 OpenStreetMap.
 """
 
@@ -141,7 +141,10 @@ class Horaires(pydantic.RootModel[list[HorairesItem]]):
         osm_rules = [
             f'{group[0].weekday()} {time_selector} open "Sans rendez-vous"'
             if len(group) == 1
-            else f'{group[0].weekday()}-{group[-1].weekday()} {time_selector} open "Sans rendez-vous"'
+            else (
+                f"{group[0].weekday()}-{group[-1].weekday()} {time_selector}"
+                ' open "Sans rendez-vous"'
+            )
             for group in self.groups()
             if (time_selector := group[0].time_selector()) is not None
         ]

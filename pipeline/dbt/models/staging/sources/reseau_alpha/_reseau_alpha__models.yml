@@ -3,18 +3,447 @@ version: 2
 models:
   - name: stg_reseau_alpha__formations
     columns:
+      - name: id
+        data_tests:
+          - unique
+          - not_null
+          - dbt_utils.not_empty_string
       - name: structure_id
         data_tests:
           - not_null
+          - relationships:
+              arguments:
+                to: ref('stg_reseau_alpha__structures')
+                field: id
+      - name: nom
+        data_tests:
+          - not_null
+      - name: activite
+        data_tests:
+          - not_null
+          - accepted_values:
+              arguments:
+                values:
+                  - Français à visée professionnelle
+                  - Français à visée sociale et communicative
+      - name: contact__nom
+        data_tests:
           - dbt_utils.not_empty_string
-      - name: id
+      - name: contact__prenom
+        data_tests:
+          - dbt_utils.not_empty_string
+      - name: contact__email
+        data_tests:
+          - dbt_utils.not_empty_string
+      - name: contact__telephone1
+        data_tests:
+          - dbt_utils.not_null_proportion:
+              arguments:
+                at_least: 0.5
+          - dbt_utils.not_empty_string
+      - name: contact__telephone2
+        data_tests:
+          - dbt_utils.not_empty_string
+      - name: cours_ete
+        data_tests:
+          - accepted_values:
+              arguments:
+                values: [true, false]
+      - name: cout
+        data_tests:
+          - dbt_utils.not_empty_string
+      - name: criteres_savoir_base
+        data_tests:
+          - not_null
+          - accepted_values:
+              arguments:
+                values:
+                  - Niveau de maîtrise des savoirs de base indifférent
+                  - Maîtrise les savoirs de base
+                  - Ne maîtrise pas les savoirs de base
+      - name: date_debut
+        data_tests:
+          - not_null
+      - name: date_fin
+        data_tests:
+          - not_null
+      - name: garde_enfants
+        data_tests:
+          - accepted_values:
+              arguments:
+                values: [true, false]
+      - name: place_disponible
+        data_tests:
+          - accepted_values:
+              arguments:
+                values: [true, false]
+      - name: presentation_publique
         data_tests:
           - not_null
           - dbt_utils.not_empty_string
+      - name: slug
+        data_tests:
+          - not_null
+          - dbt_utils.not_empty_string
+      - name: url
+        data_tests:
+          - not_null
+          - dbt_utils.not_empty_string
+
+      - name: criteres_linguistique_ecrit
+      - name: criteres_linguistique_oral
+      - name: criteres_savoir_base
+      - name: criteres_scolarisation
+      - name: programmes
+
+  - name: stg_reseau_alpha__formations__competences_linguistiques
+    columns:
+      - name: structure_id
+        data_tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('stg_reseau_alpha__structures')
+                field: id
+      - name: formation_id
+        data_tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('stg_reseau_alpha__formations')
+                field: id
+      - name: value
+        data_tests:
+          - not_null
+          - accepted_values:
+              arguments:
+                values:
+                  - A1
+                  - A1.1
+                  - A2
+                  - B1
+                  - B2
+                  - C1
+
+  - name: stg_reseau_alpha__formations__objectifs
+    columns:
+      - name: structure_id
+        data_tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('stg_reseau_alpha__structures')
+                field: id
+      - name: formation_id
+        data_tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('stg_reseau_alpha__formations')
+                field: id
+      - name: label
+        data_tests:
+          - not_null
+          - dbt_utils.not_empty_string
+      - name: description
+        data_tests:
+          - dbt_utils.not_empty_string
+
+  - name: stg_reseau_alpha__formations__criteres_scolarisation
+    columns:
+      - name: structure_id
+        data_tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('stg_reseau_alpha__structures')
+                field: id
+      - name: formation_id
+        data_tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('stg_reseau_alpha__formations')
+                field: id
+      - name: value
+        data_tests:
+          - not_null
+          - accepted_values:
+              config:
+                severity: warn
+              arguments:
+                values:
+                  - Niveau de scolarisation indifférent
+                  - Jamais ou peu scolarisé (-3ans)
+                  - Scolarisé (3ans et +) en langue étrangère
+                  - Scolarisé (3ans et +) en langue française en France ou à l''étranger [illettrisme/remise à niveau]
+
+  - name: stg_reseau_alpha__formations__adresses
+    columns:
+      - name: structure_id
+        data_tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('stg_reseau_alpha__structures')
+                field: id
+      - name: formation_id
+        data_tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('stg_reseau_alpha__formations')
+                field: id
+      - name: numero
+        data_tests:
+          - dbt_utils.at_least_one
+          - dbt_utils.not_empty_string
+      - name: voie
+        data_tests:
+          - dbt_utils.at_least_one
+          - dbt_utils.not_empty_string
+      - name: code_postal
+        data_tests:
+          - not_null
+          - dbt_utils.not_empty_string
+      - name: ville
+        data_tests:
+          - not_null
+          - dbt_utils.not_empty_string
+      - name: latitude
+        data_tests:
+          - not_null
+      - name: longitude
+        data_tests:
+          - not_null
+      - name: garde_enfants
+        data_tests:
+          - not_null
+          - accepted_values:
+              arguments:
+                values: [true, false]
+
+  - name: stg_reseau_alpha__formations__horaires
+    columns:
+      - name: structure_id
+        data_tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('stg_reseau_alpha__structures')
+                field: id
+      - name: formation_id
+        data_tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('stg_reseau_alpha__formations')
+                field: id
+      - name: jour
+        data_tests:
+          - not_null
+          - accepted_values:
+              arguments:
+                values:
+                  - lundi
+                  - mardi
+                  - mercredi
+                  - jeudi
+                  - vendredi
+                  - samedi
+                  - dimanche
+      - name: debut
+        data_tests:
+          - dbt_utils.at_least_one
+      - name: fin
+        data_tests:
+          - dbt_utils.at_least_one
+
+  - name: stg_reseau_alpha__formations__publics
+    columns:
+      - name: structure_id
+        data_tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('stg_reseau_alpha__structures')
+                field: id
+      - name: formation_id
+        data_tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('stg_reseau_alpha__formations')
+                field: id
+      - name: public_specifique_raw_value
+        data_tests:
+          - not_null
+          - dbt_utils.not_empty_string
+      - name: public_specifique_value
+        data_tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('stg_reseau_alpha__publics')
+                field: value
+      - name: public_specifique_description
+        data_tests:
+          - dbt_utils.not_empty_string
+      - name: public_specifique_prioritaire
+        data_tests:
+          - dbt_utils.at_least_one
+          - accepted_values:
+              arguments:
+                values:
+                  - prioritaire
+                  - exclusif
 
   - name: stg_reseau_alpha__structures
     columns:
       - name: id
         data_tests:
+          - unique
+          - not_null
+          - dbt_utils.not_empty_string
+          - relationships:
+              arguments:
+                to: ref('stg_reseau_alpha__pages')
+                field: structure_id
+      - name: acronyme
+        data_tests:
+          - dbt_utils.not_empty_string
+      - name: description
+        data_tests:
+          - dbt_utils.not_empty_string
+      - name: est_coordination
+        data_tests:
+          - not_null
+          - accepted_values:
+              arguments:
+                values: [true, false]
+      - name: logo
+        data_tests:
+          - dbt_utils.not_empty_string
+      - name: nom
+        data_tests:
+          - not_null
+          - dbt_utils.not_empty_string
+      - name: slug
+        data_tests:
+          - dbt_utils.not_empty_string
+      - name: type
+        data_tests:
+          - dbt_utils.not_empty_string
+      - name: url
+        data_tests:
+          - not_null
+          - dbt_utils.not_empty_string
+      - name: url_coordination
+        data_tests:
+          - dbt_utils.not_empty_string
+
+      - name: activites_formation
+      - name: activites_coordination
+
+  - name: stg_reseau_alpha__structures__adresses
+    columns:
+      - name: structure_id
+        data_tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('stg_reseau_alpha__structures')
+                field: id
+      - name: numero
+        data_tests:
+          - dbt_utils.at_least_one
+          - dbt_utils.not_empty_string
+      - name: voie
+        data_tests:
+          - dbt_utils.at_least_one
+          - dbt_utils.not_empty_string
+      - name: code_postal
+        data_tests:
+          - not_null
+          - dbt_utils.not_empty_string
+      - name: ville
+        data_tests:
+          - not_null
+          - dbt_utils.not_empty_string
+      - name: latitude
+        data_tests:
+          - not_null
+      - name: longitude
+        data_tests:
+          - not_null
+      - name: garde_enfants
+        data_tests:
+          - not_null
+          - accepted_values:
+              arguments:
+                values: [true, false]
+
+  - name: stg_reseau_alpha__structures__contacts
+    columns:
+      - name: structure_id
+        data_tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('stg_reseau_alpha__structures')
+                field: id
+      - name: nom
+        data_tests:
+          - dbt_utils.at_least_one
+          - dbt_utils.not_empty_string
+      - name: email
+        data_tests:
+          - dbt_utils.at_least_one
+          - dbt_utils.not_empty_string
+      - name: prenom
+        data_tests:
+          - dbt_utils.at_least_one
+          - dbt_utils.not_empty_string
+      - name: civilite
+        data_tests:
+          - dbt_utils.at_least_one
+          - dbt_utils.not_empty_string
+      - name: telephone1
+        data_tests:
+          - dbt_utils.at_least_one
+          - dbt_utils.not_empty_string
+      - name: telephone2
+        data_tests:
+          - dbt_utils.at_least_one
+          - dbt_utils.not_empty_string
+
+  - name: stg_reseau_alpha__pages
+    columns:
+      - name: structure_id
+        data_tests:
+          - unique
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('stg_reseau_alpha__structures')
+                field: id
+      - name: date_derniere_modification
+        data_tests:
+          - not_null
+      - name: url
+        data_tests:
+          - dbt_utils.at_least_one
+          - dbt_utils.not_empty_string
+
+  - name: stg_reseau_alpha__publics
+    columns:
+      - name: raw
+        data_tests:
+          - unique
+          - not_null
+          - dbt_utils.not_empty_string
+      - name: value
+        data_tests:
+          - unique
           - not_null
           - dbt_utils.not_empty_string

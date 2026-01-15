@@ -12,5 +12,6 @@ FROM (
     ('fredo'),
     ('ma-boussole-aidants'),
     ('monenfant'),
-    ('soliguide')
+    ('soliguide'),
+    ('reseau-alpha')
 ) AS x (source)

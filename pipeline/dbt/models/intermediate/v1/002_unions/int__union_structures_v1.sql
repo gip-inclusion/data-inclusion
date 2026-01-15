@@ -12,6 +12,7 @@
             ref('int_soliguide__structures_v1'),
             ref('int_ma_boussole_aidants__structures_v1'),
             ref('int_monenfant__structures_v1'),
+            ref('int_reseau_alpha__structures_v1'),
         ],
         column_override={
             "reseaux_porteurs": "TEXT[]",
