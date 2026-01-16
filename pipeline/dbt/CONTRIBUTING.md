@@ -1,6 +1,60 @@
-# `dbt` guidelines
+# `dbt` project guidelines
 
-## testing models
+## Layout
+
+The models are organized according to [the conventional layout](https://docs.getdbt.com/best-practices/how-we-structure/1-guide-overview):
+
+* the **source** layer contains the raw data. The source tables are created in postgres beforehand (with airflow) and simply declared in dbt.
+* the **seeds** directory contains stable long-lived data (like [our schema](https://github.com/gip-inclusion/data-inclusion-schema)). No cleaning required.
+* the **staging** layer built on top of sources models. Staging models transforms raw source data into proper tables and columns. The data is cleaned, but the original data model is kept.
+* the **intermediate** layer built on top of the staging models and seeds. It contains all the heavy work (changing data models, enhancing data etc.).
+* the **marts** layer built on top of the intermediate models. This is the final presentational layer.
+
+Each models in a given layer should strictly use models from the previous layer. Intermediate models should never use source models and marts models should never use staging models.
+
+The **source** layer are loaded in two ways. On the first hand, well defined and reliable data sources (like sirene) are loaded using their actual schema. On the other hand, less reliable sources (like the inclusion data providers) are loaded using a single jsonb column (`data`) that should be parsed into proper tables in the staging layer.
+
+The **staging** layer is essentially cleaning and testing the source data. The tests define and ensure expectations about source tables that can be trusted by the downstream models : a table has an id, which is unique and always present, etc. The staging models are practical cleaned views on the source data, which does not alter the nature of the data.
+
+Typical staging cleanups include:
+
+* unnesting nested data structures or arrays into their own, testable tables
+* replacing empty strings with nulls
+* snake casing columns
+* removing html tags
+
+Typical staging tests include testing that:
+
+* tables have an unique id
+* tables references each other
+* a column is limited to a given set of expected values
+* a column is not always null
+* a column does not have empty strings
+* important columns are filled enough
+
+Heavy computation belong to the **intermediate** layer. Most of the work is done in this layer.
+
+Typical intermediate computation includes:
+
+* filtering
+* renaming the columns to fit into a given schema
+* changing the nature of data (e.g. places to services)
+* geocoding
+* joining data with other sources
+* generating data
+* any transformation that alter the source data
+
+Intermediate stage tests check the results of our computations, when staging tests check their inputs.
+
+The **marts** layer can be thought as a presentational layer. Data that will be used by downstream services should be declared here. This include the data·inclusion dataset (structures and services). It is a ready-to-use view that assembles results of our intermediate layer.
+
+## Orchestration
+
+In production, airflow run the dbt project, using the `main` dag especially. Related dbt models are grouped and built in dedicated airflow tasks. For instance, the staging layer models are grouped by source.
+
+The `main` dag is designed to prevent corrupted sources to block the entire pipeline execution. Some models are first ran and built in temporary database schema with a dedicated (non-blocking) airflow task. This way, when a task fails, the last known data will remain in use for downstream models and the pipeline continues to run.
+
+## Testing models
 
 #### `data_tests` vs `unit_tests` vs `contract`:
 
