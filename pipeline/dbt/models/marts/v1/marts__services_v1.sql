@@ -24,6 +24,14 @@ scores AS (
     GROUP BY 1
 ),
 
+adresses AS (
+    SELECT id
+    FROM {{ ref('int__adresses_v1') }}
+    UNION
+    SELECT _di_surrogate_id AS id
+    FROM {{ ref('int__adresses') }}
+),
+
 final AS (
     SELECT
         {{
@@ -35,14 +43,16 @@ final AS (
                 ]
             )
         }},
-        scores.score                                    AS "score_qualite",
-        courriels_personnels.courriel IS NOT NULL       AS "_has_pii",
-        services.source NOT IN ('soliguide', 'agefiph') AS "_in_opendata",
-        erreurs.id IS NULL                              AS "_is_valid"
+        scores.score                                                   AS "score_qualite",
+        CASE WHEN services.adresse_id IS NOT NULL THEN adresses.id END AS "_has_valid_address",
+        courriels_personnels.courriel IS NOT NULL                      AS "_has_pii",
+        services.source NOT IN ('soliguide', 'agefiph')                AS "_in_opendata",
+        erreurs.id IS NULL                                             AS "_is_valid"
     FROM services
     LEFT JOIN courriels_personnels ON services.courriel = courriels_personnels.courriel
     LEFT JOIN scores ON services.id = scores.service_id
     LEFT JOIN erreurs ON services.id = erreurs.id
+    LEFT JOIN adresses ON services.adresse_id = adresses.id
 )
 
 SELECT * FROM final

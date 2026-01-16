@@ -25,6 +25,7 @@ reseaux_porteurs AS (
 )
 
 SELECT
+    structures._di_adresse_surrogate_id        AS "adresse_id",
     structures.courriel                        AS "courriel",
     structures.horaires_ouverture              AS "horaires_accueil",
     structures.source || '--' || structures.id AS "id",

@@ -90,7 +90,7 @@ final AS (
                     OR {{ this }}.score IS NULL
                     -- score is low, and has not been checked recently
                     OR (
-                        {{ this }}.score < 0.765
+                        {{ this }}.score < 0.75
                         AND (
                             {{ this }}.geocoded_at IS NULL
                             OR {{ this }}.geocoded_at < (NOW() - INTERVAL '1 week')

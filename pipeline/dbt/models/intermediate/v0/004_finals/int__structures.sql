@@ -20,6 +20,7 @@ urls AS (
 
 SELECT
     structures._di_surrogate_id                           AS "_di_surrogate_id",
+    structures._di_adresse_surrogate_id                   AS "_di_adresse_surrogate_id",
     structures.courriel                                   AS "courriel",
     structures.horaires_ouverture                         AS "horaires_ouverture",
     structures.id                                         AS "id",
