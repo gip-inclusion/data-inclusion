@@ -1,32 +1,51 @@
--- mediation-numerique source filtering (Dec 2025)
--- See stg_mediation_numerique__structures.sql for details on source selection.
-
 WITH source AS (
-    {{ stg_source_header('mediation_numerique', 'services') }}),
+    {{ stg_source_header('mediation_numerique', 'structures') }}
+),
 
 final AS (
     SELECT
-        CAST(ARRAY(SELECT d.* FROM JSONB_ARRAY_ELEMENTS_TEXT(NULLIF(source.data -> 'types', 'null')) AS d) AS TEXT [])       AS "types",
-        CAST(ARRAY(SELECT d.* FROM JSONB_ARRAY_ELEMENTS_TEXT(NULLIF(source.data -> 'profils', 'null')) AS d) AS TEXT [])     AS "profils",
-        CAST(ARRAY(SELECT d.* FROM JSONB_ARRAY_ELEMENTS_TEXT(NULLIF(source.data -> 'thematiques', 'null')) AS d) AS TEXT []) AS "thematiques",
-        CAST(ARRAY(SELECT d.* FROM JSONB_ARRAY_ELEMENTS_TEXT(NULLIF(source.data -> 'frais', 'null')) AS d) AS TEXT [])       AS "frais",
-        CAST((source.data ->> 'longitude') AS FLOAT)                                                                         AS "longitude",
-        CAST((source.data ->> 'latitude') AS FLOAT)                                                                          AS "latitude",
-        source.data ->> 'id'                                                                                                 AS "id",
-        source.data ->> 'structure_id'                                                                                       AS "structure_id",
-        source.data ->> 'nom'                                                                                                AS "nom",
-        source.data ->> 'source'                                                                                             AS "source",
-        source.data ->> 'prise_rdv'                                                                                          AS "prise_rdv"
+        source.data ->> 'id'                                                     AS "id",
+        source.data ->> 'id'                                                     AS "structure_id",
+        NULLIF(TRIM(source.data ->> 'prise_rdv'), '')                            AS "prise_rdv",
+        CAST(NULLIF(source.data ->> 'date_maj', '') AS TIMESTAMP WITH TIME ZONE) AS "date_maj",
+        CAST(
+            ARRAY(
+                SELECT d.*
+                FROM JSONB_ARRAY_ELEMENTS_TEXT(NULLIF(source.data -> 'services', 'null')) AS d
+            ) AS TEXT []
+        )                                                                        AS "services",
+        CAST(
+            ARRAY(
+                SELECT d.*
+                FROM JSONB_ARRAY_ELEMENTS_TEXT(NULLIF(source.data -> 'frais_a_charge', 'null')) AS d
+            ) AS TEXT []
+        )                                                                        AS "frais_a_charge",
+        CAST(
+            ARRAY(
+                SELECT d.*
+                FROM JSONB_ARRAY_ELEMENTS_TEXT(NULLIF(source.data -> 'modalites_acces', 'null')) AS d
+            ) AS TEXT []
+        )                                                                        AS "modalites_acces",
+        CAST(
+            ARRAY(
+                SELECT d.*
+                FROM JSONB_ARRAY_ELEMENTS_TEXT(NULLIF(source.data -> 'modalites_accompagnement', 'null')) AS d
+            ) AS TEXT []
+        )                                                                        AS "modalites_accompagnement",
+        CAST(
+            ARRAY(
+                SELECT d.*
+                FROM JSONB_ARRAY_ELEMENTS_TEXT(NULLIF(source.data -> 'publics_specifiquement_adresses', 'null')) AS d
+            ) AS TEXT []
+        )                                                                        AS "publics_specifiquement_adresses",
+        CAST(
+            ARRAY(
+                SELECT d.*
+                FROM JSONB_ARRAY_ELEMENTS_TEXT(NULLIF(source.data -> 'prise_en_charge_specifique', 'null')) AS d
+            ) AS TEXT []
+        )                                                                        AS "prise_en_charge_specifique"
     FROM source
-    WHERE
-        source.data ->> 'source' IN (
-            'France Services',
-            'Coop numérique',
-            'Hinaura',
-            'SIILAB',
-            'Hub Bretagne',
-            'Conseiller Numerique'
-        )
+    WHERE source.data ->> 'source' NOT IN ('dora', 'fredo', 'soliguide')
 )
 
 SELECT * FROM final

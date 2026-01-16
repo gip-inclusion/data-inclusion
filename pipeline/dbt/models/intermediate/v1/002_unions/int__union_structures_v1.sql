@@ -9,6 +9,7 @@
             ref('int_emplois_de_linclusion__structures_v1'),
             ref('int_france_travail__structures_v1'),
             ref('int_fredo__structures_v1'),
+            ref('int_mediation_numerique__structures_v1'),
             ref('int_soliguide__structures_v1'),
             ref('int_ma_boussole_aidants__structures_v1'),
             ref('int_monenfant__structures_v1'),
