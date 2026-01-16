@@ -1,5 +1,9 @@
+import io
+import json
 from pathlib import Path
 from typing import Literal
+
+from airflow.providers.amazon.aws.hooks import s3
 
 # These are airflow templated values
 # They will be evaluated at dag runtime
@@ -33,3 +37,32 @@ def get_key(
             as a task parameter (to be evaluated).
     """
     return _FACTORIES[stage](**kwargs)
+
+
+def to_s3(path: str, data: bytes | str | dict | list) -> str:
+    """Store data to s3 under the given path."""
+
+    s3_hook = s3.S3Hook(aws_conn_id="s3")
+
+    if not isinstance(data, bytes):
+        data = json.dumps(data).encode()
+
+    with io.BytesIO(data) as buf:
+        s3_hook.load_file_obj(
+            key=path,
+            file_obj=buf,
+            replace=True,
+        )
+
+    return path
+
+
+def from_s3(path: Path | str) -> Path:
+    """Fetch data from s3 and store it in a local temporary file."""
+
+    if isinstance(path, str):
+        path = Path(path)
+
+    s3_hook = s3.S3Hook(aws_conn_id="s3")
+
+    return Path(s3_hook.download_file(key=str(path)))

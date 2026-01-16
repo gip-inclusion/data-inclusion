@@ -46,6 +46,8 @@ models:
           +materialized: table
         monenfant:
           +materialized: table
+        reseau_alpha:
+          +materialized: table
 
       # The following models use table materialization, because:
       # - their upstream source tables are (currently) loaded with DROP/CREATE.

@@ -17,6 +17,7 @@ dependencies = [
     "sib-api-v3-sdk",
     "unidecode",
     "data-inclusion-schema==1.0.4",
+    "markdownify>=1.2.2",
 ]
 
 [project.optional-dependencies]

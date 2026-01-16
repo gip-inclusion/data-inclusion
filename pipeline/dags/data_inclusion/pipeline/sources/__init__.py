@@ -17,7 +17,6 @@ from . import (
     mediation_numerique,
     mes_aides,
     mission_locale,
-    reseau_alpha,
     soliguide,
     un_jeune_une_solution,
     utils,
@@ -156,23 +155,7 @@ SOURCES_CONFIGS = {
             }
         },
     },
-    "reseau-alpha": {
-        "schedule": "@once",
-        "streams": {
-            "structures": {
-                "filename": "structures.tar.gz",
-                "url": "https://www.reseau-alpha.org",
-                "extractor": reseau_alpha.extract_structures,
-                "reader": reseau_alpha.read_structures,
-            },
-            "formations": {
-                "filename": "formations.tar.gz",
-                "url": "https://www.reseau-alpha.org",
-                "extractor": reseau_alpha.extract_formations,
-                "reader": reseau_alpha.read_formations,
-            },
-        },
-    },
+    "reseau-alpha": {},
     "agefiph": {
         "schedule": "@daily",
         "extractor": agefiph.extract,
