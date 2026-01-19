@@ -85,7 +85,8 @@ SELECT
     adresses.commune                     AS "commune",
     adresses.adresse                     AS "adresse",
     adresses.code_postal                 AS "code_postal",
-    adresses.code_insee                  AS "code_insee"
+    adresses.code_insee                  AS "code_insee",
+    services.extra                       AS "extra"
 FROM services
 LEFT JOIN contacts
     ON services.id = contacts.id
@@ -128,5 +129,6 @@ SELECT
     services_v0_to_v1.commune,
     services_v0_to_v1.adresse,
     services_v0_to_v1.code_postal,
-    services_v0_to_v1.code_insee
+    services_v0_to_v1.code_insee,
+    NULL::JSONB AS "extra"
 FROM services_v0_to_v1
