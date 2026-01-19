@@ -28,11 +28,11 @@ class SoliguideAPIClient:
             base_url=settings.SOLIGUIDE_API_URL,
             headers={"Authorization": f"JWT {settings.SOLIGUIDE_API_TOKEN}"},
             event_hooks={"response": [log_error]},
-            timeout=1,  # seconds
+            timeout=0.5,  # seconds
         )
 
-    def retrieve_place(self, place_id: str) -> dict:
-        return self.client.get(f"/place/{place_id}").json()
+    def retrieve_place(self, place_id: str) -> httpx.Response:
+        return self.client.head(f"/place/{place_id}")
 
 
 def is_allowed_user(request: fastapi.Request) -> bool:
