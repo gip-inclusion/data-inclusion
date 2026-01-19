@@ -164,9 +164,9 @@ final AS (
         )                                               AS "courriel",
         NULL                                            AS "contact_nom_prenom",
         CASE
-            WHEN actions.modalites_enseignement = '0' THEN ARRAY['en-presentiel']
-            WHEN actions.modalites_enseignement = '1' THEN ARRAY['a-distance']
-            WHEN actions.modalites_enseignement = '2' THEN ARRAY['en-presentiel', 'a-distance']
+            WHEN actions.modalites_enseignement = 0 THEN ARRAY['en-presentiel']
+            WHEN actions.modalites_enseignement = 1 THEN ARRAY['a-distance']
+            WHEN actions.modalites_enseignement = 2 THEN ARRAY['en-presentiel', 'a-distance']
         END                                             AS "modes_accueil",
         CASE actions.code_perimetre_recrutement
             WHEN '1' THEN ARRAY[communes.code]
@@ -182,8 +182,11 @@ final AS (
         END                                             AS "zone_eligibilite",
         CAST(actions.duree_hebdo AS FLOAT)              AS "volume_horaire_hebdomadaire",
         CAST(NULL AS INTEGER)                           AS "nombre_semaines",
-        NULL                                            AS "horaires_accueil"
-
+        NULL                                            AS "horaires_accueil",
+        JSONB_BUILD_OBJECT(
+            'formation', formations.raw,
+            'action', actions.raw
+        )                                               AS "_extra"
     FROM actions
     INNER JOIN formations
         ON actions.numero_formation = formations.numero
@@ -221,9 +224,9 @@ final AS (
     ORDER BY
         actions.numero ASC,
         organismes_formateurs.numero ASC,
-        organismes_formateurs__contacts.type_contact = '3' DESC, -- référent pédagogique
-        organismes_formateurs__contacts.type_contact = '0' DESC, -- autre
-        organismes_formateurs__contacts.type_contact = '4' DESC -- accueil
+        organismes_formateurs__contacts.type_contact = 3 DESC, -- référent pédagogique
+        organismes_formateurs__contacts.type_contact = 0 DESC, -- autre
+        organismes_formateurs__contacts.type_contact = 4 DESC -- accueil
 )
 
 SELECT * FROM final

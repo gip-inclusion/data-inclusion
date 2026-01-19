@@ -387,6 +387,7 @@ def test_list_services_unauthenticated(api_client, schema_version):
                     zone_eligibilite=None,
                     volume_horaire_hebdomadaire=1,
                     nombre_semaines=1,
+                    extra={"foo": "bar"},
                 ),
             ],
         ),
@@ -2267,18 +2268,3 @@ def test_ressources_ordered_by_id(api_client, url, factory):
         "4--8",
         "4--9",
     ]
-
-
-@pytest.mark.parametrize("schema_version", ["v1"])
-@pytest.mark.parametrize("path", ["/services"])
-@pytest.mark.with_token
-def test_list_services_returns_extra_field(api_client, url):
-    service = v1_factories.ServiceFactory(extra={"foo": "bar"})
-
-    response = api_client.get(url)
-
-    assert response.status_code == 200
-    resp_data = response.json()
-    assert resp_data["total"] == 1
-    assert resp_data["items"][0]["id"] == service.id
-    assert resp_data["items"][0]["extra"] == {"foo": "bar"}

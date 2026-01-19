@@ -1,3 +1,4 @@
+import json
 import logging
 from pathlib import Path
 
@@ -114,6 +115,11 @@ def load_df_to_table(
     df = df.sort_values(by="id", ascending=True)
     df = df[[c.name for c in columns_list]]
 
+    if "_extra" in df.columns:
+        df = df.assign(
+            extra=df["_extra"].apply(lambda x: json.loads(x) if x is not None else None)
+        )
+
     df.to_sql(
         name=model.__tablename__,
         con=db_session.connection(),
@@ -137,17 +143,10 @@ def load_dataset(
 
 
 def load_inclusion_data(db_session: orm.Session, path: Path):
-    import json
-
     structures_df, services_df = [
         pd.read_parquet(path / filename).replace({np.nan: None})
         for filename in ("structures.parquet", "services.parquet")
     ]
-
-    if "extra" in services_df.columns:
-        services_df["extra"] = services_df["extra"].apply(
-            lambda x: json.loads(x) if x is not None else None
-        )
 
     logger.info("Validating data...")
     structures_df, services_df = validate_dataset(
