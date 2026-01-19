@@ -34,13 +34,16 @@ models:
       +schema: staging
 
       sources:
-        # These models can be materialized as views, because:
+        # By default, these models can be materialized as views, because:
         # - their upstream source tables are loaded with a TRUNCATE.
         # - they usually contain lightweight transformations.
+        # - they have few downstream tests/models.
         +materialized: view
+
+        # These specific models are materialized as tables,
+        # because they contain costly transformations and
+        # many downstream tests/models.
         carif_oref:
-          # These models are materialized as views, because they contain heavy
-          # transformations.
           +materialized: table
         soliguide:
           +materialized: table

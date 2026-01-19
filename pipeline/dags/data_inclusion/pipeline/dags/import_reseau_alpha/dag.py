@@ -1,20 +1,12 @@
 from airflow.decorators import dag, task
 from airflow.models.baseoperator import chain
 
-from data_inclusion.pipeline.common import dags, tasks
+from data_inclusion.pipeline.common import dags, s3, tasks
 
 SOURCE_ID = "reseau-alpha"
 SCHEMA_NAME = SOURCE_ID.replace("-", "_")
 
-S3_PATH = "/".join(
-    [
-        "data",
-        "raw",
-        "{{ logical_date.in_timezone('Europe/Paris').date() }}",
-        SOURCE_ID,
-        "{{ run_id }}",
-    ]
-)
+S3_PATH = s3.get_key_for_raw_data(source_id=SOURCE_ID)
 
 
 @task.virtualenv(
@@ -32,7 +24,9 @@ def extract(to_path: str):
     # this is our entrypoint to the reseau-alpha data
     url = "https://www.reseau-alpha.org/cartographie.json"
 
-    cartographie_data = httpx.get(url).json()
+    response = httpx.get(url)
+    response.raise_for_status()
+    cartographie_data = response.json()
 
     s3.to_s3(path=f"{to_path}/cartographie.json", data=cartographie_data)
 
@@ -42,6 +36,7 @@ def extract(to_path: str):
     # because we need extra data unavailable in the JSON API
     for _, row in structures_df.iterrows():
         response = httpx.get(row["url"])
+        response.raise_for_status()
         s3.to_s3(
             path=f"{to_path}/structures/{row['id']}.html",
             data=response.content,
@@ -52,7 +47,7 @@ def extract(to_path: str):
     requirements="requirements/tasks/requirements.txt",
     system_site_packages=False,
     venv_cache_path="/tmp/",
-    retries=0,
+    retries=1,
 )
 def load(from_path: str, schema_name: str):
     import json

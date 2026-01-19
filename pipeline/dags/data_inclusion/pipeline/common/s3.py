@@ -44,8 +44,11 @@ def to_s3(path: str, data: bytes | str | dict | list) -> str:
 
     s3_hook = s3.S3Hook(aws_conn_id="s3")
 
-    if not isinstance(data, bytes):
-        data = json.dumps(data).encode()
+    if isinstance(data, (dict, list)):
+        data = json.dumps(data)
+
+    if isinstance(data, str):
+        data = data.encode()
 
     with io.BytesIO(data) as buf:
         s3_hook.load_file_obj(
