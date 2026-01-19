@@ -3452,6 +3452,18 @@
               "title": "Description",
               "type": "string"
             },
+            "extra": {
+              "anyOf": [
+                {
+                  "additionalProperties": true,
+                  "type": "object"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Extra"
+            },
             "frais": {
               "anyOf": [
                 {
@@ -4627,6 +4639,18 @@
               "minLength": 5,
               "title": "Description",
               "type": "string"
+            },
+            "extra": {
+              "anyOf": [
+                {
+                  "additionalProperties": true,
+                  "type": "object"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Extra"
             },
             "frais": {
               "anyOf": [

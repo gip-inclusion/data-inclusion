@@ -110,3 +110,4 @@ class ServiceFactory(factory.alchemy.SQLAlchemyModelFactory):
     nombre_semaines = 1
     volume_horaire_hebdomadaire = 1
     score_qualite = 0.5
+    extra = None

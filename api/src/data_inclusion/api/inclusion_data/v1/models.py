@@ -127,6 +127,7 @@ class Service(HasAddress, Base):
     volume_horaire_hebdomadaire: Mapped[float | None]
     zone_eligibilite: Mapped[list[str] | None]
     nombre_semaines: Mapped[int | None]
+    extra: Mapped[dict | None]
 
     commune_: Mapped[Commune] = relationship(back_populates="services_v1")
     structure: Mapped[Structure] = relationship(back_populates="services")
