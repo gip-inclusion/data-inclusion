@@ -11,6 +11,7 @@
             ref('int_soliguide__adresses_v1'),
             ref('int_ma_boussole_aidants__adresses_v1'),
             ref('int_monenfant__adresses_v1'),
+            ref('int_reseau_alpha__adresses_v1'),
         ],
         source_column_name=None
     )

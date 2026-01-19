@@ -10,6 +10,7 @@
             ref('int_soliguide__services_v1'),
             ref('int_ma_boussole_aidants__services_v1'),
             ref('int_monenfant__services_v1'),
+            ref('int_reseau_alpha__services_v1'),
         ],
         column_override={
             "thematiques": "TEXT[]",

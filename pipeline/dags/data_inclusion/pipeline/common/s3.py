@@ -39,7 +39,7 @@ def get_key(
     return _FACTORIES[stage](**kwargs)
 
 
-def to_s3(path: str, data: bytes | str | dict | list) -> str:
+def to_s3(path: str | Path, data: bytes | str | dict | list) -> str | Path:
     """Store data to s3 under the given path."""
 
     s3_hook = s3.S3Hook(aws_conn_id="s3")
@@ -50,9 +50,12 @@ def to_s3(path: str, data: bytes | str | dict | list) -> str:
     if isinstance(data, str):
         data = data.encode()
 
+    if isinstance(path, str):
+        path = Path(path)
+
     with io.BytesIO(data) as buf:
         s3_hook.load_file_obj(
-            key=path,
+            key=str(path),
             file_obj=buf,
             replace=True,
         )

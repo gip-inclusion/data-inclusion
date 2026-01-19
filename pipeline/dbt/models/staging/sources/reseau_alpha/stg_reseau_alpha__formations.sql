@@ -26,7 +26,8 @@ final AS (
         CAST(formations.data ->> 'placeDisponible' AS BOOLEAN)                   AS "place_disponible",
         processings.html_to_markdown(formations.data ->> 'presentationPublique') AS "presentation_publique",
         NULLIF(TRIM(formations.data ->> 'slug'), '')                             AS "slug",
-        NULLIF(TRIM(formations.data ->> 'url'), '')                              AS "url"
+        NULLIF(TRIM(formations.data ->> 'url'), '')                              AS "url",
+        formations.data -> 'joursHorairesDetails'                                AS "jours_horaires_details"
     FROM
         source,
         JSONB_PATH_QUERY(source.data, '$.formations[*]') AS formations (data)

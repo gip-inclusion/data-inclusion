@@ -11,5 +11,6 @@ FROM (
     ('france-travail'),
     ('ma-boussole-aidants'),
     ('monenfant'),
-    ('soliguide')
+    ('soliguide'),
+    ('reseau-alpha')
 ) AS x (source)

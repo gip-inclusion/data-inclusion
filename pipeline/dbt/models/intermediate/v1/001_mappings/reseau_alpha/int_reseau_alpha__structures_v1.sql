@@ -2,6 +2,12 @@ WITH structures AS (
     SELECT * FROM {{ ref('stg_reseau_alpha__structures') }}
 ),
 
+structures_adresses AS (
+    SELECT DISTINCT ON (structure_id) *
+    FROM {{ ref('stg_reseau_alpha__structures__adresses') }}
+    ORDER BY structure_id, voie IS NOT NULL DESC
+),
+
 pages AS (
     SELECT * FROM {{ ref('stg_reseau_alpha__pages') }}
 ),
@@ -16,7 +22,7 @@ final AS (
     SELECT
         'reseau-alpha'                                                             AS "source",
         'reseau-alpha--' || structures.id                                          AS "id",
-        'reseau-alpha--' || 'structure-' || structures.id                          AS "adresse_id",
+        'reseau-alpha--' || 'structure-' || structures_adresses.structure_id       AS "adresse_id",
         structures.nom                                                             AS "nom",
         pages.date_derniere_modification                                           AS "date_maj",
         structures.url                                                             AS "lien_source",
@@ -31,6 +37,7 @@ final AS (
     FROM structures
     LEFT JOIN pages ON structures.id = pages.structure_id
     LEFT JOIN structures__contacts ON structures.id = structures__contacts.structure_id
+    LEFT JOIN structures_adresses ON structures.id = structures_adresses.structure_id
 )
 
 SELECT * FROM final

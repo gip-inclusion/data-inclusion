@@ -94,8 +94,89 @@ models:
       - name: criteres_linguistique_oral
       - name: criteres_savoir_base
       - name: criteres_scolarisation
-      - name: objectifs_vises
       - name: programmes
+
+  - name: stg_reseau_alpha__formations__competences_linguistiques
+    columns:
+      - name: structure_id
+        data_tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('stg_reseau_alpha__structures')
+                field: id
+      - name: formation_id
+        data_tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('stg_reseau_alpha__formations')
+                field: id
+      - name: value
+        data_tests:
+          - not_null
+          - accepted_values:
+              arguments:
+                values:
+                  - A1
+                  - A1.1
+                  - A2
+                  - B1
+                  - B2
+                  - C1
+
+  - name: stg_reseau_alpha__formations__objectifs
+    columns:
+      - name: structure_id
+        data_tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('stg_reseau_alpha__structures')
+                field: id
+      - name: formation_id
+        data_tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('stg_reseau_alpha__formations')
+                field: id
+      - name: label
+        data_tests:
+          - not_null
+          - dbt_utils.not_empty_string
+      - name: description
+        data_tests:
+          - dbt_utils.not_empty_string
+
+  - name: stg_reseau_alpha__formations__criteres_scolarisation
+    columns:
+      - name: structure_id
+        data_tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('stg_reseau_alpha__structures')
+                field: id
+      - name: formation_id
+        data_tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('stg_reseau_alpha__formations')
+                field: id
+      - name: value
+        data_tests:
+          - not_null
+          - accepted_values:
+              config:
+                severity: warn
+              arguments:
+                values:
+                  - Niveau de scolarisation indifférent
+                  - Jamais ou peu scolarisé (-3ans)
+                  - Scolarisé (3ans et +) en langue étrangère
+                  - Scolarisé (3ans et +) en langue française en France ou à l''étranger [illettrisme/remise à niveau]
 
   - name: stg_reseau_alpha__formations__adresses
     columns:

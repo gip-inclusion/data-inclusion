@@ -42,7 +42,7 @@ models:
           - dbt_utils.not_empty_string
       - name: adresse_id
         data_tests:
-          - not_null
+          - dbt_utils.at_least_one
           - relationships:
               arguments:
                 to: ref('int_reseau_alpha__adresses_v1')
@@ -70,7 +70,7 @@ models:
                 field: id
       - name: adresse_id
         data_tests:
-          - not_null
+          - dbt_utils.at_least_one
           - relationships:
               arguments:
                 to: ref('int_reseau_alpha__adresses_v1')

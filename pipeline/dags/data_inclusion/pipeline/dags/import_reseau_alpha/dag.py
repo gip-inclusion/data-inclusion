@@ -1,3 +1,5 @@
+from pathlib import Path
+
 from airflow.decorators import dag, task
 from airflow.models.baseoperator import chain
 
@@ -15,7 +17,7 @@ S3_PATH = s3.get_key_for_raw_data(source_id=SOURCE_ID)
     venv_cache_path="/tmp/",
     retries=1,
 )
-def extract(to_path: str):
+def extract(to_path: Path):
     import httpx
     import pandas as pd
 
@@ -28,7 +30,7 @@ def extract(to_path: str):
     response.raise_for_status()
     cartographie_data = response.json()
 
-    s3.to_s3(path=f"{to_path}/cartographie.json", data=cartographie_data)
+    s3.to_s3(path=to_path / "cartographie.json", data=cartographie_data)
 
     structures_df = pd.json_normalize(cartographie_data["structures"])
 
@@ -38,7 +40,7 @@ def extract(to_path: str):
         response = httpx.get(row["url"])
         response.raise_for_status()
         s3.to_s3(
-            path=f"{to_path}/structures/{row['id']}.html",
+            path=to_path / "structures" / f"{row['id']}.html",
             data=response.content,
         )
 
@@ -49,7 +51,7 @@ def extract(to_path: str):
     venv_cache_path="/tmp/",
     retries=1,
 )
-def load(from_path: str, schema_name: str):
+def load(from_path: Path, schema_name: str):
     import json
     import tempfile
     from pathlib import Path
@@ -65,7 +67,7 @@ def load(from_path: str, schema_name: str):
     pg_hook = postgres.PostgresHook(postgres_conn_id="pg")
     s3_hook = s3_hooks.S3Hook(aws_conn_id="s3")
 
-    with s3.from_s3(path=from_path + "/cartographie.json").open() as f:
+    with s3.from_s3(path=from_path / "cartographie.json").open() as f:
         cartographie_data = json.load(f)
 
     structures_df = pd.DataFrame.from_records(cartographie_data["structures"])
@@ -75,7 +77,7 @@ def load(from_path: str, schema_name: str):
 
     pages_data = []
     with tempfile.TemporaryDirectory() as tmpdir:
-        for key in s3_hook.list_keys(prefix=from_path + "/structures"):
+        for key in s3_hook.list_keys(prefix=str(from_path / "structures")):
             path = Path(
                 s3_hook.download_file(
                     key=key, local_path=tmpdir, preserve_file_name=True
