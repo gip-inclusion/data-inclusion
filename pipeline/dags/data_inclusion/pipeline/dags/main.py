@@ -12,6 +12,7 @@ from data_inclusion.pipeline.common import dags, dbt, s3, tasks
     python=tasks.PYTHON_BIN_PATH,
 )
 def export_dataset(to_s3_path: str):
+    import json
     from pathlib import Path
 
     from airflow.providers.amazon.aws.hooks import s3
@@ -27,6 +28,10 @@ def export_dataset(to_s3_path: str):
             query = f"SELECT * FROM public_marts.{model}"
             print(f"Downloading data from query='{query}'")
             df = pg_hook.get_pandas_df(sql=query)
+            if "extra" in df.columns:
+                df["extra"] = df["extra"].apply(
+                    lambda x: json.dumps(x) if x is not None else None
+                )
             df.info()
             print(f"Uploading data to bucket='{key}'")
             s3_hook.load_bytes(

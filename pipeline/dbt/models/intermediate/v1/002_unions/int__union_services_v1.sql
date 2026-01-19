@@ -20,6 +20,7 @@
             "zone_eligibilite": "TEXT[]",
             "modes_mobilisation": "TEXT[]",
             "mobilisable_par": "TEXT[]",
+            "extra": "JSONB",
         },
         source_column_name=None
     )
