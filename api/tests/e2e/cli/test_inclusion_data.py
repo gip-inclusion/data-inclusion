@@ -86,6 +86,7 @@ def dataset_path(structures_df, services_df, tmpdir):
                     {
                         "score_qualite": 0.8,
                         "_has_valid_address": None,
+                        "extra": {"foo": "bar"},
                         **v1.Service(
                             source="foo",
                             id="1",
@@ -173,3 +174,8 @@ def test_load_inclusion_data(
             response = api_client.get(path)
             assert response.status_code == 200
             assert len(response.json()["items"]) == expected_count
+
+        if version == "v1":
+            response = api_client.get(f"/api/{version}/services")
+            service = response.json()["items"][0]
+            assert service["extra"] == {"foo": "bar"}

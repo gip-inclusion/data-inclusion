@@ -87,6 +87,7 @@
         "courriel": "michelgerard@example.net",
         "date_maj": "2023-01-01",
         "description": "Lorem ipsum dolor sit amet, consectetur adipiscing\n                    elit, sed do eiusmod tempor incididunt ut labore et dolore magna\n                    aliqua.",
+        "extra": null,
         "frais": "gratuit",
         "frais_precisions": "Camarade il.",
         "horaires_accueil": "Mo-Fr 10:00-20:00",

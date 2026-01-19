@@ -25,6 +25,7 @@ class Service(schema.Service):
                 """),
         ),
     ]
+    extra: dict | None = None
 
 
 class BaseStructure(schema.Structure):
