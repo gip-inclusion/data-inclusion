@@ -1,3 +1,4 @@
+import json
 from datetime import datetime
 
 import pandas as pd
@@ -11,6 +12,10 @@ from data_inclusion.schema import v0, v1
 @pytest.fixture
 def dataset_path(structures_df, services_df, tmpdir):
     structures_df.to_parquet(tmpdir / "structures.parquet")
+    if "extra" in services_df.columns:
+        services_df["extra"] = services_df["extra"].apply(
+            lambda x: json.dumps(x) if x is not None else None
+        )
     services_df.to_parquet(tmpdir / "services.parquet")
     return tmpdir
 
@@ -86,7 +91,7 @@ def dataset_path(structures_df, services_df, tmpdir):
                     {
                         "score_qualite": 0.8,
                         "_has_valid_address": None,
-                        "extra": {"foo": "bar"},
+                        "_extra": {"foo": "bar"},
                         **v1.Service(
                             source="foo",
                             id="1",
@@ -125,6 +130,7 @@ def dataset_path(structures_df, services_df, tmpdir):
                     {
                         "score_qualite": 0.8,
                         "_has_valid_address": False,
+                        "_extra": None,
                         **v1.Service(
                             source="foo",
                             id="1",
@@ -151,6 +157,7 @@ def test_load_inclusion_data(
     dataset_path,
     expected_exit_code,
     expected_count,
+    snapshot,
 ):
     result = cli_runner.invoke(
         cli,
@@ -175,7 +182,5 @@ def test_load_inclusion_data(
             assert response.status_code == 200
             assert len(response.json()["items"]) == expected_count
 
-        if version == "v1":
-            response = api_client.get(f"/api/{version}/services")
-            service = response.json()["items"][0]
-            assert service["extra"] == {"foo": "bar"}
+        response = api_client.get(f"/api/{version}/services")
+        assert response.json()["items"] == snapshot

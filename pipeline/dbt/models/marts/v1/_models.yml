@@ -195,7 +195,7 @@ models:
         data_type: float
       - name: _has_valid_address
         data_type: boolean
-      - name: extra
+      - name: _extra
         data_type: jsonb
       - name: _has_pii
         data_type: boolean

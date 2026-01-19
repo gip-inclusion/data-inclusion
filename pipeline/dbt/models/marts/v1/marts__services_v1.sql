@@ -47,7 +47,8 @@ final AS (
         CASE WHEN services.adresse_id IS NOT NULL THEN adresses.id IS NOT NULL END AS "_has_valid_address",
         courriels_personnels.courriel IS NOT NULL                                  AS "_has_pii",
         services.source NOT IN ('soliguide', 'agefiph')                            AS "_in_opendata",
-        erreurs.id IS NULL                                                         AS "_is_valid"
+        erreurs.id IS NULL                                                         AS "_is_valid",
+        services._extra                                                            AS "_extra"
     FROM services
     LEFT JOIN courriels_personnels ON services.courriel = courriels_personnels.courriel
     LEFT JOIN scores ON services.id = scores.service_id

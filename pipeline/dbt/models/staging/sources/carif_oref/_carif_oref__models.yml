@@ -98,6 +98,7 @@ models:
               arguments:
                 values: [0, 1, 2]
       - name: modalites_recrutement
+        description: https://lheo.gouv.fr/2.3/lheo/modalites-recrutement.html
         data_tests:
           - dbt_utils.not_constant
           - dbt_utils.not_empty_string
@@ -133,6 +134,7 @@ models:
               arguments:
                 min_value: 0
                 max_value: 100
+
   - name: stg_carif_oref__formations
     description: http://lheo.gouv.fr/2.3/lheo/formation.html
     columns:
@@ -175,6 +177,7 @@ models:
           - dbt_utils.not_null_proportion:
               arguments:
                 at_least: 0.1
+
   - name: stg_carif_oref__formations__contacts
     description: http://lheo.gouv.fr/2.3/lheo/contact-formation.html
     data_tests:
@@ -196,9 +199,10 @@ models:
         description: http://lheo.gouv.fr/2.3/lheo/dict-type-contact.html
         data_tests:
           - not_null
-          - accepted_values:
+          - dbt_utils.accepted_range:
               arguments:
-                values: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14]
+                min_value: 0
+                max_value: 14
       - name: hash_coordonnees
         data_tests:
           - not_null
@@ -288,9 +292,10 @@ models:
         description: http://lheo.gouv.fr/2.3/lheo/dict-type-contact.html
         data_tests:
           - not_null
-          - accepted_values:
+          - dbt_utils.accepted_range:
               arguments:
-                values: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14]
+                min_value: 0
+                max_value: 14
       - name: hash_coordonnees
         data_tests:
           - not_null
@@ -298,6 +303,7 @@ models:
               arguments:
                 to: ref('stg_carif_oref__coordonnees')
                 field: hash_
+
   - name: stg_carif_oref__coordonnees
     description: http://lheo.gouv.fr/2.3/lheo/coordonnees.html
     columns:
@@ -326,6 +332,7 @@ models:
               arguments:
                 to: ref('stg_carif_oref__adresses')
                 field: hash_
+
   - name: stg_carif_oref__adresses
     description: http://lheo.gouv.fr/2.3/lheo/adresse.html
     columns:

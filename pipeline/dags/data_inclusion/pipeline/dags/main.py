@@ -27,12 +27,14 @@ def export_dataset(to_s3_path: str):
             model = f"marts__{resource}_v1" if version == "v1" else f"marts__{resource}"
             query = f"SELECT * FROM public_marts.{model}"
             print(f"Downloading data from query='{query}'")
-            df = pg_hook.get_pandas_df(sql=query)
+            df = pg_hook.get_df(sql=query)
+
+            # this prevents conversion issues with nested JSON columns in Parquet
             if "extra" in df.columns:
                 df["extra"] = df["extra"].apply(
                     lambda x: json.dumps(x) if x is not None else None
                 )
-            df.info()
+
             print(f"Uploading data to bucket='{key}'")
             s3_hook.load_bytes(
                 bytes_data=df.to_parquet(compression="gzip"),

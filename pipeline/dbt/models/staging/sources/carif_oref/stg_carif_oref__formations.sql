@@ -28,7 +28,11 @@ final AS (
                 NULL
             ),
             '{}'
-        )                                                                                AS "url_formation"
+        )                                                                                AS "url_formation",
+        JSONB_BUILD_OBJECT(
+            'code-niveau-entree', source.data -> 'code-niveau-entree',
+            'code-niveau-sortie', source.data -> 'code-niveau-sortie'
+        )                                                                                AS "raw"
     FROM source
 )
 

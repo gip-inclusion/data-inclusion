@@ -86,7 +86,7 @@ SELECT
     adresses.adresse                     AS "adresse",
     adresses.code_postal                 AS "code_postal",
     adresses.code_insee                  AS "code_insee",
-    services.extra                       AS "extra"
+    services._extra                      AS "_extra"
 FROM services
 LEFT JOIN contacts
     ON services.id = contacts.id
@@ -130,5 +130,5 @@ SELECT
     services_v0_to_v1.adresse,
     services_v0_to_v1.code_postal,
     services_v0_to_v1.code_insee,
-    NULL::JSONB AS "extra"
+    CAST(NULL AS JSONB) AS "_extra"
 FROM services_v0_to_v1

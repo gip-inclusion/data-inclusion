@@ -6,7 +6,7 @@ final AS (
     SELECT DISTINCT ON (1, 2, 3)
         NULLIF(TRIM(source.data ->> '@numero'), '')                   AS "numero_formation",
         CAST(MD5(contacts_formations.data ->> 'coordonnees') AS TEXT) AS "hash_coordonnees",
-        NULLIF(TRIM(contacts_formations.data ->> 'type-contact'), '') AS "type_contact"
+        CAST(contacts_formations.data ->> 'type-contact' AS INTEGER)  AS "type_contact"
     FROM
         source,  -- noqa: structure.unused_join
         JSONB_PATH_QUERY(source.data, '$.contact\-formation[*]') AS contacts_formations (data)
