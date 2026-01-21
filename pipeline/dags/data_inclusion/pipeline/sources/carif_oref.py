@@ -52,22 +52,14 @@ def read(path: Path):
     schema_path = Path(__file__).resolve().parent / "lheo.xsd"
     schema = xmlschema.XMLSchema(schema_path)
 
-    data = []
-    for formation_data in schema.iter_decode(
-        path,
-        path="//offres/formation",
-        lazy=True,
-    ):
-        formation_data["objectif-formation"] = utils.html_to_markdown(
-            formation_data["objectif-formation"]
-        )
-        formation_data["contenu-formation"] = utils.html_to_markdown(
-            formation_data["contenu-formation"]
-        )
-        data.append(formation_data)
-
     df = pd.json_normalize(
-        data=data,
+        data=list(
+            schema.iter_decode(
+                path,
+                path="//offres/formation",
+                lazy=True,
+            )
+        ),
         max_level=0,
     )
     return utils.df_clear_nan(df)
