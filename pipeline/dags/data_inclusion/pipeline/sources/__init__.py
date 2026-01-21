@@ -160,7 +160,6 @@ SOURCES_CONFIGS = {
             "services": {
                 "filename": "services.json",
                 "url": "https://www.agefiph.fr/jsonapi/node/solution",
-                "reader": agefiph.read,
             },
             "structures": {
                 "filename": "structures.json",
