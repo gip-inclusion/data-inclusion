@@ -4,7 +4,6 @@ import json
 import logging
 import os
 import unicodedata
-from pathlib import Path
 
 import httpx
 from playwright.sync_api import (
@@ -13,8 +12,6 @@ from playwright.sync_api import (
     sync_playwright,
 )
 from twocaptcha import TwoCaptcha
-
-from . import utils
 
 logger = logging.getLogger(__name__)
 
@@ -232,25 +229,3 @@ def extract(
     data = [extract_structure(search_result["id"]) for search_result in search_results]
 
     return json.dumps(data).encode()
-
-
-def read(path: Path):
-    import pandas as pd
-
-    # utils.df_from_json is enough
-    # but this adds the conversion of descriptions from html to markdown
-    # should eventually be implemented as a python dbt model
-
-    with path.open() as file:
-        data = json.load(file)
-
-    for creche_data in data:
-        creche_data["description"] = {
-            k: utils.html_to_markdown(v) for k, v in creche_data["description"].items()
-        }
-        creche_data["service_accueil"]["handicap"] = utils.html_to_markdown(
-            creche_data["service_accueil"]["handicap"]
-        )
-
-    df = pd.DataFrame.from_records(data)
-    return utils.df_clear_nan(df)
