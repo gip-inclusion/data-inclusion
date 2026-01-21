@@ -2,8 +2,6 @@ import json
 import time
 from copy import deepcopy
 from math import ceil
-from pathlib import Path
-from typing import Optional
 
 from . import utils
 
@@ -19,7 +17,7 @@ class APIClient(utils.BaseApiClient):
     def search(
         self,
         location_geo_type: str,
-        location_geo_value: Optional[str] = None,
+        location_geo_value: str | None = None,
     ) -> list[dict]:
         if location_geo_type != "position" and location_geo_value is None:
             raise RuntimeError("Missing location.geoValue.")
@@ -74,33 +72,3 @@ def extract(url: str, token: str, **kwargs) -> bytes:
     soliguide_client = APIClient(base_url=url, token=token)
     data = soliguide_client.search(location_geo_type="pays", location_geo_value="fr")
     return json.dumps(data).encode()
-
-
-def read(path: Path):
-    import pandas as pd
-
-    from . import utils
-
-    # utils.df_from_json is enough
-    # but this adds the conversion of descriptions from html to markdown
-    # should eventually be implemented as a python dbt model
-
-    with path.open() as file:
-        data = json.load(file)
-
-    for lieu_data in data:
-        lieu_data["description"] = utils.html_to_markdown(lieu_data["description"])
-        lieu_data["modalities"]["other"] = utils.html_to_markdown(
-            lieu_data["modalities"]["other"]
-        )
-
-        for service_data in lieu_data["services_all"]:
-            service_data["description"] = utils.html_to_markdown(
-                service_data["description"]
-            )
-            service_data["modalities"]["other"] = utils.html_to_markdown(
-                service_data["modalities"]["other"]
-            )
-
-    df = pd.DataFrame.from_records(data)
-    return utils.df_clear_nan(df)

@@ -143,7 +143,6 @@ SOURCES_CONFIGS = {
     "soliguide": {
         "schedule": "@hourly",
         "extractor": soliguide.extract,
-        "reader": soliguide.read,
         "streams": {
             "lieux": {
                 "filename": "lieux.json",
