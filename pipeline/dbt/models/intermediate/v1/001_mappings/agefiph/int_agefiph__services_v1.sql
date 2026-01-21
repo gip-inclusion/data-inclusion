@@ -37,7 +37,7 @@ final AS (
         services.attributes__title                                        AS "nom",
         ARRAY_TO_STRING(
             ARRAY[
-                services.attributes__field_solution_detail__processed,
+                services.attributes__field_solution_detail__value,
                 'Aide d’un montant de : ' || LOWER(services.attributes__field_montant_aide)
             ],
             E'\n'
