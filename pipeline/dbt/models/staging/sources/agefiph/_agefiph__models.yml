@@ -73,7 +73,7 @@ models:
           - unique
           - not_null
           - dbt_utils.not_empty_string
-      - name: attributes__field_solution_detail__processed
+      - name: attributes__field_solution_detail__value
         data_tests:
           - dbt_utils.at_least_one
           - dbt_utils.not_empty_string
