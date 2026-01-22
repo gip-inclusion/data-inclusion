@@ -1,5 +1,40 @@
 # serializer version: 1
-# name: test_load_inclusion_data[v0-structures_df2-services_df2-0]
+# name: test_load_inclusion_data[v0-valid]
+  list([
+    dict({
+      'accessibilite': None,
+      'adresse': None,
+      'antenne': None,
+      'code_insee': '59350',
+      'code_postal': None,
+      'commune': None,
+      'complement_adresse': None,
+      'courriel': None,
+      'date_maj': '2025-01-01',
+      'doublons': list([
+      ]),
+      'horaires_ouverture': None,
+      'id': '1',
+      'labels_autres': None,
+      'labels_nationaux': None,
+      'latitude': None,
+      'lien_source': None,
+      'longitude': None,
+      'nom': 'ma structure',
+      'presentation_detail': None,
+      'presentation_resume': None,
+      'rna': None,
+      'score_qualite': 0.8,
+      'siret': None,
+      'site_web': None,
+      'source': 'foo',
+      'telephone': None,
+      'thematiques': None,
+      'typologie': None,
+    }),
+  ])
+# ---
+# name: test_load_inclusion_data[v0-valid].1
   list([
     dict({
       'adresse': None,
@@ -50,7 +85,44 @@
     }),
   ])
 # ---
-# name: test_load_inclusion_data[v1-structures_df3-services_df3-0]
+# name: test_load_inclusion_data[v1-invalid-address]
+  list([
+  ])
+# ---
+# name: test_load_inclusion_data[v1-invalid-address].1
+  list([
+  ])
+# ---
+# name: test_load_inclusion_data[v1-valid]
+  list([
+    dict({
+      'accessibilite_lieu': None,
+      'adresse': None,
+      'code_insee': '59350',
+      'code_postal': None,
+      'commune': None,
+      'complement_adresse': None,
+      'courriel': None,
+      'date_maj': '2025-01-01',
+      'description': None,
+      'doublons': list([
+      ]),
+      'horaires_accueil': None,
+      'id': '1',
+      'latitude': None,
+      'lien_source': None,
+      'longitude': None,
+      'nom': 'ma structure',
+      'reseaux_porteurs': None,
+      'score_qualite': 0.8,
+      'siret': None,
+      'site_web': None,
+      'source': 'foo',
+      'telephone': None,
+    }),
+  ])
+# ---
+# name: test_load_inclusion_data[v1-valid].1
   list([
     dict({
       'adresse': None,
