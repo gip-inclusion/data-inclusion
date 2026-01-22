@@ -31,8 +31,8 @@ def publish():
     date_str = pendulum.today().to_date_string()
 
     structures_df, services_df = (
-        pg_hook.get_pandas_df(sql="SELECT * FROM public_marts.marts__structures_v1"),
-        pg_hook.get_pandas_df(sql="SELECT * FROM public_marts.marts__services_v1"),
+        pg_hook.get_df(sql="SELECT * FROM public_marts.marts__structures_v1"),
+        pg_hook.get_df(sql="SELECT * FROM public_marts.marts__services_v1"),
     )
 
     def clean_up(df):
