@@ -23,9 +23,9 @@ def dataset_path(structures_df, services_df, tmpdir):
 @pytest.mark.parametrize(
     ("version", "structures_df", "services_df", "expected_exit_code", "expected_count"),
     [
-        ("v0", pd.DataFrame(), pd.DataFrame(), 1, 0),
-        ("v1", pd.DataFrame(), pd.DataFrame(), 1, 0),
-        (
+        pytest.param("v0", pd.DataFrame(), pd.DataFrame(), 1, 0, id="v0-empty"),
+        pytest.param("v1", pd.DataFrame(), pd.DataFrame(), 1, 0, id="v1-empty"),
+        pytest.param(
             "v0",
             pd.DataFrame(
                 [
@@ -67,8 +67,9 @@ def dataset_path(structures_df, services_df, tmpdir):
             ),
             0,
             1,
+            id="v0-valid",
         ),
-        (
+        pytest.param(
             "v1",
             pd.DataFrame(
                 [
@@ -106,8 +107,9 @@ def dataset_path(structures_df, services_df, tmpdir):
             ),
             0,
             1,
+            id="v1-valid",
         ),
-        (
+        pytest.param(
             "v1",
             pd.DataFrame(
                 [
@@ -145,9 +147,9 @@ def dataset_path(structures_df, services_df, tmpdir):
             ),
             0,
             0,
+            id="v1-invalid-address",
         ),
     ],
-    ids=["v0-empty", "v1-empty", "v0-valid", "v1-valid", "v1-invalid-address"],
 )
 @pytest.mark.with_token
 def test_load_inclusion_data(
@@ -181,6 +183,4 @@ def test_load_inclusion_data(
             response = api_client.get(path)
             assert response.status_code == 200
             assert len(response.json()["items"]) == expected_count
-
-        response = api_client.get(f"/api/{version}/services")
-        assert response.json()["items"] == snapshot
+            assert response.json()["items"] == snapshot

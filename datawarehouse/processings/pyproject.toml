@@ -51,7 +51,7 @@ known-first-party = ["data_inclusion"]
 [tool.pytest.ini_options]
 testpaths = "tests"
 markers = '''
-    ban_api: mark test as requiring the base base adresse nationale api
+    integration: mark test as requiring external ressources (like an api)
 '''
 
 [tool.ruff.lint.per-file-ignores]
