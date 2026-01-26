@@ -32,7 +32,7 @@ def test_list_structures_unauthenticated(api_client, schema_version):
     url = f"/api/{schema_version}/structures/"
     response = api_client.get(url)
 
-    assert response.status_code == 403
+    assert response.status_code == 401
 
 
 @pytest.mark.parametrize(
@@ -241,7 +241,7 @@ def test_list_services_unauthenticated(api_client, schema_version):
     url = f"/api/{schema_version}/services/"
     response = api_client.get(url)
 
-    assert response.status_code == 403
+    assert response.status_code == 401
 
 
 @pytest.mark.parametrize(
