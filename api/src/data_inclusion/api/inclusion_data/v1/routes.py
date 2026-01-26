@@ -108,7 +108,14 @@ def list_services_endpoint(
         params=params,
         db_session=db_session,
     )
-    return page
+
+    is_extra_visible = request.query_params.get("extra", "false").lower() == "true"
+
+    # manually serialize to pass context for extra field visibility
+    return pagination.Page[schemas.Service].model_validate(
+        page,
+        context={"is_extra_visible": is_extra_visible},
+    )
 
 
 @router.get(

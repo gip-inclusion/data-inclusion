@@ -12,8 +12,8 @@ from data_inclusion.schema import v0, v1
 @pytest.fixture
 def dataset_path(structures_df, services_df, tmpdir):
     structures_df.to_parquet(tmpdir / "structures.parquet")
-    if "extra" in services_df.columns:
-        services_df["extra"] = services_df["extra"].apply(
+    if "_extra" in services_df.columns:
+        services_df["_extra"] = services_df["_extra"].apply(
             lambda x: json.dumps(x) if x is not None else None
         )
     services_df.to_parquet(tmpdir / "services.parquet")
@@ -179,7 +179,10 @@ def test_load_inclusion_data(
         if result.exception is not None:
             raise result.exception
 
-        for path in [f"/api/{version}/structures", f"/api/{version}/services"]:
+        for path in [
+            f"/api/{version}/structures",
+            f"/api/{version}/services?extra=true",
+        ]:
             response = api_client.get(path)
             assert response.status_code == 200
             assert len(response.json()["items"]) == expected_count
