@@ -9,7 +9,7 @@ def test_create_token_unauthenticated(api_client):
     url = "/api/v0/create_token/"
     response = api_client.post(url, json={"email": "foo@bar.com"})
 
-    assert response.status_code == 403
+    assert response.status_code == 401
 
 
 @pytest.mark.with_token

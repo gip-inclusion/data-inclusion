@@ -9,7 +9,7 @@ from data_inclusion.api import auth
 @pytest.mark.parametrize(
     ("token", "status_code"),
     [
-        (None, 403),
+        (None, 401),
         ("not-a-token", 403),
         pytest.param(
             # generated with key=legacy-key and sub=legacy.user@example.com
@@ -46,7 +46,7 @@ def test_private_endpoint(token, status_code, monkeypatch):
 @pytest.mark.parametrize(
     ("token", "status_code"),
     [
-        (None, 403),
+        (None, 401),
         ("not-a-token", 403),
         (auth.create_access_token("some_user"), 403),
         (auth.create_access_token("admin_user", admin=True), 200),
