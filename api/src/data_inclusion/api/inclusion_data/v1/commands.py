@@ -112,13 +112,13 @@ def load_df_to_table(
         and c.name not in ["cluster_best_duplicate", "doublons"]
     ]
 
-    df = df.sort_values(by="id", ascending=True)
-    df = df[[c.name for c in columns_list]]
-
     if "_extra" in df.columns:
         df = df.assign(
             extra=df["_extra"].apply(lambda x: json.loads(x) if x is not None else None)
         )
+
+    df = df.sort_values(by="id", ascending=True)
+    df = df[[c.name for c in columns_list]]
 
     df.to_sql(
         name=model.__tablename__,

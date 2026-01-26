@@ -387,7 +387,6 @@ def test_list_services_unauthenticated(api_client, schema_version):
                     zone_eligibilite=None,
                     volume_horaire_hebdomadaire=1,
                     nombre_semaines=1,
-                    extra={"foo": "bar"},
                 ),
             ],
         ),
@@ -2268,3 +2267,37 @@ def test_ressources_ordered_by_id(api_client, url, factory):
         "4--8",
         "4--9",
     ]
+
+
+@pytest.mark.parametrize("schema_version", ["v1"])
+@pytest.mark.parametrize("path", ["/services"])
+@pytest.mark.with_token
+@pytest.mark.parametrize(
+    ("query_params", "extra_data", "expected"),
+    [
+        ({}, {"foo": "bar"}, None),
+        ({"extra": False}, None, None),
+        ({"extra": False}, {"foo": "bar"}, None),
+        ({"extra": True}, None, {"extra": None}),
+        ({"extra": True}, {"foo": "bar"}, {"extra": {"foo": "bar"}}),
+    ],
+)
+def test_show_extra_data_if_flag_provided(
+    api_client, url, service_factory, query_params, extra_data, expected
+):
+    service_factory(
+        id="src--1",
+        source="src",
+        extra=extra_data,
+    )
+
+    response = api_client.get(url, params=query_params)
+
+    assert response.status_code == 200
+    resp_data = response.json()
+    service_data = resp_data["items"][0]
+
+    if expected is None:
+        assert "extra" not in service_data
+    else:
+        assert service_data["extra"] == expected["extra"]

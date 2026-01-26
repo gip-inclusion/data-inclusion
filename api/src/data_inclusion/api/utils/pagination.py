@@ -22,6 +22,8 @@ def get_pagination_params(
 
 
 class Page[T](pydantic.BaseModel):
+    model_config = pydantic.ConfigDict(from_attributes=True, populate_by_name=True)
+
     items: list[T]
     total: int
     page: int

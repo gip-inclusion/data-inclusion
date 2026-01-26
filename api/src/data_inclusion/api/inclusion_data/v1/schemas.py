@@ -1,7 +1,9 @@
 from textwrap import dedent
 from typing import Annotated
 
-from pydantic import BaseModel, ConfigDict, Field
+from pydantic import BaseModel, ConfigDict, Field, ValidationInfo, field_validator
+from pydantic.experimental.missing_sentinel import MISSING
+from pydantic.json_schema import SkipJsonSchema
 
 from data_inclusion.schema import v1 as schema
 
@@ -25,7 +27,19 @@ class Service(schema.Service):
                 """),
         ),
     ]
-    extra: dict | None = None
+
+    # This field is hidden from the openapi schema AND the data is not serialized
+    # unless the context flag `is_extra_visible` is set to True.
+    extra: Annotated[SkipJsonSchema[dict | None], Field()] = None
+
+    @field_validator("extra")
+    def show_extra(cls, v: dict | None, info: ValidationInfo) -> dict | None | MISSING:
+        """Show the extra field only if the context flag is set."""
+
+        if info.context is not None and info.context.get("is_extra_visible", False):
+            return v
+
+        return MISSING
 
 
 class BaseStructure(schema.Structure):
