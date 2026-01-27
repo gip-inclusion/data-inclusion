@@ -129,7 +129,7 @@ def get_results(
         commune_instance = db_session.get(Commune, params.code_commune)
         if commune_instance is None:
             raise fastapi.HTTPException(
-                status_code=fastapi.status.HTTP_422_UNPROCESSABLE_ENTITY,
+                status_code=fastapi.status.HTTP_422_UNPROCESSABLE_CONTENT,
                 detail="This `code_commune` does not exist.",
             )
 
