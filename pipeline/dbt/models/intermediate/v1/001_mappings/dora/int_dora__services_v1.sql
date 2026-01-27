@@ -2,6 +2,10 @@ WITH services AS (
     SELECT * FROM {{ ref('int_dora__services_v0') }}
 ),
 
+adresses AS (
+    SELECT * FROM {{ ref('int_dora__adresses_v1') }}
+),
+
 departements AS (
     SELECT * FROM {{ ref('stg_decoupage_administratif__departements') }}
 ),
@@ -46,7 +50,7 @@ SELECT
     'dora'                                                                                                    AS "source",
     'dora--' || services.id                                                                                   AS "id",
     'dora--' || services.structure_id                                                                         AS "structure_id",
-    'dora--' || services.id                                                                                   AS "adresse_id",
+    adresses.id                                                                                               AS "adresse_id",
     COALESCE(services.prise_rdv, services.formulaire_en_ligne, services.page_web)                             AS "lien_mobilisation",
     services.recurrence                                                                                       AS "horaires_accueil",
     services.lien_source                                                                                      AS "lien_source",
@@ -166,6 +170,8 @@ SELECT
         ELSE LEFT(services.nom, 149) || '…'
     END                                                                                                       AS "nom"
 FROM services
+LEFT JOIN adresses
+    ON ('dora--' || services.id) = adresses.id
 LEFT JOIN publics
     ON services.id = publics.service_id
 LEFT JOIN frais

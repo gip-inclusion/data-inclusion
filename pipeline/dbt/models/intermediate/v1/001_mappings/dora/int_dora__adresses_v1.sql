@@ -34,9 +34,7 @@ service_adresses AS (
         code_postal        AS "code_postal",
         code_insee         AS "code_insee"
     FROM services
-    WHERE
-        (adresse IS NOT NULL OR complement_adresse IS NOT NULL)
-        AND (commune IS NOT NULL OR code_insee IS NOT NULL OR code_postal IS NOT NULL)
+
 ),
 
 final AS (
@@ -45,4 +43,8 @@ final AS (
     SELECT * FROM service_adresses
 )
 
-SELECT * FROM final
+SELECT *
+FROM final
+WHERE
+    (adresse IS NOT NULL OR complement_adresse IS NOT NULL)
+    AND (commune IS NOT NULL OR code_insee IS NOT NULL OR code_postal IS NOT NULL)

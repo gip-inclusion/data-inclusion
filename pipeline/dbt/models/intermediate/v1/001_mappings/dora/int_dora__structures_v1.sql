@@ -2,6 +2,10 @@ WITH structures AS (
     SELECT * FROM {{ ref('int_dora__structures_v0') }}
 ),
 
+adresses AS (
+    SELECT * FROM {{ ref('int_dora__adresses_v1') }}
+),
+
 map_reseaux_labels AS (SELECT * FROM {{ ref('_map_reseaux_labels') }}),
 
 map_reseaux_typologie AS (SELECT * FROM {{ ref('_map_reseaux_typologie') }}),
@@ -24,7 +28,7 @@ final AS (
     SELECT
         'dora'                            AS "source",
         'dora--' || structures.id         AS "id",
-        'dora--' || structures.id         AS "adresse_id",
+        adresses.id                       AS "adresse_id",
         structures.courriel               AS "courriel",
         structures.horaires_ouverture     AS "horaires_accueil",
         structures.lien_source            AS "lien_source",
@@ -41,6 +45,7 @@ final AS (
         structures.accessibilite          AS "accessibilite_lieu",
         structures.nom                    AS "nom"
     FROM structures
+    LEFT JOIN adresses ON ('dora--' || structures.id) = adresses.id
     LEFT JOIN reseaux_porteurs ON structures.id = reseaux_porteurs.structure_id
 )
 
