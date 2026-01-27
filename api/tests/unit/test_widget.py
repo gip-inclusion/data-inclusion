@@ -1,8 +1,10 @@
 import pytest
+import sqlalchemy as sqla
 
 import fastapi
 
 from data_inclusion.api import auth
+from data_inclusion.api.analytics.v1 import models as analytics_models
 from data_inclusion.api.widget.routes import validate_widget_token
 from data_inclusion.schema import v1
 
@@ -398,3 +400,19 @@ def test_widget_filter_publics(api_client, db_session, auth_disabled):  # noqa: 
     assert "Service Pour Femmes" in response.text
     assert "Service Pour Jeunes" not in response.text
     assert "Service Pour Seniors" in response.text
+
+
+def test_widget_saves_search_event(api_client, db_session, auth_disabled):  # noqa: ARG001
+    response = api_client.get("/widget/?token=test-token&publics=femmes")
+    assert response.status_code == 200
+
+    event_count = db_session.scalar(
+        sqla.select(sqla.func.count()).select_from(analytics_models.SearchServicesEvent)
+    )
+    assert event_count == 1
+
+    event = db_session.scalars(
+        sqla.select(analytics_models.SearchServicesEvent)
+    ).first()
+    assert event.user == "test_user"
+    assert event.publics == ["femmes"]

@@ -4,10 +4,12 @@ from typing import Annotated
 
 import furl
 import pydantic
+from starlette.authentication import AuthCredentials, SimpleUser
 
 import fastapi
 from fastapi import staticfiles, templating
 
+from data_inclusion.api.analytics.v1.services import save_event
 from data_inclusion.api.auth.services import verify_token
 from data_inclusion.api.config import settings
 from data_inclusion.api.core import db
@@ -158,6 +160,7 @@ def list_thematiques(categories: list[v1.Categorie]) -> list[v1.Thematique]:
 @app.get(path="/")
 def widget(
     request: fastapi.Request,
+    background_tasks: fastapi.BackgroundTasks,
     token: Annotated[
         str,
         fastapi.Query(description="Token d'authentification du widget (obligatoire)"),
@@ -246,6 +249,9 @@ def widget(
     else:
         token_sub = "test_user"
 
+    request.scope["user"] = SimpleUser(username=token_sub)
+    request.scope["auth"] = AuthCredentials(scopes=["authenticated"])
+
     commune_instance = None
     if code_commune:
         commune_instance = db_session.get(Commune, code_commune)
@@ -268,6 +274,22 @@ def widget(
         size=effective_size,
         sources=sources,
         include_remote_services=include_remote_services,
+    )
+
+    params = parameters.SearchServicesQueryParams(
+        code_commune=code_commune or None,
+        thematiques=thematiques_for_query,
+        publics=publics,
+        score_qualite_minimum=score_qualite_minimum,
+        exclure_doublons=True,
+        sources=sources,
+    )
+    background_tasks.add_task(
+        save_event,
+        request=request,
+        params=params,
+        db_session=db_session,
+        first_results_page=results,
     )
 
     current_url = str(request.url)
