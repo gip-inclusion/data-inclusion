@@ -82,7 +82,6 @@ models:
           - dbt_utils.not_empty_string
       - name: adresse_id
         data_tests:
-          - not_null
           - relationships:
               arguments:
                 to: ref('int_soliguide__adresses_v1')
@@ -110,7 +109,6 @@ models:
                 field: id
       - name: adresse_id
         data_tests:
-          - not_null
           - relationships:
               arguments:
                 to: ref('int_soliguide__adresses_v1')

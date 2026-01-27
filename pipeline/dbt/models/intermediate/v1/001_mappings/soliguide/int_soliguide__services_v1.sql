@@ -2,6 +2,10 @@ WITH lieux AS (
     SELECT * FROM {{ ref('stg_soliguide__lieux') }}
 ),
 
+adresses AS (
+    SELECT * FROM {{ ref('int_soliguide__adresses_v1') }}
+),
+
 services AS (
     SELECT * FROM {{ ref('stg_soliguide__services') }}
 ),
@@ -67,7 +71,7 @@ final AS (
     SELECT
         'soliguide'                                                                           AS "source",
         'soliguide--' || services.id                                                          AS "id",
-        'soliguide--' || lieux.id                                                             AS "adresse_id",
+        adresses.id                                                                           AS "adresse_id",
         'soliguide--' || lieux.id                                                             AS "structure_id",
         categories.label                                                                      AS "nom",
         ARRAY_TO_STRING(
@@ -153,6 +157,7 @@ final AS (
         END                                                                                   AS "horaires_accueil"
     FROM services
     LEFT JOIN lieux ON services.lieu_id = lieux.id
+    LEFT JOIN adresses ON ('soliguide--' || lieux.id) = adresses.id
     LEFT JOIN publics ON services.id = publics.service_id
     LEFT JOIN categories ON services.category = categories.code
     LEFT JOIN {{ ref('_map_soliguide__types_v1') }} AS mappings_types ON services.category = mappings_types.category

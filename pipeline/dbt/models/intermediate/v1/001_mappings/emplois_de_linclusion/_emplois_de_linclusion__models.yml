@@ -37,7 +37,6 @@ models:
           - dbt_utils.not_empty_string
       - name: adresse_id
         data_tests:
-          - not_null
           - relationships:
               arguments:
                 to: ref('int_emplois_de_linclusion__adresses_v1')
