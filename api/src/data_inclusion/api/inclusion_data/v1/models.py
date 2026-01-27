@@ -128,10 +128,7 @@ class Service(HasAddress, Base):
     zone_eligibilite: Mapped[list[str] | None]
     nombre_semaines: Mapped[int | None]
 
-    # the loading of the extra field is deferred, because:
-    # - it is shown conditionally in the API
-    # - it can contain large JSON blobs
-    extra: Mapped[dict | None] = mapped_column(deferred=True)
+    extra: Mapped[dict | None]
 
     commune_: Mapped[Commune] = relationship(back_populates="services_v1")
     structure: Mapped[Structure] = relationship(back_populates="services")
