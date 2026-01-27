@@ -18,6 +18,7 @@ FROM (
     ('Primo-arrivants signataires du CIR',                              'primo-arrivants-signataires-du-cir'),
     ('Réfugiés / Bénéficiaires de la protection internationale',        'refugies-beneficiaires-de-la-protection-internationale'),
     ('Résidents de centre d''hébergement ou de CADA',                   'residents-de-centre-d-hebergement-ou-de-cada'),
-    ('Tout public',                                                     'tout-public')
+    ('Tout public',                                                     'tout-public'),
+    ('Publics en situation de handicap',                                'publics-en-situation-de-handicap')
     -- noqa: enable=layout.spacing
 ) AS x (raw, value)

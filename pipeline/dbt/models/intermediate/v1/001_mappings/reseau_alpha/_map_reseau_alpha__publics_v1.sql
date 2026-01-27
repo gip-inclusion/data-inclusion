@@ -21,7 +21,8 @@ FROM (
     ('primo-arrivants-signataires-du-cir',                     'personnes-exilees'),
     ('refugies-beneficiaires-de-la-protection-internationale', 'personnes-exilees'),
     ('residents-de-centre-d-hebergement-ou-de-cada',           NULL),
-    ('tout-public',                                            'tous-publics')
+    ('tout-public',                                            'tous-publics'),
+    ('publics-en-situation-de-handicap',                       'personnes-en-situation-de-handicap')
     -- noqa: enable=layout.spacing
 ) AS x (public_reseau_alpha, public_datainclusion)
 WHERE x.public_datainclusion IS NOT NULL
