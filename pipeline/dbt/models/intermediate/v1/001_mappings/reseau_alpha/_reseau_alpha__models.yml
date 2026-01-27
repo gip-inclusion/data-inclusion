@@ -9,7 +9,7 @@ models:
           - not_null
           - relationships:
               arguments:
-                to: ref('int_reseau_alpha__publics_v1')
+                to: ref('stg_reseau_alpha__publics')
                 field: value
       - name: public_datainclusion
         data_tests:
