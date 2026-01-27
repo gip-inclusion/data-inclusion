@@ -11,10 +11,6 @@
         {
             "command": "0 4 * * * vacuumdb --full --analyze --verbose --table api__structures --table api__services $DATABASE_URL",
             "size": "S"
-        },
-        {
-            "command": "45 5-22 * * * data-inclusion-api export-analytics",
-            "size": "M"
         }
     ]
 }
