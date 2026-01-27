@@ -2,11 +2,7 @@
     "jobs": [
         {
             "command": "30 5-22 * * * data-inclusion-api load-inclusion-data --version v1",
-            "size": "XL"
-        },
-        {
-            "command": "30 5-22 * * * data-inclusion-api load-inclusion-data --version v0",
-            "size": "XL"
+            "size": "2XL"
         },
         {
             "command": "15 4 * * MON data-inclusion-api import-communes",
