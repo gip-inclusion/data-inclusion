@@ -2,6 +2,10 @@ WITH lieux AS (
     SELECT * FROM {{ ref('stg_soliguide__lieux') }}
 ),
 
+adresses AS (
+    SELECT * FROM {{ ref('int_soliguide__adresses_v1') }}
+),
+
 phones AS (
     SELECT * FROM {{ ref('stg_soliguide__phones') }}
 ),
@@ -32,7 +36,7 @@ final AS (
     SELECT
         'soliguide'                                       AS "source",
         'soliguide--' || lieux.id                         AS "id",
-        'soliguide--' || lieux.id                         AS "adresse_id",
+        adresses.id                                       AS "adresse_id",
         lieux.name                                        AS "nom",
         lieux.updated_at                                  AS "date_maj",
         'https://soliguide.fr/fr/fiche/' || lieux.seo_url AS "lien_source",
@@ -57,6 +61,7 @@ final AS (
         NULL                                              AS "accessibilite_lieu",
         reseaux_porteurs.reseaux_porteurs                 AS "reseaux_porteurs"
     FROM lieux
+    LEFT JOIN adresses ON ('soliguide--' || lieux.id) = adresses.id
     LEFT JOIN filtered_phones ON lieux.id = filtered_phones.lieu_id
     LEFT JOIN reseaux_porteurs ON lieux.id = reseaux_porteurs.lieu_id
 )
