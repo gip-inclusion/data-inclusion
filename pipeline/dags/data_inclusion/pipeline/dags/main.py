@@ -1,5 +1,4 @@
 from pathlib import Path
-from typing import Literal
 
 from airflow.decorators import dag, task, task_group
 from airflow.models.baseoperator import chain
@@ -21,26 +20,28 @@ def export_dataset(to_s3_path: str):
     pg_hook = postgres.PostgresHook(postgres_conn_id="pg")
     s3_hook = s3.S3Hook(aws_conn_id="s3")
 
-    for version in ["v0", "v1"]:
-        for resource in ["structures", "services"]:
-            key = (Path() / to_s3_path / version / resource).with_suffix(".parquet")
-            model = f"marts__{resource}_v1" if version == "v1" else f"marts__{resource}"
-            query = f"SELECT * FROM public_marts.{model}"
-            print(f"Downloading data from query='{query}'")
-            df = pg_hook.get_df(sql=query)
+    version = "v1"
+    path = Path() / to_s3_path / version
 
-            # this prevents conversion issues with nested JSON columns in Parquet
-            if "extra" in df.columns:
-                df["extra"] = df["extra"].apply(
-                    lambda x: json.dumps(x) if x is not None else None
-                )
+    for resource in ["structures", "services"]:
+        key = (path / resource).with_suffix(".parquet")
+        model = f"marts__{resource}_{version}"
+        query = f"SELECT * FROM public_marts.{model}"
+        print(f"Downloading data from query='{query}'")
+        df = pg_hook.get_df(sql=query)
 
-            print(f"Uploading data to bucket='{key}'")
-            s3_hook.load_bytes(
-                bytes_data=df.to_parquet(compression="gzip"),
-                key=str(key),
-                replace=True,
+        # this prevents conversion issues with nested JSON columns in Parquet
+        if "extra" in df.columns:
+            df["extra"] = df["extra"].apply(
+                lambda x: json.dumps(x) if x is not None else None
             )
+
+        print(f"Uploading data to bucket='{key}'")
+        s3_hook.load_bytes(
+            bytes_data=df.to_parquet(compression="gzip"),
+            key=str(key),
+            replace=True,
+        )
 
 
 @dag(
@@ -76,7 +77,7 @@ def main():
             )
 
     @task_group()
-    def dbt_build_intermediate(version: Literal["v0", "v1"]):
+    def dbt_build_intermediate():
         @task_group()
         def dbt_build_mappings():
             for path in sorted(
@@ -84,7 +85,7 @@ def main():
                     dbt.DBT_PROJECT_PATH
                     / "models"
                     / "intermediate"
-                    / version
+                    / "v1"
                     / "001_mappings"
                 ).glob("*")
             ):
@@ -120,28 +121,28 @@ def main():
             trigger_rule=TriggerRule.ALL_DONE,
         )(
             command="build",
-            select=f"intermediate.{version}.002_unions",
+            select="intermediate.v1.002_unions",
         )
 
         dbt_build_enrichments = dbt.dbt_task.override(
             task_id="dbt_build_enrichments",
         )(
             command="build",
-            select=f"intermediate.{version}.003_enrichments",
+            select="intermediate.v1.003_enrichments",
         )
 
         dbt_build_finals = dbt.dbt_task.override(
             task_id="dbt_build_finals",
         )(
             command="build",
-            select=f"intermediate.{version}.004_finals",
+            select="intermediate.v1.004_finals",
         )
 
         dbt_build_deduplicate = dbt.dbt_task.override(
             task_id="dbt_build_deduplicate",
         )(
             command="build",
-            select=f"intermediate.{version}.005_deduplicate",
+            select="intermediate.v1.005_deduplicate",
         )
 
         chain(
@@ -163,16 +164,8 @@ def main():
         dbt_seed,
         dbt_create_udfs,
         dbt_build_staging(),
-        dbt_build_intermediate.override(group_id="dbt_build_intermediate_v0")(
-            version="v0"
-        ),
-        dbt_build_intermediate.override(group_id="dbt_build_intermediate_v1")(
-            version="v1"
-        ),
+        dbt_build_intermediate(),
         [
-            dbt.dbt_task.override(task_id="dbt_build_marts_v0")(
-                command="build", select="marts.v0"
-            ),
             dbt.dbt_task.override(task_id="dbt_build_marts_v1")(
                 command="build", select="marts.v1"
             ),

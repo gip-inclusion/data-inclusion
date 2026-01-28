@@ -25,11 +25,7 @@ scores AS (
 ),
 
 adresses AS (
-    SELECT id
-    FROM {{ ref('int__adresses_v1') }}
-    UNION
-    SELECT _di_surrogate_id AS id
-    FROM {{ ref('int__adresses') }}
+    SELECT id FROM {{ ref('int__adresses_v1') }}
 ),
 
 final AS (

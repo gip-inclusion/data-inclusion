@@ -11,7 +11,7 @@ final AS (
         'v1'                 AS "schema_version"
     FROM
         services,
-        LATERAL (SELECT * FROM processings.score('v1', TO_JSONB(services))) AS scores
+        LATERAL (SELECT * FROM processings.score(TO_JSONB(services))) AS scores
 )
 
 SELECT * FROM final

@@ -64,7 +64,7 @@ graph TD;
 
 |      |                                                                                                    |
 |------|----------------------------------------------------------------------------------------------------|
-| dev  | http://localhost:8000/api/v0/docs                                                                               |
-| prod | [lien 🔗](https://api.data.inclusion.gouv.fr/api/v0/docs) |
+| dev  | http://localhost:8000/api/docs                                                                               |
+| prod | [lien 🔗](https://api.data.inclusion.gouv.fr/api/docs) |
 
 ## [Contribuer](CONTRIBUTING.md)
