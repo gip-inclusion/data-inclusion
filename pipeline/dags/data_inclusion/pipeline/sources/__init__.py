@@ -135,11 +135,8 @@ SOURCES_CONFIGS = {
         "streams": {
             "structures": {
                 "filename": "structures.json",
-                "url": "https://cartographie.societenumerique.gouv.fr/api/v0/",
-            },
-            "services": {
-                "filename": "services.json",
-                "url": "https://cartographie.societenumerique.gouv.fr/api/v0/",
+                "url": "https://api.inclusion-numerique.anct.gouv.fr/carto",
+                "token": Variable.get("MEDIATION_NUMERIQUE_API_TOKEN", None),
             },
         },
     },
