@@ -21,10 +21,6 @@ pyogrio
 requests==2.*
 sib-api-v3-sdk
 SQLAlchemy
-trafilatura
 urllib3
 xlsxwriter
 xmlschema
-
-# this is temporary fix until trafilatura can be updated to >1.8.1
-lxml[html_clean]

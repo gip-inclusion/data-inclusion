@@ -146,7 +146,6 @@ SOURCES_CONFIGS = {
     "soliguide": {
         "schedule": "@hourly",
         "extractor": soliguide.extract,
-        "reader": soliguide.read,
         "streams": {
             "lieux": {
                 "filename": "lieux.json",
@@ -163,7 +162,6 @@ SOURCES_CONFIGS = {
             "services": {
                 "filename": "services.json",
                 "url": "https://www.agefiph.fr/jsonapi/node/solution",
-                "reader": agefiph.read,
             },
             "structures": {
                 "filename": "structures.json",
