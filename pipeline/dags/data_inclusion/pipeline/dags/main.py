@@ -30,8 +30,8 @@ def export_dataset(to_s3_path: str):
             df = pg_hook.get_df(sql=query)
 
             # this prevents conversion issues with nested JSON columns in Parquet
-            if "extra" in df.columns:
-                df["extra"] = df["extra"].apply(
+            if "_extra" in df.columns:
+                df["_extra"] = df["_extra"].apply(
                     lambda x: json.dumps(x) if x is not None else None
                 )
 
