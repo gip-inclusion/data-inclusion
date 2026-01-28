@@ -25,6 +25,16 @@ class Settings(BaseSettings):
     DEFAULT_PAGE_SIZE: int = 5_000
     MAX_PAGE_SIZE: int = 10_000
 
+    # DB allows 240 max connections, by default we can have
+    # 4 workers * (5 + 10) or 60 maximum connections.
+    # Raised to 4 * (15 + 40) or 220 maximum connections.
+    # We keep 20 for admin/migrations/backups/...
+    DB_POOL_SIZE: int = 15
+    DB_POOL_MAX_OVERFLOW: int = 40
+    DB_POOL_TIMEOUT: int | None = None
+    # close any stale connection after 30 minutes, usually disabled
+    DB_POOL_RECYCLE: int = 1800
+
     DATALAKE_BUCKET_NAME: str | None = None
 
     AWS_ENDPOINT_URL: str | None = None

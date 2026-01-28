@@ -13,7 +13,14 @@ import fastapi
 
 from data_inclusion.api.config import settings
 
-default_db_engine = sqla.create_engine(settings.DATABASE_URL, pool_pre_ping=True)
+default_db_engine = sqla.create_engine(
+    settings.DATABASE_URL,
+    pool_pre_ping=True,
+    pool_size=settings.DB_POOL_SIZE,
+    max_overflow=settings.DB_POOL_MAX_OVERFLOW,
+    pool_timeout=settings.DB_POOL_TIMEOUT,
+    pool_recycle=settings.DB_POOL_RECYCLE,
+)
 SessionLocal = orm.sessionmaker(autoflush=False, bind=default_db_engine)
 
 uuid_pk = Annotated[uuid.UUID, mapped_column(primary_key=True, default=uuid.uuid4)]
