@@ -56,14 +56,6 @@ def extract_http_content(url: str, **kwargs) -> bytes:
     return response.content
 
 
-def html_to_markdown(s: str | None) -> str | None:
-    import trafilatura
-
-    if s is None or s == "":
-        return s
-    return trafilatura.extract(trafilatura.load_html("<html>" + s + "</html>"))
-
-
 def log_and_raise(resp, *args, **kwargs):
     import requests
 
