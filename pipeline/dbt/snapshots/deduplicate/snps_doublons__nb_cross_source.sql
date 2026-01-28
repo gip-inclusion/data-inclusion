@@ -13,6 +13,6 @@
     SELECT
         *,
         CAST('{{ run_started_at.strftime("%Y-%m-%d") }}' AS DATE) AS date_day
-    FROM {{ ref('int__doublons_nb_cross_source') }}
+    FROM {{ ref('int__doublons_nb_cross_source_v1') }}
 
 {% endsnapshot %}

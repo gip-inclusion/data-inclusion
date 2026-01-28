@@ -2,10 +2,6 @@ WITH services AS (
     SELECT * FROM {{ ref('int__union_services_v1') }}
 ),
 
-services_v0_to_v1 AS (
-    SELECT * FROM {{ ref('int__services_v0_to_v1') }}
-),
-
 contacts AS (
     SELECT * FROM {{ ref('int__contacts_v1') }}
 ),
@@ -18,7 +14,7 @@ urls AS (
     SELECT
         input_url,
         "url"
-    FROM {{ ref('int__urls') }}
+    FROM {{ ref('int__urls_v1') }}
     WHERE status_code > 0
 )
 
@@ -94,41 +90,3 @@ LEFT JOIN adresses
     ON services.adresse_id = adresses.id
 LEFT JOIN urls
     ON services.lien_mobilisation = urls.input_url
-UNION ALL
-SELECT
-    services_v0_to_v1.adresse_id,
-    services_v0_to_v1.lien_mobilisation,
-    services_v0_to_v1.horaires_accueil,
-    services_v0_to_v1.source,
-    services_v0_to_v1.structure_id,
-    services_v0_to_v1.lien_source,
-    services_v0_to_v1.conditions_acces,
-    services_v0_to_v1.date_maj,
-    services_v0_to_v1.id,
-    services_v0_to_v1.description,
-    services_v0_to_v1.thematiques,
-    services_v0_to_v1.modes_accueil,
-    services_v0_to_v1.modes_mobilisation,
-    services_v0_to_v1.mobilisable_par,
-    services_v0_to_v1.mobilisation_precisions,
-    services_v0_to_v1.publics,
-    services_v0_to_v1.publics_precisions,
-    services_v0_to_v1.type,
-    services_v0_to_v1.frais,
-    services_v0_to_v1.frais_precisions,
-    services_v0_to_v1.nombre_semaines,
-    services_v0_to_v1.volume_horaire_hebdomadaire,
-    services_v0_to_v1.zone_eligibilite,
-    services_v0_to_v1.contact_nom_prenom,
-    services_v0_to_v1.courriel,
-    services_v0_to_v1.telephone,
-    services_v0_to_v1.nom,
-    services_v0_to_v1.longitude,
-    services_v0_to_v1.latitude,
-    services_v0_to_v1.complement_adresse,
-    services_v0_to_v1.commune,
-    services_v0_to_v1.adresse,
-    services_v0_to_v1.code_postal,
-    services_v0_to_v1.code_insee,
-    CAST(NULL AS JSONB) AS "_extra"
-FROM services_v0_to_v1

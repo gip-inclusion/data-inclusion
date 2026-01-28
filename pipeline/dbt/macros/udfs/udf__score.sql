@@ -2,7 +2,7 @@
 
 DROP FUNCTION IF EXISTS processings.score;
 
-CREATE OR REPLACE FUNCTION processings.score(schema_version TEXT, data JSONB)
+CREATE OR REPLACE FUNCTION processings.score(data JSONB)
 RETURNS
     TABLE(
         score_ligne FLOAT,
@@ -13,10 +13,7 @@ AS $$
 
 import pydantic
 
-if schema_version == "v1":
-    from data_inclusion.schema.v1 import Service, score_qualite
-else:
-    from data_inclusion.schema.v0 import Service, score_qualite
+from data_inclusion.schema import.v1 import Service, score_qualite
 
 try:
     service = Service.model_validate_json(data)
