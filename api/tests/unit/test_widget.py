@@ -1,3 +1,4 @@
+import jwt
 import pytest
 import sqlalchemy as sqla
 
@@ -5,6 +6,7 @@ import fastapi
 
 from data_inclusion.api import auth
 from data_inclusion.api.analytics.v1 import models as analytics_models
+from data_inclusion.api.config import settings
 from data_inclusion.api.widget.routes import validate_widget_token
 from data_inclusion.schema import v1
 
@@ -27,91 +29,45 @@ def test_widget_token_validation_invalid_token():
 
 
 @pytest.mark.parametrize(
-    (
-        "allowed_origins",
-        "request_headers",
-        "status_code",
-        "detail",
-    ),
+    ("allowed_hosts", "request_headers", "status_code", "detail"),
     [
+        (None, {}, 403, "Widget access not configured for this token."),
+        (["mairie.arras.fr"], {}, 403, "Origin not allowed for this token."),
+        (["api.data.inclusion.gouv.fr"], {}, 200, None),
         (
-            None,
-            {},
-            403,
-            "Widget access not configured for this token.",
-        ),
-        (
-            ["https://mairie.arras.fr"],
-            {},
-            403,
-            "Origin not allowed for this token.",
-        ),
-        (
-            ["https://api.data.inclusion.gouv.fr"],
-            {},
-            200,
-            None,
-        ),
-        (
-            ["https://mairie.arras.fr"],
+            ["mairie.arras.fr"],
             {"origin": "https://attaquant.com"},
             403,
             "Origin not allowed for this token.",
         ),
         (
-            ["https://mairie.arras.fr"],
+            ["mairie.arras.fr"],
             {"origin": "https://mairie.arras.fr"},
             200,
             None,
         ),
         (
-            ["https://*.arras.fr"],
+            ["*.arras.fr"],
             {"origin": "https://tartempion.arras.fr"},
             200,
             None,
         ),
         (["*"], {}, 200, None),
         (
-            ["https://mairie.arras.fr"],
+            ["mairie.arras.fr"],
             {"referer": "https://mairie.arras.fr/page"},
             200,
             None,
         ),
-        (
-            ["https://some-other-domain.com"],
-            {"origin": "http://testserver"},
-            200,
-            None,
-        ),
-        (
-            ["https://some-other-domain.com"],
-            {"origin": "http://localhost:3000"},
-            200,
-            None,
-        ),
-        (
-            ["https://some-other-domain.com"],
-            {"origin": "http://localhost:8080"},
-            200,
-            None,
-        ),
-        (
-            ["https://some-other-domain.com"],
-            {"origin": "http://127.0.0.1:5000"},
-            200,
-            None,
-        ),
-        (
-            ["https://some-other-domain.com"],
-            {"origin": "http://127.0.0.1"},
-            200,
-            None,
-        ),
+        (["other.com"], {"origin": "http://localhost:3000"}, 200, None),
+        (["other.com"], {"origin": "http://127.0.0.1:5000"}, 200, None),
     ],
 )
-def test_widget_token_validation(allowed_origins, request_headers, status_code, detail):
-    token = auth.create_access_token("mairie-arras", allowed_origins=allowed_origins)
-
+def test_widget_token_validation(allowed_hosts, request_headers, status_code, detail):
+    token = auth.create_access_token(
+        "mairie-arras",
+        allowed_hosts=allowed_hosts,
+    )
     request = MockRequest(headers=request_headers)
 
     if status_code == 200:
@@ -119,9 +75,19 @@ def test_widget_token_validation(allowed_origins, request_headers, status_code, 
     else:
         with pytest.raises(fastapi.HTTPException) as exc_info:
             validate_widget_token(request, token)
-
         assert exc_info.value.status_code == status_code
         assert exc_info.value.detail == detail
+
+
+def test_widget_token_validation_legacy_allowed_origins():
+    payload = {
+        "sub": "mairie-legacy",
+        "admin": False,
+        "allowed_origins": ["mairie.arras.fr"],
+    }
+    token = jwt.encode(payload=payload, key=settings.SECRET_KEY, algorithm="HS256")
+    request = MockRequest(headers={"origin": "https://mairie.arras.fr"})
+    assert validate_widget_token(request, token) == "mairie-legacy"
 
 
 def test_widget_rendering_empty_results(api_client, snapshot, auth_disabled):  # noqa: ARG001
