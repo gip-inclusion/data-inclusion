@@ -72,14 +72,15 @@ def validate_widget_token(request: fastapi.Request, token: str) -> str | None:
             detail="Invalid widget token.",
         )
 
-    allowed_origins = payload.get("allowed_origins")
-    if allowed_origins is None:
+    # support legacy widget tokens with allowed_origins
+    allowed_hosts = payload.get("allowed_hosts") or payload.get("allowed_origins")
+    if allowed_hosts is None:
         raise fastapi.HTTPException(
             status_code=fastapi.status.HTTP_403_FORBIDDEN,
             detail="Widget access not configured for this token.",
         )
 
-    if "*" in allowed_origins:
+    if "*" in allowed_hosts:
         return payload.get("sub")
 
     req_origin = request.headers.get("origin") or request.headers.get("referer")
@@ -93,11 +94,11 @@ def validate_widget_token(request: fastapi.Request, token: str) -> str | None:
     if origin_host in ("localhost", "127.0.0.1"):
         return payload.get("sub")
 
-    widget_host_origin = furl.furl(settings.BASE_URL).origin
-    if origin == widget_host_origin:
+    widget_host = furl.furl(settings.BASE_URL).host
+    if origin_host == widget_host:
         return payload.get("sub")
 
-    if not any(fnmatch.fnmatch(origin, p) for p in allowed_origins):
+    if not any(fnmatch.fnmatch(origin_host, p) for p in allowed_hosts):
         raise fastapi.HTTPException(
             status_code=fastapi.status.HTTP_403_FORBIDDEN,
             detail="Origin not allowed for this token.",
