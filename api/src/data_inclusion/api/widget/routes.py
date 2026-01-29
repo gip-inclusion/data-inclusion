@@ -1,4 +1,3 @@
-import fnmatch
 from pathlib import Path
 from typing import Annotated
 
@@ -73,13 +72,22 @@ def validate_widget_token(request: fastapi.Request, token: str) -> str | None:
         )
 
     # support legacy widget tokens with allowed_origins
-    allowed_hosts = payload.get("allowed_hosts") or payload.get("allowed_origins")
-    if allowed_hosts is None:
+    allowed_hosts = [
+        host.strip("* ")  # remove leading * from hostnames
+        for host in (
+            # keep support for legacy widget tokens with 'allowed_origins' key;
+            # please note that the values were already hostnames.
+            payload.get("allowed_hosts", []) + payload.get("allowed_origins", [])
+        )
+        if host and host.strip()
+    ]
+    if not allowed_hosts:
         raise fastapi.HTTPException(
             status_code=fastapi.status.HTTP_403_FORBIDDEN,
             detail="Widget access not configured for this token.",
         )
 
+    # quick allow wildcard host
     if "*" in allowed_hosts:
         return payload.get("sub")
 
@@ -88,17 +96,19 @@ def validate_widget_token(request: fastapi.Request, token: str) -> str | None:
         request_url = str(request.url)
         req_origin = furl.furl(request_url).origin
 
-    origin = furl.furl(req_origin).origin
-    origin_host = furl.furl(origin).host
+    origin_host = furl.furl(req_origin).host
 
+    # allow widget on localhost
     if origin_host in ("localhost", "127.0.0.1"):
         return payload.get("sub")
 
+    # allow widget on the API's own host
     widget_host = furl.furl(settings.BASE_URL).host
     if origin_host == widget_host:
         return payload.get("sub")
 
-    if not any(fnmatch.fnmatch(origin_host, p) for p in allowed_hosts):
+    # else allow allowed hosts
+    if not any(origin_host.endswith(host) for host in allowed_hosts):
         raise fastapi.HTTPException(
             status_code=fastapi.status.HTTP_403_FORBIDDEN,
             detail="Origin not allowed for this token.",
