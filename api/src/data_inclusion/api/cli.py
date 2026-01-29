@@ -141,7 +141,7 @@ def _load_inclusion_data(db_session, path: Path, version: Literal["v0", "v1"]):
 @sentry_sdk.monitor(
     monitor_slug="export-analytics",
     monitor_config={
-        "schedule": {"type": "crontab", "value": "45 5-22 * * *"},
+        "schedule": {"type": "crontab", "value": "45 2 * * *"},
         "checkin_margin": 60,
         "max_runtime": 60,
         "failure_issue_threshold": 1,
@@ -151,8 +151,6 @@ def _load_inclusion_data(db_session, path: Path, version: Literal["v0", "v1"]):
 )
 @cli.command(name="export-analytics")
 def _export_analytics():
-    """Export analytics data"""
-
     # TODO(vmttn): make this code testable with local export
     output_filename = "analytics.dump"
 

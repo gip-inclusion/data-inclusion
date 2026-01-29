@@ -9,6 +9,10 @@
             "size": "M"
         },
         {
+            "command": "45 2 * * * data-inclusion-api export-analytics",
+            "size": "M"
+        },
+        {
             "command": "0 4 * * * vacuumdb --full --analyze --verbose --table api__structures --table api__services $DATABASE_URL",
             "size": "S"
         }
