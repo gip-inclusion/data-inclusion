@@ -2,18 +2,6 @@ WITH services AS (
     SELECT * FROM {{ ref('stg_dora__services') }}
 ),
 
-di_profil_by_dora_profil AS (
-    -- dora's thematiques are not yet normalized
-    SELECT x.*
-    FROM (
-        VALUES
-        ('Adultes', 'adultes'),
-        ('Femmes', 'femmes'),
-        ('Public bénéficiaire du Revenu de Solidarité Active (RSA)', 'beneficiaires-rsa'),
-        ('Demandeur d''emploi', 'demandeurs-demploi')
-    ) AS x (dora_profil, di_profil)
-),
-
 final AS (
     SELECT
         services.id                                        AS "adresse_id",
@@ -41,11 +29,7 @@ final AS (
         services.presentation_detail                       AS "presentation_detail",
         services.prise_rdv                                 AS "prise_rdv",
         NULL                                               AS "lien_mobilisation",
-        CAST(ARRAY(
-            SELECT di_profil_by_dora_profil.di_profil
-            FROM di_profil_by_dora_profil
-            WHERE di_profil_by_dora_profil.dora_profil = ANY(services.profils)
-        ) AS TEXT [])                                      AS "profils",
+        services.profils                                   AS "profils",
         LEFT(ARRAY_TO_STRING(services.profils, ', '), 500) AS "profils_precisions",
         /* We decided against using dora's recurrence field in the new horaires_accueil field. */
         NULL                                               AS "recurrence",

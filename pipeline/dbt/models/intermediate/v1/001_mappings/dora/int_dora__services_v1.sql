@@ -24,18 +24,10 @@ frais AS (
 
 publics AS (
     SELECT
-        services.id AS "service_id",
-        CASE
-            WHEN 'tous-publics' = ANY(services.profils)
-                THEN ARRAY['tous-publics']
-            ELSE ARRAY_AGG(DISTINCT mapping.public_v1)
-        END         AS "publics"
-    FROM
-        services,
-        UNNEST(services.profils) AS profil
-    LEFT JOIN {{ ref('_map_publics') }} AS "mapping" ON profil = mapping.profil_v0
-    WHERE mapping.public_v1 IS NOT NULL
-    GROUP BY services.id, services.profils
+        service_id,
+        ARRAY_AGG(item) AS "publics"
+    FROM {{ ref('stg_dora__services__publics') }}
+    GROUP BY service_id
 ),
 
 thematiques AS (
@@ -126,7 +118,7 @@ SELECT
     ), '{}')                                                                                                  AS "mobilisable_par",
     services.modes_orientation_beneficiaire_autres || ' ' || services.modes_orientation_accompagnateur_autres AS "mobilisation_precisions",
     publics.publics                                                                                           AS "publics",
-    services.profils_precisions                                                                               AS "publics_precisions",
+    NULL                                                                                                      AS "publics_precisions",
     CASE
         WHEN
             services.types && ARRAY['aide-financiere']

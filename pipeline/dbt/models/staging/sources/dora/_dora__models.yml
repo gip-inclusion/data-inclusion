@@ -155,8 +155,6 @@ models:
         data_tests:
           - not_null
           - relationships:
-              config:
-                error_if: ">1000"
               arguments:
                 to: ref('stg_dora__services')
                 field: id
@@ -168,6 +166,22 @@ models:
                 to: ref('thematiques_v1')
                 field: value
 
+  - name: stg_dora__services__publics
+    columns:
+      - name: service_id
+        data_tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('stg_dora__services')
+                field: id
+      - name: item
+        data_tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('publics_v1')
+                field: value
 
   - name: stg_dora__structures
     columns:
