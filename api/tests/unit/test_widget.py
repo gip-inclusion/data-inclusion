@@ -41,6 +41,12 @@ def test_widget_token_validation_invalid_token():
             "Origin not allowed for this token.",
         ),
         (
+            ["*"],
+            {"origin": "https://any.origin.com"},
+            200,
+            None,
+        ),
+        (
             ["mairie.arras.fr"],
             {"origin": "https://mairie.arras.fr"},
             200,
