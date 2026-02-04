@@ -149,45 +149,72 @@ def _load_inclusion_data(db_session, path: Path, version: Literal["v0", "v1"]):
         "timezone": "Europe/Paris",
     },
 )
+@click.option(
+    "--date",
+    type=click.DateTime(formats=["%Y-%m-%d"]),
+    default=pendulum.today().date().isoformat(),
+    show_default=True,
+    callback=lambda _, __, value: pendulum.instance(value).date(),
+)
+@click.option(
+    "--output",
+    type=click.Path(file_okay=True, dir_okay=False, writable=True),
+    default=None,
+    show_default=True,
+    help=(
+        "Local directory to store the dump file. "
+        "If not set, the file is uploaded to the datalake."
+    ),
+    callback=lambda _, __, value: Path(value) if value is not None else None,
+)
 @cli.command(name="export-analytics")
-def _export_analytics():
-    # TODO(vmttn): make this code testable with local export
-    output_filename = "analytics.dump"
+def _export_analytics(date: pendulum.Date, output: Path | None):
+    click.echo("Dumping analytics")
+    click.echo(f"Date: {date}")
 
     if (stack := os.environ.get("STACK")) is not None and stack.startswith("scalingo"):
         subprocess.run("dbclient-fetcher pgsql", shell=True, check=True)
 
-    s3fs_client = s3fs.S3FileSystem()
-    base_key = Path(settings.DATALAKE_BUCKET_NAME) / "data" / "api"
-    key = str(
-        base_key
-        / pendulum.now().date().isoformat()
-        / pendulum.now().isoformat()
-        / output_filename
+    command = (
+        "pg_dump $DATABASE_URL "
+        "--format=custom "
+        "--clean "
+        "--if-exists "
+        "--no-owner "
+        "--no-privileges "
+        "--section=pre-data "
+        "--section=data "
+        "--table api__*_events "
+        "--table api__*_events_v1 "
     )
 
-    with tempfile.TemporaryDirectory() as tmpdir:
-        tmpfile = Path(tmpdir) / output_filename
+    if output is not None:
+        click.echo(f"Output: {output}")
 
-        command = (
-            "pg_dump $DATABASE_URL "
-            "--format=custom "
-            "--clean "
-            "--if-exists "
-            "--no-owner "
-            "--no-privileges "
-            "--section=pre-data "
-            "--section=data "
-            "--table api__*_events "
-            "--table api__*_events_v1 "
-            f"--file {tmpfile}"
-        )
-
-        logger.info(command)
+        command = command + f"--file {output}"
         subprocess.run(command, shell=True, check=True)
 
-        logger.info(f"Storing to {key}")
-        s3fs_client.put_file(tmpfile, key)
+    # by default, upload to s3
+    if output is None:
+        s3fs_client = s3fs.S3FileSystem()
+        filename = date.isoformat() + ".dump"
+        base_key = (
+            Path(settings.DATALAKE_BUCKET_NAME)
+            / "data"
+            / "api"
+            / "analytics"
+            / date.isoformat()
+        )
+        key = str(base_key / filename)
+
+        click.echo(f"Uploading to datalake under: {key}")
+
+        with tempfile.TemporaryDirectory() as tmpdir:
+            tmpfile = Path(tmpdir) / filename
+            command = command + f"--file {tmpfile}"
+            click.echo(command)
+            subprocess.run(command, shell=True, check=True)
+            s3fs_client.put_file(tmpfile, key)
 
 
 @cli.command(name="import-communes")
