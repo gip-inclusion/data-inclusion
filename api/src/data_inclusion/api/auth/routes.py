@@ -1,4 +1,4 @@
-from typing import Annotated
+from typing import Annotated, Literal
 
 import furl
 from pydantic import BaseModel
@@ -13,6 +13,7 @@ router = fastapi.APIRouter(tags=["Auth"])
 class TokenCreationData(BaseModel):
     email: str
     hosts: list[str] | None = None
+    scopes: list[Literal["api", "widget"]] | None = None
 
 
 class Token(BaseModel):
@@ -27,7 +28,7 @@ def create_token(email: str) -> Token:
 @router.post(
     "/create_token",
     response_model=Token,
-    dependencies=[auth.admin_dependency],
+    dependencies=auth.authenticated(required_scopes=["admin"]),
 )
 def create_token_endpoint(
     token_creation_data: Annotated[TokenCreationData, fastapi.Body()],
@@ -38,7 +39,6 @@ def create_token_endpoint(
         for value in token_creation_data.hosts:
             if not value:
                 continue
-            # allow URLs or hostnames in JSON payload
             host = furl.furl(value).host or value
             if host:
                 allowed_hosts.append(host)
@@ -46,6 +46,7 @@ def create_token_endpoint(
     return Token(
         access=auth.create_access_token(
             subject=token_creation_data.email,
+            scopes=token_creation_data.scopes,
             allowed_hosts=allowed_hosts,
         ),
         allowed_hosts=allowed_hosts,

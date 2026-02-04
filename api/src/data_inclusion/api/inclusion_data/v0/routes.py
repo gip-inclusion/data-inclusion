@@ -4,7 +4,6 @@ import fastapi
 
 from data_inclusion.api import auth
 from data_inclusion.api.analytics.v0.services import save_event
-from data_inclusion.api.config import settings
 from data_inclusion.api.core import db
 from data_inclusion.api.decoupage_administratif.models import Commune
 from data_inclusion.api.inclusion_data.v0 import parameters, schemas, services
@@ -17,7 +16,7 @@ router = fastapi.APIRouter(tags=["v0 | Données"])
     "/structures",
     response_model=pagination.Page[schemas.ListedStructure],
     summary="Lister les structures consolidées",
-    dependencies=[auth.authenticated_dependency] if settings.TOKEN_ENABLED else [],
+    dependencies=auth.authenticated(required_scopes=["api"]),
 )
 def list_structures_endpoint(
     request: fastapi.Request,
@@ -47,7 +46,7 @@ def list_structures_endpoint(
     "/structures/{source}/{id}",
     response_model=schemas.DetailedStructure,
     summary="Détailler une structure",
-    dependencies=[auth.authenticated_dependency] if settings.TOKEN_ENABLED else [],
+    dependencies=auth.authenticated(required_scopes=["api"]),
 )
 def retrieve_structure_endpoint(
     request: fastapi.Request,
@@ -75,7 +74,7 @@ def retrieve_structure_endpoint(
     "/sources",
     response_model=list[schemas.Source],
     summary="Lister les sources consolidées",
-    dependencies=[auth.authenticated_dependency] if settings.TOKEN_ENABLED else [],
+    dependencies=auth.authenticated(required_scopes=["api"]),
 )
 def list_sources_endpoint():
     return services.list_sources()
@@ -85,7 +84,7 @@ def list_sources_endpoint():
     "/services",
     response_model=pagination.Page[schemas.Service],
     summary="Lister les services consolidés",
-    dependencies=[auth.authenticated_dependency] if settings.TOKEN_ENABLED else [],
+    dependencies=auth.authenticated(required_scopes=["api"]),
 )
 def list_services_endpoint(
     request: fastapi.Request,
@@ -115,7 +114,7 @@ def list_services_endpoint(
     "/services/{source}/{id}",
     response_model=schemas.DetailedService,
     summary="Détailler un service",
-    dependencies=[auth.authenticated_dependency] if settings.TOKEN_ENABLED else [],
+    dependencies=auth.authenticated(required_scopes=["api"]),
 )
 def retrieve_service_endpoint(
     request: fastapi.Request,
@@ -144,7 +143,7 @@ def retrieve_service_endpoint(
     "/search/services",
     response_model=pagination.Page[schemas.ServiceSearchResult],
     summary="Rechercher des services",
-    dependencies=[auth.authenticated_dependency] if settings.TOKEN_ENABLED else [],
+    dependencies=auth.authenticated(required_scopes=["api"]),
 )
 def search_services_endpoint(
     request: fastapi.Request,
