@@ -3635,7 +3635,7 @@
           "security": [
             {
               "HTTPBearer": [
-                "authenticated"
+                "api"
               ]
             }
           ],
@@ -3960,7 +3960,7 @@
           "security": [
             {
               "HTTPBearer": [
-                "authenticated"
+                "api"
               ]
             }
           ],
@@ -4009,7 +4009,7 @@
           "security": [
             {
               "HTTPBearer": [
-                "authenticated"
+                "api"
               ]
             }
           ],
@@ -4041,7 +4041,7 @@
           "security": [
             {
               "HTTPBearer": [
-                "authenticated"
+                "api"
               ]
             }
           ],
@@ -4256,7 +4256,7 @@
           "security": [
             {
               "HTTPBearer": [
-                "authenticated"
+                "api"
               ]
             }
           ],
@@ -4305,7 +4305,7 @@
           "security": [
             {
               "HTTPBearer": [
-                "authenticated"
+                "api"
               ]
             }
           ],

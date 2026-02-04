@@ -259,9 +259,8 @@ def widget(
         token_sub = validate_widget_token(request=request, token=token)
     else:
         token_sub = "test_user"
-
     request.scope["user"] = SimpleUser(username=token_sub)
-    request.scope["auth"] = AuthCredentials(scopes=["authenticated"])
+    request.scope["auth"] = AuthCredentials(scopes=["widget"])
 
     commune_instance = None
     if code_commune:

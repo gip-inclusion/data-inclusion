@@ -38,11 +38,10 @@ def cli(ctx: click.Context, verbose: int):
 @cli.command(name="generate-token")
 @click.argument("email", type=click.STRING)
 @click.option(
-    "--admin",
-    is_flag=True,
-    show_default=True,
-    default=False,
-    help="Generate an admin token",
+    "--scope",
+    "scopes",
+    multiple=True,
+    help="Add a scope to the token (can be used multiple times, defaults to 'api')",
 )
 @click.option(
     "--allowed-host",
@@ -52,19 +51,20 @@ def cli(ctx: click.Context, verbose: int):
 )
 def _generate_token_for_user(
     email: str,
-    admin: bool,
-    allowed_hosts: tuple[str, ...],
+    scopes: list[str],
+    allowed_hosts: list[str],
 ):
     """Generate a token associated with the given email."""
+    scopes_list = list(scopes) if scopes else None
     allowed_hosts_list = list(allowed_hosts) if allowed_hosts else None
     click.echo(
         auth.create_access_token(
-            subject=email, admin=admin, allowed_hosts=allowed_hosts_list
+            subject=email, scopes=scopes_list, allowed_hosts=allowed_hosts_list
         )
     )
 
 
-def get_path(value: str, version: Literal["v0", "v1"]) -> Path:
+def get_path(value: str | None, version: Literal["v0", "v1"]) -> Path:
     """Get a valid local path to the target dataset."""
 
     if value is not None and Path(value).exists():
