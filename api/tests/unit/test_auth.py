@@ -65,3 +65,36 @@ def test_admin_endpoint(token, status_code):
 
     response = api_client.get("/api/admin")
     assert response.status_code == status_code
+
+
+@pytest.mark.parametrize(
+    ("token", "status_code"),
+    [
+        (auth.create_access_token("widget_user", allowed_hosts=["example.com"]), 403),
+        (auth.create_access_token("api_user"), 200),
+        (
+            auth.create_access_token(
+                "admin_user", admin=True, allowed_hosts=["example.com"]
+            ),
+            200,
+        ),
+    ],
+)
+def test_widget_token_cannot_access_api(api_client, token, status_code):
+    response = api_client.get(
+        "/api/v1/search/services",
+        headers={"Authorization": f"Bearer {token}"},
+    )
+    assert response.status_code == status_code
+
+
+@pytest.mark.parametrize(
+    ("token", "status_code"),
+    [
+        (auth.create_access_token("api_user"), 403),
+        (auth.create_access_token("widget_user", allowed_hosts=["example.com"]), 200),
+    ],
+)
+def test_widget_token_validation(api_client, token, status_code):
+    response = api_client.get(f"/widget/?token={token}")
+    assert response.status_code == status_code
