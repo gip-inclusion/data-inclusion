@@ -15,72 +15,53 @@ from data_inclusion.schema import v1
 logger = logging.getLogger(__name__)
 
 
-def validate_dataset(
+def validate_data(model_schema, data: dict) -> list[dict]:
+    errors = []
+
+    try:
+        model_schema(**data)
+    except pydantic.ValidationError as exc:
+        errors += [{"id": data["id"], **err} for err in exc.errors()]
+
+    return errors
+
+
+def prepare_load(
     db_session: orm.Session,
     structures_df: pd.DataFrame,
     services_df: pd.DataFrame,
 ) -> tuple[pd.DataFrame, pd.DataFrame]:
+    """Prepare the structures and services dataframes for loading into the database.
+
+    Remove invalid entries, compute quality scores, etc.
+    """
+    if structures_df.empty or services_df.empty:
+        raise ValueError("Structures or services dataset is empty.")
+
     city_codes = db_session.scalars(sqla.select(Commune.code)).all()
 
-    def validate_data(model_schema, data):
-        errors = []
+    structures_errors_df = structures_df.apply(
+        lambda d: validate_data(v1.Structure, d), axis=1
+    )
+    structures_df = structures_df.loc[structures_errors_df.apply(len) == 0]
+    valid_code_insee_idx = structures_df["code_insee"].apply(
+        lambda c: c is None or c in city_codes
+    )
+    structures_df = structures_df.loc[valid_code_insee_idx]
+    structures_df = structures_df.loc[~structures_df["_is_closed"]]
+    structures_df = structures_df.loc[structures_df["_has_valid_address"].fillna(False)]
 
-        try:
-            model_schema(**data)
-        except pydantic.ValidationError as exc:
-            errors += [{"id": data["id"], **err} for err in exc.errors()]
+    services_errors_df = services_df.apply(
+        lambda d: validate_data(v1.Service, d), axis=1
+    )
+    services_df = services_df.loc[services_errors_df.apply(len) == 0]
+    valid_code_insee_idx = services_df["code_insee"].apply(
+        lambda c: c is None or c in city_codes
+    )
+    services_df = services_df.loc[valid_code_insee_idx]
+    services_df = services_df.loc[services_df["_has_valid_address"].fillna(False)]
+    services_df = services_df.loc[services_df["structure_id"].isin(structures_df["id"])]
 
-        if data["code_insee"] is not None and data["code_insee"] not in city_codes:
-            errors += [
-                {
-                    "id": data["id"],
-                    "loc": ("code_insee",),
-                    "input": data["code_insee"],
-                }
-            ]
-
-        for error in errors:
-            model = model_schema.__name__
-            id, key, value = (
-                error["id"][:50],
-                ".".join(map(str, error["loc"])),
-                error["input"],
-            )
-            logger.warning(f"{model:10} {id=:52} {key=:20} {value=}")
-
-        return errors
-
-    def is_valid(df, model_schema):
-        return df.apply(lambda d: len(validate_data(model_schema, d)) == 0, axis=1)
-
-    if not structures_df.empty:
-        structures_df = structures_df.loc[is_valid(structures_df, v1.Structure)]
-        structures_df = structures_df.loc[
-            structures_df["code_insee"].apply(lambda c: c is None or c in city_codes)
-        ]
-        structures_df = structures_df.loc[structures_df["_is_closed"] == False]  # noqa: E712
-        structures_df = structures_df.loc[structures_df["_has_valid_address"] != False]  # noqa: E712
-
-    if not services_df.empty:
-        services_df = services_df.loc[is_valid(services_df, v1.Service)]
-        services_df = services_df.loc[
-            services_df["code_insee"].apply(lambda c: c is None or c in city_codes)
-        ]
-        # TODO: add further schema validation for services with "se-presenter" mode
-        services_df = services_df.loc[
-            (services_df["_has_valid_address"] != False)  # noqa: E712
-        ]
-        services_df = services_df.loc[
-            services_df["structure_id"].isin(structures_df["id"])
-        ]
-
-    return structures_df, services_df
-
-
-def prepare_dataset(
-    structures_df: pd.DataFrame,
-    services_df: pd.DataFrame,
-) -> tuple[pd.DataFrame, pd.DataFrame]:
     service_scores = (
         services_df.groupby("structure_id")["score_qualite"]
         .mean()
@@ -139,7 +120,7 @@ swap_sql = """
 """
 
 
-def load_dataset(
+def apply_load(
     engine: sqla.Engine,  # manage transactions manually
     structures_df: pd.DataFrame,
     services_df: pd.DataFrame,
@@ -203,26 +184,19 @@ def load_dataset(
         logger.info(f"{services_count.scalar()} services loaded.")
 
 
-def load_inclusion_data(db_session: orm.Session, path: Path):
+def load(db_session: orm.Session, path: Path):
     structures_df, services_df = [
         pd.read_parquet(path / filename).replace({np.nan: None})
         for filename in ("structures.parquet", "services.parquet")
     ]
 
-    logger.info("Validating data...")
-    structures_df, services_df = validate_dataset(
+    structures_df, services_df = prepare_load(
         db_session=db_session,
         structures_df=structures_df,
         services_df=services_df,
     )
 
-    logger.info("Preparing data...")
-    structures_df, services_df = prepare_dataset(
-        structures_df=structures_df,
-        services_df=services_df,
-    )
-
-    load_dataset(
+    apply_load(
         engine=db_session.get_bind().engine,
         structures_df=structures_df,
         services_df=services_df,

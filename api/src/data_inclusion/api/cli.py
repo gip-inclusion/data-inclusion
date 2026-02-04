@@ -127,11 +127,13 @@ def get_path(value: str, version: Literal["v0", "v1"]) -> Path:
 @click.pass_obj
 def _load_inclusion_data(db_session, path: Path, version: Literal["v0", "v1"]):
     if version == "v1":
-        from data_inclusion.api.inclusion_data.v1.commands import load_inclusion_data
+        from data_inclusion.api.inclusion_data.v1.commands import load
+
+        load(db_session=db_session, path=path)
     elif version == "v0":
         from data_inclusion.api.inclusion_data.v0.commands import load_inclusion_data
 
-    load_inclusion_data(db_session=db_session, path=path)
+        load_inclusion_data(db_session=db_session, path=path)
 
     # if the dataset has been downloaded from s3
     if tempfile.gettempdir() in path.parents:

@@ -3,52 +3,74 @@ from datetime import datetime
 import pandas as pd
 import pytest
 
-from data_inclusion.api.inclusion_data.v0 import commands as commands_v0
-from data_inclusion.api.inclusion_data.v1 import commands as commands_v1
-from data_inclusion.schema import v0, v1
+from data_inclusion.api.inclusion_data.v1 import commands
+from data_inclusion.schema import v1
+
+structure_data = {
+    **v1.Structure(
+        id="dora--1",
+        source="dora",
+        nom="Structure 1",
+        date_maj=datetime(2025, 1, 1),
+    ).model_dump(),
+    "_has_valid_address": True,
+    "_is_closed": False,
+}
+
+service_data = {
+    **v1.Service(
+        id="dora--1",
+        source="dora",
+        description="." * 100,
+        structure_id="dora--1",
+        code_insee="59350",
+        nom="Service 1",
+        date_maj=datetime(2025, 1, 1),
+    ).model_dump(),
+    "_has_valid_address": True,
+    "score_qualite": 0.9,
+}
 
 
-@pytest.mark.parametrize("schema_version", ["v0", "v1"])
 @pytest.mark.parametrize(
-    ("column", "value"),
+    ("structure_data", "expected_empty"),
     [
-        ("date-maj", "not-a-date"),  # schema violation
-        ("_is_closed", True),  # valid schema, but structure flagged as closed
-        ("code_insee", "00000"),  # valid schema, but not an actual city code
+        (structure_data, False),
+        # schema violation (date_maj is not a date)
+        ({**structure_data, "date_maj": "not-a-date"}, True),
+        # valid schema, but structure flagged as closed
+        ({**structure_data, "_is_closed": True}, True),
+        # valid schema, but not an actual city code
+        ({**structure_data, "code_insee": "00000"}, True),
     ],
 )
-def test_validate_dataset(db_session, schema_version, column, value):
-    if schema_version == "v0":
-        validate_dataset = commands_v0.validate_dataset
-        valid_structure = v0.Structure(
-            id="1",
-            source="foo",
-            nom="Structure 1",
-            date_maj=datetime(2025, 1, 1),
-            telephone=None,
-            courriel=None,
-            site_web=None,
-        )
-    else:
-        validate_dataset = commands_v1.validate_dataset
-        valid_structure = v1.Structure(
-            id="foo--1",
-            source="foo",
-            nom="Structure 1",
-            date_maj=datetime(2025, 1, 1),
-        )
-
-    structure_data = {
-        "_di_surrogate_id": "foo-1",
-        **valid_structure.model_dump(),
-        "_is_closed": False,
-        column: value,
-    }
-    if schema_version == "v1":
-        structure_data["_has_valid_address"] = True
-
-    validate_dataset(
+def test_prepare_load_structures(db_session, structure_data, expected_empty):
+    structures_df, services_df = commands.prepare_load(
         db_session=db_session,
         structures_df=pd.DataFrame([structure_data]),
-        services_df=pd.DataFrame(),
+        services_df=pd.DataFrame([service_data]),
     )
+    assert structures_df.empty is expected_empty
+
+    # if the structure is invalid, all its services should be also be filtered
+    assert services_df.empty is expected_empty
+
+
+@pytest.mark.parametrize(
+    ("service_data", "expected_empty"),
+    [
+        (service_data, False),
+        # schema violation (date_maj is not a date)
+        ({**service_data, "date_maj": "not-a-date"}, True),
+        # valid schema, but not an actual city code
+        ({**service_data, "code_insee": "00000"}, True),
+    ],
+)
+def test_prepare_load_services(db_session, service_data, expected_empty):
+    structures_df, services_df = commands.prepare_load(
+        db_session=db_session,
+        structures_df=pd.DataFrame([structure_data]),
+        services_df=pd.DataFrame([service_data]),
+    )
+    assert not structures_df.empty
+    assert services_df.empty is expected_empty
