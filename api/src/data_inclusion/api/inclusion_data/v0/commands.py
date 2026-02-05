@@ -164,3 +164,12 @@ def load_inclusion_data(db_session: orm.Session, path: Path):
         structures_df=structures_df,
         services_df=services_df,
     )
+
+    logger.info("Vacuuming...")
+    with (
+        db_session.get_bind()
+        .engine.connect()
+        .execution_options(isolation_level="AUTOCOMMIT") as connection
+    ):
+        for model in [models.Structure, models.Service]:
+            connection.execute(sqla.text(f"VACUUM ANALYZE {model.__tablename__}"))

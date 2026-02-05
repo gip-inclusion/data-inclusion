@@ -1,7 +1,7 @@
 {
     "jobs": [
         {
-            "command": "30 5-22 * * * data-inclusion-api load-inclusion-data --version v1",
+            "command": "30 5-22 * * * data-inclusion-api load-inclusion-data",
             "size": "2XL"
         },
         {
