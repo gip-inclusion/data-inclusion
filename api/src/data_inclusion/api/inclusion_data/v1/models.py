@@ -56,6 +56,7 @@ class Structure(HasAddress, Base):
     __table_args__ = (
         sqla.Index(None, "source"),
         sqla.Index(None, "_cluster_id"),
+        sqla.Index(None, "score_qualite"),
         sqla.Index(
             "ix_api__structures_v1__cluster_dedup",
             "_cluster_id",
@@ -136,6 +137,7 @@ class Service(HasAddress, Base):
     __table_args__ = (
         sqla.Index(None, "structure_id"),
         sqla.Index(None, "source"),
+        sqla.Index(None, "score_qualite"),
         sqla.Index(None, "modes_accueil", postgresql_using="gin"),
         sqla.Index(None, "thematiques", postgresql_using="gin"),
         sqla.Index(
