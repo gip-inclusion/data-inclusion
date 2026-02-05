@@ -17,9 +17,10 @@ data-inclusion-api generate-token user@example.com
 # Generate an admin token
 data-inclusion-api generate-token admin@example.com --admin
 
-# Generate a widget token with allowed origins
-data-inclusion-api generate-token widget@example.com --allowed-origin example.com --allowed-origin *.example2.com
+# Generate a widget token with allowed hosts
+data-inclusion-api generate-token widget@example.com --allowed-host example.com
 
-# Generate a widget token that allows all origins
-data-inclusion-api generate-token widget@example.com --allowed-origin "*"
+# Generate a widget token that allows all hosts
+data-inclusion-api generate-token widget@example.com --allowed-host "*"
 ```
+

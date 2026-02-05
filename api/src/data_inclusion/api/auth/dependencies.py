@@ -50,6 +50,8 @@ async def authenticate(request: fastapi.Request):
         scopes = ["authenticated"]
         if payload.get("admin", False):
             scopes += ["admin"]
+        if payload.get("allowed_hosts") or payload.get("allowed_origins"):
+            scopes += ["widget"]
 
         request.scope["user"], request.scope["auth"] = (
             SimpleUser(username=payload["sub"]),
@@ -68,6 +70,12 @@ async def authenticated(
     """Ensure the request is authenticated"""
     if not request.user.is_authenticated:
         raise fastapi.HTTPException(status_code=status.HTTP_403_FORBIDDEN)
+
+    if request.auth.scopes == ["authenticated", "widget"]:
+        raise fastapi.HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="Widget tokens cannot access API routes",
+        )
 
     sentry_sdk.set_user({"username": request.user.username})
 
