@@ -3,12 +3,6 @@ version: 2
 sources:
   - name: dora
     schema: dora
-    meta:
-      is_provider: true
     tables:
       - name: structures
-        meta:
-          kind: structure
       - name: services
-        meta:
-          kind: service

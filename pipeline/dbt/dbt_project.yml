@@ -45,6 +45,8 @@ models:
         # many downstream tests/models.
         carif_oref:
           +materialized: table
+        dora:
+          +materialized: table
         soliguide:
           +materialized: table
         monenfant:
