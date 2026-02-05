@@ -1,6 +1,30 @@
 version: 2
 
 models:
+  - name: _map_reseaux_labels
+    columns:
+      - name: label_national
+        data_tests:
+          - not_null
+      - name: reseau_porteur
+        data_tests:
+          - relationships:
+              arguments:
+                to: ref('reseaux_porteurs_v1')
+                field: value
+
+  - name: _map_reseaux_typologie
+    columns:
+      - name: typologie
+        data_tests:
+          - not_null
+      - name: reseau_porteur
+        data_tests:
+          - relationships:
+              arguments:
+                to: ref('reseaux_porteurs_v1')
+                field: value
+
   - name: int_dora__adresses_v1
     columns:
       - name: id
@@ -31,10 +55,15 @@ models:
                 field: id
       - name: adresse_id
         data_tests:
+          - not_null:
+              config:
+                severity: warn
+                error_if: ">200"
           - relationships:
               arguments:
                 to: ref('int_dora__adresses_v1')
                 field: id
+
   - name: int_dora__structures_v1
     data_tests:
       - model_validate:
@@ -50,6 +79,10 @@ models:
           - dbt_utils.not_empty_string
       - name: adresse_id
         data_tests:
+          - not_null:
+              config:
+                severity: warn
+                error_if: ">50"
           - relationships:
               arguments:
                 to: ref('int_dora__adresses_v1')

@@ -7,8 +7,8 @@ services AS (
 
 final AS (
     SELECT
-        NULLIF(TRIM(data ->> 'id'), '')                                AS "service_id",
-        NULLIF(TRIM(JSONB_ARRAY_ELEMENTS_TEXT(data -> 'publics')), '') AS "item"
+        NULLIF(TRIM(data ->> 'id'), '')                                      AS "service_id",
+        NULLIF(TRIM(JSONB_ARRAY_ELEMENTS_TEXT(data -> 'justificatifs')), '') AS "item"
     FROM source
 )
 

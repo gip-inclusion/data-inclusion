@@ -20,8 +20,6 @@ structure_adresses AS (
     FROM structures
 ),
 
--- services may not have their own address (they use the parent structure's address)
--- only include services that actually have their own address data
 service_adresses AS (
     SELECT
         'dora'             AS "source",
@@ -34,7 +32,6 @@ service_adresses AS (
         code_postal        AS "code_postal",
         code_insee         AS "code_insee"
     FROM services
-
 ),
 
 final AS (

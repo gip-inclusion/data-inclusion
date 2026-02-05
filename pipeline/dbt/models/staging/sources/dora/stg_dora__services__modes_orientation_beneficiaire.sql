@@ -7,8 +7,8 @@ services AS (
 
 final AS (
     SELECT
-        NULLIF(TRIM(data ->> 'id'), '')                                AS "service_id",
-        NULLIF(TRIM(JSONB_ARRAY_ELEMENTS_TEXT(data -> 'publics')), '') AS "item"
+        NULLIF(TRIM(data ->> 'id'), '')                                                       AS "service_id",
+        NULLIF(TRIM(JSONB_ARRAY_ELEMENTS_TEXT(data -> 'modes_orientation_beneficiaire')), '') AS "item"
     FROM source
 )
 
@@ -16,3 +16,4 @@ SELECT final.*
 FROM final
 -- keep only values for selected services
 INNER JOIN services ON final.service_id = services.id
+WHERE final.item != 'professionnel'

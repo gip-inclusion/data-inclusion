@@ -1,27 +1,45 @@
 WITH structures AS (
-    SELECT * FROM {{ ref('int_dora__structures_v0') }}
+    SELECT * FROM {{ ref('stg_dora__structures') }}
 ),
 
 adresses AS (
     SELECT * FROM {{ ref('int_dora__adresses_v1') }}
 ),
 
-map_reseaux_labels AS (SELECT * FROM {{ ref('_map_reseaux_labels') }}),
+reseaux_from_labels AS (
+    SELECT DISTINCT
+        labels.structure_id,
+        map.reseau_porteur
+    FROM {{ ref('stg_dora__structures__labels_nationaux') }} AS labels
+    INNER JOIN {{ ref('_map_reseaux_labels') }} AS map
+        ON
+            labels.item = map.label_national
+            AND map.reseau_porteur IS NOT NULL
+),
 
-map_reseaux_typologie AS (SELECT * FROM {{ ref('_map_reseaux_typologie') }}),
+reseaux_from_typologie AS (
+    SELECT
+        structures.id AS "structure_id",
+        map.reseau_porteur
+    FROM structures
+    INNER JOIN {{ ref('_map_reseaux_typologie') }} AS map
+        ON
+            structures.typologie = map.typologie
+            AND map.reseau_porteur IS NOT NULL
+),
+
+all_reseaux AS (
+    SELECT * FROM reseaux_from_labels
+    UNION
+    SELECT * FROM reseaux_from_typologie
+),
 
 reseaux_porteurs AS (
     SELECT
-        structures.id AS "structure_id",
-        ARRAY_REMOVE(ARRAY(
-            SELECT DISTINCT map_reseaux_labels.reseau_porteur
-            FROM UNNEST(structures.labels_nationaux) AS x (label_national)
-            LEFT JOIN map_reseaux_labels ON x.label_national = map_reseaux_labels.label_national
-            UNION
-            SELECT map_reseaux_typologie.reseau_porteur
-        ), NULL)      AS "reseaux_porteurs"
-    FROM structures
-    LEFT JOIN map_reseaux_typologie ON structures.typologie = map_reseaux_typologie.typologie
+        structure_id,
+        ARRAY_AGG(reseau_porteur ORDER BY reseau_porteur) AS "reseaux_porteurs"
+    FROM all_reseaux
+    GROUP BY structure_id
 ),
 
 final AS (
@@ -29,9 +47,7 @@ final AS (
         'dora'                            AS "source",
         'dora--' || structures.id         AS "id",
         adresses.id                       AS "adresse_id",
-        structures.courriel               AS "courriel",
-        structures.horaires_ouverture     AS "horaires_accueil",
-        structures.lien_source            AS "lien_source",
+        structures.nom                    AS "nom",
         CASE
             WHEN LENGTH(structures.presentation_detail) >= 10000
                 THEN LEFT(structures.presentation_detail, 9999) || '…'
@@ -39,11 +55,13 @@ final AS (
         END                               AS "description",
         structures.siret                  AS "siret",
         CAST(structures.date_maj AS DATE) AS "date_maj",
-        reseaux_porteurs.reseaux_porteurs AS "reseaux_porteurs",
+        structures.lien_source            AS "lien_source",
         structures.telephone              AS "telephone",
+        structures.courriel               AS "courriel",
         structures.site_web               AS "site_web",
+        structures.horaires_ouverture     AS "horaires_accueil",
         structures.accessibilite          AS "accessibilite_lieu",
-        structures.nom                    AS "nom"
+        reseaux_porteurs.reseaux_porteurs AS "reseaux_porteurs"
     FROM structures
     LEFT JOIN adresses ON ('dora--' || structures.id) = adresses.id
     LEFT JOIN reseaux_porteurs ON structures.id = reseaux_porteurs.structure_id
