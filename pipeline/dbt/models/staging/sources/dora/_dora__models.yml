@@ -3,80 +3,81 @@ version: 2
 models:
   - name: stg_dora__services
     columns:
-      - name: adresse
-        data_tests:
-          - dbt_utils.not_constant
-          - dbt_utils.not_empty_string
-      - name: code_insee
-        data_tests:
-          - dbt_utils.not_constant
-          - dbt_utils.not_empty_string
-      - name: code_postal
-        data_tests:
-          - dbt_utils.not_constant
-          - dbt_utils.not_empty_string
-      - name: commune
-        data_tests:
-          - dbt_utils.not_constant
-          - dbt_utils.not_empty_string
-      - name: complement_adresse
-        data_tests:
-          - dbt_utils.not_constant
-          - dbt_utils.not_empty_string
-      - name: contact_nom_prenom
-        data_tests:
-          - dbt_utils.not_constant
-          - dbt_utils.not_empty_string
-      - name: courriel
-        data_tests:
-          - dbt_utils.not_constant
-          - dbt_utils.not_empty_string
-      - name: date_maj
-        data_tests:
-          - not_null
-          - dbt_utils.accepted_range:
-              config:
-                severity: warn
-              arguments:
-                min_value: "now() - interval '2 years'"
-      - name: formulaire_en_ligne
-        data_tests:
-          - dbt_utils.not_constant
-          - dbt_utils.not_empty_string
-      - name: frais_autres
-        data_tests:
-          - dbt_utils.not_constant
-          - dbt_utils.not_empty_string
-      - name: frais
-        data_tests:
-          - dbt_utils.not_constant
-          - relationships:
-              arguments:
-                to: ref('frais')
-                field: value
       - name: id
         data_tests:
           - unique
           - not_null
           - dbt_utils.not_empty_string
-      - name: justificatifs
+      - name: adresse
         data_tests:
-          - dbt_utils.not_constant
+          - dbt_utils.not_null_proportion:
+              arguments:
+                at_least: 0.9
+          - dbt_utils.not_empty_string
+      - name: code_insee
+        data_tests:
+          - dbt_utils.not_null_proportion:
+              arguments:
+                at_least: 0.9
+          - dbt_utils.not_empty_string
+      - name: code_postal
+        data_tests:
+          - dbt_utils.not_null_proportion:
+              arguments:
+                at_least: 0.9
+          - dbt_utils.not_empty_string
+      - name: commune
+        data_tests:
+          - dbt_utils.not_null_proportion:
+              arguments:
+                at_least: 0.9
+          - dbt_utils.not_empty_string
+      - name: complement_adresse
+        data_tests:
+          - dbt_utils.at_least_one
+          - dbt_utils.not_empty_string
+      - name: contact_nom_prenom
+        data_tests:
+          - dbt_utils.at_least_one
+          - dbt_utils.not_empty_string
+      - name: courriel
+        data_tests:
+          - dbt_utils.not_null_proportion:
+              arguments:
+                at_least: 0.5
+          - dbt_utils.not_empty_string
+      - name: date_maj
+        data_tests:
+          - not_null
+      - name: formulaire_en_ligne
+        data_tests:
+          - dbt_utils.not_null_proportion:
+              arguments:
+                at_least: 0.5
+          - dbt_utils.not_empty_string
+      - name: frais
+        data_tests:
+          - not_null:
+              config:
+                error_if: ">100"
+          - relationships:
+              arguments:
+                to: ref('frais')
+                field: value
+      - name: frais_autres
+        data_tests:
+          - dbt_utils.at_least_one
+          - dbt_utils.not_empty_string
       - name: latitude
         data_tests:
-          - dbt_utils.not_constant
+          - dbt_utils.at_least_one
+      - name: longitude
+        data_tests:
+          - dbt_utils.at_least_one
       - name: lien_source
         data_tests:
           - not_null
           - dbt_utils.not_empty_string
-      - name: longitude
-        data_tests:
-          - dbt_utils.not_constant
-      - name: modes_accueil
-        data_tests:
-          - dbt_utils.expression_is_true:
-              arguments:
-                expression: "<@ ARRAY(SELECT value FROM {{ ref('modes_accueil') }})"
       - name: nom
         data_tests:
           - not_null
@@ -84,38 +85,29 @@ models:
           - dbt_utils.expression_is_true:
               arguments:
                 expression: "!~ '(?<!etc)\\.$'"
-      - name: pre_requis
-        data_tests:
-          - dbt_utils.not_constant
       - name: presentation_resume
         data_tests:
           - not_null
           - dbt_utils.not_empty_string
       - name: presentation_detail
         data_tests:
-          - dbt_utils.not_constant:
-              config:
-                severity: warn
+          - dbt_utils.at_least_one
           - dbt_utils.not_empty_string
       - name: prise_rdv
         data_tests:
-          - dbt_utils.not_constant:
-              config:
-                severity: warn
+          - dbt_utils.at_least_one
           - dbt_utils.not_empty_string
-      - name: profils
+      - name: publics_precisions
         data_tests:
-          - dbt_utils.expression_is_true:
-              config:
-                severity: warn
-              arguments:
-                expression: "<@ ARRAY(SELECT value FROM {{ ref('profils') }})"
+          - dbt_utils.at_least_one
+          - dbt_utils.not_empty_string
       - name: recurrence
         data_tests:
-          - dbt_utils.not_constant
+          - dbt_utils.at_least_one
           - dbt_utils.not_empty_string
       - name: source
         data_tests:
+          - dbt_utils.at_least_one
           - dbt_utils.not_empty_string
       - name: structure_id
         data_tests:
@@ -126,30 +118,50 @@ models:
                 field: id
       - name: telephone
         data_tests:
-          - dbt_utils.not_constant
-          - dbt_utils.not_empty_string
-      - name: types
-        data_tests:
-          - dbt_utils.expression_is_true:
+          - dbt_utils.not_null_proportion:
               arguments:
-                expression: "<@ ARRAY(SELECT value FROM {{ ref('typologies_de_services') }})"
+                at_least: 0.8
+          - dbt_utils.not_empty_string
+      - name: temps_passe_duree_hebdomadaire
+        data_tests:
+          - dbt_utils.at_least_one
+      - name: temps_passe_semaines
+        data_tests:
+          - dbt_utils.at_least_one
       - name: zone_diffusion_code
         data_tests:
-          - dbt_utils.not_constant
+          - not_null:
+              config:
+                error_if: ">1000"
           - dbt_utils.not_empty_string
       - name: zone_diffusion_nom
         data_tests:
-          - dbt_utils.not_constant
+          - not_null:
+              config:
+                error_if: ">100"
           - dbt_utils.not_empty_string
       - name: zone_diffusion_type
         data_tests:
           - not_null
-          - dbt_utils.not_constant
           - accepted_values:
               arguments:
                 values: [commune, epci, departement, region, pays]
 
-  - name: stg_dora__services__thematiques
+  - name: stg_dora__services__justificatifs
+    columns:
+      - name: service_id
+        data_tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('stg_dora__services')
+                field: id
+      - name: item
+        data_tests:
+          - not_null
+          - dbt_utils.not_empty_string
+
+  - name: stg_dora__services__modes_accueil
     columns:
       - name: service_id
         data_tests:
@@ -163,8 +175,70 @@ models:
           - not_null
           - relationships:
               arguments:
-                to: ref('thematiques_v1')
+                to: ref('modes_accueil_v1')
                 field: value
+
+  - name: stg_dora__services__modes_orientation_accompagnateur
+    columns:
+      - name: service_id
+        data_tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('stg_dora__services')
+                field: id
+      - name: item
+        data_tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('modes_orientation_accompagnateur')
+                field: value
+
+  - name: stg_dora__services__modes_orientation_beneficiaire
+    columns:
+      - name: service_id
+        data_tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('stg_dora__services')
+                field: id
+      - name: item
+        data_tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('modes_orientation_beneficiaire')
+                field: value
+
+  - name: stg_dora__services__pre_requis
+    columns:
+      - name: service_id
+        data_tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('stg_dora__services')
+                field: id
+      - name: item
+        data_tests:
+          - not_null
+          - dbt_utils.not_empty_string
+
+  - name: stg_dora__services__profils
+    columns:
+      - name: service_id
+        data_tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('stg_dora__services')
+                field: id
+      - name: item
+        data_tests:
+          - not_null
+          - dbt_utils.not_empty_string
 
   - name: stg_dora__services__publics
     columns:
@@ -183,123 +257,169 @@ models:
                 to: ref('publics_v1')
                 field: value
 
+  - name: stg_dora__services__thematiques
+    columns:
+      - name: service_id
+        data_tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('stg_dora__services')
+                field: id
+      - name: item
+        data_tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('thematiques_v1')
+                field: value
+
+  - name: stg_dora__services__types
+    columns:
+      - name: service_id
+        data_tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('stg_dora__services')
+                field: id
+      - name: item
+        data_tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('typologies_de_services')
+                field: value
+
   - name: stg_dora__structures
     columns:
-      - name: accessibilite
-        data_tests:
-          - dbt_utils.not_constant
-          - dbt_utils.not_empty_string
-      - name: adresse
-        data_tests:
-          - not_null:
-              config:
-                severity: warn
-          - dbt_utils.not_constant
-          - dbt_utils.not_empty_string
-      - name: code_insee
-        data_tests:
-          - dbt_utils.not_constant
-          - dbt_utils.not_empty_string
-      - name: code_postal
-        data_tests:
-          - dbt_utils.not_constant
-          - dbt_utils.not_empty_string
-      - name: commune
-        data_tests:
-          - dbt_utils.not_constant
-          - dbt_utils.not_empty_string
-      - name: complement_adresse
-        data_tests:
-          - dbt_utils.not_constant
-          - dbt_utils.not_empty_string
-      - name: courriel
-        data_tests:
-          - dbt_utils.not_constant
-          - dbt_utils.not_empty_string
-      - name: date_maj
-        data_tests:
-          - not_null:
-              config:
-                severity: warn
-          - dbt_utils.not_constant
-          - dbt_utils.accepted_range:
-              config:
-                severity: warn
-              arguments:
-                min_value: "now() - interval '2 years'"
-      - name: horaires_ouverture
-        data_tests:
-          - dbt_utils.not_constant
-          - dbt_utils.not_empty_string
       - name: id
         data_tests:
           - unique
           - not_null
           - dbt_utils.not_empty_string
-      - name: labels_autres
-      - name: labels_nationaux
-        data_tests:
-          - dbt_utils.expression_is_true:
-              config:
-                severity: warn
-              arguments:
-                expression: "<@ ARRAY(SELECT value FROM {{ ref('labels_nationaux') }})"
-      - name: latitude
-        data_tests:
-          - dbt_utils.not_constant
-      - name: lien_source
-        data_tests:
-          - not_null
-          - dbt_utils.not_empty_string
-      - name: longitude
-        data_tests:
-          - dbt_utils.not_constant
       - name: nom
         data_tests:
           - not_null:
               config:
-                severity: warn
-          - dbt_utils.not_constant
+                error_if: ">10"
           - dbt_utils.not_empty_string
-          - dbt_utils.expression_is_true:
+      - name: accessibilite
+        data_tests:
+          - dbt_utils.at_least_one
+          - dbt_utils.not_empty_string
+      - name: adresse
+        data_tests:
+          - dbt_utils.not_null_proportion:
               arguments:
-                expression: "!~ '(?<!etc)\\.$'"
-      - name: presentation_detail
-        data_tests:
-          - dbt_utils.not_constant
+                at_least: 0.95
           - dbt_utils.not_empty_string
-      - name: presentation_resume
+      - name: code_insee
         data_tests:
-          - dbt_utils.not_constant
+          - dbt_utils.not_null_proportion:
+              arguments:
+                at_least: 0.95
           - dbt_utils.not_empty_string
-      - name: rna
+      - name: code_postal
         data_tests:
-          - dbt_utils.not_constant:
-              config:
-                severity: warn
+          - dbt_utils.not_null_proportion:
+              arguments:
+                at_least: 0.95
           - dbt_utils.not_empty_string
-      - name: siret
+      - name: commune
+        data_tests:
+          - dbt_utils.not_null_proportion:
+              arguments:
+                at_least: 0.95
+          - dbt_utils.not_empty_string
+      - name: complement_adresse
+        data_tests:
+          - dbt_utils.at_least_one
+          - dbt_utils.not_empty_string
+      - name: courriel
+        data_tests:
+          - dbt_utils.at_least_one
+          - dbt_utils.not_empty_string
+      - name: date_maj
         data_tests:
           - not_null:
               config:
-                severity: warn
-          - dbt_utils.not_constant
+                error_if: ">100"
+      - name: horaires_ouverture
+        data_tests:
+          - dbt_utils.at_least_one
+          - dbt_utils.not_empty_string
+      - name: labels_autres
+      - name: latitude
+        data_tests:
+          - dbt_utils.at_least_one
+      - name: longitude
+        data_tests:
+          - dbt_utils.at_least_one
+      - name: lien_source
+        data_tests:
+          - not_null
+          - dbt_utils.not_empty_string
+      - name: presentation_detail
+        data_tests:
+          - dbt_utils.at_least_one
+          - dbt_utils.not_empty_string
+      - name: presentation_resume
+        data_tests:
+          - dbt_utils.at_least_one
+          - dbt_utils.not_empty_string
+      - name: siret
+        data_tests:
+          - dbt_utils.at_least_one
           - dbt_utils.not_empty_string
       - name: site_web
         data_tests:
-          - dbt_utils.not_constant
+          - dbt_utils.at_least_one
           - dbt_utils.not_empty_string
       - name: source
         data_tests:
           - dbt_utils.not_empty_string
       - name: telephone
         data_tests:
-          - dbt_utils.not_constant
+          - dbt_utils.at_least_one
           - dbt_utils.not_empty_string
       - name: typologie
         data_tests:
-          - dbt_utils.not_constant
+          - dbt_utils.at_least_one
           - relationships:
               arguments:
                 to: ref('typologies_de_structures')
+                field: value
+
+  - name: stg_dora__structures__labels_autres
+    columns:
+      - name: structure_id
+        data_tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('stg_dora__structures')
+                field: id
+      - name: item
+        data_tests:
+          - not_null
+          - dbt_utils.not_empty_string
+
+  - name: stg_dora__structures__labels_nationaux
+    columns:
+      - name: structure_id
+        data_tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('stg_dora__structures')
+                field: id
+      - name: item
+        data_tests:
+          - not_null
+          - relationships:
+              config:
+                where: "item NOT IN ('siae', 'cpam', 'conseil-departemental', 'slime', 'cma')"
+              arguments:
+                to: ref('labels_nationaux')
                 field: value

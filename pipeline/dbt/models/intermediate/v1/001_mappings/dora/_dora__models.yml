@@ -1,6 +1,55 @@
 version: 2
 
 models:
+  - name: _map_dora__modes_mobilisation
+    columns:
+      - name: mode_orientation
+        data_tests:
+          - not_null
+          - relationships:
+              config:
+                where: "type = 'beneficiaire'"
+              arguments:
+                to: ref('modes_orientation_beneficiaire')
+                field: value
+          - relationships:
+              config:
+                where: "type = 'accompagnateur'"
+              arguments:
+                to: ref('modes_orientation_accompagnateur')
+                field: value
+      - name: mode_mobilisation
+        data_tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('modes_mobilisation_v1')
+                field: value
+
+  - name: _map_dora__reseaux_porteurs__labels_nationaux
+    columns:
+      - name: label_national
+        data_tests:
+          - not_null
+      - name: reseau_porteur
+        data_tests:
+          - relationships:
+              arguments:
+                to: ref('reseaux_porteurs_v1')
+                field: value
+
+  - name: _map_dora__reseaux_porteurs__typologie
+    columns:
+      - name: typologie
+        data_tests:
+          - not_null
+      - name: reseau_porteur
+        data_tests:
+          - relationships:
+              arguments:
+                to: ref('reseaux_porteurs_v1')
+                field: value
+
   - name: int_dora__adresses_v1
     columns:
       - name: id
@@ -31,10 +80,14 @@ models:
                 field: id
       - name: adresse_id
         data_tests:
+          - not_null:
+              config:
+                error_if: ">1500"
           - relationships:
               arguments:
                 to: ref('int_dora__adresses_v1')
                 field: id
+
   - name: int_dora__structures_v1
     data_tests:
       - model_validate:
@@ -50,6 +103,9 @@ models:
           - dbt_utils.not_empty_string
       - name: adresse_id
         data_tests:
+          - not_null:
+              config:
+                error_if: ">150"
           - relationships:
               arguments:
                 to: ref('int_dora__adresses_v1')
