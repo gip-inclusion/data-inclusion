@@ -90,7 +90,7 @@ def create_app(settings: config.Settings) -> fastapi.FastAPI:
 
     @app.get("/robots.txt", include_in_schema=False)
     def get_robots_txt():
-        content = "User-agent: *\nAllow: /api/v0/docs\nDisallow: /\n"
+        content = "User-agent: *\nAllow: /api/docs\nDisallow: /\n"
         return fastapi.Response(content=content, media_type="text/plain")
 
     # redirect legacy /api/v0/docs to version agnostic /api/docs
