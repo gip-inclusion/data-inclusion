@@ -86,7 +86,7 @@ FROM (
     ('tous-tes-possible',                       'tous-tes-possibles'),
     ('tzcld',                                   NULL),
     ('unaf',                                    'unaf'),
-    ('unai',                                    'ai'),
+    ('unai',                                    NULL),
     ('unccas',                                  'ccas-cias'),
     ('unea',                                    'unea'),
     ('unis-cite',                               'unis-cite'),
