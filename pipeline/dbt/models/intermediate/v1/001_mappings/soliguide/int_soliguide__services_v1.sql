@@ -122,15 +122,21 @@ final AS (
                 'envoyer-un-courriel',
                 'telephoner',
                 CASE
-                    WHEN services.different_modalities AND services.modalities__inconditionnel
-                        THEN 'se-presenter'
-                    WHEN lieux.modalities__inconditionnel
+                    WHEN
+                        services.different_modalities AND services.modalities__inconditionnel AND NOT services.modalities__orientation__checked
+                        OR NOT services.different_modalities AND lieux.modalities__inconditionnel AND NOT lieux.modalities__orientation__checked
                         THEN 'se-presenter'
                 END
             ],
             NULL
         )                                                                                     AS "modes_mobilisation",
-        ARRAY['usagers', 'professionnels']                                                    AS "mobilisable_par",
+        CASE
+            WHEN
+                services.different_modalities AND services.modalities__orientation__checked
+                OR NOT services.different_modalities AND lieux.modalities__orientation__checked
+                THEN ARRAY['professionnels']
+            ELSE ARRAY['professionnels', 'usagers']
+        END                                                                                   AS "mobilisable_par",
         ARRAY_TO_STRING(
             CASE
                 WHEN services.different_modalities
