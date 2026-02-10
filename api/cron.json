@@ -1,10 +1,6 @@
 {
     "jobs": [
         {
-            "command": "30 5-22 * * * data-inclusion-api load-inclusion-data",
-            "size": "2XL"
-        },
-        {
             "command": "15 4 * * MON data-inclusion-api import-communes",
             "size": "M"
         },

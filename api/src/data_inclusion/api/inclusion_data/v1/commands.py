@@ -84,6 +84,10 @@ def prepare_load(
 
 
 setup_sql = """
+    -- prevent this transaction from lasting too long
+    -- it will fail rather than blocking other transactions
+    SET LOCAL lock_timeout = '5s';
+
     DROP SCHEMA IF EXISTS load_tmp CASCADE;
     DROP SCHEMA IF EXISTS load_old CASCADE;
 
