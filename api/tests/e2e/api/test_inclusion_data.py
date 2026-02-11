@@ -717,8 +717,14 @@ def test_can_filter_resources_by_slug_departement(api_client, url, factory):
 @pytest.mark.with_token
 @pytest.mark.parametrize("schema_version", ["v0", "v1"])
 @pytest.mark.parametrize("path", ["/structures", "/services"])
-def test_can_filter_resources_by_code_region(api_client, url, factory):
-    resource = factory(code_insee=PARIS["code_insee"])
+def test_can_filter_resources_by_code_region(
+    api_client, url, factory, path, schema_version
+):
+    kwargs = {}
+    if "services" in path and schema_version == "v1":
+        # check a structure whose location is very different from the service
+        kwargs["structure__code_insee"] = STRASBOURG["code_insee"]
+    resource = factory(code_insee=PARIS["code_insee"], **kwargs)
     factory(code_insee=LILLE["code_insee"])
 
     response = api_client.get(
