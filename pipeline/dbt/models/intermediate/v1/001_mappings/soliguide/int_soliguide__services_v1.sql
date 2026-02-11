@@ -114,7 +114,10 @@ final AS (
         lieux.entity_mail                                                                     AS "courriel",
         NULL                                                                                  AS "contact_nom_prenom",
         ARRAY['en-presentiel']                                                                AS "modes_accueil",
-        CAST(NULL AS TEXT [])                                                                 AS "zone_eligibilite",
+        CASE
+            WHEN lieux.position__department_code IS NOT NULL
+                THEN ARRAY[lieux.position__department_code]
+        END                                                                                   AS "zone_eligibilite",
         'departement'                                                                         AS "zone_eligibilite_type",
         NULL                                                                                  AS "lien_mobilisation",
         ARRAY_REMOVE(

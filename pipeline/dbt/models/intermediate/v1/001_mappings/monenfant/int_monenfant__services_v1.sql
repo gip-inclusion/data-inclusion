@@ -15,7 +15,7 @@ WITH creches AS (
     SELECT * FROM {{ ref('stg_monenfant__creches') }}
 ),
 
-zones_eligibilite AS (
+zones_communes_desservies AS (
     SELECT
         communes_desservies.structure_id,
         ARRAY_AGG(DISTINCT communes.code) AS "zone_eligibilite"
@@ -24,6 +24,15 @@ zones_eligibilite AS (
         -- array operator is required to leverage the GIN index on codes_postaux
         ON ARRAY[communes_desservies.code_postal] && communes.codes_postaux
     GROUP BY communes_desservies.structure_id
+),
+
+zones_code_postal_creche AS (
+    SELECT
+        creches.structure_id,
+        ARRAY_AGG(DISTINCT communes.code) AS "zone_eligibilite"
+    FROM creches
+    INNER JOIN {{ ref('stg_decoupage_administratif__communes') }} AS communes ON ARRAY[creches.coordonnees__code_postal] && communes.codes_postaux
+    GROUP BY creches.structure_id
 ),
 
 final AS (
@@ -68,8 +77,10 @@ final AS (
         creches.coordonnees__adresse_mail                                       AS "courriel",
         NULL                                                                    AS "contact_nom_prenom",
         ARRAY['en-presentiel']                                                  AS "modes_accueil",
-        zones_eligibilite.zone_eligibilite                                      AS "zone_eligibilite",
-        NULL                                                                    AS "zone_eligibilite_type",
+        COALESCE(
+            zones_communes_desservies.zone_eligibilite,
+            zones_code_postal_creche.zone_eligibilite
+        )                                                                       AS "zone_eligibilite",
         NULL                                                                    AS "lien_mobilisation",
         NULLIF(ARRAY_REMOVE(
             ARRAY[
@@ -84,7 +95,8 @@ final AS (
         NULL                                                                    AS "nombre_semaines",
         processings.monenfant_opening_hours(creches.service_commun__calendrier) AS "horaires_accueil"
     FROM creches
-    LEFT JOIN zones_eligibilite ON creches.structure_id = zones_eligibilite.structure_id
+    LEFT JOIN zones_communes_desservies ON creches.structure_id = zones_communes_desservies.structure_id
+    LEFT JOIN zones_code_postal_creche ON creches.structure_id = zones_code_postal_creche.structure_id
 )
 
 SELECT * FROM final
