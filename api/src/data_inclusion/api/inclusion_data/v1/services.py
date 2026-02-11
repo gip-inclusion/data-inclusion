@@ -215,7 +215,9 @@ def list_services_query(
         )
 
     if params.region is not None:
-        query = query.join(Commune).options(orm.contains_eager(models.Service.commune_))
+        query = query.join(models.Service.commune_).options(
+            orm.contains_eager(models.Service.commune_)
+        )
         query = query.filter(Commune.region == params.region.code)
 
     if params.code_commune is not None:
