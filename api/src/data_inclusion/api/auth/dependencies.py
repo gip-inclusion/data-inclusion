@@ -1,5 +1,9 @@
 import sentry_sdk
-from starlette.authentication import AuthCredentials, SimpleUser, UnauthenticatedUser
+from starlette.authentication import (
+    AuthCredentials,
+    SimpleUser,
+    UnauthenticatedUser,
+)
 
 import fastapi
 from fastapi import security, status
@@ -33,23 +37,23 @@ async def authenticate(request: fastapi.Request):
         AuthCredentials(),
     )
 
-    # extract token from header
-    http_bearer_instance = security.HTTPBearer()
     try:
-        credentials = await http_bearer_instance(request=request)
+        credentials = await security.HTTPBearer()(request=request)
     except fastapi.HTTPException:
-        credentials = None
-
-    if credentials is None:
         return
 
-    # extract payload from token
     payload = auth.verify_token(credentials.credentials)
-
     if payload is not None:
-        scopes = ["authenticated"]
-        if payload.get("admin", False):
-            scopes += ["admin"]
+        if "created_at" not in payload or "admin" in payload:
+            scopes = []
+            if payload.get("admin", False):
+                scopes += ["admin"]
+            if payload.get("allowed_hosts") or payload.get("allowed_origins"):
+                scopes += ["widget"]
+            else:
+                scopes += ["api"]
+        else:
+            scopes = payload.get("scopes", [])
 
         request.scope["user"], request.scope["auth"] = (
             SimpleUser(username=payload["sub"]),
@@ -60,29 +64,21 @@ async def authenticate(request: fastapi.Request):
 authenticate_dependency = fastapi.Depends(authenticate, use_cache=True)
 
 
-async def authenticated(
-    request: fastapi.Request,
-    _authenticate=authenticate_dependency,
-    _credentials=credentials_dependency,
-) -> None:
-    """Ensure the request is authenticated"""
-    if not request.user.is_authenticated:
-        raise fastapi.HTTPException(status_code=status.HTTP_403_FORBIDDEN)
+def authenticated(required_scopes: list[str]):
+    if not settings.TOKEN_ENABLED:
+        return []
 
-    sentry_sdk.set_user({"username": request.user.username})
+    async def _authenticated(
+        request: fastapi.Request,
+        _authenticate=authenticate_dependency,
+        _credentials=credentials_dependency,
+    ) -> None:
+        if not request.user.is_authenticated:
+            raise fastapi.HTTPException(status_code=status.HTTP_401_UNAUTHORIZED)
 
+        if len(set(request.auth.scopes) & set(required_scopes)) == 0:
+            raise fastapi.HTTPException(status_code=status.HTTP_403_FORBIDDEN)
 
-authenticated_dependency = fastapi.Security(authenticated, scopes=["authenticated"])
+        sentry_sdk.set_user({"username": request.user.username})
 
-
-async def admin(
-    request: fastapi.Request,
-    _authenticated=authenticated_dependency,
-    _credentials=credentials_dependency,
-) -> None:
-    """Ensure the request is authenticated and has admin permissions"""
-    if "admin" not in request.auth.scopes:
-        raise fastapi.HTTPException(status_code=status.HTTP_403_FORBIDDEN)
-
-
-admin_dependency = fastapi.Security(admin, scopes=["admin"])
+    return [fastapi.Security(_authenticated, scopes=required_scopes)]

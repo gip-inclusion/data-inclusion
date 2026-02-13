@@ -1,6 +1,7 @@
 import logging
 
 import jwt
+import pendulum
 
 from data_inclusion.api.config import settings
 
@@ -11,21 +12,21 @@ logger = logging.getLogger(__name__)
 
 def create_access_token(
     subject,
-    admin: bool | None = False,
-    allowed_origins: list[str] | None = None,
+    scopes: list[str] | None = None,
+    allowed_hosts: list[str] | None = None,
 ) -> str:
     payload = {
         "sub": str(subject),
-        "admin": admin,
+        "scopes": scopes or ["api"],
+        "created_at": pendulum.now().isoformat(),
     }
-    if allowed_origins is not None:
-        payload["allowed_origins"] = allowed_origins
-    encoded_jwt = jwt.encode(
+    if allowed_hosts is not None:
+        payload["allowed_hosts"] = allowed_hosts
+    return jwt.encode(
         payload=payload,
         key=settings.SECRET_KEY,
         algorithm=ALGORITHM,
     )
-    return encoded_jwt
 
 
 def verify_token(token: str) -> dict | None:
