@@ -44,7 +44,7 @@ final AS (
         date_maj.date_maj                                                                AS "date_maj",
         FORMAT(
             'https://www.intercariforef.org/formations/%s/organisme-%s.html',
-            SLUGIFY('organismes_formateurs.raison_sociale_formateur'),
+            SLUGIFY(organismes_formateurs.raison_sociale_formateur),
             organismes_formateurs.numero
         )                                                                                AS "lien_source",
         organismes_formateurs.siret_formateur__siret                                     AS "siret",

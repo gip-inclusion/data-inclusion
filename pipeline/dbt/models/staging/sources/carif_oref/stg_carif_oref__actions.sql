@@ -50,10 +50,10 @@ final AS (
             'session',                   actions.data -> 'session'
             -- noqa: enable=layout.spacing
         )                                                                                                                    AS "raw"
-    FROM source
-    INNER JOIN JSONB_PATH_QUERY(source.data, '$.action[*]') AS actions (data) ON TRUE
-    INNER JOIN JSONB_PATH_QUERY(actions.data, '$.organisme\-formateur[*]') AS organismes_formateurs (data) ON TRUE
-    LEFT JOIN JSONB_PATH_QUERY(actions.data, '$.lieu\-de\-formation[*]') AS lieux_de_formation (data) ON TRUE
+    FROM source,
+        JSONB_PATH_QUERY(source.data, '$.action[*]') AS actions (data),
+        JSONB_PATH_QUERY(actions.data, '$.organisme\-formateur[*]') AS organismes_formateurs (data),
+        JSONB_PATH_QUERY(actions.data, '$.lieu\-de\-formation[*]') AS lieux_de_formation (data)
     ORDER BY
         NULLIF(TRIM(actions.data ->> '@numero'), ''),
         (lieux_de_formation.data ->> '@tag') = 'principal' DESC

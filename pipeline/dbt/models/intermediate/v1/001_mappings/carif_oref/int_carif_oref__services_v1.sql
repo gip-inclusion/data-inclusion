@@ -72,8 +72,55 @@ thematiques AS (
     FROM formations
 ),
 
+codes_public_vise AS (
+    SELECT
+        numero_action,
+        ARRAY_AGG(DISTINCT code_public_vise ORDER BY code_public_vise) AS "codes_public_vise"
+    FROM actions__publics
+    GROUP BY numero_action
+),
+
+-- Formations can have many closely related actions with only a few differences, if not identical.
+-- Here we remove actions that are closely related to another action of the same formation.
+-- The columns listed in the following DISTINCT ON clause are the columns that we consider
+-- when determining if two actions are distinct.
+deduplicated_actions AS (
+    SELECT DISTINCT ON (
+        actions.numero_formation,
+        actions.prix_total_ttc,
+        actions.detail_conditions_prise_en_charge,
+        actions.info_public_vise,
+        actions.modalites_recrutement,
+        actions.modalites_enseignement,
+        actions.code_perimetre_recrutement,
+        actions.duree_hebdo,
+        actions.numero_organisme_formateur,
+        actions.hash_coordonnees_lieu_de_formation_principal,
+        codes_public_vise.codes_public_vise
+    ) actions.*
+    FROM actions
+    LEFT JOIN codes_public_vise
+        ON actions.numero = codes_public_vise.numero_action
+    ORDER BY
+        actions.numero_formation ASC,
+        actions.prix_total_ttc ASC,
+        actions.detail_conditions_prise_en_charge ASC,
+        actions.info_public_vise ASC,
+        actions.modalites_recrutement ASC,
+        actions.modalites_enseignement ASC,
+        actions.code_perimetre_recrutement ASC,
+        actions.duree_hebdo ASC,
+        actions.numero_organisme_formateur ASC,
+        actions.hash_coordonnees_lieu_de_formation_principal ASC,
+        codes_public_vise.codes_public_vise ASC,
+
+        -- the following criteria are used to select one action among closely related actions
+        actions.date_maj DESC NULLS LAST, -- most recent action
+        actions.numero ASC -- stability if same date_maj
+),
+
 final AS (
-    SELECT DISTINCT ON (actions.numero, organismes_formateurs.numero)
+    SELECT DISTINCT ON (actions.numero)
         'carif-oref'                                    AS "source",
         COALESCE(actions.date_maj, formations.date_maj) AS "date_maj",
         'carif-oref--' || actions.numero                AS "id",
@@ -82,25 +129,27 @@ final AS (
             coordonnees_organisme_formateur.hash_adresse
         )                                               AS "adresse_id",
         'carif-oref--' || organismes_formateurs.numero  AS "structure_id",
-        -- NOTE(vperron): I don't RTRIM the trailing dot but there are quite a few
         CASE
             WHEN LENGTH(formations.intitule_formation) > 150
                 THEN LEFT(formations.intitule_formation, 149) || '…'
             ELSE formations.intitule_formation
         END                                             AS "nom",
         ARRAY_TO_STRING(
-            ARRAY[
-                '### Objectif de la formation' || E'\n\n' || formations.objectif_formation,
-                '### Contenu de la formation' || E'\n\n' || formations.contenu_formation
-            ],
+            ARRAY_REMOVE(
+                ARRAY[
+                    '### Objectif de la formation' || E'\n\n' || formations.objectif_formation,
+                    '### Contenu de la formation' || E'\n\n' || formations.contenu_formation
+                ],
+                NULL
+            ),
             E'\n\n'
         )                                               AS "description",
-        FORMAT(
+        COALESCE(formations.url_formation[1], FORMAT(
             'https://www.intercariforef.org/formations/%s/formation-%s_%s.html',
-            SLUGIFY('formations.intitule_formation'),
+            SLUGIFY(formations.intitule_formation),
             formations.numero,
             SUBSTRING(actions.numero, 4)
-        )                                               AS "lien_source",
+        ))                                              AS "lien_source",
         'formation'                                     AS "type",
         thematiques.thematiques                         AS "thematiques",
         CASE
@@ -117,7 +166,7 @@ final AS (
             ELSE publics.publics
         END                                             AS "publics",
         actions.info_public_vise                        AS "publics_precisions",
-        NULLIF(actions.conditions_specifiques, '')      AS "conditions_acces",
+        NULL                                            AS "conditions_acces",
         NULLIF(
             ARRAY_REMOVE(
                 ARRAY[
@@ -187,7 +236,7 @@ final AS (
             'formation', formations.raw,
             'action', actions.raw
         )                                               AS "_extra"
-    FROM actions
+    FROM deduplicated_actions AS actions
     INNER JOIN formations
         ON actions.numero_formation = formations.numero
     LEFT JOIN organismes_formateurs
@@ -223,7 +272,6 @@ final AS (
         ON formations.numero = thematiques.numero_formation
     ORDER BY
         actions.numero ASC,
-        organismes_formateurs.numero ASC,
         organismes_formateurs__contacts.type_contact = 3 DESC, -- référent pédagogique
         organismes_formateurs__contacts.type_contact = 0 DESC, -- autre
         organismes_formateurs__contacts.type_contact = 4 DESC -- accueil
