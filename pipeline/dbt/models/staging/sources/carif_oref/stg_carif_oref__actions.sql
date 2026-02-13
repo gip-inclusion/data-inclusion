@@ -56,7 +56,7 @@ final AS (
         JSONB_PATH_QUERY(actions.data, '$.lieu\-de\-formation[*]') AS lieux_de_formation (data)
     ORDER BY
         NULLIF(TRIM(actions.data ->> '@numero'), ''),
-        (lieux_de_formation.data ->> '@tag') = 'principal' DESC -- noqa: references.keywords
+        (lieux_de_formation.data ->> '@tag') = 'principal' DESC
 )
 
 SELECT * FROM final

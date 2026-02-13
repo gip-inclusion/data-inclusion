@@ -12,8 +12,7 @@ final AS (
         source,  -- noqa: structure.unused_join
         JSONB_PATH_QUERY(source.data, '$.action[*]') AS actions (data),
         JSONB_PATH_QUERY(actions.data, '$.organisme\-formateur[*]') AS organismes_formateurs (data),
-        JSONB_PATH_QUERY(organismes_formateurs.data, '$.contact\-formateur[*]') AS contacts_formateurs (data),
-        JSONB_PATH_QUERY(actions.data, '$.lieu\-de\-formation[*]')
+        JSONB_PATH_QUERY(organismes_formateurs.data, '$.contact\-formateur[*]') AS contacts_formateurs (data)
     WHERE
         (contacts_formateurs.data ->> 'coordonnees') IS NOT NULL
 )
