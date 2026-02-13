@@ -36,7 +36,7 @@ final AS (
         'carif-oref'                                                                     AS "source",
         'carif-oref--' || organismes_formateurs.numero                                   AS "id",
         coordonnees.hash_                                                                AS "hash_id",
-        COALESCE(
+        'carif-oref--' || COALESCE(
             coordonnees.hash_adresse,
             coordonnees_lieu_de_formation_principal.hash_adresse
         )                                                                                AS "adresse_id",

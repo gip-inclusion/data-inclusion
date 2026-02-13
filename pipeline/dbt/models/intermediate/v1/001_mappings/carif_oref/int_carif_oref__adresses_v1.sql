@@ -4,7 +4,7 @@ WITH adresses AS (
 
 final AS (
     SELECT
-        adresses.hash_                        AS "id",
+        'carif-oref--' || adresses.hash_      AS "id",
         adresses.ville                        AS "commune",
         adresses.code_insee_commune           AS "code_insee",
         adresses.geolocalisation__longitude   AS "longitude",

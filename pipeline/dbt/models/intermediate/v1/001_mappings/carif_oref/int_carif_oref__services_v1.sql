@@ -77,7 +77,7 @@ final AS (
         'carif-oref'                                    AS "source",
         COALESCE(actions.date_maj, formations.date_maj) AS "date_maj",
         'carif-oref--' || actions.numero                AS "id",
-        COALESCE(
+        'carif-oref--' || COALESCE(
             coordonnees_lieu_de_formation.hash_adresse,
             coordonnees_organisme_formateur.hash_adresse
         )                                               AS "adresse_id",
