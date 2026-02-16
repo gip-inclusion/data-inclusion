@@ -11,6 +11,10 @@ import pytest
         ("<h1>Hello World</h1>", "# Hello World"),
         ("<ul><li>Item 1</li><li>Item 2</li></ul>", "* Item 1\n* Item 2"),
         ("<a href='https://example.com'>Link</a>", "[Link](https://example.com)"),
+        (
+            "<a href='https://example.com'>https://example.com</a>",
+            "[https://example.com](https://example.com)",
+        ),
         ('<img src="data:image/png;base64,XXX=">', ""),
     ],
 )
