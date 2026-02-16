@@ -7,8 +7,8 @@ final AS (
         NULLIF(TRIM(source.data ->> '@numero'), '')                                                                    AS "numero",
         CAST((source.data ->> '@datemaj') AS DATE)                                                                     AS "date_maj",
         NULLIF(RTRIM(TRIM(source.data ->> 'intitule-formation'), '.'), '')                                             AS "intitule_formation",
-        processings.html_to_markdown(NULLIF(NULLIF(TRIM(source.data ->> 'objectif-formation'), ''), 'Non renseigné')) AS "objectif_formation",
-        processings.html_to_markdown(NULLIF(TRIM(source.data ->> 'contenu-formation'), ''))                            AS "contenu_formation",
+        NULLIF(NULLIF(TRIM(processings.html_to_markdown(source.data ->> 'objectif-formation')), ''), 'Non renseigné') AS "objectif_formation",
+        NULLIF(TRIM(processings.html_to_markdown(source.data ->> 'contenu-formation')), '')                            AS "contenu_formation",
         NULLIF(
             ARRAY_REMOVE(
                 ARRAY(

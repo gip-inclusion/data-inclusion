@@ -13,7 +13,7 @@ final AS (
             'internal:',
             'https://www.agefiph.fr'
         )                                                                                                           AS "attributes__field_lien_aide__uri",
-        processings.html_to_markdown(NULLIF(TRIM(data -> 'attributes' -> 'field_solution_detail' ->> 'value'), '')) AS "attributes__field_solution_detail__value",
+        NULLIF(TRIM(processings.html_to_markdown(data -> 'attributes' -> 'field_solution_detail' ->> 'value')), '') AS "attributes__field_solution_detail__value",
         NULLIF(TRIM(data -> 'attributes' ->> 'field_montant_aide'), '')                                             AS "attributes__field_montant_aide",
         CAST(data -> 'attributes' ->> 'field_solution_partenaire' AS BOOLEAN)                                       AS "attributes__field_solution_partenaire",
         data -> 'relationships' -> 'field_profil_associe' -> 'data' ->> 'id'                                        AS "relationships__field_profil_associe__data__id",

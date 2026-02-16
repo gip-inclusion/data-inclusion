@@ -30,7 +30,7 @@ creches AS (
         CAST(data -> 'serviceCommun' -> 'avip' AS BOOLEAN)                                                                             AS "service_commun__avip",
         NULLIF(TRIM(data -> 'serviceCommun' -> 'calendrier' ->> 'joursHorairesText'), '')                                              AS "service_commun__calendrier__jours_horaires_text",
         data -> 'serviceCommun' -> 'calendrier'                                                                                        AS "service_commun__calendrier",
-        processings.html_to_markdown(NULLIF(REGEXP_REPLACE(TRIM(data -> 'serviceAccueil' ->> 'handicap'), '^\W*$', ''), ''))           AS "service_accueil__handicap"
+        NULLIF(REGEXP_REPLACE(TRIM(processings.html_to_markdown(data -> 'serviceAccueil' ->> 'handicap')), '^\W*$', ''), '')           AS "service_accueil__handicap"
     FROM source
 ),
 
