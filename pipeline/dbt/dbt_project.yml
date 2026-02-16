@@ -34,30 +34,7 @@ models:
       +schema: staging
 
       sources:
-        # By default, these models can be materialized as views, because:
-        # - their upstream source tables are loaded with a TRUNCATE.
-        # - they usually contain lightweight transformations.
-        # - they have few downstream tests/models.
-        +materialized: view
-
-        # These specific models are materialized as tables,
-        # because they contain costly transformations and
-        # many downstream tests/models.
-        carif_oref:
-          +materialized: table
-        dora:
-          +materialized: table
-        soliguide:
-          +materialized: table
-        monenfant:
-          +materialized: table
-        reseau_alpha:
-          +materialized: table
-
-      # The following models use table materialization, because:
-      # - their upstream source tables are (currently) loaded with DROP/CREATE.
-      # - using views would require cascading, which could impact downstream models.
-      # - they defined indexes.
+        +materialized: table
       decoupage_administratif:
         +materialized: table
       sirene:
