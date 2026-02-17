@@ -1,3 +1,7 @@
+import datetime
+import logging
+
+import pydantic
 import sentry_sdk
 from starlette.authentication import (
     AuthCredentials,
@@ -11,12 +15,27 @@ from fastapi import security, status
 from data_inclusion.api import auth
 from data_inclusion.api.config import settings
 
+logger = logging.getLogger(__name__)
+
 credentials_dependency = (
     fastapi.Depends(security.HTTPBearer(), use_cache=True)
     if settings.TOKEN_ENABLED
     # hide auth from openapi UI
     else fastapi.Depends(lambda: None)
 )
+
+
+class LegacyTokenPayload(pydantic.BaseModel):
+    sub: str
+    admin: bool | None = False
+    allowed_origins: list[str] | None = None
+
+
+class TokenPayload(pydantic.BaseModel):
+    sub: str
+    scopes: list[str] = []
+    created_at: datetime.datetime
+    allowed_hosts: list[str] | None = None
 
 
 async def authenticate(request: fastapi.Request):
@@ -43,22 +62,29 @@ async def authenticate(request: fastapi.Request):
         return
 
     payload = auth.verify_token(credentials.credentials)
-    if payload is not None:
-        if "created_at" not in payload or "admin" in payload:
-            scopes = []
-            if payload.get("admin", False):
-                scopes += ["admin"]
-            if payload.get("allowed_hosts") or payload.get("allowed_origins"):
-                scopes += ["widget"]
-            else:
-                scopes += ["api"]
-        else:
-            scopes = payload.get("scopes", [])
+    if payload is None:
+        return
 
-        request.scope["user"], request.scope["auth"] = (
-            SimpleUser(username=payload["sub"]),
-            AuthCredentials(scopes=scopes),
-        )
+    try:
+        payload = TokenPayload.model_validate(payload)
+        scopes = payload.scopes
+    except pydantic.ValidationError:
+        try:
+            payload = LegacyTokenPayload.model_validate(payload)
+            if payload.allowed_origins:
+                scopes = ["widget"]
+            else:
+                scopes = ["api"]
+                if payload.admin:
+                    scopes.append("admin")
+        except pydantic.ValidationError:
+            logger.error("Invalid token payload: %s", payload)
+            return
+
+    request.scope["user"], request.scope["auth"] = (
+        SimpleUser(username=payload.sub),
+        AuthCredentials(scopes=scopes),
+    )
 
 
 authenticate_dependency = fastapi.Depends(authenticate, use_cache=True)
@@ -66,7 +92,7 @@ authenticate_dependency = fastapi.Depends(authenticate, use_cache=True)
 
 def authenticated(required_scopes: list[str]):
     if not settings.TOKEN_ENABLED:
-        return []
+        return None
 
     async def _authenticated(
         request: fastapi.Request,
@@ -81,4 +107,4 @@ def authenticated(required_scopes: list[str]):
 
         sentry_sdk.set_user({"username": request.user.username})
 
-    return [fastapi.Security(_authenticated, scopes=required_scopes)]
+    return fastapi.Security(_authenticated, scopes=required_scopes)

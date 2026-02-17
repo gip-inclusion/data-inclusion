@@ -28,7 +28,7 @@ def create_token(email: str) -> Token:
 @router.post(
     "/create_token",
     response_model=Token,
-    dependencies=auth.authenticated(required_scopes=["admin"]),
+    dependencies=[auth.authenticated(required_scopes=["admin"])],
 )
 def create_token_endpoint(
     token_creation_data: Annotated[TokenCreationData, fastapi.Body()],

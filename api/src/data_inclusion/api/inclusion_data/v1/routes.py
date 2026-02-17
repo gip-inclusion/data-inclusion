@@ -16,7 +16,7 @@ router = fastapi.APIRouter(tags=["v1 | Données"])
     "/structures",
     response_model=pagination.Page[schemas.ListedStructure],
     summary="Lister les structures consolidées",
-    dependencies=auth.authenticated(required_scopes=["api"]),
+    dependencies=[auth.authenticated(required_scopes=["api"])],
 )
 def list_structures_endpoint(
     request: fastapi.Request,
@@ -46,7 +46,7 @@ def list_structures_endpoint(
     "/structures/{id}",
     response_model=schemas.DetailedStructure,
     summary="Détailler une structure",
-    dependencies=auth.authenticated(required_scopes=["api"]),
+    dependencies=[auth.authenticated(required_scopes=["api"])],
 )
 def retrieve_structure_endpoint(
     request: fastapi.Request,
@@ -74,7 +74,7 @@ def retrieve_structure_endpoint(
     "/sources",
     response_model=list[schemas.Source],
     summary="Lister les sources consolidées",
-    dependencies=auth.authenticated(required_scopes=["api"]),
+    dependencies=[auth.authenticated(required_scopes=["api"])],
 )
 def list_sources_endpoint():
     return services.list_sources()
@@ -84,7 +84,7 @@ def list_sources_endpoint():
     "/services",
     response_model=pagination.Page[schemas.Service],
     summary="Lister les services consolidés",
-    dependencies=auth.authenticated(required_scopes=["api"]),
+    dependencies=[auth.authenticated(required_scopes=["api"])],
 )
 def list_services_endpoint(
     request: fastapi.Request,
@@ -121,7 +121,7 @@ def list_services_endpoint(
     "/services/{id}",
     response_model=schemas.DetailedService,
     summary="Détailler un service",
-    dependencies=auth.authenticated(required_scopes=["api"]),
+    dependencies=[auth.authenticated(required_scopes=["api"])],
 )
 def retrieve_service_endpoint(
     request: fastapi.Request,
@@ -150,7 +150,7 @@ def retrieve_service_endpoint(
     "/search/services",
     response_model=pagination.Page[schemas.ServiceSearchResult],
     summary="Rechercher des services",
-    dependencies=auth.authenticated(required_scopes=["api"]),
+    dependencies=[auth.authenticated(required_scopes=["api"])],
 )
 def search_services_endpoint(
     request: fastapi.Request,

@@ -51,8 +51,8 @@ def cli(ctx: click.Context, verbose: int):
 )
 def _generate_token_for_user(
     email: str,
-    scopes: tuple[str],
-    allowed_hosts: tuple[str],
+    scopes: list[str],
+    allowed_hosts: list[str],
 ):
     """Generate a token associated with the given email."""
     scopes_list = list(scopes) if scopes else None
@@ -64,7 +64,7 @@ def _generate_token_for_user(
     )
 
 
-def get_path(value: str, version: Literal["v0", "v1"]) -> Path:
+def get_path(value: str | None, version: Literal["v0", "v1"]) -> Path:
     """Get a valid local path to the target dataset."""
 
     if value is not None and Path(value).exists():
