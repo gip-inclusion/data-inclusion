@@ -22,6 +22,7 @@ class HasAddress:
     commune: Mapped[str | None]
     longitude: Mapped[float | None]
     latitude: Mapped[float | None]
+    adresse_certifiee: Mapped[bool] = mapped_column("_has_valid_address", default=False)
 
 
 class Structure(HasAddress, Base):
