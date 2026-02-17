@@ -68,7 +68,7 @@ def test_create_token_unauthorized(api_client):
             ["example.com"],
             {
                 "sub": "widget@example.com",
-                "scopes": ["api"],
+                "scopes": ["widget"],
                 "created_at": ANY,
                 "allowed_hosts": ["example.com"],
             },
@@ -78,7 +78,7 @@ def test_create_token_unauthorized(api_client):
             ["sub.example.com"],
             {
                 "sub": "widget@example.com",
-                "scopes": ["api"],
+                "scopes": ["widget"],
                 "created_at": ANY,
                 "allowed_hosts": ["sub.example.com"],
             },

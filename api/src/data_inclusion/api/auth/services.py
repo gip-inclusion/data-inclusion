@@ -15,9 +15,10 @@ def create_access_token(
     scopes: list[str] | None = None,
     allowed_hosts: list[str] | None = None,
 ) -> str:
+    default_scopes = ["widget"] if allowed_hosts else ["api"]
     payload = {
         "sub": str(subject),
-        "scopes": scopes or ["api"],
+        "scopes": scopes or default_scopes,
         "created_at": pendulum.now().isoformat(),
     }
     if allowed_hosts is not None:
