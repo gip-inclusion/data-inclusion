@@ -16,6 +16,7 @@ def html_to_markdown(content: str | None) -> str | None:
         return content
 
     return markdownify.markdownify(
+        autolinks=False,
         html=content,
         bullets="*",
         heading_style="ATX",  # use # for headings
