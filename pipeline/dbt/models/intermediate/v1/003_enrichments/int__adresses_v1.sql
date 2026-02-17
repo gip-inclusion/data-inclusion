@@ -12,60 +12,34 @@ communes AS (
 
 adresses_geocodees AS (
     SELECT
-        adresses.id                 AS "id",
-        adresses.complement_adresse AS "complement_adresse",
+        adresses.id                                            AS "id",
+        adresses.complement_adresse                            AS "complement_adresse",
         CASE
             WHEN geocodages.type = 'municipality'
                 THEN adresses.adresse
-            ELSE geocodages.adresse
-        END                         AS "adresse",
-        geocodages.longitude        AS "longitude",
-        geocodages.latitude         AS "latitude",
-        geocodages.commune          AS "commune",
-        geocodages.code_postal      AS "code_postal",
-        geocodages.code_commune     AS "code_insee",
-        geocodages.score            AS "score_geocodage"
+            ELSE COALESCE(geocodages.adresse, adresses.adresse)
+        END                                                    AS "adresse",
+        COALESCE(geocodages.longitude, adresses.longitude)     AS "longitude",
+        COALESCE(geocodages.latitude, adresses.latitude)       AS "latitude",
+        COALESCE(geocodages.commune, adresses.commune)         AS "commune",
+        COALESCE(geocodages.code_postal, adresses.code_postal) AS "code_postal",
+        COALESCE(geocodages.code_commune, adresses.code_insee) AS "code_insee",
+        geocodages.score > 0.75                                AS "_has_valid_address"
     FROM adresses
     LEFT JOIN geocodages
-        ON adresses.id = geocodages.adresse_id
-    WHERE geocodages.score > 0.75
-),
-
-adresses_originales AS (
-    SELECT
-        adresses.id                 AS "id",
-        adresses.complement_adresse AS "complement_adresse",
-        adresses.adresse            AS "adresse",
-        adresses.longitude          AS "longitude",
-        adresses.latitude           AS "latitude",
-        adresses.commune            AS "commune",
-        adresses.code_postal        AS "code_postal",
-        adresses.code_insee         AS "code_insee",
-        CAST(NULL AS FLOAT)         AS "score_geocodage"
-    FROM adresses
-    WHERE SPLIT_PART(adresses.id, '--', 1) = 'dora'
-),
-
-adresses_finales AS (
-    SELECT DISTINCT ON (id) *
-    FROM (
-        SELECT * FROM adresses_geocodees
-        UNION ALL
-        SELECT * FROM adresses_originales
-    )
-    ORDER BY
-        id ASC,
-        score_geocodage DESC NULLS LAST
+        ON
+            adresses.id = geocodages.adresse_id
+            AND geocodages.score > 0.75
 ),
 
 final AS (
     SELECT
-        adresses_finales.*,
+        adresses_geocodees.*,
         communes.code_departement,
         communes.code_region,
         communes.code_epci
-    FROM adresses_finales
-    LEFT JOIN communes ON adresses_finales.code_insee = communes.code
+    FROM adresses_geocodees
+    LEFT JOIN communes ON adresses_geocodees.code_insee = communes.code
 )
 
 SELECT * FROM final

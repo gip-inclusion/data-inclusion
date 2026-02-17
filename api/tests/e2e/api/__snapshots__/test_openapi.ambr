@@ -35,6 +35,11 @@
               ],
               "title": "Adresse"
             },
+            "adresse_certifiee": {
+              "description": "Indique si l'adresse  de la structure a été certifiée par géocodage.\n\nLorsque `true`, les champs d'adresse (adresse, commune,\ncode_postal, code_insee, longitude, latitude) proviennent\ndu résultat de géocodage via la BAN (Base Adresse Nationale)\n\nLorsque `false`, les champs d'adresse contiennent les valeurs\noriginales fournies par le producteur de données.\n",
+              "title": "Adresse Certifiee",
+              "type": "boolean"
+            },
             "code_insee": {
               "anyOf": [
                 {
@@ -285,7 +290,8 @@
             "source",
             "id",
             "nom",
-            "date_maj"
+            "date_maj",
+            "adresse_certifiee"
           ],
           "title": "BaseStructure",
           "type": "object"
@@ -539,6 +545,11 @@
                 }
               ],
               "title": "Adresse"
+            },
+            "adresse_certifiee": {
+              "description": "Indique si l'adresse  du service a été certifiée par géocodage.\n\nLorsque `true`, les champs d'adresse (adresse, commune,\ncode_postal, code_insee, longitude, latitude) proviennent\ndu résultat de géocodage via la BAN (Base Adresse Nationale)\n\nLorsque `false`, les champs d'adresse contiennent les valeurs\noriginales fournies par le producteur de données.\n",
+              "title": "Adresse Certifiee",
+              "type": "boolean"
             },
             "code_insee": {
               "anyOf": [
@@ -1083,6 +1094,7 @@
             "nom",
             "description",
             "date_maj",
+            "adresse_certifiee",
             "score_qualite",
             "structure"
           ],
@@ -1119,6 +1131,11 @@
                 }
               ],
               "title": "Adresse"
+            },
+            "adresse_certifiee": {
+              "description": "Indique si l'adresse  de la structure a été certifiée par géocodage.\n\nLorsque `true`, les champs d'adresse (adresse, commune,\ncode_postal, code_insee, longitude, latitude) proviennent\ndu résultat de géocodage via la BAN (Base Adresse Nationale)\n\nLorsque `false`, les champs d'adresse contiennent les valeurs\noriginales fournies par le producteur de données.\n",
+              "title": "Adresse Certifiee",
+              "type": "boolean"
             },
             "code_insee": {
               "anyOf": [
@@ -1393,6 +1410,7 @@
             "id",
             "nom",
             "date_maj",
+            "adresse_certifiee",
             "score_qualite",
             "doublons",
             "services"
@@ -1482,6 +1500,11 @@
                 }
               ],
               "title": "Adresse"
+            },
+            "adresse_certifiee": {
+              "description": "Indique si l'adresse  de la structure a été certifiée par géocodage.\n\nLorsque `true`, les champs d'adresse (adresse, commune,\ncode_postal, code_insee, longitude, latitude) proviennent\ndu résultat de géocodage via la BAN (Base Adresse Nationale)\n\nLorsque `false`, les champs d'adresse contiennent les valeurs\noriginales fournies par le producteur de données.\n",
+              "title": "Adresse Certifiee",
+              "type": "boolean"
             },
             "code_insee": {
               "anyOf": [
@@ -1749,6 +1772,7 @@
             "id",
             "nom",
             "date_maj",
+            "adresse_certifiee",
             "score_qualite",
             "doublons"
           ],
@@ -2087,6 +2111,11 @@
                 }
               ],
               "title": "Adresse"
+            },
+            "adresse_certifiee": {
+              "description": "Indique si l'adresse  du service a été certifiée par géocodage.\n\nLorsque `true`, les champs d'adresse (adresse, commune,\ncode_postal, code_insee, longitude, latitude) proviennent\ndu résultat de géocodage via la BAN (Base Adresse Nationale)\n\nLorsque `false`, les champs d'adresse contiennent les valeurs\noriginales fournies par le producteur de données.\n",
+              "title": "Adresse Certifiee",
+              "type": "boolean"
             },
             "code_insee": {
               "anyOf": [
@@ -2628,6 +2657,7 @@
             "nom",
             "description",
             "date_maj",
+            "adresse_certifiee",
             "score_qualite"
           ],
           "title": "Service",
