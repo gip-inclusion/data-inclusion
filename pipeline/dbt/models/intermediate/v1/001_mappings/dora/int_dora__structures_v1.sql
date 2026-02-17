@@ -20,7 +20,7 @@ reseaux_from_typologie AS (
         structures.id AS "structure_id",
         map.reseau_porteur
     FROM structures
-    INNER JOIN {{ ref('_map_dora__reseaux_porteurs_typologie') }} AS map
+    INNER JOIN {{ ref('_map_dora__reseaux_porteurs__typologie') }} AS map
         ON structures.typologie = map.typologie
 ),
 

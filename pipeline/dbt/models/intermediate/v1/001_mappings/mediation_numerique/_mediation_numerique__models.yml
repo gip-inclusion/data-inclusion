@@ -133,5 +133,5 @@ models:
           - not_null
           - relationships:
               arguments:
-                to: ref('types_v1')
+                to: ref('types_de_services_v1')
                 field: value
