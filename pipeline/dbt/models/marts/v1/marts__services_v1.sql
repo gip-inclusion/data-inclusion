@@ -25,7 +25,9 @@ scores AS (
 ),
 
 adresses AS (
-    SELECT id
+    SELECT
+        id,
+        _has_valid_address
     FROM {{ ref('int__adresses_v1') }}
 ),
 
@@ -40,11 +42,11 @@ final AS (
                 ]
             )
         }},
-        scores.score                                                               AS "score_qualite",
-        CASE WHEN services.adresse_id IS NOT NULL THEN adresses.id IS NOT NULL END AS "_has_valid_address",
-        courriels_personnels.courriel IS NOT NULL                                  AS "_has_pii",
-        services.source NOT IN ('soliguide', 'agefiph')                            AS "_in_opendata",
-        erreurs.id IS NULL                                                         AS "_is_valid"
+        scores.score                                    AS "score_qualite",
+        COALESCE(adresses._has_valid_address, FALSE)    AS "_has_valid_address",
+        courriels_personnels.courriel IS NOT NULL       AS "_has_pii",
+        services.source NOT IN ('soliguide', 'agefiph') AS "_in_opendata",
+        erreurs.id IS NULL                              AS "_is_valid"
     FROM services
     LEFT JOIN courriels_personnels ON services.courriel = courriels_personnels.courriel
     LEFT JOIN scores ON services.id = scores.service_id

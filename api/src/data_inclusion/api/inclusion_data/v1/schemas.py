@@ -17,6 +17,22 @@ class Source(BaseModel):
 class Service(schema.Service):
     model_config = ConfigDict(from_attributes=True, populate_by_name=True)
 
+    adresse_certifiee: Annotated[
+        bool,
+        Field(
+            description=dedent("""\
+                Indique si l'adresse  du service a été certifiée par géocodage.
+
+                Lorsque `true`, les champs d'adresse (adresse, commune,
+                code_postal, code_insee, longitude, latitude) proviennent
+                du résultat de géocodage via la BAN (Base Adresse Nationale)
+
+                Lorsque `false`, les champs d'adresse contiennent les valeurs
+                originales fournies par le producteur de données.
+                """),
+        ),
+    ]
+
     score_qualite: Annotated[
         float,
         Field(
@@ -44,6 +60,22 @@ class Service(schema.Service):
 
 class BaseStructure(schema.Structure):
     model_config = ConfigDict(from_attributes=True, populate_by_name=True)
+
+    adresse_certifiee: Annotated[
+        bool,
+        Field(
+            description=dedent("""\
+                Indique si l'adresse  de la structure a été certifiée par géocodage.
+
+                Lorsque `true`, les champs d'adresse (adresse, commune,
+                code_postal, code_insee, longitude, latitude) proviennent
+                du résultat de géocodage via la BAN (Base Adresse Nationale)
+
+                Lorsque `false`, les champs d'adresse contiennent les valeurs
+                originales fournies par le producteur de données.
+                """),
+        ),
+    ]
 
 
 class DetailedService(Service):
