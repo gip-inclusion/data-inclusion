@@ -108,7 +108,7 @@ mediateurs AS (
         NULLIF(TRIM(CONCAT_WS(' ', prenom, nom)), '') AS "contact_nom_prenom",
         email
     FROM {{ ref('stg_mediation_numerique__structures__mediateurs') }}
-    ORDER BY structure_id, NULLIF(TRIM(CONCAT_WS(' ', prenom, nom)), '')
+    ORDER BY structure_id, NULLIF(TRIM(CONCAT_WS(' ', prenom, nom)), ''), email
 ),
 
 final AS (
