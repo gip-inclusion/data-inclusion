@@ -1,5 +1,4 @@
-from airflow.decorators import dag, task, task_group
-from airflow.models.baseoperator import chain
+from airflow.sdk import chain, dag, task, task_group
 
 from data_inclusion.pipeline import sources
 from data_inclusion.pipeline.common import dags, s3, tasks

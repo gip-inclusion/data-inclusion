@@ -1,8 +1,7 @@
 import pendulum
 
-from airflow.decorators import dag, task
-from airflow.models.baseoperator import chain
-from airflow.utils.trigger_rule import TriggerRule
+from airflow.sdk import Connection, chain, dag, task
+from airflow.task.trigger_rule import TriggerRule
 
 from data_inclusion.pipeline.common import dags, dbt, tasks
 
@@ -17,7 +16,6 @@ def import_data():
     import tempfile
     from pathlib import Path
 
-    from airflow.models import Connection
     from airflow.providers.amazon.aws.fs import s3 as s3fs
     from airflow.providers.amazon.aws.hooks import s3
 

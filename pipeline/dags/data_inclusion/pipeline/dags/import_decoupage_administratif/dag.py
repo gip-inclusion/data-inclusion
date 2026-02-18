@@ -1,5 +1,4 @@
-from airflow.decorators import dag, task
-from airflow.models.baseoperator import chain
+from airflow.sdk import chain, dag, task
 
 from data_inclusion.pipeline.common import dags, dbt, tasks
 
@@ -45,16 +44,15 @@ def extract_and_load(schema: str):
                 ]
                 else None,
             )
-            conn.execute(
-                f"""\
-                CREATE TABLE IF NOT EXISTS {fq_table_name}
-                (LIKE {fq_table_name}_tmp);
+
+        pg_hook.run(
+            f"""\
+                CREATE TABLE IF NOT EXISTS {fq_table_name} (LIKE {fq_table_name}_tmp);
                 TRUNCATE {fq_table_name};
-                INSERT INTO {fq_table_name}
-                (SELECT * FROM {fq_table_name}_tmp);
+                INSERT INTO {fq_table_name} (SELECT * FROM {fq_table_name}_tmp);
                 DROP TABLE {fq_table_name}_tmp;
-                """
-            )
+            """
+        )
 
 
 @dag(

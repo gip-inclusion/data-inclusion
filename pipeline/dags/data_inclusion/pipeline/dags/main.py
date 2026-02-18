@@ -1,9 +1,8 @@
 from pathlib import Path
 from typing import Literal
 
-from airflow.decorators import dag, task, task_group
-from airflow.models.baseoperator import chain
-from airflow.utils.trigger_rule import TriggerRule
+from airflow.sdk import chain, dag, task, task_group
+from airflow.task.trigger_rule import TriggerRule
 
 from data_inclusion.pipeline.common import dags, dbt, s3, tasks
 
