@@ -72,3 +72,4 @@ variable "stack_version" {
   description = "Version (e.g. sha or semver) of the stack services to deploy"
   type        = string
 }
+

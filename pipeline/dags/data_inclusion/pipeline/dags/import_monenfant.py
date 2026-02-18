@@ -1,7 +1,6 @@
 from datetime import timedelta
 
-from airflow.decorators import dag, task
-from airflow.models.baseoperator import chain
+from airflow.sdk import Variable, chain, dag, task
 
 from data_inclusion.pipeline.common import dags, s3, tasks
 
@@ -48,7 +47,6 @@ def extract(city_code: str, commune: str, region: str, to_s3_path: str):
     import io
     import os
 
-    from airflow.models import Variable
     from airflow.providers.amazon.aws.hooks import s3
 
     from data_inclusion.pipeline.sources import monenfant

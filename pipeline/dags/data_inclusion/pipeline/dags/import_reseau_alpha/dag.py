@@ -1,7 +1,4 @@
-from pathlib import Path
-
-from airflow.decorators import dag, task
-from airflow.models.baseoperator import chain
+from airflow.sdk import chain, dag, task
 
 from data_inclusion.pipeline.common import dags, s3, tasks
 
@@ -17,7 +14,9 @@ S3_PATH = s3.get_key_for_raw_data(source_id=SOURCE_ID)
     venv_cache_path="/tmp/",
     retries=1,
 )
-def extract(to_path: Path):
+def extract(to_path: str):
+    from pathlib import Path
+
     import httpx
     import pandas as pd
 
@@ -30,7 +29,7 @@ def extract(to_path: Path):
     response.raise_for_status()
     cartographie_data = response.json()
 
-    s3.to_s3(path=to_path / "cartographie.json", data=cartographie_data)
+    s3.to_s3(path=Path(to_path) / "cartographie.json", data=cartographie_data)
 
     structures_df = pd.json_normalize(cartographie_data["structures"])
 
@@ -40,7 +39,7 @@ def extract(to_path: Path):
         response = httpx.get(row["url"])
         response.raise_for_status()
         s3.to_s3(
-            path=to_path / "structures" / f"{row['id']}.html",
+            path=Path(to_path) / "structures" / f"{row['id']}.html",
             data=response.content,
         )
 
@@ -51,7 +50,7 @@ def extract(to_path: Path):
     venv_cache_path="/tmp/",
     retries=1,
 )
-def load(from_path: Path, schema_name: str):
+def load(from_path: str, schema_name: str):
     import json
     import tempfile
     from pathlib import Path
@@ -67,7 +66,7 @@ def load(from_path: Path, schema_name: str):
     pg_hook = postgres.PostgresHook(postgres_conn_id="pg")
     s3_hook = s3_hooks.S3Hook(aws_conn_id="s3")
 
-    with s3.from_s3(path=from_path / "cartographie.json").open() as f:
+    with s3.from_s3(path=Path(from_path) / "cartographie.json").open() as f:
         cartographie_data = json.load(f)
 
     structures_df = pd.DataFrame.from_records(cartographie_data["structures"])
@@ -77,7 +76,7 @@ def load(from_path: Path, schema_name: str):
 
     pages_data = []
     with tempfile.TemporaryDirectory() as tmpdir:
-        for key in s3_hook.list_keys(prefix=str(from_path / "structures")):
+        for key in s3_hook.list_keys(prefix=str(Path(from_path) / "structures")):
             path = Path(
                 s3_hook.download_file(
                     key=key, local_path=tmpdir, preserve_file_name=True
@@ -101,8 +100,8 @@ def load(from_path: Path, schema_name: str):
 def import_reseau_alpha():
     chain(
         tasks.create_schema(name=SCHEMA_NAME),
-        extract(to_path=S3_PATH),
-        load(from_path=S3_PATH, schema_name=SCHEMA_NAME),
+        extract(to_path=str(S3_PATH)),
+        load(from_path=str(S3_PATH), schema_name=SCHEMA_NAME),
     )
 
 

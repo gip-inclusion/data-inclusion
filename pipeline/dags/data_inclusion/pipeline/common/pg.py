@@ -38,25 +38,13 @@ def to_pg(
             dtype={"data": JSONB},
         )
 
-        # ensure destination table exists and has the right format.
-        # Legacy columns are notably dropped.
-        # TODO: remove `DROP COLUMN` statements after some time
-        conn.execute(
+    hook.run(
+        [
             f"""
-            CREATE TABLE IF NOT EXISTS {fqtn} (data JSONB);
-            ALTER TABLE {fqtn} DROP COLUMN IF EXISTS _di_batch_id CASCADE;
-            ALTER TABLE {fqtn} DROP COLUMN IF EXISTS _di_source_id CASCADE;
-            ALTER TABLE {fqtn} DROP COLUMN IF EXISTS _di_stream_id CASCADE;
-            ALTER TABLE {fqtn} DROP COLUMN IF EXISTS _di_source_url CASCADE;
-            ALTER TABLE {fqtn} DROP COLUMN IF EXISTS _di_stream_s3_key CASCADE;
-            ALTER TABLE {fqtn} DROP COLUMN IF EXISTS _di_logical_date CASCADE;
+                CREATE TABLE IF NOT EXISTS {fqtn} (data JSONB);
+                TRUNCATE {fqtn};
+                INSERT INTO {fqtn} SELECT * FROM {fqtn}_tmp;
+                DROP TABLE {fqtn}_tmp;
             """
-        )
-
-        # copy data into destination table
-        conn.execute(
-            f"""
-            TRUNCATE {fqtn};
-            INSERT INTO {fqtn} SELECT * FROM {fqtn}_tmp;
-            DROP TABLE {fqtn}_tmp;"""
-        )
+        ]
+    )

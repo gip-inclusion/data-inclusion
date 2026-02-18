@@ -1,4 +1,4 @@
-FROM apache/airflow:2.11.0-python3.12 AS runtime-image
+FROM apache/airflow:3.1.7-python3.12 AS runtime-image
 
 ENV PYTHONUNBUFFERED=1
 ENV PYTHONDONTWRITEBYTECODE=1
@@ -20,7 +20,7 @@ USER airflow
 COPY requirements requirements
 RUN uv --no-cache pip install -r requirements/airflow/requirements.txt
 
-RUN uv venv venvs/tasks
+RUN uv --no-cache venv venvs/tasks
 RUN uv --no-cache pip install --python venvs/tasks/bin/python -r requirements/tasks/requirements.txt
 
 COPY --chown=airflow:0 pyproject.toml pyproject.toml
@@ -30,7 +30,7 @@ COPY --chown=airflow:0 tests tests
 
 # setup dbt
 USER airflow
-RUN uv venv venvs/dbt
+RUN uv --no-cache venv venvs/dbt
 RUN uv --no-cache pip install --python venvs/dbt/bin/python dbt-postgres dbt-core==1.*
 RUN uv --no-cache run --no-project --python venvs/dbt/bin/python dbt deps --project-dir dbt
 

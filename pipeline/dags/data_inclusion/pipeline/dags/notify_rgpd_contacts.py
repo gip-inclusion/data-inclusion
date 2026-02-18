@@ -1,4 +1,4 @@
-from airflow.decorators import dag, task
+from airflow.sdk import Variable, dag, task
 
 from data_inclusion.pipeline.common import dags, tasks
 
@@ -7,7 +7,6 @@ from data_inclusion.pipeline.common import dags, tasks
 def send_rgpd_notice():
     import time
 
-    from airflow.models import Variable
     from airflow.providers.postgres.hooks import postgres
 
     from data_inclusion.pipeline.sources import brevo
