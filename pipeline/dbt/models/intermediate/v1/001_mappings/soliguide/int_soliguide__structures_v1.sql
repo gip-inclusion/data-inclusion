@@ -7,13 +7,11 @@ adresses AS (
 ),
 
 phones AS (
-    SELECT * FROM {{ ref('stg_soliguide__phones') }}
-),
-
-filtered_phones AS (
-    -- FIXME: di schema only allows a single phone number, but soliguide can have more
     SELECT DISTINCT ON (lieu_id) *
-    FROM phones
+    FROM {{ ref('stg_soliguide__phones') }}
+    ORDER BY
+        lieu_id ASC,
+        label <% 'Accueil' DESC
 ),
 
 sources AS (
@@ -41,7 +39,7 @@ final AS (
         lieux.updated_at                                  AS "date_maj",
         'https://soliguide.fr/fr/fiche/' || lieux.seo_url AS "lien_source",
         NULL                                              AS "siret",
-        filtered_phones.phone_number                      AS "telephone",
+        phones.phone_number                               AS "telephone",
         lieux.entity_mail                                 AS "courriel",
         lieux.entity_website                              AS "site_web",
         ARRAY_TO_STRING(
@@ -62,7 +60,7 @@ final AS (
         reseaux_porteurs.reseaux_porteurs                 AS "reseaux_porteurs"
     FROM lieux
     LEFT JOIN adresses ON ('soliguide--' || lieux.id) = adresses.id
-    LEFT JOIN filtered_phones ON lieux.id = filtered_phones.lieu_id
+    LEFT JOIN phones ON lieux.id = phones.lieu_id
     LEFT JOIN reseaux_porteurs ON lieux.id = reseaux_porteurs.lieu_id
 )
 

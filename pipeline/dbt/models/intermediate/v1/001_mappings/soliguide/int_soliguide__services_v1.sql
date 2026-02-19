@@ -15,13 +15,11 @@ categories AS (
 ),
 
 phones AS (
-    SELECT * FROM {{ ref('stg_soliguide__phones') }}
-),
-
-filtered_phones AS (
-    -- FIXME: di schema only allows a single phone number, but soliguide can have more
     SELECT DISTINCT ON (lieu_id) *
-    FROM phones
+    FROM {{ ref('stg_soliguide__phones') }}
+    ORDER BY
+        lieu_id ASC,
+        label <% 'Accueil' DESC
 ),
 
 thematiques AS (
@@ -110,7 +108,7 @@ final AS (
             E'\n\n'
         )                                                                                     AS "publics_precisions",
         COALESCE(services.modalities__other, lieux.modalities__other)                         AS "conditions_acces",
-        filtered_phones.phone_number                                                          AS "telephone",
+        phones.phone_number                                                                   AS "telephone",
         lieux.entity_mail                                                                     AS "courriel",
         NULL                                                                                  AS "contact_nom_prenom",
         ARRAY['en-presentiel']                                                                AS "modes_accueil",
@@ -171,7 +169,7 @@ final AS (
     LEFT JOIN categories ON services.category = categories.code
     LEFT JOIN {{ ref('_map_soliguide__types_v1') }} AS mappings_types ON services.category = mappings_types.category
     LEFT JOIN thematiques ON services.id = thematiques.id
-    LEFT JOIN filtered_phones ON services.lieu_id = filtered_phones.lieu_id
+    LEFT JOIN phones ON services.lieu_id = phones.lieu_id
     -- remove services without mapped thematiques which are assumed irrelevant
     WHERE thematiques.thematiques IS NOT NULL
 )
