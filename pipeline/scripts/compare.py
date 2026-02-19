@@ -23,7 +23,15 @@ app = typer.Typer()
 
 
 def read(path: Path) -> pd.DataFrame:
-    return pd.read_parquet(path).replace({np.nan: None})
+    match path.suffix:
+        case ".parquet":
+            df = pd.read_parquet(path)
+        case ".json":
+            df = pd.read_json(path, dtype=False)
+        case _:
+            raise ValueError(f"Unsupported file format: {path.suffix}")
+
+    return df.replace({np.nan: None})
 
 
 def prepare(
@@ -117,7 +125,10 @@ def print_diff_summary(
     meta_columns: list[str],
 ) -> None:
     count_by_type_df = (
-        diff_df.groupby(by=meta_columns + ["change_type"])["id"]
+        diff_df.groupby(
+            by=meta_columns + ["change_type"],
+            dropna=False,
+        )["id"]
         .nunique()
         .rename("count")
         .reset_index()
@@ -143,7 +154,10 @@ def print_diff_summary(
 
     count_by_column_df = (
         diff_df.iloc[diff_df["change_type"] == "modified"]
-        .value_counts(meta_columns + ["column"])
+        .value_counts(
+            meta_columns + ["column"],
+            dropna=False,
+        )
         .reset_index(name="count")
     )
     count_by_column_df = (
