@@ -93,7 +93,7 @@ FROM (
     ('REG',          'regions'),
     ('RESSOURCERIE', NULL),
     ('RFS',          'france-service'),
-    ('RS_FJT',       'residence-fjt'),
+    ('RS_FJT',       'residences-fjt'),
     ('SCP',          NULL),
     ('SPIP',         'spip'),
     ('TIERS_LIEUX',  NULL),
