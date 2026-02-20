@@ -7,7 +7,8 @@ from airflow.sdk import Variable, task
 
 AIRFLOW_HOME = Path(configuration.get_airflow_home())
 DBT_PROJECT_PATH = AIRFLOW_HOME / "dbt"
-DBT_BIN_PATH = AIRFLOW_HOME / "venvs" / "dbt" / "bin" / "dbt"
+DBT_PACKAGES_PATH = (DBT_PROJECT_PATH / "dbt_packages").resolve()
+DBT_BASE_COMMAND = "uvx --with dbt-postgres --from dbt-core==1.* dbt"
 
 
 @task.bash(
@@ -44,4 +45,9 @@ def dbt_task(
     if command in ["build", "test"] and Variable.get("ENVIRONMENT", None) == "prod":
         args += ["--exclude-resource-type", "unit_test"]
 
-    return f"{DBT_BIN_PATH} {command} {' '.join(args)}"
+    return "\n".join(
+        [
+            f"[ -e {DBT_PACKAGES_PATH} ] || {DBT_BASE_COMMAND} deps",
+            f"{DBT_BASE_COMMAND} {command} {' '.join(args)}",
+        ]
+    )

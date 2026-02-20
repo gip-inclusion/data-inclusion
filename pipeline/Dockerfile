@@ -25,11 +25,5 @@ COPY --chown=airflow:0 dags dags
 COPY --chown=airflow:0 dbt dbt
 COPY --chown=airflow:0 tests tests
 
-# setup dbt
-USER airflow
-RUN uv --no-cache venv venvs/dbt
-RUN uv --no-cache pip install --python venvs/dbt/bin/python dbt-postgres dbt-core==1.*
-RUN uv --no-cache run --no-project --python venvs/dbt/bin/python dbt deps --project-dir dbt
-
 # make the dags package available in editable mode
 ENV PYTHONPATH="${PYTHONPATH}:/opt/airflow/dags"
