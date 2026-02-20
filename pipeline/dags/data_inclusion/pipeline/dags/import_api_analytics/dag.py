@@ -1,15 +1,13 @@
-import pendulum
+from airflow.sdk import dag, task
 
-from airflow.sdk import Connection, chain, dag, task
-from airflow.task.trigger_rule import TriggerRule
-
-from data_inclusion.pipeline.common import dags, dbt, tasks
+from data_inclusion.pipeline.common import dags
 
 
-@task.external_python(
-    python=tasks.PYTHON_BIN_PATH,
+@task.virtualenv(
+    requirements="requirements/tasks/requirements.txt",
+    system_site_packages=False,
+    venv_cache_path="/tmp/",
     retries=1,
-    retry_delay=pendulum.duration(seconds=10),
 )
 def import_data():
     import subprocess
@@ -18,8 +16,9 @@ def import_data():
 
     from airflow.providers.amazon.aws.fs import s3 as s3fs
     from airflow.providers.amazon.aws.hooks import s3
+    from airflow.sdk import Connection
 
-    pg_conn = Connection.get_connection_from_secrets(conn_id="pg")
+    pg_conn = Connection.get(conn_id="pg")
     s3_hook = s3.S3Hook(aws_conn_id="s3")
 
     s3fs_client = s3fs.get_fs(conn_id="s3")
@@ -62,34 +61,7 @@ FIFTEEN_BEFORE_THE_HOUR = "45 5-22 * * *"
     **dags.common_args(use_sentry=True),
 )
 def load_api_analytics():
-    build_source_stats = dbt.dbt_task.override(
-        task_id="generate_source_stats",
-        trigger_rule=TriggerRule.ALL_DONE,
-    )(
-        command="build",
-        select="path:models/intermediate/quality",
-    )
-
-    """
-    TODO
-    snapshot_source_stats = dbt.dbt_task.override(
-        task_id="snapshot_source_stats",
-        trigger_rule=TriggerRule.ALL_DONE,
-    )(
-        command="snapshot",
-        select="quality",
-    )
-    """
-
-    chain(
-        import_data()
-        # Will generate the daily stats 24 times a day.
-        # The same table will be generated, the snapshot won't
-        # be triggered except on day boundaries and it's fast.
-        # The alternative would be more complicated code.
-        >> build_source_stats
-        # >> snapshot_source_stats
-    )
+    import_data()
 
 
 load_api_analytics()
