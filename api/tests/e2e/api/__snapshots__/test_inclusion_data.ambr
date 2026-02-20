@@ -78,6 +78,7 @@
     "items": [
       {
         "adresse": "62, rue Eugène Rodrigues",
+        "adresse_certifiee": false,
         "code_insee": "59350",
         "code_postal": "92950",
         "commune": "Sainte Gabriel",
@@ -183,6 +184,7 @@
       {
         "accessibilite_lieu": "https://acceslibre.beta.gouv.fr/app/kitchen-amount/",
         "adresse": "49, avenue de Pichon",
+        "adresse_certifiee": false,
         "code_insee": "59350",
         "code_postal": "46873",
         "commune": "Sainte CharlotteBourg",

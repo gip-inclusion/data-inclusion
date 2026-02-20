@@ -21,8 +21,7 @@ sirets AS (
 ),
 
 adresses AS (
-    SELECT id
-    FROM {{ ref('int__adresses_v1') }}
+    SELECT * FROM {{ ref('int__adresses_v1') }}
 ),
 
 final AS (
@@ -36,12 +35,12 @@ final AS (
                 ]
             )
         }},
-        doublons.cluster_id                                                          AS "_cluster_id",
-        CASE WHEN structures.adresse_id IS NOT NULL THEN adresses.id IS NOT NULL END AS "_has_valid_address",
-        courriels_personnels.courriel IS NOT NULL                                    AS "_has_pii",
-        structures.source NOT IN ('soliguide', 'agefiph')                            AS "_in_opendata",
-        erreurs.id IS NULL                                                           AS "_is_valid",
-        sirets.statut IS NOT NULL AND sirets.statut = 'fermé-définitivement'         AS "_is_closed"
+        doublons.cluster_id                                                  AS "_cluster_id",
+        adresses._has_valid_address                                          AS "_has_valid_address",
+        courriels_personnels.courriel IS NOT NULL                            AS "_has_pii",
+        structures.source NOT IN ('soliguide', 'agefiph')                    AS "_in_opendata",
+        erreurs.id IS NULL                                                   AS "_is_valid",
+        sirets.statut IS NOT NULL AND sirets.statut = 'fermé-définitivement' AS "_is_closed"
     FROM structures
     LEFT JOIN doublons ON structures.id = doublons.structure_id
     LEFT JOIN courriels_personnels ON structures.courriel = courriels_personnels.courriel

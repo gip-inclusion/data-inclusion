@@ -49,7 +49,6 @@ def prepare_load(
     )
     structures_df = structures_df.loc[valid_code_insee_idx]
     structures_df = structures_df.loc[~structures_df["_is_closed"]]
-    structures_df = structures_df.loc[structures_df["_has_valid_address"].fillna(False)]
 
     services_errors_df = services_df.apply(
         lambda d: validate_data(v1.Service, d), axis=1
@@ -59,7 +58,6 @@ def prepare_load(
         lambda c: c is None or c in city_codes
     )
     services_df = services_df.loc[valid_code_insee_idx]
-    services_df = services_df.loc[services_df["_has_valid_address"].fillna(False)]
     services_df = services_df.loc[services_df["structure_id"].isin(structures_df["id"])]
 
     service_scores = (
