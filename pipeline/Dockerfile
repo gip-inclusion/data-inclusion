@@ -20,9 +20,6 @@ USER airflow
 COPY requirements requirements
 RUN uv --no-cache pip install -r requirements/airflow/requirements.txt
 
-RUN uv --no-cache venv venvs/tasks
-RUN uv --no-cache pip install --python venvs/tasks/bin/python -r requirements/tasks/requirements.txt
-
 COPY --chown=airflow:0 pyproject.toml pyproject.toml
 COPY --chown=airflow:0 dags dags
 COPY --chown=airflow:0 dbt dbt

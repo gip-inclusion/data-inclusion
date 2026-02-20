@@ -39,7 +39,7 @@ uv dbt ls
 In order to prevent conflicts:
 
 * tasks requirements are compiled separately
-* python tasks run in dedicated virtuale envs using `python.external_python`
+* python tasks run in dedicated virtual envs using `task.virtualenv`
 * python tasks requirements must comply to airflow constraints
 
 

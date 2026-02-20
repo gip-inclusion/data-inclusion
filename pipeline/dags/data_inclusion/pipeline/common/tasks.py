@@ -1,12 +1,5 @@
-from pathlib import Path
-
-from airflow import configuration
 from airflow.providers.postgres.hooks import postgres
 from airflow.sdk import task
-
-PYTHON_BIN_PATH = str(
-    Path(configuration.get_airflow_home()) / "venvs" / "tasks" / "bin" / "python"
-)
 
 
 @task.python

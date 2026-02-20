@@ -1,9 +1,13 @@
 from airflow.sdk import Variable, dag, task
 
-from data_inclusion.pipeline.common import dags, tasks
+from data_inclusion.pipeline.common import dags
 
 
-@task.external_python(python=tasks.PYTHON_BIN_PATH)
+@task.virtualenv(
+    requirements="requirements/tasks/requirements.txt",
+    system_site_packages=False,
+    venv_cache_path="/tmp/",
+)
 def send_rgpd_notice():
     import time
 

@@ -4,12 +4,10 @@ from typing import Literal
 from airflow.sdk import chain, dag, task, task_group
 from airflow.task.trigger_rule import TriggerRule
 
-from data_inclusion.pipeline.common import dags, dbt, s3, tasks
+from data_inclusion.pipeline.common import dags, dbt, s3
 
 
-@task.external_python(
-    python=tasks.PYTHON_BIN_PATH,
-)
+@task.python
 def export_dataset(to_s3_path: str):
     import json
     from pathlib import Path

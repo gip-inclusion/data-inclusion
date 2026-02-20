@@ -4,8 +4,10 @@ from data_inclusion.pipeline import sources
 from data_inclusion.pipeline.common import dags, s3, tasks
 
 
-@task.external_python(
-    python=tasks.PYTHON_BIN_PATH,
+@task.virtualenv(
+    requirements="requirements/tasks/requirements.txt",
+    system_site_packages=False,
+    venv_cache_path="/tmp/",
     retries=2,
 )
 def extract(source_id, stream_id, to_s3_path):
@@ -33,7 +35,11 @@ def extract(source_id, stream_id, to_s3_path):
         )
 
 
-@task.external_python(python=tasks.PYTHON_BIN_PATH)
+@task.virtualenv(
+    requirements="requirements/tasks/requirements.txt",
+    system_site_packages=False,
+    venv_cache_path="/tmp/",
+)
 def load(schema_name: str, source_id, stream_id, from_s3_path):
     import tempfile
     from pathlib import Path

@@ -5,8 +5,10 @@ from airflow.sdk import Variable, chain, dag, task
 from data_inclusion.pipeline.common import dags, s3, tasks
 
 
-@task.external_python(
-    python=tasks.PYTHON_BIN_PATH,
+@task.virtualenv(
+    requirements="requirements/tasks/requirements.txt",
+    system_site_packages=False,
+    venv_cache_path="/tmp/",
     retries=2,
 )
 def list_cities(max_number_of_cities: int):
@@ -36,8 +38,10 @@ def list_cities(max_number_of_cities: int):
     return df.to_dict(orient="records")
 
 
-@task.external_python(
-    python=tasks.PYTHON_BIN_PATH,
+@task.virtualenv(
+    requirements="requirements/tasks/requirements.txt",
+    system_site_packages=False,
+    venv_cache_path="/tmp/",
     retries=6,
     retry_delay=timedelta(minutes=5),
     retry_exponential_backoff=True,
@@ -65,8 +69,10 @@ def extract(city_code: str, commune: str, region: str, to_s3_path: str):
         )
 
 
-@task.external_python(
-    python=tasks.PYTHON_BIN_PATH,
+@task.virtualenv(
+    requirements="requirements/tasks/requirements.txt",
+    system_site_packages=False,
+    venv_cache_path="/tmp/",
 )
 def load(schema_name: str, table_name: str, from_s3_path: str):
     import tempfile
