@@ -3,9 +3,5 @@ version: 2
 sources:
   - name: soliguide
     schema: soliguide
-    meta:
-      is_provider: true
     tables:
       - name: lieux
-        meta:
-          kind: structure

@@ -3,13 +3,7 @@ version: 2
 sources:
   - name: mission_locale
     schema: mission_locale
-    meta:
-      is_provider: true
     tables:
       - name: structures
-        meta:
-          kind: structure
       - name: offres
-        meta:
-          kind: service
       - name: structures_offres

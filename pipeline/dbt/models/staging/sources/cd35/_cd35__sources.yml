@@ -3,9 +3,5 @@ version: 2
 sources:
   - name: cd35
     schema: cd35
-    meta:
-      is_provider: true
     tables:
       - name: organisations
-        meta:
-          kind: structure

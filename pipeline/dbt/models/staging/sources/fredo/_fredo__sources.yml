@@ -3,9 +3,5 @@ version: 2
 sources:
   - name: fredo
     schema: fredo
-    meta:
-      is_provider: true
     tables:
       - name: structures
-        meta:
-          kind: structure

@@ -3,9 +3,5 @@ version: 2
 sources:
   - name: mediation_numerique
     schema: mediation_numerique
-    meta:
-      is_provider: true
     tables:
       - name: structures
-        meta:
-          kind: structure
