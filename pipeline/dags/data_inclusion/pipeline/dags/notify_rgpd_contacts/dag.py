@@ -22,7 +22,7 @@ def send_rgpd_notice():
 
     pg_hook = postgres.PostgresHook(postgres_conn_id="pg")
     contacts = pg_hook.get_records(
-        sql="SELECT * FROM public_intermediate.int__courriels_verifies",
+        sql="SELECT * FROM public_intermediate.int__courriels_verifies_v1",
     )
 
     all_emails = [c[0] for c in contacts]

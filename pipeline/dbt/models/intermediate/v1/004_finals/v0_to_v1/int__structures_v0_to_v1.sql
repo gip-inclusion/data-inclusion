@@ -1,9 +1,9 @@
 WITH structures AS (
     SELECT structures.*
-    FROM {{ ref('int__structures') }} AS structures
+    FROM public_intermediate.int__structures AS structures
     LEFT JOIN {{ ref('int__sources_v0_to_v1') }} AS sources
         ON structures.source = sources.source
-    WHERE sources.source IS NULL
+    WHERE sources.source IS NOT NULL
 ),
 
 map_reseaux_labels AS (SELECT * FROM {{ ref('_map_reseaux_labels') }}),

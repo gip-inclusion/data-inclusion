@@ -1,9 +1,9 @@
 WITH services AS (
     SELECT services.*
-    FROM {{ ref('int__services') }} AS services
+    FROM public_intermediate.int__services AS services
     LEFT JOIN {{ ref('int__sources_v0_to_v1') }} AS sources
         ON services.source = sources.source
-    WHERE sources.source IS NULL
+    WHERE sources.source IS NOT NULL
 ),
 
 departements AS (

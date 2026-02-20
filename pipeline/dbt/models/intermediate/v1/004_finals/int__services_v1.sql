@@ -18,7 +18,7 @@ urls AS (
     SELECT
         input_url,
         "url"
-    FROM {{ ref('int__urls') }}
+    FROM {{ ref('int__urls_v1') }}
     WHERE status_code > 0
 )
 

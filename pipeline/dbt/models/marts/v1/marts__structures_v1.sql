@@ -4,8 +4,6 @@ WITH structures AS (
 
 courriels_personnels AS (
     SELECT * FROM {{ ref('int__courriels_personnels_v1') }}
-    UNION
-    SELECT * FROM {{ ref('int__courriels_personnels') }}
 ),
 
 doublons AS (
@@ -18,31 +16,13 @@ erreurs AS (
     WHERE resource_type = 'structure'
 ),
 
-sirets_v0 AS (
-    SELECT
-        source || '--' || id AS "id",
-        siret,
-        date_fermeture,
-        siret_successeur,
-        statut
-    FROM {{ ref('int__sirets') }}
-),
-
 sirets AS (
-    SELECT * FROM sirets_v0
-    UNION
-    SELECT * FROM {{ ref('int__sirets_v1') }} AS sirets_v1
-    WHERE sirets_v1.id NOT IN (
-        SELECT sirets_v0.id FROM sirets_v0
-    )
+    SELECT * FROM {{ ref('int__sirets_v1') }}
 ),
 
 adresses AS (
     SELECT id
     FROM {{ ref('int__adresses_v1') }}
-    UNION
-    SELECT _di_surrogate_id AS id
-    FROM {{ ref('int__adresses') }}
 ),
 
 final AS (

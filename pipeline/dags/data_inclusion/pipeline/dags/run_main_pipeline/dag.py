@@ -18,11 +18,10 @@ def export_dataset(to_s3_path: str):
     pg_hook = postgres.PostgresHook(postgres_conn_id="pg")
     s3_hook = s3.S3Hook(aws_conn_id="s3")
 
-    for version in ["v0", "v1"]:
+    for version in ["v1"]:
         for resource in ["structures", "services"]:
             key = (Path() / to_s3_path / version / resource).with_suffix(".parquet")
-            model = f"marts__{resource}_v1" if version == "v1" else f"marts__{resource}"
-            query = f"SELECT * FROM public_marts.{model}"
+            query = f"SELECT * FROM public_marts.marts__{resource}_{version}"
             print(f"Downloading data from query='{query}'")
             df = pg_hook.get_df(sql=query)
 
@@ -73,7 +72,7 @@ def run_main_pipeline():
             )
 
     @task_group()
-    def dbt_build_intermediate(version: Literal["v0", "v1"]):
+    def dbt_build_intermediate(version: Literal["v1"]):
         @task_group()
         def dbt_build_mappings():
             for path in sorted(
@@ -160,20 +159,10 @@ def run_main_pipeline():
         dbt_seed,
         dbt_create_udfs,
         dbt_build_staging(),
-        dbt_build_intermediate.override(group_id="dbt_build_intermediate_v0")(
-            version="v0"
+        dbt_build_intermediate(version="v1"),
+        dbt.dbt_task.override(task_id="dbt_build_marts")(
+            command="build", select="marts.v1"
         ),
-        dbt_build_intermediate.override(group_id="dbt_build_intermediate_v1")(
-            version="v1"
-        ),
-        [
-            dbt.dbt_task.override(task_id="dbt_build_marts_v0")(
-                command="build", select="marts.v0"
-            ),
-            dbt.dbt_task.override(task_id="dbt_build_marts_v1")(
-                command="build", select="marts.v1"
-            ),
-        ],
         export_dataset(to_s3_path=str(s3.get_key(stage="marts"))),
         dbt_snapshot_deduplicate_stats,
     )
