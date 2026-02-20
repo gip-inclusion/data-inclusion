@@ -42,7 +42,7 @@ def read(path: Path):
     import pandas as pd
     import xmlschema
 
-    from . import utils
+    from data_inclusion.pipeline.common import utils
 
     # Reset the limit on the number of XML elements, added in version 4.2.0 of xmlschema
     # but seemingly still taken into account even when we use a lazy decoding iterator.

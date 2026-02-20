@@ -2,7 +2,7 @@ import json
 
 from urllib3.util.retry import Retry
 
-from . import utils
+from data_inclusion.pipeline.common import utils
 
 
 class EmploisClient(utils.BaseApiClient):

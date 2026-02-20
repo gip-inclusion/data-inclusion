@@ -1,4 +1,4 @@
-from . import utils
+from data_inclusion.pipeline.common import utils
 
 
 def extract(id: str, url: str, **kwargs) -> bytes:

@@ -43,7 +43,7 @@ def read(path: Path):
     """
     import pandas as pd
 
-    from . import utils
+    from data_inclusion.pipeline.common import utils
 
     with path.open() as file:
         data = json.load(file)

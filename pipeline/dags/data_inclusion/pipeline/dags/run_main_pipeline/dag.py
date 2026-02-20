@@ -45,7 +45,7 @@ def export_dataset(to_s3_path: str):
     max_active_tasks=4,
     **dags.common_args(use_sentry=True),
 )
-def main():
+def run_main_pipeline():
     dbt_seed = dbt.dbt_task.override(
         task_id="dbt_seed",
     )(
@@ -179,4 +179,4 @@ def main():
     )
 
 
-main()
+run_main_pipeline()

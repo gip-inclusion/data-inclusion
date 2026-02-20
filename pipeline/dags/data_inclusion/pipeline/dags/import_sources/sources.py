@@ -5,21 +5,29 @@ It is used as a source of truth in general and to generate dedicated dags in par
 
 from airflow.sdk import Variable
 
-from . import (
-    agefiph,
-    annuaire_du_service_public,
-    carif_oref,
-    dora,
-    emplois_de_linclusion,
-    france_travail,
-    fredo,
-    ma_boussole_aidants,
-    mediation_numerique,
-    mes_aides,
-    mission_locale,
-    soliguide,
-    un_jeune_une_solution,
-    utils,
+from data_inclusion.pipeline.common import utils
+from data_inclusion.pipeline.dags.import_agefiph import utils as agefiph
+from data_inclusion.pipeline.dags.import_annuaire_du_service_public import (
+    utils as annuaire_du_service_public,
+)
+from data_inclusion.pipeline.dags.import_carif_oref import utils as carif_oref
+from data_inclusion.pipeline.dags.import_dora import utils as dora
+from data_inclusion.pipeline.dags.import_emplois_de_linclusion import (
+    utils as emplois_de_linclusion,
+)
+from data_inclusion.pipeline.dags.import_france_travail import utils as france_travail
+from data_inclusion.pipeline.dags.import_fredo import utils as fredo
+from data_inclusion.pipeline.dags.import_ma_boussole_aidants import (
+    utils as ma_boussole_aidants,
+)
+from data_inclusion.pipeline.dags.import_mediation_numerique import (
+    utils as mediation_numerique,
+)
+from data_inclusion.pipeline.dags.import_mes_aides import utils as mes_aides
+from data_inclusion.pipeline.dags.import_mission_locale import utils as mission_locale
+from data_inclusion.pipeline.dags.import_soliguide import utils as soliguide
+from data_inclusion.pipeline.dags.import_un_jeune_une_solution import (
+    utils as un_jeune_une_solution,
 )
 
 SOURCES_CONFIGS = {

@@ -3,7 +3,7 @@ import time
 from copy import deepcopy
 from math import ceil
 
-from . import utils
+from data_inclusion.pipeline.common import utils
 
 
 class APIClient(utils.BaseApiClient):

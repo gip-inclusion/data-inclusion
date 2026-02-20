@@ -19,12 +19,12 @@ def list_cities(max_number_of_cities: int):
     import httpx
     import pandas as pd
 
-    url = "https://www.insee.fr/fr/statistiques/fichier/7739582/ensemble.zip"
+    from data_inclusion.pipeline.dags.import_monenfant import constants
 
     df = pd.read_csv(
-        zipfile.ZipFile(io.BytesIO(httpx.get(url).content)).open(
-            "donnees_communes.csv"
-        ),
+        zipfile.ZipFile(
+            io.BytesIO(httpx.get(constants.INSEE_POP_COMMUNES_URL).content)
+        ).open("donnees_communes.csv"),
         sep=";",
     )
     df = df.sort_values(by="PTOT", ascending=False)
@@ -53,12 +53,12 @@ def extract(city_code: str, commune: str, region: str, to_s3_path: str):
 
     from airflow.providers.amazon.aws.hooks import s3
 
-    from data_inclusion.pipeline.sources import monenfant
+    from data_inclusion.pipeline.dags.import_monenfant import constants, utils
 
-    os.environ["MONENFANT_BASE_URL"] = "https://monenfant.fr"
+    os.environ["MONENFANT_BASE_URL"] = constants.MONENFANT_BASE_URL
     os.environ["TWOCAPTCHA_API_KEY"] = Variable.get("TWOCAPTCHA_API_KEY")
 
-    content = monenfant.extract(city_code=city_code, commune=commune, region=region)
+    content = utils.extract(city_code=city_code, commune=commune, region=region)
 
     s3_hook = s3.S3Hook(aws_conn_id="s3")
     with io.BytesIO(content) as buf:
@@ -83,8 +83,7 @@ def load(schema_name: str, table_name: str, from_s3_path: str):
     from airflow.providers.amazon.aws.hooks import s3
     from airflow.providers.postgres.hooks import postgres
 
-    from data_inclusion.pipeline.common import pg
-    from data_inclusion.pipeline.sources import monenfant
+    from data_inclusion.pipeline.common import pg, utils
 
     s3_hook = s3.S3Hook(aws_conn_id="s3")
 
@@ -93,7 +92,7 @@ def load(schema_name: str, table_name: str, from_s3_path: str):
     with tempfile.TemporaryDirectory() as tmpdir:
         s3_hook = s3.S3Hook(aws_conn_id="s3")
         dfs_list = [
-            monenfant.read(Path(s3_hook.download_file(key=p, local_path=tmpdir)))
+            utils.df_from_json(Path(s3_hook.download_file(key=p, local_path=tmpdir)))
             for p in s3_hook.list_keys(prefix=from_s3_path)
         ]
 

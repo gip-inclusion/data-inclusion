@@ -1,7 +1,7 @@
 import json
 from enum import Enum
 
-from . import utils
+from data_inclusion.pipeline.common import utils
 
 
 class StructureType(Enum):

@@ -1,6 +1,6 @@
 import json
 
-from . import utils
+from data_inclusion.pipeline.common import utils
 
 
 class ImiloClient(utils.BaseApiClient):

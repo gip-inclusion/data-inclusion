@@ -13,7 +13,7 @@ def send_rgpd_notice():
 
     from airflow.providers.postgres.hooks import postgres
 
-    from data_inclusion.pipeline.sources import brevo
+    from data_inclusion.pipeline.dags.notify_rgpd_contacts import brevo
 
     ALL_CONTACTS_LIST_ID = 6
     CURRENT_CONTACTS_LIST_ID = 5

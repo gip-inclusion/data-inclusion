@@ -1,7 +1,6 @@
 import json
-from typing import Optional
 
-from . import utils
+from data_inclusion.pipeline.common import utils
 
 
 class DoraClient(utils.BaseApiClient):
@@ -13,7 +12,7 @@ class DoraClient(utils.BaseApiClient):
     def _list_paginated_endpoint(
         self,
         url_path: str,
-        params: Optional[dict] = None,
+        params: dict | None = None,
     ) -> list:
         next_url = f"{self.base_url}{url_path}"
         return_data = []

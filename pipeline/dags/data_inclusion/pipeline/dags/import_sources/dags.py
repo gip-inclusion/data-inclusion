@@ -1,7 +1,7 @@
 from airflow.sdk import chain, dag, task, task_group
 
-from data_inclusion.pipeline import sources
 from data_inclusion.pipeline.common import dags, s3, tasks
+from data_inclusion.pipeline.dags.import_sources import sources
 
 
 @task.virtualenv(
@@ -15,7 +15,7 @@ def extract(source_id, stream_id, to_s3_path):
 
     from airflow.providers.amazon.aws.hooks import s3
 
-    from data_inclusion.pipeline import sources
+    from data_inclusion.pipeline.dags.import_sources import sources
 
     source = sources.SOURCES_CONFIGS[source_id]
     stream = source["streams"][stream_id]
@@ -47,8 +47,8 @@ def load(schema_name: str, source_id, stream_id, from_s3_path):
     from airflow.providers.amazon.aws.hooks import s3
     from airflow.providers.postgres.hooks import postgres
 
-    from data_inclusion.pipeline import sources
     from data_inclusion.pipeline.common import pg
+    from data_inclusion.pipeline.dags.import_sources import sources
 
     read_fn = sources.get_reader(source_id, stream_id)
 
