@@ -1,9 +1,14 @@
 from airflow.sdk import chain, dag, task
 
 from data_inclusion.pipeline.common import dags, dbt, tasks
+from data_inclusion.pipeline.dags.import_sirene import constants
 
 
-@task.external_python(python=tasks.PYTHON_BIN_PATH)
+@task.virtualenv(
+    requirements="requirements/tasks/requirements.txt",
+    system_site_packages=False,
+    venv_cache_path="/tmp/",
+)
 def import_file(url: str, schema: str, table: str):
     import pandas as pd
 
@@ -30,18 +35,10 @@ def import_file(url: str, schema: str, table: str):
             )
 
 
-# Run monthly on the 10th at 10:30 PM
 # This dag should run during the night
 # Based on the historic of publications on data.gouv.fr,
 # the data is usually updated in the first week of the month.
 EVERY_MONTH_ON_THE_10TH_AT_10_30_PM = "30 22 10 * *"
-
-FILES = {
-    "etablissement_historique": "https://www.data.gouv.fr/api/1/datasets/r/88fbb6b4-0320-443e-b739-b4376a012c32",
-    "etablissement_succession": "https://www.data.gouv.fr/api/1/datasets/r/9c4d5d9c-4bbb-4b9c-837a-6155cb589e26",
-    "stock_unite_legale": "https://www.data.gouv.fr/api/1/datasets/r/825f4199-cadd-486c-ac46-a65a8ea1a047",
-    "stock_etablissement": "https://www.data.gouv.fr/api/1/datasets/r/0651fb76-bcf3-4f6a-a38d-bc04fa708576",
-}
 
 
 @dag(
@@ -65,7 +62,7 @@ def import_sirene():
             import_file.override(task_id=f"import_{table}")(
                 url=url, schema=schema, table=table
             )
-            for table, url in FILES.items()
+            for table, url in constants.FILES.items()
         ],
         dbt_build_staging,
     )
