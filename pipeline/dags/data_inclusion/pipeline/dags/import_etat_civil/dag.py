@@ -3,22 +3,36 @@ from airflow.sdk import chain, dag, task
 from data_inclusion.pipeline.common import dags, dbt, tasks
 
 
-@task.external_python(
-    python=tasks.PYTHON_BIN_PATH,
-    retries=2,
+@task.virtualenv(
+    requirements="requirements/tasks/requirements.txt",
+    system_site_packages=False,
+    venv_cache_path="/tmp/",
+    retries=1,
 )
 def import_prenoms(schema: str):
+    import urllib.error
+
     import pandas as pd
+    import pendulum
 
     from airflow.providers.postgres.hooks import postgres
 
+    from data_inclusion.pipeline.dags.import_etat_civil import constants
+
     pg_hook = postgres.PostgresHook(postgres_conn_id="pg")
 
-    url = (
-        "https://www.insee.fr/fr/statistiques/fichier/8595130/prenoms-2024-nat_csv.zip"
-    )
+    year = pendulum.now().year - 1
+    year_before = year - 1
 
-    df = pd.read_csv(url, sep=";")
+    try:
+        url = constants.INSEE_URL.format(year=year)
+        print("👉 Using URL:", url)
+        df = pd.read_parquet(url)
+    except (FileNotFoundError, urllib.error.HTTPError):
+        print("❌ Failed")
+        url = constants.INSEE_URL.format(year=year_before)
+        print("👉 Fallback to URL:", url)
+        df = pd.read_parquet(url)
 
     with pg_hook.get_sqlalchemy_engine().begin() as conn:
         df.to_sql(

@@ -7,7 +7,9 @@ cleaned AS (
         LOWER(prenom) AS "prenom",
         valeur
     FROM source
-    WHERE prenom != '_PRENOMS_RARES'
+    WHERE
+        prenom != '_PRENOMS_RARES'
+        AND niveau_geographique = 'FRANCE'
 )
 
 SELECT prenom
