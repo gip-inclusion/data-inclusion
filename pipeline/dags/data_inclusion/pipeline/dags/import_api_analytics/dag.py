@@ -60,8 +60,8 @@ FIFTEEN_BEFORE_THE_HOUR = "45 5-22 * * *"
     schedule=FIFTEEN_BEFORE_THE_HOUR,
     **dags.common_args(use_sentry=True),
 )
-def load_api_analytics():
+def import_api_analytics():
     import_data()
 
 
-load_api_analytics()
+import_api_analytics()
