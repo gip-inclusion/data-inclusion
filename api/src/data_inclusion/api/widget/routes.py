@@ -97,24 +97,19 @@ def validate_widget_token(request: fastapi.Request, token: str) -> str | None:
         req_origin = furl.furl(request_url).origin
 
     origin_host = furl.furl(req_origin).host
-
-    # allow widget on localhost
-    if origin_host in ("localhost", "127.0.0.1"):
-        return payload.get("sub")
-
-    # allow widget on the API's own host
     widget_host = furl.furl(settings.BASE_URL).host
-    if origin_host == widget_host:
+
+    if origin_host and (
+        origin_host in ("localhost", "127.0.0.1")
+        or origin_host == widget_host
+        or any(origin_host.endswith(host) for host in allowed_hosts)
+    ):
         return payload.get("sub")
 
-    # else allow allowed hosts
-    if not any(origin_host.endswith(host) for host in allowed_hosts):
-        raise fastapi.HTTPException(
-            status_code=fastapi.status.HTTP_403_FORBIDDEN,
-            detail="Origin not allowed for this token.",
-        )
-
-    return payload.get("sub")
+    raise fastapi.HTTPException(
+        status_code=fastapi.status.HTTP_403_FORBIDDEN,
+        detail="Origin not allowed for this token.",
+    )
 
 
 def get_results(
