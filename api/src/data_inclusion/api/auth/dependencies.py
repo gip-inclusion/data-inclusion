@@ -92,7 +92,7 @@ authenticate_dependency = fastapi.Depends(authenticate, use_cache=True)
 
 def authenticated(required_scopes: list[str]):
     if not settings.TOKEN_ENABLED:
-        return None
+        return fastapi.Depends(lambda: None)
 
     async def _authenticated(
         request: fastapi.Request,
