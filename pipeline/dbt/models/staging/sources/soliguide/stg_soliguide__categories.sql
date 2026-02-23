@@ -66,6 +66,7 @@ FROM (
     ('long_term_accomodation',                'Hébergement à long terme'),
     ('luggage_storage',                       'Bagagerie'),
     ('mammography',                           'Mammographie'),
+    ('mobility_assistance',                   'Aide à la mobilité'),
     ('mobility_financing',                    'Aide financière pour la mobilité'),
     ('mobility_support',                      'Aide à la mobilité'),
     ('museums',                               'Musée'),

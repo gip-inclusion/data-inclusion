@@ -43,6 +43,7 @@ FROM (
     ('libraries',                             'remobilisation--activites-sportives-et-culturelles'),
     ('long_term_accomodation',                'logement-hebergement--acheter-un-logement'),
     ('long_term_accomodation',                'logement-hebergement--louer-un-logement'),
+    ('mobility_assistance',                   'mobilite--etre-accompagne-dans-son-parcours-mobilite'),
     ('mobility_financing',                    'mobilite--financer-ma-mobilite'),
     ('mobility_support',                      'mobilite--etre-accompagne-dans-son-parcours-mobilite'),
     ('museums',                               'remobilisation--activites-sportives-et-culturelles'),
