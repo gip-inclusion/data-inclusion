@@ -1,6 +1,6 @@
 import io
 
-from data_inclusion.pipeline.sources import utils
+from data_inclusion.pipeline.common import utils
 
 DATAGOUV_API_URL = "https://www.data.gouv.fr/api/1"
 DATAGOUV_API_TOKEN_HEADER = "X-API-KEY"

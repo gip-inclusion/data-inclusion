@@ -2,8 +2,8 @@ import enum
 
 from furl import furl
 
+from data_inclusion.pipeline.common import utils
 from data_inclusion.pipeline.dags.import_decoupage_administratif import constants
-from data_inclusion.pipeline.sources import utils
 
 COMMUNES_FIELDS = [
     "nom",
