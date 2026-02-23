@@ -1108,6 +1108,7 @@ def test_can_filter_resources_by_sources(api_client, url, factory):
     [
         pytest.param(True, marks=pytest.mark.with_token("dora-test")),
         pytest.param(False, marks=pytest.mark.with_token("not-dora")),
+        pytest.param(True, marks=pytest.mark.with_token("les-emplois-2025-04-10")),
     ],
 )
 @pytest.mark.parametrize("path", ["/services", "/search/services", "/structures"])

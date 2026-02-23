@@ -39,7 +39,11 @@ def is_allowed_user(request: fastapi.Request) -> bool:
     if not request.user.is_authenticated:
         return False
 
-    if not request.user.username.startswith("dora-"):
+    if not (
+        request.user.username.startswith("dora-")
+        # les-emplois API token, not the widget token
+        or request.user.username == "les-emplois-2025-04-10"
+    ):
         return False
 
     return True
