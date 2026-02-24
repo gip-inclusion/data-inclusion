@@ -17,7 +17,7 @@ AS $$
             return next(iter(difflib.get_close_matches(value, enum_class, n=1)), value)
         return _validator
 
-    class HolidaysStatus(str, enum.Enum):
+    class HolidaysStatus(enum.StrEnum):
         CLOSED = "CLOSED"
         OPEN = "OPEN"
         UNKNOWN = "UNKNOWN"

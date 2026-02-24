@@ -74,7 +74,7 @@ AS $$
             )
 
 
-    class PeriodeFermeture(str, enum.Enum):
+    class PeriodeFermeture(enum.StrEnum):
         JAMAIS = "jamais"
         JUILLET = "juillet"
         AOUT = "aout"

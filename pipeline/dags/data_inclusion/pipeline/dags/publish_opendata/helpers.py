@@ -5,7 +5,7 @@ import geopandas as gpd
 import pandas as pd
 
 
-class Format(str, enum.Enum):
+class Format(enum.StrEnum):
     CSV = "csv"
     GEOJSON = "geojson"
     JSON = "json"
