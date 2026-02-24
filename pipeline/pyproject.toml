@@ -14,6 +14,7 @@ namespaces = true
 [tool.ruff.lint]
 # see prefixes in https://beta.ruff.rs/docs/rules/
 select = [
+    "PD",  # pandas-vet
     "F",  # pyflakes
     "E",  # pycodestyle errors
     "W",  # pycodestyle warnings

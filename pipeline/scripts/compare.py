@@ -77,9 +77,9 @@ def compare(
 
     if not added_idx.empty:
         added_df = after_df.loc[added_idx]
-        added_df = added_df.stack()
-        added_df = added_df.reindex(added_df.index.set_names("column", level=-1))
-        added_df = added_df.to_frame(name="after")
+        added_df = added_df.melt(
+            ignore_index=False, var_name="column", value_name="after"
+        ).set_index("column", append=True)
         added_df = added_df.assign(before=np.nan)
         added_df = added_df.assign(change_type="added")
 
@@ -87,30 +87,29 @@ def compare(
 
     if not removed_idx.empty:
         removed_df = before_df.loc[removed_idx]
-        removed_df = removed_df.stack()
-        removed_df = removed_df.reindex(removed_df.index.set_names("column", level=-1))
-        removed_df = removed_df.to_frame(name="before")
+        removed_df = removed_df.melt(
+            ignore_index=False, var_name="column", value_name="before"
+        ).set_index("column", append=True)
         removed_df = removed_df.assign(after=np.nan)
         removed_df = removed_df.assign(change_type="removed")
 
         diff_df = pd.concat([diff_df, removed_df])
 
     if not modified_idx.empty:
-        modified_df = before_df.loc[modified_idx].compare(
-            other=after_df.loc[modified_idx],
-            keep_equal=False,
-            keep_shape=False,
-            result_names=("before", "after"),
+        before_df = (
+            before_df.loc[modified_idx]
+            .melt(ignore_index=False, var_name="column")
+            .set_index("column", append=True)
         )
-        modified_df = modified_df.stack(level=0)
-        modified_df = modified_df.reindex(
-            modified_df.index.set_names("column", level=-1)
+        after_df = (
+            after_df.loc[modified_idx]
+            .melt(ignore_index=False, var_name="column")
+            .set_index("column", append=True)
         )
-
-        if isinstance(modified_df, pd.Series):
-            modified_df = modified_df.to_frame()
-
-        modified_df = modified_df.dropna(how="all")
+        modified_df = before_df.compare(
+            other=after_df, result_names=("before", "after")
+        )
+        modified_df = modified_df.set_axis(modified_df.columns.droplevel(0), axis=1)
         modified_df = modified_df.assign(change_type="modified")
 
         diff_df = pd.concat([diff_df, modified_df])
