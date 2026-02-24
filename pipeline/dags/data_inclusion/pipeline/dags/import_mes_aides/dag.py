@@ -38,14 +38,18 @@ def load(schema_name: str, from_s3_path: str):
     from airflow.providers.postgres.hooks import postgres
 
     from data_inclusion.pipeline.common import pg, s3, utils
+    from data_inclusion.pipeline.dags.import_mes_aides import constants
 
     pg_hook = postgres.PostgresHook(postgres_conn_id="pg")
 
-    table_name = Path(from_s3_path).stem
-    tmp_path = s3.from_s3(path=from_s3_path)
-    df = utils.read_csv(tmp_path, sep=",")
-
-    pg.to_pg(hook=pg_hook, df=df, schema_name=schema_name, table_name=table_name)
+    for resource_key in [
+        Path(constants.AIDES_FILE_KEY),
+        Path(constants.GARAGES_SOLIDAIRES_FILE_KEY),
+    ]:
+        table_name = Path(resource_key).stem
+        tmp_path = s3.from_s3(path=Path(from_s3_path) / resource_key.name)
+        df = utils.read_csv(tmp_path, sep=",")
+        pg.to_pg(hook=pg_hook, df=df, schema_name=schema_name, table_name=table_name)
 
 
 @dag(
