@@ -17,6 +17,7 @@ final AS (
             WHEN 'Accompagnement personnalisé à la mobilité' THEN 'Mobilité'
             WHEN 'Acheter ou louer un véhicule'              THEN 'Transport'
             WHEN 'Atelier pédagogique'                       THEN 'Mobilité'
+            WHEN 'Auto-école sociale'                        THEN 'Mobilité'
             WHEN 'Covoiturage & autopartage'                 THEN 'Transport'
             WHEN 'Réparer votre véhicule'                    THEN 'Transport'
             WHEN 'Transport à la demande'                    THEN 'Transport'
