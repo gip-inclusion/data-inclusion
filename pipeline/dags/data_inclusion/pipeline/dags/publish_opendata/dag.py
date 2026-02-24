@@ -1,4 +1,4 @@
-from airflow.sdk import Variable, dag, task
+from airflow.sdk import dag, task
 
 from data_inclusion.pipeline.common import dags
 
@@ -14,6 +14,7 @@ def publish():
     import pendulum
 
     from airflow.providers.postgres.hooks import postgres
+    from airflow.sdk import Variable
 
     from data_inclusion.pipeline.dags.publish_opendata import (
         constants,
