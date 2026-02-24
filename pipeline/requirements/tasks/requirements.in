@@ -8,12 +8,11 @@ GeoAlchemy2
 geopandas
 httpx
 openpyxl
-pandas==2.*
+pandas
 playwright
-psycopg2==2.*
 pyarrow
 pyogrio
-requests==2.*
+requests
 sib-api-v3-sdk
 SQLAlchemy
 urllib3
