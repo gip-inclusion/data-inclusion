@@ -86,6 +86,7 @@ def create_app(settings: config.Settings) -> fastapi.FastAPI:
 
     app.include_router(v1_api_router)
     app.include_router(v0_api_router, include_in_schema=False)
+    app.include_router(auth_api_router, prefix="/auth", include_in_schema=False)
     app.mount(path="/widget", app=widget_app)
 
     @app.get("/robots.txt", include_in_schema=False)
@@ -103,7 +104,6 @@ def create_app(settings: config.Settings) -> fastapi.FastAPI:
 
 v0_api_router = fastapi.APIRouter(prefix="/api/v0")
 v0_api_router.include_router(v0_data_api_router)
-v0_api_router.include_router(auth_api_router, include_in_schema=False)
 v0_api_router.include_router(v0_schema_api_router, prefix="/doc")
 
 v1_api_router = fastapi.APIRouter(prefix="/api/v1")

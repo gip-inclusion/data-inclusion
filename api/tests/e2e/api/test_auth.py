@@ -34,7 +34,7 @@ LEGACY_ADMIN_TOKEN = jwt.encode(
 
 def create_token_with_admin(api_client, payload: dict) -> str:
     response = api_client.post(
-        "/api/v0/create_token/",
+        "/auth/create_token/",
         json=payload,
         headers={"Authorization": f"Bearer {LEGACY_ADMIN_TOKEN}"},
     )
@@ -44,7 +44,7 @@ def create_token_with_admin(api_client, payload: dict) -> str:
 
 def test_create_token_unauthenticated(api_client):
     response = api_client.post(
-        "/api/v0/create_token/",
+        "/auth/create_token/",
         json={"email": "foo@bar.com"},
     )
     assert response.status_code == 401
@@ -53,7 +53,7 @@ def test_create_token_unauthenticated(api_client):
 @pytest.mark.with_token
 def test_create_token_unauthorized(api_client):
     response = api_client.post(
-        "/api/v0/create_token/",
+        "/auth/create_token/",
         json={"email": "foo@bar.com"},
     )
     assert response.status_code == 403
@@ -88,7 +88,7 @@ def test_create_token_unauthorized(api_client):
 def test_create_token_with_hosts(
     api_client, payload, expected_hosts, expected_token_payload
 ):
-    response = api_client.post("/api/v0/create_token/", json=payload)
+    response = api_client.post("/auth/create_token/", json=payload)
 
     assert response.status_code == 200
     resp_data = response.json()
