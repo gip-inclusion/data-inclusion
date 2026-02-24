@@ -97,8 +97,11 @@ def handle_schedule(schedule: Schedule) -> str:
     return result
 
 
-def to_osm(data: str) -> str:
-    return handle_schedule(Schedule.model_validate(data))
+def to_osm(data: str | dict) -> str | None:
+    if isinstance(data, str):
+        return handle_schedule(Schedule.model_validate_json(data))
+    else:
+        return handle_schedule(Schedule.model_validate(data))
 
 
 return to_osm(data)
