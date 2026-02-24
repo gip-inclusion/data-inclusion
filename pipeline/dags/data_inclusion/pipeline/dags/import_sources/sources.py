@@ -23,7 +23,6 @@ from data_inclusion.pipeline.dags.import_ma_boussole_aidants import (
 from data_inclusion.pipeline.dags.import_mediation_numerique import (
     utils as mediation_numerique,
 )
-from data_inclusion.pipeline.dags.import_mes_aides import utils as mes_aides
 from data_inclusion.pipeline.dags.import_mission_locale import utils as mission_locale
 from data_inclusion.pipeline.dags.import_soliguide import utils as soliguide
 from data_inclusion.pipeline.dags.import_un_jeune_une_solution import (
@@ -56,22 +55,6 @@ SOURCES_CONFIGS = {
                 "filename": "structures.json",
                 "url": "https://solutionsv2-back.maboussoleaidants.fr/api/",
                 "token": Variable.get("MA_BOUSSOLE_AIDANTS_API_KEY", None),
-            },
-        },
-    },
-    "mes-aides": {
-        "schedule": "@daily",
-        "extractor": mes_aides.extract,
-        "streams": {
-            "garages": {
-                "filename": "garages.json",
-                "url": "https://airtable.com/appEvva5gyqqoQRnr/tblnGf4Y5EUEeVHtJ",
-                "token": Variable.get("MES_AIDES_AIRTABLE_KEY", None),
-            },
-            "permis_velo": {
-                "filename": "permis_velo.json",
-                "url": "https://airtable.com/appoYjASNOp90Ryy5/tblN4m8Ayzxzgxl9W",
-                "token": Variable.get("MES_AIDES_AIRTABLE_KEY", None),
             },
         },
     },
