@@ -460,7 +460,6 @@ inflection==0.5.1
     #   -c airflow/constraints.txt
     #   apache-airflow-providers-amazon
     #   connexion
-    #   pyairtable
 iniconfig==2.3.0
     # via pytest
 itsdangerous==2.2.0
@@ -731,8 +730,6 @@ psycopg2-binary==2.9.11
     # via
     #   -c airflow/constraints.txt
     #   apache-airflow-providers-postgres
-pyairtable==3.3.0
-    # via -r dev/../tasks/requirements.in
 pyarrow==18.1.0
     # via
     #   -c airflow/constraints.txt
@@ -753,7 +750,6 @@ pydantic==2.12.5
     #   cadwyn
     #   data-inclusion-schema
     #   fastapi
-    #   pyairtable
 pydantic-core==2.41.5
     # via
     #   -c airflow/constraints.txt
@@ -861,7 +857,6 @@ requests==2.32.5
     #   apache-airflow-providers-http
     #   connexion
     #   opentelemetry-exporter-otlp-proto-http
-    #   pyairtable
     #   redshift-connector
     #   requests-mock
     #   requests-toolbelt
@@ -1034,7 +1029,6 @@ typing-extensions==4.15.0
     #   fastapi
     #   limits
     #   opentelemetry-sdk
-    #   pyairtable
     #   pydantic
     #   pydantic-core
     #   pyee
@@ -1067,7 +1061,6 @@ urllib3==2.6.3
     #   -c airflow/constraints.txt
     #   -r dev/../tasks/requirements.in
     #   botocore
-    #   pyairtable
     #   requests
     #   sagemaker-studio
     #   sentry-sdk
