@@ -47,7 +47,8 @@ def extract_and_load(schema: str):
 
         pg_hook.run(
             f"""\
-                CREATE TABLE IF NOT EXISTS {fq_table_name} (LIKE {fq_table_name}_tmp);
+                DROP TABLE IF EXISTS {fq_table_name};
+                CREATE TABLE {fq_table_name} (LIKE {fq_table_name}_tmp);
                 TRUNCATE {fq_table_name};
                 INSERT INTO {fq_table_name} (SELECT * FROM {fq_table_name}_tmp);
                 DROP TABLE {fq_table_name}_tmp;
