@@ -37,7 +37,7 @@ def load(schema_name: str, from_s3_path: str):
 
     from airflow.providers.postgres.hooks import postgres
 
-    from data_inclusion.pipeline.common import pg, utils
+    from data_inclusion.pipeline.common import pg, s3, utils
 
     pg_hook = postgres.PostgresHook(postgres_conn_id="pg")
 
