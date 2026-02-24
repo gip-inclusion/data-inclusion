@@ -2,6 +2,5 @@
 SELECT x.*
 FROM (
     VALUES
-    ('mission-locale'),
-    ('mes-aides')
+    ('mission-locale')
 ) AS x (source)
