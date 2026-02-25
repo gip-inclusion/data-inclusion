@@ -26,6 +26,7 @@ models:
                 values:
                   - Français à visée professionnelle
                   - Français à visée sociale et communicative
+                  - Lutte contre l’illettrisme / Remise à niveau
       - name: contact__nom
         data_tests:
           - dbt_utils.not_empty_string
