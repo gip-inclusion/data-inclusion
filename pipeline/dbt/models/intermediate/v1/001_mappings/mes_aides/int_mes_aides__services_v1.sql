@@ -11,7 +11,6 @@
             "zone_eligibilite": "TEXT[]",
             "modes_mobilisation": "TEXT[]",
             "mobilisable_par": "TEXT[]",
-            "frais": "TEXT[]",
         },
         source_column_name=None
     )
