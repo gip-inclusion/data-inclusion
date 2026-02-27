@@ -11,11 +11,10 @@ RETURNS
     )
 AS $$
 
-import json
+#INLINE#
 
-from data_inclusion import processings
+return brevo_import_contacts()
 
-return processings.brevo_import_contacts()
 $$ LANGUAGE plpython3u;
 
 {% endmacro %}

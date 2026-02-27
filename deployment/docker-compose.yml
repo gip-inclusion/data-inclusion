@@ -148,6 +148,7 @@ services:
       - POSTGRES_USER=${DATAWAREHOUSE_DI_USERNAME}
       - POSTGRES_PASSWORD=${DATAWAREHOUSE_DI_PASSWORD}
       - BREVO_API_KEY=${AIRFLOW_VAR_BREVO_API_KEY}
+      - DEDUPLICATE_MODEL_PATH=/app/deduplicate-model.bin
     volumes:
       - datawarehouse-data:/var/lib/postgresql/data
 
