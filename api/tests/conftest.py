@@ -196,3 +196,14 @@ def cli_runner(db_session):
             return super().invoke(*args, **kwargs, obj=db_session)
 
     yield CustomRunner()
+
+
+@pytest.fixture(scope="session")
+def fixtures_dir() -> Path:
+    return Path(__file__).parent / "fixtures"
+
+
+@pytest.fixture(scope="function")
+def fixture_path(filename: str, fixtures_dir: Path) -> Path | None:
+    file_path = fixtures_dir / filename
+    return file_path if file_path.exists() else None

@@ -1,0 +1,34 @@
+{% extends "base.html" %}
+{% block content %}
+<main class="fr-container fr-my-12v">
+  <form class="fr-container fr-py-5v fr-my-10v" style="background-color: var(--background-contrast-grey);"
+    hx-post="/valideur/fragments/analyze" hx-encoding="multipart/form-data" hx-target="#results" hx-swap="innerHTML"
+    hx-trigger="change">
+    <div class="fr-upload-group">
+      <label class="fr-label" for="dataset">
+        Sélectionner un fichier
+        <span class="fr-hint-text">Formats acceptés : {{ supported_file_types|map(attribute='name')|map('lower')|join(', ') }} — Taille max. {{ max_file_size_bytes // 10**6 }} Mo</span>
+      </label>
+      <input class="fr-upload" type="file" id="dataset" name="dataset" accept="{{ supported_file_types|map(attribute='value')|join(',') }}"
+        required _="
+          on change
+            set maxFileSizeBytes to {{ max_file_size_bytes }}
+
+            hide #upload-message-error
+
+            repeat for file in my.files
+              if file.size > maxFileSizeBytes
+                show #upload-message-error
+                set my.value to ''
+              end
+            end
+        ">
+      <div class="fr-messages-group" aria-live="polite">
+        <p class="fr-message fr-message--error" id="upload-message-error" style="display: none">Votre fichier doit être
+          inférieur à 5 Mo.</p>
+      </div>
+    </div>
+  </form>
+  <output class="fr-py-10v" id="results"></output>
+</main>
+{% endblock %}

@@ -4,26 +4,15 @@ from pathlib import Path
 
 import numpy as np
 import pandas as pd
-import pydantic
 import sqlalchemy as sqla
 from sqlalchemy import orm
 
 from data_inclusion.api.decoupage_administratif.models import Commune
 from data_inclusion.api.inclusion_data.v1 import models
+from data_inclusion.api.valideur import services
 from data_inclusion.schema import v1
 
 logger = logging.getLogger(__name__)
-
-
-def validate_data(model_schema, data: dict) -> list[dict]:
-    errors = []
-
-    try:
-        model_schema(**data)
-    except pydantic.ValidationError as exc:
-        errors += [{"id": data["id"], **err} for err in exc.errors()]
-
-    return errors
 
 
 def prepare_load(
@@ -35,30 +24,34 @@ def prepare_load(
 
     Remove invalid entries, compute quality scores, etc.
     """
+
+    # batch load city codes to avoid querying the database for each line of the dataset
+    city_codes = db_session.scalars(sqla.select(Commune.code)).all()
+
     if structures_df.empty or services_df.empty:
         raise ValueError("Structures or services dataset is empty.")
 
-    city_codes = db_session.scalars(sqla.select(Commune.code)).all()
-
-    structures_errors_df = structures_df.apply(
-        lambda d: validate_data(v1.Structure, d), axis=1
+    valid_structures_idx = structures_df.apply(
+        lambda d: len(services.list_errors(model=v1.Structure, data=[{**d}])) == 0,
+        axis=1,
     )
-    structures_df = structures_df.loc[structures_errors_df.apply(len) == 0]
+    structures_df = structures_df.loc[valid_structures_idx]
+    structures_df = structures_df.loc[~structures_df["_is_closed"]]
     valid_code_insee_idx = structures_df["code_insee"].apply(
         lambda c: c is None or c in city_codes
     )
     structures_df = structures_df.loc[valid_code_insee_idx]
-    structures_df = structures_df.loc[~structures_df["_is_closed"]]
 
-    services_errors_df = services_df.apply(
-        lambda d: validate_data(v1.Service, d), axis=1
+    valid_services_idx = services_df.apply(
+        lambda d: len(services.list_errors(model=v1.Service, data=[{**d}])) == 0,
+        axis=1,
     )
-    services_df = services_df.loc[services_errors_df.apply(len) == 0]
+    services_df = services_df.loc[valid_services_idx]
+    services_df = services_df.loc[services_df["structure_id"].isin(structures_df["id"])]
     valid_code_insee_idx = services_df["code_insee"].apply(
         lambda c: c is None or c in city_codes
     )
     services_df = services_df.loc[valid_code_insee_idx]
-    services_df = services_df.loc[services_df["structure_id"].isin(structures_df["id"])]
 
     service_scores = (
         services_df.groupby("structure_id")["score_qualite"]

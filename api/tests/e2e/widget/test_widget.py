@@ -4,7 +4,7 @@ import pytest
 from playwright import sync_api as pw
 
 
-@pytest.mark.skipif(os.getenv("CI") != "1", reason="Skipping test in CI")
+@pytest.mark.skipif(os.getenv("CI") == "1", reason="Skipping test in CI")
 def test_widget(page: pw.Page):
     """Necessite un serveur de test comportant des données sur Lille
     en cours d'exécution avec TOKEN_ENABLED = False
