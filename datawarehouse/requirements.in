@@ -1,0 +1,33 @@
+# dependencies for UDFs in pipeline/dbt/macros/udfs/
+
+# brevo
+sib-api-v3-sdk
+
+# check_urls
+certifi
+furl
+
+# deduplicate
+dedupe
+dedupe-variable-datetime
+unidecode
+
+# geocode
+numpy~=2.0
+pandas~=2.2
+requests~=2.31
+
+# html_to_markdown
+markdownify>=1.2.2
+
+# phonenumbers
+phonenumbers
+
+# slugify
+python-slugify
+
+# score / model_validate
+data-inclusion-schema==1.0.4
+
+# testing
+pytest

@@ -1,8 +1,7 @@
 from unittest.mock import ANY
 
 import pytest
-
-from data_inclusion.processings import geocode
+from geocode import geocode
 
 pytestmark = pytest.mark.integration
 

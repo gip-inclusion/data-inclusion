@@ -35,10 +35,10 @@ RUN pip install --no-cache-dir --upgrade pip setuptools wheel
 
 COPY ./docker-entrypoint-initdb.d /docker-entrypoint-initdb.d
 
-COPY processings/requirements processings/requirements
-RUN pip install --no-cache-dir -r processings/requirements/test-requirements.txt
+COPY requirements.txt requirements.txt
+RUN pip install --no-cache-dir -r requirements.txt
 
-COPY processings processings
-RUN pip install --no-cache-dir -e processings
+COPY deduplicate-model.bin /app/deduplicate-model.bin
+ENV DEDUPLICATE_MODEL_PATH=/app/deduplicate-model.bin
 
 RUN localedef -i fr_FR -c -f UTF-8 -A /usr/share/locale/locale.alias fr_FR.UTF-8
