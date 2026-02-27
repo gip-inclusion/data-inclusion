@@ -1,4 +1,4 @@
-apache-airflow[amazon,fab,postgres,s3fs,sentry,ssh,standard,uv]==3.1.7
+apache-airflow[amazon,fab,postgres,s3fs,sentry,slack,ssh,standard,uv]==3.1.7
 
 2captcha-python
 beautifulsoup4
@@ -7,14 +7,18 @@ furl
 GeoAlchemy2
 geopandas
 httpx
+openai
 openpyxl
 pandas
 playwright
+pyarrow
 pyarrow
 pyogrio
 requests
 sib-api-v3-sdk
 SQLAlchemy
+tabulate
+typer
 urllib3
 xlsxwriter
 xmlschema
