@@ -13,6 +13,7 @@ from data_inclusion.api.inclusion_data.v0.routes import router as v0_data_api_ro
 from data_inclusion.api.inclusion_data.v1.routes import router as v1_data_api_router
 from data_inclusion.api.inclusion_schema.v0.routes import router as v0_schema_api_router
 from data_inclusion.api.inclusion_schema.v1.routes import router as v1_schema_api_router
+from data_inclusion.api.valideur.routes import app as valideur_app
 from data_inclusion.api.widget.routes import app as widget_app
 
 API_DESCRIPTION_PATH = Path(__file__).parent / "api_description.md"
@@ -87,6 +88,7 @@ def create_app(settings: config.Settings) -> fastapi.FastAPI:
     app.include_router(v1_api_router)
     app.include_router(v0_api_router, include_in_schema=False)
     app.mount(path="/widget", app=widget_app)
+    app.mount(path="/valideur", app=valideur_app)
 
     @app.get("/robots.txt", include_in_schema=False)
     def get_robots_txt():
@@ -109,6 +111,5 @@ v0_api_router.include_router(v0_schema_api_router, prefix="/doc")
 v1_api_router = fastapi.APIRouter(prefix="/api/v1")
 v1_api_router.include_router(v1_data_api_router)
 v1_api_router.include_router(v1_schema_api_router, prefix="/doc")
-
 
 app = create_app(settings=config.settings)
