@@ -66,8 +66,8 @@ repos:
         files: ^pipeline
         types: [sql]
         additional_dependencies:
-          - sqlfluff-templater-dbt==4.0.4
-          - dbt-core>=1.10.11
-          - dbt-postgres>=1.9
+          - sqlfluff-templater-dbt
+          - dbt-core
+          - dbt-postgres
         args:
           - --config=./pipeline/pyproject.toml
