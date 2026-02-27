@@ -9,7 +9,7 @@ jobs:
 
     strategy:
       matrix:
-        service: ["api", "datawarehouse", "pipeline"]
+        service: ["api", "pipeline"]
       fail-fast: false
 
     env:

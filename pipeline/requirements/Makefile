@@ -1,11 +1,11 @@
-PIP_COMPILE := uv pip compile --quiet --constraint airflow/constraints.txt
+AIRFLOW_VERSION := 3.1.7
+PYTHON_VERSION := 3.12
+
+PIP_COMPILE := uv pip compile --quiet --constraint airflow/constraints.txt --python-version $(PYTHON_VERSION)
 
 ifeq ($(filter upgrade,$(MAKECMDGOALS)),upgrade)
 PIP_COMPILE += --upgrade
 endif
-
-AIRFLOW_VERSION := 3.1.7
-PYTHON_VERSION := 3.12
 
 .PHONY: all airflow tasks dev upgrade
 

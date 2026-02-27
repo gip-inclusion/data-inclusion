@@ -1,6 +1,5 @@
 import pytest
-
-from data_inclusion.processings import deduplicate
+from deduplicate import deduplicate
 
 STRUCTURES = [
     {

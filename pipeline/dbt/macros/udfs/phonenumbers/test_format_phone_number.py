@@ -1,6 +1,5 @@
 import pytest
-
-from data_inclusion.processings.phonenumbers import format_phone_number
+from format_phone_number import format_phone_number
 
 
 @pytest.mark.parametrize(
