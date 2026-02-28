@@ -1,0 +1,11 @@
+{% extends "base.html" %}
+{% block content %}
+<main>
+    <form hx-post="/valideur/fragments/analyze" hx-encoding="multipart/form-data" hx-target="#results" hx-swap="outerHTML" hx-trigger="change">
+        <label for="dataset">Cliquez pour sélectionner un fichier. Taille maximale : 500 Mo.</label>
+        <input type="file" id="dataset" name="dataset" accept=".xls, .xlsx">
+    </form>
+    <output id="results">
+    </output>
+</main>
+{% endblock %}

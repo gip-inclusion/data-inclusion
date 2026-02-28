@@ -1,5 +1,19 @@
+import numpy as np
 import pandas as pd
 import pydantic
+
+from data_inclusion.schema import v1
+
+
+def validate_dataset(
+    structures_df: pd.DataFrame,
+    services_df: pd.DataFrame,
+) -> pd.DataFrame:
+    structures_errors_df = list_errors(v1.Structure, structures_df)
+    services_errors_df = list_errors(v1.Service, services_df)
+    errors_df = pd.concat([structures_errors_df, services_errors_df])
+    errors_df = errors_df.replace({np.nan: None})
+    return errors_df
 
 
 def list_errors(model, df: pd.DataFrame) -> pd.DataFrame:

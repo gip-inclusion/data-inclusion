@@ -1,0 +1,20 @@
+<output id="results">
+    <div>
+        <h2>État du fichier</h2>
+        {{summary_df.to_html(index=False) | safe}}
+    </div>
+    {% if errors_df.empty %}
+    <div>
+        <h2>Votre fichier est parfaitement valide !</h2>
+        <p>Toutes vos données respectent intégralement notre schéma data·inclusion.</p>
+        <p>Votre fichier respecte parfaitement le schéma data·inclusion.</p>
+    </div>
+    {% else %}
+    <div>
+        <h2>Erreurs à corriger</h2>
+        <p>Votre fichier comporte plusieurs erreurs qui nécessitent des corrections de votre part.</p>
+        <p>Voici la liste des anomalies détectées dans votre fichier par rapport au schéma data·inclusion.</p>
+        {{errors_df.to_html(index=False) | safe}}
+    </div>
+    {% endif %}
+</output>
