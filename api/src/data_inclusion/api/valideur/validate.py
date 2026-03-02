@@ -32,11 +32,11 @@ def list_errors(model, df: pd.DataFrame) -> pd.DataFrame:
                 {
                     "version": "v1",
                     "fqn": f"{model.__name__}.{field}",
-                    "schéma": model.__name__,
-                    "champ": field,
-                    "ligne": line_number,
+                    "schema": model.__name__,
+                    "field": field,
+                    "line": line_number,
                     "id": id,
-                    "valeur": error["input"] if error["type"] != "missing" else None,
+                    "value": error["input"] if error["type"] != "missing" else None,
                     "message": error["msg"],
                 }
             )

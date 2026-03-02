@@ -1,7 +1,7 @@
 from pathlib import Path
 from typing import Annotated
 
-import pandas as pd
+import numpy as np
 
 import fastapi
 from fastapi import staticfiles, templating
@@ -34,45 +34,38 @@ def results(
     errors_df = validate.validate_dataset(structures_df, services_df)
     errors_df = errors_df.assign(message=errors_df["message"].apply(translations.tr))
 
-    summary_df = pd.DataFrame(
-        [
-            {
-                "Schéma": "Structures",
-                "Total de lignes": len(structures_df),
-                "Invalides": errors_df[errors_df["schéma"] == "Structure"][
-                    "id"
-                ].nunique(),
-                "Erreurs": len(errors_df[errors_df["schéma"] == "Structure"]),
-            },
-            {
-                "Schéma": "Services",
-                "Total de lignes": len(services_df),
-                "Invalides": errors_df[errors_df["schéma"] == "Service"][
-                    "id"
-                ].nunique(),
-                "Erreurs": len(errors_df[errors_df["schéma"] == "Service"]),
-            },
-        ]
-    )
+    summary_dict = {
+        "structures": {
+            "total": len(structures_df),
+            "invalid": errors_df[errors_df["schema"] == "Structure"]["id"].nunique(),
+            "errors": len(errors_df[errors_df["schema"] == "Structure"]),
+        },
+        "services": {
+            "total": len(services_df),
+            "invalid": errors_df[errors_df["schema"] == "Service"]["id"].nunique(),
+            "errors": len(errors_df[errors_df["schema"] == "Service"]),
+        },
+    }
 
     errors_df = errors_df.groupby(
-        list(errors_df.columns[~errors_df.columns.isin(["id", "ligne"])]),
-        as_index=False,
-    )["ligne"].agg(
-        lambda lignes: utils.display_ranges(list(lignes)).replace("-", " à ")
+        by=["schema", "field", "value", "message"], as_index=False, dropna=False
+    )["line"].agg(
+        lines=lambda lines: utils.display_ranges(list(lines)).replace("-", " à ")
     )
-    errors_df = errors_df[["schéma", "ligne", "champ", "message"]]
+    errors_df = errors_df[["schema", "lines", "field", "value", "message"]]
     errors_df = errors_df.sort_values(
-        by=["schéma", "ligne", "champ"], ascending=[False, True, True]
+        by=["schema", "lines", "field"], ascending=[False, True, True]
     )
+    errors_df = errors_df.replace(np.nan, "")
+    errors_records = errors_df.to_dict("records")
 
     return templates.TemplateResponse(
         request=request,
         name="fragments/results.html",
         context={
             "request": request,
-            "summary_df": summary_df,
-            "errors_df": errors_df,
+            "summary_dict": summary_dict,
+            "errors_records": errors_records,
         },
     )
 
