@@ -42,7 +42,9 @@ def read_file(
     structures_df, services_df = read_fn(content)
 
     for col in ["reseaux_porteurs"]:
-        structures_df[col] = structures_df[col].fillna("").apply(lambda s: s.split(","))
+        structures_df[col] = (
+            structures_df[col].fillna("").apply(lambda s: s.split(",")).str.strip()
+        )
 
     for col in [
         "thematiques",

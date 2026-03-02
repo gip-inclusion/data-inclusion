@@ -4,20 +4,14 @@ from typing import Annotated
 import numpy as np
 
 import fastapi
-from fastapi import staticfiles, templating
+from fastapi import templating
 
 from data_inclusion.api.valideur import readers, translations, utils, validate
 
 MAX_FILE_SIZE_IN_BYTES = 500_000_000  # 500MB
 TEMPLATES_DIR = Path(__file__).parent / "templates"
-STATIC_FILES_DIR = Path(__file__).parent / "static"
 
 app = fastapi.FastAPI()
-app.mount(
-    path="/static",
-    app=staticfiles.StaticFiles(directory=STATIC_FILES_DIR.resolve()),
-    name="static",
-)
 
 templates = templating.Jinja2Templates(directory=TEMPLATES_DIR)
 
