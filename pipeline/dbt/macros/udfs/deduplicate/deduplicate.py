@@ -93,8 +93,14 @@ def deduplicate(data: list[DeduplicateInput]) -> pd.DataFrame:
     if "date_maj" not in df.columns:
         df["date_maj"] = None
 
-    dir_path = os.path.dirname(os.path.realpath(__file__))
-    with open(f"{dir_path}/deduplicate-model.bin", "rb") as f:
+    model_path = os.environ.get("DEDUPLICATE_MODEL_PATH")
+    if model_path is None:
+        raise RuntimeError(
+            "DEDUPLICATE_MODEL_PATH env var must be set to the"
+            " path of deduplicate-model.bin"
+        )
+
+    with open(model_path, "rb") as f:
         deduper = dedupe.StaticDedupe(f)
 
     data = json.loads(df.to_json(orient="records"))

@@ -20,10 +20,10 @@ AS $$
 
 import json
 
-from data_inclusion import processings
+#INLINE#
 
 return (
-    processings.geocode(data=json.loads(data))
+    geocode(data=json.loads(data))
     if data is not None
     else []
 )

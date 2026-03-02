@@ -160,6 +160,7 @@ services:
       - POSTGRES_USER=data-inclusion
       - POSTGRES_PASSWORD=data-inclusion
       - BREVO_API_KEY=${AIRFLOW_VAR_BREVO_API_KEY}
+      - DEDUPLICATE_MODEL_PATH=/app/deduplicate-model.bin
     volumes:
       - pg-data:/var/lib/postgresql/data
 

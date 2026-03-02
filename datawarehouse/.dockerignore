@@ -1,7 +1,8 @@
 *
 
 !/docker-entrypoint-initdb.d
-!/processings
+!/requirements.txt
+!/deduplicate-model.bin
 
 # Python
 **/*.py[cod]
