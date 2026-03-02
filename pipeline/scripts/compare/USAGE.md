@@ -17,7 +17,7 @@ Generate a summary with a llm generated comment:
 ```bash
 # requires access to an openai compatible provider
 # with `OPENAI_API_KEY` and `OPENAI_BASE_URL` set
-./compare.py summarize diff.jsonl --llm --model
+./compare.py summarize diff.jsonl --llm --model gpt-5.2
 ```
 
 One-liner with pipes:
@@ -26,7 +26,7 @@ One-liner with pipes:
 ./compare.py compare BEFORE AFTER --meta-columns source | ./compare.py summarize --llm
 ```
 
-The diff can be filter with `jq`:
+The diff can be filtered with `jq`:
 
 ```bash
 ./compare.py compare BEFORE AFTER --meta-columns source | jq -s -c '.[] | select(.source == "dora")' | ./compare.py summarize --llm

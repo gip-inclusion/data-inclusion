@@ -176,7 +176,7 @@ def compare(
         typer.Option(
             help=(
                 "List of columns to exclude from the comparison. Can be used to "
-                "removed non-deterministic columns like timestamps."
+                "remove non-deterministic columns like timestamps."
             ),
         ),
     ] = [],
