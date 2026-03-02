@@ -1,0 +1,100 @@
+<output id="results">
+    {% if errors_records %}
+    <div class="fr-alert fr-alert--error fr-mb-3w">
+        <p>Nous avons identifié plusieurs erreurs. Vous trouverez ci-dessous un récapitulatif des actions à effectuer.
+        </p>
+    </div>
+    {% else %}
+    <div class="fr-alert fr-alert--success fr-mb-3w">
+        <p>Votre fichier est conforme au schéma data·inclusion !</p>
+    </div>
+    {% endif %}
+
+    <section class="fr-mb-4w">
+        <h2 class="fr-h4">Résultat de l'analyse</h2>
+        <div class="fr-grid-row fr-grid-row--middle fr-py-1w">
+            <div class="fr-col">
+                <strong>{{ summary_dict.structures.total }} structure(s) analysée(s)</strong>
+                {% if summary_dict.structures.invalid %}
+                <span class="fr-hint-text">{{ summary_dict.structures.invalid }} à corriger</span>
+                {% endif %}
+            </div>
+            <div class="fr-col-auto">
+                {% if summary_dict.structures.errors == 0 %}
+                <span class="fr-text--mention-grey">Aucune erreur</span>
+                {% else %}
+                <span class="fr-badge fr-badge--error">{{ summary_dict.structures.errors }} erreur(s)</span>
+                {% endif %}
+            </div>
+        </div>
+        <div class="fr-grid-row fr-grid-row--middle fr-py-1w">
+            <div class="fr-col">
+                <strong>{{ summary_dict.services.total }} service(s) analysé(s)</strong>
+                {% if summary_dict.services.invalid %}
+                <span class="fr-hint-text">{{ summary_dict.services.invalid }} à corriger</span>
+                {% endif %}
+            </div>
+            <div class="fr-col-auto">
+                {% if summary_dict.services.errors == 0 %}
+                <span class="fr-text--mention-grey">Aucune erreur</span>
+                {% else %}
+                <span class="fr-badge fr-badge--error">{{ summary_dict.services.errors }} erreur(s)</span>
+                {% endif %}
+            </div>
+        </div>
+    </section>
+
+    {% if not errors_records %}
+    <section>
+        <h2 class="fr-h4">Prochaine étape : publier vos données</h2>
+        <p>Vous pouvez maintenant publier votre fichier sur data.gouv.fr pour qu'il soit intégré au commun numérique
+            data·inclusion.
+            Notre guide pas à pas vous accompagne jusqu'à la publication.</p>
+        <p><a href="#" target="_blank">Consulter notre documentation</a></p>
+    </section>
+    {% else %}
+    <section>
+        <h2 class="fr-h4">Erreurs à corriger</h2>
+        <p class="fr-hint-text">
+            Corrigez les erreurs ci-dessous dans votre fichier source, puis chargez-le à nouveau.
+        </br>
+            Les valeurs attendues sont définies dans le
+            <a href="https://gip-inclusion.github.io/data-inclusion-schema/latest/structure/" target="_blank">schéma
+                data·inclusion</a>.
+        </p>
+        <div class="fr-table fr-table--multiline">
+            <div class="fr-table__wrapper">
+                <div class="fr-table__container">
+                    <div class="fr-table__content">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th class="fr-col--xs" scope="col">Typologie</th>
+                                    <th class="fr-col--xs" scope="col">Champ</th>
+                                    <th class="fr-col--xs" scope="col">Ligne(s)</th>
+                                    <th scope="col">Valeur</th>
+                                    <th scope="col">Détail</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% set ns = namespace(prev_schema=None) %}
+                                {% for r in errors_records %}
+                                {% set show_schema = r.schema != ns.prev_schema %}
+                                <tr>
+                                    <td><strong>{% if show_schema %}{{ r.schema }}{% endif %}</strong></td>
+                                    <td><strong>{{ r.field }}</strong></td>
+                                    <td><strong>{{ r.lines }}</strong></td>
+                                    <td>{{ r.value or '' }}</td>
+                                    <td>{{ r.message }}</td>
+                                </tr>
+                                {% if show_schema %}{% set ns.prev_schema = r.schema %}{% endif %}
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    {% endif %}
+</output>

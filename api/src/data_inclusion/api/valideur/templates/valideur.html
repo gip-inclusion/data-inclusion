@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+{% block content %}
+<main class="fr-container fr-my-12v">
+  <form class="fr-mb-3w" hx-post="/valideur/fragments/analyze" hx-encoding="multipart/form-data"
+        hx-target="#results" hx-swap="outerHTML" hx-trigger="change">
+    <div class="fr-upload-group">
+      <label class="fr-label" for="dataset">
+        Sélectionner un fichier
+        <span class="fr-hint-text">Formats acceptés : .xls, .xlsx — Taille max. 500 Mo</span>
+      </label>
+      <input class="fr-upload" type="file" id="dataset" name="dataset" accept=".xls,.xlsx">
+    </div>
+  </form>
+  <output id="results"></output>
+</main>
+{% endblock %}
