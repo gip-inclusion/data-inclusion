@@ -1,5 +1,6 @@
-import opening_hours
 import pytest
+
+from france_travail import opening_hours
 
 
 @pytest.mark.parametrize(

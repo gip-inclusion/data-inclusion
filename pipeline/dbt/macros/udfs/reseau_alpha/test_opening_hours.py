@@ -1,5 +1,6 @@
-import opening_hours
 import pytest
+
+from reseau_alpha import opening_hours
 
 
 @pytest.mark.parametrize(
