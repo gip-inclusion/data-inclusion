@@ -1,5 +1,6 @@
-import opening_hours
 import pytest
+
+from soliguide import opening_hours
 
 
 @pytest.mark.parametrize(

@@ -1,5 +1,6 @@
-import html_to_markdown
 import pytest
+
+from html_to_markdown import html_to_markdown
 
 
 @pytest.mark.parametrize(

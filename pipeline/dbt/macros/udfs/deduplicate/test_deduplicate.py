@@ -1,5 +1,6 @@
 import pytest
-from deduplicate import deduplicate
+
+from deduplicate.deduplicate import deduplicate
 
 STRUCTURES = [
     {
