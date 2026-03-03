@@ -18,7 +18,9 @@ WARNING = "{# !!! THIS FILE IS AUTO-GENERATED. DO NOT EDIT MANUALLY. !!! #}"
 def process_udf(udf_dir: Path):
     template_path = next(udf_dir.glob("*.sql.template"))
     template_content = template_path.read_text()
-    python = next(udf_dir.glob("[!test_]*.py")).read_text()
+    python = next(
+        f for f in udf_dir.glob("*.py") if not f.name.startswith("test_")
+    ).read_text()
     sql = template_content.replace(MARKER, python)
     output_path = udf_dir / template_path.name.replace(".template", "")
     output_path.write_text(WARNING + "\n" * 2 + sql)
