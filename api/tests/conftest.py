@@ -92,12 +92,12 @@ def force_authenticate(request, api_client):
 
 
 @pytest.fixture(scope="session")
-def db_init():
+def db_init(worker_id):  # worker_id provided by pytest-xdist
     from data_inclusion.api import config
 
     DEFAULT_DATABASE_URL = sqla.engine.make_url(config.settings.DATABASE_URL)
     TEST_DATABASE_URL = DEFAULT_DATABASE_URL.set(
-        database=f"{DEFAULT_DATABASE_URL.database}_test"
+        database=f"{DEFAULT_DATABASE_URL.database}_test_{worker_id}"
     )
 
     default_engine = sqla.create_engine(
