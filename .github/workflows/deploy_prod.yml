@@ -5,7 +5,11 @@ on:
     branches: [release]
 
 jobs:
+  test:
+    uses: ./.github/workflows/_test.yml
+
   build:
+    needs: test
     uses: ./.github/workflows/_build_images.yml
 
   deploy_prod:
