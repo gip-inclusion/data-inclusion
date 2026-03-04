@@ -36,6 +36,7 @@ airflow = ["airflow"]
 testpaths = [
     "dags",
     "tests",
+    "dbt/macros/udfs",
 ]
 markers = '''
     integration: mark test as requiring external ressources (like an api)

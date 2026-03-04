@@ -1,0 +1,57 @@
+name: Run all tests
+
+on:
+  workflow_call:
+
+jobs:
+  test-pipeline:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@5a095e7a2014a4212f075830d4f7277575a9d098  # v7.3.1
+
+      - name: Test pipeline UDF functions
+        env:
+          DEDUPLICATE_MODEL_PATH: ${{ github.workspace }}/datawarehouse/deduplicate-model.bin
+        working-directory: pipeline
+        run: |
+          uv venv &&
+          uv pip install -r ../datawarehouse/requirements.txt &&
+          uv run pytest dbt/macros/udfs/ -vv -m 'not integration'
+
+  test-api:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+
+    services:
+      postgres:
+        image: postgis/postgis:18-3.6-alpine
+        env:
+          POSTGRES_DB: data-inclusion
+          POSTGRES_USER: data-inclusion
+          POSTGRES_PASSWORD: data-inclusion
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 5s
+          --health-retries 5
+
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@5a095e7a2014a4212f075830d4f7277575a9d098  # v7.3.1
+
+      - name: Test API
+        env:
+          DATABASE_URL: postgresql://data-inclusion:data-inclusion@localhost:5432/data-inclusion
+          ENV: test
+          SECRET_KEY: test-secret-key
+        working-directory: api
+        run: |
+          uv venv &&
+          uv sync --group test &&
+          uv run pytest tests/ -vv -m 'not integration'
