@@ -8,6 +8,9 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: read
+    defaults:
+      run:
+        working-directory: pipeline
 
     steps:
       - uses: actions/checkout@v4
@@ -15,10 +18,12 @@ jobs:
         with:
           enable-cache: true
 
+      - name: Ruff check
+        run: uvx ruff check .
+
       - name: Test pipeline UDF functions
         env:
           DEDUPLICATE_MODEL_PATH: ${{ github.workspace }}/datawarehouse/deduplicate-model.bin
-        working-directory: pipeline
         run: |
           uv venv &&
           uv pip install -r ../datawarehouse/requirements.txt &&
@@ -28,6 +33,9 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: read
+    defaults:
+      run:
+        working-directory: api
 
     services:
       postgres:
@@ -49,12 +57,14 @@ jobs:
         with:
           enable-cache: true
 
+      - name: Ruff check
+        run: uvx ruff check .
+
       - name: Test API
         env:
           DATABASE_URL: postgresql://data-inclusion:data-inclusion@localhost:5432/data-inclusion
           ENV: test
           SECRET_KEY: test-secret-key
-        working-directory: api
         run: |
           uv sync --group test &&
           uv run pytest tests/ -vv -n auto -m 'not integration'
