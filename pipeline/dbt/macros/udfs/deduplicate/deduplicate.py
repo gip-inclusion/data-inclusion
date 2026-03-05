@@ -52,8 +52,8 @@ def deduplicate(data: list[DeduplicateInput]) -> pd.DataFrame:
     df["nom"] = df["nom"].str.lower().str.strip().apply(unidecode)
     df["location"] = df.apply(
         lambda row: [
-            float(row["latitude"] if pd.notnull(row["latitude"]) else 0.0),
-            float(row["longitude"] if pd.notnull(row["longitude"]) else 0.0),
+            float(row["latitude"] if pd.notna(row["latitude"]) else 0.0),
+            float(row["longitude"] if pd.notna(row["longitude"]) else 0.0),
         ],
         axis=1,
     )

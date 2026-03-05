@@ -24,9 +24,7 @@ class BrevoClient:
     def contacts_api(self) -> sib_api_v3_sdk.ContactsApi:
         return sib_api_v3_sdk.ContactsApi(self.client)
 
-    def list_contacts(
-        self, list_id
-    ) -> Generator[sib_api_v3_sdk.GetContactDetails, None, None]:
+    def list_contacts(self, list_id) -> Generator[sib_api_v3_sdk.GetContactDetails]:
         index = 0
         while True:
             response = self.contacts_api.get_contacts_from_list(

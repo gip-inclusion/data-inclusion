@@ -1,4 +1,4 @@
-from typing import Generic, TypeVar
+from typing import TypeVar
 
 from pydantic import BaseModel, Field
 from sqlalchemy import Select
@@ -9,7 +9,7 @@ import fastapi
 T = TypeVar("T")
 
 
-class CursorPage(BaseModel, Generic[T]):
+class CursorPage[T](BaseModel):
     items: list[T]
     next_cursor: str | None = None
     previous_cursor: str | None = None

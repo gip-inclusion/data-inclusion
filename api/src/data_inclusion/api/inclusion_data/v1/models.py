@@ -49,7 +49,7 @@ class Structure(HasAddress, Base):
     lien_source: Mapped[str | None]
     telephone: Mapped[str | None]
 
-    services: Mapped[list["v1.models.Service"]] = relationship(  # noqa: F821
+    services: Mapped[list[v1.models.Service]] = relationship(  # noqa: F821
         back_populates="structure"
     )
     commune_: Mapped[Commune] = relationship(back_populates="structures_v1")
