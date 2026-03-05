@@ -56,7 +56,7 @@ x-airflow-common:
 
 services:
   airflow-db:
-    image: postgres:14
+    image: postgres:18
     restart: no
     healthcheck:
       test: pg_isready
@@ -161,7 +161,7 @@ services:
       - POSTGRES_PASSWORD=data-inclusion
       - BREVO_API_KEY=${AIRFLOW_VAR_BREVO_API_KEY}
     volumes:
-      - pg-data:/var/lib/postgresql/data
+      - pg-data:/var/lib/postgresql
 
   api:
     image: data-inclusion/api

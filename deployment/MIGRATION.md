@@ -1,67 +1,92 @@
-Here is the corrected and formatted version of your migration process:
-**The goal**: Migrate PostgreSQL from 14 to 17
+**The goal**: Migrate PostgreSQL from 17 to 18 (datawarehouse) and from 14 to 18 (airflow-db)
 
-### Steps:
+### Datawarehouse (PG 17 → 18)
 
 1. **Connect via SSH to the instance**
-```bash
-   ssh root@<INSTANCE_IP>
-```
-2. **Install PostgreSQL 17**
     ```bash
-    sudo apt install curl ca-certificates
-    sudo install -d /usr/share/postgresql-common/pgdg
-    sudo curl -o /usr/share/postgresql-common/pgdg/apt.postgresql.org.asc --fail https://www.postgresql.org/media/keys/ACCC4CF8.asc
-
-    sudo sh -c 'echo "deb [signed-by=/usr/share/postgresql-common/pgdg/apt.postgresql.org.asc] https://apt.postgresql.org/pub/repos/apt $(lsb_release -cs)-pgdg main" > /etc/apt/sources.list.d/pgdg.list'
-
-    sudo apt update
-
-    sudo apt -y install postgresql
+    ssh root@<INSTANCE_IP>
+    cd data-inclusion
     ```
 
-3. **Create a backup of the current database after stoping other container | Stop all **
+2. **Stop everything, then start only datawarehouse for the dump**
     ```bash
-    cd data-inclusion
     docker compose stop
     docker compose up datawarehouse -d
-    pg_dump -d 'postgresql://data_inclusion:{password}@172.17.0.1:5432/data_inclusion' --no-owner --no-acl -Fc -v -f /root/migrate_14_to_17.dump
+    docker compose exec datawarehouse pg_isready
     ```
 
-4. **Import the dump locally**
-   Transfer the backup file to your local machine:
-
+3. **Dump the datawarehouse**
     ```bash
-    scp root@163.172.186.56:/root/migrate_14_to_17.dump ~/data
+    pg_dump \
+      -d 'postgresql://<user>:<password>@172.17.0.1:5432/<dbname>' \
+      --no-owner --no-acl -Fc -v \
+      -f /root/migrate_17_to_18.dump
     ```
 
-5. **Stop the instance**
-   Stop the running services using Docker Compose:
+4. **Stop all services**
+    ```bash
+    docker compose stop
+    ```
 
+5. **Remove the datawarehouse data volume**
+    ```bash
+    docker volume rm data-inclusion_datawarehouse-data
+    ```
+
+6. **Pull the new images**
+    ```bash
+    docker compose pull
+    ```
+
+7. **Start only the datawarehouse to initialize PG 18**
+    ```bash
+    docker compose up datawarehouse -d
+    sleep 10
+    docker compose exec datawarehouse pg_isready
+    ```
+
+8. **Restore the dump**
+    ```bash
+    pg_restore \
+      --no-owner -Fc \
+      -d 'postgresql://<user>:<password>@172.17.0.1:5432/<dbname>' \
+      -j 8 -v \
+      /root/migrate_17_to_18.dump
+    ```
+
+9. **Stop datawarehouse**
     ```bash
     docker compose stop
     ```
 
-6. **Clean the data folder**
-   Remove all the existing data in the target database container:
+### Airflow DB (PG 14 → 18)
 
-    ```bash
-    docker compose run datawarehouse 'rm -rf /var/lib/postgresql/data/*'
-    ```
+All connections and variables are set via environment variables.
+Just destroy the old container and its anonymous volume:
 
-7. **Update the PostgreSQL version**
-   Deploy from pull request
+```bash
+docker compose rm -v airflow-db
+```
 
-8. **Run the migration**
-   Restore the backup to the new PostgreSQL version:
+`airflow-init` will recreate the schema on the new PG 18 image via `_AIRFLOW_DB_MIGRATE`.
 
-    ```bash
-    docker compose stop
-    docker compose run datawarehouse 'rm -rf /var/lib/postgresql/data/*'
-    pg_restore --no-owner -Fc /root/migrate_14_to_17.dump -d 'postgresql://datainclusion:{password}@172.17.0.1:5432/datainclusion' -j 8 -v
-    ```
+### Full restart
 
-9. **Deploy relaunch docker**
-    ```Bash
-    docker compose --progress=plain up --pull=always --force-recreate --remove-orphans --wait --wait-timeout 1200 --quiet-pull --detach
-    ```
+```bash
+docker compose --progress=plain up \
+  --pull=always \
+  --force-recreate \
+  --remove-orphans \
+  --wait \
+  --wait-timeout 1200 \
+  --quiet-pull \
+  --detach
+```
+
+### Validation
+
+```bash
+docker compose exec datawarehouse psql -U <user> -d <dbname> -c "SELECT version();"
+docker compose exec airflow-db psql -U airflow -d airflow -c "SELECT version();"
+docker compose exec datawarehouse psql -U <user> -d <dbname> -c "SELECT extname, extversion FROM pg_extension;"
+```
