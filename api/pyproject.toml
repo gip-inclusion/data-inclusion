@@ -94,6 +94,7 @@ section-order = [
 ]
 combine-as-imports = true
 known-first-party = ["data_inclusion"]
+known-third-party = ["alembic"]
 
 [tool.ruff.lint.isort.sections]
 fastapi = ["fastapi", "fastapi_pagination"]
