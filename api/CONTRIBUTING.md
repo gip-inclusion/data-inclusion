@@ -40,6 +40,10 @@ uv run uvicorn data_inclusion.api.app:app --reload
    ```bash
    cd data-inclusion/
    docker compose up minio datawarehouse
+   docker compose exec -ti datawarehouse psql
+   CREATE DATABASE diapi;
+   \c diapi;
+   CREATE EXTENSION postgis;
    ```
 
 2. Make sure your `.env` has the minio settings (see `.template.env`):
