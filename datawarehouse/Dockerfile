@@ -1,4 +1,4 @@
-FROM postgres:17.4-bookworm
+FROM postgres:18-bookworm
 
 ENV VIRTUAL_ENV=/app/venv
 ENV PATH="${VIRTUAL_ENV}/bin:${PATH}"
@@ -9,8 +9,8 @@ WORKDIR /app
 
 RUN apt-get update \
     && apt-get install -y --no-install-recommends \
-    postgresql-17-postgis-3 \
-    postgresql-plpython3-17 \
+    postgresql-18-postgis-3 \
+    postgresql-plpython3-18 \
     python3-pip \
     python3-venv \
     python3-dev \

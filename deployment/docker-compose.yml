@@ -57,7 +57,7 @@ x-airflow-common:
 
 services:
   airflow-db:
-    image: postgres:14
+    image: postgres:18
     restart: always
     healthcheck:
       test: pg_isready
@@ -149,7 +149,7 @@ services:
       - POSTGRES_PASSWORD=${DATAWAREHOUSE_DI_PASSWORD}
       - BREVO_API_KEY=${AIRFLOW_VAR_BREVO_API_KEY}
     volumes:
-      - datawarehouse-data:/var/lib/postgresql/data
+      - datawarehouse-data:/var/lib/postgresql
 
   reverse-proxy:
     image: traefik:v3.6
