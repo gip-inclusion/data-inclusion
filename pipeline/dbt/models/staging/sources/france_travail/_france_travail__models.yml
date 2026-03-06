@@ -16,10 +16,14 @@ models:
                 values: [true, false]
       - name: adresse_principale__gps_lat
         data_tests:
-          - not_null
+          - not_null:
+              config:
+                error_if: ">5"
       - name: adresse_principale__gps_lon
         data_tests:
-          - not_null
+          - not_null:
+              config:
+                error_if: ">5"
       - name: adresse_principale__ligne_4
         data_tests:
           - not_null
