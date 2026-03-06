@@ -1,0 +1,3 @@
+web: ./airflow.sh db migrate && ./airflow.sh fab-db migrate && ./airflow.sh api-server --port $PORT
+scheduler: ./airflow.sh scheduler
+dagprocessor: ./airflow.sh dag-processor

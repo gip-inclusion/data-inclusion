@@ -1,4 +1,4 @@
--r ../airflow/requirements.in
+-r ../../requirements.txt
 -r ../tasks/requirements.in
 
 pre-commit
@@ -6,5 +6,4 @@ pytest
 pytest-dotenv
 requests-mock
 ruff
-tox
 uv
