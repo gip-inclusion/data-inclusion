@@ -3,10 +3,25 @@
 ## Setup
 
 ```bash
-uv venv
-uv pip install -r requirements/dev/requirements.txt
+uv venv --python 3.12
+uv pip install -r requirements.txt
 uv pip install dbt-postgres dbt-core==1.*
 ```
+
+## First airflow start
+
+Ensure required env vars are set (e.g. copy `.env.template` to `.env` and load those env vars in your shell)
+
+Then from the `pipeline` folder:
+
+```
+./airflow.sh db migrate
+./airflow.sh fab-db migrate
+./airflow.sh users create --username admin --password admin --firstname Admin --lastname Admin --role Admin --email admin@example.com
+```
+
+Use `./airflow.sh` as the entry point for any airflow command (standalone, dags test, etc.).
+
 
 ## Running `dbt`
 
@@ -53,12 +68,12 @@ make all
 make upgrade all
 ```
 
-## Running the test suite
+## Testing the UDFs
+
+From the `pipeline` folder:
 
 ```bash
-# Copy (and optionally edit) the template .env
-cp .template.env .env
-
-# simply use tox (for reproducible environnement, packaging errors, etc.)
-tox
+uv venv
+uv pip install -r ../datawarehouse/requirements.txt &&
+uv run pytest dbt/macros/udfs/ -vv -m 'not integration'
 ```
