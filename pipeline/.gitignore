@@ -1,2 +1,2 @@
 # Airflow temporary artifacts
-logs/
+.airflow/
