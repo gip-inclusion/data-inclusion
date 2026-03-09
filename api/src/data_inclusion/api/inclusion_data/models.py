@@ -49,9 +49,7 @@ class Structure(HasAddress, Base):
     lien_source: Mapped[str | None]
     telephone: Mapped[str | None]
 
-    services: Mapped[list[Service]] = relationship(  # noqa: F821
-        back_populates="structure"
-    )
+    services: Mapped[list[Service]] = relationship(back_populates="structure")
     commune_: Mapped[Commune] = relationship(back_populates="structures_v1")
 
     __table_args__ = (
@@ -135,6 +133,8 @@ class Service(HasAddress, Base):
     commune_: Mapped[Commune] = relationship(back_populates="services_v1")
     structure: Mapped[Structure] = relationship(back_populates="services")
 
+    search_vector: Mapped[str | None] = mapped_column(TSVECTOR)
+
     __table_args__ = (
         sqla.Index(None, "structure_id"),
         sqla.Index(None, "source"),
@@ -148,6 +148,7 @@ class Service(HasAddress, Base):
         ),
         sqla.Index(None, "searchable_index_publics", postgresql_using="gin"),
         sqla.Index(None, "searchable_index_publics_precisions", postgresql_using="gin"),
+        sqla.Index(None, search_vector, postgresql_using="gin"),
     )
 
     def __repr__(self) -> str:

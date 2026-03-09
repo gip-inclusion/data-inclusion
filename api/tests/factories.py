@@ -3,7 +3,7 @@ from datetime import date
 import factory
 import faker
 
-from data_inclusion.api.inclusion_data import models
+from data_inclusion.api.inclusion_data import models, services
 from data_inclusion.schema import v1
 
 fake = faker.Faker("fr_FR")
@@ -111,3 +111,10 @@ class ServiceFactory(factory.alchemy.SQLAlchemyModelFactory):
     volume_horaire_hebdomadaire = 1
     score_qualite = 0.5
     extra = None
+
+    @factory.post_generation
+    def build_search_vector(obj, create, extracted, **kwargs):
+        if not create:
+            return
+
+        services.build_search_index(ServiceFactory._meta.sqlalchemy_session)

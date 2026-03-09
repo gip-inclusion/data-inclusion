@@ -109,3 +109,31 @@ class SearchServicesQueryParams(pydantic.BaseModel, pagination.get_pagination_pa
             )
 
         return self
+
+
+class SearchQueryParams(pydantic.BaseModel, pagination.get_pagination_params()):
+    q: Annotated[str, pydantic.Field()]
+
+    sources: filters.SourcesFilter = None
+    code_commune: filters.SearchCodeCommuneFilter[schema.CodeCommune] = None
+    code_region: filters.CodeRegionFilter = None
+    slug_region: Annotated[RegionSlugEnum | None, pydantic.Field()] = None
+    code_departement: filters.CodeDepartementFilter = None
+    slug_departement: Annotated[DepartementSlugEnum | None, pydantic.Field()] = None
+    lat: filters.SearchLatitudeFilter = None
+    lon: filters.SearchLongitudeFilter = None
+    thematiques: filters.ThematiquesFilter[schema.Thematique | schema.Categorie] = None
+    frais: filters.FraisFilter[schema.Frais] = None
+    modes_accueil: filters.ModesAccueilFilter[schema.ModeAccueil] = None
+    publics: filters.ProfilsFilter[schema.Public] = None
+    types: filters.ServiceTypesFilter[schema.TypeService] = None
+
+    @pydantic.model_validator(mode="after")
+    def validate_lat_lon(self) -> Self:
+        if (self.lat is None) != (self.lon is None):
+            raise fastapi.HTTPException(
+                status_code=422,
+                detail="The `lat` and `lon` must be simultaneously filled.",
+            )
+
+        return self

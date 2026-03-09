@@ -9,6 +9,7 @@ from sqlalchemy import orm
 
 from data_inclusion.api.decoupage_administratif.models import Commune
 from data_inclusion.api.inclusion_data import models
+from data_inclusion.api.inclusion_data.services import build_search_index
 from data_inclusion.api.valideur import services
 from data_inclusion.schema import v1
 
@@ -196,6 +197,8 @@ def load(db_session: orm.Session, path: Path):
         structures_df=structures_df,
         services_df=services_df,
     )
+
+    build_search_index(db_session=db_session)
 
     logger.info("Vacuuming...")
     with (
