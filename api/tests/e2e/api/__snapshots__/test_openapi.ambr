@@ -3638,6 +3638,24 @@
                 "description": "[BETA] Mode qui ne retourne, parmi les services attachés à des structures en doublon, que ceux attachés à la structure la plus qualitative (voir [documentation](https://gip-inclusion.notion.site/Syst-me-de-d-duplication-des-donn-es-17d5f321b60480f99f6cf65522a83c8b?pvs=4)).",
                 "title": "Exclure Doublons"
               }
+            },
+            {
+              "description": "[BETA]",
+              "in": "query",
+              "name": "q",
+              "required": false,
+              "schema": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "description": "[BETA]",
+                "title": "Q"
+              }
             }
           ],
           "responses": {

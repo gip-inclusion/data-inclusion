@@ -54,6 +54,11 @@ class Structure(HasAddress, Base):
     )
     commune_: Mapped[Commune] = relationship(back_populates="structures_v1")
 
+    search_vector: Mapped[str] = mapped_column(
+        TSVECTOR,
+        Computed("TO_TSVECTOR('french', nom)", persisted=True),
+    )
+
     __table_args__ = (
         sqla.Index(None, "source"),
         sqla.Index(None, "_cluster_id"),
@@ -64,6 +69,7 @@ class Structure(HasAddress, Base):
             sqla.desc("score_qualite"),
             sqla.desc("date_maj"),
         ),
+        sqla.Index(None, search_vector, postgresql_using="gin"),
     )
 
     def __repr__(self) -> str:

@@ -1913,8 +1913,8 @@ def test_retrieve_structure_and_notify_soliguide(
     )
 
     fake_soliguide_client = FakeSoliguideClient()
-    app.dependency_overrides[soliguide.SoliguideAPIClient] = (
-        lambda: fake_soliguide_client
+    app.dependency_overrides[soliguide.SoliguideAPIClient] = lambda: (
+        fake_soliguide_client
     )
 
     if "v0" in url:
@@ -1963,8 +1963,8 @@ def test_retrieve_service_and_notify_soliguide(
     )
 
     fake_soliguide_client = FakeSoliguideClient()
-    app.dependency_overrides[soliguide.SoliguideAPIClient] = (
-        lambda: fake_soliguide_client
+    app.dependency_overrides[soliguide.SoliguideAPIClient] = lambda: (
+        fake_soliguide_client
     )
 
     path = f"/{service_1.source}/{requested_id}" if "v0" in url else f"/{requested_id}"
@@ -2308,3 +2308,35 @@ def test_show_extra_data_if_flag_provided(
         assert "extra" not in service_data
     else:
         assert service_data["extra"] == expected["extra"]
+
+
+@pytest.mark.parametrize("schema_version", ["v1"])
+@pytest.mark.parametrize("path", ["/search/services"])
+@pytest.mark.with_token
+@pytest.mark.parametrize(
+    ("nom_structure", "q", "expected"),
+    [
+        ("agefiph", "", False),
+        ("agefiph", None, False),
+        ("agefiph", "agefiph", True),
+        ("L'Agefiph", "agefiph", True),
+        ("L'Agefiph Paris", "agefiph", True),
+        ("L'Agefiph Hauts-de-France", "agefiph", True),
+        (
+            "Association de gestion du fonds pour l'insertion des personnes handicapées",  # noqa: E501
+            "agefiph",
+            False,
+        ),
+    ],
+)
+def test_search_by_structure_name(
+    api_client, url, service_factory, nom_structure, q, expected
+):
+    service_factory(structure__nom=nom_structure)
+
+    response = api_client.get(url, params={"q": q})
+
+    assert response.status_code == 200
+    response_data = response.json()
+
+    assert len(response_data["items"]) == (1 if expected else 0)
