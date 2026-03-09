@@ -6,6 +6,9 @@ if [[ -n "${SCALINGO_POSTGRESQL_URL:-}" ]]; then
 fi
 
 export AIRFLOW_HOME=.airflow/
+export AIRFLOW__CORE__EXECUTION_API_SERVER_URL="${AIRFLOW__CORE__EXECUTION_API_SERVER_URL:-http://127.0.0.1:8080/execution/}"
+export AIRFLOW__CORE__HOSTNAME_CALLABLE="${AIRFLOW__CORE__HOSTNAME_CALLABLE:-airflow.utils.net.get_host_ip_address}"
+
 export AIRFLOW__CORE__DAGS_FOLDER=dags
 export AIRFLOW__CORE__AUTH_MANAGER=airflow.providers.fab.auth_manager.fab_auth_manager.FabAuthManager
 export AIRFLOW__CORE__DEFAULT_POOL_TASK_SLOT_COUNT=24

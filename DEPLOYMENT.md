@@ -5,6 +5,20 @@
 * It is made possible using the [`PROJECT_DIR`](https://doc.scalingo.com/platform/getting-started/common-deployment-errors#project-in-a-subdirectory) env variable defined in each app.
 * Services are configured through the environment.
 
+### Airflow task logs on Scalingo
+
+On Scalingo (and any environment where task workers have no stable hostname), the UI cannot fetch logs via the worker log server (`http://:8793/...`), which leads to "Could not read served logs: Invalid URL ... No host supplied". Enable **remote logging to S3** so logs are written to and read from object storage.
+
+Set these env vars on the pipeline app (use the same bucket as your datalake, with a prefix):
+
+| Variable | Value |
+|----------|--------|
+| `AIRFLOW__LOGGING__REMOTE_LOGGING` | `true` |
+| `AIRFLOW__LOGGING__REMOTE_LOG_CONN_ID` | `s3` |
+| `AIRFLOW__LOGGING__REMOTE_BASE_LOG_FOLDER` | `s3://YOUR_BUCKET/airflow-logs` |
+
+Replace `YOUR_BUCKET` with the bucket name used in your `AIRFLOW_CONN_S3` connection (e.g. Scaleway object storage bucket).
+
 
 
 ### Scaleway
