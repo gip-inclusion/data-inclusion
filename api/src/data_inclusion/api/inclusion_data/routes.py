@@ -211,3 +211,33 @@ def search_services_endpoint(
     )
 
     return page
+
+
+@router.get(
+    "/search",
+    response_model=pagination.Page[schemas.SearchResult],
+    dependencies=[auth.authenticated(required_scopes=["api"])],
+    include_in_schema=False,
+    description=(
+        "[BETA] Endpoint de recherche expérimental. Ne pas utiliser en production."
+    ),
+)
+def search_endpoint(
+    request: fastapi.Request,
+    params: Annotated[parameters.SearchQueryParams, fastapi.Query()],
+    db_session=fastapi.Depends(db.get_session),
+):
+    query, mapping = services.search_query(
+        params=params,
+        include_soliguide=soliguide.is_allowed_user(request),
+    )
+
+    page = pagination.paginate(
+        db_session=db_session,
+        query=query,
+        size=params.size,
+        page=params.page,
+        mapping=mapping,
+    )
+
+    return page

@@ -115,7 +115,9 @@ def list_sources() -> list[dict]:
 
 def filter_services(
     query: sqla.Select,
-    params: parameters.ListServicesQueryParams | parameters.SearchServicesQueryParams,
+    params: parameters.ListServicesQueryParams
+    | parameters.SearchServicesQueryParams
+    | parameters.SearchQueryParams,
 ) -> sqla.Select:
     if params.sources is not None:
         query = query.filter(
@@ -174,12 +176,30 @@ def filter_services(
             models.Service.type == sqla.any_(sqla.literal(params.types))
         )
 
-    if params.score_qualite_minimum is not None:
+    if (
+        isinstance(
+            params,
+            (
+                parameters.SearchServicesQueryParams,
+                parameters.ListServicesQueryParams,
+            ),
+        )
+        and params.score_qualite_minimum is not None
+    ):
         query = query.filter(
             models.Service.score_qualite >= params.score_qualite_minimum
         )
 
-    if params.recherche_public is not None:
+    if (
+        isinstance(
+            params,
+            (
+                parameters.SearchServicesQueryParams,
+                parameters.ListServicesQueryParams,
+            ),
+        )
+        and params.recherche_public is not None
+    ):
         websearch_to_tsquery = sqla.func.websearch_to_tsquery(
             "french", params.recherche_public
         )
@@ -357,3 +377,87 @@ def retrieve_service(
     return db_session.execute(
         retrieve_service_query(params=params)
     ).scalar_one_or_none()
+
+
+def search_query(
+    params: parameters.SearchQueryParams,
+    include_soliguide: bool,
+) -> tuple[sqla.Select[tuple[models.Service, int]], tuple[str, str]]:
+    query = (
+        sqla.select(models.Service)
+        .join(models.Structure)
+        .options(orm.contains_eager(models.Service.structure))
+    )
+
+    if not include_soliguide:
+        query = query.filter(models.Structure.source != "soliguide")
+
+    plainto_tsquery = sqla.func.plainto_tsquery("french", params.q)
+    query = query.filter(models.Service.search_vector.bool_op("@@")(plainto_tsquery))
+    query = query.add_columns(
+        sqla.func.ts_rank_cd(models.Service.search_vector, plainto_tsquery, 32).label(
+            "score_recherche"
+        ),
+    )
+
+    query = query.order_by(
+        sqla.column("score_recherche").desc(),
+        models.Service.score_qualite.desc(),
+    )
+
+    return query, ("data", "score_recherche")
+
+
+def build_search_index(
+    db_session: orm.Session,
+) -> None:
+    db_session.execute(
+        sqla.text("""
+            WITH thematiques AS (
+                SELECT
+                    api__services_v1.id AS service_id,
+                    STRING_AGG(api__thematiques_v1.label, ', ') AS labels
+                FROM api__services_v1,
+                    UNNEST(api__services_v1.thematiques) AS item
+                INNER JOIN api__thematiques_v1
+                    ON api__thematiques_v1.value = item
+                GROUP BY api__services_v1.id
+            ),
+            publics AS (
+                SELECT
+                    api__services_v1.id AS service_id,
+                    STRING_AGG(api__publics_v1.label, ', ') AS labels
+                FROM api__services_v1,
+                    UNNEST(api__services_v1.publics) AS item
+                INNER JOIN api__publics_v1
+                    ON api__publics_v1.value = item
+                GROUP BY api__services_v1.id
+            ),
+            types AS (
+                SELECT
+                    api__services_v1.id AS service_id,
+                    api__types_services_v1.label AS label
+                FROM api__services_v1
+                LEFT JOIN api__types_services_v1
+                    ON api__types_services_v1.value = api__services_v1.type
+            )
+            UPDATE api__services_v1
+            SET search_vector =
+                SETWEIGHT(TO_TSVECTOR('french', api__structures_v1.nom),                                                   'A') ||
+                SETWEIGHT(TO_TSVECTOR('french', api__services_v1.nom),                                                     'B') ||
+                SETWEIGHT(TO_TSVECTOR('french', COALESCE(api__services_v1.description, '')),                               'B') ||
+                SETWEIGHT(TO_TSVECTOR('french', COALESCE(api__structures_v1.description, '')),                             'B') ||
+                SETWEIGHT(TO_TSVECTOR('french', COALESCE(thematiques.labels, '')),                                         'C') ||
+                SETWEIGHT(TO_TSVECTOR('french', COALESCE(publics.labels, '')),                                             'C') ||
+                SETWEIGHT(TO_TSVECTOR('french', COALESCE(ARRAY_TO_STRING(api__structures_v1.reseaux_porteurs, ', '), '')), 'D') ||
+                SETWEIGHT(TO_TSVECTOR('french', COALESCE(types.label, '')),                                                'D')
+            FROM api__structures_v1
+            LEFT JOIN thematiques ON TRUE
+            LEFT JOIN publics ON TRUE
+            LEFT JOIN types ON TRUE
+            WHERE api__services_v1.structure_id = api__structures_v1.id
+                AND thematiques.service_id = api__services_v1.id
+                AND publics.service_id = api__services_v1.id
+                AND types.service_id = api__services_v1.id
+        """)  # noqa: E501
+    )

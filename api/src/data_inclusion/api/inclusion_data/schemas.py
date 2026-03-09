@@ -122,3 +122,9 @@ class ListedStructure(Structure):
             description="Identifiants (source, id) des doublons connus de la structure",
         ),
     ]
+
+
+class SearchResult(BaseModel):
+    data: DetailedService | DetailedStructure
+    distance: int | None = None
+    score_recherche: float | None = None

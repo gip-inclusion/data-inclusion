@@ -24,8 +24,9 @@ STRASBOURG = {"code_insee": "67482"}
 
 STRUCTURES_ENDPOINT = furl("/api/v1/structures")
 SERVICES_ENDPOINT = furl("/api/v1/services")
-SEARCH_ENDPOINT = furl("/api/v1/search/services")
+SEARCH_SERVICES_ENDPOINT = furl("/api/v1/search/services")
 SOURCES_ENDPOINT = furl("/api/v1/sources")
+SEARCH_ENDPOINT = furl("/api/v1/search")
 
 
 def list_resources_data(resp_data):
@@ -194,7 +195,7 @@ def test_list_services_all(api_client, db_session, snapshot):
     )
 
 
-@pytest.mark.parametrize("endpoint", [SERVICES_ENDPOINT, SEARCH_ENDPOINT])
+@pytest.mark.parametrize("endpoint", [SERVICES_ENDPOINT, SEARCH_SERVICES_ENDPOINT])
 @pytest.mark.parametrize(
     ("publics_precisions", "input", "found"),
     [
@@ -228,7 +229,7 @@ def test_can_filter_resources_by_publics_precisions(
         assert_paginated_response_data(resp_data, total=0)
 
 
-@pytest.mark.parametrize("endpoint", [SERVICES_ENDPOINT, SEARCH_ENDPOINT])
+@pytest.mark.parametrize("endpoint", [SERVICES_ENDPOINT, SEARCH_SERVICES_ENDPOINT])
 @pytest.mark.parametrize(
     ("profils", "input", "found"),
     [
@@ -260,7 +261,7 @@ def test_can_filter_resources_by_profils_precisions_with_only_profils_data(
         assert_paginated_response_data(resp_data, total=0)
 
 
-@pytest.mark.parametrize("endpoint", [SERVICES_ENDPOINT, SEARCH_ENDPOINT])
+@pytest.mark.parametrize("endpoint", [SERVICES_ENDPOINT, SEARCH_SERVICES_ENDPOINT])
 @pytest.mark.parametrize(
     ("thematiques", "input", "found"),
     [
@@ -452,7 +453,7 @@ UNDEFINED = "UNDEFINED"
 
 
 @pytest.mark.with_token
-@pytest.mark.parametrize("endpoint", [SERVICES_ENDPOINT, SEARCH_ENDPOINT])
+@pytest.mark.parametrize("endpoint", [SERVICES_ENDPOINT, SEARCH_SERVICES_ENDPOINT])
 @pytest.mark.parametrize(
     ("defined_publics", "requested_publics", "expected_total"),
     [
@@ -502,7 +503,7 @@ def test_can_filter_services_by_publics(
 
 
 @pytest.mark.with_token
-@pytest.mark.parametrize("endpoint", [SERVICES_ENDPOINT, SEARCH_ENDPOINT])
+@pytest.mark.parametrize("endpoint", [SERVICES_ENDPOINT, SEARCH_SERVICES_ENDPOINT])
 def test_list_services_by_types(api_client, endpoint):
     service_1 = factories.ServiceFactory(type=v1.TypeService.INFORMATION.value)
     service_2 = factories.ServiceFactory(type=v1.TypeService.ACCOMPAGNEMENT.value)
@@ -536,7 +537,7 @@ def test_list_services_by_types(api_client, endpoint):
 
 
 @pytest.mark.with_token
-@pytest.mark.parametrize("endpoint", [SERVICES_ENDPOINT, SEARCH_ENDPOINT])
+@pytest.mark.parametrize("endpoint", [SERVICES_ENDPOINT, SEARCH_SERVICES_ENDPOINT])
 def test_list_services_by_score_qualite(api_client, endpoint):
     service_1 = factories.ServiceFactory(score_qualite=0.5)
     service_2 = factories.ServiceFactory(score_qualite=0.7)
@@ -557,7 +558,7 @@ def test_list_services_by_score_qualite(api_client, endpoint):
 
 
 @pytest.mark.with_token
-@pytest.mark.parametrize("endpoint", [SERVICES_ENDPOINT, SEARCH_ENDPOINT])
+@pytest.mark.parametrize("endpoint", [SERVICES_ENDPOINT, SEARCH_SERVICES_ENDPOINT])
 def test_can_filter_services_by_frais(api_client, endpoint):
     service_1 = factories.ServiceFactory(frais=v1.Frais.GRATUIT.value)
     factories.ServiceFactory(frais=v1.Frais.PAYANT.value)
@@ -580,7 +581,7 @@ def test_can_filter_services_by_frais(api_client, endpoint):
 
 
 @pytest.mark.with_token
-@pytest.mark.parametrize("endpoint", [SERVICES_ENDPOINT, SEARCH_ENDPOINT])
+@pytest.mark.parametrize("endpoint", [SERVICES_ENDPOINT, SEARCH_SERVICES_ENDPOINT])
 def test_can_filter_services_by_modes_accueil(api_client, endpoint):
     service_1 = factories.ServiceFactory(
         modes_accueil=[v1.ModeAccueil.EN_PRESENTIEL.value]
@@ -607,7 +608,7 @@ def test_can_filter_services_by_modes_accueil(api_client, endpoint):
 
 @pytest.mark.with_token
 @pytest.mark.parametrize(
-    "endpoint", [SERVICES_ENDPOINT, SEARCH_ENDPOINT, STRUCTURES_ENDPOINT]
+    "endpoint", [SERVICES_ENDPOINT, SEARCH_SERVICES_ENDPOINT, STRUCTURES_ENDPOINT]
 )
 def test_can_filter_resources_by_sources(api_client, endpoint, factory):
     service_1 = factory(source="dora")
@@ -647,7 +648,7 @@ def test_can_filter_resources_by_sources(api_client, endpoint, factory):
     ],
 )
 @pytest.mark.parametrize(
-    "endpoint", [SERVICES_ENDPOINT, SEARCH_ENDPOINT, STRUCTURES_ENDPOINT]
+    "endpoint", [SERVICES_ENDPOINT, SEARCH_SERVICES_ENDPOINT, STRUCTURES_ENDPOINT]
 )
 @pytest.mark.parametrize(
     ("source", "code_insee", "restricted"),
@@ -691,7 +692,9 @@ def test_search_services_with_code_commune(api_client, commune_data, input, foun
         **(commune_data if commune_data is not None else {}),
     )
 
-    response = api_client.get(SEARCH_ENDPOINT.url, params={"code_commune": input})
+    response = api_client.get(
+        SEARCH_SERVICES_ENDPOINT.url, params={"code_commune": input}
+    )
 
     assert response.status_code == 200
     resp_data = response.json()
@@ -725,7 +728,7 @@ def test_search_services_with_code_commune_too_far(api_client):
     )
 
     response = api_client.get(
-        SEARCH_ENDPOINT.url,
+        SEARCH_SERVICES_ENDPOINT.url,
         params={
             "code_commune": ROUBAIX["code_insee"],  # Roubaix (only close to Lille)
         },
@@ -739,7 +742,7 @@ def test_search_services_with_code_commune_too_far(api_client):
 
     # Do the same but with lat/lon in addition to the code INSEE
     response = api_client.get(
-        SEARCH_ENDPOINT.url,
+        SEARCH_SERVICES_ENDPOINT.url,
         params={
             "code_commune": ROUBAIX["code_insee"],  # Roubaix
             # Coordinates for Le Mans. We don't enforce lat/lon to be within
@@ -755,7 +758,7 @@ def test_search_services_with_code_commune_too_far(api_client):
 
     # This time with coordinates close to the services we know
     response = api_client.get(
-        SEARCH_ENDPOINT.url,
+        SEARCH_SERVICES_ENDPOINT.url,
         params={
             "code_commune": ROUBAIX["code_insee"],  # Roubaix
             # Coordinates for Hazebrouck, between Dunkirk & Lille
@@ -773,7 +776,7 @@ def test_search_services_with_code_commune_too_far(api_client):
 
     # What about a request without code_commune but with lat/lon?
     response = api_client.get(
-        SEARCH_ENDPOINT.url,
+        SEARCH_SERVICES_ENDPOINT.url,
         params={
             # Coordinates for Le Mans, should be ignored.
             # the supplied 'code_commune' city limits.
@@ -788,7 +791,7 @@ def test_search_services_with_code_commune_too_far(api_client):
 
     # Error cases
     response = api_client.get(
-        SEARCH_ENDPOINT.url,
+        SEARCH_SERVICES_ENDPOINT.url,
         params={
             "code_commune": MAUBEUGE["code_insee"],
             "lat": 48.003954,
@@ -800,7 +803,7 @@ def test_search_services_with_code_commune_too_far(api_client):
     assert resp_data["detail"] == "The `lat` and `lon` must be simultaneously filled."
 
     response = api_client.get(
-        SEARCH_ENDPOINT.url,
+        SEARCH_SERVICES_ENDPOINT.url,
         params={
             "code_commune": MAUBEUGE["code_insee"],
             "lon": 1.2563,
@@ -828,7 +831,7 @@ def test_search_services_with_zone_diffusion_pays(api_client, zone_eligibilite):
     )
 
     response = api_client.get(
-        SEARCH_ENDPOINT.url,
+        SEARCH_SERVICES_ENDPOINT.url,
         params={
             "code_commune": MAUBEUGE["code_insee"],  # Maubeuge
         },
@@ -861,7 +864,7 @@ def test_search_services_with_zone_diffusion_commune(api_client):
     )
 
     response = api_client.get(
-        SEARCH_ENDPOINT.url,
+        SEARCH_SERVICES_ENDPOINT.url,
         params={
             "code_commune": DUNKERQUE["code_insee"],  # Dunkerque
         },
@@ -893,7 +896,7 @@ def test_search_services_with_zone_diffusion_epci(api_client):
     )
 
     response = api_client.get(
-        SEARCH_ENDPOINT.url,
+        SEARCH_SERVICES_ENDPOINT.url,
         params={
             "code_commune": DUNKERQUE["code_insee"],  # Dunkerque
         },
@@ -925,7 +928,7 @@ def test_search_services_with_zone_diffusion_departement(api_client):
     )
 
     response = api_client.get(
-        SEARCH_ENDPOINT.url,
+        SEARCH_SERVICES_ENDPOINT.url,
         params={
             "code_commune": DUNKERQUE["code_insee"],  # Dunkerque
         },
@@ -957,7 +960,7 @@ def test_search_services_with_zone_diffusion_region(api_client):
     )
 
     response = api_client.get(
-        SEARCH_ENDPOINT.url,
+        SEARCH_SERVICES_ENDPOINT.url,
         params={
             "code_commune": DUNKERQUE["code_insee"],  # Dunkerque
         },
@@ -980,7 +983,7 @@ def test_search_services_with_bad_code_commune(api_client):
     )
 
     response = api_client.get(
-        SEARCH_ENDPOINT.url,
+        SEARCH_SERVICES_ENDPOINT.url,
         params={
             "code_commune": "59999",  # Does not exist
         },
@@ -1013,7 +1016,7 @@ def test_search_services_with_commune_without_epci(api_client, db_session):
     )
 
     response = api_client.get(
-        SEARCH_ENDPOINT.url, params={"code_commune": commune_code}
+        SEARCH_SERVICES_ENDPOINT.url, params={"code_commune": commune_code}
     )
 
     assert response.status_code == 200
@@ -1039,7 +1042,7 @@ def test_search_services_with_code_commune_ordering(api_client):
     )
 
     response = api_client.get(
-        SEARCH_ENDPOINT.url, params={"code_commune": ROUBAIX["code_insee"]}
+        SEARCH_SERVICES_ENDPOINT.url, params={"code_commune": ROUBAIX["code_insee"]}
     )
 
     assert response.status_code == 200
@@ -1064,7 +1067,7 @@ def test_search_services_with_code_commune_sample_distance(api_client):
     )
 
     response = api_client.get(
-        SEARCH_ENDPOINT.url, params={"code_commune": HAZEBROUCK["code_insee"]}
+        SEARCH_SERVICES_ENDPOINT.url, params={"code_commune": HAZEBROUCK["code_insee"]}
     )
 
     assert response.status_code == 200
@@ -1088,7 +1091,7 @@ def test_search_services_with_code_commune_a_distance(api_client):
     )
 
     response = api_client.get(
-        SEARCH_ENDPOINT.url, params={"code_commune": DUNKERQUE["code_insee"]}
+        SEARCH_SERVICES_ENDPOINT.url, params={"code_commune": DUNKERQUE["code_insee"]}
     )
 
     assert response.status_code == 200
@@ -1116,7 +1119,7 @@ def test_search_services_with_code_commune_mixed_modes_far_away(api_client):
     )
 
     response = api_client.get(
-        SEARCH_ENDPOINT.url, params={"code_commune": LILLE["code_insee"]}
+        SEARCH_SERVICES_ENDPOINT.url, params={"code_commune": LILLE["code_insee"]}
     )
 
     assert response.status_code == 200
@@ -1373,7 +1376,7 @@ def test_search_services_deduplicate(api_client):
     )
 
     response = api_client.get(
-        SEARCH_ENDPOINT.url,
+        SEARCH_SERVICES_ENDPOINT.url,
         params={"sources": ["src_1"], "exclure_doublons": True},
     )
     assert_paginated_response_data(response.json(), total=4)
@@ -1385,7 +1388,7 @@ def test_search_services_deduplicate(api_client):
     }
 
     response = api_client.get(
-        SEARCH_ENDPOINT.url,
+        SEARCH_SERVICES_ENDPOINT.url,
         params={"exclure_doublons": True},
     )
     assert_paginated_response_data(response.json(), total=3)
@@ -1396,7 +1399,7 @@ def test_search_services_deduplicate(api_client):
     }
 
     response = api_client.get(
-        SEARCH_ENDPOINT.url,
+        SEARCH_SERVICES_ENDPOINT.url,
         params={
             "sources": ["src_1"],
             "thematiques": ["famille--garde-denfants"],
@@ -1410,7 +1413,7 @@ def test_search_services_deduplicate(api_client):
     }
 
     response = api_client.get(
-        SEARCH_ENDPOINT.url,
+        SEARCH_SERVICES_ENDPOINT.url,
         params={"thematiques": ["famille--garde-denfants"], "exclure_doublons": True},
     )
     assert_paginated_response_data(response.json(), total=2)
@@ -1420,7 +1423,7 @@ def test_search_services_deduplicate(api_client):
     }
 
     response = api_client.get(
-        SEARCH_ENDPOINT.url,
+        SEARCH_SERVICES_ENDPOINT.url,
         params={
             "sources": ["src_1"],
             "thematiques": ["mobilite--acceder-a-un-vehicule"],
@@ -1455,7 +1458,9 @@ def test_search_services_deduplicate_best_structure_has_no_service(api_client):
         thematiques=["famille--garde-denfants"],
     )
 
-    response = api_client.get(SEARCH_ENDPOINT.url, params={"exclure_doublons": True})
+    response = api_client.get(
+        SEARCH_SERVICES_ENDPOINT.url, params={"exclure_doublons": True}
+    )
 
     assert response.status_code == 200
     assert {d["service"]["id"] for d in response.json()["items"]} == {
@@ -1464,7 +1469,7 @@ def test_search_services_deduplicate_best_structure_has_no_service(api_client):
 
 
 @pytest.mark.parametrize(
-    "endpoint", [SEARCH_ENDPOINT, SERVICES_ENDPOINT, STRUCTURES_ENDPOINT]
+    "endpoint", [SEARCH_SERVICES_ENDPOINT, SERVICES_ENDPOINT, STRUCTURES_ENDPOINT]
 )
 @pytest.mark.with_token
 def test_ressources_ordered_by_id(api_client, endpoint, factory):
@@ -1527,3 +1532,195 @@ def test_show_extra_data_if_flag_provided(
         assert "extra" not in service_data
     else:
         assert service_data["extra"] == expected["extra"]
+
+
+@pytest.mark.with_token
+@pytest.mark.parametrize(
+    ("nom_structure", "q", "expected"),
+    [
+        ("agefiph", "", False),
+        ("agefiph", None, False),
+        ("agefiph", "agefiph", True),
+        ("L'Agefiph", "agefiph", True),
+        ("L'Agefiph Paris", "agefiph", True),
+        ("L'Agefiph Hauts-de-France", "agefiph", True),
+        (
+            "Association de gestion du fonds pour l'insertion des personnes handicapées",  # noqa: E501
+            "agefiph",
+            False,
+        ),
+    ],
+)
+def test_search_by_structure_name(api_client, nom_structure, q, expected):
+    factories.ServiceFactory(structure__nom=nom_structure)
+
+    response = api_client.get(SEARCH_ENDPOINT.url, params={"q": q})
+
+    assert response.status_code == 200
+    response_data = response.json()
+
+    assert len(response_data["items"]) == (1 if expected else 0)
+
+
+@pytest.mark.with_token
+def test_search_score_recherche_between_zero_and_one(api_client):
+    factories.ServiceFactory(structure__nom="agefiph")
+
+    response = api_client.get(SEARCH_ENDPOINT.url, params={"q": "agefiph"})
+
+    assert response.status_code == 200
+    response_data = response.json()
+
+    assert len(response_data["items"]) == 1
+    assert "data" in response_data["items"][0]
+    assert "score_recherche" in response_data["items"][0]
+    assert 0 < response_data["items"][0]["score_recherche"] < 1
+
+
+@pytest.mark.with_token
+def test_search_score_recherche_decreasing(api_client):
+    service_1 = factories.ServiceFactory(id="1", structure__nom="France Travail Paris")
+    service_2 = factories.ServiceFactory(
+        id="2", structure__nom="Agence France Travail du 2eme arrondissement de Paris"
+    )
+
+    response = api_client.get(SEARCH_ENDPOINT.url, params={"q": "France travail Paris"})
+
+    assert response.status_code == 200
+    response_data = response.json()
+
+    assert len(response_data["items"]) == 2
+    assert response_data["items"][0]["data"]["id"] == service_1.id
+    assert response_data["items"][1]["data"]["id"] == service_2.id
+    # score_recherche must decrease
+    assert (
+        response_data["items"][0]["score_recherche"]
+        > response_data["items"][1]["score_recherche"]
+    )
+
+
+@pytest.mark.with_token
+@pytest.mark.parametrize(
+    ("field", "value", "q", "expected"),
+    [
+        ("structure__nom", "foo", "foo", True),
+        ("nom", "foo", "foo", True),
+        ("description", "foo" * 10, "foo" * 10, True),
+        ("structure__description", "foo" * 10, "foo" * 10, True),
+        (
+            "thematiques",
+            [v1.Thematique.FAMILLE__SOUTIEN_AIDANTS.value],
+            "Soutien aux aidants",
+            True,
+        ),
+        ("publics", [v1.Public.JEUNES.value], "Jeunes", True),
+        (
+            "structure__reseaux_porteurs",
+            [v1.ReseauPorteur.FRANCE_TRAVAIL.value],
+            "France Travail",
+            True,
+        ),
+        ("type", "accompagnement", "Accompagnement", True),
+        ("publics_precisions", "foo", "foo", False),
+        ("modes_accueil", [v1.ModeAccueil.EN_PRESENTIEL.value], "présentiel", False),
+    ],
+)
+def test_search_by_(api_client, field, value, q, expected):
+    factories.ServiceFactory(
+        id="1",
+        **{
+            # this prevent flaky tests due to the default
+            # factory values matching the search query
+            "description": "lorem ipsum dolor sit amet",
+            **{field: value},
+        },
+    )
+
+    response = api_client.get(SEARCH_ENDPOINT.url, params={"q": q})
+
+    assert response.status_code == 200
+    response_data = response.json()
+
+    assert len(response_data["items"]) == (1 if expected else 0)
+
+
+@pytest.mark.with_token
+@pytest.mark.parametrize(
+    ("q", "stronger_match_data", "weaker_match_data"),
+    [
+        pytest.param(
+            "foo",
+            {"structure__nom": "foo", "nom": "bar"},
+            {"structure__nom": "bar", "nom": "foo"},
+            id="match on structure__nom stronger than match on nom",
+        ),
+        pytest.param(
+            "foo",
+            {"structure__nom": "foo", "description": "lorem ipsum dolor sit amet bar"},
+            {"structure__nom": "bar", "description": "lorem ipsum dolor sit amet foo"},
+            id="match on structure__nom stronger than match on description",
+        ),
+        pytest.param(
+            "foo",
+            {
+                "structure__nom": "foo",
+                "structure__description": "lorem ipsum dolor sit amet bar",
+            },
+            {
+                "structure__nom": "bar",
+                "structure__description": "lorem ipsum dolor sit amet foo",
+            },
+            id="match on structure__nom stronger than match on structure__description",
+        ),
+    ],
+)
+def test_search_weights(api_client, q, stronger_match_data, weaker_match_data):
+    service_1 = factories.ServiceFactory(id="1", **stronger_match_data)
+    service_2 = factories.ServiceFactory(id="2", **weaker_match_data)
+
+    response = api_client.get(SEARCH_ENDPOINT.url, params={"q": q})
+
+    assert response.status_code == 200
+    response_data = response.json()
+
+    assert len(response_data["items"]) == 2
+    assert response_data["items"][0]["data"]["id"] == service_1.id
+    assert response_data["items"][1]["data"]["id"] == service_2.id
+    assert (
+        response_data["items"][0]["score_recherche"]
+        > response_data["items"][1]["score_recherche"]
+    )
+
+
+@pytest.mark.with_token
+def test_search_order_by_score_recherche_then_by_score_qualite(api_client):
+    factories.ServiceFactory(
+        id="1",
+        structure__nom="France Travail Paris",
+        score_qualite=0.7,
+    )
+    factories.ServiceFactory(
+        id="2",
+        structure__nom="France Travail Paris",
+        score_qualite=0.9,
+    )
+    factories.ServiceFactory(
+        id="3",
+        structure__nom="Agence France Travail du 2eme arrondissement de Paris",
+        score_qualite=0.8,
+    )
+    factories.ServiceFactory(
+        id="4",
+        structure__nom="Agence France Travail du 2eme arrondissement de Paris",
+        score_qualite=1.0,
+    )
+
+    response = api_client.get(SEARCH_ENDPOINT.url, params={"q": "France travail Paris"})
+
+    assert response.status_code == 200
+    assert [item["data"]["id"] for item in response.json()["items"]] == [
+        "2",
+        "1",
+        "4",
+        "3",
+    ]

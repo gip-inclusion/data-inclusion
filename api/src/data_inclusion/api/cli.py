@@ -18,6 +18,7 @@ from data_inclusion.api.config import settings
 from data_inclusion.api.core import db
 from data_inclusion.api.decoupage_administratif.commands import import_communes
 from data_inclusion.api.inclusion_data.commands import load
+from data_inclusion.api.inclusion_schema.commands import seed
 
 logger = logging.getLogger(__name__)
 
@@ -126,6 +127,12 @@ def _load_inclusion_data(db_session, path: Path):
     # if the dataset has been downloaded from s3
     if tempfile.gettempdir() in path.parents:
         path.rmdir()
+
+
+@cli.command(name="seed-schema")
+@click.pass_obj
+def _seed_schema(db_session):
+    seed(db_session)
 
 
 @sentry_sdk.monitor(
