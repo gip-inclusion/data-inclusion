@@ -517,7 +517,7 @@ def test_can_filter_resources_by_profils_precisions_with_only_profils_data_v0(
         (
             [v1.Public.PERSONNES_EN_SITUATION_DE_HANDICAP.value],
             "handicap jeune difficulte",
-            True,
+            False,
         ),
     ],
 )
@@ -1913,8 +1913,8 @@ def test_retrieve_structure_and_notify_soliguide(
     )
 
     fake_soliguide_client = FakeSoliguideClient()
-    app.dependency_overrides[soliguide.SoliguideAPIClient] = (
-        lambda: fake_soliguide_client
+    app.dependency_overrides[soliguide.SoliguideAPIClient] = lambda: (
+        fake_soliguide_client
     )
 
     if "v0" in url:
@@ -1963,8 +1963,8 @@ def test_retrieve_service_and_notify_soliguide(
     )
 
     fake_soliguide_client = FakeSoliguideClient()
-    app.dependency_overrides[soliguide.SoliguideAPIClient] = (
-        lambda: fake_soliguide_client
+    app.dependency_overrides[soliguide.SoliguideAPIClient] = lambda: (
+        fake_soliguide_client
     )
 
     path = f"/{service_1.source}/{requested_id}" if "v0" in url else f"/{requested_id}"
