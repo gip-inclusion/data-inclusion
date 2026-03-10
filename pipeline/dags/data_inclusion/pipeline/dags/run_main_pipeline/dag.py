@@ -146,13 +146,6 @@ def run_main_pipeline():
             dbt_build_deduplicate,
         )
 
-    dbt_snapshot_deduplicate_stats = dbt.dbt_task.override(
-        task_id="dbt_snapshot_deduplicate_stats",
-    )(
-        command="snapshot",
-        select="deduplicate",
-    )
-
     chain(
         dbt_seed,
         dbt_create_udfs,
@@ -162,7 +155,6 @@ def run_main_pipeline():
             command="build", select="marts.v1"
         ),
         export_dataset(to_s3_path=str(s3.get_key(stage="marts"))),
-        dbt_snapshot_deduplicate_stats,
     )
 
 
