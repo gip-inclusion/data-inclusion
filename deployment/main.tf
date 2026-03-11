@@ -93,12 +93,12 @@ resource "scaleway_object_bucket" "main" {
   }
 
   lifecycle_rule {
-    id      = "expire-api-data-after-1-day"
+    id      = "expire-api-data-after-90-days"
     prefix  = "data/api"
     enabled = true
 
     expiration {
-      days = 1
+      days = 90
     }
   }
 }
