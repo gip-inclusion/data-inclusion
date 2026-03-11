@@ -1,11 +1,10 @@
-import os
 from pathlib import Path
 
 import pytest
 from playwright import sync_api as pw
 
 
-@pytest.mark.skipif(os.getenv("CI") == "1", reason="Skipping test in CI")
+@pytest.mark.playwright
 @pytest.mark.parametrize(
     ("filename"),
     [

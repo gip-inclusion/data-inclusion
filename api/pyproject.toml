@@ -106,5 +106,6 @@ markers = '''
     with_admin_token: inject admin token headers in test client
     settings: override api settings
     feature_deprecated: the marked test is deprecated
+    playwright: requires an api running instance
 '''
 testpaths = "tests"
