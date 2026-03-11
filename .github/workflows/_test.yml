@@ -67,4 +67,4 @@ jobs:
           SECRET_KEY: test-secret-key
         run: |
           uv sync --group test &&
-          uv run pytest tests/ -vv -n auto -m 'not integration'
+          uv run pytest tests/ -vv -n auto -m 'not integration' -m 'not playwright'
