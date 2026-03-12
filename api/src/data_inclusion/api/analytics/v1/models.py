@@ -75,3 +75,12 @@ class SearchServicesEvent(db.Base):
     recherche_public: Mapped[str | None]
     score_qualite_minimum: Mapped[float | None]
     exclure_doublons: Mapped[bool | None]
+
+
+ANALYTICS_EVENTS_TABLES_V1 = (
+    ConsultStructureEvent.__tablename__,
+    ConsultServiceEvent.__tablename__,
+    ListServicesEvent.__tablename__,
+    ListStructuresEvent.__tablename__,
+    SearchServicesEvent.__tablename__,
+)
