@@ -9,8 +9,10 @@ import click
 import pendulum
 import s3fs
 import sentry_sdk
+import sqlalchemy as sqla
 
 from data_inclusion.api import auth
+from data_inclusion.api.analytics.v1.models import ANALYTICS_EVENTS_TABLES_V1
 from data_inclusion.api.config import settings
 from data_inclusion.api.core import db
 from data_inclusion.api.decoupage_administratif.commands import import_communes
@@ -200,3 +202,28 @@ def _import_communes():
 
 if __name__ == "__main__":
     cli()
+
+
+@sentry_sdk.monitor(
+    monitor_slug="truncate-analytics",
+    monitor_config={
+        "schedule": {"type": "crontab", "value": "0 0 * * *"},
+        "checkin_margin": 60,
+        "max_runtime": 60,
+        "failure_issue_threshold": 1,
+        "recovery_threshold": 1,
+        "timezone": "Europe/Paris",
+    },
+)
+@cli.command(name="truncate-analytics")
+def _truncate_analytics():
+    for table in ANALYTICS_EVENTS_TABLES_V1:
+        with db.SessionLocal() as db_session:
+            rows_deleted = db_session.execute(
+                sqla.text(
+                    f"DELETE FROM {table} "
+                    "WHERE created_at < NOW() - INTERVAL '13 months';"
+                )
+            )
+            logger.info(f"Deleted {rows_deleted.rowcount} rows from {table}")
+            db_session.commit()
