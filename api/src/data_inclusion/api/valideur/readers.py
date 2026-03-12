@@ -60,12 +60,17 @@ def read_xlsx(file: BinaryIO | Path) -> tuple[pd.DataFrame, pd.DataFrame]:
             file,
             sheet_name=sheet_name,
             dtype=str,
-            header=0,
+            header=None,
         )
         df = df.replace({np.nan: None})
+        # update index to start at 1 instead of 0, to match line numbers in Excel
         df = df.set_axis(labels=df.index + 1, axis=0)
+        # use first row as column names, and drop it from the data
+        df = df[1:].rename(columns=df.iloc[0].to_dict())
+        # create a line column from the index
         df = df.reset_index(drop=False, names=["line"])
-        df = df.iloc[~df.__ignore__.map(bool).fillna(False)]
+        # drop description and example rows
+        df = df.iloc[~df["__ignore__"].map(bool).fillna(False)]
 
         # convert array-like fields from comma-separated strings to lists
         for fieldname in _get_array_fields(model):

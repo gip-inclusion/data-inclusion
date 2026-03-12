@@ -8,14 +8,14 @@
       - paragraph: Nous avons identifié plusieurs erreurs. Vous trouverez ci-dessous un récapitulatif des actions à effectuer.
       - heading "Résultat de l'analyse" [level=2]
       - strong: 1 structure(s) analysée(s)
-      - text: 1 à corriger 6 erreur(s)
+      - text: 1 à corriger 5 erreur(s)
       - strong: 2 service(s) analysé(s)
-      - text: 2 à corriger 10 erreur(s)
+      - text: 2 à corriger 8 erreur(s)
       - heading "Erreurs à corriger" [level=2]
       - paragraph:
         - text: Corrigez les erreurs ci-dessous dans votre fichier source, puis chargez-le à nouveau. Les valeurs attendues sont définies dans le
         - link "schéma data·inclusion":
-          - /url: https://gip-inclusion.github.io/data-inclusion-schema/latest/structure/
+          - /url: https://gip-inclusion.github.io/data-inclusion-schema/latest/
         - text: .
       - table:
         - rowgroup:
@@ -26,112 +26,94 @@
             - columnheader "Valeur"
             - columnheader "Détail"
         - rowgroup:
-          - row "Structure code_postal 2 750121 La chaîne doit contenir au plus 5 caractères":
+          - row "Structure code_postal 4 750121 La chaîne doit contenir au plus 5 caractères":
             - cell "Structure":
               - strong: Structure
             - cell "code_postal":
               - strong: code_postal
-            - cell "2":
-              - strong: "2"
+            - cell "4":
+              - strong: "4"
             - cell "750121"
             - cell "La chaîne doit contenir au plus 5 caractères"
-          - row "courriel 2 pas une adresse La valeur n'est pas un courriel valide":
+          - row "courriel 4 pas une adresse La valeur n'est pas un courriel valide":
             - cell:
               - strong
             - cell "courriel":
               - strong: courriel
-            - cell "2":
-              - strong: "2"
+            - cell "4":
+              - strong: "4"
             - cell "pas une adresse"
             - cell "La valeur n'est pas un courriel valide"
-          - row "date_maj 2 Champ requis":
+          - row "date_maj 4 Champ requis":
             - cell:
               - strong
             - cell "date_maj":
               - strong: date_maj
-            - cell "2":
-              - strong: "2"
+            - cell "4":
+              - strong: "4"
             - cell
             - cell "Champ requis"
-          - row "nom 2 AGENCE ACTION LOGEMENT. Le nom de la structure ne doit pas se terminer par un point.":
+          - row "nom 4 AGENCE ACTION LOGEMENT. Le nom de la structure ne doit pas se terminer par un point.":
             - cell:
               - strong
             - cell "nom":
               - strong: nom
-            - cell "2":
-              - strong: "2"
+            - cell "4":
+              - strong: "4"
             - cell "AGENCE ACTION LOGEMENT."
             - cell "Le nom de la structure ne doit pas se terminer par un point."
-          - row "site_web 2 pas une url ! La valeur doit être une URL valide":
+          - row "site_web 4 pas une url ! La valeur doit être une URL valide":
             - cell:
               - strong
             - cell "site_web":
               - strong: site_web
-            - cell "2":
-              - strong: "2"
+            - cell "4":
+              - strong: "4"
             - cell "pas une url !"
             - cell "La valeur doit être une URL valide"
-          - row "source 2 Champ requis":
-            - cell:
-              - strong
-            - cell "source":
-              - strong: source
-            - cell "2":
-              - strong: "2"
-            - cell
-            - cell "Champ requis"
-          - row "Service thematiques 2 logement-hebergement--louer-un-appartement La valeur 'logement-hebergement--louer-un-appartement' n'existe pas. Vouliez-vous dire 'logement-hebergement--louer-un-logement' ?":
+          - row "Service thematiques 4 logement-hebergement--louer-un-appartement La valeur 'logement-hebergement--louer-un-appartement' n'existe pas. Vouliez-vous dire 'logement-hebergement--louer-un-logement' ?":
             - cell "Service":
               - strong: Service
             - cell "thematiques":
               - strong: thematiques
-            - cell "2":
-              - strong: "2"
+            - cell "4":
+              - strong: "4"
             - cell "logement-hebergement--louer-un-appartement"
             - cell "La valeur 'logement-hebergement--louer-un-appartement' n'existe pas. Vouliez-vous dire 'logement-hebergement--louer-un-logement' ?"
-          - row "date_maj 2 à 3 Champ requis":
+          - row "date_maj 4 à 5 Champ requis":
             - cell:
               - strong
             - cell "date_maj":
               - strong: date_maj
-            - cell "2 à 3":
-              - strong: 2 à 3
+            - cell "4 à 5":
+              - strong: 4 à 5
             - cell
             - cell "Champ requis"
-          - row "mobilisable_par 2 à 3 autres La valeur doit être 'usagers' ou 'professionnels'":
+          - row "mobilisable_par 4 à 5 autres La valeur doit être 'usagers' ou 'professionnels'":
             - cell:
               - strong
             - cell "mobilisable_par":
               - strong: mobilisable_par
-            - cell "2 à 3":
-              - strong: 2 à 3
+            - cell "4 à 5":
+              - strong: 4 à 5
             - cell "autres"
             - cell "La valeur doit être 'usagers' ou 'professionnels'"
-          - row "nombre_semaines 2 à 3 beaucoup La valeur doit être un entier valide":
+          - row "nombre_semaines 4 à 5 beaucoup La valeur doit être un entier valide":
             - cell:
               - strong
             - cell "nombre_semaines":
               - strong: nombre_semaines
-            - cell "2 à 3":
-              - strong: 2 à 3
+            - cell "4 à 5":
+              - strong: 4 à 5
             - cell "beaucoup"
             - cell "La valeur doit être un entier valide"
-          - row "source 2 à 3 Champ requis":
-            - cell:
-              - strong
-            - cell "source":
-              - strong: source
-            - cell "2 à 3":
-              - strong: 2 à 3
-            - cell
-            - cell "Champ requis"
-          - row "code_insee 3 59999 Le code commune 59999 n'existe pas":
+          - row "code_insee 5 59999 Le code commune 59999 n'existe pas":
             - cell:
               - strong
             - cell "code_insee":
               - strong: code_insee
-            - cell "3":
-              - strong: "3"
+            - cell "5":
+              - strong: "5"
             - cell "59999"
             - cell "Le code commune 59999 n'existe pas"
   '''
