@@ -1,11 +1,13 @@
 import logging
 import os
 import subprocess
+import tarfile
 import tempfile
 from pathlib import Path
 from typing import Literal
 
 import click
+import pandas as pd
 import pendulum
 import s3fs
 import sentry_sdk
@@ -155,43 +157,37 @@ def _load_inclusion_data(db_session, path: Path, version: Literal["v0", "v1"]):
 )
 @cli.command(name="export-analytics")
 def _export_analytics():
-    # TODO(vmttn): make this code testable with local export
-    output_filename = "analytics.dump"
-
     if (stack := os.environ.get("STACK")) is not None and stack.startswith("scalingo"):
         subprocess.run("dbclient-fetcher pgsql", shell=True, check=True)
 
+    engine = sqla.create_engine(settings.DATABASE_URL)
     s3fs_client = s3fs.S3FileSystem()
-    base_key = Path(settings.DATALAKE_BUCKET_NAME) / "data" / "api"
-    key = str(
-        base_key
-        / pendulum.now().date().isoformat()
-        / pendulum.now().isoformat()
-        / output_filename
-    )
 
     with tempfile.TemporaryDirectory() as tmpdir:
-        tmpfile = Path(tmpdir) / output_filename
+        os.chdir(tmpdir)
+        for table in ANALYTICS_EVENTS_TABLES_V1:
+            df = pd.read_sql_table(table, engine)
+            # there are parquet conversion issues with nested JSON columns
+            for col in df.select_dtypes(include="object").columns:
+                df[col] = df[col].astype(str).where(df[col].notna())
+            df.to_parquet(f"{table}.parquet", index=False)
+            logger.info(f"Exported {table}")
 
-        command = (
-            "pg_dump $DATABASE_URL "
-            "--format=custom "
-            "--clean "
-            "--if-exists "
-            "--no-owner "
-            "--no-privileges "
-            "--section=pre-data "
-            "--section=data "
-            "--table api__*_events "
-            "--table api__*_events_v1 "
-            f"--file {tmpfile}"
+        archive_path = "analytics.tar.gz"
+        with tarfile.open(archive_path, "w:gz") as tar:
+            for table in ANALYTICS_EVENTS_TABLES_V1:
+                tar.add(f"{table}.parquet")
+
+        key = str(
+            Path(settings.DATALAKE_BUCKET_NAME)
+            / "data"
+            / "api"
+            / pendulum.now().date().isoformat()
+            / pendulum.now().isoformat()
+            / archive_path
         )
-
-        logger.info(command)
-        subprocess.run(command, shell=True, check=True)
-
         logger.info(f"Storing to {key}")
-        s3fs_client.put_file(tmpfile, key)
+        s3fs_client.put_file(str(archive_path), key)
 
 
 @cli.command(name="import-communes")
