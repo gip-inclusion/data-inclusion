@@ -48,7 +48,7 @@ class ListStructuresEvent(db.Base):
     created_at: Mapped[db.timestamp]
     user: Mapped[str]
     sources: Mapped[list[str] | None]
-    reseaux_porteurs: Mapped[str | None]
+    reseaux_porteurs: Mapped[list[str] | None]
     code_departement: Mapped[str | None]
     code_region: Mapped[str | None]
     code_commune: Mapped[str | None]

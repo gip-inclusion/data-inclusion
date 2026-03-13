@@ -183,10 +183,10 @@ def filter_services(
         query = query.filter(
             or_(
                 models.Service.searchable_index_profils.bool_op("@@")(
-                    func.to_tsquery("french_di", " | ".join(profils_only))
+                    func.to_tsquery("french", " | ".join(profils_only))
                 ),
                 models.Service.searchable_index_profils_precisions.bool_op("@@")(
-                    func.websearch_to_tsquery("french_di", params.recherche_public)
+                    func.websearch_to_tsquery("french", params.recherche_public)
                 ),
             )
         )

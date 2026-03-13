@@ -180,15 +180,16 @@ def filter_services(
         )
 
     if params.recherche_public is not None:
-        publics_only = params.recherche_public.split(" ")
-        publics_only = [p.strip() for p in publics_only]
+        websearch_to_tsquery = sqla.func.websearch_to_tsquery(
+            "french", params.recherche_public
+        )
         query = query.filter(
             sqla.or_(
                 models.Service.searchable_index_publics.bool_op("@@")(
-                    sqla.func.to_tsquery("french_di", " | ".join(publics_only))
+                    websearch_to_tsquery
                 ),
                 models.Service.searchable_index_publics_precisions.bool_op("@@")(
-                    sqla.func.websearch_to_tsquery("french_di", params.recherche_public)
+                    websearch_to_tsquery
                 ),
             )
         )
