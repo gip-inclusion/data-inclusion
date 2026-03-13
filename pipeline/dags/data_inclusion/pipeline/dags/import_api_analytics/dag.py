@@ -10,9 +10,13 @@ from data_inclusion.pipeline.common import dags
     retries=1,
 )
 def import_data():
-    import subprocess
+    import tarfile
     import tempfile
     from pathlib import Path
+
+    import pandas as pd
+    import sqlalchemy as sqla
+    from sqlalchemy.dialects.postgresql import insert
 
     from airflow.providers.amazon.aws.fs import s3 as s3fs
     from airflow.providers.amazon.aws.hooks import s3
@@ -20,44 +24,62 @@ def import_data():
 
     pg_conn = Connection.get(conn_id="pg")
     s3_hook = s3.S3Hook(aws_conn_id="s3")
-
     s3fs_client = s3fs.get_fs(conn_id="s3")
+    engine = sqla.create_engine(pg_conn.get_uri())
 
     BASE_KEY = Path(s3_hook.service_config["bucket_name"]) / "data" / "api"
     value = sorted(s3fs_client.ls(BASE_KEY))[-1]  # latest day
     value = sorted(s3fs_client.ls(value))[-1]  # latest run
-    value = Path(value) / "analytics.dump"
-
+    value = Path(value) / "analytics.tar.gz"
     print(f"Using {value}")
 
-    with tempfile.NamedTemporaryFile() as tmpfile:
-        s3fs_client.get_file(rpath=value, lpath=tmpfile.name)
+    with tempfile.TemporaryDirectory() as tmpdir:
+        tmpdir_path = Path(tmpdir)
+        with tempfile.NamedTemporaryFile(suffix=".tar.gz") as tmpfile:
+            s3fs_client.get_file(rpath=value, lpath=tmpfile.name)
+            archive_path = Path(tmpfile.name)
+            with tarfile.open(archive_path, "r:gz") as tar:
+                tar.extractall(path=tmpdir_path)
 
-        command = (
-            "pg_restore"
-            f" --dbname={pg_conn.get_uri()}"
-            " --clean"
-            " --if-exists"
-            " --no-owner"
-            " --no-privileges"
-            f" {tmpfile.name}"
-        )
+        for table_name in [
+            "api__consult_structure_events_v1",
+            "api__consult_service_events_v1",
+            "api__list_services_events_v1",
+            "api__list_structures_events_v1",
+            "api__search_services_events_v1",
+        ]:
+            df = pd.read_parquet(tmpdir_path / f"{table_name}.parquet")
+            if df.empty:
+                print(f"empty parquet file={table_name}, skipping")
+                continue
 
-        try:
-            print(command.replace(pg_conn.password, "***"))
-            subprocess.run(command, shell=True, check=True, capture_output=True)
-        except subprocess.CalledProcessError as exc:
-            print(exc.stdout)
-            print(exc.stderr)
-            raise exc
+            with engine.begin() as conn:
+                conn.execute(
+                    sqla.text(
+                        "CREATE UNIQUE INDEX IF NOT EXISTS"
+                        f" {table_name}_id_idx ON {table_name} (id)"
+                    )
+                )
+                rows = df.to_sql(
+                    name=table_name,
+                    con=conn,
+                    if_exists="append",
+                    index=False,
+                    method=lambda table, conn, keys, iterator: (
+                        conn.execute(
+                            insert(table.table)
+                            .values([dict(zip(keys, row)) for row in iterator])
+                            .on_conflict_do_nothing(index_elements=["id"])
+                        ).rowcount
+                    ),
+                )
+                print(f"{table_name}: {rows} rows inserted")
 
-
-# At 45 minutes past the hour, between 5am and 10pm
-FIFTEEN_BEFORE_THE_HOUR = "45 5-22 * * *"
+    print("All tables imported.")
 
 
 @dag(
-    schedule=FIFTEEN_BEFORE_THE_HOUR,
+    schedule="45 5-22 * * *",
     **dags.common_args(use_sentry=True),
 )
 def import_api_analytics():
