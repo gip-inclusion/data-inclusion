@@ -48,7 +48,7 @@ def paginate(
 
     if mapping is not None:
         items = db_session.execute(query).all()
-        items = [dict(zip(mapping, item, strict=True)) for item in items]
+        items = [dict(zip(mapping, item)) for item in items]
     else:
         items = db_session.execute(query).scalars().unique().all()
 

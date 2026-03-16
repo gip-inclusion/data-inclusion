@@ -193,6 +193,20 @@ def filter_services(
             )
         )
 
+    if (
+        isinstance(params, parameters.SearchServicesQueryParams)
+        and params.q is not None
+    ):
+        websearch_to_tsquery = sqla.func.websearch_to_tsquery("french_di", params.q)
+        query = query.filter(
+            models.Structure.search_vector.bool_op("@@")(websearch_to_tsquery)
+        )
+        query = query.add_columns(
+            sqla.func.ts_rank(
+                models.Structure.search_vector, websearch_to_tsquery
+            ).label("ts_rank")
+        )
+
     return query
 
 
@@ -330,10 +344,16 @@ def search_services_query(
             )
         )
 
-    query = query.order_by(
-        sqla.column("distance").nulls_last(),
-        models.Service.id,
-    )
+    if params.q is not None:
+        query = query.order_by(
+            sqla.column("ts_rank").desc(),
+            sqla.column("distance").nulls_last(),
+        )
+    else:
+        query = query.order_by(
+            sqla.column("distance").nulls_last(),
+            models.Service.id,
+        )
 
     return query, ("service", "distance")
 
