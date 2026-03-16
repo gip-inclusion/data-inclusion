@@ -6,9 +6,9 @@ from airflow import configuration
 from airflow.sdk import Variable, task
 
 AIRFLOW_HOME = Path(configuration.get_airflow_home())
-DBT_PROJECT_PATH = AIRFLOW_HOME / "dbt"
+DBT_PROJECT_PATH = Path("dbt").resolve()
 DBT_PACKAGES_PATH = (DBT_PROJECT_PATH / "dbt_packages").resolve()
-DBT_BASE_COMMAND = "uvx --with dbt-postgres --from dbt-core==1.* dbt"
+DBT_BASE_COMMAND = "uvx --python 3.12 --with dbt-postgres --from dbt-core==1.* dbt"
 
 
 @task.bash(

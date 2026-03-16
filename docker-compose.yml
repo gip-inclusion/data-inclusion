@@ -1,114 +1,18 @@
-x-airflow-common:
-  &airflow-common
-
-  image: data-inclusion/airflow
-  build:
-    context: pipeline
-
-  environment:
-    &airflow-common-environment
-    AIRFLOW__API_AUTH__JWT_SECRET: USE_IN_DEVELOPMENT_ONLY
-    AIRFLOW__API__SECRET_KEY: USE_IN_DEVELOPMENT_ONLY
-    AIRFLOW__API__WORKERS:
-    AIRFLOW__CORE__DEFAULT_POOL_TASK_SLOT_COUNT: 24
-    AIRFLOW__CORE__DEFAULT_TIMEZONE: ${AIRFLOW__CORE__DEFAULT_TIMEZONE}
-    AIRFLOW__CORE__EXECUTION_API_SERVER_URL: http://airflow-api-server:8080/execution/
-    AIRFLOW__CORE__LOAD_EXAMPLES: 'false'
-    AIRFLOW__CORE__MAX_MAP_LENGTH: 2048
-    AIRFLOW__CORE__PARALLELISM: 4
-    AIRFLOW__CORE__SIMPLE_AUTH_MANAGER_ALL_ADMINS: 'true'
-    AIRFLOW__DAG_PROCESSOR__MIN_FILE_PROCESS_INTERVAL: 60
-    AIRFLOW__DAG_PROCESSOR__PARSING_PROCESSES: 4
-    AIRFLOW__DATABASE__SQL_ALCHEMY_CONN: postgresql://airflow:airflow@airflow-db:5432/airflow
-    AIRFLOW__SCHEDULER__MAX_TIS_PER_QUERY: 0
-    # Connections
-    AIRFLOW_CONN_PG: postgresql://data-inclusion:data-inclusion@datawarehouse:5432/data-inclusion
-    AIRFLOW_CONN_S3: '{"conn_type": "aws", "extra": {"endpoint_url": "http://minio:9000", "aws_access_key_id": "minioadmin", "aws_secret_access_key": "minioadmin", "service_config": {"s3": {"bucket_name": "data-inclusion-lake"}}}}'
-
-    # Variables
-    AIRFLOW_VAR_BREVO_API_KEY: ${AIRFLOW_VAR_BREVO_API_KEY}
-    AIRFLOW_VAR_CARIF_OREF_URL: ${AIRFLOW_VAR_CARIF_OREF_URL}
-    AIRFLOW_VAR_DATAGOUV_API_KEY: ${AIRFLOW_VAR_DATAGOUV_API_KEY}
-    AIRFLOW_VAR_DORA_API_TOKEN: ${AIRFLOW_VAR_DORA_API_TOKEN}
-    AIRFLOW_VAR_FREDO_API_TOKEN: ${AIRFLOW_VAR_FREDO_API_TOKEN}
-    AIRFLOW_VAR_FT_API_TOKEN: ${AIRFLOW_VAR_FT_API_TOKEN}
-    AIRFLOW_VAR_MISSION_LOCALE_API_SECRET: ${AIRFLOW_VAR_MISSION_LOCALE_API_SECRET}
-    AIRFLOW_VAR_DORA_PREPROD_API_TOKEN: ${AIRFLOW_VAR_DORA_PREPROD_API_TOKEN}
-    AIRFLOW_VAR_EMPLOIS_API_TOKEN: ${AIRFLOW_VAR_EMPLOIS_API_TOKEN}
-    AIRFLOW_VAR_MEDIATION_NUMERIQUE_API_TOKEN: ${AIRFLOW_VAR_MEDIATION_NUMERIQUE_API_TOKEN}
-    AIRFLOW_VAR_SOLIGUIDE_API_TOKEN: ${AIRFLOW_VAR_SOLIGUIDE_API_TOKEN}
-    AIRFLOW_VAR_TWOCAPTCHA_API_KEY: ${AIRFLOW_VAR_TWOCAPTCHA_API_KEY}
-    AIRFLOW_VAR_MA_BOUSSOLE_AIDANTS_API_KEY: ${AIRFLOW_VAR_MA_BOUSSOLE_AIDANTS_API_KEY}
-    AIRFLOW_VAR_ENVIRONMENT: test
-
-  volumes:
-    - ./pipeline/dbt:/opt/airflow/dbt
-    - ./pipeline/dags:/opt/airflow/dags
-
-  user: ${AIRFLOW_UID:-50000}:0
-
-  depends_on:
-    &airflow-common-depends-on
-    airflow-db:
-      condition: service_healthy
-    airflow-init:
-      condition: service_completed_successfully
-
 services:
   airflow-db:
     image: postgres:18
-    restart: no
+    restart: always
     healthcheck:
       test: pg_isready
       interval: 5s
       retries: 5
     ports:
-      - ${AIRFLOW_DB_PORT:-5454}:5432
+      - 5432:5432
     environment:
       - PGUSER=airflow
       - POSTGRES_DB=airflow
       - POSTGRES_USER=airflow
       - POSTGRES_PASSWORD=airflow
-
-  airflow-api-server:
-    <<: *airflow-common
-    command: api-server
-    restart: no
-    ports:
-      - ${AIRFLOW_UI_PORT:-8080}:8080
-
-  airflow-dag-processor:
-    <<: *airflow-common
-    command: dag-processor
-    restart: no
-    healthcheck:
-      test: airflow jobs check --job-type DagFileProcessorJob --local
-      interval: 10s
-      timeout: 20s
-      retries: 5
-      start_period: 30s
-
-  airflow-scheduler:
-    <<: *airflow-common
-    command: scheduler
-    restart: no
-    healthcheck:
-      test: airflow jobs check --job-type SchedulerJob --local
-      interval: 10s
-      timeout: 20s
-      retries: 5
-      start_period: 30s
-
-  airflow-init:
-    <<: *airflow-common
-    command: version
-    restart: no
-    environment:
-      <<: *airflow-common-environment
-      _AIRFLOW_DB_MIGRATE: 'true'
-    depends_on:
-      airflow-db:
-        condition: service_healthy
 
   playwright:
     # the version should match the tasks requirements
