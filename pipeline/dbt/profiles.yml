@@ -5,7 +5,7 @@ data_inclusion:
       type: postgres
       threads: 4
       host: "{{ env_var('POSTGRES_HOST', 'localhost') }}"
-      port: "{{ env_var('POSTGRES_PORT', '5455') | int }}"
+      port: "{{ env_var('POSTGRES_PORT', '5433') | int }}"
       user: "{{ env_var('POSTGRES_USER', 'data-inclusion') }}"
       password: "{{ env_var('POSTGRES_PASSWORD', 'data-inclusion') }}"
       dbname: "{{ env_var('POSTGRES_DB', 'data-inclusion') }}"
