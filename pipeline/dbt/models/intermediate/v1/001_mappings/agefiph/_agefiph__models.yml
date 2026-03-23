@@ -65,8 +65,8 @@ models:
           - dbt_utils.not_empty_string
           - relationships:
               arguments:
-                to: ref('stg_agefiph__services_thematiques')
-                field: thematique_id
+                to: ref('stg_agefiph__thematiques')
+                field: id
       - name: thematique
         data_tests:
           - not_null
