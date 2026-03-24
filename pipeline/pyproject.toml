@@ -11,6 +11,11 @@ version = "0.1.0"
 where = ["dags"]
 namespaces = true
 
+[tool.ruff.format]
+# Enable preview style formatting, to better format method chainings
+# see https://docs.astral.sh/ruff/formatter/#fluent-layout-for-method-chains
+preview = true
+
 [tool.ruff.lint]
 # see prefixes in https://beta.ruff.rs/docs/rules/
 select = [
@@ -88,3 +93,6 @@ preferred_type_casting_style = "cast"
 [tool.sqlfluff.templater.dbt]
 project_dir = "./pipeline/dbt"
 profiles_dir = "./pipeline/dbt"
+
+[tool.inline-snapshot]
+format-command="ruff format --stdin-filename {filename}"

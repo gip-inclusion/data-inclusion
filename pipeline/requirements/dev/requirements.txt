@@ -96,6 +96,7 @@ apache-airflow-providers-common-io==1.7.1
 apache-airflow-providers-common-sql==1.30.4
     # via
     #   -c airflow/constraints.txt
+    #   apache-airflow
     #   apache-airflow-core
     #   apache-airflow-providers-amazon
     #   apache-airflow-providers-postgres
@@ -148,6 +149,10 @@ asn1crypto==1.5.1
     # via
     #   -c airflow/constraints.txt
     #   scramp
+asttokens==3.0.1
+    # via
+    #   -c airflow/constraints.txt
+    #   inline-snapshot
 asyncpg==0.31.0
     # via
     #   -c airflow/constraints.txt
@@ -171,6 +176,7 @@ babel==2.18.0
     #   -c airflow/constraints.txt
     #   apache-airflow-task-sdk
     #   flask-babel
+    #   great-tables
 bcrypt==5.0.0
     # via
     #   -c airflow/constraints.txt
@@ -179,7 +185,6 @@ beautifulsoup4==4.14.3
     # via
     #   -c airflow/constraints.txt
     #   -r dev/../tasks/requirements.in
-    #   markdownify
     #   redshift-connector
 blinker==1.9.0
     # via
@@ -249,6 +254,7 @@ click==8.3.1
     #   clickclick
     #   flask
     #   flask-appbuilder
+    #   pointblank
     #   rich-toolkit
     #   typer
     #   uvicorn
@@ -266,6 +272,10 @@ colorlog==6.10.1
     #   -c airflow/constraints.txt
     #   apache-airflow-core
     #   apache-airflow-task-sdk
+commonmark==0.9.1
+    # via
+    #   great-tables
+    #   pointblank
 connexion==2.14.2
     # via
     #   -c airflow/constraints.txt
@@ -299,6 +309,8 @@ dill==0.4.1
     # via
     #   -c airflow/constraints.txt
     #   apache-airflow-core
+dirty-equals==0.11
+    # via -r dev/requirements.in
 distlib==0.4.0
     # via
     #   -c airflow/constraints.txt
@@ -319,6 +331,12 @@ et-xmlfile==2.0.0
     # via
     #   -c airflow/constraints.txt
     #   openpyxl
+executing==2.2.1
+    # via
+    #   -c airflow/constraints.txt
+    #   inline-snapshot
+faicons==0.2.2
+    # via great-tables
 fastapi==0.117.1
     # via
     #   -c airflow/constraints.txt
@@ -406,6 +424,8 @@ googleapis-common-protos==1.72.0
     #   -c airflow/constraints.txt
     #   opentelemetry-exporter-otlp-proto-grpc
     #   opentelemetry-exporter-otlp-proto-http
+great-tables==0.21.0
+    # via pointblank
 greenback==1.3.0
     # via
     #   -c airflow/constraints.txt
@@ -425,6 +445,10 @@ h11==0.16.0
     #   -c airflow/constraints.txt
     #   httpcore
     #   uvicorn
+htmltools==0.6.0
+    # via
+    #   faicons
+    #   great-tables
 httpcore==1.0.9
     # via
     #   -c airflow/constraints.txt
@@ -455,7 +479,13 @@ importlib-metadata==8.4.0
     # via
     #   -c airflow/constraints.txt
     #   apache-airflow-core
+    #   great-tables
     #   opentelemetry-api
+    #   pointblank
+importlib-resources==6.5.2
+    # via
+    #   -c airflow/constraints.txt
+    #   great-tables
 inflection==0.5.1
     # via
     #   -c airflow/constraints.txt
@@ -463,6 +493,8 @@ inflection==0.5.1
     #   connexion
 iniconfig==2.3.0
     # via pytest
+inline-snapshot==0.32.5
+    # via -r dev/requirements.in
 itsdangerous==2.2.0
     # via
     #   -c airflow/constraints.txt
@@ -534,8 +566,6 @@ markdown-it-py==4.0.0
     # via
     #   -c airflow/constraints.txt
     #   rich
-markdownify==1.2.2
-    # via -r dev/../airflow/requirements.in
 markupsafe==3.0.3
     # via
     #   -c airflow/constraints.txt
@@ -584,6 +614,8 @@ multidict==6.7.1
     #   aiobotocore
     #   aiohttp
     #   yarl
+narwhals==2.18.0
+    # via pointblank
 natsort==8.4.0
     # via
     #   -c airflow/constraints.txt
@@ -660,6 +692,7 @@ packaging==26.0
     #   connexion
     #   geoalchemy2
     #   geopandas
+    #   htmltools
     #   limits
     #   marshmallow
     #   pyogrio
@@ -705,6 +738,16 @@ ply==3.11
     # via
     #   -c airflow/constraints.txt
     #   jsonpath-ng
+pointblank==0.22.0
+    # via -r dev/../tasks/requirements.in
+polars==1.37.1
+    # via
+    #   -c airflow/constraints.txt
+    #   apache-airflow-providers-common-sql
+polars-runtime-32==1.37.1
+    # via
+    #   -c airflow/constraints.txt
+    #   polars
 pre-commit==4.5.1
     # via -r dev/requirements.in
 prison==0.2.1
@@ -790,6 +833,7 @@ pytest==9.0.2
     # via
     #   -r dev/../airflow/requirements.in
     #   -r dev/requirements.in
+    #   inline-snapshot
     #   pytest-dotenv
 pytest-dotenv==0.5.2
     # via -r dev/requirements.in
@@ -838,6 +882,7 @@ pyyaml==6.0.3
     #   clickclick
     #   connexion
     #   libcst
+    #   pointblank
     #   pre-commit
     #   uvicorn
 redshift-connector==2.1.7
@@ -858,6 +903,7 @@ requests==2.32.5
     #   apache-airflow-providers-http
     #   connexion
     #   opentelemetry-exporter-otlp-proto-http
+    #   pointblank
     #   redshift-connector
     #   requests-mock
     #   requests-toolbelt
@@ -875,6 +921,8 @@ rich==13.9.4
     #   -c airflow/constraints.txt
     #   apache-airflow-core
     #   flask-limiter
+    #   inline-snapshot
+    #   pointblank
     #   rich-argparse
     #   rich-toolkit
     #   typer
@@ -934,7 +982,6 @@ six==1.17.0
     # via
     #   -c airflow/constraints.txt
     #   furl
-    #   markdownify
     #   orderedmultidict
     #   prison
     #   python-dateutil
@@ -1029,8 +1076,12 @@ typing-extensions==4.15.0
     #   cadwyn
     #   cron-descriptor
     #   fastapi
+    #   great-tables
+    #   htmltools
+    #   inline-snapshot
     #   limits
     #   opentelemetry-sdk
+    #   pointblank
     #   pydantic
     #   pydantic-core
     #   pyee

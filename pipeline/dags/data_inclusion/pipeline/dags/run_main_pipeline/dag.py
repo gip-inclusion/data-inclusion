@@ -37,6 +37,59 @@ def export_dataset(to_s3_path: str):
         )
 
 
+@task.virtualenv(
+    requirements="requirements/tasks/requirements.txt",
+    system_site_packages=False,
+    venv_cache_path="/tmp/",
+)
+def int__geocodages():
+    from airflow.providers.postgres.hooks import postgres
+
+    from data_inclusion.pipeline.models.intermediate.enrichments.geocodages import (
+        data_tests,
+        model,
+    )
+
+    # explicitly select columns to exclude geometry column
+    query = """
+        SELECT
+            code,
+            nom,
+            code_region,
+            code_departement,
+            code_epci,
+            codes_postaux,
+            nom_region,
+            nom_departement
+        FROM public_staging.stg_decoupage_administratif__communes
+    """
+
+    pg_hook = postgres.PostgresHook(postgres_conn_id="pg")
+    communes_df = pg_hook.get_df(sql=query, df_type="polars")
+
+    adresses_df = pg_hook.get_df(
+        sql="SELECT * FROM public_intermediate.int__union_adresses_v1",
+        df_type="polars",
+    )
+
+    geocodages_df = model.int__geocodages(
+        adresses_df=adresses_df,
+        communes_df=communes_df,
+    )
+
+    data_tests.int__geocodages(
+        geocodages_df=geocodages_df,
+        adresses_df=adresses_df,
+    )
+
+    with pg_hook.get_sqlalchemy_engine().begin() as conn:
+        geocodages_df.write_database(
+            table_name="public_intermediate.int__geocodages_v1",
+            connection=conn,
+            if_table_exists="replace",
+        )
+
+
 @dag(
     schedule="@hourly",
     max_active_tasks=4,
@@ -141,6 +194,7 @@ def run_main_pipeline():
         chain(
             dbt_build_mappings(),
             dbt_build_unions,
+            int__geocodages(),
             dbt_build_enrichments,
             dbt_build_finals,
             dbt_build_deduplicate,

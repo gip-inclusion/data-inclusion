@@ -1,6 +1,8 @@
 -r ../airflow/requirements.in
 -r ../tasks/requirements.in
 
+dirty-equals
+inline-snapshot
 pre-commit
 pytest
 pytest-dotenv
