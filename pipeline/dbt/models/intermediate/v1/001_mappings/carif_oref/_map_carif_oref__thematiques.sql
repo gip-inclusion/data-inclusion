@@ -27,7 +27,11 @@ FROM (
     ),
     (
         '15041', -- mise à niveau
-        'remobilisation--activites-sportives-et-culturelles'
+        'lecture-ecriture-calcul--maitriser-le-calcul'
+    ),
+    (
+        '15041', -- mise à niveau
+        'lecture-ecriture-calcul--maitriser-le-francais'
     ),
     (
         '15043', -- alphabétisation
@@ -42,6 +46,26 @@ FROM (
         'preparer-sa-candidature--organiser-ses-demarches-de-recherche-demploi'
     ),
     (
+        '15061', -- accompagnement vers emploi
+        'trouver-un-emploi--suivre-ses-candidatures-et-relancer-les-employeurs'
+    ),
+    (
+        '15061', -- accompagnement vers emploi
+        'choisir-un-metier--confirmer-son-choix-de-metier'
+    ),
+    (
+        '15062', -- bilan de compétences et projet professionnel
+        'choisir-un-metier--identifier-ses-points-forts-et-ses-competences'
+    ),
+    (
+        '15062', -- bilan de compétences et projet professionnel
+        'choisir-un-metier--confirmer-son-choix-de-metier'
+    ),
+    (
+        '15066', -- bien-être et confiance en soi
+        'remobilisation--bien-etre-confiance-en-soi'
+    ),
+    (
         '15084', -- préparation entrée formation
         'se-former--trouver-sa-formation'
     ),
@@ -52,5 +76,17 @@ FROM (
     (
         '15281', -- français mise à niveau
         'lecture-ecriture-calcul--maitriser-le-francais'
+    ),
+    (
+        '15436', -- activités sportives et culturelles
+        'remobilisation--activites-sportives-et-culturelles'
+    ),
+    (
+        '32154', -- identification des compétences
+        'choisir-un-metier--identifier-ses-points-forts-et-ses-competences'
+    ),
+    (
+        '44028', -- prise en charge personne dépendante
+        'famille--prise-en-charge-personne-dependante'
     )
 ) AS x (formacode_v14, thematique)
