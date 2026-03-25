@@ -6,8 +6,8 @@ WITH services AS (
     WHERE sources.source IS NOT NULL
 ),
 
-departements AS (
-    SELECT * FROM {{ ref('stg_decoupage_administratif__departements') }}
+regions AS (
+    SELECT * FROM {{ ref('stg_decoupage_administratif__regions') }}
 ),
 
 map_frais AS (SELECT * FROM {{ ref('_map_frais') }}),
@@ -165,11 +165,7 @@ SELECT
     CASE
         WHEN
             services.zone_diffusion_type = 'region'
-            THEN (
-                SELECT ARRAY_AGG(departements.code)
-                FROM departements
-                WHERE departements.code_region = services.zone_diffusion_code
-            )
+            THEN regions.departements
         WHEN services.zone_diffusion_type = 'pays' THEN ARRAY['france']
         WHEN services.zone_diffusion_code IS NOT NULL THEN ARRAY[services.zone_diffusion_code]
     END                                                                                                       AS "zone_eligibilite",
@@ -188,6 +184,7 @@ SELECT
     services.code_postal                                                                                      AS "code_postal",
     services.code_insee                                                                                       AS "code_insee"
 FROM services
+LEFT JOIN regions ON services.zone_diffusion_code = regions.code
 LEFT JOIN publics_v1
     ON services._di_surrogate_id = publics_v1._di_surrogate_id
 LEFT JOIN frais

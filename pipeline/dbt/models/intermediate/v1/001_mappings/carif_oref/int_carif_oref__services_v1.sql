@@ -38,8 +38,8 @@ thematiques_mapping AS (
     SELECT * FROM {{ ref('_map_carif_oref__thematiques') }}
 ),
 
-departements AS (
-    SELECT * FROM {{ ref('stg_decoupage_administratif__departements') }}
+regions AS (
+    SELECT * FROM {{ ref('stg_decoupage_administratif__regions') }}
 ),
 
 communes AS (
@@ -221,14 +221,7 @@ final AS (
         CASE actions.code_perimetre_recrutement
             WHEN '1' THEN ARRAY[communes.code]
             WHEN '2' THEN ARRAY[communes.code_departement]
-            ELSE NULLIF(
-                ARRAY(
-                    SELECT departements.code
-                    FROM departements
-                    WHERE departements.code_region = communes.code_region
-                ),
-                '{}'
-            )
+            WHEN regions.code IS NOT NULL THEN regions.departements
         END                                                          AS "zone_eligibilite",
         CAST(actions.duree_hebdo AS FLOAT)                           AS "volume_horaire_hebdomadaire",
         CAST(NULL AS INTEGER)                                        AS "nombre_semaines",
@@ -267,6 +260,8 @@ final AS (
 
     LEFT JOIN communes
         ON COALESCE(adresses_lieu_de_formation.code_insee_commune, adresses_organisme_formateur.code_insee_commune) = communes.code
+    LEFT JOIN regions
+        ON communes.code_region = regions.code
     LEFT JOIN publics
         ON actions.numero = publics.numero_action
     LEFT JOIN thematiques

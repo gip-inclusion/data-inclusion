@@ -18,8 +18,8 @@ communes AS (
     SELECT * FROM {{ ref('stg_decoupage_administratif__communes') }}
 ),
 
-departements AS (
-    SELECT * FROM {{ ref('stg_decoupage_administratif__departements') }}
+regions AS (
+    SELECT * FROM {{ ref('stg_decoupage_administratif__regions') }}
 ),
 
 thematiques AS (
@@ -73,15 +73,7 @@ final AS (
         ARRAY['a-distance']                                          AS "modes_accueil",
         NULL                                                         AS "contact_nom_prenom",
         CASE
-            WHEN communes.code_region IS NOT NULL THEN NULLIF(
-                ARRAY(
-                    SELECT departements.code
-                    FROM departements
-                    WHERE departements.code_region = communes.code_region
-                    ORDER BY departements.code
-                ),
-                '{}'
-            )
+            WHEN regions.code IS NOT NULL THEN regions.departements
         END                                                          AS "zone_eligibilite",
         services.attributes__field_lien_aide__uri                    AS "lien_mobilisation",
         ARRAY_REMOVE(
@@ -100,6 +92,7 @@ final AS (
     FROM structures
     LEFT JOIN adresses ON ('agefiph--' || structures.id) = adresses.id
     LEFT JOIN communes ON adresses.code_insee = communes.code
+    LEFT JOIN regions ON communes.code_region = regions.code
     CROSS JOIN services
     LEFT JOIN thematiques ON services.id = thematiques.service_id
     WHERE NOT services.attributes__field_solution_partenaire
