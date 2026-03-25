@@ -20,6 +20,10 @@ urls AS (
         "url"
     FROM {{ ref('int__urls_v1') }}
     WHERE status_code > 0
+),
+
+regions AS (
+    SELECT * FROM {{ ref('stg_decoupage_administratif__regions') }}
 )
 
 SELECT
@@ -68,7 +72,7 @@ SELECT
         WHEN services.zone_eligibilite_type = 'departement' AND adresses.code_departement IS NOT NULL
             THEN ARRAY[adresses.code_departement]
         WHEN services.zone_eligibilite_type = 'region' AND adresses.code_region IS NOT NULL
-            THEN ARRAY[adresses.code_region]
+            THEN regions.departements
         WHEN services.zone_eligibilite_type = 'pays'
             THEN ARRAY['france']
     END                                  AS "zone_eligibilite",
@@ -92,6 +96,8 @@ LEFT JOIN contacts
     ON services.id = contacts.id
 LEFT JOIN adresses
     ON services.adresse_id = adresses.id
+LEFT JOIN regions
+    ON adresses.code_region = regions.code
 LEFT JOIN urls
     ON services.lien_mobilisation = urls.input_url
 UNION ALL
