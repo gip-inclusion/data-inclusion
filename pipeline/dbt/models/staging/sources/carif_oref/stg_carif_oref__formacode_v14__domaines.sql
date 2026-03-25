@@ -10,7 +10,12 @@ FROM (
     ('15043', TRUE, 'Alphabétisation'),
     ('15050', TRUE, 'Mise à niveau numérique'),
     ('15061', TRUE, 'Accompagnement vers emploi'),
+    ('15062', TRUE, 'Bilan de compétences et projet professionnel'),
+    ('15066', TRUE, 'Bien-être et confiance en soi'),
     ('15084', TRUE, 'Préparation entrée formation'),
     ('15235', TRUE, 'Français langue étrangère'),
-    ('15281', TRUE, 'Français mise à niveau')
+    ('15281', TRUE, 'Français mise à niveau'),
+    ('15436', TRUE, 'Activités sportives et culturelles'),
+    ('32154', TRUE, 'Identification des compétences'),
+    ('44028', TRUE, 'Prise en charge d’une personne dépendante')
 ) AS formacode (code, selected, libelle)
