@@ -6,8 +6,8 @@ adresses AS (
     SELECT * FROM {{ ref('int_dora__adresses_v1') }}
 ),
 
-departements AS (
-    SELECT * FROM {{ ref('stg_decoupage_administratif__departements') }}
+regions AS (
+    SELECT * FROM {{ ref('stg_decoupage_administratif__regions') }}
 ),
 
 publics AS (
@@ -171,11 +171,7 @@ final AS (
         CASE
             WHEN
                 services.zone_diffusion_type = 'region'
-                THEN (
-                    SELECT ARRAY_AGG(departements.code)
-                    FROM departements
-                    WHERE departements.code_region = services.zone_diffusion_code
-                )
+                THEN regions.departements
             WHEN services.zone_diffusion_type = 'pays' THEN ARRAY['france']
             WHEN services.zone_diffusion_code IS NOT NULL THEN ARRAY[services.zone_diffusion_code]
         END                                                                                                                         AS "zone_eligibilite",
@@ -187,6 +183,7 @@ final AS (
             ELSE LEFT(services.nom, 149) || '…'
         END                                                                                                                         AS "nom"
     FROM services
+    LEFT JOIN regions ON services.zone_diffusion_code = regions.code
     LEFT JOIN adresses ON ('dora--' || services.id) = adresses.id
     LEFT JOIN publics ON services.id = publics.service_id
     LEFT JOIN thematiques ON services.id = thematiques.service_id
