@@ -1,0 +1,7 @@
+version: 2
+
+sources:
+  - name: python_models
+    schema: public_intermediate
+    tables:
+      - name: int__geocodages_v1

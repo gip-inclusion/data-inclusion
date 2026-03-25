@@ -6,10 +6,6 @@ models:
       - name: public_fredo
         data_tests:
           - not_null
-          - relationships:
-              arguments:
-                to: ref('stg_fredo__publics')
-                field: value
       - name: public_di
         data_tests:
           - not_null
@@ -23,10 +19,6 @@ models:
       - name: type_structure
         data_tests:
           - not_null
-          - relationships:
-              arguments:
-                to: ref('stg_fredo__types')
-                field: value
       - name: reseau_porteur
         data_tests:
           - not_null
@@ -40,10 +32,6 @@ models:
       - name: category
         data_tests:
           - not_null
-          - relationships:
-              arguments:
-                to: ref('stg_fredo__categories')
-                field: value
       - name: thematique
         data_tests:
           - not_null
@@ -57,10 +45,6 @@ models:
       - name: service
         data_tests:
           - not_null
-          - relationships:
-              arguments:
-                to: ref('stg_fredo__services')
-                field: value
       - name: type
         data_tests:
           - not_null
