@@ -1,129 +1,121 @@
-import re
+import enum
 
 import phonenumbers
+from phonenumbers import shortnumberinfo
 
-# source: https://fr.wikipedia.org/wiki/Plan_de_num%C3%A9rotation_en_France#Num%C3%A9ros_d'urgence
-URGENCY_NUMBERS = [
-    "15",  # SAMU
-    "17",  # police ou gendarmerie
-    "18",  # pompiers
-    "110",  # numéro pour des opérations de collecte de dons
-    "112",  # numéro d'urgence européen
-    "114",  # numéro d'urgence pour personnes sourdes ou malentendantes
-    "115",  # urgences sociales (ou "SAMU social")
-    "119",  # enfance maltraitée
-    "191",  # service d'urgences pour les accidents aériens
-    "196",  # service d'urgences en mer (depuis 2015)
-    "197",  # numéro d'urgence en cas d'Alerte Enlèvement ou d'Alerte Attentat
-    "116000",  # enfants disparus, SOS enfants disparus
-    "116117",  # permanence des soins ambulatoires
-]
+# note: DOMs have their own country codes, but it is also possible to use the +33 code
+# because they are departements. We will favour local country codes in our outputs, but
+# both local and national codes should be considered as valid inputs.
 
-# Numéros courts SVA (Services à Valeur Ajoutée) à 4 chiffres commençant par 3
-# https://fr.wikipedia.org/wiki/Num%C3%A9ro_de_t%C3%A9l%C3%A9phone_en_France#SVA
-SVA_NUMBER_PATTERN = re.compile(r"^3\d{3}$")
+# note: TOMs are not departements. Therefore the +33 code is not valid for them.
+# Nevertheless we will try and parse numbers with +33 that are obviously for a TOM.
 
-# Préfixes DOM-TOM vers code région ISO 3166-1 alpha-2
-# Ordre important : RE avant YT pour le préfixe 0262 partagé
-DOM_TOM_PREFIXES = {
-    "0590": "GP",  # Guadeloupe
-    "0690": "GP",
-    "0691": "GP",
-    "0594": "GF",  # Guyane
-    "0694": "GF",
-    "0596": "MQ",  # Martinique
-    "0696": "MQ",
-    "0697": "MQ",
-    "0262": "RE",  # Réunion (prioritaire sur Mayotte)
-    "0263": "RE",
-    "0692": "RE",
-    "0693": "RE",
-    "0269": "YT",  # Mayotte
-    "0639": "YT",
-    "0508": "PM",  # Saint-Pierre-et-Miquelon
-    "0608": "PM",
-    "0681": "WF",  # Wallis-et-Futuna
-    "0689": "PF",  # Polynésie française
-    "0687": "NC",  # Nouvelle-Calédonie
-}
-
-# https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2
-# Ordre de priorité pour le fallback
-ALLOWED_REGION_CODES = ["FR", "GP", "GF", "MQ", "RE", "YT", "PM", "WF", "PF", "NC"]
-
-# Codes pays pour les territoires où phonenumbers ne valide pas bien
-COUNTRY_CODES = {
-    "PM": "508",
-    "WF": "681",
-    "PF": "689",
-    "NC": "687",
-}
+# resources:
+# - https://fr.wikipedia.org/wiki/Indicatif_téléphonique_local_en_France
+# - https://fr.wikipedia.org/wiki/Liste_des_préfixes_des_opérateurs_de_téléphonie_mobile_en_France
 
 
-def _get_region_for_prefix(phone_number: str) -> str | None:
-    if len(phone_number) < 4:
-        return None
-    return DOM_TOM_PREFIXES.get(phone_number[:4])
+class Region(enum.Enum):
+    # see https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2
+
+    INTERNATIONAL = None
+    FRANCE = "FR"
+    MAYOTTE = "YT"
+    GUADELOUPE = "GP"
+    GUYANE = "GF"
+    MARTINIQUE = "MQ"
+    REUNION = "RE"
+    SAINT_PIERRE_ET_MIQUELON = "PM"
+    WALLIS_ET_FUTUNA = "WF"
+    POLYNESIE_FRANCAISE = "PF"
+    NOUVELLE_CALEDONIE = "NC"
 
 
-def format_phone_number(phone_number: str) -> str | None:
-    if phone_number is None:
+def format_phone_number(value: str | None) -> str | None:
+    if value is None:
         return None
 
-    phone_number = phone_number.strip()
-    phone_number = re.sub(r"[\.\-\s]", "", phone_number)
+    # is_possible_number -> check shape and length, cheap
+    # is_valid_number -> check ranges, expensive
 
-    is_urgency = phone_number in URGENCY_NUMBERS
-    is_sva = SVA_NUMBER_PATTERN.fullmatch(phone_number)
-    if is_urgency or is_sva:
-        return phone_number
+    # short numbers (including emergency numbers) in France
+    try:
+        parsed = phonenumbers.parse(value, region="FR")
+        if shortnumberinfo.is_possible_short_number(parsed):
+            if shortnumberinfo.is_valid_short_number(parsed):
+                return phonenumbers.normalize_digits_only(value)
+    except phonenumbers.NumberParseException:
+        pass
 
-    # Numéros internationaux (hors +33)
-    if phone_number.startswith("+") and not phone_number.startswith("+33"):
+    # regular numbers
+    # order matters: DOM TOM first, then France, then international
+    for region in [
+        Region.MAYOTTE,
+        Region.GUADELOUPE,
+        Region.GUYANE,
+        Region.MARTINIQUE,
+        Region.REUNION,
+        Region.SAINT_PIERRE_ET_MIQUELON,
+        Region.WALLIS_ET_FUTUNA,
+        Region.POLYNESIE_FRANCAISE,
+        Region.NOUVELLE_CALEDONIE,
+        Region.FRANCE,
+        Region.INTERNATIONAL,
+    ]:
         try:
-            parsed = phonenumbers.parse(phone_number, None)
-            if phonenumbers.is_possible_number(parsed) and phonenumbers.is_valid_number(
-                parsed
-            ):
-                return phonenumbers.format_number(
-                    parsed, phonenumbers.PhoneNumberFormat.E164
-                )
-        except phonenumbers.NumberParseException:
-            pass
-        return None
-
-    # Conversion +33 -> 0
-    phone_number = re.sub(r"^\+33", "0", phone_number)
-
-    # Détection du préfixe DOM-TOM
-    detected_region = _get_region_for_prefix(phone_number)
-
-    # Cas spécial : WF, PF, NC ne sont pas bien supportés par phonenumbers
-    # On fait donc un formatting manuel
-    if detected_region in COUNTRY_CODES:
-        country_code = COUNTRY_CODES[detected_region]
-        national_number = phone_number.lstrip("0")
-        return f"+{country_code}{national_number}"
-
-    # Ordre de test des régions : région détectée d'abord, puis les autres
-    if detected_region:
-        region_codes = [detected_region] + [
-            r for r in ALLOWED_REGION_CODES if r != detected_region
-        ]
-    else:
-        region_codes = ALLOWED_REGION_CODES
-
-    for region_code in region_codes:
-        try:
-            parsed = phonenumbers.parse(phone_number, region_code)
+            parsed = phonenumbers.parse(
+                value,
+                region=region.value,
+                keep_raw_input=True,  # required for .country_code_source
+            )
         except phonenumbers.NumberParseException:
             continue
 
-        if phonenumbers.is_possible_number(parsed) and phonenumbers.is_valid_number(
-            parsed
+        # skip toll-free and voip numbers unless it is France
+        if region != Region.FRANCE and (
+            str(parsed.national_number).startswith("8")  # toll-free
+            or str(parsed.national_number).startswith("9")  # voip
         ):
-            return phonenumbers.format_number(
-                parsed, phonenumbers.PhoneNumberFormat.E164
+            continue
+
+        # try and straighten (invalid) DOM TOM numbers using the +33
+        # overwrite with the current region country code before parsing
+        if (
+            parsed.country_code_source
+            == phonenumbers.CountryCodeSource.FROM_NUMBER_WITH_PLUS_SIGN
+            and str(parsed.country_code) == "33"
+            and region
+            not in [
+                Region.INTERNATIONAL,
+                Region.FRANCE,
+                Region.WALLIS_ET_FUTUNA,
+                Region.POLYNESIE_FRANCAISE,
+                Region.NOUVELLE_CALEDONIE,
+            ]
+        ):
+            parsed.country_code = phonenumbers.country_code_for_region(region.value)
+
+        # skip 6 digit numbers without code: they cannot be parsed without
+        # an additional hint on the region
+        if (
+            parsed.country_code_source
+            == phonenumbers.CountryCodeSource.FROM_DEFAULT_COUNTRY
+            and len(str(parsed.national_number)) == 6
+        ):
+            continue
+
+        # try and straighten (invalid) Saint-Pierre-et-Miquelon numbers
+        # that are missing the right country code
+        # note: not possible for other DOM TOM because their prefix is not specific
+        if region in [
+            Region.SAINT_PIERRE_ET_MIQUELON,
+        ] and str(parsed.national_number).startswith(str(parsed.country_code)):
+            parsed.national_number = int(
+                str(parsed.national_number)[len(str(parsed.country_code)) :]
             )
 
-    return None
+        if phonenumbers.is_possible_number(parsed):
+            if phonenumbers.is_valid_number(parsed):
+                return phonenumbers.format_number(
+                    parsed, phonenumbers.PhoneNumberFormat.E164
+                )
