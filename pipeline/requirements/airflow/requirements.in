@@ -1,4 +1,0 @@
-apache-airflow[amazon,fab,postgres,s3fs,sentry,ssh,standard,uv]==3.1.7
-
-pytest
-requests-mock

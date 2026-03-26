@@ -1,8 +1,0 @@
-*
-
-!pyproject.toml
-!/requirements
-!/src
-!/dags
-!/dbt
-!/tests

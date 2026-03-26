@@ -19,6 +19,19 @@ resource "scaleway_instance_security_group" "main" {
     action = "accept"
     port   = 443
   }
+  # Scalingo egress IPs for osc-secnum-fr1,
+  # FIXME(vperron): remove when DWH is on Scalingo
+  # https://doc.scalingo.com/platform/networking/public/egress
+  inbound_rule {
+    action   = "accept"
+    port     = 5432
+    ip_range = "148.253.96.190/32"
+  }
+  inbound_rule {
+    action   = "accept"
+    port     = 5432
+    ip_range = "148.253.97.14/32"
+  }
 }
 
 resource "scaleway_instance_server" "main" {
