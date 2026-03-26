@@ -61,23 +61,12 @@ resource "random_pet" "datalake_bucket_suffix" {}
 resource "scaleway_object_bucket" "main" {
   name = "data-inclusion-datalake-${var.environment}-${random_pet.datalake_bucket_suffix.id}"
   lifecycle_rule {
-    id      = "archive-raw-data-after-30-days"
+    id      = "archive-raw-data-after-90-days"
     prefix  = "data/raw"
     enabled = true
 
     transition {
-      days          = 30
-      storage_class = "GLACIER"
-    }
-  }
-
-  lifecycle_rule {
-    id      = "archive-marts-data-after-7-days"
-    prefix  = "data/marts"
-    enabled = true
-
-    transition {
-      days          = 7
+      days          = 90
       storage_class = "GLACIER"
     }
   }
