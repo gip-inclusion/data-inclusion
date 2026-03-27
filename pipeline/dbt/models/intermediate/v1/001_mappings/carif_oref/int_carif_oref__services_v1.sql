@@ -218,9 +218,9 @@ final AS (
             WHEN actions.modalites_enseignement = 1 THEN ARRAY['a-distance']
             WHEN actions.modalites_enseignement = 2 THEN ARRAY['en-presentiel', 'a-distance']
         END                                                          AS "modes_accueil",
-        CASE actions.code_perimetre_recrutement
-            WHEN '1' THEN ARRAY[communes.code]
-            WHEN '2' THEN ARRAY[communes.code_departement]
+        CASE
+            WHEN actions.code_perimetre_recrutement = 1 THEN ARRAY[communes.code]
+            WHEN actions.code_perimetre_recrutement = 2 THEN ARRAY[communes.code_departement]
             WHEN regions.code IS NOT NULL THEN regions.departements
         END                                                          AS "zone_eligibilite",
         CAST(actions.duree_hebdo AS FLOAT)                           AS "volume_horaire_hebdomadaire",
