@@ -25,7 +25,12 @@ def import_data():
     pg_conn = Connection.get(conn_id="pg")
     s3_hook = s3.S3Hook(aws_conn_id="s3")
     s3fs_client = s3fs.get_fs(conn_id="s3")
-    engine = sqla.create_engine(pg_conn.get_uri())
+    engine = sqla.create_engine(
+        pg_conn.get_uri().replace(
+            "postgres://",
+            "postgresql://",
+        )
+    )
 
     BASE_KEY = Path(s3_hook.service_config["bucket_name"]) / "data" / "api"
     value = sorted(s3fs_client.ls(BASE_KEY))[-1]  # latest day
