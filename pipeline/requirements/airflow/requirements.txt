@@ -58,6 +58,7 @@ apache-airflow==3.1.7
     #   apache-airflow-providers-fab
     #   apache-airflow-providers-http
     #   apache-airflow-providers-postgres
+    #   apache-airflow-providers-slack
     #   apache-airflow-providers-smtp
     #   apache-airflow-providers-ssh
     #   apache-airflow-providers-standard
@@ -79,6 +80,7 @@ apache-airflow-providers-common-compat==1.13.0
     #   apache-airflow-providers-fab
     #   apache-airflow-providers-http
     #   apache-airflow-providers-postgres
+    #   apache-airflow-providers-slack
     #   apache-airflow-providers-smtp
     #   apache-airflow-providers-ssh
     #   apache-airflow-providers-standard
@@ -92,6 +94,7 @@ apache-airflow-providers-common-sql==1.30.4
     #   apache-airflow-core
     #   apache-airflow-providers-amazon
     #   apache-airflow-providers-postgres
+    #   apache-airflow-providers-slack
 apache-airflow-providers-fab==3.2.0
     # via
     #   -c airflow/constraints.txt
@@ -101,6 +104,10 @@ apache-airflow-providers-http==5.6.4
     #   -c airflow/constraints.txt
     #   apache-airflow-providers-amazon
 apache-airflow-providers-postgres==6.5.3
+    # via
+    #   -c airflow/constraints.txt
+    #   apache-airflow
+apache-airflow-providers-slack==9.6.2
     # via
     #   -c airflow/constraints.txt
     #   apache-airflow
@@ -136,6 +143,7 @@ asgiref==3.11.0
     #   apache-airflow-providers-amazon
     #   apache-airflow-providers-common-compat
     #   apache-airflow-providers-http
+    #   apache-airflow-providers-slack
     #   apache-airflow-task-sdk
 asn1crypto==1.5.1
     # via
@@ -175,7 +183,9 @@ beautifulsoup4==4.14.3
 blinker==1.9.0
     # via
     #   -c airflow/constraints.txt
+    #   apache-airflow-core
     #   apache-airflow-providers-fab
+    #   sentry-sdk
 boto3==1.42.30
     # via
     #   -c airflow/constraints.txt
@@ -212,6 +222,7 @@ certifi==2026.1.4
     #   httpcore
     #   httpx
     #   requests
+    #   sentry-sdk
 cffi==2.0.0
     # via
     #   -c airflow/constraints.txt
@@ -305,6 +316,7 @@ flask==2.2.5
     #   flask-session
     #   flask-sqlalchemy
     #   flask-wtf
+    #   sentry-sdk
 flask-appbuilder==5.0.1
     # via
     #   -c airflow/constraints.txt
@@ -486,6 +498,7 @@ markupsafe==3.0.3
     #   -c airflow/constraints.txt
     #   jinja2
     #   mako
+    #   sentry-sdk
     #   werkzeug
     #   wtforms
 marshmallow==3.26.2
@@ -786,6 +799,10 @@ scramp==1.4.8
     # via
     #   -c airflow/constraints.txt
     #   redshift-connector
+sentry-sdk==2.51.0
+    # via
+    #   -c airflow/constraints.txt
+    #   apache-airflow-core
 setproctitle==1.3.7
     # via
     #   -c airflow/constraints.txt
@@ -805,6 +822,10 @@ six==1.17.0
     #   prison
     #   python-dateutil
     #   wirerope
+slack-sdk==3.39.0
+    # via
+    #   -c airflow/constraints.txt
+    #   apache-airflow-providers-slack
 sniffio==1.3.1
     # via
     #   -c airflow/constraints.txt
@@ -923,6 +944,7 @@ urllib3==2.6.3
     #   botocore
     #   requests
     #   sagemaker-studio
+    #   sentry-sdk
 uuid6==2025.0.1
     # via
     #   -c airflow/constraints.txt
