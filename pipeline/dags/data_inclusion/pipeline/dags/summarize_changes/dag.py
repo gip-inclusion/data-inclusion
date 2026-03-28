@@ -12,6 +12,8 @@ def compare_and_summarize():
     import tempfile
     from pathlib import Path
 
+    from slack_sdk.models import blocks
+
     from airflow.providers.amazon.aws.fs import s3 as s3fs
     from airflow.providers.amazon.aws.hooks import s3
     from airflow.providers.slack.hooks import slack
@@ -53,7 +55,7 @@ def compare_and_summarize():
         meta_columns=["source"],
     )
 
-    texts = compare.summarize(diff_df)
+    texts = compare.summarize(diff_df, llm=True)
 
     before_ds = before_date.split("/")[-1]
     after_ds = after_date.split("/")[-1]
@@ -71,12 +73,12 @@ def compare_and_summarize():
 
     thread_ts = response["ts"]
 
-    MD_MAX_CHUNK_SIZE = 11_500  # Slack limits markdown to 12k chars
     for text in texts:
-        for i in range(0, len(text), MD_MAX_CHUNK_SIZE):
+        print(text)
+        if len(text) < blocks.MarkdownBlock.text_max_length:
             slack_hook.client.chat_postMessage(
                 channel=CHANNEL,
-                markdown_text=text[i : i + MD_MAX_CHUNK_SIZE],
+                markdown_text=text,
                 thread_ts=thread_ts,
             )
 
