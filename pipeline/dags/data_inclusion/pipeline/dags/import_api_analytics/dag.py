@@ -10,6 +10,7 @@ from data_inclusion.pipeline.common import dags
     retries=1,
 )
 def import_data():
+    import json
     import tarfile
     import tempfile
     from pathlib import Path
@@ -41,7 +42,7 @@ def import_data():
     with tempfile.TemporaryDirectory() as tmpdir:
         tmpdir_path = Path(tmpdir)
         with tempfile.NamedTemporaryFile(suffix=".tar.gz") as tmpfile:
-            s3fs_client.get_file(rpath=value, lpath=tmpfile.name)
+            s3fs_client.get_file(rpath=str(value), lpath=tmpfile.name)
             archive_path = Path(tmpfile.name)
             with tarfile.open(archive_path, "r:gz") as tar:
                 tar.extractall(path=tmpdir_path)
@@ -57,6 +58,16 @@ def import_data():
             if df.empty:
                 print(f"empty parquet file={table_name}, skipping")
                 continue
+
+            for col in df.columns:
+                if df[col].dtype == object:
+                    df[col] = df[col].map(
+                        lambda x: (
+                            json.loads(x)
+                            if isinstance(x, str) and x and x[0] in "[{"
+                            else x
+                        )
+                    )
 
             with engine.begin() as conn:
                 conn.execute(
