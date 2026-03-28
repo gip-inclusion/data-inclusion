@@ -23,8 +23,6 @@ def compare_and_summarize():
 
     slack_hook = slack.SlackHook(slack_conn_id="slack")
     s3_hook = s3.S3Hook(aws_conn_id="s3")
-
-    s3_hook = s3.S3Hook(aws_conn_id="s3")
     s3fs_client = s3fs.get_fs(conn_id="s3")
 
     BASE_KEY = Path(s3_hook.service_config["bucket_name"]) / "data" / "marts"
@@ -67,12 +65,14 @@ def compare_and_summarize():
 
     thread_ts = response["ts"]
 
+    MD_MAX_CHUNK_SIZE = 11_500  # Slack limits markdown to 12k chars
     for text in texts:
-        response = slack_hook.client.chat_postMessage(
-            channel=CHANNEL,
-            markdown_text=text,
-            thread_ts=thread_ts,
-        )
+        for i in range(0, len(text), MD_MAX_CHUNK_SIZE):
+            slack_hook.client.chat_postMessage(
+                channel=CHANNEL,
+                markdown_text=text[i : i + MD_MAX_CHUNK_SIZE],
+                thread_ts=thread_ts,
+            )
 
 
 @dag(
