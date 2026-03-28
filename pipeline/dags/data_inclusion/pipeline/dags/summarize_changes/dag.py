@@ -16,6 +16,7 @@ def compare_and_summarize():
     from airflow.providers.amazon.aws.hooks import s3
     from airflow.providers.slack.hooks import slack
 
+    from data_inclusion.pipeline.common.s3 import to_s3
     from data_inclusion.pipeline.scripts.compare import compare
 
     VERSION = "v1"
@@ -54,10 +55,14 @@ def compare_and_summarize():
 
     texts = compare.summarize(diff_df)
 
-    CHANNEL = "#lab-data-inclusion-alertes"
-
     before_ds = before_date.split("/")[-1]
     after_ds = after_date.split("/")[-1]
+    to_s3(
+        after_key.parent / "changes_summary.md",
+        f"### Changements entre {before_ds} et {after_ds}\n\n" + "\n\n".join(texts),
+    )
+
+    CHANNEL = "#lab-data-inclusion-alertes"
     response = slack_hook.client.chat_postMessage(
         channel=CHANNEL,
         markdown_text=f"### Changements entre {before_ds} et {after_ds}",
