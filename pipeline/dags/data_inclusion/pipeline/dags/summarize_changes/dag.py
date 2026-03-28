@@ -14,6 +14,7 @@ def compare_and_summarize():
 
     from slack_sdk.models import blocks
 
+    from airflow.models import Variable
     from airflow.providers.amazon.aws.fs import s3 as s3fs
     from airflow.providers.amazon.aws.hooks import s3
     from airflow.providers.slack.hooks import slack
@@ -32,10 +33,10 @@ def compare_and_summarize():
 
     before_date, after_date = sorted(s3fs_client.ls(BASE_KEY))[-2:]
 
-    before_run = sorted(s3fs_client.ls(before_date))[0]
+    before_run = sorted(s3fs_client.ls(before_date))[-1]
     before_key = Path(before_run) / VERSION / FILE
 
-    after_run = sorted(s3fs_client.ls(after_date))[0]
+    after_run = sorted(s3fs_client.ls(after_date))[-1]
     after_key = Path(after_run) / VERSION / FILE
 
     print(f"Before: {before_key}")
@@ -55,7 +56,10 @@ def compare_and_summarize():
         meta_columns=["source"],
     )
 
-    texts = compare.summarize(diff_df, llm=True)
+    texts = compare.summarize(
+        diff_df,
+        api_key=Variable.get("ANTHROPIC_API_KEY", default_var=None),
+    )
 
     before_ds = before_date.split("/")[-1]
     after_ds = after_date.split("/")[-1]

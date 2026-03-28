@@ -3,7 +3,7 @@
 # /// script
 # requires-python = ">=3.12"
 # dependencies = [
-#     "openai",
+#     "anthropic",
 #     "pandas",
 #     "pyarrow",
 #     "tabulate",
@@ -17,7 +17,6 @@ from pathlib import Path
 from typing import Annotated, Literal
 
 import numpy as np
-import openai
 import pandas as pd
 import tabulate
 import typer
@@ -315,8 +314,8 @@ def get_count_by_column(diff_df: pd.DataFrame, meta_columns: list[str]) -> pd.Da
 
 def summarize(
     diff_df: pd.DataFrame,
-    llm: bool = False,
     model: Models = "claude-sonnet-4-6",
+    api_key: str | None = None,
 ) -> list[str]:
     expected_columns = {
         "id",
@@ -331,18 +330,26 @@ def summarize(
     samples_df = get_samples(diff_df, meta_columns)
 
     results = [
+        "## Résumé\n\n" + to_string(count_by_type_df),
+        "## Changements par colonne\n\n" + to_string(count_by_column_df),
+        "## Échantillons\n\n" + to_string(samples_df),
+    ]
+
+    summary_str = SUMMARY_TEMPLATE.format(
         to_string(count_by_type_df),
         to_string(count_by_column_df),
         to_string(samples_df),
-    ]
+    )
 
-    summary_str = SUMMARY_TEMPLATE.format(*results)
-
-    if llm:
-        llm_summary = get_llm_summary(summary_str, model=model)
+    if api_key:
+        llm_summary = get_llm_summary(
+            summary_str,
+            model=model,
+            api_key=api_key,
+        )
 
         if llm_summary is not None:
-            results.append(llm_summary)
+            results.append("## Analyse LLM\n\n" + llm_summary)
 
     return results
 
@@ -350,21 +357,21 @@ def summarize(
 def get_llm_summary(
     summary_str: str,
     model: str,
+    api_key: str | None = None,
 ) -> str | None:
-    openai_client = openai.OpenAI(
-        api_key=os.environ.get("OPENAI_API_KEY"),
-        base_url=os.environ.get("OPENAI_BASE_URL", None),
+    import anthropic
+
+    client = anthropic.Anthropic(
+        api_key=api_key or os.environ.get("ANTHROPIC_API_KEY"),
     )
 
-    response = openai_client.chat.completions.create(
+    response = client.messages.create(
         model=model,
-        messages=[
-            {"role": "system", "content": INSTRUCTIONS_PROMPT},
-            {"role": "user", "content": summary_str},
-        ],
-        max_completion_tokens=1000,
+        system=INSTRUCTIONS_PROMPT,
+        messages=[{"role": "user", "content": summary_str}],
+        max_tokens=1000,
     )
-    return response.choices[0].message.content
+    return response.content[0].text
 
 
 @app.command(name="summarize")
@@ -378,19 +385,17 @@ def _summarize(
         ),
     ],
     *,
-    llm: Annotated[
-        bool,
+    api_key: Annotated[
+        str | None,
         typer.Option(
-            help="Whether to generate a natural language summary of the diff.",
+            help="Anthropic API key. If provided, an LLM summary is appended.",
+            envvar="ANTHROPIC_API_KEY",
         ),
-    ] = False,
+    ] = None,
     model: Annotated[
         Models,
         typer.Option(
-            help=(
-                "LLM model to use for generating the summary. "
-                "Ignored if --llm is not set."
-            ),
+            help="LLM model to use. Ignored if --api-key is not set.",
         ),
     ] = "claude-sonnet-4-6",
 ):
@@ -398,7 +403,7 @@ def _summarize(
 
     diff_df = pd.read_json(input_file, orient="records", lines=True, dtype=False)
 
-    for text in summarize(diff_df, llm=llm, model=model):
+    for text in summarize(diff_df, model=model, api_key=api_key):
         typer.echo(text)
 
 

@@ -7,7 +7,7 @@ furl
 GeoAlchemy2
 geopandas
 httpx
-openai
+anthropic
 openpyxl
 pandas
 playwright
