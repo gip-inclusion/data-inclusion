@@ -58,7 +58,8 @@ def compare_and_summarize():
     before_ds = before_date.split("/")[-1]
     after_ds = after_date.split("/")[-1]
     to_s3(
-        after_key.parent / "changes_summary.md",
+        after_key.parent.relative_to(s3_hook.service_config["bucket_name"])
+        / "changes_summary.md",
         f"### Changements entre {before_ds} et {after_ds}\n\n" + "\n\n".join(texts),
     )
 
