@@ -1,4 +1,4 @@
-from airflow.sdk import dag, task
+from airflow.sdk import Variable, dag, task
 
 from data_inclusion.pipeline.common import dags
 
@@ -14,7 +14,6 @@ def compare_and_summarize():
 
     from slack_sdk.models import blocks
 
-    from airflow.models import Variable
     from airflow.providers.amazon.aws.fs import s3 as s3fs
     from airflow.providers.amazon.aws.hooks import s3
     from airflow.providers.slack.hooks import slack
@@ -46,39 +45,37 @@ def compare_and_summarize():
         s3fs_client.get_file(rpath=before_key, lpath=Path(tmpdir) / "before.parquet")
         s3fs_client.get_file(rpath=after_key, lpath=Path(tmpdir) / "after.parquet")
 
-        before_df = compare.read(Path(tmpdir) / "before.parquet")
-        after_df = compare.read(Path(tmpdir) / "after.parquet")
+        before_df = compare.read(path=Path(tmpdir) / "before.parquet")
+        after_df = compare.read(path=Path(tmpdir) / "after.parquet")
 
-    diff_df = compare.compare(
-        before_df,
-        after_df,
-        index_column="id",
-        meta_columns=["source"],
-    )
-
-    texts = compare.summarize(
-        diff_df,
-        api_key=Variable.get("ANTHROPIC_API_KEY", default_var=None),
+    diff = compare.Diff(
+        before_df=before_df,
+        after_df=after_df,
+        pk_col="id",
+        meta_cols=["source"],
     )
 
     before_ds = before_date.split("/")[-1]
     after_ds = after_date.split("/")[-1]
-    to_s3(
-        after_key.parent.relative_to(s3_hook.service_config["bucket_name"])
-        / "changes_summary.md",
-        f"### Changements entre {before_ds} et {after_ds}\n\n" + "\n\n".join(texts),
-    )
+    title = f"## Changements entre {before_ds} et {after_ds}"
+    summary = diff.summarize(llm=True)
 
+    # show summary in logs
+    print(summary)
+
+    # save summary to s3
+    out_path = after_key.parent.relative_to(s3_hook.service_config["bucket_name"])
+    to_s3(out_path / "changes_summary.md", "\n\n".join([title, summary]))
+
+    # notify on slack
     CHANNEL = "#lab-data-inclusion-alertes"
     response = slack_hook.client.chat_postMessage(
         channel=CHANNEL,
-        markdown_text=f"### Changements entre {before_ds} et {after_ds}",
+        markdown_text=title,
     )
-
     thread_ts = response["ts"]
 
-    for text in texts:
-        print(text)
+    for text in summary.split("---"):
         if len(text) < blocks.MarkdownBlock.text_max_length:
             slack_hook.client.chat_postMessage(
                 channel=CHANNEL,
@@ -92,7 +89,15 @@ def compare_and_summarize():
     **dags.common_args(use_sentry=True),
 )
 def summarize_changes():
-    compare_and_summarize()
+    OPENAI_API_KEY = Variable.get("ANTHROPIC_API_KEY")
+    OPENAI_BASE_URL = "https://api.anthropic.com/v1/"
+
+    compare_and_summarize.override(
+        env_vars={
+            "OPENAI_API_KEY": OPENAI_API_KEY,
+            "OPENAI_BASE_URL": OPENAI_BASE_URL,
+        }
+    )()
 
 
 dag = summarize_changes()

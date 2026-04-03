@@ -3,8 +3,9 @@
 # /// script
 # requires-python = ">=3.12"
 # dependencies = [
-#     "anthropic",
+#     "openai",
 #     "pandas",
+#     "polars",
 #     "pyarrow",
 #     "tabulate",
 #     "typer",
@@ -12,12 +13,14 @@
 # ///
 
 import os
-import sys
+from datetime import datetime, timedelta
+from functools import cached_property
 from pathlib import Path
 from typing import Annotated, Literal
 
-import numpy as np
-import pandas as pd
+import openai
+import polars as pl
+import polars.selectors as cs
 import tabulate
 import typer
 
@@ -27,223 +30,6 @@ app = typer.Typer()
 
 
 INSTRUCTIONS_PROMPT = (Path(__file__).parent / "instructions.md").open().read()
-
-
-def read(path: Path) -> pd.DataFrame:
-    match path.suffix:
-        case ".parquet":
-            df = pd.read_parquet(path)
-        case ".json":
-            df = pd.read_json(path, dtype=False)
-        case _:
-            raise ValueError(f"Unsupported file format: {path.suffix}")
-
-    return df.replace({np.nan: None})
-
-
-def prepare(
-    df: pd.DataFrame,
-    index_column: str,
-    meta_columns: list[str],
-    exclude_columns: list[str],
-) -> pd.DataFrame:
-    df = df.drop(columns=exclude_columns)
-
-    # convert list-like columns to sets for better comparison
-    for column in df.columns:
-        is_list_like = (
-            df[column].dropna().map(lambda x: isinstance(x, (np.ndarray, list))).all()
-        )
-
-        if is_list_like:
-            df = df.assign(
-                **{
-                    column: df[column].apply(
-                        lambda x: set(x) if x is not None else None
-                    )
-                }
-            )
-
-    df = df.sort_values(by=index_column)
-
-    # retain only the index and meta columns for comparison
-    df = df.set_index(keys=meta_columns + [index_column])
-
-    return df
-
-
-def is_significant_change(before, after) -> bool:
-    if isinstance(before, pd.Timestamp) and isinstance(after, pd.Timestamp):
-        return before - after > pd.Timedelta(days=7)
-
-    if isinstance(before, (int, float)) and isinstance(after, (int, float)):
-        return abs(after - before) >= 0.1 * abs(before)
-
-    return True
-
-
-def compare(
-    before_df: pd.DataFrame,
-    after_df: pd.DataFrame,
-    index_column: str,
-    meta_columns: list[str] | None = None,
-    exclude_columns: list[str] | None = None,
-) -> pd.DataFrame:
-    meta_columns = meta_columns if meta_columns is not None else []
-    exclude_columns = exclude_columns if exclude_columns is not None else []
-
-    before_df = prepare(before_df, index_column, meta_columns, exclude_columns)
-    after_df = prepare(after_df, index_column, meta_columns, exclude_columns)
-
-    diff_df = pd.DataFrame()
-
-    added_idx = after_df.index.difference(before_df.index)
-    shared_idx = before_df.index.intersection(after_df.index)
-    removed_idx = before_df.index.difference(after_df.index)
-
-    if not added_idx.empty:
-        added_df = after_df.loc[added_idx]
-        added_df = added_df.melt(
-            ignore_index=False, var_name="column", value_name="after"
-        ).set_index("column", append=True)
-        added_df = added_df.assign(before=np.nan)
-        added_df = added_df.assign(change_type="added")
-
-        diff_df = pd.concat([diff_df, added_df])
-
-    if not removed_idx.empty:
-        removed_df = before_df.loc[removed_idx]
-        removed_df = removed_df.melt(
-            ignore_index=False, var_name="column", value_name="before"
-        ).set_index("column", append=True)
-        removed_df = removed_df.assign(after=np.nan)
-        removed_df = removed_df.assign(change_type="removed")
-
-        diff_df = pd.concat([diff_df, removed_df])
-
-    if not shared_idx.empty:
-        melted_before_df = (
-            before_df.loc[shared_idx]
-            .melt(ignore_index=False, var_name="column")
-            .set_index("column", append=True)
-        )
-        melted_after_df = (
-            after_df.loc[shared_idx]
-            .melt(ignore_index=False, var_name="column")
-            .set_index("column", append=True)
-        )
-        modified_df = melted_before_df.compare(
-            other=melted_after_df,
-            keep_equal=True,
-            result_names=("before", "after"),
-        )
-        modified_df = modified_df.set_axis(modified_df.columns.droplevel(0), axis=1)
-        modified_df = modified_df.assign(change_type="modified")
-        modified_df = modified_df.assign(
-            change_type=modified_df.apply(
-                lambda row: (
-                    "modified"
-                    if is_significant_change(row["before"], row["after"])
-                    else "almost_unchanged"
-                ),
-                axis=1,
-            )
-        )
-
-        diff_df = pd.concat([diff_df, modified_df])
-
-        unchanged_idx = shared_idx.difference(modified_df.index.get_level_values("id"))
-
-        unchanged_df = (
-            before_df.loc[unchanged_idx]
-            .melt(ignore_index=False, var_name="column", value_name="before")
-            .set_index("column", append=True)
-        )
-        unchanged_df = unchanged_df.assign(change_type="unchanged")
-        diff_df = pd.concat([diff_df, unchanged_df])
-
-    diff_df = diff_df.reset_index()
-
-    return diff_df
-
-
-@app.command(name="compare")
-def _compare(
-    before: Annotated[Path, typer.Argument(help="Path to the 'before' parquet file")],
-    after: Annotated[Path, typer.Argument(help="Path to the 'after' parquet file")],
-    *,
-    meta_columns: Annotated[
-        list[str],
-        typer.Option(
-            help=(
-                "List of metadata columns that will be retained for comparison and "
-                "included in the output."
-            ),
-        ),
-    ] = [],
-    exclude_columns: Annotated[
-        list[str],
-        typer.Option(
-            help=(
-                "List of columns to exclude from the comparison. Can be used to "
-                "remove non-deterministic columns like timestamps."
-            ),
-        ),
-    ] = [],
-    index_column: Annotated[
-        str, typer.Option(help="Name of the index column used to match rows.")
-    ] = "id",
-):
-    """Compare two parquet files and output the differences."""
-
-    before_df = read(before)
-    after_df = read(after)
-
-    diff_df = compare(
-        before_df=before_df,
-        after_df=after_df,
-        index_column=index_column,
-        meta_columns=meta_columns,
-        exclude_columns=exclude_columns,
-    )
-
-    typer.echo(to_json(diff_df))
-
-
-def to_string(df: pd.DataFrame) -> str:
-    return tabulate.tabulate(
-        tabular_data=df,
-        headers="keys",
-        tablefmt="github",
-    )
-
-
-def to_json(df: pd.DataFrame) -> str:
-    return df.to_json(
-        orient="records",
-        lines=True,
-        force_ascii=True,
-        date_format="iso",
-        date_unit="s",
-    )
-
-
-def get_samples(
-    diff_df: pd.DataFrame,
-    meta_columns: list[str],
-) -> pd.DataFrame:
-    group_by = meta_columns + ["column"]
-    minimum_group_size = 100
-    samples_by_group = 10
-
-    diff_df = diff_df[diff_df["change_type"] == "modified"]
-    diff_df = diff_df[meta_columns + ["column", "before", "after"]]
-    diff_df = diff_df.groupby(group_by).filter(lambda g: len(g) >= minimum_group_size)
-    diff_df = diff_df.groupby(["source", "column"]).sample(n=samples_by_group)
-    diff_df = diff_df.reset_index(drop=True)
-
-    return diff_df
-
 
 SUMMARY_TEMPLATE = """
 ## Summary
@@ -260,151 +46,331 @@ SUMMARY_TEMPLATE = """
 """
 
 
-def get_count_by_type(diff_df: pd.DataFrame, meta_columns: list[str]) -> pd.DataFrame:
-    df = (
-        diff_df.groupby(
-            by=meta_columns + ["change_type"],
-            dropna=False,
-        )["id"]
-        .nunique()
-        .rename("count")
-        .reset_index()
-    )
-    df = (
-        pd.crosstab(
-            index=[df[col] for col in meta_columns]
-            if meta_columns
-            else pd.Series("all", index=df.index),
-            columns=df["change_type"],
-            values=df["count"],
-            aggfunc="sum",
-            dropna=False,
-        )
-        .fillna(0)
-        .astype(int)
-    )
+def read(
+    path: Path,
+    pk_col: str = "id",
+    exclude_cols: list[str] | None = None,
+) -> pl.DataFrame:
+    if exclude_cols is None:
+        exclude_cols = []
+    match path.suffix:
+        case ".parquet":
+            df = pl.read_parquet(path)
+        case ".json":
+            df = pl.read_json(path)
+        case _:
+            raise ValueError(f"Unsupported file format: {path.suffix}")
+
+    df = df.drop(exclude_cols)
+    df = df.sort(by=pk_col)
+    df = df.with_columns(cs.list().map_elements(set))
     return df
 
 
-def get_count_by_column(diff_df: pd.DataFrame, meta_columns: list[str]) -> pd.DataFrame:
-    df = (
-        diff_df.loc[diff_df["change_type"] == "modified"]
-        .value_counts(
-            meta_columns + ["column"],
-            dropna=False,
+def to_string(df: pl.DataFrame) -> str:
+    return tabulate.tabulate(
+        tabular_data=df.to_dicts(),
+        headers="keys",
+        tablefmt="github",
+        maxcolwidths=100,
+    )
+
+
+class Diff:
+    added: pl.DataFrame
+    removed: pl.DataFrame
+    changed: pl.DataFrame
+    unchanged: pl.DataFrame
+
+    def __init__(
+        self,
+        before_df: pl.DataFrame,
+        after_df: pl.DataFrame,
+        pk_col: str = "id",
+        meta_cols: list[str] | None = None,
+        tolerances: dict[cs.Selector, float | timedelta] | None = None,
+    ):
+        self.meta_cols = meta_cols if meta_cols is not None else []
+        self.pk_col = pk_col
+
+        if tolerances is None:
+            tolerances = {
+                cs.float(): 0.2,
+                cs.date() | cs.datetime(): timedelta(days=7),
+            }
+
+        self._compare(
+            before_df=before_df,
+            after_df=after_df,
+            tolerances=tolerances if tolerances is not None else {},
         )
-        .reset_index(name="count")
-    )
-    df = (
-        pd.crosstab(
-            index=[df[col] for col in meta_columns]
-            if meta_columns
-            else pd.Series("all", index=df.index),
-            columns=df["column"],
-            values=df["count"],
-            aggfunc="sum",
-            dropna=False,
+
+    def _compare(
+        self,
+        before_df: pl.DataFrame,
+        after_df: pl.DataFrame,
+        tolerances: dict[cs.Selector, float | timedelta],
+    ):
+        self.added = after_df.join(before_df, on=self.pk_col, how="anti").select(
+            self.pk_col, *self.meta_cols
         )
-        .fillna(0)
-        .astype(int)
-        .replace({0: ""})
-    )
-    return df
+        self.removed = before_df.join(after_df, on=self.pk_col, how="anti").select(
+            self.pk_col, *self.meta_cols
+        )
 
+        tolerances = tolerances if tolerances is not None else {}
+        tolerance_by_column = {
+            col: tol
+            for selector, tol in tolerances.items()
+            for col in before_df.select(selector).columns
+        }
 
-def summarize(
-    diff_df: pd.DataFrame,
-    model: Models = "claude-sonnet-4-6",
-    api_key: str | None = None,
-) -> list[str]:
-    expected_columns = {
-        "id",
-        "column",
-        "before",
-        "after",
-        "change_type",
-    }
-    meta_columns = [col for col in diff_df.columns if col not in expected_columns]
-    count_by_type_df = get_count_by_type(diff_df, meta_columns)
-    count_by_column_df = get_count_by_column(diff_df, meta_columns)
-    samples_df = get_samples(diff_df, meta_columns)
+        def check_delta(row) -> dict:
+            if type(row["before"]) is not type(row["after"]):
+                return {"delta": None, "within_tolerance": False}
 
-    results = [
-        "## Résumé\n\n" + to_string(count_by_type_df),
-        "## Changements par colonne\n\n" + to_string(count_by_column_df),
-        "## Échantillons\n\n" + to_string(samples_df),
-    ]
+            if isinstance(row["before"], datetime):
+                delta = row["after"] - row["before"]
 
-    summary_str = SUMMARY_TEMPLATE.format(
-        to_string(count_by_type_df),
-        to_string(count_by_column_df),
-        to_string(samples_df),
-    )
+                if row["column"] in tolerance_by_column:
+                    tol = tolerance_by_column[row["column"]]
+                    return {"delta": str(delta), "within_tolerance": abs(delta) < tol}
+                else:
+                    return {"delta": str(delta), "within_tolerance": False}
 
-    if api_key:
-        llm_summary = get_llm_summary(
-            summary_str,
+            return {"delta": None, "within_tolerance": False}
+
+        # find changes using pandas.DataFrame.compare
+        # polars does not have a built-in equivalent
+        compare_df = (
+            before_df.join(after_df, on=self.pk_col, how="semi")
+            .to_pandas()
+            .set_index([self.pk_col, *self.meta_cols])
+            .melt(ignore_index=False, var_name="column")
+            .set_index("column", append=True)
+            .compare(
+                other=after_df.join(before_df, on=self.pk_col, how="semi")
+                .to_pandas()
+                .set_index([self.pk_col, *self.meta_cols])
+                .melt(ignore_index=False, var_name="column")
+                .set_index("column", append=True),
+                result_names=("before", "after"),
+            )
+            .droplevel(level=0, axis=1)
+            .fillna("")
+            .replace({"": None})
+        )
+
+        # flag changes within tolerance zone
+        compare_df = (
+            compare_df.reset_index(level="column")
+            .assign(
+                **compare_df.reset_index(level="column").apply(
+                    check_delta,
+                    axis="columns",
+                    result_type="expand",
+                )
+            )
+            .set_index("column", append=True)
+        )
+
+        if len(compare_df) > 0:
+            changes_df = pl.from_pandas(
+                data=compare_df.astype({"before": str, "after": str}).reset_index(),
+                include_index=True,
+            ).filter(~pl.col("within_tolerance"))
+        else:
+            changes_df = pl.DataFrame(
+                schema={
+                    self.pk_col: str,
+                    **{col: str for col in self.meta_cols},
+                    "column": str,
+                    "before": str,
+                    "after": str,
+                    "delta": str,
+                    "within_tolerance": bool,
+                }
+            )
+
+        self.changed = changes_df.group_by([self.pk_col, *self.meta_cols]).agg(
+            pl.struct(pl.all()).alias("changes")
+        )
+
+        self.unchanged = (
+            after_df.join(before_df, on=self.pk_col, how="semi")
+            .join(changes_df.select(self.pk_col), on=self.pk_col, how="anti")
+            .select(self.pk_col, *self.meta_cols)
+            .unique()
+        )
+
+    @cached_property
+    def count_rows_by_change_type(self) -> pl.DataFrame:
+        return (
+            pl.concat(
+                [
+                    self.added.with_columns(change_type=pl.lit("added")),
+                    self.removed.with_columns(change_type=pl.lit("removed")),
+                    self.changed.with_columns(change_type=pl.lit("modified")),
+                    self.unchanged.with_columns(change_type=pl.lit("unchanged")),
+                ],
+                how="diagonal",
+            )
+            .group_by(*self.meta_cols, "change_type")
+            .len()
+            .pivot(on="change_type", index=self.meta_cols)
+            .match_to_schema(
+                {col: pl.String for col in self.meta_cols}
+                | {
+                    "change_type": pl.String,
+                    "added": pl.UInt32,
+                    "removed": pl.UInt32,
+                    "modified": pl.UInt32,
+                    "unchanged": pl.UInt32,
+                },
+                missing_columns="insert",
+            )
+            .sort(by=self.meta_cols)
+            .select(*self.meta_cols, "added", "removed", "modified", "unchanged")
+        )
+
+    @cached_property
+    def count_changes_by_column(self) -> pl.DataFrame:
+        return (
+            self.changed.explode("changes")
+            .unnest("changes")
+            .group_by(*self.meta_cols, "column")
+            .len()
+            .pivot(on="column", index=self.meta_cols)
+            .sort(by=self.meta_cols)
+        )
+
+    @cached_property
+    def samples(self) -> pl.DataFrame:
+        min_changes = 100
+        top_changes = 3
+
+        return (
+            self.changed.explode("changes")
+            .unnest("changes")
+            .filter((pl.len() >= min_changes).over(*self.meta_cols, "column"))
+            .group_by(*self.meta_cols, "column", "after")
+            .agg(pl.len().alias("count"))
+            .sort(["column", "count"], descending=[False, True])
+            .with_columns(
+                pl.col("count")
+                .rank("ordinal", descending=True)
+                .over(*self.meta_cols, "column")
+                .alias("rank")
+            )
+            .filter(pl.col("rank") <= top_changes)
+            .select(
+                *self.meta_cols,
+                "column",
+                pl.col("after").str.slice(0, 200),
+                "count",
+            )
+        )
+
+    def ai_summarize(
+        self,
+        model: Models = "claude-sonnet-4-6",
+    ) -> str | None:
+        summary_str = SUMMARY_TEMPLATE.format(
+            to_string(self.count_rows_by_change_type),
+            to_string(self.count_changes_by_column),
+            to_string(self.samples),
+        )
+
+        openai_client = openai.OpenAI(
+            api_key=os.environ.get("OPENAI_API_KEY"),
+            base_url=os.environ.get("OPENAI_BASE_URL", None),
+        )
+
+        response = openai_client.chat.completions.create(
             model=model,
-            api_key=api_key,
+            messages=[
+                {"role": "system", "content": INSTRUCTIONS_PROMPT},
+                {"role": "user", "content": summary_str},
+            ],
+            max_completion_tokens=1000,
         )
 
-        if llm_summary is not None:
-            results.append("## Analyse LLM\n\n" + llm_summary)
+        return response.choices[0].message.content
 
-    return results
+    def summarize(
+        self,
+        llm: bool,
+        model: Models = "claude-sonnet-4-6",
+    ) -> str:
+        sections = [
+            ("## Par type de changement", to_string(self.count_rows_by_change_type)),
+            ("## Par colonne", to_string(self.count_changes_by_column)),
+        ]
 
+        if not self.samples.is_empty():
+            sections.append(("## Échantillons", to_string(self.samples)))
 
-def get_llm_summary(
-    summary_str: str,
-    model: str,
-    api_key: str | None = None,
-) -> str | None:
-    import anthropic
+        if llm and (llm_summary := self.ai_summarize(model=model)) is not None:
+            sections.append(("## Analyse LLM", llm_summary))
 
-    client = anthropic.Anthropic(
-        api_key=api_key or os.environ.get("ANTHROPIC_API_KEY"),
-    )
-
-    response = client.messages.create(
-        model=model,
-        system=INSTRUCTIONS_PROMPT,
-        messages=[{"role": "user", "content": summary_str}],
-        max_tokens=1000,
-    )
-    return response.content[0].text
+        return "\n\n---\n\n".join(["\n\n".join(section) for section in sections])
 
 
-@app.command(name="summarize")
-def _summarize(
-    input_file: Annotated[
-        typer.FileText,
-        typer.Argument(
-            help="Path to the diff output file (JSONL format).",
-            default_factory=lambda: sys.stdin,
-            show_default="sys.stdin",
-        ),
-    ],
+@app.command(name="compare")
+def _compare(
+    before: Annotated[Path, typer.Argument(help="Path to the 'before' parquet file")],
+    after: Annotated[Path, typer.Argument(help="Path to the 'after' parquet file")],
     *,
-    api_key: Annotated[
-        str | None,
+    meta_cols: Annotated[
+        list[str],
         typer.Option(
-            help="Anthropic API key. If provided, an LLM summary is appended.",
-            envvar="ANTHROPIC_API_KEY",
+            help=(
+                "List of metadata columns that will be retained for comparison and "
+                "included in the output."
+            ),
         ),
-    ] = None,
+    ] = [],
+    exclude_cols: Annotated[
+        list[str],
+        typer.Option(
+            help=(
+                "List of columns to exclude from the comparison. Can be used to "
+                "remove non-deterministic columns like timestamps."
+            ),
+        ),
+    ] = [],
+    pk_col: Annotated[
+        str, typer.Option(help="Name of the primary key column used to match rows.")
+    ] = "id",
+    llm: Annotated[
+        bool,
+        typer.Option(
+            help="Whether to generate a natural language summary of the diff.",
+        ),
+    ] = False,
     model: Annotated[
         Models,
         typer.Option(
-            help="LLM model to use. Ignored if --api-key is not set.",
+            help=(
+                "LLM model to use for generating the summary. "
+                "Ignored if --llm is not set."
+            ),
         ),
     ] = "claude-sonnet-4-6",
 ):
-    """Summarize the diff output from the compare command."""
+    """Compare two parquet files and output the differences."""
 
-    diff_df = pd.read_json(input_file, orient="records", lines=True, dtype=False)
+    before_df = read(path=before, pk_col=pk_col, exclude_cols=exclude_cols)
+    after_df = read(path=after, pk_col=pk_col, exclude_cols=exclude_cols)
 
-    for text in summarize(diff_df, model=model, api_key=api_key):
-        typer.echo(text)
+    diff = Diff(
+        before_df=before_df,
+        after_df=after_df,
+        pk_col=pk_col,
+        meta_cols=meta_cols,
+    )
+
+    typer.echo(diff.summarize(llm=llm, model=model))
 
 
 if __name__ == "__main__":

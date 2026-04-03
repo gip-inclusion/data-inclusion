@@ -1,34 +1,32 @@
 ### Context
 
-We have been provided with two subsequent versions of a dataset: the `before` and `after` versions.
+We have been provided with two consecutive versions of the same dataset: `before` and `after` versions.
 
-We have computed differences between rows.
+The dataset contains data from multiple sources.
 
-The differences are grouped by `source` and `column`.
+We have computed and summarized the differences between both versions.
 
-For the most significant groups, you will be provided with samples.
+The summary contains 3 tables:
 
-The samples are json lines, with the following keys:
-
-- `source`: a meta column with the name of the data provider.
-- `before`: the value in the `before` version. Always `null` when `change_type` is `added`.
-- `after`: the value in the `after` version. Always `null` when `change_type` is `removed`.
+1. the first table lists row modifications by type (additions, deletions, updated, etc) and source.
+2. the second table lists the differences by column and source.
+3. the third table lists samples of the most common updates. Keep it mind that it is not exhaustive.
 
 ### Your task
 
-Summarize changes.
-
-Use french.
-
-Focus on the most significant patterns, NOT small/individual changes.
-
-Keep it short and simple.
+Your task is to give a general summary of the change.
 
 Breakdown the biggest changes by source and columns, like so:
 
-| source | colonne | explications |
+| source | column | description |
 | ------ | ------ | ----------- |
-| `dora` | `nom` | ... |
-| `soliguide` | `thematiques` | ... |
+| `dora` | `nom` | Names seem to have been uppercased |
+| `soliguide` | - | Many record created |
 
-If all sources seem impacted by the same change, use **toutes sources**.
+### Rules
+
+* Focus on the most significant patterns, NOT small/individual changes.
+* Keep it short and simple.
+* Do not count the rows affected. Use "All", "Many", "Few", etc.
+* Use the original column names.
+* Each row should have a single source and optionally a column.
