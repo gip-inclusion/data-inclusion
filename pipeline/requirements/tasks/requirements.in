@@ -7,10 +7,11 @@ furl
 GeoAlchemy2
 geopandas
 httpx
-anthropic
+openai
 openpyxl
 pandas
 playwright
+polars
 pyarrow
 pyarrow
 pyogrio

@@ -724,6 +724,14 @@ ply==3.11
     # via
     #   -c airflow/constraints.txt
     #   jsonpath-ng
+polars==1.37.1
+    # via
+    #   -c airflow/constraints.txt
+    #   -r dev/../tasks/requirements.in
+polars-runtime-32==1.37.1
+    # via
+    #   -c airflow/constraints.txt
+    #   polars
 pre-commit==4.5.1
     # via -r dev/requirements.in
 prison==0.2.1
