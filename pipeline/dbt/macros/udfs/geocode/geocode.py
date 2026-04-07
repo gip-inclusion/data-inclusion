@@ -86,21 +86,42 @@ class GeocodeInput:
     commune: str
 
 
+# abbreviations found in the FINESS "typvoie" column
 STREET_ABBREVIATIONS = {
-    r"(?i) all ": " allée ",
-    r"(?i) av ": " avenue ",
-    r"(?i) bd ": " boulevard ",
-    r"(?i) bvd ": " boulevard ",
-    r"(?i) che ": " chemin ",
-    r"(?i) crs ": " cours ",
-    r"(?i) esp ": " esplanade ",
-    r"(?i) imp ": " impasse ",
-    r"(?i) pl ": " place ",
-    r"(?i) pro ": " promenade ",
-    r"(?i) rd pt ": " rond point ",
-    r"(?i) rte ": " route ",
-    r"(?i) sq ": " square ",
+    "all": "allée",
+    "av": "avenue",
+    "bd": "boulevard",
+    "bld": "boulevard",
+    "bvd": "boulevard",
+    "che": "chemin",
+    "chem": "chemin",
+    "crs": "cours",
+    "esp": "esplanade",
+    "fg": "faubourg",
+    "ham": "hameau",
+    "imp": "impasse",
+    "ld": "lieu-dit",
+    "mte": "montée",
+    "pas": "passage",
+    "pl": "place",
+    "pro": "promenade",
+    "prom": "promenade",
+    "pte": "porte",
+    "qu": "quai",
+    "qua": "quartier",
+    "r": "rue",
+    "rd pt": "rond point",
+    "rle": "ruelle",
+    "rpt": "rond point",
+    "rte": "route",
+    "sq": "square",
+    "tra": "traverse",
+    "voi": "voie",
 }
+
+
+def get_street_abbreviations() -> dict[str, str]:
+    return {rf"(?i)\b{abbrev}\b": full for abbrev, full in STREET_ABBREVIATIONS.items()}
 
 
 def geocode(
@@ -154,7 +175,7 @@ def geocode(
     df["commune"] = df["commune"].apply(lambda x: x.strip(" -") if x else x)
     df["adresse"] = (
         df["adresse"]
-        .replace(STREET_ABBREVIATIONS, regex=True)
+        .replace(get_street_abbreviations(), regex=True)
         .apply(lambda x: x.strip(" -") if x else x)
     )
 

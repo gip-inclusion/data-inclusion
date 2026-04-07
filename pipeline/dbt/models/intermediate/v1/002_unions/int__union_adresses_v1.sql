@@ -8,6 +8,7 @@ WITH final AS ({{
             ref('int_cd35__adresses_v1'),
             ref('int_emplois_de_linclusion__adresses_v1'),
             ref('int_france_travail__adresses_v1'),
+            ref('int_finess__adresses_v1'),
             ref('int_fredo__adresses_v1'),
             ref('int_mediation_numerique__adresses_v1'),
             ref('int_soliguide__adresses_v1'),
