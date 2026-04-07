@@ -1,0 +1,89 @@
+version: 2
+
+models:
+  - name: stg_finess__etablissements
+    columns:
+      - name: categorie
+        data_tests:
+          - not_null
+          - accepted_values:
+              arguments:
+                values:
+                  - 156  # Centre Médico-Psychologique (C.M.P.)
+                  - 246  # Etablissement et Service d'Aide par le Travail (E.S.A.T.)
+      - name: commune
+        data_tests:
+          - not_null
+          - dbt_utils.not_empty_string
+      - name: complement_distribution
+        data_tests:
+          - dbt_utils.at_least_one
+          - dbt_utils.not_empty_string
+      - name: complement_raison_sociale
+        data_tests:
+          - dbt_utils.at_least_one
+          - dbt_utils.not_empty_string
+      - name: complement_voie
+        data_tests:
+          - dbt_utils.at_least_one
+          - dbt_utils.not_empty_string
+      - name: date_maj_structure
+        data_tests:
+          - not_null
+          - dbt_utils.not_constant
+      - name: departement
+        data_tests:
+          - not_null
+          - dbt_utils.not_empty_string
+      - name: lieu_dit_bp
+        data_tests:
+          - dbt_utils.not_empty_string
+      - name: ligne_acheminement
+        data_tests:
+          - not_null
+          - dbt_utils.not_empty_string
+      - name: numero_finess_et
+        data_tests:
+          - unique
+          - not_null
+          - dbt_utils.not_empty_string
+      - name: numero_voie
+        data_tests:
+          - dbt_utils.at_least_one
+          - dbt_utils.not_empty_string
+      - name: raison_sociale
+        data_tests:
+          - not_null
+          - dbt_utils.not_empty_string
+      - name: raison_sociale_longue
+        data_tests:
+          - dbt_utils.at_least_one
+          - dbt_utils.not_empty_string
+      - name: siret
+        data_tests:
+          - dbt_utils.not_null_proportion:
+              arguments:
+                at_least: 0.5
+          - dbt_utils.not_empty_string
+      - name: telephone
+        data_tests:
+          - dbt_utils.not_null_proportion:
+              arguments:
+                at_least: 0.8
+          - dbt_utils.not_empty_string
+      - name: type_etablissement
+        data_tests:
+          - not_null
+          - accepted_values:
+              arguments:
+                values: [structureet]
+      - name: type_voie
+        data_tests:
+          - dbt_utils.at_least_one
+          - dbt_utils.not_empty_string
+      - name: libelle_voie
+        data_tests:
+          - not_null:
+              config:
+                error_if: ">200"
+          - dbt_utils.not_empty_string
