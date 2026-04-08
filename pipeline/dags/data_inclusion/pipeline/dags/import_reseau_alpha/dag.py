@@ -94,7 +94,7 @@ def load(from_path: str, schema_name: str):
 
 
 @dag(
-    schedule="@daily",
+    schedule="5 1 * * *",
     **dags.common_args(use_sentry=True),
 )
 def import_reseau_alpha():

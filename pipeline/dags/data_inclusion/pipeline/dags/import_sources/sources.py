@@ -48,7 +48,7 @@ SOURCES_CONFIGS = {
         },
     },
     "ma-boussole-aidants": {
-        "schedule": "@daily",
+        "schedule": "5 0 * * *",
         "extractor": ma_boussole_aidants.extract,
         "streams": {
             "structures": {
@@ -59,7 +59,7 @@ SOURCES_CONFIGS = {
         },
     },
     "fredo": {
-        "schedule": "@daily",
+        "schedule": "10 0 * * *",
         "extractor": fredo.extract,
         "streams": {
             "structures": {
@@ -70,7 +70,7 @@ SOURCES_CONFIGS = {
         },
     },
     "cd35": {
-        "schedule": "@daily",
+        "schedule": "15 0 * * *",
         "streams": {
             "organisations": {
                 "filename": "organisations.csv",
@@ -80,7 +80,7 @@ SOURCES_CONFIGS = {
         },
     },
     "emplois-de-linclusion": {
-        "schedule": "@daily",
+        "schedule": "20 0 * * *",
         "streams": {
             "organisations": {
                 "filename": "organisations.json",
@@ -97,7 +97,7 @@ SOURCES_CONFIGS = {
         },
     },
     "un-jeune-une-solution": {
-        "schedule": "@daily",
+        "schedule": "25 0 * * *",
         "extractor": un_jeune_une_solution.extract,
         "streams": {
             "benefits": {
@@ -111,7 +111,7 @@ SOURCES_CONFIGS = {
         },
     },
     "annuaire-du-service-public": {
-        "schedule": "@daily",
+        "schedule": "30 0 * * *",
         "reader": annuaire_du_service_public.read,
         "streams": {
             "etablissements": {
@@ -121,7 +121,7 @@ SOURCES_CONFIGS = {
         },
     },
     "mediation-numerique": {
-        "schedule": "@daily",
+        "schedule": "35 0 * * *",
         "extractor": mediation_numerique.extract,
         "streams": {
             "structures": {
@@ -144,7 +144,7 @@ SOURCES_CONFIGS = {
     },
     "reseau-alpha": {},
     "agefiph": {
-        "schedule": "@daily",
+        "schedule": "40 0 * * *",
         "extractor": agefiph.extract,
         "streams": {
             "services": {
@@ -158,7 +158,7 @@ SOURCES_CONFIGS = {
         },
     },
     "france-travail": {
-        "schedule": "@daily",
+        "schedule": "50 0 * * *",
         "streams": {
             "agences": {
                 "filename": "agences.json",
@@ -175,7 +175,7 @@ SOURCES_CONFIGS = {
         },
     },
     "action-logement": {
-        "schedule": "@daily",
+        "schedule": "55 0 * * *",
         "reader": lambda path: utils.read_csv(path, sep=","),
         "streams": {
             "services": {
@@ -202,7 +202,7 @@ SOURCES_CONFIGS = {
     },
     "monenfant": {},
     "mission-locale": {
-        "schedule": "@daily",
+        "schedule": "0 1 * * *",
         "extractor": mission_locale.extract,
         "streams": {
             "offres": {
