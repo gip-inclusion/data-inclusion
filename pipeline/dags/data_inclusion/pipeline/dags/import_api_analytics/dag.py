@@ -23,6 +23,24 @@ def import_data():
     from airflow.providers.amazon.aws.hooks import s3
     from airflow.sdk import Connection
 
+    ARRAY_COLUMNS = {
+        "frais",
+        "modes_accueil",
+        "publics",
+        "reseaux_porteurs",
+        "sources",
+        "thematiques",
+        "types",
+    }
+    CHUNK_SIZE = 10_000
+
+    def to_python_list(value):
+        if hasattr(value, "tolist"):
+            return value.tolist()
+        if isinstance(value, str) and value and value[0] == "[":
+            return json.loads(value)
+        return value
+
     pg_conn = Connection.get(conn_id="pg")
     s3_hook = s3.S3Hook(aws_conn_id="s3")
     s3fs_client = s3fs.get_fs(conn_id="s3")
@@ -59,16 +77,7 @@ def import_data():
                 print(f"empty parquet file={table_name}, skipping")
                 continue
 
-            for col in df.columns:
-                if df[col].dtype == object:
-                    df[col] = df[col].map(
-                        lambda x: (
-                            json.loads(x)
-                            if isinstance(x, str) and x and x[0] in "[{"
-                            else x
-                        )
-                    )
-
+            total_rows = 0
             with engine.begin() as conn:
                 conn.execute(
                     sqla.text(
@@ -76,20 +85,27 @@ def import_data():
                         f" {table_name}_id_idx ON {table_name} (id)"
                     )
                 )
-                rows = df.to_sql(
-                    name=table_name,
-                    con=conn,
-                    if_exists="append",
-                    index=False,
-                    method=lambda table, conn, keys, iterator: (
-                        conn.execute(
-                            insert(table.table)
-                            .values([dict(zip(keys, row)) for row in iterator])
-                            .on_conflict_do_nothing(index_elements=["id"])
-                        ).rowcount
-                    ),
-                )
-                print(f"{table_name}: {rows} rows inserted")
+                for start in range(0, len(df), CHUNK_SIZE):
+                    chunk = df.iloc[start : start + CHUNK_SIZE].copy()
+                    for col in chunk.columns:
+                        if col in ARRAY_COLUMNS:
+                            chunk[col] = chunk[col].map(to_python_list)
+                    rows = chunk.to_sql(
+                        name=table_name,
+                        con=conn,
+                        if_exists="append",
+                        index=False,
+                        method=lambda table, conn, keys, iterator: (
+                            conn.execute(
+                                insert(table.table)
+                                .values([dict(zip(keys, row)) for row in iterator])
+                                .on_conflict_do_nothing(index_elements=["id"])
+                            ).rowcount
+                        ),
+                    )
+                    total_rows += rows or 0
+
+            print(f"{table_name}: {total_rows} rows inserted")
 
     print("All tables imported.")
 

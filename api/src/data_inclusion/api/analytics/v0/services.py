@@ -84,14 +84,6 @@ def save_event(
 
             event = models.SearchServicesEvent(
                 user=user.username,
-                first_services=[
-                    {
-                        "id": result["service"].id,
-                        "score_qualite": result["service"].score_qualite,
-                        "distance": result["distance"],
-                    }
-                    for result in first_results_page["items"][:10]
-                ],
                 total_services=first_results_page["total"],
                 sources=params.sources,
                 code_commune=params.code_commune,

@@ -61,7 +61,6 @@ class SearchServicesEvent(db.Base):
     id: Mapped[db.uuid_pk]
     created_at: Mapped[db.timestamp]
     user: Mapped[str]
-    first_services: Mapped[list[dict] | None]
     total_services: Mapped[int | None]
     sources: Mapped[list[str] | None]
     code_commune: Mapped[str | None]

@@ -1,4 +1,3 @@
-import json
 import logging
 import os
 import subprocess
@@ -168,16 +167,7 @@ def _export_analytics():
         os.chdir(tmpdir)
         for table in ANALYTICS_EVENTS_TABLES_V1:
             df = pd.read_sql_table(table, engine)
-            for col in df.select_dtypes(include="object").columns:
-                df[col] = (
-                    df[col]
-                    .map(
-                        lambda x: (
-                            json.dumps(x) if isinstance(x, (dict, list)) else str(x)
-                        )
-                    )
-                    .where(df[col].notna())
-                )
+            df["id"] = df["id"].astype(str).where(df["id"].notna())
             df.to_parquet(f"{table}.parquet", index=False)
             logger.info(f"Exported {table}")
 

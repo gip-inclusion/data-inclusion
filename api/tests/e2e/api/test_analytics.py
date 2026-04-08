@@ -263,7 +263,6 @@ def test_search_services_event_saved(
     event = db_session.scalars(sqla.select(model)).first()
 
     assert event.user == "some_user"
-    assert len(event.first_services) == 0
     assert event.total_services == 0
     assert event.sources == query_param["sources"]
     assert event.thematiques == query_param["thematiques"]
@@ -305,14 +304,6 @@ def test_search_services_event_saved_with_results(
 
     event = db_session.scalars(sqla.select(model)).first()
     assert event.user == "some_user"
-    assert event.first_services == [
-        {
-            "id": item["service"]["id"],
-            "score_qualite": item["service"]["score_qualite"],
-            "distance": item["distance"],
-        }
-        for item in response.json()["items"][:number_of_results_to_saved]
-    ]
     assert event.total_services == response.json()["total"]
 
 
@@ -336,11 +327,4 @@ def test_search_services_event_only_first_page_saved(
     assert db_session.scalar(sqla.select(sqla.func.count()).select_from(model)) == 1
 
     event = db_session.scalars(sqla.select(model)).first()
-    assert event.first_services == [
-        {
-            "id": item["service"]["id"],
-            "score_qualite": item["service"]["score_qualite"],
-            "distance": item["distance"],
-        }
-        for item in first_response.json()["items"]
-    ]
+    assert event.total_services == first_response.json()["total"]
