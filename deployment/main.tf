@@ -22,7 +22,7 @@ resource "scaleway_instance_security_group" "main" {
 }
 
 resource "scaleway_instance_server" "main" {
-  type              = var.environment == "prod" ? "STANDARD3-X8C-32G" : "GP1-XS"
+  type              = var.environment == "prod" ? "POP2-8C-32G" : "GP1-XS"
   image             = "ubuntu_noble"
   ip_id             = scaleway_instance_ip.main.id
   security_group_id = scaleway_instance_security_group.main.id
