@@ -11,6 +11,7 @@ from data_inclusion.pipeline.dags.import_annuaire_du_service_public import (
     utils as annuaire_du_service_public,
 )
 from data_inclusion.pipeline.dags.import_carif_oref import utils as carif_oref
+from data_inclusion.pipeline.dags.import_cd35 import utils as cd35
 from data_inclusion.pipeline.dags.import_dora import utils as dora
 from data_inclusion.pipeline.dags.import_emplois_de_linclusion import (
     utils as emplois_de_linclusion,
@@ -71,11 +72,12 @@ SOURCES_CONFIGS = {
     },
     "cd35": {
         "schedule": "@daily",
+        "extractor": cd35.extract,
+        "reader": cd35.read,
         "streams": {
             "organisations": {
-                "filename": "organisations.csv",
-                "url": "https://data.ille-et-vilaine.fr/datastore/dump/3c349ef5-725a-4c5a-bb3c-95eac4a0622a?bom=True",
-                "reader": lambda path: utils.read_csv(path, sep=","),
+                "filename": "organisations.json",
+                "url": "https://services1.arcgis.com/jGLANYlFVVx3nuxa/arcgis/rest/services/annuaire_social_CD35/FeatureServer/0",
             },
         },
     },
