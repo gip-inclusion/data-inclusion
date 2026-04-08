@@ -119,6 +119,8 @@ services:
     <<: *airflow-common
     command: scheduler
     restart: always
+    mem_limit: 16g
+    memswap_limit: 20g
     healthcheck:
       test: airflow jobs check --job-type SchedulerJob --local
       interval: 10s
