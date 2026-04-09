@@ -192,7 +192,9 @@ SOURCES_CONFIGS = {
     },
     "carif-oref": {
         # file updated by carif oref every sunday at 6:25am
-        "schedule": "@weekly",
+        # for many reasons they might change it and have done so int the pas
+        # let's ingest more frequently
+        "schedule": "@daily",
         "extractor": carif_oref.extract,
         "reader": carif_oref.read,
         "streams": {
