@@ -11,7 +11,9 @@ phones AS (
     FROM {{ ref('stg_soliguide__phones') }}
     ORDER BY
         lieu_id ASC,
-        label <% 'Accueil' DESC
+        label <% 'Accueil' DESC,
+        LENGTH(phone_number) DESC,
+        phone_number ASC
 ),
 
 sources AS (
