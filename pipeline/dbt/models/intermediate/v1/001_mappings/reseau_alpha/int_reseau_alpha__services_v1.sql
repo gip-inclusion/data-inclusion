@@ -47,9 +47,22 @@ formations__publics AS (
 publics AS (
     SELECT
         formations__publics.formation_id,
-        ARRAY_AGG(DISTINCT mapping.public_datainclusion)                                                       AS "publics",
-        'habitant-un-territoire-precis' = ANY(ARRAY_AGG(DISTINCT formations__publics.public_specifique_value)) AS "habitant_un_territoire_precis",
-        'oriente-par-des-prescripteurs' = ANY(ARRAY_AGG(DISTINCT formations__publics.public_specifique_value)) AS "oriente_par_des_prescripteurs"
+        ARRAY_AGG(
+            DISTINCT mapping.public_datainclusion
+            ORDER BY mapping.public_datainclusion
+        ) AS "publics",
+        'habitant-un-territoire-precis' = ANY(
+            ARRAY_AGG(
+                DISTINCT formations__publics.public_specifique_value
+                ORDER BY formations__publics.public_specifique_value
+            )
+        ) AS "habitant_un_territoire_precis",
+        'oriente-par-des-prescripteurs' = ANY(
+            ARRAY_AGG(
+                DISTINCT formations__publics.public_specifique_value
+                ORDER BY formations__publics.public_specifique_value
+            )
+        ) AS "oriente_par_des_prescripteurs"
     FROM formations__publics
     INNER JOIN {{ ref('_map_reseau_alpha__publics_v1') }} AS "mapping"
         ON formations__publics.public_specifique_value = mapping.public_reseau_alpha
@@ -72,6 +85,12 @@ publics_precisions AS (
                                 ELSE '- ' || public_specifique_raw_value
                             END,
                             E'\n'
+                            ORDER BY
+                                CASE
+                                    WHEN public_specifique_value = 'habitant-un-territoire-precis'
+                                        THEN '- ' || public_specifique_raw_value || ' : ' || public_specifique_description
+                                    ELSE '- ' || public_specifique_raw_value
+                                END
                         ) FILTER (WHERE public_specifique_prioritaire = 'exclusif')
                     ),
                     E'Publics prioritaires : \n\n' || (
@@ -83,6 +102,12 @@ publics_precisions AS (
                                 ELSE '- ' || public_specifique_raw_value
                             END,
                             E'\n'
+                            ORDER BY
+                                CASE
+                                    WHEN public_specifique_value = 'habitant-un-territoire-precis'
+                                        THEN '- ' || public_specifique_raw_value || ' : ' || public_specifique_description
+                                    ELSE '- ' || public_specifique_raw_value
+                                END
                         ) FILTER (WHERE public_specifique_prioritaire = 'prioritaire')
                     )
                 ],
