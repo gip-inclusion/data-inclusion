@@ -1,4 +1,4 @@
-FROM apache/airflow:3.1.7-python3.12 AS runtime-image
+FROM apache/airflow:3.2.1-python3.13 AS runtime-image
 
 ENV PYTHONUNBUFFERED=1
 ENV PYTHONDONTWRITEBYTECODE=1
