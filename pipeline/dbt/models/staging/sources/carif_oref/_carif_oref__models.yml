@@ -8,6 +8,13 @@ models:
 
       All staging models here must use this model as a source.
 
+  - name: _stg_carif_oref__actions_filtered
+    description: |
+      Flattens `$.action[*]` from the filtered formation source and keeps
+      only actions that have properly defined all the side relations models
+      (namely have an `organisme-formateur`, `code-public-vise`, and
+      `lieu-de-formation` as those are required downstream)
+
   - name: stg_carif_oref__actions__publics
     columns:
       - name: numero_action

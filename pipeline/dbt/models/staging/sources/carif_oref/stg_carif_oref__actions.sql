@@ -1,5 +1,5 @@
-WITH source AS (
-    SELECT * FROM {{ ref('_stg_carif_oref__source_filtered') }}
+WITH actions AS (
+    SELECT * FROM {{ ref('_stg_carif_oref__actions_filtered') }}
 ),
 
 -- TODO(vmttn): there are around 10 actions sharing the same "numero" value
@@ -8,7 +8,7 @@ WITH source AS (
 final AS (
     SELECT DISTINCT ON (1)
         NULLIF(TRIM(actions.data ->> '@numero'), '')                                                                         AS "numero",
-        source.data ->> '@numero'                                                                                            AS "numero_formation",
+        actions.numero_formation                                                                                             AS "numero_formation",
         NULLIF(TRIM(organismes_formateurs.data ->> '@numero'), '')                                                           AS "numero_organisme_formateur",
         CAST(NULLIF(actions.data ->> '@datemaj', '00000000') AS DATE)                                                        AS "date_maj",
         CAST(actions.data ->> 'code-perimetre-recrutement' AS INTEGER)                                                       AS "code_perimetre_recrutement",
@@ -50,8 +50,7 @@ final AS (
             'session',                   actions.data -> 'session'
             -- noqa: enable=layout.spacing
         )                                                                                                                    AS "raw"
-    FROM source,
-        JSONB_PATH_QUERY(source.data, '$.action[*]') AS actions (data),
+    FROM actions,
         JSONB_PATH_QUERY(actions.data, '$.organisme\-formateur[*]') AS organismes_formateurs (data),
         JSONB_PATH_QUERY(actions.data, '$.lieu\-de\-formation[*]') AS lieux_de_formation (data)
     ORDER BY
