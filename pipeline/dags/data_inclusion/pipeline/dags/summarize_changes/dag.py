@@ -14,10 +14,10 @@ def compare_and_summarize():
 
     from slack_sdk.models import blocks
 
-    from airflow.models import Variable
     from airflow.providers.amazon.aws.fs import s3 as s3fs
     from airflow.providers.amazon.aws.hooks import s3
     from airflow.providers.slack.hooks import slack
+    from airflow.sdk import Variable
 
     from data_inclusion.pipeline.common.s3 import to_s3
     from data_inclusion.pipeline.scripts.compare import compare
