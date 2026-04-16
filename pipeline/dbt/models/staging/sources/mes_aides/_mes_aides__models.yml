@@ -185,10 +185,10 @@ models:
               arguments:
                 values:
                   - location
-                  - auto-école sociale
+                  - auto-ecole sociale
                   - achat
-                  - atelier pédagogique
-                  - réparation
+                  - atelier pedagogique
+                  - reparation
 
   - name: stg_mes_aides__garages__types_de_vehicule
     columns:

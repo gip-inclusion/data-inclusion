@@ -3,8 +3,8 @@ WITH source AS (
 
 besoins AS (
     SELECT
-        data ->> 'ID'                                  AS "garage_id",
-        TRIM(STRING_TO_TABLE(data ->> 'Besoins', ',')) AS "item"
+        data ->> 'id'                                      AS "garage_id",
+        TRIM(JSONB_ARRAY_ELEMENTS_TEXT(data -> 'besoins')) AS "item"
     FROM source
 ),
 

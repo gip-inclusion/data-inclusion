@@ -3,8 +3,8 @@ WITH source AS (
 
 final AS (
     SELECT
-        data ->> 'ID'                                          AS "garage_id",
-        LOWER(TRIM(STRING_TO_TABLE(data ->> 'Services', ','))) AS "item"
+        data ->> 'id'                                                        AS "garage_id",
+        UNACCENT(LOWER(TRIM(JSONB_ARRAY_ELEMENTS_TEXT(data -> 'services')))) AS "item"
     FROM source
 )
 
