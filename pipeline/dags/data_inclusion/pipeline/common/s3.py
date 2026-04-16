@@ -53,6 +53,8 @@ def to_s3(path: str | Path, data: bytes | str | dict | list) -> str | Path:
     if isinstance(path, str):
         path = Path(path)
 
+    print(f"Storing data to s3 with key: {path}")
+
     with io.BytesIO(data) as buf:
         s3_hook.load_file_obj(
             key=str(path),
