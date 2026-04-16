@@ -3,8 +3,8 @@ WITH source AS (
 
 final AS (
     SELECT
-        data ->> 'ID'                                                                         AS "aide_id",
-        LOWER(SUBSTRING(UNNEST(STRING_TO_ARRAY(data ->> 'Thématiques', ',')) FROM '. (.*)')) AS "value"
+        data ->> 'id'                                                       AS "aide_id",
+        NULLIF(LOWER(JSONB_ARRAY_ELEMENTS_TEXT(data -> 'thematiques')), '') AS "value"
     FROM source
 )
 
