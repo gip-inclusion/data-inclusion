@@ -7,6 +7,7 @@
             ref('int_dora__services_v1'),
             ref('int_cd35__services_v1'),
             ref('int_france_travail__services_v1'),
+            ref('int_finess__services_v1'),
             ref('int_fredo__services_v1'),
             ref('int_mediation_numerique__services_v1'),
             ref('int_soliguide__services_v1'),
