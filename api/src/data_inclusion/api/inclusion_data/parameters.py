@@ -12,7 +12,7 @@ from data_inclusion.api.decoupage_administratif.constants import (
     RegionEnum,
     RegionSlugEnum,
 )
-from data_inclusion.api.inclusion_data.common import filters
+from data_inclusion.api.inclusion_data import filters
 from data_inclusion.api.utils import pagination
 from data_inclusion.schema import v1 as schema
 

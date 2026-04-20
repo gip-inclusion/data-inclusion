@@ -3,13 +3,13 @@ from typing import Annotated
 import fastapi
 
 from data_inclusion.api import auth
-from data_inclusion.api.analytics.v0.services import save_event
+from data_inclusion.api.analytics.services import save_event
 from data_inclusion.api.core import db
 from data_inclusion.api.decoupage_administratif.models import Commune
-from data_inclusion.api.inclusion_data.v0 import parameters, schemas, services
+from data_inclusion.api.inclusion_data import parameters, schemas, services
 from data_inclusion.api.utils import pagination, soliguide
 
-router = fastapi.APIRouter(tags=["v0 | Données"])
+router = fastapi.APIRouter(tags=["Données"])
 
 
 @router.get(
@@ -43,7 +43,7 @@ def list_structures_endpoint(
 
 
 @router.get(
-    "/structures/{source}/{id}",
+    "/structures/{id}",
     response_model=schemas.DetailedStructure,
     summary="Détailler une structure",
     dependencies=[auth.authenticated(required_scopes=["api"])],
@@ -107,11 +107,18 @@ def list_services_endpoint(
         params=params,
         db_session=db_session,
     )
-    return page
+
+    is_extra_visible = request.query_params.get("extra", "false").lower() == "true"
+
+    # manually serialize to pass context for extra field visibility
+    return pagination.Page[schemas.Service].model_validate(
+        page,
+        context={"is_extra_visible": is_extra_visible},
+    )
 
 
 @router.get(
-    "/services/{source}/{id}",
+    "/services/{id}",
     response_model=schemas.DetailedService,
     summary="Détailler un service",
     dependencies=[auth.authenticated(required_scopes=["api"])],

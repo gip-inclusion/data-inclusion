@@ -10,7 +10,7 @@ Par exemple, l'adresse complète (URL) correspondant à une recherche de service
 sans paramètres additionnels, est:
 
 ```
-{{ base_url }}/api/v0/search/services
+{{ base_url }}/api/v1/search/services
 ```
 
 

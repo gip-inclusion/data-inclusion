@@ -3,7 +3,7 @@ from datetime import datetime
 import pandas as pd
 import pytest
 
-from data_inclusion.api.inclusion_data.v1 import commands
+from data_inclusion.api.inclusion_data import commands
 from data_inclusion.schema import v1
 
 structure_data = {

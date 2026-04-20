@@ -7,7 +7,6 @@ from dotenv import load_dotenv
 load_dotenv()
 
 LOCUST_API_TOKEN = os.environ.get("LOCUST_API_TOKEN", None)
-LOCUST_API_VERSION = os.environ.get("LOCUST_API_VERSION", "v0")
 
 
 class APIUser(locust.HttpUser):
@@ -37,28 +36,26 @@ class APIUser(locust.HttpUser):
     @locust.task
     @locust.tag("list_structures")
     def list_structures(self):
-        self._list_paginated_endpoint(
-            furl.furl(f"/api/{LOCUST_API_VERSION}/structures")
-        )
+        self._list_paginated_endpoint(furl.furl("/api/v1/structures"))
 
     @locust.task
     @locust.tag("list_structures_deduplicate")
     def list_structures_deduplicate(self):
         self._list_paginated_endpoint(
-            furl.furl(f"/api/{LOCUST_API_VERSION}/structures?exclure_doublons=True")
+            furl.furl("/api/v1/structures?exclure_doublons=True")
         )
 
     @locust.task
     @locust.tag("list_services")
     def list_services(self):
-        self._list_paginated_endpoint(furl.furl(f"/api/{LOCUST_API_VERSION}/services"))
+        self._list_paginated_endpoint(furl.furl("/api/v1/services"))
 
     @locust.task
     @locust.tag("search_services")
     def search_services(self):
         self._list_paginated_endpoint(
             furl.furl(
-                f"/api/{LOCUST_API_VERSION}/search/services",
+                "/api/v1/search/services",
                 {
                     "code_insee": "59350",
                     "thematiques": "sante",
@@ -71,7 +68,7 @@ class APIUser(locust.HttpUser):
     def search_services_deduplicate(self):
         self._list_paginated_endpoint(
             furl.furl(
-                f"/api/{LOCUST_API_VERSION}/search/services",
+                "/api/v1/search/services",
                 {
                     "code_insee": "59350",
                     "thematiques": "sante",

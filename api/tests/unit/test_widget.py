@@ -5,7 +5,7 @@ import sqlalchemy as sqla
 import fastapi
 
 from data_inclusion.api import auth
-from data_inclusion.api.analytics.v1 import models as analytics_models
+from data_inclusion.api.analytics import models as analytics_models
 from data_inclusion.api.config import settings
 from data_inclusion.api.widget.routes import validate_widget_token
 from data_inclusion.schema import v1
@@ -109,7 +109,7 @@ def test_widget_rendering_empty_results(api_client, snapshot, auth_disabled):  #
 
 
 def test_widget_rendering_with_results(api_client, db_session, snapshot, auth_disabled):  # noqa: ARG001
-    factories.v1.ServiceFactory(
+    factories.ServiceFactory(
         source="dora",
         structure__nom="Structure Formation",
         nom="Service de formation professionnelle",
@@ -123,7 +123,7 @@ def test_widget_rendering_with_results(api_client, db_session, snapshot, auth_di
         thematiques=[v1.Thematique.FAMILLE__GARDE_DENFANTS.value],
         score_qualite=0.9,
     )
-    factories.v1.ServiceFactory(
+    factories.ServiceFactory(
         source="dora",
         structure__nom="Structure Emploi",
         nom="Accompagnement à l'emploi",
@@ -139,7 +139,7 @@ def test_widget_rendering_with_results(api_client, db_session, snapshot, auth_di
         ],
         score_qualite=0.85,
     )
-    factories.v1.ServiceFactory(
+    factories.ServiceFactory(
         source="emplois-de-linclusion",
         structure__nom="Structure Sans Commune",
         nom="Service sans commune",
@@ -173,7 +173,7 @@ def test_widget_rendering_with_results(api_client, db_session, snapshot, auth_di
 
 
 def test_widget_filter_sources(api_client, db_session, auth_disabled):  # noqa: ARG001
-    factories.v1.ServiceFactory(
+    factories.ServiceFactory(
         source="dora",
         structure__nom="Structure Dora",
         nom="Service Dora",
@@ -182,7 +182,7 @@ def test_widget_filter_sources(api_client, db_session, auth_disabled):  # noqa: 
         code_insee="59350",
         score_qualite=0.9,
     )
-    factories.v1.ServiceFactory(
+    factories.ServiceFactory(
         source="emplois-de-linclusion",
         structure__nom="Structure Emplois",
         nom="Service Emplois",
@@ -191,7 +191,7 @@ def test_widget_filter_sources(api_client, db_session, auth_disabled):  # noqa: 
         code_insee="59350",
         score_qualite=0.9,
     )
-    factories.v1.ServiceFactory(
+    factories.ServiceFactory(
         source="mes-aides",
         structure__nom="Structure MesAides",
         nom="Service MesAides",
@@ -217,7 +217,7 @@ def test_widget_filter_sources(api_client, db_session, auth_disabled):  # noqa: 
 
 
 def test_widget_filter_thematiques(api_client, db_session, auth_disabled):  # noqa: ARG001
-    factories.v1.ServiceFactory(
+    factories.ServiceFactory(
         source="dora",
         structure__nom="Structure Famille",
         nom="Service Garde Enfants",
@@ -227,7 +227,7 @@ def test_widget_filter_thematiques(api_client, db_session, auth_disabled):  # no
         thematiques=[v1.Thematique.FAMILLE__GARDE_DENFANTS.value],
         score_qualite=0.9,
     )
-    factories.v1.ServiceFactory(
+    factories.ServiceFactory(
         source="dora",
         structure__nom="Structure Mobilite",
         nom="Service Mobilite",
@@ -239,7 +239,7 @@ def test_widget_filter_thematiques(api_client, db_session, auth_disabled):  # no
         ],
         score_qualite=0.9,
     )
-    factories.v1.ServiceFactory(
+    factories.ServiceFactory(
         source="dora",
         structure__nom="Structure Logement",
         nom="Service Logement",
@@ -270,7 +270,7 @@ def test_widget_filter_thematiques(api_client, db_session, auth_disabled):  # no
 
 
 def test_widget_filter_include_remote_services(api_client, db_session, auth_disabled):  # noqa: ARG001
-    factories.v1.ServiceFactory(
+    factories.ServiceFactory(
         source="dora",
         structure__nom="Structure Presentiel",
         nom="Service Presentiel",
@@ -282,7 +282,7 @@ def test_widget_filter_include_remote_services(api_client, db_session, auth_disa
         modes_accueil=[v1.ModeAccueil.EN_PRESENTIEL.value],
         score_qualite=0.9,
     )
-    factories.v1.ServiceFactory(
+    factories.ServiceFactory(
         source="dora",
         structure__nom="Structure En Ligne",
         nom="Service En Ligne",
@@ -294,7 +294,7 @@ def test_widget_filter_include_remote_services(api_client, db_session, auth_disa
         modes_accueil=[v1.ModeAccueil.A_DISTANCE.value],
         score_qualite=0.9,
     )
-    factories.v1.ServiceFactory(
+    factories.ServiceFactory(
         source="dora",
         structure__nom="Structure Lointaine Mixte",
         nom="Service Lointain Mixte",
@@ -334,7 +334,7 @@ def test_widget_filter_include_remote_services(api_client, db_session, auth_disa
 
 
 def test_widget_filter_publics(api_client, db_session, auth_disabled):  # noqa: ARG001
-    factories.v1.ServiceFactory(
+    factories.ServiceFactory(
         source="dora",
         structure__nom="Structure Femmes",
         nom="Service Pour Femmes",
@@ -344,7 +344,7 @@ def test_widget_filter_publics(api_client, db_session, auth_disabled):  # noqa: 
         publics=[v1.Public.FEMMES.value],
         score_qualite=0.9,
     )
-    factories.v1.ServiceFactory(
+    factories.ServiceFactory(
         source="dora",
         structure__nom="Structure Jeunes",
         nom="Service Pour Jeunes",
@@ -354,7 +354,7 @@ def test_widget_filter_publics(api_client, db_session, auth_disabled):  # noqa: 
         publics=[v1.Public.JEUNES.value],
         score_qualite=0.9,
     )
-    factories.v1.ServiceFactory(
+    factories.ServiceFactory(
         source="dora",
         structure__nom="Structure Seniors",
         nom="Service Pour Seniors",

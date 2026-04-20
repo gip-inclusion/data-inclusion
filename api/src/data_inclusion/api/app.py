@@ -9,10 +9,8 @@ from fastapi.middleware import cors, gzip, trustedhost
 from data_inclusion.api import auth, config
 from data_inclusion.api.auth.routes import router as auth_api_router
 from data_inclusion.api.core import db
-from data_inclusion.api.inclusion_data.v0.routes import router as v0_data_api_router
-from data_inclusion.api.inclusion_data.v1.routes import router as v1_data_api_router
-from data_inclusion.api.inclusion_schema.v0.routes import router as v0_schema_api_router
-from data_inclusion.api.inclusion_schema.v1.routes import router as v1_schema_api_router
+from data_inclusion.api.inclusion_data.routes import router as data_api_router
+from data_inclusion.api.inclusion_schema.routes import router as schema_api_router
 from data_inclusion.api.valideur.routes import app as valideur_app
 from data_inclusion.api.widget.routes import app as widget_app
 
@@ -85,31 +83,21 @@ def create_app(settings: config.Settings) -> fastapi.FastAPI:
 
     app.middleware("http")(db.db_session_middleware)
 
-    app.include_router(v1_api_router)
-    app.include_router(v0_api_router, include_in_schema=False)
+    app.include_router(api_router)
     app.include_router(auth_api_router, prefix="/auth", include_in_schema=False)
     app.mount(path="/widget", app=widget_app)
     app.mount(path="/valideur", app=valideur_app)
 
     @app.get("/robots.txt", include_in_schema=False)
     def get_robots_txt():
-        content = "User-agent: *\nAllow: /api/v0/docs\nDisallow: /\n"
+        content = "User-agent: *\nAllow: /api/docs\nDisallow: /\n"
         return fastapi.Response(content=content, media_type="text/plain")
-
-    # redirect legacy /api/v0/docs to version agnostic /api/docs
-    @app.get("/api/v0/docs", include_in_schema=False)
-    def redirect_v0_docs():
-        return fastapi.responses.RedirectResponse(url="/api/docs", status_code=301)
 
     return app
 
 
-v0_api_router = fastapi.APIRouter(prefix="/api/v0")
-v0_api_router.include_router(v0_data_api_router)
-v0_api_router.include_router(v0_schema_api_router, prefix="/doc")
-
-v1_api_router = fastapi.APIRouter(prefix="/api/v1")
-v1_api_router.include_router(v1_data_api_router)
-v1_api_router.include_router(v1_schema_api_router, prefix="/doc")
+api_router = fastapi.APIRouter(prefix="/api/v1")
+api_router.include_router(data_api_router)
+api_router.include_router(schema_api_router, prefix="/doc")
 
 app = create_app(settings=config.settings)

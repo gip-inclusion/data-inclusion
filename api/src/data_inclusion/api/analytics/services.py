@@ -2,9 +2,8 @@ from sqlalchemy import orm
 
 import fastapi
 
-from data_inclusion.api.analytics import helpers
-from data_inclusion.api.analytics.v1 import models
-from data_inclusion.api.inclusion_data.v1 import parameters
+from data_inclusion.api.analytics import helpers, models
+from data_inclusion.api.inclusion_data import parameters
 
 
 def save_event(

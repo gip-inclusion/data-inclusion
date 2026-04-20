@@ -4,7 +4,6 @@ import subprocess
 import tarfile
 import tempfile
 from pathlib import Path
-from typing import Literal
 
 import click
 import pandas as pd
@@ -14,10 +13,11 @@ import sentry_sdk
 import sqlalchemy as sqla
 
 from data_inclusion.api import auth
-from data_inclusion.api.analytics.v1.models import ANALYTICS_EVENTS_TABLES_V1
+from data_inclusion.api.analytics.models import ANALYTICS_EVENTS_TABLES
 from data_inclusion.api.config import settings
 from data_inclusion.api.core import db
 from data_inclusion.api.decoupage_administratif.commands import import_communes
+from data_inclusion.api.inclusion_data.commands import load
 
 logger = logging.getLogger(__name__)
 
@@ -68,7 +68,7 @@ def _generate_token_for_user(
     )
 
 
-def get_path(value: str | None, version: Literal["v0", "v1"]) -> Path:
+def get_path(value: str | None) -> Path:
     """Get a valid local path to the target dataset."""
 
     if value is not None and Path(value).exists():
@@ -84,7 +84,7 @@ def get_path(value: str | None, version: Literal["v0", "v1"]) -> Path:
         value = str(Path(settings.DATALAKE_BUCKET_NAME) / "data" / "marts")
         value = sorted(s3fs_client.ls(value))[-1]  # latest day
         value = sorted(s3fs_client.ls(value))[-1]  # latest run
-        value = str(Path(value) / version)
+        value = str(Path(value) / "v1")
 
         logger.info(f"Using {value}")
 
@@ -116,28 +116,12 @@ def get_path(value: str | None, version: Literal["v0", "v1"]) -> Path:
 )
 @cli.command(name="load-inclusion-data")
 @click.option(
-    "--version",
-    type=click.Choice(["v0", "v1"]),
-    default="v1",
-    show_default=True,
-    help="Dataset version to load",
-)
-@click.option(
     "--path",
-    callback=lambda ctx, param, value: get_path(
-        value, version=ctx.params.get("version", param.default)
-    ),
+    callback=lambda ctx, param, value: get_path(value),
 )
 @click.pass_obj
-def _load_inclusion_data(db_session, path: Path, version: Literal["v0", "v1"]):
-    if version == "v1":
-        from data_inclusion.api.inclusion_data.v1.commands import load
-
-        load(db_session=db_session, path=path)
-    elif version == "v0":
-        from data_inclusion.api.inclusion_data.v0.commands import load_inclusion_data
-
-        load_inclusion_data(db_session=db_session, path=path)
+def _load_inclusion_data(db_session, path: Path):
+    load(db_session=db_session, path=path)
 
     # if the dataset has been downloaded from s3
     if tempfile.gettempdir() in path.parents:
@@ -165,7 +149,7 @@ def _export_analytics():
 
     with tempfile.TemporaryDirectory() as tmpdir:
         os.chdir(tmpdir)
-        for table in ANALYTICS_EVENTS_TABLES_V1:
+        for table in ANALYTICS_EVENTS_TABLES:
             df = pd.read_sql_table(table, engine)
             df["id"] = df["id"].astype(str).where(df["id"].notna())
             df.to_parquet(f"{table}.parquet", index=False)
@@ -173,7 +157,7 @@ def _export_analytics():
 
         archive_filename = "analytics.tar.gz"
         with tarfile.open(archive_filename, "w:gz") as tar:
-            for table in ANALYTICS_EVENTS_TABLES_V1:
+            for table in ANALYTICS_EVENTS_TABLES:
                 tar.add(f"{table}.parquet")
 
         key = str(
@@ -211,7 +195,7 @@ if __name__ == "__main__":
 )
 @cli.command(name="truncate-analytics")
 def _truncate_analytics():
-    for table in ANALYTICS_EVENTS_TABLES_V1:
+    for table in ANALYTICS_EVENTS_TABLES:
         with db.SessionLocal() as db_session:
             rows_deleted = db_session.execute(
                 sqla.text(

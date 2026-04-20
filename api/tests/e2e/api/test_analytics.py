@@ -1,20 +1,19 @@
 import pytest
 import sqlalchemy as sqla
 
-from data_inclusion.api.analytics.v0 import models as v0
-from data_inclusion.api.analytics.v1 import models as v1
+from data_inclusion.api.analytics import models
+
+from ... import factories
 
 DUNKERQUE = {"code_insee": "59183", "latitude": 51.0361, "longitude": 2.3770}
 HAZEBROUCK = {"code_insee": "59295", "latitude": 50.7262, "longitude": 2.5387}
 
 
 @pytest.mark.parametrize(
-    ("schema_version", "path", "model"),
+    ("url", "model"),
     [
-        ("v0", "/structures/foo/bar", v0.ConsultStructureEvent),
-        ("v0", "/services/foo/bar", v0.ConsultServiceEvent),
-        ("v1", "/structures/foo--bar", v1.ConsultStructureEvent),
-        ("v1", "/services/foo--bar", v1.ConsultServiceEvent),
+        ("/api/v1/structures/foo--bar", models.ConsultStructureEvent),
+        ("/api/v1/services/foo--bar", models.ConsultServiceEvent),
     ],
 )
 @pytest.mark.with_token
@@ -26,13 +25,6 @@ def test_ignore_event_if_resource_not_found(api_client, db_session, url, model):
 
 
 @pytest.mark.parametrize(
-    ("schema_version", "path", "model"),
-    [
-        ("v0", "/structures", v0.ConsultStructureEvent),
-        ("v1", "/structures", v1.ConsultStructureEvent),
-    ],
-)
-@pytest.mark.parametrize(
     ("user_agent", "num_events"),
     [
         ("bingbot/2.0; +http://www.bing.com/bingbot.htm)", 0),
@@ -40,21 +32,11 @@ def test_ignore_event_if_resource_not_found(api_client, db_session, url, model):
     ],
 )
 @pytest.mark.with_token
-def test_consult_structure_event_saved(
-    api_client,
-    db_session,
-    url,
-    user_agent,
-    num_events,
-    structure_factory,
-    model,
-):
-    structure = structure_factory(source="foo", id="foo--1")
+def test_consult_structure_event_saved(api_client, db_session, user_agent, num_events):
+    structure = factories.StructureFactory(source="foo", id="foo--1")
 
-    if "v0" in url:
-        url = f"{url}/{structure.source}/{structure.id}"
-    else:
-        url = f"{url}/{structure.id}"
+    model = models.ConsultStructureEvent
+    url = f"/api/v1/structures/{structure.id}"
 
     response = api_client.get(
         url,
@@ -76,13 +58,6 @@ def test_consult_structure_event_saved(
 
 
 @pytest.mark.parametrize(
-    ("schema_version", "path", "model"),
-    [
-        ("v0", "/services", v0.ConsultServiceEvent),
-        ("v1", "/services", v1.ConsultServiceEvent),
-    ],
-)
-@pytest.mark.parametrize(
     ("user_agent", "num_events"),
     [
         ("bingbot/2.0; +http://www.bing.com/bingbot.htm)", 0),
@@ -93,18 +68,13 @@ def test_consult_structure_event_saved(
 def test_consult_service_event_saved(
     api_client,
     db_session,
-    url,
     user_agent,
     num_events,
-    service_factory,
-    model,
 ):
-    service = service_factory(source="foo", id="foo--1", score_qualite=0.8)
+    service = factories.ServiceFactory(source="foo", id="foo--1", score_qualite=0.8)
 
-    if "v0" in url:
-        url = f"{url}/{service.source}/{service.id}"
-    else:
-        url = f"{url}/{service.id}"
+    model = models.ConsultServiceEvent
+    url = f"/api/v1/services/{service.id}"
 
     response = api_client.get(
         url,
@@ -126,15 +96,10 @@ def test_consult_service_event_saved(
         assert event.score_qualite == service.score_qualite
 
 
-@pytest.mark.parametrize(
-    ("schema_version", "path", "model"),
-    [
-        ("v0", "/services", v0.ListServicesEvent),
-        ("v1", "/services", v1.ListServicesEvent),
-    ],
-)
 @pytest.mark.with_token
-def test_list_services_event_saved(api_client, db_session, url, schema_version, model):
+def test_list_services_event_saved(api_client, db_session):
+    model = models.ListServicesEvent
+    url = "/api/v1/services"
     query_param = {
         "sources": ["foo"],
         "thematiques": ["famille--garde-denfants"],
@@ -146,13 +111,9 @@ def test_list_services_event_saved(api_client, db_session, url, schema_version, 
         "types": ["accompagnement"],
         "recherche_public": "test",
         "score_qualite_minimum": 0.5,
+        "publics": ["etudiants"],
+        "publics_precisions": "test",
     }
-    if schema_version == "v0":
-        query_param["profils"] = ["etudiants"]
-        query_param["profils_precisions"] = "test"
-    elif schema_version == "v1":
-        query_param["publics"] = ["etudiants"]
-        query_param["publics_precisions"] = "test"
 
     response = api_client.get(url, params=query_param)
 
@@ -171,23 +132,13 @@ def test_list_services_event_saved(api_client, db_session, url, schema_version, 
     assert event.types == query_param["types"]
     assert event.recherche_public == query_param["recherche_public"]
     assert event.score_qualite_minimum == query_param["score_qualite_minimum"]
-    if schema_version == "v0":
-        assert event.profils == query_param["profils"]
-    elif schema_version == "v1":
-        assert event.publics == query_param["publics"]
+    assert event.publics == query_param["publics"]
 
 
-@pytest.mark.parametrize(
-    ("schema_version", "path", "model"),
-    [
-        ("v0", "/structures", v0.ListStructuresEvent),
-        ("v1", "/structures", v1.ListStructuresEvent),
-    ],
-)
 @pytest.mark.with_token
-def test_list_structures_event_saved(
-    api_client, db_session, url, schema_version, model
-):
+def test_list_structures_event_saved(api_client, db_session):
+    model = models.ListStructuresEvent
+    url = "/api/v1/structures"
     query_param = {
         "sources": ["foo"],
         "code_departement": "26",
@@ -195,13 +146,8 @@ def test_list_structures_event_saved(
         "code_commune": "26400",
         "id": "1",
         "exclure_doublons": True,
+        "reseaux_porteurs": ["action-logement"],
     }
-    if schema_version == "v0":
-        query_param["thematiques"] = ["famille--garde-denfants"]
-        query_param["label_national"] = "action-logement"
-        query_param["typologie"] = "ACIPHC"
-    elif schema_version == "v1":
-        query_param["reseaux_porteurs"] = ["action-logement"]
 
     response = api_client.get(url, params=query_param)
 
@@ -215,25 +161,13 @@ def test_list_structures_event_saved(
     assert event.code_region == query_param["code_region"]
     assert event.code_commune == query_param["code_commune"]
     assert event.exclure_doublons == query_param["exclure_doublons"]
-    if schema_version == "v0":
-        assert event.thematiques == query_param["thematiques"]
-        assert event.label_national == query_param["label_national"]
-        assert event.typologie == query_param["typologie"]
-    elif schema_version == "v1":
-        assert event.reseaux_porteurs == query_param["reseaux_porteurs"]
+    assert event.reseaux_porteurs == query_param["reseaux_porteurs"]
 
 
-@pytest.mark.parametrize(
-    ("schema_version", "path", "model"),
-    [
-        ("v0", "/search/services", v0.SearchServicesEvent),
-        ("v1", "/search/services", v1.SearchServicesEvent),
-    ],
-)
 @pytest.mark.with_token
-def test_search_services_event_saved(
-    api_client, db_session, url, schema_version, model
-):
+def test_search_services_event_saved(api_client, db_session):
+    model = models.SearchServicesEvent
+    url = "/api/v1/search/services"
     query_param = {
         "sources": ["foo"],
         "thematiques": ["famille--garde-denfants"],
@@ -247,13 +181,9 @@ def test_search_services_event_saved(
         "exclure_doublons": True,
         "recherche_public": "test",
         "score_qualite_minimum": 0.5,
+        "publics": ["etudiants"],
+        "publics_precisions": "test",
     }
-    if schema_version == "v0":
-        query_param["profils"] = ["etudiants"]
-        query_param["profils_precisions"] = "test"
-    elif schema_version == "v1":
-        query_param["publics"] = ["etudiants"]
-        query_param["publics_precisions"] = "test"
 
     response = api_client.get(url, params=query_param)
 
@@ -275,27 +205,17 @@ def test_search_services_event_saved(
     assert event.recherche_public == query_param["recherche_public"]
     assert event.score_qualite_minimum == query_param["score_qualite_minimum"]
     assert event.exclure_doublons == query_param["exclure_doublons"]
-    if schema_version == "v0":
-        assert event.profils == query_param["profils"]
-    elif schema_version == "v1":
-        assert event.publics == query_param["publics"]
+    assert event.publics == query_param["publics"]
 
 
-@pytest.mark.parametrize(
-    ("schema_version", "path", "model"),
-    [
-        ("v0", "/search/services", v0.SearchServicesEvent),
-        ("v1", "/search/services", v1.SearchServicesEvent),
-    ],
-)
 @pytest.mark.with_token
-def test_search_services_event_saved_with_results(
-    api_client, db_session, url, service_factory, model
-):
+def test_search_services_event_saved_with_results(api_client, db_session):
+    model = models.SearchServicesEvent
+    url = "/api/v1/search/services"
     number_of_results_to_saved = 10
 
     for _ in range(number_of_results_to_saved + 1):
-        service_factory()
+        factories.ServiceFactory()
 
     response = api_client.get(url)
 
@@ -307,19 +227,12 @@ def test_search_services_event_saved_with_results(
     assert event.total_services == response.json()["total"]
 
 
-@pytest.mark.parametrize(
-    ("schema_version", "path", "model"),
-    [
-        ("v0", "/search/services", v0.SearchServicesEvent),
-        ("v1", "/search/services", v1.SearchServicesEvent),
-    ],
-)
 @pytest.mark.with_token
-def test_search_services_event_only_first_page_saved(
-    api_client, db_session, url, service_factory, model
-):
-    service_factory()
-    service_factory()
+def test_search_services_event_only_first_page_saved(api_client, db_session):
+    model = models.SearchServicesEvent
+    url = "/api/v1/search/services"
+    factories.ServiceFactory()
+    factories.ServiceFactory()
 
     first_response = api_client.get(url, params={"size": 1, "page": 1})
     api_client.get(url, params={"size": 1, "page": 2})

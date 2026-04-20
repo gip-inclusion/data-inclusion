@@ -1,78 +1,5 @@
 # serializer version: 1
-# name: test_list_services_all[/services-v0-instances0]
-  '''
-  {
-    "items": [
-      {
-        "adresse": "62, rue Eugène Rodrigues",
-        "code_insee": "59350",
-        "code_postal": "92950",
-        "commune": "Sainte Gabriel",
-        "complement_adresse": null,
-        "contact_nom_prenom": "Thibaut de Michaud",
-        "contact_public": null,
-        "courriel": "michelgerard@example.net",
-        "cumulable": null,
-        "date_creation": null,
-        "date_maj": "2023-01-01",
-        "date_suspension": null,
-        "formulaire_en_ligne": null,
-        "frais": [
-          "gratuit"
-        ],
-        "frais_autres": "Camarade il.",
-        "id": "be-water-scene-wind",
-        "justificatifs": [],
-        "latitude": -77.857573,
-        "lien_source": null,
-        "longitude": -62.54684,
-        "modes_accueil": [
-          "a-distance"
-        ],
-        "modes_orientation_accompagnateur": [
-          "telephoner"
-        ],
-        "modes_orientation_accompagnateur_autres": null,
-        "modes_orientation_beneficiaire": [
-          "telephoner"
-        ],
-        "modes_orientation_beneficiaire_autres": null,
-        "nom": "Munoz",
-        "nombre_semaines": 1,
-        "page_web": "http://aubert.net/",
-        "pre_requis": [],
-        "presentation_detail": "Épaule élever un.",
-        "presentation_resume": "Puissant fine.",
-        "prise_rdv": "https://teixeira.fr/",
-        "profils": [
-          "femmes"
-        ],
-        "profils_precisions": "Femme en situation d'insertion",
-        "recurrence": null,
-        "score_qualite": 0.5,
-        "source": "dora",
-        "structure_id": "much-mention",
-        "telephone": "0102030405",
-        "thematiques": [
-          "famille--garde-denfants"
-        ],
-        "types": [
-          "formation"
-        ],
-        "volume_horaire_hebdomadaire": 1.0,
-        "zone_diffusion_code": null,
-        "zone_diffusion_nom": null,
-        "zone_diffusion_type": null
-      }
-    ],
-    "page": 1,
-    "pages": 1,
-    "size": 1,
-    "total": 1
-  }
-  '''
-# ---
-# name: test_list_services_all[/services-v1-instances1]
+# name: test_list_services_all
   '''
   {
     "items": [
@@ -114,7 +41,7 @@
         "publics_precisions": "Femme en situation d'insertion",
         "score_qualite": 0.5,
         "source": "dora",
-        "structure_id": "dora--much-mention",
+        "structure_id": "dora--lot-kitchen-amount",
         "telephone": "0102030405",
         "thematiques": [
           "famille--garde-denfants"
@@ -131,53 +58,7 @@
   }
   '''
 # ---
-# name: test_list_structures_all[/structures-v0-instance0]
-  '''
-  {
-    "items": [
-      {
-        "accessibilite": "https://acceslibre.beta.gouv.fr/app/kitchen-amount/",
-        "adresse": "49, avenue de Pichon",
-        "antenne": null,
-        "code_insee": "59350",
-        "code_postal": "46873",
-        "commune": "Sainte CharlotteBourg",
-        "complement_adresse": null,
-        "courriel": "levyalexandre@example.org",
-        "date_maj": "2023-01-01",
-        "doublons": [],
-        "horaires_ouverture": "Mo-Fr 10:00-20:00 \"sur rendez-vous\"; PH off",
-        "id": "lot-kitchen-amount",
-        "labels_autres": [
-          "Nièvre médiation numérique"
-        ],
-        "labels_nationaux": [],
-        "latitude": -20.074628,
-        "lien_source": null,
-        "longitude": 99.899603,
-        "nom": "Perrin",
-        "presentation_detail": "Or personne jambe.",
-        "presentation_resume": "Image voie battre.",
-        "rna": "W242194892",
-        "score_qualite": 0.7,
-        "siret": "76475938700658",
-        "site_web": "https://www.le.net/",
-        "source": "dora",
-        "telephone": "0102030405",
-        "thematiques": [
-          "famille--garde-denfants"
-        ],
-        "typologie": "ACI"
-      }
-    ],
-    "page": 1,
-    "pages": 1,
-    "size": 1,
-    "total": 1
-  }
-  '''
-# ---
-# name: test_list_structures_all[/structures-v1-instance1]
+# name: test_list_structures_all
   '''
   {
     "items": [
