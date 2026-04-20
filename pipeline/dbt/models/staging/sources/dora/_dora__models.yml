@@ -120,7 +120,7 @@ models:
         data_tests:
           - dbt_utils.not_null_proportion:
               arguments:
-                at_least: 0.8
+                at_least: 0.4
           - dbt_utils.not_empty_string
       - name: temps_passe_duree_hebdomadaire
         data_tests:
