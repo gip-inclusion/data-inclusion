@@ -2,10 +2,6 @@ WITH structures AS (
     SELECT * FROM {{ ref('int__union_structures_v1') }}
 ),
 
-structures_v0_to_v1 AS (
-    SELECT * FROM {{ ref('int__structures_v0_to_v1') }}
-),
-
 adresses AS (
     SELECT * FROM {{ ref('int__adresses_v1') }}
 ),
@@ -60,27 +56,3 @@ LEFT JOIN urls AS urls_site_web ON structures.site_web = urls_site_web.input_url
 LEFT JOIN urls AS urls_accessibilite_lieu ON structures.accessibilite_lieu = urls_accessibilite_lieu.input_url
 LEFT JOIN adresses ON structures.adresse_id = adresses.id
 LEFT JOIN sirets ON structures.id = sirets.id
-UNION ALL
-SELECT
-    structures_v0_to_v1.adresse_id,
-    structures_v0_to_v1.courriel,
-    structures_v0_to_v1.horaires_accueil,
-    structures_v0_to_v1.id,
-    structures_v0_to_v1.lien_source,
-    structures_v0_to_v1.description,
-    structures_v0_to_v1.siret,
-    structures_v0_to_v1.source,
-    structures_v0_to_v1.date_maj,
-    structures_v0_to_v1.reseaux_porteurs,
-    structures_v0_to_v1.telephone,
-    structures_v0_to_v1.site_web,
-    structures_v0_to_v1.accessibilite_lieu,
-    structures_v0_to_v1.nom,
-    structures_v0_to_v1.longitude,
-    structures_v0_to_v1.latitude,
-    structures_v0_to_v1.complement_adresse,
-    structures_v0_to_v1.commune,
-    structures_v0_to_v1.adresse,
-    structures_v0_to_v1.code_postal,
-    structures_v0_to_v1.code_insee
-FROM structures_v0_to_v1

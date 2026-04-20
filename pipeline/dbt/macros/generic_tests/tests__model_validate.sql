@@ -4,7 +4,7 @@
     - name: marts__structures
         data_tests:
         - model_validate:
-            model_class: data_inclusion.schema.v0.Structure
+            model_class: data_inclusion.schema.v1.Structure
 #}
 
 {% test model_validate(model, model_class, where) %}
