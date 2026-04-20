@@ -98,7 +98,7 @@ def test_create_token_with_hosts(
 
 def test_robots(api_client):
     response = api_client.get("/robots.txt")
-    assert response.content == b"User-agent: *\nAllow: /api/v0/docs\nDisallow: /\n"
+    assert response.content == b"User-agent: *\nAllow: /api/docs\nDisallow: /\n"
 
 
 @pytest.mark.parametrize(

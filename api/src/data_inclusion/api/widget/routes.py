@@ -8,12 +8,12 @@ from starlette.authentication import AuthCredentials, SimpleUser
 import fastapi
 from fastapi import staticfiles, templating
 
-from data_inclusion.api.analytics.v1.services import save_event
+from data_inclusion.api.analytics.services import save_event
 from data_inclusion.api.auth.services import verify_token
 from data_inclusion.api.config import settings
 from data_inclusion.api.core import db
 from data_inclusion.api.decoupage_administratif.models import Commune
-from data_inclusion.api.inclusion_data.v1 import parameters, services
+from data_inclusion.api.inclusion_data import parameters, services
 from data_inclusion.api.utils import pagination
 from data_inclusion.schema import v1
 

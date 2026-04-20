@@ -2,22 +2,9 @@ from unittest.mock import ANY
 
 import pytest
 
-from data_inclusion.schema import v0, v1
+from data_inclusion.schema import v1
 
-MODELS_MAPPING_V0 = {
-    "frais": v0.Frais,
-    "labels-nationaux": v0.LabelNational,
-    "modes-accueil": v0.ModeAccueil,
-    "modes-orientation-accompagnateur": v0.ModeOrientationAccompagnateur,
-    "modes-orientation-beneficiaire": v0.ModeOrientationBeneficiaire,
-    "profils": v0.Profil,
-    "thematiques": v0.Thematique,
-    "typologies-services": v0.TypologieService,
-    "typologies-structures": v0.TypologieStructure,
-}
-
-
-MODELS_MAPPING_V1 = {
+MODELS_MAPPING = {
     "frais": v1.Frais,
     "reseaux-porteurs": v1.ReseauPorteur,
     "modes-accueil": v1.ModeAccueil,
@@ -27,34 +14,6 @@ MODELS_MAPPING_V1 = {
     "thematiques": v1.Thematique,
     "types-services": v1.TypeService,
 }
-
-
-@pytest.mark.parametrize(
-    "collection",
-    [
-        "frais",
-        "labels-nationaux",
-        "modes-accueil",
-        "modes-orientation-accompagnateur",
-        "modes-orientation-beneficiaire",
-        "profils",
-        "thematiques",
-        "typologies-services",
-        "typologies-structures",
-    ],
-)
-@pytest.mark.with_token
-def test_list_collections_v0(api_client, collection):
-    url = f"/api/v0/doc/{collection}/"
-
-    response = api_client.get(url)
-
-    assert response.status_code == 200
-    resp_data = response.json()
-    assert resp_data[0] == {"value": ANY, "label": ANY, "description": ANY}
-    assert set(v.value for v in list(MODELS_MAPPING_V0[collection])) == set(
-        d["value"] for d in resp_data
-    )
 
 
 @pytest.mark.parametrize(
@@ -71,7 +30,7 @@ def test_list_collections_v0(api_client, collection):
     ],
 )
 @pytest.mark.with_token
-def test_list_collections_v1(api_client, collection):
+def test_list_collections(api_client, collection):
     url = f"/api/v1/doc/{collection}/"
 
     response = api_client.get(url)
@@ -79,6 +38,6 @@ def test_list_collections_v1(api_client, collection):
     assert response.status_code == 200
     resp_data = response.json()
     assert resp_data[0] == {"value": ANY, "label": ANY, "description": ANY}
-    assert set(v.value for v in list(MODELS_MAPPING_V1[collection])) == set(
+    assert set(v.value for v in list(MODELS_MAPPING[collection])) == set(
         d["value"] for d in resp_data
     )

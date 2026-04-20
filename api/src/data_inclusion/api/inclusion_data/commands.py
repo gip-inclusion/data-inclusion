@@ -8,7 +8,7 @@ import sqlalchemy as sqla
 from sqlalchemy import orm
 
 from data_inclusion.api.decoupage_administratif.models import Commune
-from data_inclusion.api.inclusion_data.v1 import models
+from data_inclusion.api.inclusion_data import models
 from data_inclusion.api.valideur import services
 from data_inclusion.schema import v1
 

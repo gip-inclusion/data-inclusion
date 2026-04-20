@@ -9,7 +9,7 @@ from sqlalchemy import orm
 
 from data_inclusion.api.decoupage_administratif import constants
 from data_inclusion.api.decoupage_administratif.models import Commune
-from data_inclusion.api.inclusion_data.v1 import models, parameters
+from data_inclusion.api.inclusion_data import models, parameters
 from data_inclusion.schema import v1
 
 
@@ -110,7 +110,7 @@ def retrieve_structure(
 
 @functools.cache
 def list_sources() -> list[dict]:
-    return json.loads((Path(__file__).parent.parent / "sources.json").read_text())
+    return json.loads((Path(__file__).parent / "sources.json").read_text())
 
 
 def filter_services(

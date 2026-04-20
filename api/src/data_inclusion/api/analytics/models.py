@@ -76,7 +76,7 @@ class SearchServicesEvent(db.Base):
     exclure_doublons: Mapped[bool | None]
 
 
-ANALYTICS_EVENTS_TABLES_V1 = (
+ANALYTICS_EVENTS_TABLES = (
     ConsultStructureEvent.__tablename__,
     ConsultServiceEvent.__tablename__,
     ListServicesEvent.__tablename__,

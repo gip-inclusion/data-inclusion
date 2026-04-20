@@ -8,8 +8,7 @@ import fastapi
 
 from data_inclusion.api.config import settings
 from data_inclusion.api.core import db
-from data_inclusion.api.inclusion_data.v0 import models as models_v0
-from data_inclusion.api.inclusion_data.v1 import models as models_v1
+from data_inclusion.api.inclusion_data import models
 
 logger = logging.getLogger(__name__)
 
@@ -58,25 +57,11 @@ def notify_soliguide_dependency(
     db_session=fastapi.Depends(db.get_session),
 ):
     match request.url.path.strip("/").split("/"):
-        # in v0, `id` are scoped by `source`
-        case ["api", "v0", "structures", "soliguide", id]:
-            place_id = id
-        case ["api", "v0", "services", "soliguide", id]:
-            service_instance = db_session.scalar(
-                sqla.select(models_v0.Service)
-                .filter(models_v0.Service.source == "soliguide")
-                .filter(models_v0.Service.id == id)
-            )
-            if service_instance is None:
-                return
-            place_id = service_instance.structure_id
-
-        # in v1, `id` are globally unique and prefixed by the source
         case ["api", "v1", "structures", id] if id.startswith("soliguide--"):
             place_id = id.split("--", 1)[1]
         case ["api", "v1", "services", id] if id.startswith("soliguide--"):
             service_instance = db_session.scalar(
-                sqla.select(models_v1.Service).filter(models_v1.Service.id == id)
+                sqla.select(models.Service).filter(models.Service.id == id)
             )
             if service_instance is None:
                 return
