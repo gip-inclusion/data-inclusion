@@ -16,15 +16,23 @@ S3_PATH = s3.get_key_for_raw_data(source_id=SOURCE_ID)
 def extract(to_path: str):
     from pathlib import Path
 
-    from data_inclusion.pipeline.common import s3
-    from data_inclusion.pipeline.dags.import_mes_aides import constants
+    from airflow.sdk import Variable
 
-    for resource_key in [
-        Path(constants.AIDES_FILE_KEY),
-        Path(constants.GARAGES_SOLIDAIRES_FILE_KEY),
+    from data_inclusion.pipeline.common import s3
+    from data_inclusion.pipeline.dags.import_mes_aides import constants, utils
+
+    mes_aides_client = utils.MesAidesClient(
+        base_url=constants.API_URL,
+        token=Variable.get("MES_AIDES_API_KEY"),
+    )
+
+    for ressource_name, extract_fn in [
+        ("aides", mes_aides_client.list_aides),
+        ("garages", mes_aides_client.list_garages),
     ]:
-        with s3.from_s3(path=resource_key).open("rb") as f:
-            s3.to_s3(path=Path(to_path) / resource_key.name, data=f.read())
+        data = extract_fn()
+        key = (Path(to_path) / ressource_name).with_suffix(".json")
+        s3.to_s3(path=key, data=data)
 
 
 @task.virtualenv(
@@ -38,18 +46,14 @@ def load(schema_name: str, from_s3_path: str):
     from airflow.providers.postgres.hooks import postgres
 
     from data_inclusion.pipeline.common import pg, s3, utils
-    from data_inclusion.pipeline.dags.import_mes_aides import constants
 
     pg_hook = postgres.PostgresHook(postgres_conn_id="pg")
 
-    for resource_key in [
-        Path(constants.AIDES_FILE_KEY),
-        Path(constants.GARAGES_SOLIDAIRES_FILE_KEY),
-    ]:
-        table_name = Path(resource_key).stem
-        tmp_path = s3.from_s3(path=Path(from_s3_path) / resource_key.name)
-        df = utils.read_csv(tmp_path, sep=",")
-        pg.to_pg(hook=pg_hook, df=df, schema_name=schema_name, table_name=table_name)
+    for resource_name in ["aides", "garages"]:
+        key = (Path(from_s3_path) / resource_name).with_suffix(".json")
+        tmp_path = s3.from_s3(path=key)
+        df = utils.df_from_json(tmp_path)
+        pg.to_pg(hook=pg_hook, df=df, schema_name=schema_name, table_name=resource_name)
 
 
 @dag(

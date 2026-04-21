@@ -3,8 +3,8 @@ WITH source AS (
 
 final AS (
     SELECT
-        data ->> 'ID'                                                    AS "aide_id",
-        UNACCENT(LOWER(UNNEST(STRING_TO_ARRAY(data ->> 'Nature', ',')))) AS "value"
+        data ->> 'id'                                                AS "aide_id",
+        UNACCENT(LOWER(JSONB_ARRAY_ELEMENTS_TEXT(data -> 'nature'))) AS "value"
     FROM source
 )
 

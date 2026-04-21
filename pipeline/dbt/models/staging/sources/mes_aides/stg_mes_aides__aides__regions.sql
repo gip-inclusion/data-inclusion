@@ -3,8 +3,8 @@ WITH source AS (
 
 raw AS (
     SELECT
-        data ->> 'ID'                                     AS "aide_id",
-        UNNEST(STRING_TO_ARRAY(data ->> 'Régions', ',')) AS "value"
+        data ->> 'id'                                AS "aide_id",
+        JSONB_ARRAY_ELEMENTS_TEXT(data -> 'regions') AS "value"
     FROM source
 ),
 

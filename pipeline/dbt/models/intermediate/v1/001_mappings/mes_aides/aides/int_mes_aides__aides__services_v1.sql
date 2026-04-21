@@ -36,14 +36,6 @@ departements AS (
     GROUP BY aide_id
 ),
 
-epcis AS (
-    SELECT
-        aide_id,
-        ARRAY_AGG(code) AS "codes"
-    FROM {{ ref('stg_mes_aides__aides__epcis') }}
-    GROUP BY aide_id
-),
-
 villes AS (
     SELECT
         aide_id,
@@ -57,7 +49,7 @@ conditions AS (
     SELECT
         *,
         BOOL_OR(value ~* 'tou. public') OVER (PARTITION BY aide_id) AS "aide_tous_publics"
-    FROM {{ ref('stg_mes_aides__aides__conditions') }}
+    FROM {{ ref('stg_mes_aides__aides__conditions__principales') }}
 ),
 
 publics AS (
@@ -107,20 +99,6 @@ frais AS (
         mapping_.frais = 'payant' DESC
 ),
 
-types AS (
-    SELECT DISTINCT ON (types_aides.aide_id)
-        types_aides.aide_id,
-        mapping_.type AS "type"
-    FROM {{ ref('stg_mes_aides__aides__types_aides') }} AS types_aides
-    LEFT JOIN {{ ref('_map_mes_aides__types_v1') }} AS mapping_ ON types_aides.value = mapping_.type_aide
-    ORDER BY
-        types_aides.aide_id,
-        mapping_.type = 'aide-financiere' DESC,
-        mapping_.type = 'aide-materielle' DESC,
-        mapping_.type = 'accompagnement' DESC
-
-),
-
 thematiques AS (
     SELECT
         besoins.aide_id,
@@ -134,7 +112,7 @@ justificatifs AS (
     SELECT
         aide_id,
         ARRAY_TO_STRING(ARRAY_AGG(value), ', ') AS "justificatifs"
-    FROM {{ ref('stg_mes_aides__aides__justificatifs') }}
+    FROM {{ ref('stg_mes_aides__aides__justificatifs__principaux') }}
     GROUP BY aide_id
 ),
 
@@ -152,7 +130,7 @@ final AS (
         ], E'\n\n'), '')                                  AS "description",
         aides.voir_l_aide                                 AS "lien_source",
         COALESCE(aides.mise_a_jour_le, aides.modifiee_le) AS "date_maj",
-        types.type                                        AS "type",
+        'aide-financiere'                                 AS "type",
         thematiques.thematiques                           AS "thematiques",
         frais.frais                                       AS "frais",
         NULL                                              AS "frais_precisions",
@@ -172,7 +150,6 @@ final AS (
         ARRAY['a-distance']                               AS "modes_accueil",
         CASE
             WHEN aides.zone_geographique ~ 'commun.' THEN villes.codes
-            WHEN aides.zone_geographique ~ 'intercommun.' THEN epcis.codes
             WHEN aides.zone_geographique ~ 'region' THEN regions.codes_departements
             WHEN aides.zone_geographique ~ 'departement' THEN departements.codes
             WHEN aides.zone_geographique ~ 'france' THEN ARRAY['france']
@@ -197,11 +174,9 @@ final AS (
     LEFT JOIN emails ON aides.id = emails.aide_id
     LEFT JOIN publics ON aides.id = publics.aide_id
     LEFT JOIN frais ON aides.id = frais.aide_id
-    LEFT JOIN types ON aides.id = types.aide_id
     LEFT JOIN thematiques ON aides.id = thematiques.aide_id
     LEFT JOIN regions ON aides.id = regions.aide_id
     LEFT JOIN departements ON aides.id = departements.aide_id
-    LEFT JOIN epcis ON aides.id = epcis.aide_id
     LEFT JOIN villes ON aides.id = villes.aide_id
     LEFT JOIN justificatifs ON aides.id = justificatifs.aide_id
     WHERE aides.en_ligne

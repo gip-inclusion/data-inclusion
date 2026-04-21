@@ -1,4 +1,4 @@
-{% set fields = ["Contact Tel", "Contact Tel 2", "Contact Tel 3"] %}
+{% set fields = ["tel", "tel1", "tel2", "tel3"] %}
 
 WITH source AS (
     {{ stg_source_header('mes_aides', 'aides') }}),
@@ -8,7 +8,7 @@ final AS (
         SELECT
             -- noqa: disable=layout.spacing
             data ->> 'ID'                            AS "aide_id",
-            {{ loop.index }}                         AS "index",
+            GREATEST({{ loop.index }}, 2) - 1        AS "index",
             NULLIF(TRIM(data ->> '{{ field }}'), '') AS "value"
             -- noqa: enable=layout.spacing
         FROM source

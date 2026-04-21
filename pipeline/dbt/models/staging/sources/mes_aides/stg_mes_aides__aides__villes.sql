@@ -3,11 +3,11 @@ WITH source AS (
 
 raw AS (
     SELECT
-        data ->> 'ID'                          AS "aide_id",
-        SUBSTRING(villes FROM '^(.*) \(.*\)$') AS "nom",
-        SUBSTRING(villes FROM '\((.*)\)$')     AS "code_postal"
+        source.data ->> 'id'                       AS "aide_id",
+        SUBSTRING(raw.villes FROM '^(.*) \(.*\)$') AS "nom",
+        SUBSTRING(raw.villes FROM '\((.*)\)$')     AS "code_postal"
     FROM source,
-        UNNEST(STRING_TO_ARRAY(data ->> 'Villes', ',')) AS villes
+        JSONB_ARRAY_ELEMENTS_TEXT(source.data -> 'villes') AS "raw" (villes)
 ),
 
 final AS (
