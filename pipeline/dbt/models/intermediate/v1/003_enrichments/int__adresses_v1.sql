@@ -3,7 +3,7 @@ WITH adresses AS (
 ),
 
 geocodages AS (
-    SELECT * FROM {{ ref('int__geocodages_v1') }}
+    SELECT * FROM {{ source('python_models', 'int__geocodages_v1') }}
 ),
 
 communes AS (
