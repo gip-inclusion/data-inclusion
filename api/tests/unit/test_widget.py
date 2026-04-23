@@ -394,3 +394,28 @@ def test_widget_saves_search_event(api_client, db_session, auth_disabled):  # no
     ).first()
     assert event.user == "test_user"
     assert event.publics == ["femmes"]
+
+
+@pytest.mark.parametrize(
+    ("headers", "expected_origin"),
+    [
+        ({"origin": "https://example.com"}, "https://example.com"),
+        ({"referer": "https://other.com/page"}, "https://other.com/page"),
+        ({}, None),
+    ],
+    ids=["custom-origin", "custom-referer", "no-origin"],
+)
+def test_widget_saves_search_event_origin(
+    api_client,
+    db_session,
+    auth_disabled,
+    headers,
+    expected_origin,
+):
+    response = api_client.get("/widget/?token=test-token", headers=headers)
+    assert response.status_code == 200
+
+    event = db_session.scalars(
+        sqla.select(analytics_models.SearchServicesEvent)
+    ).first()
+    assert event.origin == expected_origin
