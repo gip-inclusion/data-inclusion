@@ -41,7 +41,7 @@
             </a>
         </div>
         <div class="di-results-footer-center">
-            {% if results and not inline_mode %}{{ pagination() }}{% endif %}
+            {% if results and display_pagination %}{{ pagination() }}{% endif %}
         </div>
         <div class="di-results-footer-right">
             <a href="https://tally.so/r/nWZBrv?produit={{ (token_sub or '')|urlencode }}&issue_url={{ current_url|urlencode }}"
