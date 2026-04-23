@@ -77,8 +77,11 @@ def save_event(
             ):
                 return
 
+            origin = request.headers.get("origin") or request.headers.get("referer")
+
             event = models.SearchServicesEvent(
                 user=user.username,
+                origin=origin,
                 total_services=first_results_page["total"],
                 sources=params.sources,
                 code_commune=params.code_commune,
