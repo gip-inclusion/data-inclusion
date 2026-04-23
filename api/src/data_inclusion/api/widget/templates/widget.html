@@ -28,6 +28,9 @@
                        name="display_publics_filter"
                        value="{{ query_params_display_publics_filter|lower }}">
                 <input type="hidden"
+                       name="display_pagination"
+                       value="{{ query_params_display_pagination|lower }}">
+                <input type="hidden"
                        name="include_remote_services"
                        value="{{ query_params_include_remote_services|lower }}">
                 {% if query_params_sources %}

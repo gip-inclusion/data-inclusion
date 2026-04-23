@@ -422,3 +422,27 @@ def test_widget_saves_search_event_origin(
         sqla.select(analytics_models.SearchServicesEvent)
     ).first()
     assert event.origin == expected_origin
+
+
+@pytest.mark.parametrize(
+    ("query", "expected_pagination"),
+    [
+        ("size=1", False),
+        ("size=1&display_pagination=true", True),
+        ("x=1&y=1", True),
+        ("x=1&y=1&display_pagination=false", False),
+    ],
+)
+def test_widget_display_pagination(
+    api_client,
+    db_session,
+    auth_disabled,
+    query,
+    expected_pagination,
+):
+    factories.ServiceFactory.create_batch(3, source="dora", score_qualite=0.9)
+
+    response = api_client.get(f"/widget/?token=test-token&{query}")
+    assert response.status_code == 200
+    does_paginate = "di-pagination" in response.text
+    assert does_paginate == expected_pagination

@@ -51,6 +51,9 @@
                          name="display_publics_filter"
                          value="true">
                   <input type="hidden"
+                         name="display_pagination"
+                         value="true">
+                  <input type="hidden"
                          name="include_remote_services"
                          value="false">
                   
@@ -436,6 +439,9 @@
                          value="true">
                   <input type="hidden"
                          name="display_publics_filter"
+                         value="true">
+                  <input type="hidden"
+                         name="display_pagination"
                          value="true">
                   <input type="hidden"
                          name="include_remote_services"

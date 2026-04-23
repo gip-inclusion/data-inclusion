@@ -189,6 +189,10 @@ def widget(
         bool,
         fastapi.Query(description="Affiche ou masque le filtre par public cible"),
     ] = True,
+    display_pagination: Annotated[
+        bool | None,
+        fastapi.Query(description="Affiche ou masque les contrôles de pagination"),
+    ] = None,
     code_commune: Annotated[
         str | None,
         fastapi.Query(
@@ -267,7 +271,9 @@ def widget(
     else:
         thematiques_for_query = list_thematiques(categories) if categories else None
 
-    inline_mode = size is not None
+    if display_pagination is None:
+        display_pagination = size is None
+
     effective_size = size if size is not None else x * y
     results = get_results(
         db_session=db_session,
@@ -319,7 +325,8 @@ def widget(
                 "page": results["page"],
                 "pages": results["pages"],
                 "x": x,
-                "inline_mode": inline_mode,
+                "inline_mode": size is not None,
+                "display_pagination": display_pagination,
             },
         )
 
@@ -346,6 +353,7 @@ def widget(
             "query_params_display_communes_filter": display_communes_filter,
             "query_params_display_categories_filter": display_categories_filter,
             "query_params_display_publics_filter": display_publics_filter,
+            "query_params_display_pagination": display_pagination,
             "query_params_sources": sources,
             "query_params_thematiques": thematiques,
             "query_params_include_remote_services": include_remote_services,
@@ -357,7 +365,8 @@ def widget(
             "page": results["page"],
             "pages": results["pages"],
             "x": x,
-            "inline_mode": inline_mode,
+            "inline_mode": size is not None,
+            "display_pagination": display_pagination,
         },
     )
 
