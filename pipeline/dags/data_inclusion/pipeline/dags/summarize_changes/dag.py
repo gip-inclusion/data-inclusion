@@ -10,6 +10,7 @@ from data_inclusion.pipeline.common import dags
 )
 def compare_and_summarize():
     import tempfile
+    from datetime import timedelta
     from pathlib import Path
 
     from slack_sdk.models import blocks
@@ -53,6 +54,12 @@ def compare_and_summarize():
         after_df=after_df,
         pk_col="id",
         meta_cols=["source"],
+        tolerances={
+            compare.cs.date() | compare.cs.datetime(): compare.TimeDeltaTolerance(
+                timedelta(weeks=4)
+            ),
+            compare.cs.float(): compare.ThresholdTolerance(0.8),
+        },
     )
 
     before_ds = before_date.split("/")[-1]
