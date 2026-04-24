@@ -14,6 +14,7 @@
 
 import os
 from datetime import datetime, timedelta
+from decimal import Decimal
 from functools import cached_property
 from pathlib import Path
 from typing import Annotated, Literal
@@ -76,6 +77,33 @@ def to_string(df: pl.DataFrame) -> str:
     )
 
 
+class TimeDeltaTolerance:
+    def __init__(self, tolerance: timedelta) -> None:
+        self.tolerance = tolerance
+
+    def __call__(self, before: datetime, after: datetime) -> tuple[bool, timedelta]:
+        delta = abs(after - before)
+        return delta < self.tolerance, delta
+
+
+class RelativeTolerance:
+    def __init__(self, tolerance: float) -> None:
+        self.tolerance = tolerance
+
+    def __call__(self, before: float, after: float) -> tuple[bool, float]:
+        delta = abs(Decimal(str(after)) - Decimal(str(before)))
+        return delta < Decimal(str(self.tolerance)), float(delta)
+
+
+class ThresholdTolerance:
+    def __init__(self, threshold: float) -> None:
+        self.threshold = threshold
+
+    def __call__(self, before: float, after: float) -> tuple[bool, float]:
+        delta = abs(Decimal(str(after)) - Decimal(str(before)))
+        return (before < self.threshold) ^ (after >= self.threshold), float(delta)
+
+
 class Diff:
     added: pl.DataFrame
     removed: pl.DataFrame
@@ -88,15 +116,18 @@ class Diff:
         after_df: pl.DataFrame,
         pk_col: str = "id",
         meta_cols: list[str] | None = None,
-        tolerances: dict[cs.Selector, float | timedelta] | None = None,
+        tolerances: dict[
+            cs.Selector, TimeDeltaTolerance | RelativeTolerance | ThresholdTolerance
+        ]
+        | None = None,
     ):
         self.meta_cols = meta_cols if meta_cols is not None else []
         self.pk_col = pk_col
 
         if tolerances is None:
             tolerances = {
-                cs.float(): 0.2,
-                cs.date() | cs.datetime(): timedelta(days=7),
+                cs.float(): RelativeTolerance(0.2),
+                cs.date() | cs.datetime(): TimeDeltaTolerance(timedelta(weeks=4)),
             }
 
         self._compare(
@@ -109,7 +140,9 @@ class Diff:
         self,
         before_df: pl.DataFrame,
         after_df: pl.DataFrame,
-        tolerances: dict[cs.Selector, float | timedelta],
+        tolerances: dict[
+            cs.Selector, TimeDeltaTolerance | RelativeTolerance | ThresholdTolerance
+        ],
     ):
         self.added = after_df.join(before_df, on=self.pk_col, how="anti").select(
             self.pk_col, *self.meta_cols
@@ -129,14 +162,10 @@ class Diff:
             if type(row["before"]) is not type(row["after"]):
                 return {"delta": None, "within_tolerance": False}
 
-            if isinstance(row["before"], datetime):
-                delta = row["after"] - row["before"]
-
-                if row["column"] in tolerance_by_column:
-                    tol = tolerance_by_column[row["column"]]
-                    return {"delta": str(delta), "within_tolerance": abs(delta) < tol}
-                else:
-                    return {"delta": str(delta), "within_tolerance": False}
+            if row["column"] in tolerance_by_column:
+                tol_fn = tolerance_by_column[row["column"]]
+                within_tolerance, delta = tol_fn(row["before"], row["after"])
+                return {"delta": str(delta), "within_tolerance": within_tolerance}
 
             return {"delta": None, "within_tolerance": False}
 
