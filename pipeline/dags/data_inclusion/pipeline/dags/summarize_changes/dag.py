@@ -75,7 +75,7 @@ def compare_and_summarize():
     )
     thread_ts = response["ts"]
 
-    for text in summary.split("---"):
+    for text in summary.split("\n---\n"):
         if len(text) < blocks.MarkdownBlock.text_max_length:
             slack_hook.client.chat_postMessage(
                 channel=CHANNEL,
