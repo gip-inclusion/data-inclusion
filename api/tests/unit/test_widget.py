@@ -1,3 +1,5 @@
+import contextlib
+
 import jwt
 import pytest
 import sqlalchemy as sqla
@@ -99,7 +101,8 @@ def test_widget_token_validation_legacy_allowed_origins():
     }
     token = jwt.encode(payload=payload, key=settings.SECRET_KEY, algorithm="HS256")
     request = MockRequest(headers={"origin": "https://mairie.arras.fr"})
-    assert validate_widget_token(request, token) == "mairie-legacy"
+    with contextlib.suppress(jwt.InsecureKeyLengthWarning):
+        assert validate_widget_token(request, token) == "mairie-legacy"
 
 
 def test_widget_rendering_empty_results(api_client, snapshot, auth_disabled):  # noqa: ARG001
