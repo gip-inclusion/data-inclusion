@@ -31,14 +31,15 @@ def setup_debug_toolbar_middleware(app: fastapi.FastAPI) -> None:
 
 
 def create_app(settings: config.Settings) -> fastapi.FastAPI:
-    # sentry must be initialized before app
-    sentry_sdk.init(
-        dsn=settings.SENTRY_DSN,
-        send_default_pii=True,  # get IP address & headers, useful to identify bots
-        traces_sample_rate=0.1,
-        profiles_sample_rate=0.1,  # 10% of sampled requests will also be profiled
-        environment=settings.ENV,
-    )
+    if settings.ENV in ["prod", "staging"]:
+        # sentry must be initialized before app
+        sentry_sdk.init(
+            dsn=settings.SENTRY_DSN,
+            send_default_pii=True,  # get IP address & headers, useful to identify bots
+            traces_sample_rate=0.1,
+            profiles_sample_rate=0.1,  # 10% of sampled requests will also be profiled
+            environment=settings.ENV,
+        )
 
     description = jinja2.Template(
         API_DESCRIPTION_PATH.read_text(), autoescape=False
