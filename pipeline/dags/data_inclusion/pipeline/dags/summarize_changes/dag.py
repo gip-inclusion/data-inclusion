@@ -74,7 +74,7 @@ def compare_and_summarize():
             compare.cs.date() | compare.cs.datetime(): compare.TimeDeltaTolerance(
                 timedelta(weeks=4)
             ),
-            compare.cs.float(): compare.ThresholdTolerance(0.8),
+            compare.cs.by_name("score_qualite"): compare.ThresholdTolerance(0.8),
         },
     )
 
