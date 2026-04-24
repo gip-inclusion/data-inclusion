@@ -26,7 +26,8 @@ final AS (
         STRING_TO_ARRAY(source.data ->> 'zone_eligibilite', ', ')    AS "zone_eligibilite",
         CAST(source.data ->> 'volume_horaire_hebdomadaire' AS FLOAT) AS "volume_horaire_hebdomadaire",
         CAST(source.data ->> 'nombre_semaines' AS INT)               AS "nombre_semaines",
-        source.data ->> 'horaires_accueil'                           AS "horaires_accueil"
+        source.data ->> 'horaires_accueil'                           AS "horaires_accueil",
+        STRING_TO_ARRAY(source.data ->> 'publics_al', ', ')          AS "publics_al"
     FROM source
     WHERE
         NOT COALESCE(CAST(source.data ->> '__ignore__' AS BOOLEAN), FALSE)

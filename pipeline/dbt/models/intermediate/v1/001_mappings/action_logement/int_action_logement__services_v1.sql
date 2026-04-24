@@ -47,7 +47,10 @@ final AS (
         END                                                        AS "zone_eligibilite",
         services.volume_horaire_hebdomadaire                       AS "volume_horaire_hebdomadaire",
         services.nombre_semaines                                   AS "nombre_semaines",
-        structures.horaires_accueil                                AS "horaires_accueil"
+        structures.horaires_accueil                                AS "horaires_accueil",
+        JSONB_BUILD_OBJECT(
+            'publics_al', services.publics_al
+        )                                                          AS "_extra"
     FROM services
     CROSS JOIN structures
     LEFT JOIN communes
