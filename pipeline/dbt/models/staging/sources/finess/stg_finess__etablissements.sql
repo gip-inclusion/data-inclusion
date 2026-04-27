@@ -26,4 +26,4 @@ final AS (
 )
 
 SELECT * FROM final
-WHERE categorie IN ('156', '246')
+WHERE categorie IN ('156', '246', '609')

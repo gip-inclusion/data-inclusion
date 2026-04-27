@@ -27,7 +27,7 @@ phonenumbers
 python-slugify
 
 # score / model_validate
-data-inclusion-schema==1.0.4
+data-inclusion-schema==1.0.8
 
 # testing
 pytest

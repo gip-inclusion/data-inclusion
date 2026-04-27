@@ -63,7 +63,7 @@ FROM (
     ('les-premieres',                           'les-premieres'),
     ('linklusion',                              NULL),
     ('maisons-de-lemploi',                      'maisons-de-l-emploi'),
-    ('mdph',                                    'departements'),
+    ('mdph',                                    'mdph'),
     ('mission-locale',                          'mission-locale'),
     ('mobin',                                   'mobin'),
     ('nqt',                                     'nqt'),

@@ -11,6 +11,7 @@ models:
                 values:
                   - 156  # Centre Médico-Psychologique (C.M.P.)
                   - 246  # Etablissement et Service d'Aide par le Travail (E.S.A.T.)
+                  - 609  # Maisons Départementales des Personnes Handicapées
       - name: commune
         data_tests:
           - not_null

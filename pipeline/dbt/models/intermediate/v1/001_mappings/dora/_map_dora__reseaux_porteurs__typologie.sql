@@ -67,7 +67,7 @@ FROM (
     ('MDA',          'maison-departementale-de-lautonomie'),
     ('MDE',          'maisons-de-l-emploi'),
     ('MDEF',         'maisons-de-l-emploi'),
-    ('MDPH',         'departements'),
+    ('MDPH',         'mdph'),
     ('MDS',          'maisons-des-solidarites'),
     ('MJC',          'mjc'),
     ('ML',           'mission-locale'),
