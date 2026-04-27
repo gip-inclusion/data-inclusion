@@ -7,9 +7,6 @@ from airflow.sdk import Variable
 
 from data_inclusion.pipeline.common import utils
 from data_inclusion.pipeline.dags.import_agefiph import utils as agefiph
-from data_inclusion.pipeline.dags.import_annuaire_du_service_public import (
-    utils as annuaire_du_service_public,
-)
 from data_inclusion.pipeline.dags.import_carif_oref import utils as carif_oref
 from data_inclusion.pipeline.dags.import_cd35 import utils as cd35
 from data_inclusion.pipeline.dags.import_dora import utils as dora
@@ -109,16 +106,6 @@ SOURCES_CONFIGS = {
             "institutions": {
                 "filename": "institutions.json",
                 "url": "https://mes-aides.1jeune1solution.beta.gouv.fr/api/",
-            },
-        },
-    },
-    "annuaire-du-service-public": {
-        "schedule": "@daily",
-        "reader": annuaire_du_service_public.read,
-        "streams": {
-            "etablissements": {
-                "filename": "etablissements.json",
-                "url": "https://www.data.gouv.fr/fr/datasets/r/73302880-e4df-4d4c-8676-1a61bb997f3d",
             },
         },
     },
