@@ -56,8 +56,14 @@ def compare_and_summarize():
             ),
         )
 
-        before_df = compare.read(path=Path(tmpdir) / "before.parquet")
-        after_df = compare.read(path=Path(tmpdir) / "after.parquet")
+        before_df = compare.read(
+            path=Path(tmpdir) / "before.parquet",
+            exclude_cols=["_extra"],
+        )
+        after_df = compare.read(
+            path=Path(tmpdir) / "after.parquet",
+            exclude_cols=["_extra"],
+        )
 
     diff = compare.Diff(
         before_df=before_df,
