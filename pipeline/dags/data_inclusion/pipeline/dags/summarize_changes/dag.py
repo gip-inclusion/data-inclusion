@@ -33,18 +33,28 @@ def compare_and_summarize():
 
     before_date, after_date = sorted(s3fs_client.ls(BASE_KEY))[-2:]
 
-    before_run = sorted(s3fs_client.ls(before_date))[-1]
+    before_run = sorted(s3fs_client.ls(before_date))[0]
     before_key = Path(before_run) / VERSION / FILE
 
-    after_run = sorted(s3fs_client.ls(after_date))[-1]
+    after_run = sorted(s3fs_client.ls(after_date))[0]
     after_key = Path(after_run) / VERSION / FILE
 
     print(f"Before: {before_key}")
     print(f"After: {after_key}")
 
     with tempfile.TemporaryDirectory() as tmpdir:
-        s3fs_client.get_file(rpath=before_key, lpath=Path(tmpdir) / "before.parquet")
-        s3fs_client.get_file(rpath=after_key, lpath=Path(tmpdir) / "after.parquet")
+        s3fs_client.get_file(
+            rpath=str(before_key),
+            lpath=str(
+                Path(tmpdir) / "before.parquet",
+            ),
+        )
+        s3fs_client.get_file(
+            rpath=str(after_key),
+            lpath=str(
+                Path(tmpdir) / "after.parquet",
+            ),
+        )
 
         before_df = compare.read(path=Path(tmpdir) / "before.parquet")
         after_df = compare.read(path=Path(tmpdir) / "after.parquet")
