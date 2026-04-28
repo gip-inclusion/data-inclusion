@@ -1,6 +1,6 @@
 from datetime import datetime
 
-import pandas as pd
+import polars as pl
 import pytest
 
 from data_inclusion.api.inclusion_data import commands
@@ -12,6 +12,7 @@ structure_data = {
         source="dora",
         nom="Structure 1",
         date_maj=datetime(2025, 1, 1),
+        code_insee="59350",
     ).model_dump(),
     "_has_valid_address": True,
     "_is_closed": False,
@@ -44,16 +45,16 @@ service_data = {
         ({**structure_data, "code_insee": "00000"}, True),
     ],
 )
-def test_prepare_load_structures(db_session, structure_data, expected_empty):
+def test_prepare_load_structures(structure_data, expected_empty):
     structures_df, services_df = commands.prepare_load(
-        db_session=db_session,
-        structures_df=pd.DataFrame([structure_data]),
-        services_df=pd.DataFrame([service_data]),
+        cities_df=pl.DataFrame([{"code": "59350"}]),
+        structures_df=pl.DataFrame([structure_data]),
+        services_df=pl.DataFrame([service_data]),
     )
-    assert structures_df.empty is expected_empty
+    assert structures_df.is_empty() is expected_empty
 
     # if the structure is invalid, all its services should be also be filtered
-    assert services_df.empty is expected_empty
+    assert services_df.is_empty() is expected_empty
 
 
 @pytest.mark.parametrize(
@@ -66,11 +67,11 @@ def test_prepare_load_structures(db_session, structure_data, expected_empty):
         ({**service_data, "code_insee": "00000"}, True),
     ],
 )
-def test_prepare_load_services(db_session, service_data, expected_empty):
+def test_prepare_load_services(service_data, expected_empty):
     structures_df, services_df = commands.prepare_load(
-        db_session=db_session,
-        structures_df=pd.DataFrame([structure_data]),
-        services_df=pd.DataFrame([service_data]),
+        cities_df=pl.DataFrame([{"code": "59350"}]),
+        structures_df=pl.DataFrame([structure_data]),
+        services_df=pl.DataFrame([service_data]),
     )
-    assert not structures_df.empty
-    assert services_df.empty is expected_empty
+    assert not structures_df.is_empty()
+    assert services_df.is_empty() is expected_empty

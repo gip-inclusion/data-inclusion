@@ -3,7 +3,7 @@ import logging
 from pathlib import Path
 
 import numpy as np
-import pandas as pd
+import polars as pl
 import sqlalchemy as sqla
 from sqlalchemy import orm
 
@@ -17,61 +17,91 @@ logger = logging.getLogger(__name__)
 
 
 def prepare_load(
-    db_session: orm.Session,
-    structures_df: pd.DataFrame,
-    services_df: pd.DataFrame,
-) -> tuple[pd.DataFrame, pd.DataFrame]:
-    """Prepare the structures and services dataframes for loading into the database.
+    cities_df: pl.DataFrame,
+    structures_df: pl.DataFrame,
+    services_df: pl.DataFrame,
+) -> tuple[pl.DataFrame, pl.DataFrame]:
+    if structures_df.is_empty():
+        raise ValueError("Structures list is empty.")
 
-    Remove invalid entries, compute quality scores, etc.
-    """
+    if services_df.is_empty():
+        raise ValueError("Services list is empty.")
 
-    # batch load city codes to avoid querying the database for each line of the dataset
-    city_codes = db_session.scalars(sqla.select(Commune.code)).all()
-
-    if structures_df.empty or services_df.empty:
-        raise ValueError("Structures or services dataset is empty.")
-
-    valid_structures_idx = structures_df.apply(
-        lambda d: len(services.list_errors(model=v1.Structure, data=[{**d}])) == 0,
-        axis=1,
+    # remove closed structures according to sirene
+    structures_df = structures_df.filter(~pl.col("_is_closed"))
+    # remove structures with invalid city code
+    structures_df = structures_df.join(
+        other=structures_df.join(
+            other=cities_df,
+            left_on="code_insee",
+            right_on="code",
+            how="anti",
+        ),
+        on="id",
+        how="anti",
     )
-    structures_df = structures_df.loc[valid_structures_idx]
-    structures_df = structures_df.loc[~structures_df["_is_closed"]]
-    valid_code_insee_idx = structures_df["code_insee"].apply(
-        lambda c: c is None or c in city_codes
+    # remove structures with validation errors
+    structures_df = structures_df.join(
+        other=pl.DataFrame(
+            data=(
+                row_dict["id"]
+                for row_dict in structures_df.iter_rows(named=True)
+                for _ in services.list_errors(model=v1.Structure, data=[{**row_dict}])
+            ),
+            schema={"structure_id": pl.String},
+        ),
+        left_on="id",
+        right_on="structure_id",
+        how="anti",
     )
-    structures_df = structures_df.loc[valid_code_insee_idx]
-
-    valid_services_idx = services_df.apply(
-        lambda d: len(services.list_errors(model=v1.Service, data=[{**d}])) == 0,
-        axis=1,
+    # exclude orphaned services
+    services_df = services_df.join(
+        other=structures_df,
+        left_on="structure_id",
+        right_on="id",
+        how="semi",
     )
-    services_df = services_df.loc[valid_services_idx]
-    services_df = services_df.loc[services_df["structure_id"].isin(structures_df["id"])]
-    valid_code_insee_idx = services_df["code_insee"].apply(
-        lambda c: c is None or c in city_codes
+    # remove services with invalid city code
+    services_df = services_df.join(
+        other=services_df.join(
+            other=cities_df,
+            left_on="code_insee",
+            right_on="code",
+            how="anti",
+        ),
+        on="id",
+        how="anti",
     )
-    services_df = services_df.loc[valid_code_insee_idx]
-
-    service_scores = (
-        services_df.groupby("structure_id")["score_qualite"]
-        .mean()
-        .astype(float)
-        .round(2)
+    # remove services with validation errors
+    services_df = services_df.join(
+        other=pl.from_dicts(
+            data=(
+                row_dict["id"]
+                for row_dict in services_df.iter_rows(named=True)
+                for _ in services.list_errors(model=v1.Service, data=[{**row_dict}])
+            ),
+            schema={"service_id": pl.String},
+        ),
+        left_on="id",
+        right_on="service_id",
+        how="anti",
     )
-
-    structures_df = structures_df.assign(
-        score_qualite=structures_df["id"].map(service_scores).astype(float).fillna(0.0)
-    )
-
-    if "_extra" in services_df.columns:
-        services_df = services_df.assign(
-            extra=services_df["_extra"].apply(
-                lambda x: json.loads(x) if x is not None else None
-            )
+    # compute quality score for structures
+    # as the average of their services quality scores
+    structures_df = structures_df.join(
+        other=structures_df.join(
+            other=services_df.select(["structure_id", "score_qualite"]),
+            left_on="id",
+            right_on="structure_id",
+            how="left",
         )
-
+        .group_by("id")
+        .agg(
+            score_qualite=pl.col("score_qualite").mean().round(2).fill_null(0.0),
+        ),
+        on="id",
+        how="left",
+    )
     return structures_df, services_df
 
 
@@ -117,17 +147,16 @@ swap_sql = """
 
 
 def apply_load(
-    engine: sqla.Engine,  # manage transactions manually
-    structures_df: pd.DataFrame,
-    services_df: pd.DataFrame,
+    engine: sqla.Engine,
+    structures_df: pl.DataFrame,
+    services_df: pl.DataFrame,
 ):
-    logger.info("Setting up staging tables...")
     with engine.connect() as conn:
+        logger.info("Setting up staging tables...")
         conn.execute(sqla.text(setup_sql))
         conn.commit()
 
-    logger.info("Loading data into staging tables...")
-    with engine.connect() as conn:
+        logger.info("Loading data into staging tables...")
         for model, df in [
             (models.Structure, structures_df),
             (models.Service, services_df),
@@ -138,12 +167,23 @@ def apply_load(
                 c
                 for c in model.__table__.columns
                 if c.server_default is None
-                and c.name not in ["cluster_best_duplicate", "doublons"]
+                and c.name
+                not in ["cluster_best_duplicate", "doublons", "search_vector"]
             ]
+
+            df = df.to_pandas().replace({np.nan: None})
+
+            # decode arbitrary json data with pandas
+            # polars doesn't support this
+            if "_extra" in df.columns:
+                df = df.assign(
+                    extra=df["_extra"].apply(
+                        lambda x: json.loads(x) if x is not None else None
+                    )
+                )
 
             df = df.sort_values(by="id", ascending=True)
             df = df[[c.name for c in columns_list]]
-
             df.to_sql(
                 name=model.__tablename__,
                 schema="load_tmp",
@@ -154,22 +194,18 @@ def apply_load(
             )
         conn.commit()
 
-    # Analyze before swapping to have accurate statistics right away
-    logger.info("Analyzing staging tables...")
-    with engine.connect().execution_options(isolation_level="AUTOCOMMIT") as conn:
+        # Analyze before swapping to have accurate statistics right away
+        logger.info("Analyzing staging tables...")
         conn.execute(sqla.text("ANALYZE load_tmp.api__structures_v1"))
         conn.execute(sqla.text("ANALYZE load_tmp.api__services_v1"))
+        conn.commit()
 
-    # The following requires an exclusive lock (because of the swap).
-    # Therefore it SHOULD stay minimal. Any operations that can be
-    # done without an exclusive lock should be done in other transactions
-    # to prevent locking everything for too long.
-    logger.info("Swapping staging tables with production tables...")
-    with engine.connect() as conn:
+        # The following requires an exclusive lock (because of the swap).
+        # Keep it minimal and commit right after !
+        logger.info("Swapping staging tables with production tables...")
         conn.execute(sqla.text(swap_sql))
         conn.commit()
 
-    with engine.connect() as conn:
         structures_count = conn.execute(
             sqla.select(sqla.func.count()).select_from(models.Structure)
         )
@@ -179,32 +215,32 @@ def apply_load(
         logger.info(f"{structures_count.scalar()} structures loaded.")
         logger.info(f"{services_count.scalar()} services loaded.")
 
+    logger.info("Vacuuming...")
+    with engine.connect().execution_options(isolation_level="AUTOCOMMIT") as connection:
+        for model in [models.Structure, models.Service]:
+            connection.execute(sqla.text(f"VACUUM ANALYZE {model.__tablename__}"))
+
 
 def load(db_session: orm.Session, path: Path):
-    structures_df, services_df = [
-        pd.read_parquet(path / filename).replace({np.nan: None})
-        for filename in ("structures.parquet", "services.parquet")
-    ]
+    # use engine for fine-grained control over transactions
+    engine = db_session.get_bind().engine
+
+    structures_df = pl.read_parquet(path / "structures.parquet")
+    services_df = pl.read_parquet(path / "services.parquet")
+
+    with engine.connect() as conn:
+        cities_df = pl.read_database(sqla.select(Commune.code), connection=conn)
 
     structures_df, services_df = prepare_load(
-        db_session=db_session,
+        cities_df=cities_df,
         structures_df=structures_df,
         services_df=services_df,
     )
 
     apply_load(
-        engine=db_session.get_bind().engine,
+        engine=engine,
         structures_df=structures_df,
         services_df=services_df,
     )
 
     build_search_index(db_session=db_session)
-
-    logger.info("Vacuuming...")
-    with (
-        db_session.get_bind()
-        .engine.connect()
-        .execution_options(isolation_level="AUTOCOMMIT") as connection
-    ):
-        for model in [models.Structure, models.Service]:
-            connection.execute(sqla.text(f"VACUUM ANALYZE {model.__tablename__}"))

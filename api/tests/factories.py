@@ -117,4 +117,5 @@ class ServiceFactory(factory.alchemy.SQLAlchemyModelFactory):
         if not create:
             return
 
-        services.build_search_index(ServiceFactory._meta.sqlalchemy_session)
+        db_session = ServiceFactory._meta.sqlalchemy_session
+        services.build_search_index(db_session)
