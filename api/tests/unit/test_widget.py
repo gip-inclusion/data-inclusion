@@ -427,7 +427,7 @@ def test_widget_saves_search_event_origin(
 @pytest.mark.parametrize(
     ("query", "expected_pagination"),
     [
-        ("size=1", False),
+        ("size=1", True),
         ("size=1&display_pagination=true", True),
         ("x=1&y=1", True),
         ("x=1&y=1&display_pagination=false", False),

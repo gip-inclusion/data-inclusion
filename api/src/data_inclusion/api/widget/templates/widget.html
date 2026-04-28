@@ -10,8 +10,13 @@
                   hx-swap="outerHTML"
                   hx-trigger="change from:select, commune-selected"
                   hx-push-url="true">
-                <input type="hidden" name="x" value="{{ query_params_x }}">
-                <input type="hidden" name="y" value="{{ query_params_y }}">
+                <input type="hidden" name="size" value="{{ query_params_size }}">
+                {% if query_params_x is not none %}
+                    <input type="hidden" name="x" value="{{ query_params_x }}">
+                {% endif %}
+                {% if query_params_y is not none %}
+                    <input type="hidden" name="y" value="{{ query_params_y }}">
+                {% endif %}
                 <input type="hidden"
                        name="score_qualite_minimum"
                        value="{{ query_params_score_qualite_minimum }}">
