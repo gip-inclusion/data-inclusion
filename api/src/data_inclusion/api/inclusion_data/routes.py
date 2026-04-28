@@ -217,7 +217,6 @@ def search_services_endpoint(
     "/search",
     response_model=pagination.Page[schemas.SearchResult],
     dependencies=[auth.authenticated(required_scopes=["api"])],
-    include_in_schema=False,
     description=(
         "[BETA] Endpoint de recherche expérimental. Ne pas utiliser en production."
     ),

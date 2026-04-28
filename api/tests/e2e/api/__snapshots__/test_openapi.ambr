@@ -1835,6 +1835,42 @@
           "title": "Page[ListedStructure]",
           "type": "object"
         },
+        "Page_SearchResult_": {
+          "properties": {
+            "items": {
+              "items": {
+                "$ref": "#/components/schemas/SearchResult"
+              },
+              "title": "Items",
+              "type": "array"
+            },
+            "page": {
+              "title": "Page",
+              "type": "integer"
+            },
+            "pages": {
+              "title": "Pages",
+              "type": "integer"
+            },
+            "size": {
+              "title": "Size",
+              "type": "integer"
+            },
+            "total": {
+              "title": "Total",
+              "type": "integer"
+            }
+          },
+          "required": [
+            "items",
+            "total",
+            "page",
+            "size",
+            "pages"
+          ],
+          "title": "Page[SearchResult]",
+          "type": "object"
+        },
         "Page_ServiceSearchResult_": {
           "properties": {
             "items": {
@@ -2099,6 +2135,48 @@
           ],
           "title": "ReseauPorteur",
           "type": "string"
+        },
+        "SearchResult": {
+          "properties": {
+            "data": {
+              "anyOf": [
+                {
+                  "$ref": "#/components/schemas/DetailedService"
+                },
+                {
+                  "$ref": "#/components/schemas/DetailedStructure"
+                }
+              ],
+              "title": "Data"
+            },
+            "distance": {
+              "anyOf": [
+                {
+                  "type": "integer"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Distance"
+            },
+            "score_recherche": {
+              "anyOf": [
+                {
+                  "type": "number"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Score Recherche"
+            }
+          },
+          "required": [
+            "data"
+          ],
+          "title": "SearchResult",
+          "type": "object"
         },
         "Service": {
           "properties": {
@@ -3367,6 +3445,341 @@
           "summary": "Récupérer le référentiel des types de services",
           "tags": [
             "v1 | Documentation"
+          ]
+        }
+      },
+      "/api/v1/search": {
+        "get": {
+          "description": "[BETA] Endpoint de recherche expérimental. Ne pas utiliser en production.",
+          "operationId": "search_endpoint_api_v1_search_get",
+          "parameters": [
+            {
+              "description": "Page number",
+              "in": "query",
+              "name": "page",
+              "required": false,
+              "schema": {
+                "default": 1,
+                "description": "Page number",
+                "minimum": 1,
+                "title": "Page",
+                "type": "integer"
+              }
+            },
+            {
+              "description": "Page size",
+              "in": "query",
+              "name": "size",
+              "required": false,
+              "schema": {
+                "default": 5000,
+                "description": "Page size",
+                "maximum": 10000,
+                "minimum": 1,
+                "title": "Size",
+                "type": "integer"
+              }
+            },
+            {
+              "in": "query",
+              "name": "q",
+              "required": true,
+              "schema": {
+                "title": "Q",
+                "type": "string"
+              }
+            },
+            {
+              "description": "Une liste d'identifiants de source.\n                La liste des identifiants de source est disponible sur le endpoint\n                dédié. Les résultats seront limités aux sources spécifiées.\n            ",
+              "in": "query",
+              "name": "sources",
+              "required": false,
+              "schema": {
+                "anyOf": [
+                  {
+                    "items": {
+                      "type": "string"
+                    },
+                    "type": "array"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "description": "Une liste d'identifiants de source.\n                La liste des identifiants de source est disponible sur le endpoint\n                dédié. Les résultats seront limités aux sources spécifiées.\n            ",
+                "title": "Sources"
+              }
+            },
+            {
+              "description": "Code insee de la commune considérée.\n                Si fourni, les résultats inclus également les services proches de\n                cette commune. Les résultats sont triés par ordre de distance\n                croissante.\n            ",
+              "in": "query",
+              "name": "code_commune",
+              "required": false,
+              "schema": {
+                "anyOf": [
+                  {
+                    "maxLength": 5,
+                    "minLength": 5,
+                    "pattern": "^\\w{5}$",
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "description": "Code insee de la commune considérée.\n                Si fourni, les résultats inclus également les services proches de\n                cette commune. Les résultats sont triés par ordre de distance\n                croissante.\n            ",
+                "title": "Code Commune"
+              }
+            },
+            {
+              "description": "Code insee géographique d'une région.",
+              "in": "query",
+              "name": "code_region",
+              "required": false,
+              "schema": {
+                "anyOf": [
+                  {
+                    "$ref": "#/components/schemas/RegionCodeEnum"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "description": "Code insee géographique d'une région.",
+                "title": "Code Region"
+              }
+            },
+            {
+              "in": "query",
+              "name": "slug_region",
+              "required": false,
+              "schema": {
+                "anyOf": [
+                  {
+                    "$ref": "#/components/schemas/RegionSlugEnum"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "title": "Slug Region"
+              }
+            },
+            {
+              "description": "Code insee géographique d'un département.",
+              "in": "query",
+              "name": "code_departement",
+              "required": false,
+              "schema": {
+                "anyOf": [
+                  {
+                    "$ref": "#/components/schemas/DepartementCodeEnum"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "description": "Code insee géographique d'un département.",
+                "title": "Code Departement"
+              }
+            },
+            {
+              "in": "query",
+              "name": "slug_departement",
+              "required": false,
+              "schema": {
+                "anyOf": [
+                  {
+                    "$ref": "#/components/schemas/DepartementSlugEnum"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "title": "Slug Departement"
+              }
+            },
+            {
+              "description": "Latitude du point de recherche.\n                Nécessite également de fournir `lon`.\n                Les résultats sont triés par ordre de distance croissante à ce point.\n            ",
+              "in": "query",
+              "name": "lat",
+              "required": false,
+              "schema": {
+                "anyOf": [
+                  {
+                    "type": "number"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "description": "Latitude du point de recherche.\n                Nécessite également de fournir `lon`.\n                Les résultats sont triés par ordre de distance croissante à ce point.\n            ",
+                "title": "Lat"
+              }
+            },
+            {
+              "description": "Longitude du point de recherche.\n                Nécessite également de fournir `lat`.\n                Les résultats sont triés par ordre de distance croissante à ce point.\n            ",
+              "in": "query",
+              "name": "lon",
+              "required": false,
+              "schema": {
+                "anyOf": [
+                  {
+                    "type": "number"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "description": "Longitude du point de recherche.\n                Nécessite également de fournir `lat`.\n                Les résultats sont triés par ordre de distance croissante à ce point.\n            ",
+                "title": "Lon"
+              }
+            },
+            {
+              "description": "Une liste de thématique.\n                Chaque résultat renvoyé a (au moins) une thématique dans cette liste.",
+              "in": "query",
+              "name": "thematiques",
+              "required": false,
+              "schema": {
+                "anyOf": [
+                  {
+                    "items": {
+                      "anyOf": [
+                        {
+                          "$ref": "#/components/schemas/Thematique"
+                        },
+                        {
+                          "$ref": "#/components/schemas/Categorie"
+                        }
+                      ]
+                    },
+                    "type": "array"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "description": "Une liste de thématique.\n                Chaque résultat renvoyé a (au moins) une thématique dans cette liste.",
+                "title": "Thematiques"
+              }
+            },
+            {
+              "description": "Une liste de frais.\n                Chaque résultat renvoyé a (au moins) un frais dans cette liste.",
+              "in": "query",
+              "name": "frais",
+              "required": false,
+              "schema": {
+                "anyOf": [
+                  {
+                    "items": {
+                      "$ref": "#/components/schemas/Frais"
+                    },
+                    "type": "array"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "description": "Une liste de frais.\n                Chaque résultat renvoyé a (au moins) un frais dans cette liste.",
+                "title": "Frais"
+              }
+            },
+            {
+              "description": "Une liste de modes d'accueil.\n                Chaque résultat renvoyé a (au moins) un mode d'accueil dans cette liste.\n            ",
+              "in": "query",
+              "name": "modes_accueil",
+              "required": false,
+              "schema": {
+                "anyOf": [
+                  {
+                    "items": {
+                      "$ref": "#/components/schemas/ModeAccueil"
+                    },
+                    "type": "array"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "description": "Une liste de modes d'accueil.\n                Chaque résultat renvoyé a (au moins) un mode d'accueil dans cette liste.\n            ",
+                "title": "Modes Accueil"
+              }
+            },
+            {
+              "description": "Une liste de profils.\n                Chaque résultat renvoyé a (au moins) un profil dans cette liste.\n            ",
+              "in": "query",
+              "name": "publics",
+              "required": false,
+              "schema": {
+                "anyOf": [
+                  {
+                    "items": {
+                      "$ref": "#/components/schemas/Public"
+                    },
+                    "type": "array"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "description": "Une liste de profils.\n                Chaque résultat renvoyé a (au moins) un profil dans cette liste.\n            ",
+                "title": "Publics"
+              }
+            },
+            {
+              "description": "Une liste de typologies de service.\n                Chaque résultat renvoyé a (au moins) une typologie dans cette liste.",
+              "in": "query",
+              "name": "types",
+              "required": false,
+              "schema": {
+                "anyOf": [
+                  {
+                    "items": {
+                      "$ref": "#/components/schemas/TypeService"
+                    },
+                    "type": "array"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "description": "Une liste de typologies de service.\n                Chaque résultat renvoyé a (au moins) une typologie dans cette liste.",
+                "title": "Types"
+              }
+            }
+          ],
+          "responses": {
+            "200": {
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/Page_SearchResult_"
+                  }
+                }
+              },
+              "description": "Successful Response"
+            },
+            "422": {
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/HTTPValidationError"
+                  }
+                }
+              },
+              "description": "Validation Error"
+            }
+          },
+          "security": [
+            {
+              "HTTPBearer": [
+                "api"
+              ]
+            }
+          ],
+          "summary": "Search Endpoint",
+          "tags": [
+            "Données"
           ]
         }
       },
