@@ -25,24 +25,41 @@ def before_send(event, hint):
     return event
 
 
-def fill_sentry_scope(context):
-    github_base_url = "https://github.com/gip-inclusion/data-inclusion"
+def init(context):
+    dsn = os.getenv("AIRFLOW__SENTRY__SENTRY_DSN")
+    if not dsn:
+        return
+    if not sentry_sdk.is_initialized():
+        sentry_sdk.init(
+            dsn=dsn,
+            release=os.getenv("AIRFLOW__SENTRY__RELEASE"),
+            traces_sample_rate=float(
+                os.getenv("AIRFLOW__SENTRY__TRACES_SAMPLE_RATE", "0.1")
+            ),
+            before_send=before_send,
+        )
 
-    dag_id = context.get("dag").dag_id
-    task_instance = context.get("task_instance")
-    task_id = task_instance.task_id
-    commit_sha = os.getenv("AIRFLOW__SENTRY__RELEASE", None)
+    with sentry_sdk.new_scope() as scope:
+        dag_id = context.get("dag").dag_id
+        task_id = context.get("task_instance").task_id
+        task_instance = context.get("task_instance")
+        commit_sha = os.getenv("AIRFLOW__SENTRY__RELEASE", None)
+        scope.set_tag("dag_id", dag_id)
+        scope.set_tag("task_id", task_id)
 
-    scope = sentry_sdk.get_current_scope()
-    scope.set_tag("dag_id", dag_id)
-    scope.set_tag("task_id", task_id)
-    # Fine-tune the fingerprint to force de-grouping issues if not from
-    # the same DAG
-    scope.fingerprint = ["{{ default }}", dag_id]
-    scope.set_context(
-        "custom",
-        {
-            "airflow_logs_url": task_instance.log_url,
-            "github_commit_url": f"{github_base_url}/commit/{commit_sha}",
-        },
-    )
+        # Fine-tune the fingerprint to force de-grouping issues if not from
+        # the same DAG
+        scope.fingerprint = ["{{ default }}", dag_id]
+        scope.set_context(
+            "custom",
+            {
+                "airflow_logs_url": task_instance.log_url,
+                "github_commit_url": (
+                    "https://github.com/gip-inclusion/"
+                    f"data-inclusion/commit/{commit_sha}"
+                ),
+            },
+        )
+
+        sentry_sdk.capture_exception(context.get("exception"))
+        sentry_sdk.flush(timeout=5)

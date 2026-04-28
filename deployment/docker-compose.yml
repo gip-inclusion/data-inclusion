@@ -20,10 +20,8 @@ x-airflow-common:
     AIRFLOW__CORE__PARALLELISM: 4
     AIRFLOW__DATABASE__SQL_ALCHEMY_CONN: postgresql://airflow:airflow@airflow-db:5432/airflow
     AIRFLOW__SCHEDULER__MAX_TIS_PER_QUERY: 0
-    AIRFLOW__SENTRY__BEFORE_SEND: data_inclusion.pipeline.common.sentry.before_send
     AIRFLOW__SENTRY__RELEASE: ${AIRFLOW__SENTRY__RELEASE}
     AIRFLOW__SENTRY__SENTRY_DSN: ${AIRFLOW__SENTRY__SENTRY_DSN}
-    AIRFLOW__SENTRY__SENTRY_ON: 'true'
     AIRFLOW__SENTRY__TRACES_SAMPLE_RATE: 0.1
     # Connections
     AIRFLOW_CONN_PG: ${AIRFLOW_CONN_PG}
