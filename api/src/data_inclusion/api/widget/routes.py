@@ -190,9 +190,9 @@ def widget(
         fastapi.Query(description="Affiche ou masque le filtre par public cible"),
     ] = True,
     display_pagination: Annotated[
-        bool | None,
+        bool,
         fastapi.Query(description="Affiche ou masque les contrôles de pagination"),
-    ] = None,
+    ] = True,
     code_commune: Annotated[
         str | None,
         fastapi.Query(
@@ -236,20 +236,20 @@ def widget(
         ),
     ] = False,
     size: Annotated[
-        int | None,
+        int,
         fastapi.Query(
-            description="Nombre de services par ligne, sans pagination. "
-            "Si non défini, utilise la grille x*y."
+            description="Nombre de services par page. "
+            "Ignoré si x et y sont définis (la grille x*y est alors utilisée)."
         ),
-    ] = None,
-    x: Annotated[
-        int,
-        fastapi.Query(description="Nombre de colonnes de résultats"),
     ] = 5,
+    x: Annotated[
+        int | None,
+        fastapi.Query(description="Nombre de colonnes de résultats"),
+    ] = None,
     y: Annotated[
-        int,
+        int | None,
         fastapi.Query(description="Nombre de lignes de résultats"),
-    ] = 2,
+    ] = None,
     hx_request: Annotated[bool, fastapi.Header()] = False,
     page: Annotated[int, pydantic.Field(ge=1)] = 1,
     db_session=fastapi.Depends(db.get_session),
@@ -271,10 +271,8 @@ def widget(
     else:
         thematiques_for_query = list_thematiques(categories) if categories else None
 
-    if display_pagination is None:
-        display_pagination = size is None
-
-    effective_size = size if size is not None else x * y
+    grid_mode = x is not None and y is not None
+    effective_size = x * y if grid_mode else size
     results = get_results(
         db_session=db_session,
         page=page,
@@ -325,7 +323,7 @@ def widget(
                 "page": results["page"],
                 "pages": results["pages"],
                 "x": x,
-                "inline_mode": size is not None,
+                "inline_mode": not grid_mode,
                 "display_pagination": display_pagination,
             },
         )
@@ -346,6 +344,7 @@ def widget(
             "commune_label": commune_label,
             "query_params_publics": publics,
             "query_params_categories": categories,
+            "query_params_size": size,
             "query_params_x": x,
             "query_params_y": y,
             "query_params_score_qualite_minimum": score_qualite_minimum,
@@ -365,7 +364,7 @@ def widget(
             "page": results["page"],
             "pages": results["pages"],
             "x": x,
-            "inline_mode": size is not None,
+            "inline_mode": not grid_mode,
             "display_pagination": display_pagination,
         },
     )

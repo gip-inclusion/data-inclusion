@@ -33,8 +33,13 @@
                     hx-swap="outerHTML"
                     hx-trigger="change from:select, commune-selected"
                     hx-push-url="true">
-                  <input type="hidden" name="x" value="2">
-                  <input type="hidden" name="y" value="1">
+                  <input type="hidden" name="size" value="5">
+                  
+                      <input type="hidden" name="x" value="2">
+                  
+                  
+                      <input type="hidden" name="y" value="1">
+                  
                   <input type="hidden"
                          name="score_qualite_minimum"
                          value="0.8">
@@ -423,8 +428,13 @@
                     hx-swap="outerHTML"
                     hx-trigger="change from:select, commune-selected"
                     hx-push-url="true">
-                  <input type="hidden" name="x" value="2">
-                  <input type="hidden" name="y" value="1">
+                  <input type="hidden" name="size" value="5">
+                  
+                      <input type="hidden" name="x" value="2">
+                  
+                  
+                      <input type="hidden" name="y" value="1">
+                  
                   <input type="hidden"
                          name="score_qualite_minimum"
                          value="0.8">

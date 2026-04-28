@@ -27,4 +27,4 @@ def test_widget(page: pw.Page):
 
     card_locator = page.locator(".di-card")
     pw.expect(card_locator.first).to_be_visible(timeout=1000)
-    assert card_locator.count() == 10
+    assert card_locator.count() == 5
