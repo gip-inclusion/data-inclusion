@@ -1672,8 +1672,8 @@ def test_search_by_(api_client, field, value, q, expected):
     ],
 )
 def test_search_weights(api_client, q, left, right, op):
-    service_1 = factories.ServiceFactory(id="1", **left)
-    service_2 = factories.ServiceFactory(id="2", **right)
+    service_1 = factories.ServiceFactory(id="1", score_qualite=1.0, **left)
+    service_2 = factories.ServiceFactory(id="2", score_qualite=1.0, **right)
 
     response = api_client.get(SEARCH_ENDPOINT.url, params={"q": q})
 

@@ -393,23 +393,22 @@ def search_query(
         query = query.filter(models.Structure.source != "soliguide")
 
     plainto_tsquery = sqla.func.plainto_tsquery("french", params.q)
-    query = query.filter(models.Service.search_vector.bool_op("@@")(plainto_tsquery))
-    query = query.add_columns(
-        sqla.func.round(
-            sqla.cast(
-                sqla.func.ts_rank_cd(
-                    models.Service.search_vector,
-                    plainto_tsquery,
-                    32,
-                ),
-                sqla.Numeric,
+    score_recherche_expr = sqla.func.round(
+        sqla.cast(
+            sqla.func.ts_rank_cd(
+                models.Service.search_vector,
+                plainto_tsquery,
+                32,
             ),
-            2,
-        ).label("score_recherche"),
-    )
+            sqla.Numeric,
+        ),
+        2,
+    ).label("score_recherche")
 
+    query = query.filter(models.Service.search_vector.bool_op("@@")(plainto_tsquery))
+    query = query.add_columns(score_recherche_expr)
     query = query.order_by(
-        sqla.column("score_recherche").desc(),
+        (sqla.func.round(score_recherche_expr * 10) / 2).desc(),
         models.Service.score_qualite.desc(),
     )
 
