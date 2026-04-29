@@ -395,9 +395,17 @@ def search_query(
     plainto_tsquery = sqla.func.plainto_tsquery("french", params.q)
     query = query.filter(models.Service.search_vector.bool_op("@@")(plainto_tsquery))
     query = query.add_columns(
-        sqla.func.ts_rank_cd(models.Service.search_vector, plainto_tsquery, 32).label(
-            "score_recherche"
-        ),
+        sqla.func.round(
+            sqla.cast(
+                sqla.func.ts_rank_cd(
+                    models.Service.search_vector,
+                    plainto_tsquery,
+                    32,
+                ),
+                sqla.Numeric,
+            ),
+            2,
+        ).label("score_recherche"),
     )
 
     query = query.order_by(
@@ -443,14 +451,13 @@ def build_search_index(
         )
         UPDATE api__services_v1
         SET search_vector =
-            SETWEIGHT(TO_TSVECTOR('french', api__structures_v1.nom),                                                   'A') ||
-            SETWEIGHT(TO_TSVECTOR('french', api__services_v1.nom),                                                     'B') ||
-            SETWEIGHT(TO_TSVECTOR('french', COALESCE(api__services_v1.description, '')),                               'B') ||
-            SETWEIGHT(TO_TSVECTOR('french', COALESCE(api__structures_v1.description, '')),                             'B') ||
-            SETWEIGHT(TO_TSVECTOR('french', COALESCE(thematiques.labels, '')),                                         'C') ||
-            SETWEIGHT(TO_TSVECTOR('french', COALESCE(publics.labels, '')),                                             'C') ||
-            SETWEIGHT(TO_TSVECTOR('french', COALESCE(ARRAY_TO_STRING(api__structures_v1.reseaux_porteurs, ', '), '')), 'D') ||
-            SETWEIGHT(TO_TSVECTOR('french', COALESCE(types.label, '')),                                                'D')
+            SETWEIGHT(TO_TSVECTOR('french', COALESCE(api__structures_v1.nom,              '')), 'A') ||
+            SETWEIGHT(TO_TSVECTOR('french', COALESCE(api__services_v1.nom,                '')), 'A') ||
+            SETWEIGHT(TO_TSVECTOR('french', COALESCE(thematiques.labels,                  '')), 'B') ||
+            SETWEIGHT(TO_TSVECTOR('french', COALESCE(publics.labels,                      '')), 'B') ||
+            SETWEIGHT(TO_TSVECTOR('french', COALESCE(api__services_v1.publics_precisions, '')), 'B') ||
+            SETWEIGHT(TO_TSVECTOR('french', COALESCE(api__services_v1.description,        '')), 'C') ||
+            SETWEIGHT(TO_TSVECTOR('french', COALESCE(api__structures_v1.description,      '')), 'C')
         FROM api__structures_v1
         LEFT JOIN thematiques ON TRUE
         LEFT JOIN publics ON TRUE

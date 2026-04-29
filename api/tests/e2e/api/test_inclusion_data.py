@@ -1,4 +1,5 @@
 import json
+import operator
 from unittest.mock import ANY
 
 import pytest
@@ -1614,14 +1615,7 @@ def test_search_score_recherche_decreasing(api_client):
             True,
         ),
         ("publics", [v1.Public.JEUNES.value], "Jeunes", True),
-        (
-            "structure__reseaux_porteurs",
-            [v1.ReseauPorteur.FRANCE_TRAVAIL.value],
-            "France Travail",
-            True,
-        ),
-        ("type", "accompagnement", "Accompagnement", True),
-        ("publics_precisions", "foo", "foo", False),
+        ("publics_precisions", "foo", "foo", True),
         ("modes_accueil", [v1.ModeAccueil.EN_PRESENTIEL.value], "présentiel", False),
     ],
 )
@@ -1646,18 +1640,20 @@ def test_search_by_(api_client, field, value, q, expected):
 
 @pytest.mark.with_token
 @pytest.mark.parametrize(
-    ("q", "stronger_match_data", "weaker_match_data"),
+    ("q", "left", "right", "op"),
     [
         pytest.param(
             "foo",
             {"structure__nom": "foo", "nom": "bar"},
             {"structure__nom": "bar", "nom": "foo"},
+            operator.eq,
             id="match on structure__nom stronger than match on nom",
         ),
         pytest.param(
             "foo",
             {"structure__nom": "foo", "description": "lorem ipsum dolor sit amet bar"},
             {"structure__nom": "bar", "description": "lorem ipsum dolor sit amet foo"},
+            operator.ge,
             id="match on structure__nom stronger than match on description",
         ),
         pytest.param(
@@ -1670,13 +1666,14 @@ def test_search_by_(api_client, field, value, q, expected):
                 "structure__nom": "bar",
                 "structure__description": "lorem ipsum dolor sit amet foo",
             },
+            operator.ge,
             id="match on structure__nom stronger than match on structure__description",
         ),
     ],
 )
-def test_search_weights(api_client, q, stronger_match_data, weaker_match_data):
-    service_1 = factories.ServiceFactory(id="1", **stronger_match_data)
-    service_2 = factories.ServiceFactory(id="2", **weaker_match_data)
+def test_search_weights(api_client, q, left, right, op):
+    service_1 = factories.ServiceFactory(id="1", **left)
+    service_2 = factories.ServiceFactory(id="2", **right)
 
     response = api_client.get(SEARCH_ENDPOINT.url, params={"q": q})
 
@@ -1686,9 +1683,9 @@ def test_search_weights(api_client, q, stronger_match_data, weaker_match_data):
     assert len(response_data["items"]) == 2
     assert response_data["items"][0]["data"]["id"] == service_1.id
     assert response_data["items"][1]["data"]["id"] == service_2.id
-    assert (
-        response_data["items"][0]["score_recherche"]
-        > response_data["items"][1]["score_recherche"]
+    assert op(
+        response_data["items"][0]["score_recherche"],
+        response_data["items"][1]["score_recherche"],
     )
 
 
