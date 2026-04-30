@@ -1540,7 +1540,7 @@ def test_show_extra_data_if_flag_provided(
     ("nom_structure", "q", "expected"),
     [
         ("agefiph", "", False),
-        ("agefiph", None, False),
+        ("agefiph", None, True),
         ("agefiph", "agefiph", True),
         ("L'Agefiph", "agefiph", True),
         ("L'Agefiph Paris", "agefiph", True),
@@ -1555,7 +1555,8 @@ def test_show_extra_data_if_flag_provided(
 def test_search_by_structure_name(api_client, nom_structure, q, expected):
     factories.ServiceFactory(structure__nom=nom_structure)
 
-    response = api_client.get(SEARCH_ENDPOINT.url, params={"q": q})
+    params = {"q": q} if q is not None else {}
+    response = api_client.get(SEARCH_ENDPOINT.url, params=params)
 
     assert response.status_code == 200
     response_data = response.json()

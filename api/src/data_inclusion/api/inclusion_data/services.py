@@ -404,6 +404,10 @@ def search_query(
         )
         query = query.add_columns(score_recherche_expr)
         query = query.order_by((sqla.func.round(score_recherche_expr * 10) / 2).desc())
+    else:
+        query = query.add_columns(
+            sqla.null().cast(sqla.Numeric).label("score_recherche")
+        )
 
     query = query.order_by(models.Service.score_qualite.desc())
 
