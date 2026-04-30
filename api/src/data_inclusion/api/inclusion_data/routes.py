@@ -217,15 +217,19 @@ def search_services_endpoint(
     "/search",
     response_model=pagination.Page[schemas.SearchResult],
     dependencies=[auth.authenticated(required_scopes=["api"])],
-    description=(
-        "[BETA] Endpoint de recherche expérimental. Ne pas utiliser en production."
-    ),
+    summary="[BETA] Recherche expérimentale. Ne pas utiliser en production.",
 )
 def search_endpoint(
     request: fastapi.Request,
     params: Annotated[parameters.SearchQueryParams, fastapi.Query()],
     db_session=fastapi.Depends(db.get_session),
 ):
+    """
+    Recherche **expérimentale** par mots-clés dans les champs suivants :
+        1. nom structure et service
+        2. thématiques et publics
+        3. description service et structure
+    """
     query, mapping = services.search_query(
         params=params,
         include_soliguide=soliguide.is_allowed_user(request),

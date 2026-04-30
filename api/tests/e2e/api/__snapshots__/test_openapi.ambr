@@ -3450,7 +3450,7 @@
       },
       "/api/v1/search": {
         "get": {
-          "description": "[BETA] Endpoint de recherche expérimental. Ne pas utiliser en production.",
+          "description": "Recherche **expérimentale** par mots-clés dans les champs suivants :\n    1. nom structure et service\n    2. thématiques et publics\n    3. description service et structure",
           "operationId": "search_endpoint_api_v1_search_get",
           "parameters": [
             {
@@ -3481,12 +3481,21 @@
               }
             },
             {
+              "description": "Termes à rechercher.",
               "in": "query",
               "name": "q",
-              "required": true,
+              "required": false,
               "schema": {
-                "title": "Q",
-                "type": "string"
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "description": "Termes à rechercher.",
+                "title": "Q"
               }
             },
             {
@@ -3511,7 +3520,7 @@
               }
             },
             {
-              "description": "Code insee de la commune considérée.\n                Si fourni, les résultats inclus également les services proches de\n                cette commune. Les résultats sont triés par ordre de distance\n                croissante.\n            ",
+              "description": "Code insee de la commune considérée.",
               "in": "query",
               "name": "code_commune",
               "required": false,
@@ -3527,7 +3536,7 @@
                     "type": "null"
                   }
                 ],
-                "description": "Code insee de la commune considérée.\n                Si fourni, les résultats inclus également les services proches de\n                cette commune. Les résultats sont triés par ordre de distance\n                croissante.\n            ",
+                "description": "Code insee de la commune considérée.",
                 "title": "Code Commune"
               }
             },
@@ -3706,7 +3715,7 @@
               }
             },
             {
-              "description": "Une liste de profils.\n                Chaque résultat renvoyé a (au moins) un profil dans cette liste.\n            ",
+              "description": "Une liste de publics.\n                Chaque résultat renvoyé a (au moins) un public dans cette liste.\n            ",
               "in": "query",
               "name": "publics",
               "required": false,
@@ -3722,7 +3731,7 @@
                     "type": "null"
                   }
                 ],
-                "description": "Une liste de profils.\n                Chaque résultat renvoyé a (au moins) un profil dans cette liste.\n            ",
+                "description": "Une liste de publics.\n                Chaque résultat renvoyé a (au moins) un public dans cette liste.\n            ",
                 "title": "Publics"
               }
             },
@@ -3745,6 +3754,24 @@
                 ],
                 "description": "Une liste de typologies de service.\n                Chaque résultat renvoyé a (au moins) une typologie dans cette liste.",
                 "title": "Types"
+              }
+            },
+            {
+              "description": "Score de qualité minimum.\n                Les résultats renvoyés ont un score de qualité supérieur ou égal à ce\n                score. (voir [documentation](https://gip-inclusion.notion.site/Conception-du-score-de-qualit-17b5f321b60480a1b79bf4a17b4567dd?pvs=4))",
+              "in": "query",
+              "name": "score_qualite_minimum",
+              "required": false,
+              "schema": {
+                "anyOf": [
+                  {
+                    "type": "number"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "description": "Score de qualité minimum.\n                Les résultats renvoyés ont un score de qualité supérieur ou égal à ce\n                score. (voir [documentation](https://gip-inclusion.notion.site/Conception-du-score-de-qualit-17b5f321b60480a1b79bf4a17b4567dd?pvs=4))",
+                "title": "Score Qualite Minimum"
               }
             }
           ],
@@ -3777,7 +3804,7 @@
               ]
             }
           ],
-          "summary": "Search Endpoint",
+          "summary": "[BETA] Recherche expérimentale. Ne pas utiliser en production.",
           "tags": [
             "Données"
           ]
@@ -3964,7 +3991,7 @@
               }
             },
             {
-              "description": "Une liste de profils.\n                Chaque résultat renvoyé a (au moins) un profil dans cette liste.\n            ",
+              "description": "Une liste de publics.\n                Chaque résultat renvoyé a (au moins) un public dans cette liste.\n            ",
               "in": "query",
               "name": "publics",
               "required": false,
@@ -3980,7 +4007,7 @@
                     "type": "null"
                   }
                 ],
-                "description": "Une liste de profils.\n                Chaque résultat renvoyé a (au moins) un profil dans cette liste.\n            ",
+                "description": "Une liste de publics.\n                Chaque résultat renvoyé a (au moins) un public dans cette liste.\n            ",
                 "title": "Publics"
               }
             },
@@ -4024,7 +4051,7 @@
               }
             },
             {
-              "description": "[BETA] Score de qualité minimum.\n                Les résultats renvoyés ont un score de qualité supérieur ou égal à ce\n                score. (voir [documentation](https://gip-inclusion.notion.site/Conception-du-score-de-qualit-17b5f321b60480a1b79bf4a17b4567dd?pvs=4))",
+              "description": "Score de qualité minimum.\n                Les résultats renvoyés ont un score de qualité supérieur ou égal à ce\n                score. (voir [documentation](https://gip-inclusion.notion.site/Conception-du-score-de-qualit-17b5f321b60480a1b79bf4a17b4567dd?pvs=4))",
               "in": "query",
               "name": "score_qualite_minimum",
               "required": false,
@@ -4037,7 +4064,7 @@
                     "type": "null"
                   }
                 ],
-                "description": "[BETA] Score de qualité minimum.\n                Les résultats renvoyés ont un score de qualité supérieur ou égal à ce\n                score. (voir [documentation](https://gip-inclusion.notion.site/Conception-du-score-de-qualit-17b5f321b60480a1b79bf4a17b4567dd?pvs=4))",
+                "description": "Score de qualité minimum.\n                Les résultats renvoyés ont un score de qualité supérieur ou égal à ce\n                score. (voir [documentation](https://gip-inclusion.notion.site/Conception-du-score-de-qualit-17b5f321b60480a1b79bf4a17b4567dd?pvs=4))",
                 "title": "Score Qualite Minimum"
               }
             },
@@ -4287,7 +4314,7 @@
               }
             },
             {
-              "description": "Une liste de profils.\n                Chaque résultat renvoyé a (au moins) un profil dans cette liste.\n            ",
+              "description": "Une liste de publics.\n                Chaque résultat renvoyé a (au moins) un public dans cette liste.\n            ",
               "in": "query",
               "name": "publics",
               "required": false,
@@ -4303,7 +4330,7 @@
                     "type": "null"
                   }
                 ],
-                "description": "Une liste de profils.\n                Chaque résultat renvoyé a (au moins) un profil dans cette liste.\n            ",
+                "description": "Une liste de publics.\n                Chaque résultat renvoyé a (au moins) un public dans cette liste.\n            ",
                 "title": "Publics"
               }
             },
@@ -4368,7 +4395,7 @@
               }
             },
             {
-              "description": "[BETA] Score de qualité minimum.\n                Les résultats renvoyés ont un score de qualité supérieur ou égal à ce\n                score. (voir [documentation](https://gip-inclusion.notion.site/Conception-du-score-de-qualit-17b5f321b60480a1b79bf4a17b4567dd?pvs=4))",
+              "description": "Score de qualité minimum.\n                Les résultats renvoyés ont un score de qualité supérieur ou égal à ce\n                score. (voir [documentation](https://gip-inclusion.notion.site/Conception-du-score-de-qualit-17b5f321b60480a1b79bf4a17b4567dd?pvs=4))",
               "in": "query",
               "name": "score_qualite_minimum",
               "required": false,
@@ -4381,7 +4408,7 @@
                     "type": "null"
                   }
                 ],
-                "description": "[BETA] Score de qualité minimum.\n                Les résultats renvoyés ont un score de qualité supérieur ou égal à ce\n                score. (voir [documentation](https://gip-inclusion.notion.site/Conception-du-score-de-qualit-17b5f321b60480a1b79bf4a17b4567dd?pvs=4))",
+                "description": "Score de qualité minimum.\n                Les résultats renvoyés ont un score de qualité supérieur ou égal à ce\n                score. (voir [documentation](https://gip-inclusion.notion.site/Conception-du-score-de-qualit-17b5f321b60480a1b79bf4a17b4567dd?pvs=4))",
                 "title": "Score Qualite Minimum"
               }
             }

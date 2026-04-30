@@ -176,16 +176,7 @@ def filter_services(
             models.Service.type == sqla.any_(sqla.literal(params.types))
         )
 
-    if (
-        isinstance(
-            params,
-            (
-                parameters.SearchServicesQueryParams,
-                parameters.ListServicesQueryParams,
-            ),
-        )
-        and params.score_qualite_minimum is not None
-    ):
+    if params.score_qualite_minimum is not None:
         query = query.filter(
             models.Service.score_qualite >= params.score_qualite_minimum
         )
@@ -392,25 +383,29 @@ def search_query(
     if not include_soliguide:
         query = query.filter(models.Structure.source != "soliguide")
 
-    plainto_tsquery = sqla.func.plainto_tsquery("french", params.q)
-    score_recherche_expr = sqla.func.round(
-        sqla.cast(
-            sqla.func.ts_rank_cd(
-                models.Service.search_vector,
-                plainto_tsquery,
-                32,
-            ),
-            sqla.Numeric,
-        ),
-        2,
-    ).label("score_recherche")
+    query = filter_services(query=query, params=params)
 
-    query = query.filter(models.Service.search_vector.bool_op("@@")(plainto_tsquery))
-    query = query.add_columns(score_recherche_expr)
-    query = query.order_by(
-        (sqla.func.round(score_recherche_expr * 10) / 2).desc(),
-        models.Service.score_qualite.desc(),
-    )
+    if params.q is not None:
+        plainto_tsquery = sqla.func.plainto_tsquery("french", params.q)
+        score_recherche_expr = sqla.func.round(
+            sqla.cast(
+                sqla.func.ts_rank_cd(
+                    models.Service.search_vector,
+                    plainto_tsquery,
+                    32,
+                ),
+                sqla.Numeric,
+            ),
+            2,
+        ).label("score_recherche")
+
+        query = query.filter(
+            models.Service.search_vector.bool_op("@@")(plainto_tsquery)
+        )
+        query = query.add_columns(score_recherche_expr)
+        query = query.order_by((sqla.func.round(score_recherche_expr * 10) / 2).desc())
+
+    query = query.order_by(models.Service.score_qualite.desc())
 
     return query, ("data", "score_recherche")
 
