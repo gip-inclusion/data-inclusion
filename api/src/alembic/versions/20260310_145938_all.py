@@ -479,7 +479,7 @@ def upgrade() -> None:
             "searchable_index_profils_precisions",
             postgresql.TSVECTOR(),
             sa.Computed(
-                "TO_TSVECTOR('french', COALESCE(profils_precisions, ''))",
+                "TO_TSVECTOR('public.french', COALESCE(profils_precisions, ''))",
                 persisted=True,
             ),
         ),
@@ -487,7 +487,7 @@ def upgrade() -> None:
             "searchable_index_profils",
             postgresql.TSVECTOR(),
             sa.Computed(
-                "TO_TSVECTOR('french', REPLACE(TEXT_ARRAY_TO_STRING(profils, ' '), '-', ' '))",  # noqa: E501
+                "TO_TSVECTOR('public.french', REPLACE(TEXT_ARRAY_TO_STRING(profils, ' '), '-', ' '))",  # noqa: E501
                 persisted=True,
             ),
         ),
@@ -619,7 +619,7 @@ def upgrade() -> None:
             "searchable_index_publics_precisions",
             postgresql.TSVECTOR(),
             sa.Computed(
-                "TO_TSVECTOR('french', COALESCE(publics_precisions, ''))",
+                "TO_TSVECTOR('public.french', COALESCE(publics_precisions, ''))",
                 persisted=True,
             ),
         ),
@@ -627,7 +627,7 @@ def upgrade() -> None:
             "searchable_index_publics",
             postgresql.TSVECTOR(),
             sa.Computed(
-                "TO_TSVECTOR('french', REPLACE(TEXT_ARRAY_TO_STRING(publics, ' '), '-', ' '))",  # noqa: E501
+                "TO_TSVECTOR('public.french', REPLACE(TEXT_ARRAY_TO_STRING(publics, ' '), '-', ' '))",  # noqa: E501
                 persisted=True,
             ),
         ),

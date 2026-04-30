@@ -1721,3 +1721,23 @@ def test_search_order_by_score_recherche_then_by_score_qualite(api_client):
         "4",
         "3",
     ]
+
+
+@pytest.mark.parametrize(
+    ("nom_structure", "q"),
+    [
+        ("mobilite", "mobilite"),
+        ("mobilité", "mobilite"),
+        ("mobilité", "mobilité"),
+        ("mobilite", "mobilité"),
+    ],
+)
+@pytest.mark.with_token
+def test_search_accents(api_client, nom_structure, q):
+    factories.ServiceFactory(structure__nom=nom_structure)
+    response = api_client.get(SEARCH_ENDPOINT.url, params={"q": q})
+
+    assert response.status_code == 200
+    response_data = response.json()
+
+    assert len(response_data["items"]) == 1

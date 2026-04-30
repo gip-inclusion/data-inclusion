@@ -21,16 +21,16 @@ def upgrade() -> None:
 
     op.execute("CREATE EXTENSION IF NOT EXISTS postgis")
 
-    op.execute("""
+    op.execute(f"""
         CREATE EXTENSION IF NOT EXISTS unaccent;
 
-        ALTER TEXT SEARCH CONFIGURATION french
+        CREATE TEXT SEARCH CONFIGURATION public.french ( COPY = pg_catalog.french );
+
+        ALTER TEXT SEARCH CONFIGURATION public.french
             ALTER MAPPING FOR hword, hword_part, word
                 WITH unaccent, french_stem;
-    """)
 
-    op.execute(f"""
-        ALTER DATABASE "{database}" SET default_text_search_config = 'french';
+        ALTER DATABASE "{database}" SET default_text_search_config = 'public.french';
     """)
 
     # This creates an immutable array_to_string function
