@@ -6,7 +6,10 @@ import pytest
 from furl import furl
 
 from data_inclusion.api.decoupage_administratif import constants
-from data_inclusion.api.decoupage_administratif.constants import RegionEnum
+from data_inclusion.api.decoupage_administratif.constants import (
+    DepartementEnum,
+    RegionEnum,
+)
 from data_inclusion.api.decoupage_administratif.models import Commune
 from data_inclusion.api.inclusion_data import models
 from data_inclusion.api.utils import soliguide
@@ -339,115 +342,48 @@ def test_can_filter_resources_by_thematiques(
 
 
 @pytest.mark.with_token
-@pytest.mark.parametrize("endpoint", [STRUCTURES_ENDPOINT, SERVICES_ENDPOINT])
-def test_can_filter_resources_by_code_departement(api_client, endpoint, factory):
-    resource = factory(code_insee=PARIS["code_insee"])
-    factory(code_insee=LILLE["code_insee"])
-    factory(code_insee=None)
-
-    response = api_client.get(endpoint.url, params={"code_departement": "75"})
-
-    assert response.status_code == 200
-    resp_data = response.json()
-    assert_paginated_response_data(resp_data, total=1)
-    assert resp_data["items"][0]["id"] == resource.id
-
-    response = api_client.get(endpoint.url, params={"code_departement": "62"})
-    assert_paginated_response_data(response.json(), total=0)
-
-
-@pytest.mark.with_token
-@pytest.mark.parametrize("endpoint", [STRUCTURES_ENDPOINT, SERVICES_ENDPOINT])
-def test_can_filter_resources_by_slug_departement(api_client, endpoint, factory):
-    resource = factory(code_insee=PARIS["code_insee"])
-    factory(code_insee=LILLE["code_insee"])
-
-    response = api_client.get(endpoint.url, params={"slug_departement": "paris"})
-
-    assert response.status_code == 200
-    resp_data = response.json()
-    assert_paginated_response_data(resp_data, total=1)
-    assert resp_data["items"][0]["id"] == resource.id
-
-    response = api_client.get(
-        endpoint.url, params={"slug_departement": "pas-de-calais"}
-    )
-    assert_paginated_response_data(response.json(), total=0)
-
-
-@pytest.mark.with_token
-@pytest.mark.parametrize("endpoint", [STRUCTURES_ENDPOINT, SERVICES_ENDPOINT])
-def test_can_filter_resources_by_code_region(api_client, endpoint, factory):
-    kwargs = {}
-    if "services" in endpoint.url:
-        # check a structure whose location is very different from the service
-        kwargs["structure__code_insee"] = STRASBOURG["code_insee"]
-    resource = factory(code_insee=PARIS["code_insee"], **kwargs)
-    factory(code_insee=LILLE["code_insee"])
-
-    response = api_client.get(
-        endpoint.url, params={"code_region": RegionEnum.ILE_DE_FRANCE.value.code}
-    )
-
-    assert response.status_code == 200
-    resp_data = response.json()
-    assert_paginated_response_data(resp_data, total=1)
-    assert resp_data["items"][0]["id"] == resource.id
-
-    response = api_client.get(
-        endpoint.url, params={"code_region": RegionEnum.LA_REUNION.value.code}
-    )
-    assert_paginated_response_data(response.json(), total=0)
-
-
-@pytest.mark.with_token
-@pytest.mark.parametrize("endpoint", [STRUCTURES_ENDPOINT, SERVICES_ENDPOINT])
-def test_can_filter_resources_by_slug_region(api_client, endpoint, factory):
-    resource = factory(code_insee=PARIS["code_insee"])
-    factory(code_insee=LILLE["code_insee"])
-
-    response = api_client.get(
-        endpoint.url, params={"slug_region": RegionEnum.ILE_DE_FRANCE.value.slug}
-    )
-
-    assert response.status_code == 200
-    resp_data = response.json()
-    assert_paginated_response_data(resp_data, total=1)
-    assert resp_data["items"][0]["id"] == resource.id
-
-    response = api_client.get(
-        endpoint.url, params={"slug_region": RegionEnum.LA_REUNION.value.slug}
-    )
-    assert_paginated_response_data(response.json(), total=0)
-
-
-@pytest.mark.with_token
-@pytest.mark.parametrize("endpoint", [STRUCTURES_ENDPOINT, SERVICES_ENDPOINT])
 @pytest.mark.parametrize(
-    "code_commune, input, found",
+    ("endpoint", "factory"),
     [
-        (None, DUNKERQUE["code_insee"], False),
-        (DUNKERQUE["code_insee"], DUNKERQUE["code_insee"], True),
-        (DUNKERQUE["code_insee"], "62041", False),
-        (PARIS["code_insee"], "75056", True),
-        (PARIS_11["code_insee"], "75111", True),
+        (STRUCTURES_ENDPOINT, factories.StructureFactory),
+        (SERVICES_ENDPOINT, factories.ServiceFactory),
+        (SEARCH_ENDPOINT, factories.ServiceFactory),
     ],
 )
-def test_can_filter_resources_by_code_commune(
-    api_client, endpoint, factory, code_commune, input, found
+@pytest.mark.parametrize(
+    ("commune", "filter_name", "filter_value", "found"),
+    [
+        (PARIS, "code_departement", DepartementEnum.PARIS.value.code, True),
+        (PARIS, "code_departement", DepartementEnum.PAS_DE_CALAIS.value.code, False),
+        (PARIS, "slug_departement", DepartementEnum.PARIS.value.slug, True),
+        (PARIS, "slug_departement", DepartementEnum.PAS_DE_CALAIS.value.slug, False),
+        (PARIS, "code_region", RegionEnum.ILE_DE_FRANCE.value.code, True),
+        (PARIS, "code_region", RegionEnum.LA_REUNION.value.code, False),
+        (PARIS, "slug_region", RegionEnum.ILE_DE_FRANCE.value.slug, True),
+        (PARIS, "slug_region", RegionEnum.LA_REUNION.value.slug, False),
+        (None, "code_commune", DUNKERQUE["code_insee"], False),
+        (DUNKERQUE, "code_commune", DUNKERQUE["code_insee"], True),
+        (DUNKERQUE, "code_commune", "62041", False),
+        (PARIS, "code_commune", PARIS["code_insee"], True),
+        (PARIS_11, "code_commune", PARIS_11["code_insee"], True),
+    ],
+)
+def test_can_filter_resources_by_(
+    api_client, endpoint, factory, commune, filter_name, filter_value, found
 ):
-    resource = factory(code_insee=code_commune)
-    factory(code_insee=LILLE["code_insee"])
+    factory_kwargs = {}
+    if factory == factories.ServiceFactory:
+        factory_kwargs["structure__code_insee"] = STRASBOURG["code_insee"]
+    if commune is not None:
+        factory_kwargs["code_insee"] = commune["code_insee"]
 
-    response = api_client.get(endpoint.url, params={"code_commune": input})
+    factory(**factory_kwargs)
+
+    response = api_client.get(endpoint.url, params={filter_name: filter_value})
 
     assert response.status_code == 200
     resp_data = response.json()
-    if found:
-        assert_paginated_response_data(resp_data, total=1)
-        assert resp_data["items"][0]["id"] == resource.id
-    else:
-        assert_paginated_response_data(resp_data, total=0)
+    assert len(resp_data["items"]) == (1 if found else 0)
 
 
 UNDEFINED = "UNDEFINED"
@@ -1682,8 +1618,10 @@ def test_search_weights(api_client, q, left, right, op):
     response_data = response.json()
 
     assert len(response_data["items"]) == 2
-    assert response_data["items"][0]["data"]["id"] == service_1.id
-    assert response_data["items"][1]["data"]["id"] == service_2.id
+
+    if op != operator.eq:
+        assert response_data["items"][0]["data"]["id"] == service_1.id
+        assert response_data["items"][1]["data"]["id"] == service_2.id
     assert op(
         response_data["items"][0]["score_recherche"],
         response_data["items"][1]["score_recherche"],

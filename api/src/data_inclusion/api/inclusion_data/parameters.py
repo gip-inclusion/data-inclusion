@@ -284,3 +284,19 @@ class SearchQueryParams(pydantic.BaseModel, pagination.get_pagination_params()):
             )
 
         return self
+
+    @pydantic.computed_field
+    @property
+    def departement(self) -> Departement | None:
+        if self.code_departement is not None:
+            return DepartementEnum[self.code_departement.name].value
+        elif self.slug_departement is not None:
+            return DepartementEnum[self.slug_departement.name].value
+
+    @pydantic.computed_field
+    @property
+    def region(self) -> Region | None:
+        if self.code_region is not None:
+            return RegionEnum[self.code_region.name].value
+        elif self.slug_region is not None:
+            return RegionEnum[self.slug_region.name].value

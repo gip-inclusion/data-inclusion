@@ -385,6 +385,20 @@ def search_query(
 
     query = filter_services(query=query, params=params)
 
+    if params.departement is not None:
+        query = query.filter(
+            models.Service.code_insee.startswith(params.departement.code)
+        )
+
+    if params.region is not None:
+        query = query.join(models.Service.commune_).options(
+            orm.contains_eager(models.Service.commune_)
+        )
+        query = query.filter(Commune.region == params.region.code)
+
+    if params.code_commune is not None:
+        query = query.filter(models.Service.code_insee == params.code_commune)
+
     if params.q is not None:
         plainto_tsquery = sqla.func.plainto_tsquery("public.french", params.q)
         score_recherche_expr = sqla.func.round(
