@@ -453,6 +453,16 @@ def build_search_index(
                 ON api__publics_v1.value = item
             GROUP BY api__services_v1.id
         ),
+        reseaux_porteurs AS (
+            SELECT
+                api__structures_v1.id AS structure_id,
+                STRING_AGG(api__reseaux_porteurs_v1.label, ', ') AS labels
+            FROM api__structures_v1,
+                UNNEST(api__structures_v1.reseaux_porteurs) AS item
+            INNER JOIN api__reseaux_porteurs_v1
+                ON api__reseaux_porteurs_v1.value = item
+            GROUP BY api__structures_v1.id
+        ),
         types AS (
             SELECT
                 api__services_v1.id AS service_id,
@@ -467,12 +477,14 @@ def build_search_index(
             SETWEIGHT(TO_TSVECTOR('public.french', COALESCE(api__services_v1.nom,                '')), 'A') ||
             SETWEIGHT(TO_TSVECTOR('public.french', COALESCE(thematiques.labels,                  '')), 'B') ||
             SETWEIGHT(TO_TSVECTOR('public.french', COALESCE(publics.labels,                      '')), 'B') ||
+            SETWEIGHT(TO_TSVECTOR('public.french', COALESCE(reseaux_porteurs.labels,             '')), 'B') ||
             SETWEIGHT(TO_TSVECTOR('public.french', COALESCE(api__services_v1.publics_precisions, '')), 'B') ||
             SETWEIGHT(TO_TSVECTOR('public.french', COALESCE(api__services_v1.description,        '')), 'C') ||
             SETWEIGHT(TO_TSVECTOR('public.french', COALESCE(api__structures_v1.description,      '')), 'C')
         FROM api__structures_v1
         LEFT JOIN thematiques ON TRUE
         LEFT JOIN publics ON TRUE
+        LEFT JOIN reseaux_porteurs ON reseaux_porteurs.structure_id = api__structures_v1.id
         LEFT JOIN types ON TRUE
         WHERE api__services_v1.structure_id = api__structures_v1.id
             AND thematiques.service_id = api__services_v1.id
