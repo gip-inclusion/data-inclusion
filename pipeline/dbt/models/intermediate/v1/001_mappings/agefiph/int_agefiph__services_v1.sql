@@ -95,7 +95,16 @@ final AS (
     LEFT JOIN regions ON communes.code_region = regions.code
     CROSS JOIN services
     LEFT JOIN thematiques ON services.id = thematiques.service_id
-    WHERE NOT services.attributes__field_solution_partenaire
+    WHERE
+        NOT services.attributes__field_solution_partenaire
+        AND services.id NOT IN (
+            SELECT st.service_id
+            FROM services_thematiques AS st
+            WHERE st.thematique_id IN (
+                '4e08047f-b0ed-431a-9182-61e8e61b1486',
+                '70bb7d35-ce81-46cc-b17b-01155a70c05c'
+            )
+        )
 )
 
 SELECT * FROM final
