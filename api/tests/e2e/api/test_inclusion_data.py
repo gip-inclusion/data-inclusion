@@ -1553,6 +1553,12 @@ def test_search_score_recherche_decreasing(api_client):
         ),
         ("publics", [v1.Public.JEUNES.value], "Jeunes", True),
         ("publics_precisions", "foo", "foo", True),
+        (
+            "structure__reseaux_porteurs",
+            [v1.ReseauPorteur.FRANCE_TRAVAIL.value],
+            "France Travail",
+            True,
+        ),
         ("modes_accueil", [v1.ModeAccueil.EN_PRESENTIEL.value], "présentiel", False),
     ],
 )
