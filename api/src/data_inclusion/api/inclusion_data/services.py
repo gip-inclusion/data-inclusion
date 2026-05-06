@@ -373,7 +373,7 @@ def retrieve_service(
 def search_query(
     params: parameters.SearchQueryParams,
     include_soliguide: bool,
-) -> tuple[sqla.Select[tuple[models.Service, int]], tuple[str, str]]:
+) -> tuple[sqla.Select[tuple[models.Service, int]], tuple[str, str, str]]:
     query = (
         sqla.select(models.Service)
         .join(models.Structure)
@@ -399,6 +399,7 @@ def search_query(
     if params.code_commune is not None:
         query = query.filter(models.Service.code_insee == params.code_commune)
 
+    score_recherche_expr = None
     if params.q is not None:
         plainto_tsquery = sqla.func.plainto_tsquery("public.french", params.q)
         score_recherche_expr = sqla.func.round(
@@ -425,7 +426,34 @@ def search_query(
 
     query = query.order_by(models.Service.score_qualite.desc())
 
-    return query, ("data", "score_recherche")
+    if params.lat is not None and params.lon is not None:
+        src_geometry = sqla.cast(
+            geoalchemy2.functions.ST_MakePoint(
+                models.Service.longitude, models.Service.latitude
+            ),
+            geoalchemy2.Geography(geometry_type="GEOMETRY", srid=4326),
+        )
+        dest_geometry = f"POINT({params.lon} {params.lat})"
+        distance_km = (
+            geoalchemy2.functions.ST_Distance(src_geometry, dest_geometry) / 1000
+        )
+        query = query.filter(
+            geoalchemy2.functions.ST_DWithin(
+                src_geometry, dest_geometry, params.distance * 1000
+            )
+        )
+        query = query.add_columns(distance_km.cast(sqla.Integer).label("distance"))
+
+        score_distance_expr = 1 - distance_km / params.distance
+        if score_recherche_expr is not None:
+            score_expr = score_recherche_expr * 0.5 + score_distance_expr * 0.5
+        else:
+            score_expr = score_distance_expr
+        query = query.order_by(None).order_by(score_expr.desc())
+    else:
+        query = query.add_columns(sqla.null().cast(sqla.Integer).label("distance"))
+
+    return query, ("data", "score_recherche", "distance")
 
 
 def build_search_index(

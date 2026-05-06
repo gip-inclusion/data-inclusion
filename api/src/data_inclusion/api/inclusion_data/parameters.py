@@ -152,6 +152,19 @@ SearchLongitudeFilter = Annotated[
     ),
 ]
 
+DEFAULT_SEARCH_DISTANCE_KM = 50
+
+SearchDistanceFilter = Annotated[
+    int,
+    pydantic.Field(
+        ge=1,
+        description="""Rayon de recherche en kilomètres autour des
+                coordonnées fournies `lat`/`lon`.
+                Sans effet si `lat` et `lon` ne sont pas fournis.
+            """,
+    ),
+]
+
 
 class ListStructuresQueryParams(pydantic.BaseModel, pagination.get_pagination_params()):
     sources: SourcesFilter = None
@@ -268,6 +281,7 @@ class SearchQueryParams(pydantic.BaseModel, pagination.get_pagination_params()):
     slug_departement: Annotated[DepartementSlugEnum | None, pydantic.Field()] = None
     lat: SearchLatitudeFilter = None
     lon: SearchLongitudeFilter = None
+    distance: SearchDistanceFilter = DEFAULT_SEARCH_DISTANCE_KM
     thematiques: ThematiquesFilter = None
     frais: FraisFilter = None
     modes_accueil: ModesAccueilFilter = None
