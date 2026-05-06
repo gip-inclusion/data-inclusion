@@ -32,20 +32,6 @@ app = typer.Typer()
 
 INSTRUCTIONS_PROMPT = (Path(__file__).parent / "instructions.md").open().read()
 
-SUMMARY_TEMPLATE = """
-## Summary
-
-{}
-
-## Changes by Column
-
-{}
-
-## Samples of changes
-
-{}
-"""
-
 
 def read(
     path: Path,
@@ -258,57 +244,143 @@ class Diff:
                 },
                 missing_columns="insert",
             )
-            .sort(by=self.meta_cols)
+            .with_columns(
+                _n=pl.sum_horizontal(
+                    pl.col("added", "removed", "modified").fill_null(0)
+                )
+            )
+            .filter(pl.col("_n") > 0)
+            .sort("_n", descending=True)
             .select(*self.meta_cols, "added", "removed", "modified", "unchanged")
         )
 
     @cached_property
     def count_changes_by_column(self) -> pl.DataFrame:
-        return (
+        df = (
             self.changed.explode("changes")
             .unnest("changes")
             .group_by(*self.meta_cols, "column")
             .len()
             .pivot(on="column", index=self.meta_cols)
-            .sort(by=self.meta_cols)
+        )
+        value_cols = [c for c in df.columns if c not in self.meta_cols]
+        if not value_cols:
+            return df
+        totals = {c: int(df[c].fill_null(0).sum()) for c in value_cols}
+        return (
+            df.with_columns(
+                nb_changes=pl.sum_horizontal(pl.col(c).fill_null(0) for c in value_cols)
+            )
+            .sort("nb_changes", descending=True)
+            .select(*self.meta_cols, *sorted(value_cols, key=totals.get, reverse=True))
         )
 
     @cached_property
-    def samples(self) -> pl.DataFrame:
-        min_changes = 100
-        top_changes = 3
-
+    def changes_as_rows(self) -> pl.DataFrame:
         return (
             self.changed.explode("changes")
             .unnest("changes")
-            .filter((pl.len() >= min_changes).over(*self.meta_cols, "column"))
-            .group_by(*self.meta_cols, "column", "after")
-            .agg(pl.len().alias("count"))
-            .sort(["column", "count"], descending=[False, True])
-            .with_columns(
-                pl.col("count")
-                .rank("ordinal", descending=True)
-                .over(*self.meta_cols, "column")
-                .alias("rank")
-            )
-            .filter(pl.col("rank") <= top_changes)
-            .select(
-                *self.meta_cols,
-                "column",
-                pl.col("after").str.slice(0, 200),
-                "count",
-            )
+            .select(*self.meta_cols, "column", "before", "after")
         )
+
+    @cached_property
+    def top_pairs(self) -> pl.DataFrame:
+        return (
+            self.changes_as_rows.group_by(*self.meta_cols, "column", "before", "after")
+            .agg(pl.len().alias("count"))
+            .with_columns(
+                pct=(
+                    pl.col("count")
+                    * 100
+                    / pl.col("count").sum().over(*self.meta_cols, "column")
+                )
+                .round(0)
+                .cast(pl.Int64),
+                _rank=pl.col("count")
+                .rank("ordinal", descending=True)
+                .over(*self.meta_cols, "column"),
+            )
+            .filter(pl.col("_rank") <= 5)
+            .with_columns(
+                pl.col("before").fill_null("∅").str.slice(0, 100),
+                pl.col("after").fill_null("∅").str.slice(0, 100),
+            )
+            .sort("count", descending=True)
+            .select(*self.meta_cols, "column", "before", "after", "count", "pct")
+        )
+
+    @cached_property
+    def source_sizes(self) -> pl.DataFrame:
+        return self.count_rows_by_change_type.with_columns(
+            source_total=pl.sum_horizontal(
+                pl.col("added", "modified", "unchanged").fill_null(0)
+            ),
+            source_modified=pl.col("modified").fill_null(0),
+        ).select(*self.meta_cols, "source_total", "source_modified")
+
+    @cached_property
+    def column_stats(self) -> pl.DataFrame:
+        return (
+            self.changes_as_rows.group_by(*self.meta_cols, "column")
+            .agg(
+                pl.len().alias("n"),
+                pl.col("before").n_unique().alias("uniq_before"),
+                pl.col("after").n_unique().alias("uniq_after"),
+                pl.col("before").is_null().sum().alias("null_before"),
+                pl.col("after").is_null().sum().alias("null_after"),
+                (pl.col("before").is_null() & pl.col("after").is_not_null())
+                .sum()
+                .alias("filled_in"),
+                (pl.col("before").is_not_null() & pl.col("after").is_null())
+                .sum()
+                .alias("nulled_out"),
+            )
+            .join(self.source_sizes, on=self.meta_cols, how="left")
+            .with_columns(
+                pct_of_source=(pl.col("n") / pl.col("source_total") * 100).round(2)
+            )
+            .sort("n", descending=True)
+        )
+
+    def llm_payload(self) -> str:
+        sources = self.source_sizes.filter(pl.col("source_modified") > 0).sort(
+            "source_modified", descending=True
+        )
+        chunks = []
+        for src in sources.iter_rows(named=True):
+            match = pl.all_horizontal(pl.col(c) == src[c] for c in self.meta_cols)
+            cols = self.column_stats.filter(match).sort("n", descending=True)
+            if cols.is_empty():
+                continue
+            meta_label = " ".join(f"{c}={src[c]}" for c in self.meta_cols)
+            block = [
+                f"## {meta_label} | source_total={src['source_total']} | "
+                f"source_modified={src['source_modified']}"
+            ]
+            for row in cols.iter_rows(named=True):
+                local = self.top_pairs.filter(
+                    match & (pl.col("column") == row["column"])
+                ).select("before", "after", "count", "pct")
+                block.append(
+                    f"### {row['column']} | "
+                    f"n={row['n']} ({row['pct_of_source']}% de la source) | "
+                    f"uniq_before={row['uniq_before']} "
+                    f"uniq_after={row['uniq_after']} | "
+                    f"null_before={row['null_before']} "
+                    f"null_after={row['null_after']} | "
+                    f"filled_in={row['filled_in']} nulled_out={row['nulled_out']}\n"
+                    f"top pairs:\n{to_string(local)}"
+                )
+            chunks.append("\n\n".join(block))
+        return "\n\n---\n\n".join(chunks)
 
     def ai_summarize(
         self,
         model: Models = "claude-sonnet-4-6",
     ) -> str | None:
-        summary_str = SUMMARY_TEMPLATE.format(
-            to_string(self.count_rows_by_change_type),
-            to_string(self.count_changes_by_column),
-            to_string(self.samples),
-        )
+        payload = self.llm_payload()
+        if not payload:
+            return None
 
         openai_client = openai.OpenAI(
             api_key=os.environ.get("OPENAI_API_KEY"),
@@ -319,12 +391,31 @@ class Diff:
             model=model,
             messages=[
                 {"role": "system", "content": INSTRUCTIONS_PROMPT},
-                {"role": "user", "content": summary_str},
+                {"role": "user", "content": payload},
             ],
             max_completion_tokens=1000,
         )
 
         return response.choices[0].message.content
+
+    def row_examples(self) -> str:
+        sampled = (
+            self.changed.with_columns(
+                _rank=pl.int_range(0, pl.len()).shuffle().over(*self.meta_cols)
+            )
+            .filter(pl.col("_rank") < 3)
+            .sort(*self.meta_cols, self.pk_col)
+        )
+        blocks = []
+        for row in sampled.iter_rows(named=True):
+            label = " / ".join(f"`{row[c]}`" for c in self.meta_cols)
+            lines = [f"**{label}** · `{self.pk_col}={row[self.pk_col]}`"]
+            for ch in row["changes"]:
+                before = (ch["before"] or "∅")[:100]
+                after = (ch["after"] or "∅")[:100]
+                lines.append(f"- `{ch['column']}` : `{before}` → `{after}`")
+            blocks.append("\n".join(lines))
+        return "\n\n".join(blocks)
 
     def summarize(
         self,
@@ -336,11 +427,13 @@ class Diff:
             ("## Par colonne", to_string(self.count_changes_by_column)),
         ]
 
-        if not self.samples.is_empty():
-            sections.append(("## Échantillons", to_string(self.samples)))
+        if examples := self.row_examples():
+            sections.append(
+                ("## Exemples (3 lignes modifiées au hasard par source)", examples)
+            )
 
-        if llm and (llm_summary := self.ai_summarize(model=model)) is not None:
-            sections.append(("## Analyse LLM", llm_summary))
+        if llm and (llm_text := self.ai_summarize(model=model)):
+            sections.append(("## Analyse sémantique", llm_text))
 
         return "\n\n---\n\n".join(["\n\n".join(section) for section in sections])
 

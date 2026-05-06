@@ -10,8 +10,12 @@ from data_inclusion.pipeline.scripts.compare import compare
 
 
 def test_compare():
-    before_df = pl.DataFrame({"id": ["1", "2"], "source": ["a", "b"], "v": [10, 20]})
-    after_df = pl.DataFrame({"id": ["1", "2"], "source": ["a", "b"], "v": [10, 30]})
+    before_df = pl.DataFrame(
+        {"id": ["1", "2", "3"], "source": ["a", "b", "b"], "v": [10, 20, 40]}
+    )
+    after_df = pl.DataFrame(
+        {"id": ["1", "2", "3"], "source": ["a", "b", "b"], "v": [10, 30, 50]}
+    )
 
     diff = compare.Diff(
         before_df=before_df,
@@ -20,16 +24,17 @@ def test_compare():
         meta_cols=["source"],
     )
 
+    # Sources with no changes ("a") are dropped; rows are sorted by total
+    # changes desc. Examples section lists the modified rows.
+    summary = diff.summarize(llm=False)
     assert (
-        diff.summarize(llm=False)
-        == dedent(
+        dedent(
             """\
             ## Par type de changement
 
-            | source   | added   | removed   |   modified |   unchanged |
+            | source   | added   | removed   |   modified | unchanged   |
             |----------|---------|-----------|------------|-------------|
-            | a        |         |           |            |           1 |
-            | b        |         |           |          1 |             |
+            | b        |         |           |          2 |             |
 
             ---
 
@@ -37,10 +42,26 @@ def test_compare():
 
             | source   |   v |
             |----------|-----|
-            | b        |   1 |
+            | b        |   2 |
             """
         ).strip()
+        in summary
     )
+    assert "## Exemples" in summary
+    assert "`v` : `20.0` → `30.0`" in summary
+    assert "`v` : `40.0` → `50.0`" in summary
+
+
+def test_compare_no_changes():
+    df = pl.DataFrame({"id": ["1"], "source": ["a"], "v": [10]})
+
+    diff = compare.Diff(before_df=df, after_df=df, pk_col="id", meta_cols=["source"])
+
+    # When nothing changed, both tables are empty but sections still render.
+    summary = diff.summarize(llm=False)
+    assert "## Par type de changement" in summary
+    assert "## Par colonne" in summary
+    assert "## Échantillons" not in summary
 
 
 @pytest.mark.parametrize(
