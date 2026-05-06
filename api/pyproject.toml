@@ -109,4 +109,5 @@ markers = '''
     feature_deprecated: the marked test is deprecated
     playwright: requires an api running instance
 '''
+addopts = "-m 'not playwright'"
 testpaths = "tests"
