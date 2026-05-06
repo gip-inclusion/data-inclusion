@@ -1686,3 +1686,51 @@ def test_search_accents(api_client, nom_structure, q):
     response_data = response.json()
 
     assert len(response_data["items"]) == 1
+
+
+@pytest.mark.with_token
+@pytest.mark.parametrize(
+    ("params", "expected_ids"),
+    [
+        ({}, {"lille", "paris", "en_distanciel"}),
+        ({"lat": LILLE["latitude"], "lon": LILLE["longitude"]}, {"lille"}),
+        (
+            {"lat": LILLE["latitude"], "lon": LILLE["longitude"], "distance": 250},
+            {"lille", "paris"},
+        ),
+    ],
+)
+def test_search_distance_filter(api_client, params, expected_ids):
+    factories.ServiceFactory(id="lille", commune="Lille", **LILLE)
+    factories.ServiceFactory(id="paris", commune="Paris", **PARIS)
+    factories.ServiceFactory(
+        id="en_distanciel", code_insee=None, latitude=None, longitude=None
+    )
+
+    response = api_client.get(SEARCH_ENDPOINT.url, params=params)
+
+    assert response.status_code == 200
+    assert {item["data"]["id"] for item in response.json()["items"]} == expected_ids
+
+
+@pytest.mark.with_token
+def test_search_order_by_distance(api_client):
+    factories.ServiceFactory(
+        id="closer", structure__nom="agefiph", commune="Lille", **LILLE
+    )
+    factories.ServiceFactory(
+        id="farther", structure__nom="agefiph", commune="Hazebrouck", **HAZEBROUCK
+    )
+
+    response = api_client.get(
+        SEARCH_ENDPOINT.url,
+        params={
+            "q": "agefiph",
+            "lat": LILLE["latitude"],
+            "lon": LILLE["longitude"],
+        },
+    )
+
+    assert response.status_code == 200
+    items = response.json()["items"]
+    assert [item["data"]["id"] for item in items] == ["closer", "farther"]

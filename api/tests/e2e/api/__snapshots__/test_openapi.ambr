@@ -3645,6 +3645,19 @@
               }
             },
             {
+              "description": "Rayon de recherche en kilomètres autour des\n                coordonnées fournies `lat`/`lon`.\n                Sans effet si `lat` et `lon` ne sont pas fournis.\n            ",
+              "in": "query",
+              "name": "distance",
+              "required": false,
+              "schema": {
+                "default": 50,
+                "description": "Rayon de recherche en kilomètres autour des\n                coordonnées fournies `lat`/`lon`.\n                Sans effet si `lat` et `lon` ne sont pas fournis.\n            ",
+                "minimum": 1,
+                "title": "Distance",
+                "type": "integer"
+              }
+            },
+            {
               "description": "Une liste de thématique.\n                Chaque résultat renvoyé a (au moins) une thématique dans cette liste.",
               "in": "query",
               "name": "thematiques",
