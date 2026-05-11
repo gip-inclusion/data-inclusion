@@ -10,7 +10,7 @@ x-airflow-common:
   environment:
     &airflow-common-environment
     AIRFLOW__API_AUTH__JWT_SECRET: ${AIRFLOW__API_AUTH__JWT_SECRET}
-    AIRFLOW__API__BASE_URL: ${AIRFLOW__API__BASE_URL}
+    AIRFLOW__API__BASE_URL: https://${AIRFLOW__API__BASE_URL}
     AIRFLOW__CORE__AUTH_MANAGER: airflow.providers.fab.auth_manager.fab_auth_manager.FabAuthManager
     AIRFLOW__CORE__DEFAULT_TIMEZONE: Europe/Paris
     AIRFLOW__CORE__EXECUTION_API_SERVER_URL: http://airflow-api-server:8080/execution/
@@ -46,6 +46,7 @@ x-airflow-common:
     AIRFLOW_VAR_SOLIGUIDE_API_TOKEN: ${AIRFLOW_VAR_SOLIGUIDE_API_TOKEN}
     AIRFLOW_VAR_TWOCAPTCHA_API_KEY: ${AIRFLOW_VAR_TWOCAPTCHA_API_KEY}
     AIRFLOW_VAR_MA_BOUSSOLE_AIDANTS_API_KEY: ${AIRFLOW_VAR_MA_BOUSSOLE_AIDANTS_API_KEY}
+    AIRFLOW_VAR_MLFLOW_TRACKING_PASSWORD: ${MLFLOW_TRACKING_PASSWORD}
 
   volumes:
     - airflow-logs:/opt/airflow/logs
@@ -174,10 +175,65 @@ services:
       - /var/run/docker.sock:/var/run/docker.sock:ro
       - letsencrypt-data:/letsencrypt
 
+  mlflow-db:
+    image: postgres:18
+    restart: no
+    healthcheck:
+      test: pg_isready
+      interval: 5s
+      retries: 5
+    environment:
+      - PGUSER=mlflow
+      - POSTGRES_DB=mlflow
+      - POSTGRES_USER=mlflow
+      - POSTGRES_PASSWORD=mlflow
+    volumes:
+      - mlflow-data:/var/lib/postgresql
+
+  mlflow:
+    image: ghcr.io/mlflow/mlflow:v3.12.0-full
+    depends_on:
+      mlflow-db:
+        condition: service_healthy
+    command:
+      - |
+        # install extra depencencies for auth
+        pip install mlflow[auth]
+
+        # create config for basic auth
+        mkdir -p /etc/mlflow/server/auth
+        cat > /etc/mlflow/server/auth/config.ini <<-EOF
+        [mlflow]
+        default_permission = READ
+        database_uri = $${MLFLOW_BACKEND_STORE_URI}
+        admin_username = admin
+        admin_password = $${MLFLOW_TRACKING_PASSWORD}
+        authorization_function = mlflow.server.auth:authenticate_request_basic_auth
+        EOF
+
+        # start mlflow server
+        mlflow server --app-name basic-auth
+    environment:
+      - MLFLOW_TRACKING_PASSWORD=${MLFLOW_TRACKING_PASSWORD}
+      - MLFLOW_AUTH_CONFIG_PATH=/etc/mlflow/server/auth/config.ini
+      - MLFLOW_HOST=0.0.0.0
+      - MLFLOW_BACKEND_STORE_URI=postgresql://mlflow:mlflow@mlflow-db:5432/mlflow
+      - MLFLOW_DISABLE_TELEMETRY=True
+      - MLFLOW_SERVER_ALLOWED_HOSTS=${MLFLOW_HOSTNAME},mlflow:5000
+      - MLFLOW_FLASK_SERVER_SECRET_KEY=${MLFLOW_FLASK_SERVER_SECRET_KEY}
+    ports:
+      - 5000:5000
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.mlflow.rule=Host(`${MLFLOW_HOSTNAME}`)"
+      - "traefik.http.routers.mlflow.entrypoints=websecure"
+      - "traefik.http.routers.mlflow.tls.certresolver=main"
+
 volumes:
   airflow-logs:
   datawarehouse-data:
   letsencrypt-data:
+  mlflow-data:
 
 networks:
   default:

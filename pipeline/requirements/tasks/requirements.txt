@@ -23,6 +23,7 @@ aiohttp==3.13.5
     #   -c airflow/constraints.txt
     #   aiobotocore
     #   apache-airflow-providers-http
+    #   mlflow
     #   s3fs
 aioitertools==0.13.0
     # via
@@ -44,6 +45,7 @@ alembic==1.18.4
     # via
     #   -c airflow/constraints.txt
     #   apache-airflow-core
+    #   mlflow
 annotated-doc==0.0.4
     # via
     #   -c airflow/constraints.txt
@@ -202,6 +204,7 @@ boto3==1.42.84
     # via
     #   -c airflow/constraints.txt
     #   apache-airflow-providers-amazon
+    #   mlflow
     #   pyathena
     #   redshift-connector
     #   sagemaker-studio
@@ -224,6 +227,8 @@ cachetools==6.2.6
     # via
     #   -c airflow/constraints.txt
     #   apache-airflow-providers-fab
+    #   mlflow-skinny
+    #   mlflow-tracing
 cadwyn==6.2.0
     # via
     #   -c airflow/constraints.txt
@@ -252,9 +257,14 @@ click==8.3.2
     #   -c airflow/constraints.txt
     #   flask
     #   flask-appbuilder
+    #   mlflow-skinny
     #   rich-toolkit
     #   typer
     #   uvicorn
+cloudpickle==3.1.1
+    # via
+    #   -c airflow/constraints.txt
+    #   mlflow-skinny
 colorama==0.4.6
     # via
     #   -c airflow/constraints.txt
@@ -264,6 +274,8 @@ colorlog==6.10.1
     #   -c airflow/constraints.txt
     #   apache-airflow-core
     #   apache-airflow-task-sdk
+contourpy==1.3.3
+    # via matplotlib
 cron-descriptor==2.0.8
     # via
     #   -c airflow/constraints.txt
@@ -277,9 +289,17 @@ cryptography==46.0.7
     #   -c airflow/constraints.txt
     #   apache-airflow-core
     #   asyncssh
+    #   google-auth
+    #   mlflow
     #   paramiko
+cycler==0.12.1
+    # via matplotlib
 data-inclusion-schema==1.0.8
     # via -r tasks/requirements.in
+databricks-sdk==0.107.0
+    # via
+    #   mlflow-skinny
+    #   mlflow-tracing
 deprecated==1.3.1
     # via
     #   -c airflow/constraints.txt
@@ -297,6 +317,10 @@ dnspython==2.8.0
     # via
     #   -c airflow/constraints.txt
     #   email-validator
+docker==7.1.0
+    # via
+    #   -c airflow/constraints.txt
+    #   mlflow
 elementpath==5.1.1
     # via xmlschema
 email-validator==2.3.0
@@ -314,6 +338,8 @@ fastapi==0.136.0
     #   -c airflow/constraints.txt
     #   apache-airflow-core
     #   cadwyn
+    #   mlflow
+    #   mlflow-skinny
 fastapi-cli==0.0.24
     # via
     #   -c airflow/constraints.txt
@@ -324,12 +350,14 @@ flask==3.1.3
     #   apache-airflow-providers-fab
     #   flask-appbuilder
     #   flask-babel
+    #   flask-cors
     #   flask-jwt-extended
     #   flask-limiter
     #   flask-login
     #   flask-session
     #   flask-sqlalchemy
     #   flask-wtf
+    #   mlflow
 flask-appbuilder==5.2.0
     # via
     #   -c airflow/constraints.txt
@@ -338,6 +366,8 @@ flask-babel==4.0.0
     # via
     #   -c airflow/constraints.txt
     #   flask-appbuilder
+flask-cors==6.0.2
+    # via mlflow
 flask-jwt-extended==4.7.1
     # via
     #   -c airflow/constraints.txt
@@ -366,6 +396,8 @@ flask-wtf==1.2.2
     #   -c airflow/constraints.txt
     #   apache-airflow-providers-fab
     #   flask-appbuilder
+fonttools==4.62.1
+    # via matplotlib
 frozenlist==1.8.0
     # via
     #   -c airflow/constraints.txt
@@ -384,11 +416,31 @@ geoalchemy2==0.18.3
     # via -r tasks/requirements.in
 geopandas==1.1.2
     # via -r tasks/requirements.in
+gitdb==4.0.12
+    # via
+    #   -c airflow/constraints.txt
+    #   gitpython
+gitpython==3.1.46
+    # via
+    #   -c airflow/constraints.txt
+    #   mlflow-skinny
+google-auth==2.49.2
+    # via
+    #   -c airflow/constraints.txt
+    #   databricks-sdk
 googleapis-common-protos==1.74.0
     # via
     #   -c airflow/constraints.txt
     #   opentelemetry-exporter-otlp-proto-grpc
     #   opentelemetry-exporter-otlp-proto-http
+graphene==3.4.3
+    # via mlflow
+graphql-core==3.2.8
+    # via
+    #   graphene
+    #   graphql-relay
+graphql-relay==3.2.0
+    # via graphene
 greenback==1.3.0
     # via
     #   -c airflow/constraints.txt
@@ -403,6 +455,10 @@ grpcio==1.80.0
     # via
     #   -c airflow/constraints.txt
     #   opentelemetry-exporter-otlp-proto-grpc
+gunicorn==25.3.0
+    # via
+    #   -c airflow/constraints.txt
+    #   mlflow
 h11==0.16.0
     # via
     #   -c airflow/constraints.txt
@@ -425,6 +481,8 @@ httpx==0.28.1
     #   apache-airflow-task-sdk
     #   fastapi
     #   openai
+huey==2.6.0
+    # via mlflow
 idna==3.11
     # via
     #   -c airflow/constraints.txt
@@ -437,6 +495,7 @@ importlib-metadata==8.7.1
     # via
     #   -c airflow/constraints.txt
     #   apache-airflow-core
+    #   mlflow-skinny
     #   opentelemetry-api
 inflection==0.5.1
     # via
@@ -469,6 +528,10 @@ jmespath==1.1.0
     #   apache-airflow-providers-fab
     #   boto3
     #   botocore
+joblib==1.5.3
+    # via
+    #   -c airflow/constraints.txt
+    #   scikit-learn
 jsonpath-ng==1.8.0
     # via
     #   -c airflow/constraints.txt
@@ -483,6 +546,8 @@ jsonschema-specifications==2025.9.1
     # via
     #   -c airflow/constraints.txt
     #   jsonschema
+kiwisolver==1.5.0
+    # via matplotlib
 lazy-object-proxy==1.12.0
     # via
     #   -c airflow/constraints.txt
@@ -495,6 +560,7 @@ limits==5.8.0
     # via
     #   -c airflow/constraints.txt
     #   flask-limiter
+    #   slowapi
 linkify-it-py==2.1.0
     # via
     #   -c airflow/constraints.txt
@@ -535,6 +601,8 @@ marshmallow-sqlalchemy==1.5.0
     # via
     #   -c airflow/constraints.txt
     #   flask-appbuilder
+matplotlib==3.10.9
+    # via mlflow
 mdurl==0.1.2
     # via
     #   -c airflow/constraints.txt
@@ -545,6 +613,12 @@ methodtools==0.4.7
     #   apache-airflow-core
     #   apache-airflow-providers-common-sql
     #   apache-airflow-task-sdk
+mlflow==3.12.0
+    # via -r tasks/requirements.in
+mlflow-skinny==3.12.0
+    # via mlflow
+mlflow-tracing==3.12.0
+    # via mlflow
 more-itertools==11.0.2
     # via
     #   -c airflow/constraints.txt
@@ -572,10 +646,16 @@ natsort==8.4.0
 numpy==2.4.4
     # via
     #   -c airflow/constraints.txt
+    #   contourpy
     #   geopandas
+    #   matplotlib
+    #   mlflow
     #   pandas
     #   pyogrio
+    #   scikit-learn
+    #   scipy
     #   shapely
+    #   skops
 openai==2.32.0
     # via
     #   -c airflow/constraints.txt
@@ -588,6 +668,8 @@ opentelemetry-api==1.41.0
     # via
     #   -c airflow/constraints.txt
     #   apache-airflow-core
+    #   mlflow-skinny
+    #   mlflow-tracing
     #   opentelemetry-exporter-otlp-proto-grpc
     #   opentelemetry-exporter-otlp-proto-http
     #   opentelemetry-sdk
@@ -613,12 +695,16 @@ opentelemetry-proto==1.41.0
     # via
     #   -c airflow/constraints.txt
     #   apache-airflow-core
+    #   mlflow-skinny
+    #   mlflow-tracing
     #   opentelemetry-exporter-otlp-proto-common
     #   opentelemetry-exporter-otlp-proto-grpc
     #   opentelemetry-exporter-otlp-proto-http
 opentelemetry-sdk==1.41.0
     # via
     #   -c airflow/constraints.txt
+    #   mlflow-skinny
+    #   mlflow-tracing
     #   opentelemetry-exporter-otlp-proto-grpc
     #   opentelemetry-exporter-otlp-proto-http
 opentelemetry-semantic-conventions==0.62b0
@@ -643,16 +729,22 @@ packaging==26.1
     #   apispec
     #   geoalchemy2
     #   geopandas
+    #   gunicorn
     #   limits
     #   marshmallow
+    #   matplotlib
+    #   mlflow-skinny
+    #   mlflow-tracing
     #   pyogrio
     #   redshift-connector
     #   sagemaker-studio
+    #   skops
 pandas==2.3.3
     # via
     #   -c airflow/constraints.txt
     #   -r tasks/requirements.in
     #   geopandas
+    #   mlflow
 paramiko==3.5.1
     # via
     #   -c airflow/constraints.txt
@@ -672,6 +764,8 @@ pendulum==3.2.0
     #   apache-airflow-core
     #   apache-airflow-task-sdk
     #   data-inclusion-schema
+pillow==12.2.0
+    # via matplotlib
 playwright==1.58.0
     # via -r tasks/requirements.in
 pluggy==1.6.0
@@ -687,6 +781,8 @@ polars-runtime-32==1.39.3
     # via
     #   -c airflow/constraints.txt
     #   polars
+prettytable==3.17.0
+    # via skops
 prison==0.2.1
     # via
     #   -c airflow/constraints.txt
@@ -699,7 +795,10 @@ propcache==0.4.1
 protobuf==6.33.6
     # via
     #   -c airflow/constraints.txt
+    #   databricks-sdk
     #   googleapis-common-protos
+    #   mlflow-skinny
+    #   mlflow-tracing
     #   opentelemetry-proto
 psutil==7.2.2
     # via
@@ -715,6 +814,15 @@ pyarrow==23.0.1
     # via
     #   -c airflow/constraints.txt
     #   -r tasks/requirements.in
+    #   mlflow
+pyasn1==0.6.3
+    # via
+    #   -c airflow/constraints.txt
+    #   pyasn1-modules
+pyasn1-modules==0.4.2
+    # via
+    #   -c airflow/constraints.txt
+    #   google-auth
 pyathena==3.30.1
     # via
     #   -c airflow/constraints.txt
@@ -731,6 +839,8 @@ pydantic==2.13.1
     #   cadwyn
     #   data-inclusion-schema
     #   fastapi
+    #   mlflow-skinny
+    #   mlflow-tracing
     #   openai
     #   pydantic-extra-types
     #   pydantic-settings
@@ -772,6 +882,10 @@ pyogrio==0.12.1
     # via
     #   -r tasks/requirements.in
     #   geopandas
+pyparsing==3.3.2
+    # via
+    #   -c airflow/constraints.txt
+    #   matplotlib
 pyproj==3.7.2
     # via geopandas
 python-daemon==3.1.2
@@ -787,6 +901,8 @@ python-dateutil==2.9.0.post0
     #   botocore
     #   croniter
     #   flask-appbuilder
+    #   graphene
+    #   matplotlib
     #   pandas
     #   pendulum
     #   pyathena
@@ -795,6 +911,7 @@ python-dateutil==2.9.0.post0
 python-dotenv==1.2.2
     # via
     #   -c airflow/constraints.txt
+    #   mlflow-skinny
     #   pydantic-settings
     #   uvicorn
 python-multipart==0.0.26
@@ -816,6 +933,7 @@ pyyaml==6.0.3
     #   -c airflow/constraints.txt
     #   apache-airflow-core
     #   apispec
+    #   mlflow-skinny
     #   uvicorn
 pyyaml-ft==8.0.0
     # via
@@ -830,6 +948,10 @@ referencing==0.37.0
     #   -c airflow/constraints.txt
     #   jsonschema
     #   jsonschema-specifications
+regex==2026.4.4
+    # via
+    #   -c airflow/constraints.txt
+    #   tiktoken
 requests==2.33.1
     # via
     #   -c airflow/constraints.txt
@@ -837,10 +959,14 @@ requests==2.33.1
     #   2captcha-python
     #   apache-airflow-core
     #   apache-airflow-providers-http
+    #   databricks-sdk
+    #   docker
+    #   mlflow-skinny
     #   opentelemetry-exporter-otlp-proto-http
     #   redshift-connector
     #   requests-toolbelt
     #   sagemaker-studio
+    #   tiktoken
 requests-toolbelt==1.0.0
     # via
     #   -c airflow/constraints.txt
@@ -878,6 +1004,17 @@ sagemaker-studio==1.0.26
     # via
     #   -c airflow/constraints.txt
     #   apache-airflow-providers-amazon
+scikit-learn==1.8.0
+    # via
+    #   -c airflow/constraints.txt
+    #   mlflow
+    #   skops
+scipy==1.17.1
+    # via
+    #   -c airflow/constraints.txt
+    #   mlflow
+    #   scikit-learn
+    #   skops
 scramp==1.4.8
     # via
     #   -c airflow/constraints.txt
@@ -912,10 +1049,18 @@ six==1.17.0
     #   python-dateutil
     #   sib-api-v3-sdk
     #   wirerope
+skops==0.14.0
+    # via mlflow
 slack-sdk==3.41.0
     # via
     #   -c airflow/constraints.txt
     #   apache-airflow-providers-slack
+slowapi==0.1.9
+    # via mlflow
+smmap==5.0.3
+    # via
+    #   -c airflow/constraints.txt
+    #   gitdb
 sniffio==1.3.1
     # via
     #   -c airflow/constraints.txt
@@ -935,6 +1080,7 @@ sqlalchemy==2.0.49
     #   flask-sqlalchemy
     #   geoalchemy2
     #   marshmallow-sqlalchemy
+    #   mlflow
     #   sqlalchemy-utils
 sqlalchemy-utils==0.42.1
     # via
@@ -944,12 +1090,14 @@ sqlparse==0.5.5
     # via
     #   -c airflow/constraints.txt
     #   apache-airflow-providers-common-sql
+    #   mlflow-skinny
 starlette==0.52.1
     # via
     #   -c airflow/constraints.txt
     #   apache-airflow-core
     #   cadwyn
     #   fastapi
+    #   mlflow-skinny
 structlog==25.5.0
     # via
     #   -c airflow/constraints.txt
@@ -978,6 +1126,14 @@ text-unidecode==1.3
     # via
     #   -c airflow/constraints.txt
     #   python-slugify
+threadpoolctl==3.6.0
+    # via
+    #   -c airflow/constraints.txt
+    #   scikit-learn
+tiktoken==0.12.0
+    # via
+    #   -c airflow/constraints.txt
+    #   mlflow
 tqdm==4.67.3
     # via
     #   -c airflow/constraints.txt
@@ -999,8 +1155,10 @@ typing-extensions==4.15.0
     #   cadwyn
     #   cron-descriptor
     #   fastapi
+    #   graphene
     #   grpcio
     #   limits
+    #   mlflow-skinny
     #   openai
     #   opentelemetry-api
     #   opentelemetry-exporter-otlp-proto-grpc
@@ -1039,6 +1197,7 @@ urllib3==2.6.3
     #   -c airflow/constraints.txt
     #   -r tasks/requirements.in
     #   botocore
+    #   docker
     #   requests
     #   sagemaker-studio
     #   sentry-sdk
@@ -1057,6 +1216,8 @@ uvicorn==0.44.0
     #   apache-airflow-core
     #   fastapi
     #   fastapi-cli
+    #   mlflow
+    #   mlflow-skinny
 uvloop==0.22.1
     # via
     #   -c airflow/constraints.txt
@@ -1064,11 +1225,16 @@ uvloop==0.22.1
 watchfiles==1.1.1
     # via
     #   -c airflow/constraints.txt
+    #   mlflow
     #   uvicorn
 watchtower==3.4.0
     # via
     #   -c airflow/constraints.txt
     #   apache-airflow-providers-amazon
+wcwidth==0.6.0
+    # via
+    #   -c airflow/constraints.txt
+    #   prettytable
 websockets==16.0
     # via
     #   -c airflow/constraints.txt
@@ -1079,6 +1245,7 @@ werkzeug==3.1.8
     #   apache-airflow-providers-fab
     #   flask
     #   flask-appbuilder
+    #   flask-cors
     #   flask-jwt-extended
     #   flask-login
 wirerope==1.0.0

@@ -34,6 +34,7 @@ x-airflow-common:
     AIRFLOW_VAR_FREDO_API_TOKEN: ${AIRFLOW_VAR_FREDO_API_TOKEN}
     AIRFLOW_VAR_FT_API_TOKEN: ${AIRFLOW_VAR_FT_API_TOKEN}
     AIRFLOW_VAR_MISSION_LOCALE_API_SECRET: ${AIRFLOW_VAR_MISSION_LOCALE_API_SECRET}
+    AIRFLOW_VAR_MLFLOW_TRACKING_URI: http://mlflow:5000
     AIRFLOW_VAR_DORA_PREPROD_API_TOKEN: ${AIRFLOW_VAR_DORA_PREPROD_API_TOKEN}
     AIRFLOW_VAR_EMPLOIS_API_TOKEN: ${AIRFLOW_VAR_EMPLOIS_API_TOKEN}
     AIRFLOW_VAR_MEDIATION_NUMERIQUE_API_TOKEN: ${AIRFLOW_VAR_MEDIATION_NUMERIQUE_API_TOKEN}
@@ -183,6 +184,33 @@ services:
       - DATALAKE_BUCKET_NAME=data-inclusion-lake
       - AWS_SECRET_ACCESS_KEY=minioadmin
       - AWS_ACCESS_KEY_ID=minioadmin
+
+  mlflow-db:
+    image: postgres:18
+    restart: no
+    healthcheck:
+      test: pg_isready
+      interval: 5s
+      retries: 5
+    environment:
+      - PGUSER=mlflow
+      - POSTGRES_DB=mlflow
+      - POSTGRES_USER=mlflow
+      - POSTGRES_PASSWORD=mlflow
+
+  mlflow:
+    image: ghcr.io/mlflow/mlflow:v3.12.0-full
+    depends_on:
+      mlflow-db:
+        condition: service_healthy
+    command: mlflow server
+    environment:
+      - MLFLOW_HOST=0.0.0.0
+      - MLFLOW_BACKEND_STORE_URI=postgresql://mlflow:mlflow@mlflow-db:5432/mlflow
+      - MLFLOW_DISABLE_TELEMETRY=True
+      - MLFLOW_SERVER_ALLOWED_HOSTS=localhost:5000,mlflow:5000
+    ports:
+      - 5000:5000
 
 volumes:
   pg-data:

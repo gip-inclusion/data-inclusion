@@ -224,6 +224,7 @@ resource "scaleway_object_bucket_policy" "main" {
 
 locals {
   airflow_hostname = "airflow.${var.dns_zone}"
+  mlflow_hostname  = "mlflow.${var.dns_zone}"
   work_dir         = "/root/data-inclusion"
 }
 
@@ -264,8 +265,8 @@ resource "terraform_data" "up" {
     STACK_VERSION='${var.stack_version}'
     AIRFLOW__SENTRY__RELEASE='${var.stack_version}'
     AIRFLOW_HOSTNAME='${local.airflow_hostname}'
-    AIRFLOW__API__BASE_URL='https://${local.airflow_hostname}'
     AIRFLOW_VAR_ENVIRONMENT='${var.environment}'
+    MLFLOW_HOSTNAME='${local.mlflow_hostname}'
     EOT
     )
     destination = "${local.work_dir}/.env"
