@@ -195,6 +195,7 @@ services:
     depends_on:
       mlflow-db:
         condition: service_healthy
+    entrypoint: /bin/bash -c
     command:
       - |
         # install extra depencencies for auth
