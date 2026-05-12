@@ -82,6 +82,7 @@ FROM (
     ('phlebology',                            'Phlébologie'),
     ('pneumology',                            'Pneumologie'),
     ('pregnancy_care',                        'Suivi grossesse'),
+    ('psychiatry',                            'Psychiatrie'),
     ('psychological_support',                 'Psychologie'),
     ('public_writer',                         'Écrivain public'),
     ('radiology',                             'Radiologie'),
