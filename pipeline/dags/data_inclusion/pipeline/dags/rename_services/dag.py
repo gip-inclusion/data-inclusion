@@ -78,7 +78,7 @@ def run():
     pg_hook = postgres.PostgresHook(postgres_conn_id="pg")
 
     structures_df = pg_hook.get_df(
-        sql="SELECT id, nom FROM api__structures_v1",
+        sql="SELECT id, nom FROM public_marts.marts__structures_v1",
         df_type="polars",
         infer_schema_length=None,
     )
@@ -94,7 +94,7 @@ def run():
                 description,
                 thematiques,
                 type
-            FROM api__services_v1
+            FROM public_marts.marts__services_v1
         """,
         df_type="polars",
         infer_schema_length=None,
