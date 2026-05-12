@@ -232,7 +232,8 @@ resource "scaleway_domain_record" "dns" {
   for_each = toset(
     [
       "",
-      local.airflow_hostname
+      local.airflow_hostname,
+      local.mlflow_hostname
     ]
   )
 
