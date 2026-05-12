@@ -10,7 +10,7 @@ x-airflow-common:
   environment:
     &airflow-common-environment
     AIRFLOW__API_AUTH__JWT_SECRET: ${AIRFLOW__API_AUTH__JWT_SECRET}
-    AIRFLOW__API__BASE_URL: https://${AIRFLOW__API__BASE_URL}
+    AIRFLOW__API__BASE_URL: https://${AIRFLOW_HOSTNAME}
     AIRFLOW__CORE__AUTH_MANAGER: airflow.providers.fab.auth_manager.fab_auth_manager.FabAuthManager
     AIRFLOW__CORE__DEFAULT_TIMEZONE: Europe/Paris
     AIRFLOW__CORE__EXECUTION_API_SERVER_URL: http://airflow-api-server:8080/execution/
