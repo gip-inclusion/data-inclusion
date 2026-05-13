@@ -1734,3 +1734,83 @@ def test_search_order_by_distance(api_client):
     assert response.status_code == 200
     items = response.json()["items"]
     assert [item["data"]["id"] for item in items] == ["closer", "farther"]
+
+
+@pytest.mark.with_token
+@pytest.mark.parametrize(
+    ("services", "expected_ordered_ids"),
+    [
+        pytest.param(
+            [
+                {
+                    "id": "phrase",
+                    "structure__nom": "Action Logement Solidarités",
+                    "score_qualite": 0.5,
+                },
+                {
+                    "id": "scattered",
+                    "structure__nom": "Logement social et action immédiate",
+                    "score_qualite": 0.5,
+                },
+            ],
+            ["phrase", "scattered"],
+            id="des mots adjacents surclassent un ordre dispersé",
+        ),
+        pytest.param(
+            [
+                {
+                    "id": "phrase",
+                    "structure__nom": "Action Logement Solidarités",
+                    "score_qualite": 0.1,
+                },
+                {
+                    "id": "scattered",
+                    "structure__nom": "Logement social et action immédiate",
+                    "score_qualite": 1.0,
+                },
+            ],
+            ["phrase", "scattered"],
+            id="le bonus de phrase surpasse le bonus de qualité",
+        ),
+        pytest.param(
+            [
+                {
+                    "id": "phrase",
+                    "structure__nom": "Action Logement Services",
+                    "score_qualite": 0.5,
+                },
+                {
+                    "id": "reversed",
+                    "structure__nom": "Logement Action Services",
+                    "score_qualite": 0.5,
+                },
+            ],
+            ["phrase", "reversed"],
+            id="l'ordre de phrase compte",
+        ),
+        pytest.param(
+            [
+                {
+                    "id": "scattered",
+                    "structure__nom": "Foo",
+                    "description": (
+                        "Nous proposons une action d'accompagnement social "
+                        "et un appui à la recherche de logement."
+                    ),
+                    "score_qualite": 0.5,
+                },
+            ],
+            ["scattered"],
+            id="ordre dispersé retourné malgré tout",
+        ),
+    ],
+)
+def test_search_phrase_boost(api_client, services, expected_ordered_ids):
+    for kwargs in services:
+        factories.ServiceFactory(**kwargs)
+
+    response = api_client.get(SEARCH_ENDPOINT.url, params={"q": "action logement"})
+
+    assert response.status_code == 200
+    items = response.json()["items"]
+    assert [item["data"]["id"] for item in items] == expected_ordered_ids

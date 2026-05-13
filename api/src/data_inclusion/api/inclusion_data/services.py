@@ -402,15 +402,26 @@ def search_query(
     score_recherche_expr = None
     if params.q is not None:
         plainto_tsquery = sqla.func.plainto_tsquery("public.french", params.q)
+        score_expr = sqla.func.ts_rank_cd(
+            models.Service.search_vector, plainto_tsquery, 32
+        )
+
+        # apply a "phrase" extra bonus (rewarding exact word order and adjacence)
+        # when we have multiple words in the query. word closeness still counts
+        # with score_expr.
+        if len(params.q.split()) > 1:
+            phraseto_tsquery = sqla.func.phraseto_tsquery("public.french", params.q)
+            phrase_rank = sqla.func.ts_rank_cd(
+                models.Service.search_vector,
+                phraseto_tsquery,
+                32,
+            )
+            # weight of 2 allows for exact adjacent match to be guaranteed first
+            # without completely discarding ts_rank_cd matches
+            score_expr = score_expr + 2 * phrase_rank
+
         score_recherche_expr = sqla.func.round(
-            sqla.cast(
-                sqla.func.ts_rank_cd(
-                    models.Service.search_vector,
-                    plainto_tsquery,
-                    32,
-                ),
-                sqla.Numeric,
-            ),
+            sqla.cast(score_expr, sqla.Numeric),
             2,
         ).label("score_recherche")
 
