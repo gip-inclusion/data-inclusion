@@ -34,7 +34,7 @@ def _geocode(df: pd.DataFrame) -> pd.DataFrame:
             )
             response.raise_for_status()
         except requests.RequestException as e:
-            logger.info("Error while fetching `%s`: %s", e.request.url, e)
+            logger.warning(e)
             return pd.DataFrame()
 
     with io.StringIO() as f:
