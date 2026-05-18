@@ -86,6 +86,7 @@ FROM (
     ('allergology',                           NULL),
     ('animal_assitance',                      NULL),
     ('cardiology',                            NULL),
+    ('chronic_diseases',                      NULL),
     ('dermatology',                           NULL),
     ('digital_safe',                          NULL),
     ('echography',                            NULL),

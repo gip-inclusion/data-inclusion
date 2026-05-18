@@ -37,6 +37,8 @@ services AS (
     FROM
         source,
         LATERAL JSONB_PATH_QUERY(source.data, '$.services_all[*]') AS services (data)
+    -- FIXME: starting from may 2026, some services have null serviceObjectId
+    WHERE services.data ->> 'serviceObjectId' IS NOT NULL
 ),
 
 final AS (

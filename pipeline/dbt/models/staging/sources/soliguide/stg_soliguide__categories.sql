@@ -23,6 +23,7 @@ FROM (
     ('carpooling',                            'Co-voiturage'),
     ('chauffeur_driven_transport',            'Transport avec chauffeur'),
     ('child_care',                            'Soins enfants'),
+    ('chronic_diseases',                      'Maladies chroniques'),
     ('citizen_housing',                       'Hébergement citoyen'),
     ('clothing',                              'Vêtements'),
     ('community_garden',                      'Jardin solidaire'),
