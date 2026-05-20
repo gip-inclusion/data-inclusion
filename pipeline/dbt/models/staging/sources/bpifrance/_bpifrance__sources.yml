@@ -1,0 +1,8 @@
+version: 2
+
+sources:
+  - name: bpifrance
+    schema: bpifrance
+    tables:
+      - name: structures
+      - name: services
