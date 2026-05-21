@@ -107,7 +107,7 @@ def int__renommages(
         on="id",
         how="inner",
     ).select(
-        pl.lit(pendulum.now()).alias("generated_at"),
+        pl.lit(pendulum.now()).alias("generated_at").dt.convert_time_zone("UTC"),
         pl.col("reason"),
         *input_columns,
         pl.col("output"),
