@@ -1,5 +1,4 @@
 from pathlib import Path
-from typing import Literal
 
 from airflow.sdk import chain, dag, task, task_group
 from airflow.task.trigger_rule import TriggerRule
@@ -73,7 +72,7 @@ def run_main_pipeline():
             )
 
     @task_group()
-    def dbt_build_intermediate(version: Literal["v1"]):
+    def dbt_build_intermediate():
         @task_group()
         def dbt_build_mappings():
             for path in sorted(
@@ -81,7 +80,7 @@ def run_main_pipeline():
                     dbt.DBT_PROJECT_PATH
                     / "models"
                     / "intermediate"
-                    / version
+                    / "v1"
                     / "001_mappings"
                 ).glob("*")
             ):
@@ -117,28 +116,28 @@ def run_main_pipeline():
             trigger_rule=TriggerRule.ALL_DONE,
         )(
             command="build",
-            select=f"intermediate.{version}.002_unions",
+            select="intermediate.v1.002_unions",
         )
 
         dbt_build_enrichments = dbt.dbt_task.override(
             task_id="dbt_build_enrichments",
         )(
             command="build",
-            select=f"intermediate.{version}.003_enrichments",
+            select="intermediate.v1.003_enrichments",
         )
 
         dbt_build_finals = dbt.dbt_task.override(
             task_id="dbt_build_finals",
         )(
             command="build",
-            select=f"intermediate.{version}.004_finals",
+            select="intermediate.v1.004_finals",
         )
 
         dbt_build_deduplicate = dbt.dbt_task.override(
             task_id="dbt_build_deduplicate",
         )(
             command="build",
-            select=f"intermediate.{version}.005_deduplicate",
+            select="intermediate.v1.005_deduplicate",
         )
 
         chain(
@@ -150,23 +149,15 @@ def run_main_pipeline():
             dbt_build_deduplicate,
         )
 
-    dbt_snapshot_deduplicate_stats = dbt.dbt_task.override(
-        task_id="dbt_snapshot_deduplicate_stats",
-    )(
-        command="snapshot",
-        select="deduplicate",
-    )
-
     chain(
         dbt_seed,
         dbt_create_udfs,
         dbt_build_staging(),
-        dbt_build_intermediate(version="v1"),
+        dbt_build_intermediate(),
         dbt.dbt_task.override(task_id="dbt_build_marts")(
             command="build", select="marts.v1"
         ),
         export_dataset(to_s3_path=str(s3.get_key(stage="marts"))),
-        dbt_snapshot_deduplicate_stats,
     )
 
 
