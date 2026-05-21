@@ -64,7 +64,6 @@ def init():
     env_vars=ENV_VARS,
 )
 def int__renommages_v1(incremental: bool):
-    import mlflow
     import sqlalchemy as sa
 
     from airflow.providers.postgres.hooks import postgres
@@ -104,16 +103,14 @@ def int__renommages_v1(incremental: bool):
             infer_schema_length=None,
         )
 
-    with mlflow.context(tags={"workflow": constants.PROMPT_RUN_ALIAS}):
-        results_df = model.int__renommages(
-            structures_df=structures_df,
-            services_df=services_df,
-            rename_fn=lambda service: renommage.rename(
-                service=service,
-                prompt_uri=constants.PROMPT_RUN_URI,
-            ),
-            existing_df=renommages_df,
-        )
+    results_df = model.int__renommages(
+        structures_df=structures_df,
+        services_df=services_df,
+        rename_fn=lambda service: renommage.rename(
+            service=service, workflow=constants.PROMPT_RUN_ALIAS
+        ),
+        existing_df=renommages_df,
+    )
 
     print(results_df)
 
@@ -133,11 +130,8 @@ def int__renommages_v1(incremental: bool):
     env_vars=ENV_VARS,
 )
 def eval():
-    import mlflow
+    from data_inclusion.pipeline.dags.rename_services import evaluation
 
-    from data_inclusion.pipeline.dags.rename_services import constants, evaluation
-
-    with mlflow.context(tags={"workflow": constants.PROMPT_EVAL_ALIAS}):
-        results_df = evaluation.eval()
+    results_df = evaluation.eval()
 
     print(results_df)

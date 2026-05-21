@@ -83,14 +83,34 @@ def int__renommages(
         )
     )
 
-    results_df = services_df.select(
+    results_df = pl.DataFrame(
+        [
+            {
+                "id": service_data["id"],
+                "output": rename_fn(service_data["input"]),
+            }
+            for service_data in (
+                services_df.unique(
+                    subset=input_columns,
+                    keep="first",
+                )
+                .with_columns(
+                    input=pl.struct(*input_columns),
+                )
+                .iter_rows(named=True)
+            )
+        ]
+    ).filter(pl.col("output").is_not_null())
+
+    results_df = results_df.join(
+        other=services_df,
+        on="id",
+        how="inner",
+    ).select(
         pl.lit(pendulum.now()).alias("generated_at"),
         pl.col("reason"),
         *input_columns,
-        output=pl.struct(*input_columns).map_elements(
-            function=rename_fn,
-            return_dtype=pl.String,
-        ),
+        pl.col("output"),
     )
 
     if existing_df is not None and len(existing_df) > 0:

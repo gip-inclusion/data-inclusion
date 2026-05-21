@@ -1,5 +1,5 @@
 import json
-from typing import Annotated
+from typing import Annotated, Literal
 
 import mlflow
 import mlflow.genai
@@ -37,7 +37,10 @@ class Response(pydantic.BaseModel):
     nom: Annotated[str, pydantic.Field(min_length=3, max_length=150)]
 
 
-def rename(service: v1.Service | dict, prompt_uri: str) -> str | None:
+def rename(
+    service: v1.Service | dict,
+    workflow: Literal["run", "eval"],
+) -> str | None:
     if isinstance(service, v1.Service):
         service_data = service.model_dump(mode="json")
     else:
@@ -48,11 +51,13 @@ def rename(service: v1.Service | dict, prompt_uri: str) -> str | None:
     @mlflow.trace
     def _rename(service: dict) -> str | None:
         # Load the prompt - this creates an automatic link to the trace
-        prompt = mlflow.genai.load_prompt(name_or_uri=prompt_uri)
+        prompt = mlflow.genai.load_prompt(
+            name_or_uri=f"{constants.PROMPT_BASE_URI}@{workflow}"
+        )
 
         model_config = PromptModelConfig.model_validate(prompt.model_config)
 
-        openai_client = openai.OpenAI()
+        openai_client = openai.OpenAI(max_retries=5)
         completion = openai_client.chat.completions.parse(
             model=model_config.model_name or constants.DEFAULT_MODEL,
             messages=prompt.format(service=json.dumps(service)),
@@ -63,4 +68,5 @@ def rename(service: v1.Service | dict, prompt_uri: str) -> str | None:
 
         return message.parsed.nom if message.parsed is not None else None
 
-    return _rename(service=service_data)
+    with mlflow.context(tags={"workflow": workflow}):
+        return _rename(service=service_data)

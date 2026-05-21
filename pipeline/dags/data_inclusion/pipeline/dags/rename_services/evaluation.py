@@ -41,8 +41,7 @@ def eval() -> EvaluationResult:
     return mlflow.genai.evaluate(
         data=dataset.to_df(),
         predict_fn=lambda service: renommage.rename(
-            service=service,
-            prompt_uri=constants.PROMPT_EVAL_URI,
+            service=service, workflow=constants.PROMPT_EVAL_ALIAS
         ),
         scorers=[keyword_presence],
     )

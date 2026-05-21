@@ -10,6 +10,10 @@ adresses AS (
     SELECT * FROM {{ ref('int__adresses_v1') }}
 ),
 
+renommages AS (
+    SELECT * FROM {{ source('python_models', 'int__renommages_v1') }}
+),
+
 urls AS (
     SELECT
         input_url,
@@ -76,6 +80,7 @@ SELECT
     contacts.courriel                    AS "courriel",
     contacts.telephone                   AS "telephone",
     CASE
+        WHEN renommages.nom IS NOT NULL THEN renommages.nom
         WHEN LENGTH(services.nom) <= 150 THEN services.nom
         ELSE LEFT(services.nom, 149) || '…'
     END                                  AS "nom",
@@ -96,3 +101,9 @@ LEFT JOIN regions
     ON adresses.code_region = regions.code
 LEFT JOIN urls
     ON services.lien_mobilisation = urls.input_url
+LEFT JOIN renommages
+    ON
+        services.nom = renommages.nom
+        AND services.description = renommages.description
+        AND services.thematiques = renommages.thematiques
+        AND services.type = renommages.type

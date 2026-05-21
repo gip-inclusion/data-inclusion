@@ -5,6 +5,7 @@ from airflow.sdk import chain, dag, task, task_group
 from airflow.task.trigger_rule import TriggerRule
 
 from data_inclusion.pipeline.common import dags, dbt, s3
+from data_inclusion.pipeline.dags.rename_services import tasks
 
 
 @task.python
@@ -143,6 +144,7 @@ def run_main_pipeline():
         chain(
             dbt_build_mappings(),
             dbt_build_unions,
+            tasks.int__renommages_v1(incremental=True),
             dbt_build_enrichments,
             dbt_build_finals,
             dbt_build_deduplicate,
