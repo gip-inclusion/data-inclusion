@@ -43,8 +43,6 @@ def rename(service: v1.Service | dict, prompt_uri: str) -> str | None:
     else:
         service_data = service
 
-    fields_of_interest = ["nom", "description", "thematiques", "type"]
-    service_data = {field: service_data[field] for field in fields_of_interest}
     service_data = json.loads(json.dumps(service_data))
 
     @mlflow.trace

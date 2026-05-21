@@ -1,7 +1,16 @@
-from airflow.sdk import Variable, chain, dag, task
+from airflow.sdk import Variable, task
 
-from data_inclusion.pipeline.common import dags
 from data_inclusion.pipeline.dags.rename_services import constants
+
+ENV_VARS = {
+    "ANTHROPIC_API_KEY": Variable.get("ANTHROPIC_API_KEY"),
+    "OPENAI_API_KEY": Variable.get("ANTHROPIC_API_KEY"),
+    "OPENAI_BASE_URL": constants.DEFAULT_PROVIDER_URL,
+    "MLFLOW_TRACKING_URI": Variable.get("MLFLOW_TRACKING_URI"),
+    "MLFLOW_TRACKING_USERNAME": constants.MLFLOW_TRACKING_USERNAME,
+    "MLFLOW_TRACKING_PASSWORD": Variable.get("MLFLOW_TRACKING_PASSWORD", ""),
+    "MLFLOW_EXPERIMENT_NAME": constants.EXPERIMENT_NAME,
+}
 
 
 @task.virtualenv(
@@ -14,11 +23,7 @@ def init():
     import mlflow.genai
     from mlflow.genai import datasets
 
-    from data_inclusion.pipeline.dags.rename_services import (
-        constants,
-        evaluation,
-        renommage,
-    )
+    from data_inclusion.pipeline.dags.rename_services import constants, renommage
 
     try:
         datasets.get_dataset(name=constants.DATASET_NAME)
@@ -50,26 +55,17 @@ def init():
                 alias=alias,
                 version=1,
             )
-    try:
-        mlflow.genai.get_scorer(name=constants.FALC_SCORER_NAME)
-    except mlflow.MlflowException:
-        falc_judge = mlflow.genai.make_judge(
-            name=constants.FALC_SCORER_NAME,
-            instructions=evaluation.FALC_GUIDELINES,
-            model=constants.MODEL_URI,
-            feedback_value_type=bool,
-            inference_params={"temperature": 0.0},
-        )
-        falc_judge.register()
 
 
 @task.virtualenv(
     requirements="requirements/tasks/requirements.txt",
     system_site_packages=False,
     venv_cache_path="/tmp/",
+    env_vars=ENV_VARS,
 )
-def run():
+def int__renommages_v1(incremental: bool):
     import mlflow
+    import sqlalchemy as sa
 
     from airflow.providers.postgres.hooks import postgres
 
@@ -78,7 +74,7 @@ def run():
     pg_hook = postgres.PostgresHook(postgres_conn_id="pg")
 
     structures_df = pg_hook.get_df(
-        sql="SELECT id, nom FROM public_marts.marts__structures_v1",
+        sql="SELECT id, nom FROM public_intermediate.int__union_structures_v1",
         df_type="polars",
         infer_schema_length=None,
     )
@@ -94,13 +90,21 @@ def run():
                 description,
                 thematiques,
                 type
-            FROM public_marts.marts__services_v1
+            FROM public_intermediate.int__union_services_v1
         """,
         df_type="polars",
         infer_schema_length=None,
     )
 
-    with mlflow.context(tags={"data.inclusion.workflow": constants.PROMPT_RUN_ALIAS}):
+    renommages_df = None
+    if incremental:
+        renommages_df = pg_hook.get_df(
+            sql="SELECT * FROM public_intermediate.int__renommages_v1",
+            df_type="polars",
+            infer_schema_length=None,
+        )
+
+    with mlflow.context(tags={"workflow": constants.PROMPT_RUN_ALIAS}):
         results_df = model.int__renommages(
             structures_df=structures_df,
             services_df=services_df,
@@ -108,51 +112,32 @@ def run():
                 service=service,
                 prompt_uri=constants.PROMPT_RUN_URI,
             ),
+            existing_df=renommages_df,
         )
 
     print(results_df)
+
+    with pg_hook.get_sqlalchemy_engine().begin() as conn:
+        results_df.write_database(
+            table_name="public_intermediate.int__renommages_v1",
+            connection=conn,
+            if_table_exists="replace",
+            engine_options={"dtype": {"thematiques": sa.ARRAY(sa.String)}},
+        )
 
 
 @task.virtualenv(
     requirements="requirements/tasks/requirements.txt",
     system_site_packages=False,
     venv_cache_path="/tmp/",
+    env_vars=ENV_VARS,
 )
 def eval():
     import mlflow
 
     from data_inclusion.pipeline.dags.rename_services import constants, evaluation
 
-    with mlflow.context(tags={"data.inclusion.workflow": constants.PROMPT_EVAL_ALIAS}):
+    with mlflow.context(tags={"workflow": constants.PROMPT_EVAL_ALIAS}):
         results_df = evaluation.eval()
 
     print(results_df)
-
-
-@dag(
-    schedule=None,
-    **dags.common_args(use_sentry=True),
-)
-def rename_services():
-    env_vars = {
-        "ANTHROPIC_API_KEY": Variable.get("ANTHROPIC_API_KEY"),
-        "OPENAI_API_KEY": Variable.get("ANTHROPIC_API_KEY"),
-        "OPENAI_BASE_URL": constants.DEFAULT_PROVIDER_URL,
-        "MLFLOW_TRACKING_URI": Variable.get("MLFLOW_TRACKING_URI"),
-        "MLFLOW_TRACKING_USERNAME": "admin",
-        "MLFLOW_TRACKING_PASSWORD": Variable.get("MLFLOW_TRACKING_PASSWORD"),
-        "MLFLOW_EXPERIMENT_NAME": constants.EXPERIMENT_NAME,
-    }
-
-    chain(
-        init.override(env_vars=env_vars)(),
-        run.override(env_vars=env_vars)(),
-        eval.override(env_vars=env_vars)(),
-    )
-
-
-dag = rename_services()
-
-
-if __name__ == "__main__":
-    dag.test()

@@ -23,33 +23,13 @@ def keyword_presence(outputs: str, expectations: dict) -> Feedback:
         return Feedback(value=False, rationale=f"Missing keyword: {expected_keyword}")
 
 
-FALC_GUIDELINES = """
-Evaluate whether the response follows these policy guidelines. Only focus on the
-provided guidelines and not the correctness, relevance, or effectiveness of the inputs.
-
-Guidelines:
-- La réponse doit avoir un niveau de langage simplifié constitué de mots courants
-- La réponse ne doit pas contenir de jargon, d'acronyme, ni de métaphore
-
-<inputs>
-{{ inputs }}
-</inputs>
-
-<outputs>
-{{ outputs }}
-</outputs>
-"""
-
-
 def eval() -> EvaluationResult:
     dataset = datasets.get_dataset(name=constants.DATASET_NAME)
 
     traces_list = [
         trace
         for trace in mlflow.search_traces(
-            filter_string=(
-                f"tags.data.inclusion.workflow = '{constants.PROMPT_RUN_ALIAS}'"
-            ),
+            filter_string=f"tags.workflow = '{constants.PROMPT_RUN_ALIAS}'",
             max_results=100,
             return_type="list",
         )
@@ -64,10 +44,7 @@ def eval() -> EvaluationResult:
             service=service,
             prompt_uri=constants.PROMPT_EVAL_URI,
         ),
-        scorers=[
-            keyword_presence,
-            *mlflow.genai.list_scorers(),
-        ],
+        scorers=[keyword_presence],
     )
 
 
