@@ -1,0 +1,22 @@
+{% macro udf__model_validate() %}
+
+DROP FUNCTION IF EXISTS processings.model_validate;
+
+CREATE OR REPLACE FUNCTION processings.model_validate(model_class TEXT, data JSONB)
+RETURNS
+    TABLE(
+        model_class TEXT,
+        type TEXT,
+        loc TEXT,
+        msg TEXT,
+        input JSONB
+    )
+AS $$
+
+#INLINE#
+
+return model_validate(model=model_class, data=data)
+
+$$ LANGUAGE plpython3u;
+
+{% endmacro %}
