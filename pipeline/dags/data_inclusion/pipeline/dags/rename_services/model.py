@@ -69,7 +69,7 @@ def validate_renamings_df(renamings_df: pl.DataFrame) -> pl.DataFrame:
             "thematiques": pl.List(pl.String),
             "type": pl.String,
             "output": pl.String,
-            "generated_at": pl.Datetime(time_zone="Europe/Paris"),
+            "generated_at": pl.Datetime(time_zone="UTC"),
         },
     )
 
@@ -169,7 +169,7 @@ def int__renommages(
     ).select(
         pl.lit(pendulum.now(tz="Europe/Paris"))
         .alias("generated_at")
-        .dt.convert_time_zone("Europe/Paris"),
+        .dt.convert_time_zone("UTC"),
         pl.col("reason"),
         *input_columns,
         pl.col("output"),

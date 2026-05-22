@@ -8,15 +8,17 @@ from data_inclusion.pipeline.dags.rename_services import model
 @pytest.mark.parametrize(
     ("service", "structure", "expected"),
     [
-        (
+        pytest.param(
             {"id": "1", "structure_id": "1", "nom": "Structure A"},
             {"id": "1", "nom": "Structure A"},
             True,
+            id="structure name matches service name",
         ),
-        (
+        pytest.param(
             {"id": "2", "structure_id": "2", "nom": "Service B"},
             {"id": "2", "nom": "Structure B"},
             False,
+            id="structure name does not match service name",
         ),
     ],
 )
@@ -32,9 +34,9 @@ def test_filter_services_named_after_structure(service, structure, expected):
 @pytest.mark.parametrize(
     ("service", "expected"),
     [
-        ({"id": "1", "nom": "Short"}, True),
-        ({"id": "3", "nom": "Long" * 100}, True),
-        ({"id": "2", "nom": "This is a reasonably long service name"}, False),
+        pytest.param({"id": "1", "nom": "*"}, True, id="too short"),
+        pytest.param({"id": "3", "nom": "*" * 200}, True, id="too long"),
+        pytest.param({"id": "2", "nom": "*" * 100}, False, id="just right"),
     ],
 )
 def test_filter_services_with_bad_name_length(service, expected):
@@ -79,7 +81,7 @@ def test_int__renommages():
                     "thematiques": None,
                     "type": "accompagnement",
                     "output": "New name for Structure A",
-                    "generated_at": pendulum.now(tz="Europe/Paris"),
+                    "generated_at": pendulum.now(tz="UTC"),
                 }
             ]
         ),
