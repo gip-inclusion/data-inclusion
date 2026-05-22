@@ -10,7 +10,6 @@ from data_inclusion.pipeline.dags.rename_services import tasks
 @task.python
 def export_dataset(to_s3_path: str):
     import json
-    from pathlib import Path
 
     from airflow.providers.amazon.aws.hooks import s3
     from airflow.providers.postgres.hooks import postgres
@@ -45,11 +44,7 @@ def export_dataset(to_s3_path: str):
     **dags.common_args(use_sentry=True),
 )
 def run_main_pipeline():
-    dbt_seed = dbt.dbt_task.override(
-        task_id="dbt_seed",
-    )(
-        command="seed",
-    )
+    dbt_seed = dbt.dbt_task.override(task_id="dbt_seed")(command="seed")
 
     dbt_create_udfs = dbt.dbt_task.override(
         task_id="dbt_create_udfs",
@@ -58,67 +53,72 @@ def run_main_pipeline():
         macro="create_udfs",
     )
 
+    SOURCES_STAGING_MODELS_PATH = (
+        dbt.DBT_PROJECT_PATH / "models" / "staging" / "sources"
+    )
+    SOURCES_MAPPING_MODELS_PATH = (
+        dbt.DBT_PROJECT_PATH / "models" / "intermediate" / "v1" / "001_mappings"
+    )
+
     @task_group()
-    def dbt_build_staging():
-        for path in sorted(
-            Path(dbt.DBT_PROJECT_PATH / "models" / "staging" / "sources").glob("*")
-        ):
-            path = path.relative_to(dbt.DBT_PROJECT_PATH)
+    def build_staging_and_mappings_models():
+        for path in sorted(SOURCES_STAGING_MODELS_PATH.glob("*")):
             source_id = str(path).split("/")[-1].replace("_", "-")
 
-            dbt.dbt_task.override(task_id=source_id)(
-                command="build",
-                select=f"path:{path}",
+            staging_model_path = path.relative_to(dbt.DBT_PROJECT_PATH)
+
+            # not all sources have mapping models
+            mapping_model_path = (
+                (SOURCES_MAPPING_MODELS_PATH / path.name).relative_to(
+                    dbt.DBT_PROJECT_PATH
+                )
+                if (SOURCES_MAPPING_MODELS_PATH / path.name).exists()
+                else None
             )
 
+            @task_group(group_id=source_id)
+            def source_task_group():
+                tasks = [
+                    dbt.dbt_task.override(task_id="dbt_build_staging")(
+                        command="build",
+                        select=f"path:{staging_model_path}",
+                    )
+                ]
+
+                if mapping_model_path is not None:
+                    # two step build:
+                    # 1. run the mapping in a temp table then run data tests
+                    # 2. if data tests pass, run the mapping for real
+                    tasks += [
+                        dbt.dbt_task.override(
+                            task_id="dbt_build_mapping_tmp",
+                        )(
+                            command="build",
+                            select=f"path:{mapping_model_path}",
+                            dbt_vars={"build_intermediate_tmp": True},
+                        ),
+                        dbt.dbt_task.override(
+                            task_id="dbt_build_mapping",
+                        )(
+                            command="build",
+                            select=f"path:{mapping_model_path}",
+                        ),
+                    ]
+
+                chain(*tasks)
+
+            source_task_group()
+
+    dbt_build_unions = dbt.dbt_task.override(
+        task_id="dbt_build_unions",
+        trigger_rule=TriggerRule.ALL_DONE,
+    )(
+        command="build",
+        select="intermediate.v1.002_unions",
+    )
+
     @task_group()
-    def dbt_build_intermediate():
-        @task_group()
-        def dbt_build_mappings():
-            for path in sorted(
-                Path(
-                    dbt.DBT_PROJECT_PATH
-                    / "models"
-                    / "intermediate"
-                    / "v1"
-                    / "001_mappings"
-                ).glob("*")
-            ):
-                path = path.relative_to(dbt.DBT_PROJECT_PATH)
-                source_id = str(path).split("/")[-1].replace("_", "-")
-
-                @task_group(group_id=source_id)
-                def source_mapping():
-                    dbt_build_mapping_tmp = dbt.dbt_task.override(
-                        task_id="dbt_build_mapping_tmp",
-                        trigger_rule=TriggerRule.ALL_DONE,
-                    )(
-                        command="build",
-                        select=f"path:{path}",
-                        dbt_vars={"build_intermediate_tmp": True},
-                    )
-                    dbt_build_mapping = dbt.dbt_task.override(
-                        task_id="dbt_build_mapping",
-                    )(
-                        command="build",
-                        select=f"path:{path}",
-                    )
-
-                    chain(
-                        dbt_build_mapping_tmp,
-                        dbt_build_mapping,
-                    )
-
-                source_mapping()
-
-        dbt_build_unions = dbt.dbt_task.override(
-            task_id="dbt_build_unions",
-            trigger_rule=TriggerRule.ALL_DONE,
-        )(
-            command="build",
-            select="intermediate.v1.002_unions",
-        )
-
+    def build_enrichments_models():
         dbt_build_enrichments = dbt.dbt_task.override(
             task_id="dbt_build_enrichments",
         )(
@@ -126,37 +126,41 @@ def run_main_pipeline():
             select="intermediate.v1.003_enrichments",
         )
 
-        dbt_build_finals = dbt.dbt_task.override(
-            task_id="dbt_build_finals",
-        )(
-            command="build",
-            select="intermediate.v1.004_finals",
-        )
-
-        dbt_build_deduplicate = dbt.dbt_task.override(
-            task_id="dbt_build_deduplicate",
-        )(
-            command="build",
-            select="intermediate.v1.005_deduplicate",
-        )
-
         chain(
-            dbt_build_mappings(),
-            dbt_build_unions,
-            tasks.int__renommages_v1(incremental=True),
-            dbt_build_enrichments,
-            dbt_build_finals,
-            dbt_build_deduplicate,
+            [
+                tasks.int__renommages_v1(incremental=True),
+                dbt_build_enrichments,
+            ]
         )
+
+    dbt_build_finals = dbt.dbt_task.override(
+        task_id="dbt_build_finals",
+        trigger_rule=TriggerRule.ALL_DONE,
+    )(
+        command="build",
+        select="intermediate.v1.004_finals",
+    )
+
+    dbt_build_deduplicate = dbt.dbt_task.override(
+        task_id="dbt_build_deduplicate",
+    )(
+        command="build",
+        select="intermediate.v1.005_deduplicate",
+    )
+
+    dbt_build_marts = dbt.dbt_task.override(task_id="dbt_build_marts")(
+        command="build", select="marts.v1"
+    )
 
     chain(
         dbt_seed,
         dbt_create_udfs,
-        dbt_build_staging(),
-        dbt_build_intermediate(),
-        dbt.dbt_task.override(task_id="dbt_build_marts")(
-            command="build", select="marts.v1"
-        ),
+        build_staging_and_mappings_models(),
+        dbt_build_unions,
+        build_enrichments_models(),
+        dbt_build_finals,
+        dbt_build_deduplicate,
+        dbt_build_marts,
         export_dataset(to_s3_path=str(s3.get_key(stage="marts"))),
     )
 
