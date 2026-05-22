@@ -112,15 +112,16 @@ def int__renommages_v1(incremental: bool):
         existing_df=renommages_df,
     )
 
-    print(results_df)
+    if results_df is not None:
+        print(results_df)
 
-    with pg_hook.get_sqlalchemy_engine().begin() as conn:
-        results_df.write_database(
-            table_name="public_intermediate.int__renommages_v1",
-            connection=conn,
-            if_table_exists="replace",
-            engine_options={"dtype": {"thematiques": sa.ARRAY(sa.String)}},
-        )
+        with pg_hook.get_sqlalchemy_engine().begin() as conn:
+            results_df.write_database(
+                table_name="public_intermediate.int__renommages_v1",
+                connection=conn,
+                if_table_exists="replace",
+                engine_options={"dtype": {"thematiques": sa.ARRAY(sa.String)}},
+            )
 
 
 @task.virtualenv(

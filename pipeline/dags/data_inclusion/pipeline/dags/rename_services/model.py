@@ -28,12 +28,65 @@ def filter_services_with_bad_name_length(services_df: pl.DataFrame) -> pl.DataFr
     )
 
 
+def validate_structures_df(structures_df: pl.DataFrame) -> pl.DataFrame:
+    expected = pl.Schema(
+        {
+            "id": pl.String,
+            "nom": pl.String,
+        },
+    )
+
+    return structures_df.match_to_schema(
+        schema=expected,
+        extra_columns="ignore",
+    )
+
+
+def validate_services_df(services_df: pl.DataFrame) -> pl.DataFrame:
+    expected = pl.Schema(
+        {
+            "id": pl.String,
+            "structure_id": pl.String,
+            "nom": pl.String,
+            "description": pl.String,
+            "thematiques": pl.List(pl.String),
+            "type": pl.String,
+        },
+    )
+
+    return services_df.match_to_schema(
+        schema=expected,
+        extra_columns="ignore",
+    )
+
+
+def validate_renamings_df(renamings_df: pl.DataFrame) -> pl.DataFrame:
+    expected = pl.Schema(
+        {
+            "reason": pl.String,
+            "nom": pl.String,
+            "description": pl.String,
+            "thematiques": pl.List(pl.String),
+            "type": pl.String,
+            "output": pl.String,
+            "generated_at": pl.Datetime(time_zone="Europe/Paris"),
+        },
+    )
+
+    return renamings_df.match_to_schema(schema=expected)
+
+
 def int__renommages(
     structures_df: pl.DataFrame,
     services_df: pl.DataFrame,
     rename_fn: Callable[[dict], str | None],
     existing_df: pl.DataFrame | None = None,
-) -> pl.DataFrame:
+) -> pl.DataFrame | None:
+    structures_df = validate_structures_df(structures_df)
+    services_df = validate_services_df(services_df)
+    if existing_df is not None:
+        existing_df = validate_renamings_df(existing_df)
+
     input_columns = [
         pl.col("nom"),
         pl.col("description"),
@@ -48,6 +101,7 @@ def int__renommages(
             left_on=input_columns,
             right_on=input_columns,
             how="anti",
+            nulls_equal=True,
         )
 
     # select poorly named services
@@ -68,11 +122,13 @@ def int__renommages(
         .filter(pl.col("description").str.len_chars() > 100)
     )
 
-    print("Services to rename:")
+    if services_df.is_empty():
+        print("No new services to rename, skipping...")
+        return None
+
+    print("Renamings to do:")
     print(
-        services_df.group_by(
-            [pl.col("reason"), pl.col("source")],
-        )
+        services_df.group_by(pl.col("reason"))
         .agg(pl.count())
         .sort(
             by=[
@@ -102,12 +158,18 @@ def int__renommages(
         ]
     ).filter(pl.col("output").is_not_null())
 
+    if results_df.is_empty():
+        print("Renaming function did not return any new name, skipping...")
+        return existing_df if existing_df is not None else None
+
     results_df = results_df.join(
         other=services_df,
         on="id",
         how="inner",
     ).select(
-        pl.lit(pendulum.now()).alias("generated_at").dt.convert_time_zone("UTC"),
+        pl.lit(pendulum.now(tz="Europe/Paris"))
+        .alias("generated_at")
+        .dt.convert_time_zone("Europe/Paris"),
         pl.col("reason"),
         *input_columns,
         pl.col("output"),
@@ -117,4 +179,4 @@ def int__renommages(
         # incremental run: append results to existing_df
         results_df = pl.concat([existing_df, results_df], how="align")
 
-    return results_df
+    return validate_renamings_df(results_df)
