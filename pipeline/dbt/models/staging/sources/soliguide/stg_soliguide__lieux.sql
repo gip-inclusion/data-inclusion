@@ -14,7 +14,7 @@ lieux AS (
         data ->> 'lieu_id'                                                                               AS "id",
         -- first replace trailing groups of 2 or more dots by an ellipsis
         -- then remove trailing dot if not preceded by "etc"
-        REGEXP_REPLACE(REGEXP_REPLACE(data ->> 'name', '\.{2,}$', '…'), '(?<!etc)\.$', '')             AS "name",
+        REGEXP_REPLACE(REGEXP_REPLACE(data ->> 'name', '\.{2,}$', '…'), '(?<!etc)\.$', '')               AS "name",
         data #>> '{position,city}'                                                                       AS "position__city",
         data #>> '{position,cityCode}'                                                                   AS "position__city_code",
         data #>> '{position,country}'                                                                    AS "position__country",
@@ -26,8 +26,8 @@ lieux AS (
         data #>> '{position,department}'                                                                 AS "position__department",
         data #>> '{position,departmentCode}'                                                             AS "position__department_code",
         CAST(data #>> '{publics,accueil}' AS INT)                                                        AS "publics__accueil",
-        CAST(data #>> '{publics,age,min}' AS INT)                                                        AS "publics__age__min",
-        CAST(data #>> '{publics,age,max}' AS INT)                                                        AS "publics__age__max",
+        NULLIF(CAST(data #>> '{publics,age,min}' AS INT), 0)                                             AS "publics__age__min",
+        NULLIF(CAST(data #>> '{publics,age,max}' AS INT), 99)                                            AS "publics__age__max",
         NULLIF(TRIM(data #>> '{publics,description}'), '')                                               AS "publics__description",
         NULLIF(TRIM(data #>> '{entity,mail}'), '')                                                       AS "entity_mail",
         NULLIF(TRIM(data #>> '{entity,website}'), '')                                                    AS "entity_website",
