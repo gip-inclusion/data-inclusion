@@ -101,13 +101,16 @@ final AS (
         END                                                                                   AS "frais",
         COALESCE(services.modalities__price__precisions, lieux.modalities__price__precisions) AS "frais_precisions",
         COALESCE(publics.publics, ARRAY['tous-publics'])                                      AS "publics",
-        ARRAY_TO_STRING(
-            ARRAY[
-                COALESCE(services.publics__description, lieux.publics__description),
-                'L’âge minimum est de ' || lieux.publics__age__min || ' ans.',
-                'L’âge maximum est de ' || lieux.publics__age__max || ' ans.'
-            ],
-            E'\n\n'
+        NULLIF(
+            ARRAY_TO_STRING(
+                ARRAY[
+                    'L’âge minimum est de ' || lieux.publics__age__min || ' ans.',
+                    'L’âge maximum est de ' || lieux.publics__age__max || ' ans.',
+                    COALESCE(services.publics__description, lieux.publics__description)
+                ],
+                ' '
+            ),
+            ''
         )                                                                                     AS "publics_precisions",
         COALESCE(services.modalities__other, lieux.modalities__other)                         AS "conditions_acces",
         phones.phone_number                                                                   AS "telephone",

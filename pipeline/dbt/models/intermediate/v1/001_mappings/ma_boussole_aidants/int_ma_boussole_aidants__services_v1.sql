@@ -86,12 +86,15 @@ final AS (
         'gratuit'                                                                                           AS "frais",
         NULL                                                                                                AS "frais_precisions",
         publics.publics                                                                                     AS "publics",
-        ARRAY_TO_STRING(
-            ARRAY[
-                'Âge minimum : ' || structures.age_min,
-                'Âge maximum : ' || structures.age_max
-            ],
-            ' '
+        NULLIF(
+            ARRAY_TO_STRING(
+                ARRAY[
+                    'Âge minimum : ' || structures.age_min,
+                    'Âge maximum : ' || structures.age_max
+                ],
+                ' '
+            ),
+            ''
         )                                                                                                   AS "publics_precisions",
         NULL                                                                                                AS "conditions_acces",
         structures.telephone_1                                                                              AS "telephone",
