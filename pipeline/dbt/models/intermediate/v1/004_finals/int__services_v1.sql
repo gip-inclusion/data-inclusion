@@ -84,6 +84,7 @@ SELECT
         WHEN LENGTH(services.nom) <= 150 THEN services.nom
         ELSE LEFT(services.nom, 149) || '…'
     END                                  AS "nom",
+    renommages.nom IS NOT NULL           AS "_was_renamed",
     adresses.longitude                   AS "longitude",
     adresses.latitude                    AS "latitude",
     adresses.complement_adresse          AS "complement_adresse",

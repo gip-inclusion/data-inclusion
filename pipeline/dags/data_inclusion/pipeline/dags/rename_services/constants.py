@@ -12,6 +12,4 @@ PROMPT_RUN_ALIAS = "run"
 PROMPT_EVAL_ALIAS = "eval"
 PROMPT_BASE_URI = f"prompts:/{PROMPT_NAME}"
 
-FALC_SCORER_NAME = "francais-facile"
-
 MLFLOW_TRACKING_USERNAME = "admin"
