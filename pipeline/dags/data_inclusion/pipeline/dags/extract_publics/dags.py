@@ -8,7 +8,7 @@ from data_inclusion.pipeline.dags.extract_publics import tasks
     schedule=None,
     **dags.common_args(use_sentry=True),
 )
-def eval_extractions():
+def eval_profiles_extractions():
     chain(
         tasks.init(),
         tasks.eval(),
@@ -19,12 +19,12 @@ def eval_extractions():
     schedule=None,
     **dags.common_args(use_sentry=True),
 )
-def refresh_extractions():
+def refresh_profiles_extractions():
     chain(
         tasks.init(),
-        tasks.int__publics_extractions_v1(),
+        tasks.int__extracted_profiles_v1(),
     )
 
 
-eval_extractions()
-refresh_extractions()
+eval_profiles_extractions()
+refresh_profiles_extractions()

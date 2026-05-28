@@ -80,11 +80,11 @@ SELECT
     contacts.courriel                    AS "courriel",
     contacts.telephone                   AS "telephone",
     CASE
-        WHEN renommages.nom IS NOT NULL THEN renommages.nom
+        WHEN renommages.output IS NOT NULL THEN renommages.output
         WHEN LENGTH(services.nom) <= 150 THEN services.nom
         ELSE LEFT(services.nom, 149) || '…'
     END                                  AS "nom",
-    renommages.nom IS NOT NULL           AS "_was_renamed",
+    renommages.output IS NOT NULL        AS "_was_renamed",
     adresses.longitude                   AS "longitude",
     adresses.latitude                    AS "latitude",
     adresses.complement_adresse          AS "complement_adresse",

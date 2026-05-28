@@ -129,11 +129,11 @@ def int__renommages(
     print("Renamings to do:")
     print(
         services_df.group_by(pl.col("reason"))
-        .agg(pl.count())
+        .agg(pl.len())
         .sort(
             by=[
                 pl.col("reason"),
-                pl.col("count"),
+                pl.col("len"),
             ],
             descending=True,
         )

@@ -36,7 +36,7 @@ def init():
     venv_cache_path="/tmp/",
     env_vars=ENV_VARS,
 )
-def int__publics_extractions_v1():
+def int__extracted_profiles_v1():
     import mlflow
     import sqlalchemy as sa
     from sqlalchemy.dialects.postgresql import JSONB
@@ -54,15 +54,14 @@ def int__publics_extractions_v1():
     services_df = pg_hook.get_df(
         sql="""
             SELECT id, publics, publics_precisions
-            -- FROM public_intermediate.int__union_services_v1  # TODO
-            FROM api__services_v1
+            FROM public_intermediate.int__union_services_v1
         """,
         df_type="polars",
         infer_schema_length=None,
     )
 
     with mlflow.context(tags={"workflow": constants.PROMPT_RUN_ALIAS}):
-        results_df = model.int__publics_extractions(
+        results_df = model.int__extracted_profiles(
             services_df=services_df,
             extract_fn=extraction.extract,
         )
@@ -72,7 +71,7 @@ def int__publics_extractions_v1():
 
         with pg_hook.get_sqlalchemy_engine().begin() as conn:
             results_df.write_database(
-                table_name="public_intermediate.int__publics_extractions_v1",
+                table_name="public_intermediate.int__extracted_profiles_v1",
                 connection=conn,
                 if_table_exists="replace",
                 engine_options={

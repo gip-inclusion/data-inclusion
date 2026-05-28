@@ -86,11 +86,7 @@ class Profil(BaseModel):
 
 
 class Extraction(BaseModel):
-    resultat: (
-        Literal["hors_sujet"]
-        | Literal["tous_publics"]
-        | Annotated[list[Profil], Field(description="Liste des profils distincts")]
-    )
+    profils: list[Profil] | None = None
 
 
 class Exemple(TypedDict):
@@ -102,7 +98,7 @@ EXEMPLES = {
     r"\bou\b": Exemple(
         description="Bénéficiaire des minimas sociaux ou alternant de moins de 30 ans",
         extraction=Extraction(
-            resultat=[
+            profils=[
                 Profil(allocation="minima-sociaux"),
                 Profil(age=TrancheAge(max=29), activite="alternant"),
             ]
@@ -111,7 +107,7 @@ EXEMPLES = {
     r"\b(commun|habitant)": Exemple(
         description="Habitants de la commune de Lens",
         extraction=Extraction(
-            resultat=[
+            profils=[
                 Profil(lieu_residence="Lens"),
             ]
         ),

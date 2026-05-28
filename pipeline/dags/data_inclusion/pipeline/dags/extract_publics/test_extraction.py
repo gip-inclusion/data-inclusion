@@ -1,6 +1,11 @@
 import pytest
 
-from data_inclusion.pipeline.dags.extract_publics import extraction
+from data_inclusion.pipeline.dags.extract_publics.extraction import (
+    Extraction,
+    Profil,
+    Profiler,
+    TrancheAge,
+)
 
 
 @pytest.mark.integration
@@ -9,17 +14,30 @@ from data_inclusion.pipeline.dags.extract_publics import extraction
     [
         (
             "Possibilite d entree en formation jusqu a 30 ans",
-            {"resultat": [{"age": {"max": 30}}]},
+            Extraction(profils=[Profil(age=TrancheAge(max=30))]),
         ),
         (
             "Beneficiaire du RSA ou + 30 ans",
-            {"resultat": [{"allocation": "rsa"}, {"age": {"min": 30}}]},
+            Extraction(
+                profils=[
+                    Profil(allocation="rsa"),
+                    Profil(age=TrancheAge(min=30)),
+                ]
+            ),
         ),
         (
             "Pour les personnes rattachées au territoire communal de Bouillargues",
-            {"resultat": [{"lieu_residence": "Bouillargues"}]},
+            Extraction(
+                profils=[
+                    Profil(lieu_residence="Bouillargues"),
+                ]
+            ),
         ),
     ],
 )
-def test_extraction(input, expected_output):
-    assert extraction.extract(input) == expected_output
+def test_extraction(
+    input: str,
+    expected_output: Extraction,
+):
+    profiler = Profiler()
+    assert profiler.extract(input) == expected_output

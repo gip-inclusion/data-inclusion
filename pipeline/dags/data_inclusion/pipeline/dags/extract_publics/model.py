@@ -1,3 +1,4 @@
+import uuid
 from collections.abc import Callable
 
 import pendulum
@@ -19,21 +20,34 @@ def validate_services_df(services_df: pl.DataFrame) -> pl.DataFrame:
     )
 
 
-def validate_extractions_df(extractions_df: pl.DataFrame) -> pl.DataFrame:
+def validate_profils_df(profils_df: pl.DataFrame) -> pl.DataFrame:
     expected = pl.Schema(
         {
-            "publics": pl.List(pl.String),
-            "publics_precisions": pl.String,
-            "output": pl.Object,
+            "extraction_id": pl.String,
             "extracted_at": pl.Datetime(time_zone="UTC"),
             "reason": pl.String,
+            "profils_total": pl.Int64,
+            "profils_number": pl.Int64,
+            "input__publics": pl.List(pl.String),
+            "input__publics_precisions": pl.String,
+            "output__age__max": pl.Int64,
+            "output__age__min": pl.Int64,
+            "output__age": pl.String,
+            "output__genre": pl.String,
+            "output__activite": pl.String,
+            "output__allocation": pl.String,
+            "output__statut_administratif": pl.String,
+            "output__lieu_residence": pl.String,
+            "output__handicap": pl.Boolean,
+            "output__famille": pl.Boolean,
+            "output__adherent": pl.Boolean,
         },
     )
 
-    return extractions_df.match_to_schema(schema=expected)
+    return profils_df.match_to_schema(schema=expected)
 
 
-def int__publics_extractions(
+def int__extracted_profiles(
     services_df: pl.DataFrame,
     extract_fn: Callable[[str], dict | None],
 ) -> pl.DataFrame | None:
@@ -58,11 +72,11 @@ def int__publics_extractions(
     print("Extractions to do:")
     print(
         services_df.group_by(pl.col("reason"))
-        .agg(pl.count())
+        .agg(pl.len())
         .sort(
             by=[
                 pl.col("reason"),
-                pl.col("count"),
+                pl.col("len"),
             ],
             descending=True,
         )
@@ -72,39 +86,56 @@ def int__publics_extractions(
     # There is currently too many services to process, which might be too costly
     # We should implement incremental processing and further filter the services
     # to process. Also use the batch api.
-    services_df = services_df.sample(n=200)
+    if len(services_df) > 100:
+        services_df = services_df.sample(n=100, shuffle=True)
 
-    results_df = pl.DataFrame(
-        [
-            {
-                "id": service_data["id"],
-                "output": extract_fn(service_data["publics_precisions"]),
-            }
-            for service_data in (
-                services_df.unique(
-                    subset=pl.col("publics_precisions"),
-                    keep="first",
-                ).iter_rows(named=True)
+    profils = []
+    for service_data in services_df.unique(
+        subset=pl.col("publics_precisions"),
+        keep="first",
+    ).iter_rows(named=True):
+        extraction_id = str(uuid.uuid4())
+        extraction_data = extract_fn(service_data["publics_precisions"])
+
+        if extraction_data is None or extraction_data["profils"] is None:
+            continue
+
+        for profil_number, profil_data in enumerate(extraction_data["profils"]):
+            if "age" in profil_data and isinstance(profil_data["age"], dict):
+                age = profil_data.pop("age")
+                if "min" in age:
+                    profil_data["age__min"] = age["min"]
+                if "max" in age:
+                    profil_data["age__max"] = age["max"]
+
+            profils.append(
+                {
+                    "extraction_id": extraction_id,
+                    "profils_total": len(extraction_data["profils"]),
+                    "profils_number": profil_number,
+                    "input__publics": service_data["publics"],
+                    "input__publics_precisions": service_data["publics_precisions"],
+                    "reason": service_data["reason"],
+                    "output__age": profil_data.get("age"),
+                    "output__age__max": profil_data.get("age__max"),
+                    "output__age__min": profil_data.get("age__min"),
+                    "output__genre": profil_data.get("genre"),
+                    "output__activite": profil_data.get("activite"),
+                    "output__allocation": profil_data.get("allocation"),
+                    "output__statut_administratif": profil_data.get(
+                        "statut_administratif"
+                    ),
+                    "output__lieu_residence": profil_data.get("lieu_residence"),
+                    "output__handicap": profil_data.get("handicap"),
+                    "output__famille": profil_data.get("famille"),
+                    "output__adherent": profil_data.get("adherent"),
+                }
             )
-        ],
-        infer_schema_length=None,
-        schema_overrides={"output": pl.Object},
-    ).filter(pl.col("output").is_not_null())
 
-    results_df = results_df.join(
-        other=services_df,
-        on="id",
-        how="inner",
-    ).select(
+    profils_df = pl.DataFrame(data=profils).with_columns(
         pl.lit(pendulum.now(tz="Europe/Paris"))
-        .alias("extracted_at")
-        .dt.convert_time_zone("UTC"),
-        pl.col("reason"),
-        pl.col("publics"),
-        pl.col("publics_precisions"),
-        pl.col("output"),
+        .dt.convert_time_zone("UTC")
+        .alias("extracted_at"),
     )
 
-    # TODO: flatten "output" column
-
-    return validate_extractions_df(results_df)
+    return validate_profils_df(profils_df)
