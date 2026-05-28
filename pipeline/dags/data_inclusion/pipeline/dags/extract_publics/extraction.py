@@ -190,3 +190,10 @@ def extract(input: str) -> dict | None:
         return None
 
     return extraction.model_dump(exclude_none=True)
+
+
+if __name__ == "__main__":
+    import sys
+
+    profiler = Profiler()
+    print(profiler.extract(input=" ".join(sys.argv[1:])))

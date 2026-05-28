@@ -97,7 +97,11 @@ def int__extracted_profiles(
         extraction_id = str(uuid.uuid4())
         extraction_data = extract_fn(service_data["publics_precisions"])
 
-        if extraction_data is None or extraction_data["profils"] is None:
+        if (
+            extraction_data is None
+            or "profils" not in extraction_data
+            or extraction_data["profils"] is None
+        ):
             continue
 
         for profil_number, profil_data in enumerate(extraction_data["profils"]):

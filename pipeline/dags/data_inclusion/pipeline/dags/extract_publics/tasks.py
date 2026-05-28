@@ -39,7 +39,6 @@ def init():
 def int__extracted_profiles_v1():
     import mlflow
     import sqlalchemy as sa
-    from sqlalchemy.dialects.postgresql import JSONB
 
     from airflow.providers.postgres.hooks import postgres
 
@@ -76,8 +75,7 @@ def int__extracted_profiles_v1():
                 if_table_exists="replace",
                 engine_options={
                     "dtype": {
-                        "publics": sa.ARRAY(sa.String),
-                        "output": JSONB,
+                        "input__publics": sa.ARRAY(sa.String),
                     }
                 },
             )
