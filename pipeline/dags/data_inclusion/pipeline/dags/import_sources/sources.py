@@ -5,7 +5,7 @@ It is used as a source of truth in general and to generate dedicated dags in par
 
 from airflow.sdk import Variable
 
-from data_inclusion.pipeline.common import utils
+from data_inclusion.pipeline.common import grist, utils
 from data_inclusion.pipeline.dags.import_agefiph import utils as agefiph
 from data_inclusion.pipeline.dags.import_carif_oref import utils as carif_oref
 from data_inclusion.pipeline.dags.import_cd35 import utils as cd35
@@ -158,22 +158,27 @@ SOURCES_CONFIGS = {
             },
             "services": {
                 "filename": "services.csv",
-                "url": "https://docs.google.com/spreadsheets/d/1g5p4CAxVnXk5kTTTjL_v9cDpewE57bg0bcXR9uTR5QM/export?gid=636818394&format=csv",
+                "url": "https://grist.numerique.gouv.fr/o/gipinclusion/api/docs/5NZ4vboTQXZs/download/csv?tableId=Services",
+                "token": Variable.get("GRIST_API_TOKEN", None),
+                "extractor": grist.extract,
                 "reader": lambda path: utils.read_csv(path, sep=","),
             },
         },
     },
     "action-logement": {
         "schedule": "@daily",
+        "extractor": grist.extract,
         "reader": lambda path: utils.read_csv(path, sep=","),
         "streams": {
             "services": {
                 "filename": "services.csv",
-                "url": "https://docs.google.com/spreadsheets/d/1Rh3Vrlr0ISTVmD9Ui5TYUR5oLUnfUfMcJiMstXurSCM/export?gid=636818394&format=csv",
+                "url": "https://grist.numerique.gouv.fr/o/gipinclusion/api/docs/ajmAtWuW9GRe/download/csv?tableId=Services",
+                "token": Variable.get("GRIST_API_TOKEN", None),
             },
             "structures": {
                 "filename": "structures.csv",
-                "url": "https://docs.google.com/spreadsheets/d/1Rh3Vrlr0ISTVmD9Ui5TYUR5oLUnfUfMcJiMstXurSCM/export?gid=1318485024&format=csv",
+                "url": "https://grist.numerique.gouv.fr/o/gipinclusion/api/docs/ajmAtWuW9GRe/download/csv?tableId=Structures",
+                "token": Variable.get("GRIST_API_TOKEN", None),
             },
         },
     },
