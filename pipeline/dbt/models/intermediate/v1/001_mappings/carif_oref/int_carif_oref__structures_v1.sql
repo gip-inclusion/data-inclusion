@@ -69,7 +69,12 @@ final AS (
         ON organismes_formateurs.numero = date_maj.numero_organisme_formateur
     LEFT JOIN coordonnees AS coordonnees_lieu_de_formation_principal
         ON date_maj.hash_coordonnees_lieu_de_formation_principal = coordonnees_lieu_de_formation_principal.hash_
-    ORDER BY organismes_formateurs.numero
+    ORDER BY
+        organismes_formateurs.numero ASC,
+        organismes_formateurs__contacts.type_contact = 3 DESC, -- référent pédagogique
+        organismes_formateurs__contacts.type_contact = 0 DESC, -- autre
+        organismes_formateurs__contacts.type_contact = 4 DESC, -- accueil
+        organismes_formateurs__contacts.hash_coordonnees ASC NULLS LAST
 )
 
 SELECT * FROM final

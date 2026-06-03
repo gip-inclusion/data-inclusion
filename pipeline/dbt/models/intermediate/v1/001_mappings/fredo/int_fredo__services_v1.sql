@@ -26,7 +26,7 @@ frais AS (
         END AS "frais"
     FROM {{ ref('stg_fredo__frais') }}
     WHERE value IS NOT NULL
-    ORDER BY structure_id, value = 'gratuit' DESC
+    ORDER BY structure_id ASC, value = 'gratuit' DESC, value = 'payant' DESC, value ASC
 ),
 
 frais_precisions AS (

@@ -58,11 +58,11 @@ def compare_and_summarize():
 
         before_df = compare.read(
             path=Path(tmpdir) / "before.parquet",
-            exclude_cols=["_extra"],
+            exclude_cols=["_extra", "date_maj", "score_qualite"],
         )
         after_df = compare.read(
             path=Path(tmpdir) / "after.parquet",
-            exclude_cols=["_extra"],
+            exclude_cols=["_extra", "date_maj", "score_qualite"],
         )
 
     diff = compare.Diff(
@@ -74,7 +74,6 @@ def compare_and_summarize():
             compare.cs.date() | compare.cs.datetime(): compare.TimeDeltaTolerance(
                 timedelta(weeks=4)
             ),
-            compare.cs.by_name("score_qualite"): compare.ThresholdTolerance(0.8),
         },
     )
 
