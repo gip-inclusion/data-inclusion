@@ -125,6 +125,6 @@ class ListedStructure(Structure):
 
 
 class SearchResult(BaseModel):
-    data: DetailedService | DetailedStructure
+    service: DetailedService | DetailedStructure
     distance: int | None = None
     score_recherche: float | None = None
