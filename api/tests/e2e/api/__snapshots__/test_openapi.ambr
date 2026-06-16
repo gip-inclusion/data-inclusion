@@ -2138,17 +2138,6 @@
         },
         "SearchResult": {
           "properties": {
-            "data": {
-              "anyOf": [
-                {
-                  "$ref": "#/components/schemas/DetailedService"
-                },
-                {
-                  "$ref": "#/components/schemas/DetailedStructure"
-                }
-              ],
-              "title": "Data"
-            },
             "distance": {
               "anyOf": [
                 {
@@ -2170,10 +2159,21 @@
                 }
               ],
               "title": "Score Recherche"
+            },
+            "service": {
+              "anyOf": [
+                {
+                  "$ref": "#/components/schemas/DetailedService"
+                },
+                {
+                  "$ref": "#/components/schemas/DetailedStructure"
+                }
+              ],
+              "title": "Service"
             }
           },
           "required": [
-            "data"
+            "service"
           ],
           "title": "SearchResult",
           "type": "object"

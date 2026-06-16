@@ -453,7 +453,7 @@ def search_query(
     else:
         query = query.add_columns(sqla.null().cast(sqla.Integer).label("distance"))
 
-    return query, ("data", "score_recherche", "distance")
+    return query, ("service", "score_recherche", "distance")
 
 
 def build_search_index(

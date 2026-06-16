@@ -1510,7 +1510,7 @@ def test_search_score_recherche_between_zero_and_one(api_client):
     response_data = response.json()
 
     assert len(response_data["items"]) == 1
-    assert "data" in response_data["items"][0]
+    assert "service" in response_data["items"][0]
     assert "score_recherche" in response_data["items"][0]
     assert 0 < response_data["items"][0]["score_recherche"] < 1
 
@@ -1528,8 +1528,8 @@ def test_search_score_recherche_decreasing(api_client):
     response_data = response.json()
 
     assert len(response_data["items"]) == 2
-    assert response_data["items"][0]["data"]["id"] == service_1.id
-    assert response_data["items"][1]["data"]["id"] == service_2.id
+    assert response_data["items"][0]["service"]["id"] == service_1.id
+    assert response_data["items"][1]["service"]["id"] == service_2.id
     # score_recherche must decrease
     assert (
         response_data["items"][0]["score_recherche"]
@@ -1626,8 +1626,8 @@ def test_search_weights(api_client, q, left, right, op):
     assert len(response_data["items"]) == 2
 
     if op != operator.eq:
-        assert response_data["items"][0]["data"]["id"] == service_1.id
-        assert response_data["items"][1]["data"]["id"] == service_2.id
+        assert response_data["items"][0]["service"]["id"] == service_1.id
+        assert response_data["items"][1]["service"]["id"] == service_2.id
     assert op(
         response_data["items"][0]["score_recherche"],
         response_data["items"][1]["score_recherche"],
@@ -1660,7 +1660,7 @@ def test_search_order_by_score_recherche_then_by_score_qualite(api_client):
     response = api_client.get(SEARCH_ENDPOINT.url, params={"q": "France travail Paris"})
 
     assert response.status_code == 200
-    assert [item["data"]["id"] for item in response.json()["items"]] == [
+    assert [item["service"]["id"] for item in response.json()["items"]] == [
         "2",
         "1",
         "4",
@@ -1710,7 +1710,7 @@ def test_search_distance_filter(api_client, params, expected_ids):
     response = api_client.get(SEARCH_ENDPOINT.url, params=params)
 
     assert response.status_code == 200
-    assert {item["data"]["id"] for item in response.json()["items"]} == expected_ids
+    assert {item["service"]["id"] for item in response.json()["items"]} == expected_ids
 
 
 @pytest.mark.with_token
@@ -1733,4 +1733,4 @@ def test_search_order_by_distance(api_client):
 
     assert response.status_code == 200
     items = response.json()["items"]
-    assert [item["data"]["id"] for item in items] == ["closer", "farther"]
+    assert [item["service"]["id"] for item in items] == ["closer", "farther"]
