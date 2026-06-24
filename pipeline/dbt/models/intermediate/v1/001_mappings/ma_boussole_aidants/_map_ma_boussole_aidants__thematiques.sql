@@ -8,7 +8,10 @@ FROM (
         1,  -- Premiers contacts
         ARRAY[
             'difficultes-administratives-ou-juridiques--accompagnement-pour-lacces-aux-droits',
-            'difficultes-administratives-ou-juridiques--accompagnement-aux-demarches-administratives'
+            'difficultes-administratives-ou-juridiques--accompagnement-aux-demarches-administratives',
+            'equipement-et-alimentation--alimentation',
+            'logement-hebergement--sinformer-sur-les-demarches-liees-a-lacces-au-logement',
+            'remobilisation--lien-social'
         ]
     ),
     (

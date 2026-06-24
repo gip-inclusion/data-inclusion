@@ -2,6 +2,14 @@ WITH structures AS (
     SELECT * FROM {{ ref('stg_ma_boussole_aidants__structures') }}
 ),
 
+adresses AS (
+    SELECT * FROM {{ ref('int_ma_boussole_aidants__adresses_v1') }}
+),
+
+communes AS (
+    SELECT * FROM {{ ref('stg_decoupage_administratif__communes') }}
+),
+
 services AS (
     SELECT * FROM {{ ref('stg_ma_boussole_aidants__structures__services') }}
 ),
@@ -112,9 +120,14 @@ final AS (
         ARRAY['usagers', 'professionnels']                                                                  AS "mobilisable_par",
         NULL                                                                                                AS "mobilisation_precisions",
         services.modes_accueil                                                                              AS "modes_accueil",
-        CAST(NULL AS TEXT [])                                                                               AS "zone_eligibilite",
+        CASE
+            WHEN
+                structures.rayon_action__nom_rayon_action = 'communal'
+                AND communes.code_epci IS NOT NULL
+                THEN ARRAY[communes.code_epci]
+        END                                                                                                 AS "zone_eligibilite",
         CASE structures.rayon_action__nom_rayon_action
-            WHEN 'communal' THEN 'commune'
+            WHEN 'communal' THEN 'epci'
             WHEN 'départemental' THEN 'departement'
             WHEN 'local' THEN 'region'
             ELSE 'pays'
@@ -124,6 +137,8 @@ final AS (
         NULL                                                                                                AS "horaires_accueil"
     FROM deduped_services AS services
     LEFT JOIN structures ON services.id_structure = structures.id_structure
+    LEFT JOIN adresses ON adresses.id = 'ma-boussole-aidants--' || structures.id_structure
+    LEFT JOIN communes ON adresses.code_insee = communes.code
     LEFT JOIN solutions ON services.id_sous_thematique_solutions = solutions.code
     LEFT JOIN thematiques ON services.id_sous_thematique_solutions = thematiques.id_sous_thematique_solutions
     LEFT JOIN {{ ref('_map_ma_boussole_aidants__types') }} AS "types" ON services.id_sous_thematique_solutions = types.solution_id
