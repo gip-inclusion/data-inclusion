@@ -139,7 +139,20 @@ final AS (
         NULLIF(ARRAY_TO_STRING(publics_raw.publics, ', '), '')                                       AS "publics_precisions",
         NULL                                                                                         AS "conditions_acces",
         structures.telephone                                                                         AS "telephone",
-        modes_mobilisation.modes_mobilisation                                                        AS "modes_mobilisation",
+        COALESCE(
+            NULLIF(modes_mobilisation.modes_mobilisation, '{}'),
+            NULLIF(
+                ARRAY_REMOVE(
+                    ARRAY[
+                        CASE WHEN structures.telephone IS NOT NULL THEN 'telephoner' END,
+                        CASE WHEN structures.courriel IS NOT NULL THEN 'envoyer-un-courriel' END,
+                        CASE WHEN structures.prise_rdv IS NOT NULL THEN 'utiliser-lien-mobilisation' END
+                    ],
+                    NULL
+                ),
+                '{}'
+            )
+        )                                                                                            AS "modes_mobilisation",
         structures.prise_rdv                                                                         AS "lien_mobilisation",
         ARRAY['usagers', 'professionnels']                                                           AS "mobilisable_par",
         NULL                                                                                         AS "mobilisation_precisions",
