@@ -36,6 +36,12 @@ models:
         data_tests:
           - dbt_utils.at_least_one
           - dbt_utils.not_empty_string
+      - name: contact_public
+        data_tests:
+          - not_null
+          - accepted_values:
+              arguments:
+                values: [true, false]
       - name: contact_nom_prenom
         data_tests:
           - dbt_utils.at_least_one

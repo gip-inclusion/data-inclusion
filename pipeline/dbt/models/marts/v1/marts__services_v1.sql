@@ -39,9 +39,24 @@ final AS (
                 from=ref('int__services_v1'),
                 except=[
                     'adresse_id',
+                    'contact_nom_prenom',
+                    'courriel',
+                    'telephone',
                 ]
             )
         }},
+        CASE
+            WHEN services._is_contact_public IS FALSE THEN NULL
+            ELSE services.contact_nom_prenom
+        END                                             AS "contact_nom_prenom",
+        CASE
+            WHEN services._is_contact_public IS FALSE THEN NULL
+            ELSE services.courriel
+        END                                             AS "courriel",
+        CASE
+            WHEN services._is_contact_public IS FALSE THEN NULL
+            ELSE services.telephone
+        END                                             AS "telephone",
         scores.score                                    AS "score_qualite",
         COALESCE(adresses._has_valid_address, FALSE)    AS "_has_valid_address",
         courriels_personnels.courriel IS NOT NULL       AS "_has_pii",

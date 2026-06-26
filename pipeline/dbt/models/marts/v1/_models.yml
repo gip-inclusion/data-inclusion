@@ -217,6 +217,8 @@ models:
         data_type: boolean
         constraints:
           - type: not_null
+      - name: _is_contact_public
+        data_type: boolean
 
   - name: marts__services_mobilisable_par_v1
     config:
