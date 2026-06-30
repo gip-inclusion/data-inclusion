@@ -145,7 +145,7 @@ final AS (
                 ARRAY_REMOVE(
                     ARRAY[
                         CASE WHEN structures.telephone IS NOT NULL THEN 'telephoner' END,
-                        CASE WHEN structures.courriel IS NOT NULL THEN 'envoyer-un-courriel' END,
+                        CASE WHEN COALESCE(structures.courriel, mediateurs.email) IS NOT NULL THEN 'envoyer-un-courriel' END,
                         CASE WHEN structures.prise_rdv IS NOT NULL THEN 'utiliser-lien-mobilisation' END
                     ],
                     NULL
