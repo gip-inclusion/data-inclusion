@@ -90,7 +90,7 @@ def compare_and_summarize():
     to_s3(out_path / "changes_summary.md", "\n\n".join([title, summary]))
 
     # notify on slack
-    CHANNEL = "#lab-data-inclusion-alertes"
+    CHANNEL = "#équipe-data-inclusion-alertes"
     response = slack_hook.client.chat_postMessage(
         channel=CHANNEL,
         markdown_text=title,
