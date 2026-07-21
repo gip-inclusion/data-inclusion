@@ -5,7 +5,15 @@ WITH structures AS (
 structures_adresses AS (
     SELECT DISTINCT ON (structure_id) *
     FROM {{ ref('stg_reseau_alpha__structures__adresses') }}
-    ORDER BY structure_id, voie IS NOT NULL DESC
+    ORDER BY
+        structure_id ASC,
+        voie IS NOT NULL DESC,
+        code_postal ASC NULLS LAST,
+        ville ASC NULLS LAST,
+        numero ASC NULLS LAST,
+        voie ASC NULLS LAST,
+        longitude ASC NULLS LAST,
+        latitude ASC NULLS LAST
 ),
 
 pages AS (
@@ -15,7 +23,14 @@ pages AS (
 structures__contacts AS (
     SELECT DISTINCT ON (structure_id) *
     FROM {{ ref('stg_reseau_alpha__structures__contacts') }}
-    ORDER BY structure_id, telephone1 IS NOT NULL DESC, email IS NOT NULL DESC
+    ORDER BY
+        structure_id ASC,
+        telephone1 IS NOT NULL DESC,
+        email IS NOT NULL DESC,
+        email ASC NULLS LAST,
+        telephone1 ASC NULLS LAST,
+        nom ASC NULLS LAST,
+        prenom ASC NULLS LAST
 ),
 
 final AS (
