@@ -23,6 +23,7 @@ FROM (
     ('computers_at_your_disposal',            'aide-materielle'),
     ('contraception',                         'aide-materielle'),
     ('cooking_workshop',                      'atelier'),
+    ('cooling_space',                         'aide-materielle'),
     ('day_hosting',                           'aide-materielle'),
     ('dental_care',                           'accompagnement'),
     ('digital_tools_training',                'formation'),

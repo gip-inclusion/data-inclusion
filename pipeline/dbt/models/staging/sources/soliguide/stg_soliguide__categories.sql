@@ -30,6 +30,7 @@ FROM (
     ('computers_at_your_disposal',            'Ordinateur'),
     ('contraception',                         'Contraception'),
     ('cooking_workshop',                      'Atelier cuisine'),
+    ('cooling_space',                         'Espace de rafraîchissement'),
     ('counseling',                            'Conseil'),
     ('day_hosting',                           'Accueil de jour'),
     ('dental_care',                           'Dentaire'),
