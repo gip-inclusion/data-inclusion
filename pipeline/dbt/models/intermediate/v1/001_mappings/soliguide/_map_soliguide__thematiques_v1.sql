@@ -29,6 +29,7 @@ FROM (
     ('computers_at_your_disposal',            'numerique--acceder-a-une-connexion-internet'),
     ('contraception',                         'sante--sante-sexuelle'),
     ('cooking_workshop',                      'remobilisation--activites-sportives-et-culturelles'),
+    ('cooling_space',                         'logement-hebergement--rechercher-une-solution-dhebergement-temporaire'),
     ('day_hosting',                           'logement-hebergement--rechercher-une-solution-dhebergement-temporaire'),
     ('day_hosting',                           'remobilisation--lien-social'),
     ('dental_care',                           'sante--acces-aux-soins'),
