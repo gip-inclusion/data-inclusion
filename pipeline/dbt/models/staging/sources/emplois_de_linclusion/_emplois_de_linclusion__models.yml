@@ -25,6 +25,7 @@ models:
                 values:
                   - AFPA
                   - ASE
+                  - Orienteur
                   - Autre
                   - CAARUD
                   - CADA
