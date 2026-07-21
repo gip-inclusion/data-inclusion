@@ -11,6 +11,12 @@ final AS (
         source,  -- noqa: structure.unused_join
         JSONB_PATH_QUERY(source.data, '$.action[*].organisme\-formateur[*]') AS organismes_formateurs (data)  -- noqa: structure.unused_join
     WHERE organismes_formateurs.data IS NOT NULL
+    ORDER BY
+        NULLIF(TRIM(organismes_formateurs.data ->> '@numero'), ''),
+        -- tiebreakers déterministes si un même numéro d'organisme apparaît avec
+        -- des contenus différents selon les formations.
+        NULLIF(TRIM(organismes_formateurs.data ->> 'raison-sociale-formateur'), '') ASC,
+        NULLIF(TRIM(organismes_formateurs.data -> 'SIRET-formateur' ->> 'SIRET'), '') ASC
 )
 
 SELECT * FROM final
