@@ -74,7 +74,10 @@ final AS (
         organismes_formateurs__contacts.type_contact = 3 DESC, -- référent pédagogique
         organismes_formateurs__contacts.type_contact = 0 DESC, -- autre
         organismes_formateurs__contacts.type_contact = 4 DESC, -- accueil
-        organismes_formateurs__contacts.hash_coordonnees ASC NULLS LAST
+        organismes_formateurs__contacts.hash_coordonnees ASC NULLS LAST,
+        -- rendre le lieu de formation retenu non arbitraire
+        date_maj.date_maj DESC NULLS LAST,
+        date_maj.hash_coordonnees_lieu_de_formation_principal ASC NULLS LAST
 )
 
 SELECT * FROM final

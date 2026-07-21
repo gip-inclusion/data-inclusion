@@ -55,7 +55,10 @@ final AS (
         JSONB_PATH_QUERY(actions.data, '$.lieu\-de\-formation[*]') AS lieux_de_formation (data)
     ORDER BY
         NULLIF(TRIM(actions.data ->> '@numero'), ''),
-        (lieux_de_formation.data ->> '@tag') = 'principal' DESC
+        (lieux_de_formation.data ->> '@tag') = 'principal' DESC,
+        -- forcer un ordre déterministe sur les couples (organisme_formateur*lieu_formation)
+        NULLIF(TRIM(organismes_formateurs.data ->> '@numero'), '') ASC NULLS LAST,
+        CAST(MD5(lieux_de_formation.data ->> 'coordonnees') AS TEXT) ASC NULLS LAST
 )
 
 SELECT * FROM final

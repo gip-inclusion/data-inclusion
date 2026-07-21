@@ -48,8 +48,8 @@ communes AS (
 
 publics AS (
     SELECT
-        actions__publics.numero_action   AS "numero_action",
-        ARRAY_AGG(DISTINCT public.value) AS "publics"
+        actions__publics.numero_action                         AS "numero_action",
+        ARRAY_AGG(DISTINCT public.value ORDER BY public.value) AS "publics"
     FROM actions__publics,
         LATERAL (
             SELECT publics_mapping.public
@@ -271,7 +271,12 @@ final AS (
         organismes_formateurs__contacts.type_contact = 3 DESC, -- référent pédagogique
         organismes_formateurs__contacts.type_contact = 0 DESC, -- autre
         organismes_formateurs__contacts.type_contact = 4 DESC, -- accueil
-        organismes_formateurs__contacts.hash_coordonnees ASC NULLS LAST
+        organismes_formateurs__contacts.hash_coordonnees ASC NULLS LAST,
+        -- le fallback formations__contacts doit aussi etre determinste
+        formations__contacts.type_contact = 3 DESC,
+        formations__contacts.type_contact = 0 DESC,
+        formations__contacts.type_contact = 4 DESC,
+        formations__contacts.hash_coordonnees ASC NULLS LAST
 )
 
 SELECT * FROM final
