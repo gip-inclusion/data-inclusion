@@ -1,13 +1,29 @@
 WITH structures_adresses AS (
     SELECT DISTINCT ON (structure_id) *
     FROM {{ ref('stg_reseau_alpha__structures__adresses') }}
-    ORDER BY structure_id, voie IS NOT NULL DESC
+    ORDER BY
+        structure_id ASC,
+        voie IS NOT NULL DESC,
+        code_postal ASC NULLS LAST,
+        ville ASC NULLS LAST,
+        numero ASC NULLS LAST,
+        voie ASC NULLS LAST,
+        longitude ASC NULLS LAST,
+        latitude ASC NULLS LAST
 ),
 
 formations_adresses AS (
     SELECT DISTINCT ON (formation_id) *
     FROM {{ ref('stg_reseau_alpha__formations__adresses') }}
-    ORDER BY formation_id, voie IS NOT NULL DESC
+    ORDER BY
+        formation_id ASC,
+        voie IS NOT NULL DESC,
+        code_postal ASC NULLS LAST,
+        ville ASC NULLS LAST,
+        numero ASC NULLS LAST,
+        voie ASC NULLS LAST,
+        longitude ASC NULLS LAST,
+        latitude ASC NULLS LAST
 ),
 
 final AS (

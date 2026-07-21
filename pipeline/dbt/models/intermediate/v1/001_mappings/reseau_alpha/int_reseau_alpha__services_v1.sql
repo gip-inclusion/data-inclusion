@@ -5,7 +5,15 @@ WITH formations AS (
 formations_adresses AS (
     SELECT DISTINCT ON (formation_id) *
     FROM {{ ref('stg_reseau_alpha__formations__adresses') }}
-    ORDER BY formation_id, voie IS NOT NULL DESC
+    ORDER BY
+        formation_id ASC,
+        voie IS NOT NULL DESC,
+        code_postal ASC NULLS LAST,
+        ville ASC NULLS LAST,
+        numero ASC NULLS LAST,
+        voie ASC NULLS LAST,
+        longitude ASC NULLS LAST,
+        latitude ASC NULLS LAST
 ),
 
 structures AS (
@@ -19,7 +27,7 @@ pages AS (
 criteres_scolarisation AS (
     SELECT
         formation_id,
-        STRING_AGG(DISTINCT '- ' || value, E'\n') AS "description"
+        STRING_AGG(DISTINCT '- ' || value, E'\n' ORDER BY '- ' || value) AS "description"
     FROM {{ ref('stg_reseau_alpha__formations__criteres_scolarisation') }}
     GROUP BY formation_id
 ),
@@ -27,7 +35,11 @@ criteres_scolarisation AS (
 objectifs_vises AS (
     SELECT
         formation_id,
-        STRING_AGG(FORMAT('%s %s', label, '[' || description || ']'), '. ') AS "description"
+        STRING_AGG(
+            FORMAT('%s %s', label, '[' || description || ']'),
+            '. '
+            ORDER BY label, description
+        ) AS "description"
     FROM {{ ref('stg_reseau_alpha__formations__objectifs') }}
     GROUP BY formation_id
 ),
@@ -35,7 +47,7 @@ objectifs_vises AS (
 competences_visees AS (
     SELECT
         formation_id,
-        STRING_AGG(DISTINCT value, ', ') AS "description"
+        STRING_AGG(DISTINCT value, ', ' ORDER BY value) AS "description"
     FROM {{ ref('stg_reseau_alpha__formations__competences_linguistiques') }}
     GROUP BY formation_id
 ),
