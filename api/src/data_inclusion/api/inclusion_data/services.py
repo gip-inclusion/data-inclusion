@@ -6,6 +6,7 @@ from pathlib import Path
 import geoalchemy2
 import sqlalchemy as sqla
 from sqlalchemy import orm
+from sqlalchemy.dialects.postgresql import TSQUERY
 
 from data_inclusion.api.decoupage_administratif import constants
 from data_inclusion.api.decoupage_administratif.models import Commune
@@ -370,7 +371,68 @@ def retrieve_service(
     ).scalar_one_or_none()
 
 
+def search_tsquery(db_session: orm.Session, q: str) -> sqla.ColumnElement:
+    """A typo-tolerant tsquery.
+
+    Method recommended by the pg_trgm doc
+    https://www.postgresql.org/docs/18/pgtrgm.html#PGTRGM-TEXT-SEARCH
+    It needs a lexicon of words and their frequency in the database, here
+    `api__search_lexicon_v1`, filled by `build_search_index`
+
+    PG indexes lexemes, ie roots without accent or ending:
+    "GARAGE Solidaire" becomes "garag" and "solidair".
+    An error in the query or in the database gives a different lexeme
+    such as "solidiar", which matches nothing.
+    So we look for "close enough" lexemes through trigrams
+    """
+    tsquery = db_session.execute(
+        sqla.text("""
+            SELECT STRING_AGG('(' || expansion.variants || ')', ' & ')
+            FROM UNNEST(
+                TSVECTOR_TO_ARRAY(TO_TSVECTOR('public.french', :q))
+            ) AS lexeme
+            LEFT JOIN api__search_lexicon_v1 AS entry ON entry.word = lexeme
+            CROSS JOIN LATERAL (
+                SELECT STRING_AGG(QUOTE_LITERAL(word), '|') AS variants
+                FROM (
+                    SELECT lexeme AS word
+                    UNION
+                    (SELECT word
+                        FROM api__search_lexicon_v1
+                        WHERE COALESCE(entry.ndoc, 0) < :max_ndoc
+                            AND LENGTH(lexeme) >= :min_length
+                            AND word % lexeme
+                        ORDER BY
+                            SIMILARITY(word, lexeme) + :freq_weight * LN(ndoc + 1)
+                            DESC
+                        LIMIT :variants
+                    )
+                ) AS candidates
+            ) AS expansion
+        """),
+        {
+            "q": q,
+            # NOTE: those thresholds have been found though data analysis
+            # a word found in more than 100 services is probably legit
+            # FYI the most widespread typo in the database "illetr" is found
+            # in 37 services
+            "max_ndoc": 100,
+            # keep at most 4 variants of each lexeme
+            "variants": 4,
+            # leans towards common words.
+            # Lower it and "solidiar" picks "solidiair" which is a typo
+            # Increase it and a correct but rare word no longer comes up
+            "freq_weight": 0.05,
+            # do not find close lexemes for words shorter than 4 characters
+            "min_length": 4,
+        },
+    ).scalar()
+
+    return sqla.cast(tsquery or "", TSQUERY)
+
+
 def search_query(
+    db_session: orm.Session,
     params: parameters.SearchQueryParams,
     include_soliguide: bool,
 ) -> tuple[sqla.Select[tuple[models.Service, int]], tuple[str, str, str]]:
@@ -401,12 +463,12 @@ def search_query(
 
     score_recherche_expr = None
     if params.q is not None:
-        plainto_tsquery = sqla.func.plainto_tsquery("public.french", params.q)
+        tsquery = search_tsquery(db_session=db_session, q=params.q)
         score_recherche_expr = sqla.func.round(
             sqla.cast(
                 sqla.func.ts_rank_cd(
                     models.Service.search_vector,
-                    plainto_tsquery,
+                    tsquery,
                     32,
                 ),
                 sqla.Numeric,
@@ -414,9 +476,7 @@ def search_query(
             2,
         ).label("score_recherche")
 
-        query = query.filter(
-            models.Service.search_vector.bool_op("@@")(plainto_tsquery)
-        )
+        query = query.filter(models.Service.search_vector.bool_op("@@")(tsquery))
         query = query.add_columns(score_recherche_expr)
         query = query.order_by((sqla.func.round(score_recherche_expr * 10) / 2).desc())
     else:
@@ -520,4 +580,15 @@ def build_search_index(
             AND types.service_id = api__services_v1.id
     """)  # noqa: E501
     )
+
+    # refill the lexeme/frequency lexicon
+    db_session.execute(
+        sqla.text("""
+        TRUNCATE api__search_lexicon_v1;
+        INSERT INTO api__search_lexicon_v1 (word, ndoc)
+        SELECT word, ndoc
+        FROM TS_STAT('SELECT search_vector FROM api__services_v1')
+    """)
+    )
+
     db_session.commit()

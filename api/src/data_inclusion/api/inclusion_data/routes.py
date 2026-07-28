@@ -231,6 +231,7 @@ def search_endpoint(
         3. description service et structure
     """
     query, mapping = services.search_query(
+        db_session=db_session,
         params=params,
         include_soliguide=soliguide.is_allowed_user(request),
     )

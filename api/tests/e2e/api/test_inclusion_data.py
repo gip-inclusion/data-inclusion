@@ -1569,6 +1569,7 @@ def test_search_by_(api_client, field, value, q, expected):
             # this prevent flaky tests due to the default
             # factory values matching the search query
             "description": "lorem ipsum dolor sit amet",
+            "structure__description": "lorem ipsum dolor sit amet",
             **{field: value},
         },
     )
@@ -1686,6 +1687,26 @@ def test_search_accents(api_client, nom_structure, q):
     response_data = response.json()
 
     assert len(response_data["items"]) == 1
+
+
+@pytest.mark.parametrize(
+    ("noms_structures", "q", "n_expected_matches"),
+    [
+        (["lutte contre l'illettrisme"], "illetrisme", 1),
+        (["garage solidaire"], "garage solidiare", 1),
+        # the typed lexeme is kept: services already containing the typo are found
+        (["illettrisme", "illetrisme"], "illetrisme", 2),
+    ],
+)
+@pytest.mark.with_token
+def test_search_typos(api_client, noms_structures, q, n_expected_matches):
+    for nom_structure in noms_structures:
+        factories.ServiceFactory(structure__nom=nom_structure)
+
+    response = api_client.get(SEARCH_ENDPOINT.url, params={"q": q})
+
+    assert response.status_code == 200
+    assert len(response.json()["items"]) == n_expected_matches
 
 
 @pytest.mark.with_token
