@@ -1588,17 +1588,17 @@ def test_search_by_(api_client, field, value, q, expected):
     [
         pytest.param(
             "foo",
-            {"structure__nom": "foo", "nom": "bar"},
             {"structure__nom": "bar", "nom": "foo"},
-            operator.eq,
-            id="match on structure__nom stronger than match on nom",
+            {"structure__nom": "foo", "nom": "bar"},
+            operator.ge,
+            id="match on nom stronger than match on structure__nom",
         ),
         pytest.param(
             "foo",
             {"structure__nom": "foo", "description": "lorem ipsum dolor sit amet bar"},
             {"structure__nom": "bar", "description": "lorem ipsum dolor sit amet foo"},
-            operator.ge,
-            id="match on structure__nom stronger than match on description",
+            operator.eq,
+            id="match on structure__nom equal to match on description",
         ),
         pytest.param(
             "foo",
@@ -1610,8 +1610,21 @@ def test_search_by_(api_client, field, value, q, expected):
                 "structure__nom": "bar",
                 "structure__description": "lorem ipsum dolor sit amet foo",
             },
+            operator.eq,
+            id="match on structure__nom equal to match on structure__description",
+        ),
+        pytest.param(
+            "Soutien aux aidants",
+            {
+                "thematiques": [v1.Thematique.FAMILLE__SOUTIEN_AIDANTS.value],
+                "structure__nom": "bar",
+            },
+            {
+                "thematiques": [v1.Thematique.SANTE__ACCES_AUX_SOINS.value],
+                "structure__nom": "Soutien aux aidants",
+            },
             operator.ge,
-            id="match on structure__nom stronger than match on structure__description",
+            id="match on thematiques stronger than match on structure__nom",
         ),
     ],
 )
