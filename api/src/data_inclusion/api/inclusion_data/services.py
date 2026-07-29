@@ -501,14 +501,14 @@ def build_search_index(
         )
         UPDATE api__services_v1
         SET search_vector =
-            SETWEIGHT(TO_TSVECTOR('public.french', COALESCE(api__structures_v1.nom,              '')), 'A') ||
+            SETWEIGHT(TO_TSVECTOR('public.french', COALESCE(thematiques.labels,                  '')), 'A') ||
             SETWEIGHT(TO_TSVECTOR('public.french', COALESCE(api__services_v1.nom,                '')), 'A') ||
-            SETWEIGHT(TO_TSVECTOR('public.french', COALESCE(thematiques.labels,                  '')), 'B') ||
-            SETWEIGHT(TO_TSVECTOR('public.french', COALESCE(publics.labels,                      '')), 'B') ||
             SETWEIGHT(TO_TSVECTOR('public.french', COALESCE(reseaux_porteurs.labels,             '')), 'B') ||
-            SETWEIGHT(TO_TSVECTOR('public.french', COALESCE(api__services_v1.publics_precisions, '')), 'B') ||
-            SETWEIGHT(TO_TSVECTOR('public.french', COALESCE(api__services_v1.description,        '')), 'C') ||
-            SETWEIGHT(TO_TSVECTOR('public.french', COALESCE(api__structures_v1.description,      '')), 'C')
+            SETWEIGHT(TO_TSVECTOR('public.french', COALESCE(api__structures_v1.nom,              '')), 'B') ||
+            SETWEIGHT(TO_TSVECTOR('public.french', COALESCE(api__services_v1.description,        '')), 'B') ||
+            SETWEIGHT(TO_TSVECTOR('public.french', COALESCE(api__structures_v1.description,      '')), 'B') ||
+            SETWEIGHT(TO_TSVECTOR('public.french', COALESCE(publics.labels,                      '')), 'C') ||
+            SETWEIGHT(TO_TSVECTOR('public.french', COALESCE(api__services_v1.publics_precisions, '')), 'C')
         FROM api__structures_v1
         LEFT JOIN thematiques ON TRUE
         LEFT JOIN publics ON TRUE
