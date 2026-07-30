@@ -513,6 +513,30 @@ def search_query(
     else:
         query = query.add_columns(sqla.null().cast(sqla.Integer).label("distance"))
 
+    if params.exclure_doublons:
+        cluster_key = sqla.func.coalesce(
+            models.Structure._cluster_id,
+            models.Structure.id,
+        )
+        structure_rank = (
+            sqla.func.dense_rank()
+            .over(
+                partition_by=cluster_key,
+                order_by=[
+                    models.Structure.score_qualite.desc(),
+                    models.Structure.date_maj.desc().nulls_last(),
+                ],
+            )
+            .label("_structure_rank")
+        )
+        ranked_subq = query.add_columns(structure_rank).subquery()
+
+        query = query.where(
+            models.Service.id.in_(
+                sqla.select(ranked_subq.c.id).where(ranked_subq.c._structure_rank == 1)
+            )
+        )
+
     return query, ("service", "score_recherche", "distance")
 
 
