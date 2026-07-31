@@ -118,4 +118,5 @@ class ServiceFactory(factory.alchemy.SQLAlchemyModelFactory):
             return
 
         db_session = ServiceFactory._meta.sqlalchemy_session
+        services.build_thematique_aliases(db_session)
         services.build_search_index(db_session)

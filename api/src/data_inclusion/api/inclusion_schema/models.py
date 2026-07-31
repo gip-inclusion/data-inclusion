@@ -1,3 +1,5 @@
+import sqlalchemy as sa
+from sqlalchemy.dialects.postgresql import ARRAY
 from sqlalchemy.orm import Mapped, mapped_column
 
 from data_inclusion.api.core.db import Base
@@ -38,6 +40,17 @@ class ReseauPorteur(FrameworkTable, Base):
 
 class Thematique(FrameworkTable, Base):
     __tablename__ = "api__thematiques_v1"
+
+
+class ThematiqueAlias(Base):
+    __tablename__ = "api__thematique_aliases_v1"
+
+    thematique_code: Mapped[str] = mapped_column(
+        sa.ForeignKey("api__thematiques_v1.value", ondelete="CASCADE"),
+        primary_key=True,
+    )
+    alias: Mapped[str] = mapped_column(primary_key=True)
+    lexemes: Mapped[list[str]] = mapped_column(ARRAY(sa.Text()))
 
 
 class TypeService(FrameworkTable, Base):

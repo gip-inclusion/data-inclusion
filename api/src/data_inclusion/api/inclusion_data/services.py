@@ -13,6 +13,265 @@ from data_inclusion.api.decoupage_administratif.models import Commune
 from data_inclusion.api.inclusion_data import models, parameters
 from data_inclusion.schema import v1
 
+THEMATIQUE_ALIASES: list[tuple[str, str]] = [
+    ("choisir-un-metier--confirmer-son-choix-de-metier", "immersion"),
+    ("choisir-un-metier--confirmer-son-choix-de-metier", "mise en situation"),
+    ("choisir-un-metier--confirmer-son-choix-de-metier", "stage"),
+    ("choisir-un-metier--connaitre-les-opportunites-demploi", "débouchés"),
+    ("choisir-un-metier--connaitre-les-opportunites-demploi", "emploi local"),
+    ("choisir-un-metier--connaitre-les-opportunites-demploi", "marché du travail"),
+    ("choisir-un-metier--connaitre-les-opportunites-demploi", "secteurs qui recrutent"),
+    (
+        "choisir-un-metier--decouvrir-un-metier-ou-un-secteur-dactivite",
+        "découverte métier",
+    ),
+    ("choisir-un-metier--decouvrir-un-metier-ou-un-secteur-dactivite", "forum métiers"),
+    ("choisir-un-metier--decouvrir-un-metier-ou-un-secteur-dactivite", "reconversion"),
+    (
+        "choisir-un-metier--identifier-ses-points-forts-et-ses-competences",
+        "bilan de compétences",
+    ),
+    (
+        "choisir-un-metier--identifier-ses-points-forts-et-ses-competences",
+        "savoir-faire",
+    ),
+    ("choisir-un-metier--identifier-ses-points-forts-et-ses-competences", "évaluation"),
+    (
+        "creer-une-entreprise--definir-son-projet-de-creation-dentreprise",
+        "auto-entrepreneur",
+    ),
+    (
+        "creer-une-entreprise--definir-son-projet-de-creation-dentreprise",
+        "entrepreneur",
+    ),
+    ("creer-une-entreprise--definir-son-projet-de-creation-dentreprise", "freelance"),
+    (
+        "creer-une-entreprise--definir-son-projet-de-creation-dentreprise",
+        "micro-entreprise",
+    ),
+    ("creer-une-entreprise--developper-son-entreprise", "croissance"),
+    ("creer-une-entreprise--developper-son-entreprise", "développement commercial"),
+    ("creer-une-entreprise--developper-son-entreprise", "gestion entreprise"),
+    (
+        "creer-une-entreprise--structurer-son-projet-de-creation-dentreprise",
+        "business plan",
+    ),
+    (
+        "creer-une-entreprise--structurer-son-projet-de-creation-dentreprise",
+        "statut juridique",
+    ),
+    (
+        "difficultes-administratives-ou-juridiques--accompagnement-aux-demarches-administratives",
+        "administratif",
+    ),
+    (
+        "difficultes-administratives-ou-juridiques--accompagnement-aux-demarches-administratives",
+        "formalités",
+    ),
+    (
+        "difficultes-administratives-ou-juridiques--accompagnement-pour-lacces-a-la-citoyennete",
+        "naturalisation",
+    ),
+    (
+        "difficultes-administratives-ou-juridiques--accompagnement-pour-lacces-a-la-citoyennete",
+        "titre de séjour",
+    ),
+    (
+        "difficultes-administratives-ou-juridiques--accompagnement-pour-lacces-a-la-citoyennete",
+        "vie civique",
+    ),
+    (
+        "difficultes-administratives-ou-juridiques--prendre-en-compte-une-problematique-judiciaire",
+        "avocat",
+    ),
+    (
+        "difficultes-administratives-ou-juridiques--prendre-en-compte-une-problematique-judiciaire",
+        "juridique",
+    ),
+    (
+        "difficultes-administratives-ou-juridiques--prendre-en-compte-une-problematique-judiciaire",
+        "justice",
+    ),
+    (
+        "difficultes-administratives-ou-juridiques--prendre-en-compte-une-problematique-judiciaire",
+        "recours",
+    ),
+    ("difficultes-financieres--acquerir-une-autonomie-budgetaire", "compte bancaire"),
+    ("difficultes-financieres--acquerir-une-autonomie-budgetaire", "gestion argent"),
+    ("difficultes-financieres--acquerir-une-autonomie-budgetaire", "épargne"),
+    ("difficultes-financieres--ameliorer-sa-gestion-budgetaire", "budget"),
+    ("difficultes-financieres--ameliorer-sa-gestion-budgetaire", "finance"),
+    ("difficultes-financieres--ameliorer-sa-gestion-budgetaire", "trésorerie"),
+    (
+        "difficultes-financieres--mettre-en-place-une-mesure-de-protection-financiere",
+        "curatelle",
+    ),
+    (
+        "difficultes-financieres--mettre-en-place-une-mesure-de-protection-financiere",
+        "protection juridique",
+    ),
+    (
+        "difficultes-financieres--mettre-en-place-une-mesure-de-protection-financiere",
+        "tutelle",
+    ),
+    (
+        "difficultes-financieres--prevenir-une-degradation-de-la-situation-financiere",
+        "microcrédit",
+    ),
+    (
+        "difficultes-financieres--prevenir-une-degradation-de-la-situation-financiere",
+        "prêt solidaire",
+    ),
+    ("difficultes-financieres--situation-dendettement-surendettement", "dette"),
+    ("difficultes-financieres--situation-dendettement-surendettement", "impayé"),
+    ("equipement-et-alimentation--aide-menagere", "aide à domicile"),
+    ("equipement-et-alimentation--aide-menagere", "entretien logement"),
+    ("equipement-et-alimentation--alimentation", "alimentaire"),
+    ("equipement-et-alimentation--alimentation", "repas"),
+    ("famille--garde-denfants", "assistante maternelle"),
+    ("famille--garde-denfants", "crèche"),
+    ("famille--garde-denfants", "nourrice"),
+    ("famille--prise-en-charge-personne-dependante", "aidant"),
+    ("famille--prise-en-charge-personne-dependante", "aide soignant"),
+    ("famille--prise-en-charge-personne-dependante", "personne âgée"),
+    ("famille--soutien-a-la-parentalite-et-a-leducation", "famille"),
+    ("famille--soutien-aidants", "aide soignant"),
+    ("famille--soutien-aidants", "handicap"),
+    ("famille--surmonter-conflits-separation-violence", "divorce"),
+    ("famille--surmonter-conflits-separation-violence", "pension alimentaire"),
+    ("lecture-ecriture-calcul--maitriser-le-calcul", "remise à niveau"),
+    ("lecture-ecriture-calcul--maitriser-le-calcul", "savoirs fondamentaux"),
+    ("lecture-ecriture-calcul--maitriser-le-francais", "alphabétisation"),
+    ("lecture-ecriture-calcul--maitriser-le-francais", "cours de français"),
+    ("lecture-ecriture-calcul--maitriser-le-francais", "fle"),
+    ("lecture-ecriture-calcul--maitriser-le-francais", "français langue étrangère"),
+    ("lecture-ecriture-calcul--maitriser-le-francais", "illettrisme"),
+    ("logement-hebergement--acheter-un-logement", "prêt immobilier"),
+    ("logement-hebergement--changer-de-logement", "déménagement"),
+    ("logement-hebergement--louer-un-logement", "bail"),
+    ("logement-hebergement--louer-un-logement", "hlm"),
+    ("logement-hebergement--louer-un-logement", "logements sociaux"),
+    (
+        "logement-hebergement--rechercher-une-solution-dhebergement-temporaire",
+        "centre d'accueil",
+    ),
+    ("logement-hebergement--rechercher-une-solution-dhebergement-temporaire", "foyer"),
+    (
+        "logement-hebergement--rechercher-une-solution-dhebergement-temporaire",
+        "sans-abri",
+    ),
+    ("logement-hebergement--reduire-les-impayes-de-loyer", "expulsion"),
+    ("logement-hebergement--reduire-les-impayes-de-loyer", "impayé"),
+    ("logement-hebergement--se-maintenir-dans-le-logement", "insalubrité"),
+    ("logement-hebergement--se-maintenir-dans-le-logement", "rénovation"),
+    ("logement-hebergement--se-maintenir-dans-le-logement", "travaux"),
+    (
+        "logement-hebergement--sinformer-sur-les-demarches-liees-a-lacces-au-logement",
+        "domiciliation",
+    ),
+    ("mobilite--acceder-a-un-vehicule", "deux-roues"),
+    ("mobilite--acceder-a-un-vehicule", "voiture"),
+    ("mobilite--acceder-a-un-vehicule", "location voiture"),
+    ("mobilite--entretenir-reparer-son-vehicule", "contrôle technique"),
+    ("mobilite--entretenir-reparer-son-vehicule", "garage"),
+    ("mobilite--entretenir-reparer-son-vehicule", "réparation"),
+    ("mobilite--etre-accompagne-dans-son-parcours-mobilite", "déplacement"),
+    ("mobilite--etre-accompagne-dans-son-parcours-mobilite", "itinéraire"),
+    ("mobilite--etre-accompagne-dans-son-parcours-mobilite", "trajet"),
+    ("mobilite--financer-ma-mobilite", "aide transport"),
+    ("mobilite--mobilite-douce-partagee-collective", "bus"),
+    ("mobilite--mobilite-douce-partagee-collective", "covoiturage"),
+    ("mobilite--mobilite-douce-partagee-collective", "transport"),
+    ("mobilite--mobilite-douce-partagee-collective", "trottinette"),
+    ("mobilite--mobilite-douce-partagee-collective", "vélo"),
+    ("mobilite--preparer-un-permis", "auto-école"),
+    ("mobilite--preparer-un-permis", "code de la route"),
+    ("mobilite--preparer-un-permis", "conduite"),
+    ("numerique--acceder-a-des-services-en-ligne", "dématérialisation"),
+    ("numerique--acceder-a-des-services-en-ligne", "informatique"),
+    ("numerique--acceder-a-des-services-en-ligne", "internet"),
+    ("numerique--acceder-a-une-connexion-internet", "wifi"),
+    ("numerique--acquerir-un-equipement", "ordinateur"),
+    ("numerique--acquerir-un-equipement", "smartphone"),
+    ("numerique--acquerir-un-equipement", "tablette"),
+    ("numerique--maitriser-les-fondamentaux-du-numerique", "bureautique"),
+    ("numerique--maitriser-les-fondamentaux-du-numerique", "digital"),
+    ("numerique--maitriser-les-fondamentaux-du-numerique", "illectronisme"),
+    ("preparer-sa-candidature--developper-son-reseau", "mentorat"),
+    ("preparer-sa-candidature--developper-son-reseau", "parrainage"),
+    (
+        "preparer-sa-candidature--organiser-ses-demarches-de-recherche-demploi",
+        "candidature",
+    ),
+    (
+        "preparer-sa-candidature--realiser-un-cv-et-ou-une-lettre-de-motivation",
+        "portfolio",
+    ),
+    ("preparer-sa-candidature--valoriser-ses-competences", "bilan de compétences"),
+    ("preparer-sa-candidature--valoriser-ses-competences", "validation acquis"),
+    ("remobilisation--activites-sportives-et-culturelles", "arts"),
+    ("remobilisation--activites-sportives-et-culturelles", "atelier créatif"),
+    ("remobilisation--activites-sportives-et-culturelles", "loisirs"),
+    ("remobilisation--benevolat-action-citoyenne", "service civique"),
+    ("remobilisation--benevolat-action-citoyenne", "volontariat"),
+    ("remobilisation--bien-etre-confiance-en-soi", "estime de soi"),
+    ("remobilisation--lien-social", "socialisation"),
+    ("sante--acces-aux-soins", "hygiène"),
+    ("sante--acces-aux-soins", "médecin"),
+    ("sante--acces-aux-soins", "santé"),
+    ("sante--addictions", "alcool"),
+    ("sante--addictions", "drogue"),
+    ("sante--addictions", "sevrage"),
+    ("sante--addictions", "désintoxication"),
+    ("sante--constituer-un-dossier-mdph-invalidite", "handicap"),
+    ("sante--constituer-un-dossier-mdph-invalidite", "rqth"),
+    ("sante--sante-mentale", "psychologue"),
+    ("sante--sante-mentale", "thérapie"),
+    ("sante--sante-mentale", "psychatre"),
+    ("sante--sante-mentale", "cmp"),
+    ("sante--sante-sexuelle", "contraception"),
+    ("sante--sante-sexuelle", "dépistage"),
+    ("sante--sante-sexuelle", "planning familial"),
+    ("se-former--monter-son-dossier-de-formation", "certification"),
+    ("se-former--monter-son-dossier-de-formation", "cpf"),
+    ("se-former--monter-son-dossier-de-formation", "financement formation"),
+    ("se-former--trouver-sa-formation", "certification"),
+    ("se-former--trouver-sa-formation", "cpf"),
+    (
+        "souvrir-a-linternational--connaitre-les-opportunites-demploi-a-letranger",
+        "expatriation",
+    ),
+    (
+        "souvrir-a-linternational--connaitre-les-opportunites-demploi-a-letranger",
+        "international",
+    ),
+    (
+        "souvrir-a-linternational--connaitre-les-opportunites-demploi-a-letranger",
+        "visa",
+    ),
+    (
+        "souvrir-a-linternational--sinformer-sur-les-aides-pour-travailler-a-letranger",
+        "mobilité européenne",
+    ),
+    (
+        "souvrir-a-linternational--sinformer-sur-les-aides-pour-travailler-a-letranger",
+        "mobilité internationale",
+    ),
+    (
+        "souvrir-a-linternational--sorganiser-suite-a-son-retour-en-france",
+        "rapatriement",
+    ),
+    ("trouver-un-emploi--convaincre-un-recruteur-en-entretien", "entretien embauche"),
+    ("trouver-un-emploi--convaincre-un-recruteur-en-entretien", "pitch"),
+    ("trouver-un-emploi--convaincre-un-recruteur-en-entretien", "simulation entretien"),
+    ("trouver-un-emploi--faire-des-candidatures-spontanees", "démarchage"),
+    ("trouver-un-emploi--faire-des-candidatures-spontanees", "prospection"),
+    ("trouver-un-emploi--maintien-dans-lemploi", "travail"),
+    ("trouver-un-emploi--repondre-a-des-offres-demploi", "candidature"),
+    ("trouver-un-emploi--repondre-a-des-offres-demploi", "embauche"),
+    ("trouver-un-emploi--repondre-a-des-offres-demploi", "recrutement"),
+]
+
 
 @functools.cache
 def get_thematiques_by_group() -> dict[str, list[str]]:
@@ -429,6 +688,24 @@ def search_tsquery(db_session: orm.Session, q: str) -> sqla.ColumnElement:
     ).scalar()
 
     return sqla.cast(tsquery or "", TSQUERY)
+
+
+def build_thematique_aliases(db_session: orm.Session) -> None:
+    db_session.execute(sqla.text("TRUNCATE api__thematique_aliases_v1"))
+    for thematique_code, alias in THEMATIQUE_ALIASES:
+        db_session.execute(
+            sqla.text("""
+                INSERT INTO api__thematique_aliases_v1
+                    (thematique_code, alias, lexemes)
+                VALUES (
+                    :thematique_code,
+                    :alias,
+                    tsvector_to_array(to_tsvector('public.french', :alias))
+                )
+            """),
+            {"thematique_code": thematique_code, "alias": alias},
+        )
+    db_session.commit()
 
 
 def search_query(
