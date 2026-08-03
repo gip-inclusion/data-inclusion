@@ -1898,3 +1898,101 @@ def test_search_order_by_distance(api_client):
     assert response.status_code == 200
     items = response.json()["items"]
     assert [item["service"]["id"] for item in items] == ["closer", "farther"]
+
+
+@pytest.mark.with_token
+def test_search_thematique_aliases_single_word(api_client):
+    factories.ServiceFactory(
+        id="fle",
+        nom="Atelier d'accueil",
+        thematiques=[
+            v1.Thematique.LECTURE_ECRITURE_CALCUL__MAITRISER_LE_FRANCAIS.value
+        ],
+    )
+
+    response = api_client.get(SEARCH_ENDPOINT.url, params={"q": "fle"})
+
+    assert response.status_code == 200
+    assert [item["service"]["id"] for item in response.json()["items"]] == ["fle"]
+
+
+NEUTRAL_TEXT = {
+    "description": "lorem ipsum dolor sit amet",
+    "structure__description": "lorem ipsum dolor sit amet",
+}
+
+
+@pytest.mark.with_token
+@pytest.mark.parametrize(
+    ("q", "services", "expected_ids"),
+    [
+        pytest.param(
+            "entretien logement",
+            [
+                {
+                    "id": "aide-menagere",
+                    "nom": "Service local",
+                    "thematiques": [
+                        v1.Thematique.EQUIPEMENT_ET_ALIMENTATION__AIDE_MENAGERE.value
+                    ],
+                    **NEUTRAL_TEXT,
+                },
+                {
+                    "id": "entretien-embauche",
+                    "nom": "Autre service",
+                    "thematiques": [
+                        v1.Thematique.TROUVER_UN_EMPLOI__CONVAINCRE_UN_RECRUTEUR_EN_ENTRETIEN.value
+                    ],
+                    **NEUTRAL_TEXT,
+                },
+            ],
+            ["aide-menagere"],
+            id="multi-word",
+        ),
+        pytest.param(
+            "entretien",
+            [
+                {
+                    "id": "aide-menagere",
+                    "nom": "Service local",
+                    "thematiques": [
+                        v1.Thematique.EQUIPEMENT_ET_ALIMENTATION__AIDE_MENAGERE.value
+                    ],
+                    **NEUTRAL_TEXT,
+                },
+                {
+                    "id": "entretien-embauche",
+                    "nom": "Autre service",
+                    "thematiques": [
+                        v1.Thematique.TROUVER_UN_EMPLOI__CONVAINCRE_UN_RECRUTEUR_EN_ENTRETIEN.value
+                    ],
+                    **NEUTRAL_TEXT,
+                },
+            ],
+            ["entretien-embauche"],
+            id="partial-alias-no-expansion",
+        ),
+        pytest.param(
+            "remise a niveau",
+            [
+                {
+                    "id": "calcul",
+                    "nom": "Atelier local",
+                    "thematiques": [
+                        v1.Thematique.LECTURE_ECRITURE_CALCUL__MAITRISER_LE_CALCUL.value
+                    ],
+                },
+            ],
+            ["calcul"],
+            id="alias-without-accents",
+        ),
+    ],
+)
+def test_search_thematique_aliases_multi_word(api_client, q, services, expected_ids):
+    for service in services:
+        factories.ServiceFactory(**service)
+
+    response = api_client.get(SEARCH_ENDPOINT.url, params={"q": q})
+
+    assert response.status_code == 200
+    assert [item["service"]["id"] for item in response.json()["items"]] == expected_ids

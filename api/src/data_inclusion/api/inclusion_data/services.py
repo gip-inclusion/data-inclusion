@@ -698,6 +698,28 @@ def to_vector_with_variants(db_session: orm.Session, q: str) -> sqla.ColumnEleme
     return sqla.cast(tsquery or "", TSQUERY)
 
 
+# Every thematique alias gets attached to the document with a fabricated
+# unique token (very much like a hash)
+CONCATENATED_TOKEN_PREFIX = "zz"
+CONCATENATED_ALIAS_SQL = (
+    f"'{CONCATENATED_TOKEN_PREFIX}' || replace(unaccent(lower(alias)), ' ', '')"
+)
+
+
+def to_vector_concatenated(db_session: orm.Session, q: str) -> sqla.ColumnElement:
+    """Tsquery for an exact match on a concatenated multi-word alias token."""
+    tsquery = db_session.execute(
+        sqla.text("""
+            SELECT plainto_tsquery(
+                'simple',
+                :prefix || replace(unaccent(lower(:q)), ' ', '')
+            )
+        """),
+        {"q": q, "prefix": CONCATENATED_TOKEN_PREFIX},
+    ).scalar()
+    return sqla.cast(tsquery or "", TSQUERY)
+
+
 def build_thematique_aliases(db_session: orm.Session) -> None:
     db_session.execute(sqla.text("TRUNCATE api__thematique_aliases_v1"))
     for thematique_code, alias in THEMATIQUE_ALIASES:
@@ -759,7 +781,29 @@ def search_query(
             variants_vector,
             32,
         )
-        query = query.filter(text_match)
+        if " " not in params.q.strip():  # single-word
+            query = query.filter(text_match)
+        else:  # multi-word: look for thematique aliases as well
+            concatenated_vector = to_vector_concatenated(
+                db_session=db_session, q=params.q
+            )
+            thematique_aliases_match = models.Service.search_vector.bool_op("@@")(
+                concatenated_vector
+            )
+            query = query.filter(
+                sqla.or_(
+                    text_match,
+                    thematique_aliases_match,
+                )
+            )
+            score = sqla.func.greatest(
+                score,
+                sqla.func.ts_rank_cd(
+                    models.Service.search_vector,
+                    concatenated_vector,
+                    32,
+                ),
+            )
         score_expr = sqla.func.round(
             sqla.cast(score, sqla.Numeric),
             2,
@@ -828,15 +872,46 @@ def build_search_index(
     db_session: orm.Session,
 ) -> None:
     db_session.execute(
-        sqla.text("""
-            WITH thematiques AS (
+        sqla.text(f"""
+            WITH single_word_aliases AS (
+                SELECT
+                    thematique_code,
+                    string_agg(alias, ' ') AS aliases
+                FROM api__thematique_aliases_v1
+                WHERE alias NOT LIKE '% %'
+                GROUP BY thematique_code
+            ),
+            concatenated_aliases AS (
+                SELECT
+                    thematique_code,
+                    string_agg(
+                        {CONCATENATED_ALIAS_SQL},
+                        ' '
+                    ) AS aliases
+                FROM api__thematique_aliases_v1
+                WHERE alias LIKE '% %'
+                GROUP BY thematique_code
+            ),
+            thematiques AS (
             SELECT
                 api__services_v1.id AS service_id,
-                STRING_AGG(api__thematiques_v1.label, ', ') AS labels
+                STRING_AGG(
+                    api__thematiques_v1.label
+                    || ' '
+                    || COALESCE(single_word_aliases.aliases, ''),
+                    ', '
+                ) AS labels,
+                STRING_AGG(
+                    COALESCE(concatenated_aliases.aliases, ''), ' '
+                ) AS concatenated_aliases
             FROM api__services_v1,
                 UNNEST(api__services_v1.thematiques) AS item
             INNER JOIN api__thematiques_v1
                 ON api__thematiques_v1.value = item
+            LEFT JOIN single_word_aliases
+                ON single_word_aliases.thematique_code = item
+            LEFT JOIN concatenated_aliases
+                ON concatenated_aliases.thematique_code = item
             GROUP BY api__services_v1.id
         ),
         publics AS (
@@ -870,6 +945,7 @@ def build_search_index(
         UPDATE api__services_v1
         SET search_vector =
             SETWEIGHT(TO_TSVECTOR('public.french', COALESCE(thematiques.labels,                  '')), 'A') ||
+            SETWEIGHT(TO_TSVECTOR('simple', COALESCE(thematiques.concatenated_aliases,           '')), 'A') ||
             SETWEIGHT(TO_TSVECTOR('public.french', COALESCE(api__services_v1.nom,                '')), 'A') ||
             SETWEIGHT(TO_TSVECTOR('public.french', COALESCE(reseaux_porteurs.labels,             '')), 'B') ||
             SETWEIGHT(TO_TSVECTOR('public.french', COALESCE(api__structures_v1.nom,              '')), 'B') ||
@@ -891,11 +967,12 @@ def build_search_index(
 
     # refill the lexeme/frequency lexicon
     db_session.execute(
-        sqla.text("""
+        sqla.text(f"""
         TRUNCATE api__search_lexicon_v1;
         INSERT INTO api__search_lexicon_v1 (word, ndoc)
         SELECT word, ndoc
         FROM TS_STAT('SELECT search_vector FROM api__services_v1')
+        WHERE word NOT LIKE '{CONCATENATED_TOKEN_PREFIX}%'
     """)
     )
 
