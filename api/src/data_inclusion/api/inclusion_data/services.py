@@ -630,7 +630,7 @@ def retrieve_service(
     ).scalar_one_or_none()
 
 
-def search_tsquery(db_session: orm.Session, q: str) -> sqla.ColumnElement:
+def to_vector_with_variants(db_session: orm.Session, q: str) -> sqla.ColumnElement:
     """A typo-tolerant tsquery.
 
     Method recommended by the pg_trgm doc
@@ -646,39 +646,47 @@ def search_tsquery(db_session: orm.Session, q: str) -> sqla.ColumnElement:
     """
     tsquery = db_session.execute(
         sqla.text("""
-            SELECT STRING_AGG('(' || expansion.variants || ')', ' & ')
+            SELECT STRING_AGG(
+                '(' || CONCAT_WS(
+                    '|',
+                    QUOTE_LITERAL(lexeme),
+                    expansion.variants
+                ) || ')',
+                ' & '
+            )
             FROM UNNEST(
                 TSVECTOR_TO_ARRAY(TO_TSVECTOR('public.french', :q))
             ) AS lexeme
-            LEFT JOIN api__search_lexicon_v1 AS entry ON entry.word = lexeme
+            LEFT JOIN api__search_lexicon_v1 AS common_word
+                ON common_word.word = lexeme
+                AND common_word.ndoc >= :max_ndoc
             CROSS JOIN LATERAL (
-                SELECT STRING_AGG(QUOTE_LITERAL(word), '|') AS variants
+                SELECT STRING_AGG(QUOTE_LITERAL(lex.word), '|') AS variants
                 FROM (
-                    SELECT lexeme AS word
-                    UNION
-                    (SELECT word
-                        FROM api__search_lexicon_v1
-                        WHERE COALESCE(entry.ndoc, 0) < :max_ndoc
-                            AND LENGTH(lexeme) >= :min_length
-                            AND word % lexeme
-                        ORDER BY
-                            SIMILARITY(word, lexeme) + :freq_weight * LN(ndoc + 1)
-                            DESC
-                        LIMIT :variants
-                    )
-                ) AS candidates
+                    SELECT lex.word
+                    FROM api__search_lexicon_v1 AS lex
+                    WHERE
+                        common_word.word IS NULL
+                        AND LENGTH(lexeme) >= :min_length
+                        AND lex.word % lexeme
+                    ORDER BY
+                        SIMILARITY(lex.word, lexeme)
+                        + :freq_weight * LN(lex.ndoc + 1)
+                        DESC
+                    LIMIT :n_variants
+                ) AS lex
             ) AS expansion
         """),
         {
             "q": q,
-            # NOTE: those thresholds have been found though data analysis
-            # a word found in more than 100 services is probably legit
-            # FYI the most widespread typo in the database "illetr" is found
+            # NOTE: those thresholds have been found though data analysis.
+            # A word found in more than 100 services is probably legit
+            # The most widespread typo in the database "illetr" is found
             # in 37 services
             "max_ndoc": 100,
             # keep at most 4 variants of each lexeme
-            "variants": 4,
-            # leans towards common words.
+            "n_variants": 4,
+            # Make typos lean towards common words, not other typos !
             # Lower it and "solidiar" picks "solidiair" which is a typo
             # Increase it and a correct but rare word no longer comes up
             "freq_weight": 0.05,
@@ -739,27 +747,26 @@ def search_query(
         query = query.filter(models.Service.code_insee == params.code_commune)
 
     score_recherche_expr = None
-    if params.q is not None:
-        tsquery = search_tsquery(db_session=db_session, q=params.q)
-        score_recherche_expr = sqla.func.round(
-            sqla.cast(
-                sqla.func.ts_rank_cd(
-                    models.Service.search_vector,
-                    tsquery,
-                    32,
-                ),
-                sqla.Numeric,
-            ),
-            2,
-        ).label("score_recherche")
-
-        query = query.filter(models.Service.search_vector.bool_op("@@")(tsquery))
-        query = query.add_columns(score_recherche_expr)
-        query = query.order_by((sqla.func.round(score_recherche_expr * 10) / 2).desc())
-    else:
+    if params.q is None:
         query = query.add_columns(
             sqla.null().cast(sqla.Numeric).label("score_recherche")
         )
+    else:
+        variants_vector = to_vector_with_variants(db_session=db_session, q=params.q)
+        text_match = models.Service.search_vector.bool_op("@@")(variants_vector)
+        score = sqla.func.ts_rank_cd(
+            models.Service.search_vector,
+            variants_vector,
+            32,
+        )
+        query = query.filter(text_match)
+        score_expr = sqla.func.round(
+            sqla.cast(score, sqla.Numeric),
+            2,
+        ).label("score_recherche")
+
+        query = query.add_columns(score_expr)
+        query = query.order_by((sqla.func.round(score_expr * 10) / 2).desc())
 
     query = query.order_by(models.Service.score_qualite.desc())
 
