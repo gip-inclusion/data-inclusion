@@ -32,16 +32,10 @@ def prepare_load(
 
     # remove closed structures according to sirene
     structures_df = structures_df.filter(~pl.col("_is_closed"))
-    # remove structures with invalid city code
-    structures_df = structures_df.join(
-        other=structures_df.join(
-            other=cities_df,
-            left_on="code_insee",
-            right_on="code",
-            how="anti",
-        ),
-        on="id",
-        how="anti",
+    # drop unknown city codes; null is allowed (e.g. fully remote services)
+    city_codes = cities_df.get_column("code").implode()
+    structures_df = structures_df.filter(
+        pl.col("code_insee").is_null() | pl.col("code_insee").is_in(city_codes)
     )
     # remove structures with validation errors
     structures_df = structures_df.join(
@@ -64,16 +58,17 @@ def prepare_load(
         right_on="id",
         how="semi",
     )
-    # remove services with invalid city code
-    services_df = services_df.join(
-        other=services_df.join(
-            other=cities_df,
-            left_on="code_insee",
-            right_on="code",
-            how="anti",
-        ),
-        on="id",
-        how="anti",
+    # unknown city codes are dropped; null code_insee is kept only for
+    # non-presentiel services (e.g. fully remote / a-distance)
+    is_presentiel = (
+        pl.col("modes_accueil")
+        .cast(pl.List(pl.String), strict=False)
+        .fill_null([])
+        .list.contains(v1.ModeAccueil.EN_PRESENTIEL.value)
+    )
+    services_df = services_df.filter(
+        pl.col("code_insee").is_in(city_codes)
+        | (pl.col("code_insee").is_null() & ~is_presentiel)
     )
     # remove services with validation errors
     services_df = services_df.join(

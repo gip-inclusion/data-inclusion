@@ -65,6 +65,49 @@ def test_prepare_load_structures(structure_data, expected_empty):
         ({**service_data, "date_maj": "not-a-date"}, True),
         # valid schema, but not an actual city code
         ({**service_data, "code_insee": "00000"}, True),
+        # remote service without address: null code_insee is allowed
+        (
+            {
+                **service_data,
+                "code_insee": None,
+                "adresse": None,
+                "commune": None,
+                "code_postal": None,
+                "latitude": None,
+                "longitude": None,
+                "_has_valid_address": False,
+                "modes_accueil": [v1.ModeAccueil.A_DISTANCE.value],
+            },
+            False,
+        ),
+        # presentiel without city code: rejected
+        (
+            {
+                **service_data,
+                "code_insee": None,
+                "adresse": None,
+                "commune": None,
+                "code_postal": None,
+                "latitude": None,
+                "longitude": None,
+                "_has_valid_address": False,
+                "modes_accueil": [v1.ModeAccueil.EN_PRESENTIEL.value],
+            },
+            True,
+        ),
+        # hybrid presentiel + distance without city code: rejected
+        (
+            {
+                **service_data,
+                "code_insee": None,
+                "_has_valid_address": False,
+                "modes_accueil": [
+                    v1.ModeAccueil.EN_PRESENTIEL.value,
+                    v1.ModeAccueil.A_DISTANCE.value,
+                ],
+            },
+            True,
+        ),
     ],
 )
 def test_prepare_load_services(service_data, expected_empty):
