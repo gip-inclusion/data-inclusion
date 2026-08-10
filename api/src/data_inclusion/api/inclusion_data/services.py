@@ -227,7 +227,7 @@ THEMATIQUE_ALIASES: list[tuple[str, str]] = [
     ("sante--constituer-un-dossier-mdph-invalidite", "rqth"),
     ("sante--sante-mentale", "psychologue"),
     ("sante--sante-mentale", "thérapie"),
-    ("sante--sante-mentale", "psychatre"),
+    ("sante--sante-mentale", "psychiatre"),
     ("sante--sante-mentale", "cmp"),
     ("sante--sante-sexuelle", "contraception"),
     ("sante--sante-sexuelle", "dépistage"),
