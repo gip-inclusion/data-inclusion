@@ -808,6 +808,7 @@ def search_query(
             sqla.cast(score, sqla.Numeric),
             2,
         ).label("score_recherche")
+        score_recherche_expr = score_expr
 
         query = query.add_columns(score_expr)
         query = query.order_by((sqla.func.round(score_expr * 10) / 2).desc())
