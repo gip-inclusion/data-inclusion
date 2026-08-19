@@ -4,19 +4,20 @@ a2wsgi==1.10.10
     # via
     #   -c airflow/constraints.txt
     #   apache-airflow-core
-aiobotocore==3.4.0
+aiobotocore==3.9.0
     # via
     #   -c airflow/constraints.txt
     #   s3fs
-aiohappyeyeballs==2.6.1
+aiohappyeyeballs==2.7.1
     # via
     #   -c airflow/constraints.txt
     #   aiohttp
-aiohttp==3.13.5
+aiohttp==3.14.3
     # via
     #   -c airflow/constraints.txt
     #   aiobotocore
     #   apache-airflow-providers-http
+    #   apache-airflow-providers-slack
     #   s3fs
 aioitertools==0.13.0
     # via
@@ -26,34 +27,34 @@ aiosignal==1.4.0
     # via
     #   -c airflow/constraints.txt
     #   aiohttp
-aiosmtplib==5.1.0
+aiosmtplib==5.1.2
     # via
     #   -c airflow/constraints.txt
     #   apache-airflow-providers-smtp
-aiosqlite==0.21.0
+aiosqlite==0.22.1
     # via
     #   -c airflow/constraints.txt
     #   apache-airflow-core
-alembic==1.18.4
+alembic==1.19.0
     # via
     #   -c airflow/constraints.txt
     #   apache-airflow-core
-annotated-doc==0.0.4
+annotated-doc==0.0.5
     # via
     #   -c airflow/constraints.txt
     #   fastapi
     #   typer
-annotated-types==0.7.0
+annotated-types==0.8.0
     # via
     #   -c airflow/constraints.txt
     #   pydantic
-anyio==4.13.0
+anyio==4.14.2
     # via
     #   -c airflow/constraints.txt
     #   httpx
     #   starlette
     #   watchfiles
-apache-airflow==3.2.1
+apache-airflow==3.3.1
     # via
     #   -r airflow/requirements.in
     #   apache-airflow-providers-amazon
@@ -67,15 +68,15 @@ apache-airflow==3.2.1
     #   apache-airflow-providers-smtp
     #   apache-airflow-providers-ssh
     #   apache-airflow-providers-standard
-apache-airflow-core==3.2.1
+apache-airflow-core==3.3.1
     # via
     #   apache-airflow
     #   apache-airflow-task-sdk
-apache-airflow-providers-amazon==9.25.0
+apache-airflow-providers-amazon==9.34.0
     # via
     #   -c airflow/constraints.txt
     #   apache-airflow
-apache-airflow-providers-common-compat==1.14.3
+apache-airflow-providers-common-compat==1.18.0
     # via
     #   -c airflow/constraints.txt
     #   apache-airflow-core
@@ -89,47 +90,47 @@ apache-airflow-providers-common-compat==1.14.3
     #   apache-airflow-providers-smtp
     #   apache-airflow-providers-ssh
     #   apache-airflow-providers-standard
-apache-airflow-providers-common-io==1.7.2
+apache-airflow-providers-common-io==1.8.0
     # via
     #   -c airflow/constraints.txt
     #   apache-airflow-core
-apache-airflow-providers-common-sql==1.34.0
+apache-airflow-providers-common-sql==2.1.0
     # via
     #   -c airflow/constraints.txt
     #   apache-airflow-core
     #   apache-airflow-providers-amazon
     #   apache-airflow-providers-postgres
     #   apache-airflow-providers-slack
-apache-airflow-providers-fab==3.6.1
+apache-airflow-providers-fab==3.8.0
     # via
     #   -c airflow/constraints.txt
     #   apache-airflow
-apache-airflow-providers-http==6.0.2
+apache-airflow-providers-http==6.0.5
     # via
     #   -c airflow/constraints.txt
     #   apache-airflow-providers-amazon
-apache-airflow-providers-postgres==6.6.3
+apache-airflow-providers-postgres==7.0.1
     # via
     #   -c airflow/constraints.txt
     #   apache-airflow
-apache-airflow-providers-slack==9.10.0
+apache-airflow-providers-slack==9.10.2
     # via
     #   -c airflow/constraints.txt
     #   apache-airflow
-apache-airflow-providers-smtp==2.4.5
+apache-airflow-providers-smtp==3.0.3
     # via
     #   -c airflow/constraints.txt
     #   apache-airflow-core
-apache-airflow-providers-ssh==5.0.0
+apache-airflow-providers-ssh==6.0.1
     # via
     #   -c airflow/constraints.txt
     #   apache-airflow
-apache-airflow-providers-standard==1.12.3
+apache-airflow-providers-standard==1.17.0
     # via
     #   -c airflow/constraints.txt
     #   apache-airflow
     #   apache-airflow-core
-apache-airflow-task-sdk==1.2.1
+apache-airflow-task-sdk==1.3.1
     # via
     #   apache-airflow
     #   apache-airflow-core
@@ -137,11 +138,15 @@ apispec==6.10.0
     # via
     #   -c airflow/constraints.txt
     #   flask-appbuilder
-argcomplete==3.6.3
+argcomplete==3.7.2
     # via
     #   -c airflow/constraints.txt
     #   apache-airflow-core
-asgiref==3.11.1
+arrow==1.4.0
+    # via
+    #   -c airflow/constraints.txt
+    #   isoduration
+asgiref==3.12.1
     # via
     #   -c airflow/constraints.txt
     #   apache-airflow-core
@@ -158,7 +163,7 @@ asyncpg==0.31.0
     # via
     #   -c airflow/constraints.txt
     #   apache-airflow-providers-postgres
-asyncssh==2.22.0
+asyncssh==2.24.0
     # via
     #   -c airflow/constraints.txt
     #   apache-airflow-providers-ssh
@@ -181,7 +186,7 @@ bcrypt==5.0.0
     # via
     #   -c airflow/constraints.txt
     #   paramiko
-beautifulsoup4==4.14.3
+beautifulsoup4==4.15.0
     # via
     #   -c airflow/constraints.txt
     #   redshift-connector
@@ -190,7 +195,7 @@ blinker==1.9.0
     #   -c airflow/constraints.txt
     #   apache-airflow-providers-fab
     #   flask
-boto3==1.42.84
+boto3==1.43.56
     # via
     #   -c airflow/constraints.txt
     #   apache-airflow-providers-amazon
@@ -198,7 +203,7 @@ boto3==1.42.84
     #   redshift-connector
     #   sagemaker-studio
     #   watchtower
-botocore==1.42.84
+botocore==1.43.56
     # via
     #   -c airflow/constraints.txt
     #   aiobotocore
@@ -208,60 +213,60 @@ botocore==1.42.84
     #   redshift-connector
     #   s3transfer
     #   sagemaker-studio
-cachelib==0.13.0
+cachelib==0.15.2
     # via
     #   -c airflow/constraints.txt
     #   flask-session
 cachetools==6.2.6
     # via
     #   -c airflow/constraints.txt
+    #   apache-airflow-core
     #   apache-airflow-providers-fab
-cadwyn==6.2.0
+cadwyn==7.0.0
     # via
     #   -c airflow/constraints.txt
     #   apache-airflow-core
-certifi==2026.2.25
+certifi==2026.7.22
     # via
     #   -c airflow/constraints.txt
     #   httpcore
     #   httpx
     #   requests
     #   sentry-sdk
-cffi==2.0.0
+cffi==2.1.1
     # via
     #   -c airflow/constraints.txt
     #   cryptography
     #   pynacl
-charset-normalizer==3.4.7
+charset-normalizer==3.4.9
     # via
     #   -c airflow/constraints.txt
     #   requests
-click==8.3.2
+click==8.4.2
     # via
     #   -c airflow/constraints.txt
     #   flask
     #   flask-appbuilder
     #   rich-toolkit
-    #   typer
     #   uvicorn
 colorama==0.4.6
     # via
     #   -c airflow/constraints.txt
     #   flask-appbuilder
-colorlog==6.10.1
+colorlog==6.12.0
     # via
     #   -c airflow/constraints.txt
     #   apache-airflow-core
     #   apache-airflow-task-sdk
-cron-descriptor==2.0.8
+cron-descriptor==2.1.0
     # via
     #   -c airflow/constraints.txt
     #   apache-airflow-core
-croniter==6.2.2
+croniter==6.2.4
     # via
     #   -c airflow/constraints.txt
     #   apache-airflow-core
-cryptography==46.0.7
+cryptography==50.0.0
     # via
     #   -c airflow/constraints.txt
     #   apache-airflow-core
@@ -285,12 +290,12 @@ email-validator==2.3.0
     #   -c airflow/constraints.txt
     #   fastapi
     #   flask-appbuilder
-fastapi==0.136.0
+fastapi==0.136.3
     # via
     #   -c airflow/constraints.txt
     #   apache-airflow-core
     #   cadwyn
-fastapi-cli==0.0.24
+fastapi-cli==0.0.32
     # via
     #   -c airflow/constraints.txt
     #   fastapi
@@ -306,7 +311,7 @@ flask==3.1.3
     #   flask-session
     #   flask-sqlalchemy
     #   flask-wtf
-flask-appbuilder==5.2.0
+flask-appbuilder==5.2.2
     # via
     #   -c airflow/constraints.txt
     #   apache-airflow-providers-fab
@@ -314,11 +319,11 @@ flask-babel==4.0.0
     # via
     #   -c airflow/constraints.txt
     #   flask-appbuilder
-flask-jwt-extended==4.7.1
+flask-jwt-extended==4.7.4
     # via
     #   -c airflow/constraints.txt
     #   flask-appbuilder
-flask-limiter==3.12
+flask-limiter==4.1.1
     # via
     #   -c airflow/constraints.txt
     #   apache-airflow-providers-fab
@@ -337,7 +342,7 @@ flask-sqlalchemy==3.1.1
     #   -c airflow/constraints.txt
     #   apache-airflow-providers-fab
     #   flask-appbuilder
-flask-wtf==1.2.2
+flask-wtf==1.3.0
     # via
     #   -c airflow/constraints.txt
     #   apache-airflow-providers-fab
@@ -347,14 +352,14 @@ frozenlist==1.8.0
     #   -c airflow/constraints.txt
     #   aiohttp
     #   aiosignal
-fsspec==2026.3.0
+fsspec==2026.7.0
     # via
     #   -c airflow/constraints.txt
     #   apache-airflow-task-sdk
     #   pyathena
     #   s3fs
     #   universal-pathlib
-googleapis-common-protos==1.74.0
+googleapis-common-protos==1.75.1
     # via
     #   -c airflow/constraints.txt
     #   opentelemetry-exporter-otlp-proto-grpc
@@ -363,12 +368,12 @@ greenback==1.3.0
     # via
     #   -c airflow/constraints.txt
     #   apache-airflow-task-sdk
-greenlet==3.4.0
+greenlet==3.5.4
     # via
     #   -c airflow/constraints.txt
     #   greenback
     #   sqlalchemy
-grpcio==1.80.0
+grpcio==1.83.0
     # via
     #   -c airflow/constraints.txt
     #   opentelemetry-exporter-otlp-proto-grpc
@@ -381,7 +386,7 @@ httpcore==1.0.9
     # via
     #   -c airflow/constraints.txt
     #   httpx
-httptools==0.7.1
+httptools==0.8.0
     # via
     #   -c airflow/constraints.txt
     #   uvicorn
@@ -391,7 +396,7 @@ httpx==0.28.1
     #   apache-airflow-core
     #   apache-airflow-task-sdk
     #   fastapi
-idna==3.11
+idna==3.18
     # via
     #   -c airflow/constraints.txt
     #   anyio
@@ -399,17 +404,25 @@ idna==3.11
     #   httpx
     #   requests
     #   yarl
-importlib-metadata==8.7.1
+importlib-metadata==8.9.0
     # via
     #   -c airflow/constraints.txt
     #   apache-airflow-core
-    #   opentelemetry-api
 inflection==0.5.1
     # via
     #   -c airflow/constraints.txt
     #   apache-airflow-providers-amazon
 iniconfig==2.3.0
     # via pytest
+invoke==3.0.3
+    # via
+    #   -c airflow/constraints.txt
+    #   paramiko
+isoduration==20.11.0
+    # via
+    #   -c airflow/constraints.txt
+    #   apache-airflow-core
+    #   apache-airflow-task-sdk
 itsdangerous==2.2.0
     # via
     #   -c airflow/constraints.txt
@@ -451,7 +464,7 @@ lazy-object-proxy==1.12.0
     # via
     #   -c airflow/constraints.txt
     #   apache-airflow-core
-libcst==1.8.6
+libcst==1.9.0
     # via
     #   -c airflow/constraints.txt
     #   apache-airflow-core
@@ -468,15 +481,15 @@ lockfile==0.12.2
     #   -c airflow/constraints.txt
     #   apache-airflow-core
     #   python-daemon
-lxml==6.0.2
+lxml==6.1.1
     # via
     #   -c airflow/constraints.txt
     #   redshift-connector
-mako==1.3.11
+mako==1.4.1
     # via
     #   -c airflow/constraints.txt
     #   alembic
-markdown-it-py==4.0.0
+markdown-it-py==4.2.0
     # via
     #   -c airflow/constraints.txt
     #   rich
@@ -488,7 +501,7 @@ markupsafe==3.0.3
     #   mako
     #   werkzeug
     #   wtforms
-marshmallow==3.26.2
+marshmallow==4.3.0
     # via
     #   -c airflow/constraints.txt
     #   apache-airflow-providers-amazon
@@ -509,11 +522,11 @@ methodtools==0.4.7
     #   apache-airflow-core
     #   apache-airflow-providers-common-sql
     #   apache-airflow-task-sdk
-more-itertools==11.0.2
+more-itertools==11.1.0
     # via
     #   -c airflow/constraints.txt
     #   apache-airflow-providers-common-sql
-msgpack==1.1.2
+msgpack==1.2.1
     # via
     #   -c airflow/constraints.txt
     #   apache-airflow-providers-fab
@@ -533,44 +546,45 @@ natsort==8.4.0
     # via
     #   -c airflow/constraints.txt
     #   apache-airflow-core
-opentelemetry-api==1.41.0
+opentelemetry-api==1.44.0
     # via
     #   -c airflow/constraints.txt
     #   apache-airflow-core
+    #   apache-airflow-task-sdk
     #   opentelemetry-exporter-otlp-proto-grpc
     #   opentelemetry-exporter-otlp-proto-http
     #   opentelemetry-sdk
     #   opentelemetry-semantic-conventions
-opentelemetry-exporter-otlp==1.41.0
+opentelemetry-exporter-otlp==1.44.0
     # via
     #   -c airflow/constraints.txt
     #   apache-airflow-core
-opentelemetry-exporter-otlp-proto-common==1.41.0
+opentelemetry-exporter-otlp-proto-common==1.44.0
     # via
     #   -c airflow/constraints.txt
     #   opentelemetry-exporter-otlp-proto-grpc
     #   opentelemetry-exporter-otlp-proto-http
-opentelemetry-exporter-otlp-proto-grpc==1.41.0
+opentelemetry-exporter-otlp-proto-grpc==1.44.0
     # via
     #   -c airflow/constraints.txt
     #   opentelemetry-exporter-otlp
-opentelemetry-exporter-otlp-proto-http==1.41.0
+opentelemetry-exporter-otlp-proto-http==1.44.0
     # via
     #   -c airflow/constraints.txt
     #   opentelemetry-exporter-otlp
-opentelemetry-proto==1.41.0
+opentelemetry-proto==1.44.0
     # via
     #   -c airflow/constraints.txt
     #   apache-airflow-core
     #   opentelemetry-exporter-otlp-proto-common
     #   opentelemetry-exporter-otlp-proto-grpc
     #   opentelemetry-exporter-otlp-proto-http
-opentelemetry-sdk==1.41.0
+opentelemetry-sdk==1.44.0
     # via
     #   -c airflow/constraints.txt
     #   opentelemetry-exporter-otlp-proto-grpc
     #   opentelemetry-exporter-otlp-proto-http
-opentelemetry-semantic-conventions==0.62b0
+opentelemetry-semantic-conventions==0.65b0
     # via
     #   -c airflow/constraints.txt
     #   opentelemetry-sdk
@@ -582,18 +596,17 @@ outcome==1.3.0.post0
     # via
     #   -c airflow/constraints.txt
     #   greenback
-packaging==26.1
+packaging==26.3
     # via
     #   -c airflow/constraints.txt
     #   apache-airflow-core
     #   apache-airflow-task-sdk
     #   apispec
     #   limits
-    #   marshmallow
     #   pytest
     #   redshift-connector
     #   sagemaker-studio
-paramiko==3.5.1
+paramiko==5.0.0
     # via
     #   -c airflow/constraints.txt
     #   apache-airflow-providers-ssh
@@ -601,7 +614,7 @@ pathlib-abc==0.5.2
     # via
     #   -c airflow/constraints.txt
     #   universal-pathlib
-pathspec==1.0.4
+pathspec==1.1.1
     # via
     #   -c airflow/constraints.txt
     #   apache-airflow-core
@@ -621,7 +634,7 @@ prison==0.2.1
     # via
     #   -c airflow/constraints.txt
     #   flask-appbuilder
-propcache==0.4.1
+propcache==0.5.2
     # via
     #   -c airflow/constraints.txt
     #   aiohttp
@@ -637,11 +650,19 @@ psutil==7.2.2
     #   apache-airflow-core
     #   apache-airflow-task-sdk
     #   sagemaker-studio
-psycopg2-binary==2.9.11
+psycopg==3.3.4
     # via
     #   -c airflow/constraints.txt
     #   apache-airflow-providers-postgres
-pyathena==3.30.1
+psycopg-binary==3.3.4
+    # via
+    #   -c airflow/constraints.txt
+    #   psycopg
+psycopg2-binary==2.9.12
+    # via
+    #   -c airflow/constraints.txt
+    #   apache-airflow-providers-postgres
+pyathena==3.35.4
     # via
     #   -c airflow/constraints.txt
     #   apache-airflow-providers-amazon
@@ -649,16 +670,17 @@ pycparser==3.0
     # via
     #   -c airflow/constraints.txt
     #   cffi
-pydantic==2.13.1
+pydantic==2.13.4
     # via
     #   -c airflow/constraints.txt
     #   apache-airflow-core
+    #   apache-airflow-providers-http
     #   apache-airflow-task-sdk
     #   cadwyn
     #   fastapi
     #   pydantic-extra-types
     #   pydantic-settings
-pydantic-core==2.46.1
+pydantic-core==2.46.4
     # via
     #   -c airflow/constraints.txt
     #   pydantic
@@ -666,7 +688,7 @@ pydantic-extra-types==2.11.1
     # via
     #   -c airflow/constraints.txt
     #   fastapi
-pydantic-settings==2.13.1
+pydantic-settings==2.15.0
     # via
     #   -c airflow/constraints.txt
     #   fastapi
@@ -681,17 +703,18 @@ pygtrie==2.5.0
     #   -c airflow/constraints.txt
     #   apache-airflow-core
     #   apache-airflow-task-sdk
-pyjwt==2.12.1
+pyjwt==2.13.0
     # via
     #   -c airflow/constraints.txt
     #   apache-airflow-core
+    #   apache-airflow-providers-fab
     #   flask-appbuilder
     #   flask-jwt-extended
 pynacl==1.6.2
     # via
     #   -c airflow/constraints.txt
     #   paramiko
-pytest==9.0.2
+pytest==9.1.1
     # via -r airflow/requirements.in
 python-daemon==3.1.2
     # via
@@ -703,6 +726,7 @@ python-dateutil==2.9.0.post0
     #   aiobotocore
     #   apache-airflow-core
     #   apache-airflow-task-sdk
+    #   arrow
     #   botocore
     #   croniter
     #   flask-appbuilder
@@ -714,7 +738,7 @@ python-dotenv==1.2.2
     #   -c airflow/constraints.txt
     #   pydantic-settings
     #   uvicorn
-python-multipart==0.0.26
+python-multipart==0.0.32
     # via
     #   -c airflow/constraints.txt
     #   fastapi
@@ -722,7 +746,7 @@ python-slugify==8.0.4
     # via
     #   -c airflow/constraints.txt
     #   apache-airflow-core
-pytz==2026.1.post1
+pytz==2026.3.post1
     # via
     #   -c airflow/constraints.txt
     #   flask-babel
@@ -737,7 +761,7 @@ pyyaml-ft==8.0.0
     # via
     #   -c airflow/constraints.txt
     #   libcst
-redshift-connector==2.1.13
+redshift-connector==2.1.16
     # via
     #   -c airflow/constraints.txt
     #   apache-airflow-providers-amazon
@@ -746,7 +770,7 @@ referencing==0.37.0
     #   -c airflow/constraints.txt
     #   jsonschema
     #   jsonschema-specifications
-requests==2.33.1
+requests==2.34.2
     # via
     #   -c airflow/constraints.txt
     #   apache-airflow-core
@@ -762,44 +786,43 @@ requests-toolbelt==1.0.0
     # via
     #   -c airflow/constraints.txt
     #   apache-airflow-providers-http
-rich==13.9.4
+rich==14.3.4
     # via
     #   -c airflow/constraints.txt
     #   apache-airflow-core
-    #   flask-limiter
     #   rich-argparse
     #   rich-toolkit
     #   typer
-rich-argparse==1.7.2
+rich-argparse==1.8.0
     # via
     #   -c airflow/constraints.txt
     #   apache-airflow-core
-rich-toolkit==0.19.7
+rich-toolkit==0.20.3
     # via
     #   -c airflow/constraints.txt
     #   fastapi-cli
-rpds-py==0.30.0
+rpds-py==2026.6.3
     # via
     #   -c airflow/constraints.txt
     #   jsonschema
     #   referencing
-s3fs==2026.3.0
+s3fs==2026.7.0
     # via
     #   -c airflow/constraints.txt
     #   apache-airflow-providers-amazon
-s3transfer==0.16.0
+s3transfer==0.19.2
     # via
     #   -c airflow/constraints.txt
     #   boto3
-sagemaker-studio==1.0.26
+sagemaker-studio==1.0.27
     # via
     #   -c airflow/constraints.txt
     #   apache-airflow-providers-amazon
-scramp==1.4.8
+scramp==1.4.17
     # via
     #   -c airflow/constraints.txt
     #   redshift-connector
-sentry-sdk==2.58.0
+sentry-sdk==2.66.1
     # via
     #   -c airflow/constraints.txt
     #   apache-airflow
@@ -807,7 +830,7 @@ setproctitle==1.3.7
     # via
     #   -c airflow/constraints.txt
     #   apache-airflow-core
-setuptools==82.0.1
+setuptools==83.0.0
     # via
     #   -c airflow/constraints.txt
     #   redshift-connector
@@ -822,7 +845,7 @@ six==1.17.0
     #   prison
     #   python-dateutil
     #   wirerope
-slack-sdk==3.41.0
+slack-sdk==3.43.0
     # via
     #   -c airflow/constraints.txt
     #   apache-airflow-providers-slack
@@ -830,11 +853,11 @@ sniffio==1.3.1
     # via
     #   -c airflow/constraints.txt
     #   greenback
-soupsieve==2.8.3
+soupsieve==2.9.2
     # via
     #   -c airflow/constraints.txt
     #   beautifulsoup4
-sqlalchemy==2.0.49
+sqlalchemy==2.0.51
     # via
     #   -c airflow/constraints.txt
     #   alembic
@@ -851,18 +874,18 @@ sqlparse==0.5.5
     # via
     #   -c airflow/constraints.txt
     #   apache-airflow-providers-common-sql
-starlette==0.52.1
+starlette==1.5.0
     # via
     #   -c airflow/constraints.txt
     #   apache-airflow-core
     #   cadwyn
     #   fastapi
-structlog==25.5.0
+structlog==26.1.0
     # via
     #   -c airflow/constraints.txt
     #   apache-airflow-core
     #   apache-airflow-task-sdk
-svcs==25.1.0
+svcs==26.1.0
     # via
     #   -c airflow/constraints.txt
     #   apache-airflow-core
@@ -884,14 +907,13 @@ text-unidecode==1.3
     # via
     #   -c airflow/constraints.txt
     #   python-slugify
-typer==0.24.1
+typer==0.27.1
     # via
     #   -c airflow/constraints.txt
     #   fastapi-cli
-typing-extensions==4.15.0
+typing-extensions==4.16.0
     # via
     #   -c airflow/constraints.txt
-    #   aiosqlite
     #   alembic
     #   apache-airflow-core
     #   apache-airflow-task-sdk
@@ -900,6 +922,7 @@ typing-extensions==4.15.0
     #   cadwyn
     #   cron-descriptor
     #   fastapi
+    #   flask-limiter
     #   grpcio
     #   limits
     #   opentelemetry-api
@@ -912,6 +935,7 @@ typing-extensions==4.15.0
     #   pydantic-extra-types
     #   rich-toolkit
     #   sqlalchemy
+    #   svcs
     #   typing-inspection
 typing-inspection==0.4.2
     # via
@@ -920,9 +944,10 @@ typing-inspection==0.4.2
     #   fastapi
     #   pydantic
     #   pydantic-settings
-tzdata==2026.1
+tzdata==2026.3
     # via
     #   -c airflow/constraints.txt
+    #   arrow
     #   pendulum
 uc-micro-py==2.0.0
     # via
@@ -932,7 +957,7 @@ universal-pathlib==0.3.10
     # via
     #   -c airflow/constraints.txt
     #   apache-airflow-core
-urllib3==2.6.3
+urllib3==2.7.0
     # via
     #   -c airflow/constraints.txt
     #   botocore
@@ -943,11 +968,11 @@ uuid6==2025.0.1
     # via
     #   -c airflow/constraints.txt
     #   apache-airflow-core
-uv==0.11.7
+uv==0.12.3
     # via
     #   -c airflow/constraints.txt
     #   apache-airflow
-uvicorn==0.44.0
+uvicorn==0.52.1
     # via
     #   -c airflow/constraints.txt
     #   apache-airflow-core
@@ -957,7 +982,7 @@ uvloop==0.22.1
     # via
     #   -c airflow/constraints.txt
     #   uvicorn
-watchfiles==1.1.1
+watchfiles==1.2.0
     # via
     #   -c airflow/constraints.txt
     #   uvicorn
@@ -965,7 +990,7 @@ watchtower==3.4.0
     # via
     #   -c airflow/constraints.txt
     #   apache-airflow-providers-amazon
-websockets==16.0
+websockets==16.1.1
     # via
     #   -c airflow/constraints.txt
     #   uvicorn
@@ -981,22 +1006,22 @@ wirerope==1.0.0
     # via
     #   -c airflow/constraints.txt
     #   methodtools
-wrapt==2.1.2
+wrapt==2.3.0
     # via
     #   -c airflow/constraints.txt
     #   aiobotocore
     #   deprecated
-wtforms==3.2.1
+wtforms==3.2.2
     # via
     #   -c airflow/constraints.txt
     #   apache-airflow-providers-fab
     #   flask-appbuilder
     #   flask-wtf
-yarl==1.23.0
+yarl==1.24.5
     # via
     #   -c airflow/constraints.txt
     #   aiohttp
-zipp==3.23.1
+zipp==4.1.0
     # via
     #   -c airflow/constraints.txt
     #   importlib-metadata

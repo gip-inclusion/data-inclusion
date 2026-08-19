@@ -6,7 +6,7 @@ requires = ["setuptools", "wheel"]
 version = "0.1.0"
 name = "data-inclusion-dedupe"
 dependencies = [
-    "notebook~=7.2",
+    "notebook~=7.6",
 ]
 
 [tool.ruff.lint]

@@ -1,4 +1,4 @@
-AIRFLOW_VERSION := 3.2.1
+AIRFLOW_VERSION := 3.3.1
 PYTHON_VERSION := 3.13
 
 PIP_COMPILE := uv pip compile --quiet --constraint airflow/constraints.txt --python-version $(PYTHON_VERSION)

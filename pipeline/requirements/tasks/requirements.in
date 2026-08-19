@@ -1,8 +1,8 @@
-apache-airflow[amazon,fab,postgres,s3fs,sentry,slack,ssh,standard,uv]==3.2.1
+apache-airflow[amazon,fab,postgres,s3fs,sentry,slack,ssh,standard,uv]==3.3.1
 
 2captcha-python
 beautifulsoup4
-data-inclusion-schema
+data-inclusion-schema==1.0.9
 furl
 GeoAlchemy2
 geopandas
