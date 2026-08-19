@@ -232,20 +232,6 @@ models:
           - not_null
           - dbt_utils.not_empty_string
 
-  - name: stg_dora__services__profils
-    columns:
-      - name: service_id
-        data_tests:
-          - not_null
-          - relationships:
-              arguments:
-                to: ref('stg_dora__services')
-                field: id
-      - name: item
-        data_tests:
-          - not_null
-          - dbt_utils.not_empty_string
-
   - name: stg_dora__services__publics
     columns:
       - name: service_id
