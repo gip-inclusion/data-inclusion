@@ -8,10 +8,10 @@ structures AS (
 
 mediateurs AS (
     SELECT
-        source.data ->> 'id'                              AS "structure_id",
-        NULLIF(TRIM(mediateur.data ->> 'prenom'), '')     AS "prenom",
-        NULLIF(TRIM(mediateur.data ->> 'nom'), '')        AS "nom",
-        NULLIF(TRIM(mediateur.data ->> 'email'), '')      AS "email"
+        source.data ->> 'id'                          AS "structure_id",
+        NULLIF(TRIM(mediateur.data ->> 'prenom'), '') AS "prenom",
+        NULLIF(TRIM(mediateur.data ->> 'nom'), '')    AS "nom",
+        NULLIF(TRIM(mediateur.data ->> 'email'), '')  AS "email"
     FROM
         source,
         LATERAL JSONB_PATH_QUERY(source.data, '$.mediateurs[*]') AS mediateur (data)

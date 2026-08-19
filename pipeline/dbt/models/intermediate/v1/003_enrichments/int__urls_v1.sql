@@ -12,12 +12,12 @@ WITH urls AS (
 
 next_batch AS (
     SELECT DISTINCT ON (urls.url)
-        CAST(NOW() AS TIMESTAMP)                                                             AS "last_checked_at",
+        CAST(NOW() AS TIMESTAMP) AS "last_checked_at",
         urls.url,
         {% if is_incremental() %}
             COALESCE({{ this }}.attempt_count, 0) AS attempt_count
         {% else %}
-            0                                                 AS attempt_count
+            0                    AS attempt_count
         {% endif %}
     FROM urls
     {% if is_incremental() %}

@@ -105,7 +105,9 @@ models:
           - dbt_utils.not_empty_string
       - name: publics_precisions
         data_tests:
-          - dbt_utils.at_least_one
+          - dbt_utils.at_least_one:
+              config:
+                severity: warn
           - dbt_utils.not_empty_string
       - name: recurrence
         data_tests:

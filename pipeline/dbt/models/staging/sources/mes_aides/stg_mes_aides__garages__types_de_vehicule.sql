@@ -3,7 +3,7 @@ WITH source AS (
 
 final AS (
     SELECT
-        data ->> 'ID'                                                    AS "garage_id",
+        data ->> 'ID'                                                   AS "garage_id",
         LOWER(TRIM(STRING_TO_TABLE(data ->> 'Types de véhicule', ','))) AS "item"
     FROM source
 )

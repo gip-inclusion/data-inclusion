@@ -3,7 +3,7 @@ WITH source AS (
 
 final AS (
     SELECT
-        data ->> 'ID'                                     AS "aide_id",
+        data ->> 'ID'                                    AS "aide_id",
         UNNEST(STRING_TO_ARRAY(data ->> 'Méthode', ',')) AS "value"
     FROM source
 )

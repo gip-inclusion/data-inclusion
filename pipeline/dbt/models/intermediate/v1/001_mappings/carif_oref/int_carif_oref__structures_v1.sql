@@ -59,7 +59,7 @@ final AS (
         NULL                                                                             AS "description",
         NULL                                                                             AS "horaires_accueil",
         NULL                                                                             AS "accessibilite_lieu",
-        CAST(NULL AS TEXT [])                                                            AS "reseaux_porteurs"
+        CAST(NULL AS TEXT[])                                                             AS "reseaux_porteurs"
     FROM organismes_formateurs
     LEFT JOIN organismes_formateurs__contacts
         ON organismes_formateurs.numero = organismes_formateurs__contacts.numero_organisme_formateur

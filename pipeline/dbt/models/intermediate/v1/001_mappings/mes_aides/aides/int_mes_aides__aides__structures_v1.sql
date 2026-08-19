@@ -31,7 +31,7 @@ final AS (
         NULL                                              AS "siret",
         aides.voir_l_aide                                 AS "lien_source",
         NULL                                              AS "description",
-        CAST(NULL AS TEXT [])                             AS "reseaux_porteurs",
+        CAST(NULL AS TEXT[])                              AS "reseaux_porteurs",
         NULL                                              AS "horaires_accueil",
         NULL                                              AS "accessibilite_lieu"
     FROM aides

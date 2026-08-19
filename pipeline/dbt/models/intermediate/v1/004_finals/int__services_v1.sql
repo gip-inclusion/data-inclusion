@@ -107,5 +107,5 @@ LEFT JOIN renommages
     ON
         services.nom = renommages.nom
         AND services.description = renommages.description
-        AND services.thematiques = CAST(renommages.thematiques AS TEXT [])
+        AND services.thematiques = CAST(renommages.thematiques AS TEXT[])
         AND services.type = renommages.type
