@@ -18,11 +18,10 @@ models:
       - name: siret
         data_type: text
         data_tests:
-          - dbt_utils.relationships_where:
+          - relationships:
               arguments:
                 to: ref('stg_sirene__stock_etablissement')
                 field: siret
-                to_condition: etat_administratif_etablissement = 'actif'
       - name: nom
         data_type: text
       - name: commune
