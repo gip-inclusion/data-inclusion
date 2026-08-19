@@ -7,7 +7,8 @@ final AS (
         NULLIF(TRIM(source.data ->> 'id'), '')                                                                       AS "structure_id",
         NULLIF(TRIM(formations.data ->> 'id'), '')                                                                   AS "id",
         NULLIF(TRIM(formations.data ->> 'nom'), '')                                                                  AS "nom",
-        NULLIF(TRIM(formations.data ->> 'activite'), '')                                                             AS "activite",
+        -- At time of writing less than 1% of activites are multiple, mostly same value multiple times
+        NULLIF(TRIM(formations.data -> 'activites' ->> 0), '')                                                       AS "activite",
         NULLIF(TRIM(formations.data -> 'contact' ->> 'nom'), '')                                                     AS "contact__nom",
         NULLIF(TRIM(formations.data -> 'contact' ->> 'prenom'), '')                                                  AS "contact__prenom",
         NULLIF(TRIM(formations.data -> 'contact' ->> 'email'), '')                                                   AS "contact__email",
