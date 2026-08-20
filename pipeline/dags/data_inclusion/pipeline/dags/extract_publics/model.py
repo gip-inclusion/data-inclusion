@@ -44,7 +44,9 @@ def validate_profils_df(profils_df: pl.DataFrame) -> pl.DataFrame:
         },
     )
 
-    return profils_df.match_to_schema(schema=expected)
+    return profils_df.with_columns(
+        pl.col("extracted_at").dt.convert_time_zone("UTC"),
+    ).match_to_schema(schema=expected)
 
 
 def int__extracted_profiles(

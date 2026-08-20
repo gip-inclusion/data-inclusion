@@ -47,6 +47,27 @@ def test_filter_services_with_bad_name_length(service, expected):
     assert (len(filtered_df) == 0) ^ expected
 
 
+def test_validate_renamings_df_accepts_postgres_utc_timezone():
+    df = pl.DataFrame(
+        {
+            "reason": ["named_after_structure"],
+            "nom": ["Structure A"],
+            "description": ["lorem ipsum dolor sit amet" * 10],
+            "thematiques": [None],
+            "type": ["accompagnement"],
+            "output": ["New name for Structure A"],
+            "generated_at": pl.Series(
+                [pendulum.now(tz="UTC")],
+                dtype=pl.Datetime(time_zone="Etc/UTC"),
+            ),
+        }
+    )
+
+    validated_df = model.validate_renamings_df(df)
+
+    assert validated_df["generated_at"].dtype == pl.Datetime(time_zone="UTC")
+
+
 def test_int__renommages():
     model.int__renommages(
         structures_df=pl.DataFrame(

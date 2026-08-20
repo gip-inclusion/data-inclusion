@@ -73,7 +73,9 @@ def validate_renamings_df(renamings_df: pl.DataFrame) -> pl.DataFrame:
         },
     )
 
-    return renamings_df.match_to_schema(schema=expected)
+    return renamings_df.with_columns(
+        pl.col("generated_at").dt.convert_time_zone("UTC"),
+    ).match_to_schema(schema=expected)
 
 
 def int__renommages(
