@@ -45,9 +45,8 @@ def dbt_task(
     if command in ["build", "test"] and Variable.get("ENVIRONMENT", None) == "prod":
         args += ["--exclude-resource-type", "unit_test"]
 
-    return "\n".join(
-        [
-            f"[ -e {DBT_PACKAGES_PATH} ] || {DBT_BASE_COMMAND} deps",
-            f"{DBT_BASE_COMMAND} {command} {' '.join(args)}",
-        ]
-    )
+    cmd = f"{DBT_BASE_COMMAND} {command} {' '.join(args)}"
+    # skip deps only if packages were actually installed
+    if (DBT_PACKAGES_PATH / "dbt_utils" / "dbt_project.yml").is_file():
+        return cmd
+    return f"{DBT_BASE_COMMAND} deps\n{cmd}"
