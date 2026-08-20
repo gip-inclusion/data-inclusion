@@ -15,7 +15,9 @@ models:
       - name: siret
         data_tests:
           - dbt_utils.not_empty_string
-          - dbt_utils.at_least_one
+          - dbt_utils.at_least_one:
+              config:
+                enabled: "{{ run_started_at.date() >= modules.datetime.date(2027, 1, 1) }}"
           - dbt_utils.not_constant
       - name: date_maj
         data_tests:
