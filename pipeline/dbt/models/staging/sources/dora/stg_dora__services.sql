@@ -12,8 +12,6 @@ services AS (
         CAST((data ->> 'longitude') AS FLOAT)                                                               AS "longitude",
         CAST(CAST((data ->> 'temps_passe_semaines') AS FLOAT) AS INT)                                       AS "temps_passe_semaines",
         CAST((data ->> 'temps_passe_duree_hebdomadaire') AS FLOAT)                                          AS "temps_passe_duree_hebdomadaire",
-        NULLIF(TRIM(data ->> 'modes_orientation_accompagnateur_autres'), '')                                AS "modes_orientation_accompagnateur_autres",
-        NULLIF(TRIM(data ->> 'modes_orientation_beneficiaire_autres'), '')                                  AS "modes_orientation_beneficiaire_autres",
         NULLIF(TRIM(data ->> 'adresse'), '')                                                                AS "adresse",
         NULLIF(TRIM(data ->> 'code_insee'), '')                                                             AS "code_insee",
         NULLIF(TRIM(data ->> 'code_postal'), '')                                                            AS "code_postal",
@@ -22,15 +20,23 @@ services AS (
         CAST((data ->> 'contact_public') AS BOOLEAN)                                                        AS "contact_public",
         NULLIF(TRIM(data ->> 'contact_nom_prenom'), '')                                                     AS "contact_nom_prenom",
         NULLIF(TRIM(data ->> 'courriel'), '')                                                               AS "courriel",
-        NULLIF(TRIM(data ->> 'formulaire_en_ligne'), '')                                                    AS "formulaire_en_ligne",
         NULLIF(TRIM(data ->> 'frais_autres'), '')                                                           AS "frais_autres",
         NULLIF(TRIM(data ->> 'frais'), '')                                                                  AS "frais",
         NULLIF(TRIM(data ->> 'id'), '')                                                                     AS "id",
+        NULLIF(TRIM(data ->> 'lien_mobilisation'), '')                                                      AS "lien_mobilisation",
         NULLIF(TRIM(data ->> 'lien_source'), '')                                                            AS "lien_source",
+        CASE
+            WHEN JSONB_TYPEOF(data -> 'mobilisable_par') = 'array'
+                THEN NULLIF(ARRAY(SELECT JSONB_ARRAY_ELEMENTS_TEXT(data -> 'mobilisable_par')), '{}')
+        END                                                                                                 AS "mobilisable_par",
+        CASE
+            WHEN JSONB_TYPEOF(data -> 'modes_mobilisation') = 'array'
+                THEN NULLIF(ARRAY(SELECT JSONB_ARRAY_ELEMENTS_TEXT(data -> 'modes_mobilisation')), '{}')
+        END                                                                                                 AS "modes_mobilisation",
+        NULLIF(TRIM(data ->> 'mobilisation_precisions'), '')                                                AS "mobilisation_precisions",
         NULLIF(REGEXP_REPLACE(REGEXP_REPLACE(TRIM(data ->> 'nom'), '\.{2,}$', '…'), '(?<!etc)\.$', ''), '') AS "nom",
         NULLIF(TRIM(data ->> 'presentation_resume'), '')                                                    AS "presentation_resume",
         NULLIF(TRIM(data ->> 'presentation_detail'), '')                                                    AS "presentation_detail",
-        NULLIF(TRIM(data ->> 'prise_rdv'), '')                                                              AS "prise_rdv",
         NULLIF(TRIM(data ->> 'publics_precisions'), '')                                                     AS "publics_precisions",
         NULLIF(TRIM(data ->> 'recurrence'), '')                                                             AS "recurrence",
         NULLIF(TRIM(data ->> 'source'), '')                                                                 AS "source",

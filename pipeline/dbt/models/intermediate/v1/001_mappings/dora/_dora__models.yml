@@ -1,31 +1,6 @@
 version: 2
 
 models:
-  - name: _map_dora__modes_mobilisation
-    columns:
-      - name: mode_orientation
-        data_tests:
-          - not_null
-          - relationships:
-              config:
-                where: "type = 'beneficiaire'"
-              arguments:
-                to: ref('modes_orientation_beneficiaire')
-                field: value
-          - relationships:
-              config:
-                where: "type = 'accompagnateur'"
-              arguments:
-                to: ref('modes_orientation_accompagnateur')
-                field: value
-      - name: mode_mobilisation
-        data_tests:
-          - not_null
-          - relationships:
-              arguments:
-                to: ref('modes_mobilisation_v1')
-                field: value
-
   - name: _map_dora__reseaux_porteurs__labels_nationaux
     columns:
       - name: label_national
