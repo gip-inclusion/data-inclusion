@@ -36,6 +36,10 @@ models:
         data_tests:
           - dbt_utils.at_least_one
           - dbt_utils.not_empty_string
+      - name: conditions_acces
+        data_tests:
+          - dbt_utils.at_least_one
+          - dbt_utils.not_empty_string
       - name: contact_public
         data_tests:
           - not_null
@@ -55,11 +59,9 @@ models:
       - name: date_maj
         data_tests:
           - not_null
-      - name: formulaire_en_ligne
+      - name: description
         data_tests:
-          - dbt_utils.not_null_proportion:
-              arguments:
-                at_least: 0.5
+          - not_null
           - dbt_utils.not_empty_string
       - name: frais
         data_tests:
@@ -80,10 +82,33 @@ models:
       - name: longitude
         data_tests:
           - dbt_utils.at_least_one
+      - name: horaires_accueil
+        data_tests:
+          - dbt_utils.at_least_one
+          - dbt_utils.not_empty_string
+      - name: lien_mobilisation
+        data_tests:
+          - dbt_utils.at_least_one
+          - dbt_utils.not_empty_string
       - name: lien_source
         data_tests:
           - not_null
           - dbt_utils.not_empty_string
+      - name: mobilisable_par
+        data_tests:
+          - dbt_utils.at_least_one
+      - name: modes_mobilisation
+        data_tests:
+          - dbt_utils.at_least_one
+      - name: mobilisation_precisions
+        data_tests:
+          - dbt_utils.at_least_one:
+              config:
+                severity: warn
+          - dbt_utils.not_empty_string
+      - name: modes_accueil
+        data_tests:
+          - dbt_utils.at_least_one
       - name: nom
         data_tests:
           - not_null
@@ -99,10 +124,9 @@ models:
         data_tests:
           - dbt_utils.at_least_one
           - dbt_utils.not_empty_string
-      - name: prise_rdv
+      - name: publics
         data_tests:
-          - dbt_utils.at_least_one
-          - dbt_utils.not_empty_string
+          - not_null
       - name: publics_precisions
         data_tests:
           - dbt_utils.at_least_one:
@@ -130,12 +154,21 @@ models:
               arguments:
                 at_least: 0.4
           - dbt_utils.not_empty_string
+      - name: thematiques
+        data_tests:
+          - dbt_utils.at_least_one
       - name: temps_passe_duree_hebdomadaire
         data_tests:
           - dbt_utils.at_least_one
       - name: temps_passe_semaines
         data_tests:
           - dbt_utils.at_least_one
+      - name: type
+        data_tests:
+          - relationships:
+              arguments:
+                to: ref('typologies_de_services')
+                field: value
       - name: zone_diffusion_code
         data_tests:
           - not_null:
@@ -154,20 +187,9 @@ models:
           - accepted_values:
               arguments:
                 values: [commune, epci, departement, region, pays]
-
-  - name: stg_dora__services__justificatifs
-    columns:
-      - name: service_id
+      - name: zone_eligibilite
         data_tests:
-          - not_null
-          - relationships:
-              arguments:
-                to: ref('stg_dora__services')
-                field: id
-      - name: item
-        data_tests:
-          - not_null
-          - dbt_utils.not_empty_string
+          - dbt_utils.at_least_one
 
   - name: stg_dora__services__modes_accueil
     columns:
@@ -178,7 +200,7 @@ models:
               arguments:
                 to: ref('stg_dora__services')
                 field: id
-      - name: item
+      - name: value
         data_tests:
           - not_null
           - relationships:
@@ -186,7 +208,7 @@ models:
                 to: ref('modes_accueil_v1')
                 field: value
 
-  - name: stg_dora__services__modes_orientation_accompagnateur
+  - name: stg_dora__services__modes_mobilisation
     columns:
       - name: service_id
         data_tests:
@@ -195,15 +217,15 @@ models:
               arguments:
                 to: ref('stg_dora__services')
                 field: id
-      - name: item
+      - name: value
         data_tests:
           - not_null
           - relationships:
               arguments:
-                to: ref('modes_orientation_accompagnateur')
+                to: ref('modes_mobilisation_v1')
                 field: value
 
-  - name: stg_dora__services__modes_orientation_beneficiaire
+  - name: stg_dora__services__mobilisable_par
     columns:
       - name: service_id
         data_tests:
@@ -212,27 +234,13 @@ models:
               arguments:
                 to: ref('stg_dora__services')
                 field: id
-      - name: item
+      - name: value
         data_tests:
           - not_null
           - relationships:
               arguments:
-                to: ref('modes_orientation_beneficiaire')
+                to: ref('personne_mobilisatrice_v1')
                 field: value
-
-  - name: stg_dora__services__pre_requis
-    columns:
-      - name: service_id
-        data_tests:
-          - not_null
-          - relationships:
-              arguments:
-                to: ref('stg_dora__services')
-                field: id
-      - name: item
-        data_tests:
-          - not_null
-          - dbt_utils.not_empty_string
 
   - name: stg_dora__services__publics
     columns:
@@ -243,7 +251,7 @@ models:
               arguments:
                 to: ref('stg_dora__services')
                 field: id
-      - name: item
+      - name: value
         data_tests:
           - not_null
           - relationships:
@@ -260,29 +268,12 @@ models:
               arguments:
                 to: ref('stg_dora__services')
                 field: id
-      - name: item
+      - name: value
         data_tests:
           - not_null
           - relationships:
               arguments:
                 to: ref('thematiques_v1')
-                field: value
-
-  - name: stg_dora__services__types
-    columns:
-      - name: service_id
-        data_tests:
-          - not_null
-          - relationships:
-              arguments:
-                to: ref('stg_dora__services')
-                field: id
-      - name: item
-        data_tests:
-          - not_null
-          - relationships:
-              arguments:
-                to: ref('typologies_de_services')
                 field: value
 
   - name: stg_dora__structures
@@ -343,7 +334,6 @@ models:
         data_tests:
           - dbt_utils.at_least_one
           - dbt_utils.not_empty_string
-      - name: labels_autres
       - name: latitude
         data_tests:
           - dbt_utils.at_least_one
@@ -362,6 +352,9 @@ models:
         data_tests:
           - dbt_utils.at_least_one
           - dbt_utils.not_empty_string
+      - name: reseaux_porteurs
+        data_tests:
+          - dbt_utils.at_least_one
       - name: siret
         data_tests:
           - dbt_utils.at_least_one
@@ -385,7 +378,7 @@ models:
                 to: ref('typologies_de_structures')
                 field: value
 
-  - name: stg_dora__structures__labels_autres
+  - name: stg_dora__structures__reseaux_porteurs
     columns:
       - name: structure_id
         data_tests:
@@ -394,26 +387,10 @@ models:
               arguments:
                 to: ref('stg_dora__structures')
                 field: id
-      - name: item
-        data_tests:
-          - not_null
-          - dbt_utils.not_empty_string
-
-  - name: stg_dora__structures__labels_nationaux
-    columns:
-      - name: structure_id
+      - name: value
         data_tests:
           - not_null
           - relationships:
               arguments:
-                to: ref('stg_dora__structures')
-                field: id
-      - name: item
-        data_tests:
-          - not_null
-          - relationships:
-              config:
-                where: "item NOT IN ('siae', 'cpam', 'conseil-departemental', 'slime', 'cma')"
-              arguments:
-                to: ref('labels_nationaux')
+                to: ref('reseaux_porteurs_v1')
                 field: value
