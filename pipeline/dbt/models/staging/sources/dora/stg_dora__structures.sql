@@ -20,6 +20,10 @@ final AS (
         NULLIF(REGEXP_REPLACE(TRIM(data ->> 'nom'), '(?<!etc)\.+$', ''), '') AS "nom",
         NULLIF(TRIM(data ->> 'presentation_detail'), '')                     AS "presentation_detail",
         NULLIF(TRIM(data ->> 'presentation_resume'), '')                     AS "presentation_resume",
+        NULLIF(
+            ARRAY(SELECT JSONB_ARRAY_ELEMENTS_TEXT(NULLIF(data -> 'reseaux_porteurs', 'null'))),
+            '{}'
+        )                                                                    AS "reseaux_porteurs",
         NULLIF(TRIM(data ->> 'siret'), '')                                   AS "siret",
         NULLIF(TRIM(data ->> 'site_web'), '')                                AS "site_web",
         NULLIF(TRIM(data ->> 'source'), '')                                  AS "source",
