@@ -1,18 +1,6 @@
-WITH source AS (
-    {{ stg_source_header('dora', 'services') }}),
-
-services AS (
-    SELECT * FROM {{ ref('stg_dora__services') }}
-),
-
-final AS (
-    SELECT
-        NULLIF(TRIM(data ->> 'id'), '')                                    AS "service_id",
-        NULLIF(TRIM(JSONB_ARRAY_ELEMENTS_TEXT(data -> 'thematiques')), '') AS "item"
-    FROM source
-)
-
-SELECT final.*
-FROM final
--- keep only publics for selected services
-INNER JOIN services ON final.service_id = services.id
+{{ unnest(
+    from=ref('stg_dora__services'),
+    column='thematiques',
+    foreign_key='id',
+    fk_alias='service_id'
+) }}

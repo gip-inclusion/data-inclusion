@@ -6,7 +6,7 @@ from data_inclusion.pipeline.common import utils
 class DoraClient(utils.BaseApiClient):
     def __init__(self, base_url: str, token: str) -> None:
         super().__init__(base_url)
-        self.session.params.update({"page_size": 1000, "o": "creation_date"})
+        self.session.params.update({"page_size": 1000})
         self.session.headers.update({"Authorization": f"Token {token}"})
 
     def _list_paginated_endpoint(
