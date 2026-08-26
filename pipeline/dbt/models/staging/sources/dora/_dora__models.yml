@@ -55,12 +55,6 @@ models:
       - name: date_maj
         data_tests:
           - not_null
-      - name: formulaire_en_ligne
-        data_tests:
-          - dbt_utils.not_null_proportion:
-              arguments:
-                at_least: 0.5
-          - dbt_utils.not_empty_string
       - name: frais
         data_tests:
           - not_null:
@@ -80,9 +74,25 @@ models:
       - name: longitude
         data_tests:
           - dbt_utils.at_least_one
+      - name: lien_mobilisation
+        data_tests:
+          - dbt_utils.at_least_one
+          - dbt_utils.not_empty_string
       - name: lien_source
         data_tests:
           - not_null
+          - dbt_utils.not_empty_string
+      - name: mobilisable_par
+        data_tests:
+          - dbt_utils.at_least_one
+      - name: modes_mobilisation
+        data_tests:
+          - dbt_utils.at_least_one
+      - name: mobilisation_precisions
+        data_tests:
+          - dbt_utils.at_least_one:
+              config:
+                severity: warn
           - dbt_utils.not_empty_string
       - name: nom
         data_tests:
@@ -96,10 +106,6 @@ models:
           - not_null
           - dbt_utils.not_empty_string
       - name: presentation_detail
-        data_tests:
-          - dbt_utils.at_least_one
-          - dbt_utils.not_empty_string
-      - name: prise_rdv
         data_tests:
           - dbt_utils.at_least_one
           - dbt_utils.not_empty_string
@@ -186,7 +192,7 @@ models:
                 to: ref('modes_accueil_v1')
                 field: value
 
-  - name: stg_dora__services__modes_orientation_accompagnateur
+  - name: stg_dora__services__modes_mobilisation
     columns:
       - name: service_id
         data_tests:
@@ -195,15 +201,15 @@ models:
               arguments:
                 to: ref('stg_dora__services')
                 field: id
-      - name: item
+      - name: value
         data_tests:
           - not_null
           - relationships:
               arguments:
-                to: ref('modes_orientation_accompagnateur')
+                to: ref('modes_mobilisation_v1')
                 field: value
 
-  - name: stg_dora__services__modes_orientation_beneficiaire
+  - name: stg_dora__services__mobilisable_par
     columns:
       - name: service_id
         data_tests:
@@ -212,12 +218,12 @@ models:
               arguments:
                 to: ref('stg_dora__services')
                 field: id
-      - name: item
+      - name: value
         data_tests:
           - not_null
           - relationships:
               arguments:
-                to: ref('modes_orientation_beneficiaire')
+                to: ref('personne_mobilisatrice_v1')
                 field: value
 
   - name: stg_dora__services__pre_requis
