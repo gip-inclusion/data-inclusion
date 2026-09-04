@@ -34,6 +34,7 @@ RUN python3.11 -m venv ${VIRTUAL_ENV}
 RUN pip install --no-cache-dir --upgrade pip setuptools wheel
 
 COPY ./docker-entrypoint-initdb.d /docker-entrypoint-initdb.d
+COPY pg_hba.conf /etc/postgresql/pg_hba.conf
 
 COPY requirements.txt requirements.txt
 RUN pip install --no-cache-dir -r requirements.txt
@@ -42,3 +43,5 @@ COPY deduplicate-model.bin /app/deduplicate-model.bin
 ENV DEDUPLICATE_MODEL_PATH=/app/deduplicate-model.bin
 
 RUN localedef -i fr_FR -c -f UTF-8 -A /usr/share/locale/locale.alias fr_FR.UTF-8
+
+CMD ["postgres", "-c", "hba_file=/etc/postgresql/pg_hba.conf"]

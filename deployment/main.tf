@@ -226,6 +226,11 @@ locals {
   airflow_hostname = "airflow.${var.dns_zone}"
   mlflow_hostname  = "mlflow.${var.dns_zone}"
   work_dir         = "/root/data-inclusion"
+  compose_up_command = var.environment == "prod" ? (
+    "docker compose -f docker-compose.yml -f docker-compose.oauth2.yml --progress=plain up --pull=always --force-recreate --remove-orphans --wait --wait-timeout 1200 --quiet-pull --detach"
+    ) : (
+    "docker compose --progress=plain up --pull=always --force-recreate --remove-orphans --wait --wait-timeout 1200 --quiet-pull --detach"
+  )
 }
 
 resource "scaleway_domain_record" "dns" {
@@ -279,6 +284,11 @@ resource "terraform_data" "up" {
   }
 
   provisioner "file" {
+    source      = "${path.root}/docker-compose.oauth2.yml"
+    destination = "${local.work_dir}/docker-compose.oauth2.yml"
+  }
+
+  provisioner "file" {
     content = sensitive(<<-EOT
     access_key: ${var.app_secrets_access_key}
     secret_key: ${var.app_secrets_secret_key}
@@ -303,7 +313,7 @@ resource "terraform_data" "up" {
       "systemctl start cleanup.timer",
       "cd ${local.work_dir}",
       "scw secret version access-by-path secret-name=pipeline secret-path=/ revision=latest -o template=\"{{ printf \\\"%s\\\" .Data }}\" >> .env",
-      "docker compose --progress=plain up --pull=always --force-recreate --remove-orphans --wait --wait-timeout 1200 --quiet-pull --detach",
+      local.compose_up_command,
       "shred -u --force --zero .env",
     ]
   }
