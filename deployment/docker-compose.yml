@@ -97,8 +97,6 @@ services:
       timeout: 10s
       retries: 5
       start_period: 30s
-    ports:
-      - 8080:8080
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.airflow.rule=Host(`${AIRFLOW_HOSTNAME}`)"
@@ -148,7 +146,7 @@ services:
       interval: 5s
       retries: 5
     ports:
-      - 5432:5432
+      - 127.0.0.1:5432:5432
     environment:
       - PGUSER=${DATAWAREHOUSE_DI_USERNAME}
       - POSTGRES_DB=${DATAWAREHOUSE_DI_DATABASE}

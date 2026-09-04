@@ -1,6 +1,6 @@
 *
-
 !/docker-entrypoint-initdb.d
+!/pg_hba.conf
 !/requirements.txt
 !/deduplicate-model.bin
 
