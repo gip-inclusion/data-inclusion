@@ -37,7 +37,12 @@ def extract(to_path: str):
     # because we need extra data unavailable in the JSON API
     for _, row in structures_df.iterrows():
         response = httpx.get(row["url"])
-        response.raise_for_status()
+        if not response.is_success:
+            print(
+                f"Skipping structure {row['id']} ({row['url']}): "
+                f"HTTP {response.status_code}"
+            )
+            continue
         s3.to_s3(
             path=Path(to_path) / "structures" / f"{row['id']}.html",
             data=response.content,
