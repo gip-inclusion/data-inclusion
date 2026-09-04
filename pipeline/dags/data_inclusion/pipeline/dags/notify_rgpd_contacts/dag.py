@@ -54,3 +54,6 @@ def send_rgpd_notice():
 )
 def notify_rgpd_contacts():
     send_rgpd_notice()
+
+
+notify_rgpd_contacts()
