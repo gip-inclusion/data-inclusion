@@ -118,6 +118,20 @@ modes_mobilisation AS (
     GROUP BY service_id
 ),
 
+forms AS (
+    SELECT
+        services.id AS service_id,
+        JSONB_AGG(
+            JSONB_BUILD_OBJECT(
+                'name', doc ->> 'nom',
+                'url', doc ->> 'fichier'
+            )
+        )           AS "forms"
+    FROM services
+    CROSS JOIN JSONB_ARRAY_ELEMENTS(services.documents_a_completer) AS doc
+    GROUP BY services.id
+),
+
 final AS (
     SELECT
         'dora'                                                                                                                      AS "source",
@@ -182,7 +196,12 @@ final AS (
         CASE
             WHEN LENGTH(services.nom) <= 150 THEN services.nom
             ELSE LEFT(services.nom, 149) || '…'
-        END                                                                                                                         AS "nom"
+        END                                                                                                                         AS "nom",
+        JSONB_BUILD_OBJECT(
+            'funding_labels', services.labels_financement,
+            'forms', forms.forms,
+            'online_form', services.formulaire_en_ligne_a_completer
+        )                                                                                                                           AS "_extra"
     FROM services
     LEFT JOIN regions ON services.zone_diffusion_code = regions.code
     LEFT JOIN adresses ON ('dora--' || services.id) = adresses.id
@@ -195,6 +214,7 @@ final AS (
     LEFT JOIN modes_orientation_accompagnateur ON services.id = modes_orientation_accompagnateur.service_id
     LEFT JOIN modes_orientation_beneficiaire ON services.id = modes_orientation_beneficiaire.service_id
     LEFT JOIN modes_mobilisation ON services.id = modes_mobilisation.service_id
+    LEFT JOIN forms ON services.id = forms.service_id
 )
 
 SELECT * FROM final

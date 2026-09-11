@@ -38,7 +38,10 @@ services AS (
         NULLIF(TRIM(data ->> 'telephone'), '')                                                              AS "telephone",
         NULLIF(TRIM(data ->> 'zone_diffusion_code'), '')                                                    AS "zone_diffusion_code",
         NULLIF(TRIM(data ->> 'zone_diffusion_nom'), '')                                                     AS "zone_diffusion_nom",
-        NULLIF(TRIM(data ->> 'zone_diffusion_type'), '')                                                    AS "zone_diffusion_type"
+        NULLIF(TRIM(data ->> 'zone_diffusion_type'), '')                                                    AS "zone_diffusion_type",
+        data -> 'labels_financement'                                                                        AS "labels_financement",
+        data -> 'documents_a_completer'                                                                     AS "documents_a_completer",
+        NULLIF(TRIM(data ->> 'formulaire_en_ligne_a_completer'), '')                                        AS "formulaire_en_ligne_a_completer"
     FROM source
 ),
 
