@@ -1,0 +1,235 @@
+version: 2
+
+models:
+  - name: stg_bpifrance__services
+    columns:
+      - name: id
+        data_tests:
+          - unique
+          - not_null
+          - dbt_utils.not_empty_string
+      - name: adresse
+        data_tests:
+          - dbt_utils.at_least_one
+          - dbt_utils.not_empty_string
+      - name: code_insee
+        data_tests:
+          - dbt_utils.at_least_one
+          - relationships:
+              arguments:
+                to: ref('stg_decoupage_administratif__communes')
+                field: value
+      - name: code_postal
+        data_tests:
+          - dbt_utils.at_least_one
+          - dbt_utils.not_empty_string
+      - name: commune
+        data_tests:
+          - dbt_utils.at_least_one
+          - dbt_utils.not_empty_string
+      - name: complement_adresse
+        data_tests:
+          - dbt_utils.at_least_one
+          - dbt_utils.not_empty_string
+      - name: courriel
+        data_tests:
+          - dbt_utils.at_least_one
+          - dbt_utils.not_empty_string
+      - name: date_maj
+        data_tests:
+          - not_null
+      - name: latitude
+        data_tests:
+          - dbt_utils.at_least_one
+      - name: longitude
+        data_tests:
+          - dbt_utils.at_least_one
+      - name: lien_mobilisation
+        data_tests:
+          - dbt_utils.at_least_one
+          - dbt_utils.not_empty_string
+      - name: lien_source
+        data_tests:
+          - dbt_utils.at_least_one
+          - dbt_utils.not_empty_string
+      - name: nom
+        data_tests:
+          - not_null
+          - dbt_utils.not_empty_string
+      - name: description
+        data_tests:
+          - not_null
+          - dbt_utils.not_empty_string
+      - name: structure_id
+        data_tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('stg_bpifrance__structures')
+                field: id
+      - name: telephone
+        data_tests:
+          - dbt_utils.at_least_one
+          - dbt_utils.not_empty_string
+      - name: type
+        data_tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('types_de_services_v1')
+                field: value
+
+  - name: stg_bpifrance__services__mobilisable_par
+    columns:
+      - name: service_id
+        data_tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('stg_bpifrance__services')
+                field: id
+      - name: item
+        data_tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('personne_mobilisatrice_v1')
+                field: value
+
+  - name: stg_bpifrance__services__modes_mobilisation
+    columns:
+      - name: service_id
+        data_tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('stg_bpifrance__services')
+                field: id
+      - name: item
+        data_tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('modes_mobilisation_v1')
+                field: value
+
+  - name: stg_bpifrance__services__thematiques
+    columns:
+      - name: service_id
+        data_tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('stg_bpifrance__services')
+                field: id
+      - name: item
+        data_tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('thematiques_v1')
+                field: value
+
+  - name: stg_bpifrance__services__zone_eligibilite
+    columns:
+      - name: service_id
+        data_tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('stg_bpifrance__services')
+                field: id
+      - name: item
+        data_tests:
+          - not_null
+          - dbt_utils.expression_is_true:
+              arguments:
+                expression: ~ '^(\w{5}|\w{2,3})$'
+          - dbt_utils.relationships_where:
+              arguments:
+                to: ref('stg_decoupage_administratif__communes')
+                field: value
+                from_condition: item ~ '^\w{5}$'
+          - dbt_utils.relationships_where:
+              arguments:
+                to: ref('stg_decoupage_administratif__departements')
+                field: value
+                from_condition: item ~ '^\w{2,3}$'
+
+  - name: stg_bpifrance__structures
+    columns:
+      - name: id
+        data_tests:
+          - unique
+          - not_null
+          - dbt_utils.not_empty_string
+      - name: nom
+        data_tests:
+          - not_null
+          - dbt_utils.not_empty_string
+      - name: adresse
+        data_tests:
+          - dbt_utils.at_least_one
+          - dbt_utils.not_empty_string
+      - name: code_insee
+        data_tests:
+          - dbt_utils.at_least_one
+          - dbt_utils.not_empty_string
+      - name: code_postal
+        data_tests:
+          - dbt_utils.at_least_one
+          - dbt_utils.not_empty_string
+      - name: commune
+        data_tests:
+          - dbt_utils.at_least_one
+          - dbt_utils.not_empty_string
+      - name: complement_adresse
+        data_tests:
+          - dbt_utils.at_least_one
+          - dbt_utils.not_empty_string
+      - name: courriel
+        data_tests:
+          - dbt_utils.at_least_one
+          - dbt_utils.not_empty_string
+      - name: date_maj
+        data_tests:
+          - not_null
+      - name: latitude
+        data_tests:
+          - dbt_utils.at_least_one
+      - name: longitude
+        data_tests:
+          - dbt_utils.at_least_one
+      - name: lien_source
+        data_tests:
+          - dbt_utils.at_least_one
+          - dbt_utils.not_empty_string
+      - name: description
+        data_tests:
+          - dbt_utils.at_least_one
+          - dbt_utils.not_empty_string
+      - name: site_web
+        data_tests:
+          - dbt_utils.at_least_one
+          - dbt_utils.not_empty_string
+      - name: telephone
+        data_tests:
+          - dbt_utils.at_least_one
+          - dbt_utils.not_empty_string
+
+  - name: stg_bpifrance__structures__reseaux_porteurs
+    columns:
+      - name: structure_id
+        data_tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('stg_bpifrance__structures')
+                field: id
+      - name: item
+        data_tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('reseaux_porteurs_v1')
+                field: value
