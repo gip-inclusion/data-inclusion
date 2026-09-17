@@ -54,17 +54,27 @@ def cli(ctx: click.Context, verbose: int):
     multiple=True,
     help="Add an allowed host for widget tokens (can be used multiple times)",
 )
+@click.option(
+    "--expires-in",
+    type=click.IntRange(min=1),
+    metavar="DAYS",
+    help="Expire the token after this number of days",
+)
 def _generate_token_for_user(
     email: str,
     scopes: list[str],
     allowed_hosts: list[str],
+    expires_in: int | None,
 ):
     """Generate a token associated with the given email."""
     scopes_list = list(scopes) if scopes else None
     allowed_hosts_list = list(allowed_hosts) if allowed_hosts else None
     click.echo(
         auth.create_access_token(
-            subject=email, scopes=scopes_list, allowed_hosts=allowed_hosts_list
+            subject=email,
+            scopes=scopes_list,
+            allowed_hosts=allowed_hosts_list,
+            expires_in_days=expires_in,
         )
     )
 

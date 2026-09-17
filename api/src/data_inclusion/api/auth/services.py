@@ -14,15 +14,19 @@ def create_access_token(
     subject,
     scopes: list[str] | None = None,
     allowed_hosts: list[str] | None = None,
+    expires_in_days: int | None = None,
 ) -> str:
     default_scopes = ["widget"] if allowed_hosts else ["api"]
+    created_at = pendulum.now()
     payload = {
         "sub": str(subject),
         "scopes": scopes or default_scopes,
-        "created_at": pendulum.now().isoformat(),
+        "created_at": created_at.isoformat(),
     }
     if allowed_hosts is not None:
         payload["allowed_hosts"] = allowed_hosts
+    if expires_in_days is not None:
+        payload["exp"] = created_at.add(days=expires_in_days)
     return jwt.encode(
         payload=payload,
         key=settings.SECRET_KEY,
