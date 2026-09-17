@@ -39,3 +39,19 @@ Par le passé nous maintenions une liste des structures et services ayant été 
 spécial sous forme de liste, attaché à chaque contact et envoyé à Brevo. Nous avons remarqué au bout d'un an,
 que aucune source ne modifiait ses courriels; nous avonc donc cessé de maintenir ce système complexe, mais il en
 reste des traces dans certains contacts Brevo. Ils ne sont plus mis à jour.
+
+## Publication en open data
+
+Les marts conservent les coordonnées selon les règles de gestion de chaque source. Les
+contacts DORA dont `contact_public` vaut `false` y sont masqués. L'API est chargée à
+partir de ces marts.
+
+La publication sur data.gouv.fr applique un filtrage supplémentaire:
+
+- `contact_nom_prenom` est toujours vide;
+- tout téléphone mobile français commençant par 06 ou 07 est vide;
+- lorsqu'un mobile ou un courriel personnel est détecté, le téléphone et le courriel
+  associés sont tous les deux vidés.
+
+Les téléphones fixes et les courriels qui ne sont pas détectés comme personnels restent
+publiés.

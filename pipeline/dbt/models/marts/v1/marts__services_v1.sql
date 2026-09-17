@@ -59,7 +59,10 @@ final AS (
         END                                             AS "telephone",
         scores.score                                    AS "score_qualite",
         COALESCE(adresses._has_valid_address, FALSE)    AS "_has_valid_address",
-        courriels_personnels.courriel IS NOT NULL       AS "_has_pii",
+        (
+            courriels_personnels.courriel IS NOT NULL
+            OR processings.is_french_mobile_phone_number(services.telephone)
+        )                                               AS "_has_pii",
         services.source NOT IN ('soliguide', 'agefiph') AS "_in_opendata",
         erreurs.id IS NULL                              AS "_is_valid"
     FROM services

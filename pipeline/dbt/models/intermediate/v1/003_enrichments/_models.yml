@@ -232,14 +232,18 @@ unit_tests:
       - input: ref('int__union_contacts_v1')
         rows:
           - {courriel: jean.valjean@wanadoo.fr}
+          - {courriel: jean.valjean@live.fr}
+          - {courriel: jean.valjean@proton.me}
+          - {courriel: jean.mairie@live.fr}
           - {courriel: contact@arpejeha.com}
-          - {courriel: savoirspoursensortirparis@orange.fr}
       - input: ref('stg_etat_civil__prenoms')
         rows:
           - {prenom: jean}
     expect:
       rows:
         - {courriel: jean.valjean@wanadoo.fr}
+        - {courriel: jean.valjean@live.fr}
+        - {courriel: jean.valjean@proton.me}
 
   - name: test_geocodages_full_refresh_mode_v1
     model: int__geocodages_v1

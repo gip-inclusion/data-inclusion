@@ -40,7 +40,10 @@ final AS (
         }},
         doublons.cluster_id                                                  AS "_cluster_id",
         COALESCE(adresses._has_valid_address, FALSE)                         AS "_has_valid_address",
-        courriels_personnels.courriel IS NOT NULL                            AS "_has_pii",
+        (
+            courriels_personnels.courriel IS NOT NULL
+            OR processings.is_french_mobile_phone_number(structures.telephone)
+        )                                                                    AS "_has_pii",
         structures.source NOT IN ('soliguide', 'agefiph')                    AS "_in_opendata",
         erreurs.id IS NULL                                                   AS "_is_valid",
         sirets.statut IS NOT NULL AND sirets.statut = 'fermé-définitivement' AS "_is_closed"

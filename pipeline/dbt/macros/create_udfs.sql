@@ -16,6 +16,7 @@ CREATE SCHEMA IF NOT EXISTS processings;
 {{ udf__deduplicate() }}
 {{ udf__geocode() }}
 {{ udf__format_phone_number() }}
+{{ udf__is_french_mobile_phone_number() }}
 {{ udf__score() }}
 {{ udf__soliguide_opening_hours() }}
 {{ udf__monenfant_opening_hours() }}

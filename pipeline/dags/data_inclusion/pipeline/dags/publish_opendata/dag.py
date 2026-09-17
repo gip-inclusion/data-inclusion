@@ -47,7 +47,7 @@ def publish():
     )
 
     structures_df = clean_up(structures_df)
-    services_df = clean_up(services_df)
+    services_df = clean_up(services_df).assign(contact_nom_prenom=None)
 
     structures_df.info()
     services_df.info()

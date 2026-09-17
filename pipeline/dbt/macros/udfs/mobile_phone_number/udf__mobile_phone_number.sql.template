@@ -1,0 +1,15 @@
+{% macro udf__is_french_mobile_phone_number() %}
+
+DROP FUNCTION IF EXISTS processings.is_french_mobile_phone_number;
+
+CREATE OR REPLACE FUNCTION processings.is_french_mobile_phone_number(phone TEXT)
+RETURNS BOOLEAN
+AS $$
+
+#INLINE#
+
+return is_french_mobile_phone_number(phone)
+
+$$ LANGUAGE plpython3u;
+
+{% endmacro %}
