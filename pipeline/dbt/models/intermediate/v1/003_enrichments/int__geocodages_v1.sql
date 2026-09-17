@@ -33,6 +33,60 @@ codes_postaux AS (
     FROM communes
 ),
 
+geocoding_inputs AS (
+    SELECT
+        JSONB_OBJECT(
+            ARRAY[
+                'id', input_adresses.id,
+                'adresse', input_adresses.adresse,
+                -- use the code postal if it exists
+                -- unfortunately, it's impossible to test in unit tests
+                'code_postal', COALESCE(codes_postaux.code_postal, ''),
+                'code_insee', input_adresses.code_insee,
+                'commune', input_adresses.commune
+            ]
+        )                                                            AS "data",
+        (ROW_NUMBER() OVER (ORDER BY input_adresses.id) - 1) / 10000 AS "batch"
+    FROM adresses AS input_adresses
+    LEFT JOIN codes_postaux ON input_adresses.code_postal = codes_postaux.code_postal
+    {% if is_incremental() %}
+    -- then only geocode new or changed rows
+        LEFT JOIN {{ this }} ON input_adresses.id = {{ this }}.adresse_id
+        WHERE
+            -- new rows
+            {{ this }}.adresse_id IS NULL
+            -- previously failed rows
+            OR {{ this }}.score IS NULL
+            -- score is low, and has not been checked recently
+            OR (
+                {{ this }}.score < 0.75
+                AND (
+                    {{ this }}.geocoded_at IS NULL
+                    OR {{ this }}.geocoded_at < (NOW() - INTERVAL '1 week')
+                )
+            )
+            -- changed rows
+            OR {{ this }}.input_adresse != input_adresses.adresse
+            OR {{ this }}.input_code_postal != input_adresses.code_postal
+            OR {{ this }}.input_code_insee != input_adresses.code_insee
+            OR {{ this }}.input_commune != input_adresses.commune
+    {% endif %}
+),
+
+batches AS (
+    SELECT
+        "batch",
+        JSONB_AGG("data") AS "data"
+    FROM geocoding_inputs
+    GROUP BY "batch"
+),
+
+geocodings AS (
+    SELECT geocoding.*
+    FROM batches
+    CROSS JOIN LATERAL processings.geocode(batches."data") AS geocoding
+),
+
 final AS (
     SELECT
         CAST(NOW() AS TIMESTAMP)   AS "geocoded_at",
@@ -60,50 +114,8 @@ final AS (
         geocodings.result_type     AS "type",
         geocodings.longitude       AS "longitude",
         geocodings.latitude        AS "latitude"
-    FROM
-        adresses
-    INNER JOIN processings.geocode(
-        (
-            SELECT
-                JSONB_AGG(
-                    JSONB_OBJECT(
-                        ARRAY[
-                            'id', input_adresses.id,
-                            'adresse', input_adresses.adresse,
-                            -- use the code postal if it exists
-                            -- unfortunately, it's impossible to test in unit tests
-                            'code_postal', COALESCE(codes_postaux.code_postal, ''),
-                            'code_insee', input_adresses.code_insee,
-                            'commune', input_adresses.commune
-                        ]
-                    )
-                )
-            FROM adresses AS input_adresses
-            LEFT JOIN codes_postaux ON input_adresses.code_postal = codes_postaux.code_postal
-            {% if is_incremental() %}
-            -- then only geocode new or changed rows
-                LEFT JOIN {{ this }} ON input_adresses.id = {{ this }}.adresse_id
-                WHERE
-                    -- new rows
-                    {{ this }}.adresse_id IS NULL
-                    -- previously failed rows
-                    OR {{ this }}.score IS NULL
-                    -- score is low, and has not been checked recently
-                    OR (
-                        {{ this }}.score < 0.75
-                        AND (
-                            {{ this }}.geocoded_at IS NULL
-                            OR {{ this }}.geocoded_at < (NOW() - INTERVAL '1 week')
-                        )
-                    )
-                    -- changed rows
-                    OR {{ this }}.input_adresse != input_adresses.adresse
-                    OR {{ this }}.input_code_postal != input_adresses.code_postal
-                    OR {{ this }}.input_code_insee != input_adresses.code_insee
-                    OR {{ this }}.input_commune != input_adresses.commune
-            {% endif %}
-        )
-    ) AS geocodings ON adresses.id = geocodings.id
+    FROM adresses
+    INNER JOIN geocodings ON adresses.id = geocodings.id
 )
 
 SELECT * FROM final
