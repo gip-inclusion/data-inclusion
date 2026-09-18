@@ -173,11 +173,9 @@ def geocode(
     )
 
     df["commune"] = df["commune"].apply(lambda x: x.strip(" -") if x else x)
-    df["adresse"] = (
-        df["adresse"]
-        .replace(get_street_abbreviations(), regex=True)
-        .apply(lambda x: x.strip(" -") if x else x)
-    )
+    if df["adresse"].notna().any():
+        df["adresse"] = df["adresse"].replace(get_street_abbreviations(), regex=True)
+    df["adresse"] = df["adresse"].apply(lambda x: x.strip(" -") if x else x)
 
     logger.info(f"Only {len(df)} rows can be geocoded.")
 

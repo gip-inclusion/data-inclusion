@@ -326,6 +326,25 @@ def test_ban_geocode(adresse: dict, expected: dict):
     assert result_df == ([expected] if expected is not None else [])
 
 
+def test_geocode_batch_with_only_null_addresses(monkeypatch):
+    monkeypatch.setattr("geocode.geocode._geocode", lambda df: df)
+    addresses = [
+        {
+            "id": str(index),
+            "adresse": None,
+            "code_postal": "59000",
+            "code_insee": "59350",
+            "commune": "Lille",
+        }
+        for index in range(2)
+    ]
+
+    result = geocode(data=addresses)
+
+    assert [row["id"] for row in result] == ["0", "1"]
+    assert all(row["adresse"] is None for row in result)
+
+
 @pytest.mark.parametrize(
     ("raw", "cleaned"),
     [
