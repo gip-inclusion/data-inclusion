@@ -311,6 +311,7 @@ resource "terraform_data" "up" {
       "systemctl enable cleanup.service",
       "systemctl enable cleanup.timer",
       "systemctl start cleanup.timer",
+      "trap 'shred -u --force --zero \"$HOME/.config/scw/config.yaml\"' EXIT",
       "cd ${local.work_dir}",
       "scw secret version access-by-path secret-name=pipeline secret-path=/ revision=latest -o template=\"{{ printf \\\"%s\\\" .Data }}\" >> .env",
       local.compose_up_command,
