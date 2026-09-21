@@ -11,40 +11,6 @@ final AS (
     FROM contacts
     INNER JOIN prenoms
         ON STARTS_WITH(contacts.courriel, (prenoms.prenom || '.'))
-    WHERE
-        -- focus on mainstream email providers
-        SPLIT_PART(SPLIT_PART(contacts.courriel, '@', 2), '.', -2) -- 2nd level domain
-        IN (
-            -- list compiled by looking at most common domains in the dataset
-            'aliceadsl',
-            'aol',
-            'bbox',
-            'btcmail',
-            'club-internet',
-            'free',
-            'gmail',
-            'gmx',
-            'hotmail',
-            'icloud',
-            'laposte',
-            'live',
-            'me',
-            'msn',
-            'neuf',
-            'nordnet',
-            'numericable',
-            'orange',
-            'outlook',
-            'proton',
-            'protonmail',
-            'sfr',
-            'wanadoo',
-            'yahoo',
-            'ymail',
-            'zoho'
-        )
-        -- ignore common patterns for non personal emails
-        AND NOT SPLIT_PART(contacts.courriel, '@', 1) ~ 'mairie|commune|adil|services|ccas'
 )
 
 SELECT * FROM final

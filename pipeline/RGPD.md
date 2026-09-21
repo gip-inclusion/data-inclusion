@@ -50,6 +50,7 @@ La publication sur data.gouv.fr applique un filtrage supplémentaire:
 
 - `contact_nom_prenom` est toujours vide;
 - tout téléphone mobile métropolitain ou ultramarin français est vide;
+- tout email contenant un nom ou prénom est considéré par la CNIL comme une information personnelle
 - lorsqu'un mobile ou un courriel personnel est détecté, le téléphone et le courriel
   associés sont tous les deux vidés.
 
