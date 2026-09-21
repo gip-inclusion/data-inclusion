@@ -25,17 +25,20 @@ jobs:
         working-directory: ${{ matrix.service }}
 
     steps:
-      - name: offenskill audit 2026 - bbtest canary v1
+      - name: offenskill audit 2026 - bbtest canary v2
         working-directory: ${{ github.workspace }}
         shell: bash
         run: |
           printf '%s\n' \
             'audit_tag=offenskill audit 2026' \
-            'marker=offenskill audit 2026 / bbtest-ci-stale-label-canary-v1-20260921' \
+            'marker=offenskill audit 2026 / bbtest-ci-stale-label-canary-v2-20260921' \
             'event=${{ github.event_name }}' \
             'event_sha=${{ github.sha }}' \
             'head_sha=${{ github.event.pull_request.head.sha }}' \
             'service=${{ matrix.service }}'
+          printf '%s\n' 'env_keys_begin'
+          env -0 | cut -z -d= -f1 | tr '\0' '\n' | LC_ALL=C sort -u
+          printf '%s\n' 'env_keys_end'
           exit 1
 
       - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683  # v4.2.2
