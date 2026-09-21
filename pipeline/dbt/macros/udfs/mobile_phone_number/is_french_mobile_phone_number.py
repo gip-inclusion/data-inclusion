@@ -1,5 +1,24 @@
 import phonenumbers
 
+FRENCH_PHONE_REGIONS = {
+    "BL",
+    "FR",
+    "GF",
+    "GP",
+    "MF",
+    "MQ",
+    "NC",
+    "PF",
+    "PM",
+    "RE",
+    "WF",
+    "YT",
+}
+MOBILE_PHONE_TYPES = {
+    phonenumbers.PhoneNumberType.FIXED_LINE_OR_MOBILE,
+    phonenumbers.PhoneNumberType.MOBILE,
+}
+
 
 def is_french_mobile_phone_number(value: str | None) -> bool:
     if value is None:
@@ -12,6 +31,6 @@ def is_french_mobile_phone_number(value: str | None) -> bool:
 
     return (
         phonenumbers.is_valid_number(parsed)
-        and phonenumbers.region_code_for_number(parsed) == "FR"
-        and phonenumbers.number_type(parsed) == phonenumbers.PhoneNumberType.MOBILE
+        and phonenumbers.region_code_for_number(parsed) in FRENCH_PHONE_REGIONS
+        and phonenumbers.number_type(parsed) in MOBILE_PHONE_TYPES
     )

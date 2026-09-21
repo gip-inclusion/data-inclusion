@@ -49,7 +49,7 @@ partir de ces marts.
 La publication sur data.gouv.fr applique un filtrage supplémentaire:
 
 - `contact_nom_prenom` est toujours vide;
-- tout téléphone mobile français commençant par 06 ou 07 est vide;
+- tout téléphone mobile métropolitain ou ultramarin français est vide;
 - lorsqu'un mobile ou un courriel personnel est détecté, le téléphone et le courriel
   associés sont tous les deux vidés.
 
