@@ -19,12 +19,9 @@ def extract(to_path: str):
     from data_inclusion.pipeline.common import s3
     from data_inclusion.pipeline.dags.import_mes_aides import constants
 
-    for resource_key in [
-        Path(constants.AIDES_FILE_KEY),
-        Path(constants.GARAGES_SOLIDAIRES_FILE_KEY),
-    ]:
-        with s3.from_s3(path=resource_key).open("rb") as f:
-            s3.to_s3(path=Path(to_path) / resource_key.name, data=f.read())
+    resource_key = Path(constants.MESAIDES_FILE_KEY)
+    with s3.from_s3(path=resource_key).open("rb") as f:
+        s3.to_s3(path=Path(to_path) / resource_key.name, data=f.read())
 
 
 @task.virtualenv(
@@ -33,23 +30,40 @@ def extract(to_path: str):
     venv_cache_path="/tmp/",
 )
 def load(schema_name: str, from_s3_path: str):
+    import json
     from pathlib import Path
+
+    import pandas as pd
 
     from airflow.providers.postgres.hooks import postgres
 
-    from data_inclusion.pipeline.common import pg, s3, utils
+    from data_inclusion.pipeline.common import pg, s3
     from data_inclusion.pipeline.dags.import_mes_aides import constants
 
     pg_hook = postgres.PostgresHook(postgres_conn_id="pg")
+    raw_name = Path(constants.MESAIDES_FILE_KEY).name
+    payload = json.loads(s3.from_s3(path=Path(from_s3_path) / raw_name).read_text())
+    records = payload["data"]
 
-    for resource_key in [
-        Path(constants.AIDES_FILE_KEY),
-        Path(constants.GARAGES_SOLIDAIRES_FILE_KEY),
-    ]:
-        table_name = Path(resource_key).stem
-        tmp_path = s3.from_s3(path=Path(from_s3_path) / resource_key.name)
-        df = utils.read_csv(tmp_path, sep=",")
-        pg.to_pg(hook=pg_hook, df=df, schema_name=schema_name, table_name=table_name)
+    aides_df = pd.DataFrame.from_records(
+        [row for row in records if row["type"] == "aide"]
+    )
+    pg.to_pg(
+        hook=pg_hook,
+        df=aides_df,
+        schema_name=schema_name,
+        table_name="aides",
+    )
+
+    garages_df = pd.DataFrame.from_records(
+        [row for row in records if row["type"] == "garage_solidaire"]
+    )
+    pg.to_pg(
+        hook=pg_hook,
+        df=garages_df,
+        schema_name=schema_name,
+        table_name="garages",
+    )
 
 
 @dag(
