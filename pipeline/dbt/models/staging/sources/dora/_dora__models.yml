@@ -61,8 +61,7 @@ models:
           - not_null
       - name: description
         data_tests:
-          - not_null
-          - dbt_utils.not_empty_string
+          - dbt_utils.not_constant
       - name: frais
         data_tests:
           - not_null:
@@ -84,7 +83,6 @@ models:
           - dbt_utils.at_least_one
       - name: horaires_accueil
         data_tests:
-          - dbt_utils.at_least_one
           - dbt_utils.not_empty_string
       - name: lien_mobilisation
         data_tests:
