@@ -10,7 +10,10 @@ final AS (
     SELECT DISTINCT contacts.courriel
     FROM contacts
     INNER JOIN prenoms
-        ON STARTS_WITH(contacts.courriel, (prenoms.prenom || '.'))
+        ON STARTS_WITH(
+            UNACCENT(LOWER(contacts.courriel)),
+            UNACCENT(LOWER(prenoms.prenom)) || '.'
+        )
 )
 
 SELECT * FROM final

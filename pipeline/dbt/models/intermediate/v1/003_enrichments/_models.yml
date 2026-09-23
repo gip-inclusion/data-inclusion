@@ -236,10 +236,15 @@ unit_tests:
           - {courriel: jean.valjean@proton.me}
           - {courriel: jean.valjean@association.fr}
           - {courriel: jean.mairie@live.fr}
+          - {courriel: veronique.fauchelevent@example.fr}
+          - {courriel: véronique.fauchelevent@example.fr}
+          - {courriel: Helene.THENARDIER@example.fr}
           - {courriel: contact@arpejeha.com}
       - input: ref('stg_etat_civil__prenoms')
         rows:
           - {prenom: jean}
+          - {prenom: véronique}
+          - {prenom: hélène}
     expect:
       rows:
         - {courriel: jean.valjean@wanadoo.fr}
@@ -247,6 +252,9 @@ unit_tests:
         - {courriel: jean.valjean@proton.me}
         - {courriel: jean.valjean@association.fr}
         - {courriel: jean.mairie@live.fr}
+        - {courriel: veronique.fauchelevent@example.fr}
+        - {courriel: véronique.fauchelevent@example.fr}
+        - {courriel: Helene.THENARDIER@example.fr}
 
   - name: test_geocodages_full_refresh_mode_v1
     model: int__geocodages_v1
