@@ -29,6 +29,13 @@ def extract(to_path: str):
     response.raise_for_status()
     cartographie_data = response.json()
 
+    # exclude "test réseau alpha"
+    cartographie_data["structures"] = [
+        structure
+        for structure in cartographie_data["structures"]
+        if str(structure["id"]) != "895"
+    ]
+
     s3.to_s3(path=Path(to_path) / "cartographie.json", data=cartographie_data)
 
     structures_df = pd.json_normalize(cartographie_data["structures"])
@@ -87,6 +94,8 @@ def load(from_path: str, schema_name: str):
                     key=key, local_path=tmpdir, preserve_file_name=True
                 )
             )
+            if path.stem == "895":
+                continue
             pages_data.append(
                 {
                     "structure_id": path.stem,
