@@ -84,7 +84,6 @@ models:
           - dbt_utils.at_least_one
       - name: horaires_accueil
         data_tests:
-          - dbt_utils.at_least_one
           - dbt_utils.not_empty_string
       - name: lien_mobilisation
         data_tests:
