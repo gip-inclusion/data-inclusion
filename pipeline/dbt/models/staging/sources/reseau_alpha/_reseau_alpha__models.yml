@@ -307,6 +307,8 @@ models:
           - not_null
           - dbt_utils.not_empty_string
           - relationships:
+              config:
+                error_if: ">10"
               arguments:
                 to: ref('stg_reseau_alpha__pages')
                 field: structure_id
