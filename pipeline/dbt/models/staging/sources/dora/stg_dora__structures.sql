@@ -18,8 +18,10 @@ final AS (
         NULLIF(TRIM(data ->> 'id'), '')                                      AS "id",
         NULLIF(TRIM(data ->> 'lien_source'), '')                             AS "lien_source",
         NULLIF(REGEXP_REPLACE(TRIM(data ->> 'nom'), '(?<!etc)\.+$', ''), '') AS "nom",
-        NULLIF(TRIM(data ->> 'presentation_detail'), '')                     AS "presentation_detail",
-        NULLIF(TRIM(data ->> 'presentation_resume'), '')                     AS "presentation_resume",
+        COALESCE(
+            NULLIF(TRIM(data ->> 'description'), ''),
+            NULLIF(TRIM(data ->> 'presentation_detail'), '')
+        )                                                                    AS "description",
         NULLIF(
             ARRAY(SELECT JSONB_ARRAY_ELEMENTS_TEXT(NULLIF(data -> 'reseaux_porteurs', 'null'))),
             '{}'

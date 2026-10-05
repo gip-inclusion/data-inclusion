@@ -13,9 +13,9 @@ final AS (
         adresses.id                       AS "adresse_id",
         structures.nom                    AS "nom",
         CASE
-            WHEN LENGTH(structures.presentation_detail) >= 10000
-                THEN LEFT(structures.presentation_detail, 9999) || '…'
-            ELSE COALESCE(structures.presentation_detail, structures.presentation_resume)
+            WHEN LENGTH(structures.description) >= 10000
+                THEN LEFT(structures.description, 9999) || '…'
+            ELSE structures.description
         END                               AS "description",
         structures.siret                  AS "siret",
         CAST(structures.date_maj AS DATE) AS "date_maj",

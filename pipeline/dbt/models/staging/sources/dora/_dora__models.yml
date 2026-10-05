@@ -342,11 +342,7 @@ models:
         data_tests:
           - not_null
           - dbt_utils.not_empty_string
-      - name: presentation_detail
-        data_tests:
-          - dbt_utils.at_least_one
-          - dbt_utils.not_empty_string
-      - name: presentation_resume
+      - name: description
         data_tests:
           - dbt_utils.at_least_one
           - dbt_utils.not_empty_string
