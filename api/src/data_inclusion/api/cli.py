@@ -8,9 +8,12 @@ from pathlib import Path
 import click
 import pandas as pd
 import pendulum
+import pyarrow as pa
+import pyarrow.parquet as pq
 import s3fs
 import sentry_sdk
 import sqlalchemy as sqla
+from sqlalchemy.dialects.postgresql import ARRAY
 
 from data_inclusion.api import auth
 from data_inclusion.api.analytics.models import ANALYTICS_EVENTS_TABLES
@@ -21,6 +24,8 @@ from data_inclusion.api.inclusion_data.commands import load
 from data_inclusion.api.inclusion_schema.commands import seed
 
 logger = logging.getLogger(__name__)
+
+ANALYTICS_EXPORT_CHUNK_SIZE = 10_000
 
 sentry_sdk.init(
     dsn=settings.SENTRY_DSN,
@@ -145,6 +150,56 @@ def _seed_schema(db_session):
     seed(db_session)
 
 
+def columns_from(table: str):
+    fields = []
+    for column in db.Base.metadata.tables[table].columns:
+        sql_type = column.type
+        # arrays & dicts
+        if isinstance(sql_type, sqla.TypeDecorator):
+            sql_type = sql_type.impl
+        if isinstance(sql_type, ARRAY):
+            arrow_type = pa.list_(pa.string())
+        elif isinstance(sql_type, sqla.Boolean):
+            arrow_type = pa.bool_()
+        elif isinstance(sql_type, sqla.Integer):
+            arrow_type = pa.int64()
+        elif isinstance(sql_type, sqla.Float):
+            arrow_type = pa.float64()
+        elif isinstance(sql_type, sqla.DateTime):
+            arrow_type = pa.timestamp("us", tz="UTC")
+        else:
+            arrow_type = pa.string()
+        fields.append((column.name, arrow_type))
+    return fields
+
+
+def stream_table_to_parquet(engine: sqla.Engine, table: str, path: Path) -> int:
+    schema = pa.schema(columns_from(table))
+    row_count = 0
+    writer = pq.ParquetWriter(path, schema)
+    try:
+        with engine.connect().execution_options(stream_results=True) as conn:
+            for chunk in pd.read_sql(
+                sqla.text(f"SELECT * FROM {table}"),
+                conn,
+                chunksize=ANALYTICS_EXPORT_CHUNK_SIZE,
+            ):
+                if chunk.empty:
+                    continue
+                chunk["id"] = chunk["id"].astype(str).where(chunk["id"].notna())
+                writer.write_table(
+                    pa.Table.from_pandas(
+                        chunk,
+                        schema=schema,
+                        preserve_index=False,
+                    )
+                )
+                row_count += len(chunk)
+    finally:
+        writer.close()
+    return row_count
+
+
 @sentry_sdk.monitor(
     monitor_slug="export-analytics",
     monitor_config={
@@ -167,10 +222,8 @@ def _export_analytics():
     with tempfile.TemporaryDirectory() as tmpdir:
         os.chdir(tmpdir)
         for table in ANALYTICS_EVENTS_TABLES:
-            df = pd.read_sql_table(table, engine)
-            df["id"] = df["id"].astype(str).where(df["id"].notna())
-            df.to_parquet(f"{table}.parquet", index=False)
-            logger.info(f"Exported {table}")
+            rows = stream_table_to_parquet(engine, table, Path(f"{table}.parquet"))
+            logger.info(f"Exported {table} ({rows} rows)")
 
         archive_filename = "analytics.tar.gz"
         with tarfile.open(archive_filename, "w:gz") as tar:
