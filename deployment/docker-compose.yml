@@ -157,7 +157,7 @@ services:
       - datawarehouse-data:/var/lib/postgresql
 
   reverse-proxy:
-    image: traefik:v3.7
+    image: traefik:v3.7.14
     restart: always
     ports:
       - 80:80
