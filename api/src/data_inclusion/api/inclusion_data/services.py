@@ -502,6 +502,18 @@ def list_services_query(
     return query
 
 
+def get_zone_eligibilite_codes(commune_instance: Commune) -> list[str]:
+    zone_eligibilite_codes = [
+        commune_instance.code,
+        commune_instance.departement,
+        constants.PaysEnum.FRANCE.value.code,
+        constants.PaysEnum.FRANCE.value.slug,
+    ]
+    if commune_instance.siren_epci is not None:
+        zone_eligibilite_codes.append(commune_instance.siren_epci)
+    return zone_eligibilite_codes
+
+
 def search_services_query(
     params: parameters.SearchServicesQueryParams,
     include_soliguide: bool,
@@ -518,20 +530,11 @@ def search_services_query(
         query = query.filter(models.Structure.source != "soliguide")
 
     if commune_instance is not None:
-        zone_eligibilite_codes = [
-            commune_instance.code,
-            commune_instance.departement,
-            constants.PaysEnum.FRANCE.value.code,
-            constants.PaysEnum.FRANCE.value.slug,
-        ]
-        if commune_instance.siren_epci is not None:
-            zone_eligibilite_codes.append(commune_instance.siren_epci)
-
         query = query.filter(
             sqla.or_(
                 models.Service.zone_eligibilite.is_(None),
                 models.Service.zone_eligibilite.op("&&")(
-                    sqla.literal(zone_eligibilite_codes)
+                    sqla.literal(get_zone_eligibilite_codes(commune_instance))
                 ),
             )
         )
@@ -738,6 +741,10 @@ def build_thematique_aliases(db_session: orm.Session) -> None:
     db_session.commit()
 
 
+# distance score of remote services out of range (i.e. at half the radius)
+REMOTE_SERVICES_SCORE_DISTANCE = 0.5
+
+
 def search_query(
     db_session: orm.Session,
     params: parameters.SearchQueryParams,
@@ -826,19 +833,50 @@ def search_query(
         distance_km = (
             geoalchemy2.functions.ST_Distance(src_geometry, dest_geometry) / 1000
         )
-        query = query.filter(
-            geoalchemy2.functions.ST_DWithin(
-                src_geometry, dest_geometry, params.distance * 1000
-            )
+        is_within_range = geoalchemy2.functions.ST_DWithin(
+            src_geometry, dest_geometry, params.distance * 1000
         )
-        query = query.add_columns(distance_km.cast(sqla.Integer).label("distance"))
 
-        score_distance_expr = 1 - distance_km / params.distance
+        if params.q is None:
+            query = query.filter(is_within_range)
+        else:
+            # remote services are also searched in their zone_eligibilite,
+            # using the commune with the nearest centre
+            commune_instance = db_session.scalars(
+                sqla.select(Commune)
+                .order_by(
+                    Commune.centre.op("<->")(
+                        geoalchemy2.functions.ST_GeomFromText(dest_geometry, 4326)
+                    )
+                )
+                .limit(1)
+            ).one()
+            is_available_remotely = models.Service.modes_accueil.contains(
+                sqla.literal([v1.ModeAccueil.A_DISTANCE.value])
+            )
+            is_eligible = models.Service.zone_eligibilite.op("&&")(
+                sqla.literal(get_zone_eligibilite_codes(commune_instance))
+            )
+            query = query.filter(
+                sqla.or_(is_within_range, sqla.and_(is_available_remotely, is_eligible))
+            )
+
+        query = query.add_columns(
+            sqla.case(
+                (is_within_range, distance_km.cast(sqla.Integer)),
+                else_=sqla.null().cast(sqla.Integer),
+            ).label("distance")
+        )
+
+        score_distance_expr = sqla.case(
+            (is_within_range, 1 - distance_km / params.distance),
+            else_=REMOTE_SERVICES_SCORE_DISTANCE,
+        )
         if score_recherche_expr is not None:
             score_expr = score_recherche_expr * 0.5 + score_distance_expr * 0.5
         else:
             score_expr = score_distance_expr
-        query = query.order_by(None).order_by(score_expr.desc())
+        query = query.order_by(None).order_by(score_expr.desc(), models.Service.id)
     else:
         query = query.add_columns(sqla.null().cast(sqla.Integer).label("distance"))
 

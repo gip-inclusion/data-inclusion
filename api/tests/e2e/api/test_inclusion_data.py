@@ -1900,6 +1900,63 @@ def test_search_order_by_distance(api_client):
     assert [item["service"]["id"] for item in items] == ["closer", "farther"]
 
 
+LILLE_LAT_LON = {"lat": LILLE["latitude"], "lon": LILLE["longitude"]}
+SANS_ADRESSE = {"code_insee": None, "latitude": None, "longitude": None}
+
+
+@pytest.mark.with_token
+@pytest.mark.parametrize(
+    ("modes_accueil", "zone_eligibilite", "location", "params", "expected"),
+    [
+        (v1.ModeAccueil.A_DISTANCE, ["59"], SANS_ADRESSE, LILLE_LAT_LON, True),
+        (v1.ModeAccueil.A_DISTANCE, ["france"], PARIS, LILLE_LAT_LON, True),
+        (v1.ModeAccueil.A_DISTANCE, ["75"], SANS_ADRESSE, LILLE_LAT_LON, False),
+        (v1.ModeAccueil.EN_PRESENTIEL, ["59"], PARIS, LILLE_LAT_LON, False),
+        (v1.ModeAccueil.A_DISTANCE, ["59"], SANS_ADRESSE, {"code_region": "32"}, False),
+    ],
+)
+def test_search_remote_services(
+    api_client, modes_accueil, zone_eligibilite, location, params, expected
+):
+    factories.ServiceFactory(
+        structure__nom="agefiph",
+        modes_accueil=[modes_accueil.value],
+        zone_eligibilite=zone_eligibilite,
+        **location,
+    )
+
+    response = api_client.get(SEARCH_ENDPOINT.url, params={"q": "agefiph", **params})
+
+    assert response.status_code == 200
+    assert len(response.json()["items"]) == int(expected)
+
+
+@pytest.mark.with_token
+def test_search_remote_services_ordering(api_client):
+    factories.ServiceFactory(
+        id="a_distance",
+        structure__nom="agefiph",
+        modes_accueil=[v1.ModeAccueil.A_DISTANCE.value],
+        zone_eligibilite=["59"],
+        **SANS_ADRESSE,
+    )
+    factories.ServiceFactory(id="proche", structure__nom="agefiph", **LILLE)
+    factories.ServiceFactory(id="loin", structure__nom="agefiph", **HAZEBROUCK)
+
+    response = api_client.get(
+        SEARCH_ENDPOINT.url, params={"q": "agefiph", **LILLE_LAT_LON}
+    )
+
+    assert response.status_code == 200
+    items = response.json()["items"]
+    # remote services are ranked as if located at half the search radius
+    assert [(i["service"]["id"], i["distance"]) for i in items] == [
+        ("proche", 0),
+        ("a_distance", None),
+        ("loin", 39),
+    ]
+
+
 @pytest.mark.with_token
 def test_search_thematique_aliases_single_word(api_client):
     factories.ServiceFactory(
