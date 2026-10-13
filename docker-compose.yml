@@ -40,7 +40,6 @@ x-airflow-common:
     AIRFLOW_VAR_EMPLOIS_API_TOKEN: ${AIRFLOW_VAR_EMPLOIS_API_TOKEN}
     AIRFLOW_VAR_MEDIATION_NUMERIQUE_API_TOKEN: ${AIRFLOW_VAR_MEDIATION_NUMERIQUE_API_TOKEN}
     AIRFLOW_VAR_SOLIGUIDE_API_TOKEN: ${AIRFLOW_VAR_SOLIGUIDE_API_TOKEN}
-    AIRFLOW_VAR_TWOCAPTCHA_API_KEY: ${AIRFLOW_VAR_TWOCAPTCHA_API_KEY}
     AIRFLOW_VAR_MA_BOUSSOLE_AIDANTS_API_KEY: ${AIRFLOW_VAR_MA_BOUSSOLE_AIDANTS_API_KEY}
     AIRFLOW_VAR_ENVIRONMENT: test
 
@@ -112,14 +111,6 @@ services:
     depends_on:
       airflow-db:
         condition: service_healthy
-
-  playwright:
-    # the version should match the tasks requirements
-    image: mcr.microsoft.com/playwright:v1.55.0-noble
-    command: npx -y playwright@1.55.0 run-server --port 3000 --host 0.0.0.0
-    user: pwuser
-    init: true
-    ipc: host
 
   minio:
     image: minio/minio:RELEASE.2025-07-23T15-54-02Z

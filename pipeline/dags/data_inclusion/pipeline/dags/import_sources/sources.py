@@ -196,7 +196,6 @@ SOURCES_CONFIGS = {
             }
         },
     },
-    "monenfant": {},
     "mission-locale": {
         "schedule": "@daily",
         "extractor": mission_locale.extract,

@@ -47,7 +47,6 @@ x-airflow-common:
     AIRFLOW_VAR_GRIST_API_TOKEN: ${AIRFLOW_VAR_GRIST_API_TOKEN}
     AIRFLOW_VAR_MEDIATION_NUMERIQUE_API_TOKEN: ${AIRFLOW_VAR_MEDIATION_NUMERIQUE_API_TOKEN}
     AIRFLOW_VAR_SOLIGUIDE_API_TOKEN: ${AIRFLOW_VAR_SOLIGUIDE_API_TOKEN}
-    AIRFLOW_VAR_TWOCAPTCHA_API_KEY: ${AIRFLOW_VAR_TWOCAPTCHA_API_KEY}
     AIRFLOW_VAR_MA_BOUSSOLE_AIDANTS_API_KEY: ${AIRFLOW_VAR_MA_BOUSSOLE_AIDANTS_API_KEY}
 
   volumes:
@@ -126,16 +125,6 @@ services:
       timeout: 20s
       retries: 5
       start_period: 30s
-
-  playwright:
-    # the version should match the tasks requirements
-    image: mcr.microsoft.com/playwright:v1.55.0-noble
-    command: npx -y playwright@1.55.0 run-server --port 3000 --host 0.0.0.0
-    user: pwuser
-    init: true
-    ipc: host
-    depends_on:
-      - airflow-scheduler
 
   datawarehouse:
     image: ghcr.io/gip-inclusion/data-inclusion-datawarehouse:${STACK_VERSION}
