@@ -19,7 +19,6 @@ CREATE SCHEMA IF NOT EXISTS processings;
 {{ udf__is_french_mobile_phone_number() }}
 {{ udf__score() }}
 {{ udf__soliguide_opening_hours() }}
-{{ udf__monenfant_opening_hours() }}
 {{ udf__france_travail_opening_hours() }}
 {{ udf__reseau_alpha_opening_hours() }}
 {{ udf__html_to_markdown() }}
