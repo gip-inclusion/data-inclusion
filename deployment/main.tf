@@ -216,6 +216,21 @@ resource "scaleway_object_bucket_policy" "main" {
             "${scaleway_object_bucket.main.name}",
             "${scaleway_object_bucket.main.name}/data/marts/*",
           ]
+        },
+        {
+          Effect = "Allow",
+          Sid    = "Grant list & read in data/marts/* to autometa",
+          Principal = {
+            SCW = ["application_id:2cf4daf8-20aa-42fa-b124-48b9e2568c08"]
+          },
+          Action = [
+            "s3:ListBucket",
+            "s3:GetObject"
+          ],
+          Resource = [
+            "${scaleway_object_bucket.main.name}",
+            "${scaleway_object_bucket.main.name}/data/marts/*",
+          ]
         }
       ]
     }
