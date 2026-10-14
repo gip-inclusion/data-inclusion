@@ -1,0 +1,27 @@
+# keeps the pinned versions and digests up to date
+version: 2
+
+updates:
+  - package-ecosystem: docker
+    directories: ["/api", "/datawarehouse", "/mlflow", "/pipeline"]
+    schedule:
+      interval: weekly
+    groups:
+      docker:
+        patterns: ["*"]
+
+  - package-ecosystem: docker-compose
+    directory: /deployment
+    schedule:
+      interval: weekly
+    groups:
+      docker-compose:
+        patterns: ["*"]
+
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: weekly
+    groups:
+      github-actions:
+        patterns: ["*"]

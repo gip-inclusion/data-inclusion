@@ -51,7 +51,8 @@ resource "scaleway_instance_server" "main" {
       - echo "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.asc] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable" | tee /etc/apt/sources.list.d/docker.list > /dev/null
       - apt-get update
       - apt-get install -y docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
-      - curl -s https://raw.githubusercontent.com/scaleway/scaleway-cli/master/scripts/get.sh | sh
+      # pinned release, checksum from the release SHA256SUMS
+      - curl -fsSL -o /tmp/scw https://github.com/scaleway/scaleway-cli/releases/download/v2.65.1/scaleway-cli_2.65.1_linux_amd64 && echo "b9ced8bc52c27baba76136a24e65a5e0abd53e9499edf02226513977d45da503  /tmp/scw" | sha256sum --check --strict && install -m 0755 /tmp/scw /usr/local/bin/scw
   EOF
 }
 

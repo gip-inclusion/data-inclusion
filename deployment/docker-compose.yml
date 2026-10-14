@@ -61,7 +61,7 @@ x-airflow-common:
 
 services:
   airflow-db:
-    image: postgres:18
+    image: postgres:18@sha256:74935e72241653ca55e0414067e6d8763aceb8a810eb51b452253ec3dcfc4336
     restart: always
     healthcheck:
       test: pg_isready
@@ -146,7 +146,7 @@ services:
       - datawarehouse-data:/var/lib/postgresql
 
   reverse-proxy:
-    image: traefik:v3.7.14
+    image: traefik:v3.7.14@sha256:575fa15b135078fe5e50aa847987d96dbddd7b093c172429618404df73f3fa7c
     restart: always
     ports:
       - 80:80
@@ -165,7 +165,7 @@ services:
       - letsencrypt-data:/letsencrypt
 
   mlflow-db:
-    image: postgres:18
+    image: postgres:18@sha256:74935e72241653ca55e0414067e6d8763aceb8a810eb51b452253ec3dcfc4336
     restart: no
     healthcheck:
       test: pg_isready
@@ -180,16 +180,13 @@ services:
       - mlflow-data:/var/lib/postgresql
 
   mlflow:
-    image: ghcr.io/mlflow/mlflow:v3.12.0-full
+    image: ghcr.io/gip-inclusion/data-inclusion-mlflow:${STACK_VERSION}
     depends_on:
       mlflow-db:
         condition: service_healthy
     entrypoint: /bin/bash -c
     command:
       - |
-        # install extra depencencies for auth
-        pip install mlflow[auth]
-
         # create config for basic auth
         mkdir -p /etc/mlflow/server/auth
         cat > /etc/mlflow/server/auth/config.ini <<-EOF
