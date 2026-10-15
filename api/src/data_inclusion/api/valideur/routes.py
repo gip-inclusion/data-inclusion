@@ -1,3 +1,4 @@
+import zipfile
 from pathlib import Path
 from typing import Annotated
 
@@ -35,6 +36,16 @@ def results(
     dataset: Annotated[fastapi.UploadFile, fastapi.File()],
     db_session=fastapi.Depends(db.get_session),
 ):
+    if dataset.size > MAX_FILE_SIZE_BYTES:
+        raise fastapi.HTTPException(status_code=413)
+
+    # xlsx files are zip archives: cap the uncompressed size (zip bombs)
+    if zipfile.is_zipfile(dataset.file):
+        with zipfile.ZipFile(dataset.file) as zf:
+            if sum(i.file_size for i in zf.infolist()) > 10 * MAX_FILE_SIZE_BYTES:
+                raise fastapi.HTTPException(status_code=413)
+    dataset.file.seek(0)
+
     structures_df, services_df = readers.read_file(
         file=dataset.file, filename=dataset.filename
     )
