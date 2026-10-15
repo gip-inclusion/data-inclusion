@@ -63,16 +63,23 @@ def import_data():
             s3fs_client.get_file(rpath=str(value), lpath=tmpfile.name)
             archive_path = Path(tmpfile.name)
             with tarfile.open(archive_path, "r:gz") as tar:
-                tar.extractall(path=tmpdir_path)
+                for table_name in [
+                    "api__consult_structure_events_v1",
+                    "api__consult_service_events_v1",
+                    "api__list_services_events_v1",
+                    "api__list_structures_events_v1",
+                    "api__search_services_events_v1",
+                ]:
+                    member = tar.getmember(f"{table_name}.parquet")
+                    # 1 GB cap: the largest member was 262 MB in 2026-10,
+                    # growing ~2 MB/day, so about a year of headroom
+                    if not member.isreg() or member.size > 1024**3:
+                        raise ValueError(f"unexpected member: {member.name}")
+                    tar.extract(member, path=tmpdir_path, filter="data")
 
-        for table_name in [
-            "api__consult_structure_events_v1",
-            "api__consult_service_events_v1",
-            "api__list_services_events_v1",
-            "api__list_structures_events_v1",
-            "api__search_services_events_v1",
-        ]:
-            df = pd.read_parquet(tmpdir_path / f"{table_name}.parquet")
+        for path in tmpdir_path.iterdir():
+            table_name = path.stem
+            df = pd.read_parquet(path)
             if df.empty:
                 print(f"empty parquet file={table_name}, skipping")
                 continue
