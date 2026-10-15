@@ -301,7 +301,7 @@ def widget(
         first_results_page=results,
     )
 
-    current_url = str(request.url)
+    current_url = str(request.url.remove_query_params("token"))
 
     commune_label = None
     if commune_instance is not None:

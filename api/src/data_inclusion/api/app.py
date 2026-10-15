@@ -1,3 +1,5 @@
+import json
+import re
 from pathlib import Path
 
 import jinja2
@@ -30,6 +32,11 @@ def setup_debug_toolbar_middleware(app: fastapi.FastAPI) -> None:
     )
 
 
+def scrub_tokens(event, hint):
+    event = json.dumps(event, default=str)
+    return json.loads(re.sub(r"eyJ[\w-]+\.[\w-]+\.[\w-]+", "[Filtered]", event))
+
+
 def create_app(settings: config.Settings) -> fastapi.FastAPI:
     if settings.ENV in ["prod", "staging"]:
         # sentry must be initialized before app
@@ -39,6 +46,8 @@ def create_app(settings: config.Settings) -> fastapi.FastAPI:
             traces_sample_rate=0.1,
             profiles_sample_rate=0.1,  # 10% of sampled requests will also be profiled
             environment=settings.ENV,
+            before_send=scrub_tokens,
+            before_send_transaction=scrub_tokens,
         )
 
     description = jinja2.Template(

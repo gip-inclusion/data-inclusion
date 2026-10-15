@@ -227,7 +227,7 @@
               
           </div>
           <div class="di-results-footer-right">
-              <a href="https://tally.so/r/nWZBrv?produit=test_user&issue_url=http%3A//testserver/widget/%3Ftoken%3Dtest-token%26x%3D2%26y%3D1"
+              <a href="https://tally.so/r/nWZBrv?produit=test_user&issue_url=http%3A//testserver/widget/%3Fx%3D2%26y%3D1"
                  target="_blank"
                  class="di-report-link">
                   Signaler un problème
@@ -341,7 +341,7 @@
       </nav>
           </div>
           <div class="di-results-footer-right">
-              <a href="https://tally.so/r/nWZBrv?produit=test_user&issue_url=http%3A//testserver/widget/%3Ftoken%3Dtest-token%26x%3D2%26y%3D1%26code_commune%3D59350%26categories%3Dfamille"
+              <a href="https://tally.so/r/nWZBrv?produit=test_user&issue_url=http%3A//testserver/widget/%3Fx%3D2%26y%3D1%26code_commune%3D59350%26categories%3Dfamille"
                  target="_blank"
                  class="di-report-link">
                   Signaler un problème
@@ -381,7 +381,7 @@
               
           </div>
           <div class="di-results-footer-right">
-              <a href="https://tally.so/r/nWZBrv?produit=test_user&issue_url=http%3A//testserver/widget/%3Ftoken%3Dtest-token%26x%3D2%26y%3D1%26code_commune%3D75056%26categories%3Dfamille"
+              <a href="https://tally.so/r/nWZBrv?produit=test_user&issue_url=http%3A//testserver/widget/%3Fx%3D2%26y%3D1%26code_commune%3D75056%26categories%3Dfamille"
                  target="_blank"
                  class="di-report-link">
                   Signaler un problème
@@ -734,7 +734,7 @@
       </nav>
           </div>
           <div class="di-results-footer-right">
-              <a href="https://tally.so/r/nWZBrv?produit=test_user&issue_url=http%3A//testserver/widget/%3Ftoken%3Dtest-token%26x%3D2%26y%3D1"
+              <a href="https://tally.so/r/nWZBrv?produit=test_user&issue_url=http%3A//testserver/widget/%3Fx%3D2%26y%3D1"
                  target="_blank"
                  class="di-report-link">
                   Signaler un problème
