@@ -191,7 +191,7 @@ services:
       - POSTGRES_PASSWORD=mlflow
 
   mlflow:
-    image: ghcr.io/mlflow/mlflow:v3.12.0-full
+    image: ghcr.io/mlflow/mlflow:v3.17.1-full
     depends_on:
       mlflow-db:
         condition: service_healthy
