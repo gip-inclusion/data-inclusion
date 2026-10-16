@@ -229,7 +229,7 @@ resource "scaleway_object_bucket_policy" "main" {
         },
         {
           Effect = "Allow",
-          Sid    = "Grant read in data/marts/* to autometa",
+          Sid    = "Grant read in data/marts/* to pilotage-inclusion",
           Principal = {
             SCW = ["application_id:2cf4daf8-20aa-42fa-b124-48b9e2568c08"]
           },
@@ -242,7 +242,7 @@ resource "scaleway_object_bucket_policy" "main" {
         },
         {
           Effect = "Allow",
-          Sid    = "Grant list in data/marts/* to the api, consumers & autometa",
+          Sid    = "Grant list in data/marts/* to the api, consumers & pilotage-inclusion",
           Principal = {
             SCW = concat(
               ["application_id:${var.api_scw_application_id}"],
