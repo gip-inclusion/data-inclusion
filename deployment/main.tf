@@ -115,18 +115,31 @@ resource "scaleway_object_bucket_policy" "main" {
       Statement = [
         {
           Effect = "Allow",
-          Sid    = "Grant list, read & write in data/* to airflow",
+          Sid    = "Grant list & read in data/* to airflow",
           Principal = {
             SCW = ["application_id:${var.airflow_application_id}"]
           },
           Action = [
             "s3:ListBucket",
-            "s3:GetObject",
-            "s3:PutObject"
+            "s3:GetObject"
           ],
           Resource = [
             "${scaleway_object_bucket.main.name}",
             "${scaleway_object_bucket.main.name}/data/*",
+          ]
+        },
+        {
+          Effect = "Allow",
+          Sid    = "Grant write in data/raw/* & data/marts/* to airflow",
+          Principal = {
+            SCW = ["application_id:${var.airflow_application_id}"]
+          },
+          Action = [
+            "s3:PutObject"
+          ],
+          Resource = [
+            "${scaleway_object_bucket.main.name}/data/raw/*",
+            "${scaleway_object_bucket.main.name}/data/marts/*",
           ]
         },
         {
@@ -162,16 +175,14 @@ resource "scaleway_object_bucket_policy" "main" {
         },
         {
           Effect = "Allow",
-          Sid    = "Grant list & read in data/marts/* to the api",
+          Sid    = "Grant read in data/marts/* to the api",
           Principal = {
             SCW = ["application_id:${var.api_scw_application_id}"]
           },
           Action = [
-            "s3:ListBucket",
             "s3:GetObject",
           ],
           Resource = [
-            "${scaleway_object_bucket.main.name}",
             "${scaleway_object_bucket.main.name}/data/marts/*",
           ]
         },
@@ -205,33 +216,51 @@ resource "scaleway_object_bucket_policy" "main" {
         },
         {
           Effect = "Allow",
-          Sid    = "Grant list, read & write in data/marts/* to consumers",
+          Sid    = "Grant read in data/marts/* to consumers",
           Principal = {
             SCW = [for app_id in data.scaleway_iam_group.marts_consumers.application_ids : "application_id:${app_id}"]
           },
           Action = [
-            "s3:ListBucket",
             "s3:GetObject"
           ],
           Resource = [
-            "${scaleway_object_bucket.main.name}",
             "${scaleway_object_bucket.main.name}/data/marts/*",
           ]
         },
         {
           Effect = "Allow",
-          Sid    = "Grant list & read in data/marts/* to autometa",
+          Sid    = "Grant read in data/marts/* to autometa",
           Principal = {
             SCW = ["application_id:2cf4daf8-20aa-42fa-b124-48b9e2568c08"]
           },
           Action = [
-            "s3:ListBucket",
             "s3:GetObject"
           ],
           Resource = [
-            "${scaleway_object_bucket.main.name}",
             "${scaleway_object_bucket.main.name}/data/marts/*",
           ]
+        },
+        {
+          Effect = "Allow",
+          Sid    = "Grant list in data/marts/* to the api, consumers & autometa",
+          Principal = {
+            SCW = concat(
+              ["application_id:${var.api_scw_application_id}"],
+              [for app_id in data.scaleway_iam_group.marts_consumers.application_ids : "application_id:${app_id}"],
+              ["application_id:2cf4daf8-20aa-42fa-b124-48b9e2568c08"]
+            )
+          },
+          Action = [
+            "s3:ListBucket"
+          ],
+          Resource = [
+            "${scaleway_object_bucket.main.name}",
+          ],
+          Condition = {
+            StringLike = {
+              "s3:prefix" = ["data/marts", "data/marts/*"]
+            }
+          }
         }
       ]
     }
