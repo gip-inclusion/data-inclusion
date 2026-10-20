@@ -114,10 +114,6 @@ models:
           - dbt_utils.expression_is_true:
               arguments:
                 expression: "!~ '(?<!etc)\\.$'"
-      - name: presentation_resume
-        data_tests:
-          - not_null
-          - dbt_utils.not_empty_string
       - name: presentation_detail
         data_tests:
           - dbt_utils.at_least_one
@@ -167,24 +163,6 @@ models:
               arguments:
                 to: ref('typologies_de_services')
                 field: value
-      - name: zone_diffusion_code
-        data_tests:
-          - not_null:
-              config:
-                error_if: ">1000"
-          - dbt_utils.not_empty_string
-      - name: zone_diffusion_nom
-        data_tests:
-          - not_null:
-              config:
-                error_if: ">100"
-          - dbt_utils.not_empty_string
-      - name: zone_diffusion_type
-        data_tests:
-          - not_null
-          - accepted_values:
-              arguments:
-                values: [commune, epci, departement, region, pays]
       - name: zone_eligibilite
         data_tests:
           - dbt_utils.at_least_one
