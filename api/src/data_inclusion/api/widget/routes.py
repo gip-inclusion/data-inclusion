@@ -73,7 +73,7 @@ def validate_widget_token(request: fastapi.Request, token: str) -> str | None:
 
     # support legacy widget tokens with allowed_origins
     allowed_hosts = [
-        host.strip("* ")  # remove leading * from hostnames
+        host.strip("*. ")  # remove leading *. from hostnames
         for host in (
             # keep support for legacy widget tokens with 'allowed_origins' key;
             # please note that the values were already hostnames.
@@ -87,8 +87,8 @@ def validate_widget_token(request: fastapi.Request, token: str) -> str | None:
             detail="Widget access not configured for this token.",
         )
 
-    # quick allow wildcard host
-    if "*" in allowed_hosts:
+    # quick allow wildcard host ("*" was stripped to "")
+    if "" in allowed_hosts:
         return payload.get("sub")
 
     req_origin = request.headers.get("origin") or request.headers.get("referer")
@@ -102,7 +102,10 @@ def validate_widget_token(request: fastapi.Request, token: str) -> str | None:
     if origin_host and (
         origin_host in ("localhost", "127.0.0.1")
         or origin_host == widget_host
-        or any(origin_host.endswith(host) for host in allowed_hosts)
+        or any(
+            origin_host == host or origin_host.endswith(f".{host}")
+            for host in allowed_hosts
+        )
     ):
         return payload.get("sub")
 
