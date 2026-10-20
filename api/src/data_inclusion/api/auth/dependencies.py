@@ -66,10 +66,10 @@ async def authenticate(request: fastapi.Request):
         return
 
     try:
-        payload = TokenPayload.model_validate(payload)
-        scopes = payload.scopes
-    except pydantic.ValidationError:
-        try:
+        if "scopes" in payload:
+            payload = TokenPayload.model_validate(payload)
+            scopes = payload.scopes
+        else:
             payload = LegacyTokenPayload.model_validate(payload)
             if payload.allowed_origins:
                 scopes = ["widget"]
@@ -77,9 +77,9 @@ async def authenticate(request: fastapi.Request):
                 scopes = ["api"]
                 if payload.admin:
                     scopes.append("admin")
-        except pydantic.ValidationError:
-            logger.error("Invalid token payload: %s", payload)
-            return
+    except pydantic.ValidationError:
+        logger.error("Invalid token payload: %s", payload)
+        return
 
     request.scope["user"], request.scope["auth"] = (
         SimpleUser(username=payload.sub),

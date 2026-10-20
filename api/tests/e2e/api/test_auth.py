@@ -30,6 +30,15 @@ LEGACY_ADMIN_TOKEN = jwt.encode(
     key=settings.SECRET_KEY,
     algorithm="HS256",
 )
+MALFORMED_MODERN_ADMIN_TOKEN = jwt.encode(
+    payload={
+        "sub": "malformed@example.com",
+        "scopes": "not-a-list",
+        "admin": True,
+    },
+    key=settings.SECRET_KEY,
+    algorithm="HS256",
+)
 
 
 def create_token_with_admin(api_client, payload: dict) -> str:
@@ -109,6 +118,7 @@ def test_robots(api_client):
         ({"Authorization": f"Bearer {LEGACY_API_TOKEN}"}, 200),
         ({"Authorization": f"Bearer {LEGACY_ADMIN_TOKEN}"}, 200),
         ({"Authorization": f"Bearer {LEGACY_WIDGET_TOKEN}"}, 403),
+        ({"Authorization": f"Bearer {MALFORMED_MODERN_ADMIN_TOKEN}"}, 401),
     ],
 )
 def test_api_endpoints_auth_legacy_tokens(api_client, headers, status_code):
