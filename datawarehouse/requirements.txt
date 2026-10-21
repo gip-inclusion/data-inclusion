@@ -12,7 +12,7 @@ btrees==6.4
     #   zope-index
 categorical-distance==1.9
     # via dedupe
-certifi==2026.7.22
+certifi==2026.10.19
     # via
     #   -r requirements.in
     #   requests
