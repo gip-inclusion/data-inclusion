@@ -1,4 +1,4 @@
-FROM ghcr.io/mlflow/mlflow:v3.17.1-full@sha256:190306b1739b9646d6d39333594334b69ba14ab843db927712c790b50892f262
+FROM ghcr.io/mlflow/mlflow:v3.17.2-full@sha256:f922dce73c12026ce7e6b8e3e0740a657db3162910d4368f67dddc86af8b3d10
 
 # extra dependencies of mlflow[auth], installed at build time rather than at startup
 COPY requirements.txt requirements.txt
