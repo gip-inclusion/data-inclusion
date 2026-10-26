@@ -118,11 +118,6 @@ models:
       - name: prix_total_ttc
         data_tests:
           - dbt_utils.not_constant
-      - name: url_action
-        data_tests:
-          - dbt_utils.not_null_proportion:
-              arguments:
-                at_least: 0.1
       - name: hash_coordonnees_lieu_de_formation_principal
         data_tests:
           - dbt_utils.not_null_proportion:

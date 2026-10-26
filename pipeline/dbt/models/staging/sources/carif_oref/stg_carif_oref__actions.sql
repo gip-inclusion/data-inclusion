@@ -19,16 +19,6 @@ final AS (
         NULLIF(TRIM(actions.data ->> 'modalites-recrutement'), '')                                                           AS "modalites_recrutement",
         CAST(actions.data ->> 'prise-en-charge-frais-possible' AS BOOLEAN)                                                   AS "prise_en_charge_frais_possible",
         CAST(REPLACE(actions.data ->> 'prix-total-TTC', ',', '.') AS FLOAT)                                                  AS "prix_total_ttc",
-        NULLIF(
-            ARRAY_REMOVE(
-                ARRAY(
-                    SELECT NULLIF(TRIM(x.urlweb), '')
-                    FROM JSONB_ARRAY_ELEMENTS_TEXT(actions.data -> 'url-action' -> 'urlweb') AS x (urlweb)
-                ),
-                NULL
-            ),
-            '{}'
-        )                                                                                                                    AS "url_action",
         CAST(MD5(lieux_de_formation.data ->> 'coordonnees') AS TEXT)                                                         AS "hash_coordonnees_lieu_de_formation_principal",
         CAST(JSONB_PATH_QUERY_FIRST(actions.data, '$.extras[*] ? (@.\@info == "duree-hebdo") .extra[*]') ->> '$' AS INTEGER) AS "duree_hebdo",
         CAST(actions.data ->> 'nombre-heures-total' AS INTEGER)                                                              AS "nombre_heures_total",
