@@ -74,7 +74,7 @@ docker compose rm -v airflow-db
 
 ```bash
 docker compose --progress=plain up \
-  --pull=always \
+  --pull=missing \
   --force-recreate \
   --remove-orphans \
   --wait \

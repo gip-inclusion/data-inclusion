@@ -272,9 +272,9 @@ locals {
   mlflow_hostname  = "mlflow.${var.dns_zone}"
   work_dir         = "/root/data-inclusion"
   compose_up_command = var.environment == "prod" ? (
-    "docker compose -f docker-compose.yml -f docker-compose.oauth2.yml --progress=plain up --pull=always --force-recreate --remove-orphans --wait --wait-timeout 1200 --quiet-pull --detach"
+    "docker compose -f docker-compose.yml -f docker-compose.oauth2.yml --progress=plain up --pull=missing --force-recreate --remove-orphans --wait --wait-timeout 1200 --quiet-pull --detach"
     ) : (
-    "docker compose --progress=plain up --pull=always --force-recreate --remove-orphans --wait --wait-timeout 1200 --quiet-pull --detach"
+    "docker compose --progress=plain up --pull=missing --force-recreate --remove-orphans --wait --wait-timeout 1200 --quiet-pull --detach"
   )
 }
 
@@ -314,6 +314,9 @@ resource "terraform_data" "up" {
   provisioner "file" {
     content = sensitive(<<-EOT
     STACK_VERSION='${var.stack_version}'
+    PIPELINE_IMAGE='ghcr.io/gip-inclusion/data-inclusion-pipeline@${file("${path.root}/digests/pipeline")}'
+    DATAWAREHOUSE_IMAGE='ghcr.io/gip-inclusion/data-inclusion-datawarehouse@${file("${path.root}/digests/datawarehouse")}'
+    MLFLOW_IMAGE='ghcr.io/gip-inclusion/data-inclusion-mlflow@${file("${path.root}/digests/mlflow")}'
     AIRFLOW__SENTRY__RELEASE='${var.stack_version}'
     AIRFLOW_HOSTNAME='${local.airflow_hostname}'
     AIRFLOW_VAR_ENVIRONMENT='${var.environment}'
