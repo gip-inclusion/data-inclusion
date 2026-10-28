@@ -5,7 +5,7 @@ name: "data-inclusion"
 x-airflow-common:
   &airflow-common
 
-  image: ghcr.io/gip-inclusion/data-inclusion-pipeline:${STACK_VERSION}
+  image: ${PIPELINE_IMAGE:?}
 
   environment:
     &airflow-common-environment
@@ -127,7 +127,7 @@ services:
       start_period: 30s
 
   datawarehouse:
-    image: ghcr.io/gip-inclusion/data-inclusion-datawarehouse:${STACK_VERSION}
+    image: ${DATAWAREHOUSE_IMAGE:?}
     shm_size: '128mb'
     restart: always
     healthcheck:
@@ -180,7 +180,7 @@ services:
       - mlflow-data:/var/lib/postgresql
 
   mlflow:
-    image: ghcr.io/gip-inclusion/data-inclusion-mlflow:${STACK_VERSION}
+    image: ${MLFLOW_IMAGE:?}
     depends_on:
       mlflow-db:
         condition: service_healthy
