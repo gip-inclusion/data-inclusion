@@ -63,7 +63,7 @@ def cli(ctx: click.Context, verbose: int):
     "--expires-in",
     type=click.IntRange(min=1),
     metavar="DAYS",
-    help="Expire the token after this number of days",
+    help="Expire the token after this number of days (default: 5 years)",
 )
 def _generate_token_for_user(
     email: str,

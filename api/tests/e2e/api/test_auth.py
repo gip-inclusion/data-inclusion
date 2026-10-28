@@ -1,6 +1,7 @@
 from unittest.mock import ANY
 
 import jwt
+import pendulum
 import pytest
 
 from data_inclusion.api import auth
@@ -79,6 +80,7 @@ def test_create_token_unauthorized(api_client):
                 "sub": "widget@example.com",
                 "scopes": ["widget"],
                 "created_at": ANY,
+                "exp": ANY,
                 "allowed_hosts": ["example.com"],
             },
         ),
@@ -89,6 +91,7 @@ def test_create_token_unauthorized(api_client):
                 "sub": "widget@example.com",
                 "scopes": ["widget"],
                 "created_at": ANY,
+                "exp": ANY,
                 "allowed_hosts": ["sub.example.com"],
             },
         ),
@@ -103,6 +106,23 @@ def test_create_token_with_hosts(
     resp_data = response.json()
     assert resp_data == {"access": ANY, "allowed_hosts": expected_hosts}
     assert auth.verify_token(token=resp_data["access"]) == expected_token_payload
+
+
+@pytest.mark.with_token(scopes=["admin"])
+@pytest.mark.parametrize(
+    ("payload", "expected_days"),
+    [
+        ({"email": "api@example.com"}, 5 * 365),
+        ({"email": "api@example.com", "expires_in_days": 30}, 30),
+    ],
+)
+def test_create_token_expires(api_client, payload, expected_days):
+    response = api_client.post("/auth/create_token/", json=payload)
+
+    assert response.status_code == 200
+    token_payload = auth.verify_token(token=response.json()["access"])
+    created_at = pendulum.parse(token_payload["created_at"])
+    assert token_payload["exp"] == created_at.add(days=expected_days).int_timestamp
 
 
 def test_robots(api_client):

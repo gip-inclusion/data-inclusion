@@ -25,8 +25,7 @@ def create_access_token(
     }
     if allowed_hosts is not None:
         payload["allowed_hosts"] = allowed_hosts
-    if expires_in_days is not None:
-        payload["exp"] = created_at.add(days=expires_in_days)
+    payload["exp"] = created_at.add(days=expires_in_days or 5 * 365)
     return jwt.encode(
         payload=payload,
         key=settings.SECRET_KEY,
