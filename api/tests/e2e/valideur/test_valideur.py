@@ -1,7 +1,10 @@
 from pathlib import Path
+from unittest import mock
 
 import pytest
 from playwright import sync_api as pw
+
+from data_inclusion.api.valideur import readers, routes
 
 
 @pytest.mark.playwright
@@ -42,3 +45,33 @@ def test_upload_files(api_client, filename, fixture_path: Path, expected_status_
         "/valideur/fragments/analyze", files={"dataset": (filename, content)}
     )
     assert response.status_code == expected_status_code
+
+
+def test_upload_too_large_is_rejected_before_reading(api_client, monkeypatch):
+    read_file = mock.Mock()
+    monkeypatch.setattr(readers, "read_file", read_file)
+
+    content = b"\0" * (routes.MAX_FILE_SIZE_BYTES + 1)
+    response = api_client.post(
+        "/valideur/fragments/analyze", files={"dataset": ("dataset.xlsx", content)}
+    )
+    assert response.status_code == 413
+    read_file.assert_not_called()
+
+
+def test_upload_too_many_parts(api_client):
+    response = api_client.post(
+        "/valideur/fragments/analyze",
+        files=[("dataset", ("dataset.xlsx", b""))] * 1001,
+    )
+    assert response.status_code == 400
+
+
+def test_upload_while_another_analysis_runs(api_client, fixtures_dir: Path):
+    content = (fixtures_dir / "dataset.xlsx").read_bytes()
+
+    with routes.analyze_lock:
+        response = api_client.post(
+            "/valideur/fragments/analyze", files={"dataset": ("dataset.xlsx", content)}
+        )
+    assert response.status_code == 503
