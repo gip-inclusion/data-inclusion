@@ -1,5 +1,8 @@
+import io
+import zipfile
 from pathlib import Path
 
+import openpyxl
 import pydantic
 import pytest
 
@@ -170,3 +173,57 @@ def test_readers(fixtures_dir: Path):
         readers.read_file(file=fixtures_dir / "dataset.xlsx")
     except Exception as exc:
         pytest.fail(f"read_file raised an exception: {exc}")
+
+
+def _zip(members: dict[str, bytes]) -> io.BytesIO:
+    buf = io.BytesIO()
+    with zipfile.ZipFile(buf, "w", zipfile.ZIP_DEFLATED) as zf:
+        for name, data in members.items():
+            zf.writestr(name, data)
+    buf.seek(0)
+    return buf
+
+
+@pytest.mark.parametrize(
+    "file",
+    [
+        io.BytesIO(b"\xd0\xcf\x11\xe0\xa1\xb1\x1a\xe1" + b"\0" * 512),
+        _zip({"mimetype": b"application/vnd.oasis.opendocument.spreadsheet"}),
+        _zip({"[Content_Types].xml": b"", "xl/workbook.bin": b""}),
+    ],
+    ids=["xls", "ods", "xlsb"],
+)
+def test_read_file_rejects_other_formats(file):
+    with pytest.raises(readers.ValideurException, match="Invalid xlsx file"):
+        readers.read_file(file=file, filename="dataset.xlsx")
+
+
+def test_read_file_rejects_high_compression_ratio():
+    buf = _zip(
+        {
+            "[Content_Types].xml": b"",
+            "xl/workbook.xml": b"",
+            "xl/padding.xml": b"\0" * 1_000_000,
+        }
+    )
+
+    with pytest.raises(readers.ValideurException, match="Invalid xlsx file"):
+        readers.read_file(file=buf, filename="dataset.xlsx")
+
+
+@pytest.mark.parametrize(
+    ("n_rows", "n_columns"),
+    [(10_001, 1), (1, 501)],
+)
+def test_read_file_rejects_large_sheets(n_rows, n_columns):
+    wb = openpyxl.Workbook(write_only=True)
+    for sheet_name in ["Structures", "Services"]:
+        ws = wb.create_sheet(sheet_name)
+        for _ in range(n_rows):
+            ws.append(["x"] * n_columns)
+    buf = io.BytesIO()
+    wb.save(buf)
+    buf.seek(0)
+
+    with pytest.raises(readers.ValideurException, match="too large"):
+        readers.read_file(file=buf, filename="dataset.xlsx")

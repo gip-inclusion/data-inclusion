@@ -2,6 +2,7 @@ import enum
 import mimetypes
 import types
 import typing
+import zipfile
 from pathlib import Path
 from typing import BinaryIO
 
@@ -52,6 +53,23 @@ def _get_array_fields(model: type[pydantic.BaseModel]) -> list[str]:
 
 
 def read_xlsx(file: BinaryIO | Path) -> tuple[pd.DataFrame, pd.DataFrame]:
+    # xlsx files are zip archives: check their metadata before decompressing
+    try:
+        with zipfile.ZipFile(file) as zf:
+            infos = zf.infolist()
+    except zipfile.BadZipFile as exc:
+        raise ValideurException("Invalid xlsx file") from exc
+    filenames = [i.filename for i in infos]
+    size = sum(i.file_size for i in infos)
+    if (
+        "[Content_Types].xml" not in filenames
+        or "xl/workbook.xml" not in filenames
+        or len(infos) > 100
+        or size > 20_000_000
+        or size > 100 * sum(i.compress_size for i in infos)
+    ):
+        raise ValideurException("Invalid xlsx file")
+
     def _read(
         sheet_name: str,
         model: type[v1.Structure] | type[v1.Service],
@@ -61,7 +79,11 @@ def read_xlsx(file: BinaryIO | Path) -> tuple[pd.DataFrame, pd.DataFrame]:
             sheet_name=sheet_name,
             dtype=str,
             header=None,
+            engine="openpyxl",
+            nrows=10_001,  # one more than allowed, to detect larger sheets
         )
+        if len(df) > 10_000 or len(df.columns) > 500:
+            raise ValideurException(f"Sheet {sheet_name} is too large")
         df = df.replace({np.nan: None})
         # update index to start at 1 instead of 0, to match line numbers in Excel
         df = df.set_axis(labels=df.index + 1, axis=0)

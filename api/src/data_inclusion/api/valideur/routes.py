@@ -1,4 +1,4 @@
-import zipfile
+import threading
 from pathlib import Path
 from typing import Annotated
 
@@ -18,6 +18,8 @@ app = fastapi.FastAPI()
 templates = templating.Jinja2Templates(directory=TEMPLATES_DIR)
 
 MAX_FILE_SIZE_BYTES = 5_000_000
+
+analyze_lock = threading.Lock()
 
 
 @app.exception_handler(readers.ValideurException)
@@ -39,24 +41,21 @@ def results(
     if dataset.size > MAX_FILE_SIZE_BYTES:
         raise fastapi.HTTPException(status_code=413)
 
-    # xlsx files are zip archives: cap the uncompressed size (zip bombs)
-    if zipfile.is_zipfile(dataset.file):
-        with zipfile.ZipFile(dataset.file) as zf:
-            if sum(i.file_size for i in zf.infolist()) > 10 * MAX_FILE_SIZE_BYTES:
-                raise fastapi.HTTPException(status_code=413)
-    dataset.file.seek(0)
-
-    structures_df, services_df = readers.read_file(
-        file=dataset.file, filename=dataset.filename
-    )
-    errors_df = pd.DataFrame(
-        services.validate_dataset(
-            db_session=db_session,
-            structures_data=structures_df.to_dict(orient="records"),
-            services_data=services_df.to_dict(orient="records"),
-        ),
-        columns=["schema", "line", "field", "value", "message"],
-    )
+    # one analysis at a time per worker
+    if analyze_lock.locked():
+        raise fastapi.HTTPException(status_code=503)
+    with analyze_lock:
+        structures_df, services_df = readers.read_file(
+            file=dataset.file, filename=dataset.filename
+        )
+        errors_df = pd.DataFrame(
+            services.validate_dataset(
+                db_session=db_session,
+                structures_data=structures_df.to_dict(orient="records"),
+                services_data=services_df.to_dict(orient="records"),
+            ),
+            columns=["schema", "line", "field", "value", "message"],
+        )
     errors_df = errors_df.replace({np.nan: None})
 
     summary_dict = {
