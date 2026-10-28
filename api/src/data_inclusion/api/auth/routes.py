@@ -1,7 +1,7 @@
 from typing import Annotated, Literal
 
 import furl
-from pydantic import BaseModel
+from pydantic import BaseModel, PositiveInt
 
 import fastapi
 
@@ -14,6 +14,7 @@ class TokenCreationData(BaseModel):
     email: str
     hosts: list[str] | None = None
     scopes: list[Literal["api", "widget"]] | None = None
+    expires_in_days: PositiveInt | None = None
 
 
 class Token(BaseModel):
@@ -48,6 +49,7 @@ def create_token_endpoint(
             subject=token_creation_data.email,
             scopes=token_creation_data.scopes,
             allowed_hosts=allowed_hosts,
+            expires_in_days=token_creation_data.expires_in_days,
         ),
         allowed_hosts=allowed_hosts,
     )
