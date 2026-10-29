@@ -209,13 +209,12 @@ services:
       - MLFLOW_SERVER_ALLOWED_HOSTS=${MLFLOW_HOSTNAME},mlflow:5000
       - MLFLOW_SERVER_CORS_ALLOWED_ORIGINS=https://${MLFLOW_HOSTNAME}
       - MLFLOW_FLASK_SERVER_SECRET_KEY=${MLFLOW_FLASK_SERVER_SECRET_KEY}
-    ports:
-      - 5000:5000
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.mlflow.rule=Host(`${MLFLOW_HOSTNAME}`)"
       - "traefik.http.routers.mlflow.entrypoints=websecure"
       - "traefik.http.routers.mlflow.tls.certresolver=main"
+      - "traefik.http.services.mlflow.loadbalancer.server.port=5000"
 
 volumes:
   airflow-logs:
