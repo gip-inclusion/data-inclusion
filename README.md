@@ -1,39 +1,16 @@
 # `data-inclusion`
 
-data·inclusion aggrège les données de l'insertion sociale et professionnelle.
+**data·inclusion** aggrège et partage l'offre de service d'insertion sociale et professionnelle.
 
-## Présentation
+## Liens importants
 
-Les sources de données traitées comprennent notamment:
+- [le dépôt de code versionnant le schéma de données](https://github.com/gip-inclusion/data-inclusion-schema)
+- [la documentation du schéma](https://gip-inclusion.github.io/data-inclusion-schema/latest/)
+- [la documentation de l'api](https://api.data.inclusion.gouv.fr/api/docs)
+- [l'open data](https://www.data.gouv.fr/datasets/referentiel-de-loffre-dinsertion-sociale-et-professionnelle-data-inclusion)
 
-* les données du GIP de l'inclusion: les emplois de l'inclusion et dora,
-* les lieux de médiations numérique,
-* la base de ressources partenariales de Pole Emploi,
-* des données de collectivités territoriales (e.g. l'Ille-et-Vilaine)
-* des acteurs publics: 1jeune1solution, mes aides de pôle emploi.
-
-Les données collectées sont:
-
-* historisées,
-* géocodées,
-* sirétisées automatiquement,
-* enrichies via les outils développés par data·inclusion:
-  * l'outil de correspondance, qui permet de faire correspondre 2 jeux de données brutes,
-  * l'outil de sirétisation, qui permet d'attribuer un siret aux structures, afin de croiser,
-* alignées sur le [schéma de données de data·inclusion](https://schema.data.gouv.fr/gip-inclusion/data-inclusion-schema/)
-* publiées régulièrement en [open data sur data.gouv](https://www.data.gouv.fr/fr/datasets/referentiel-de-loffre-dinsertion-liste-des-structures-et-services-dinsertion/), la plateforme de données publiques,
-* consultables via une api.
-
-## Architecture
-
-![architecture](./docs/img/data-inclusion-architecture.drawio.png)
-
-## Pipeline
-
-![pipeline](./docs/img/data-inclusion-data.drawio.png)
+## [Architecture](ARCHI.md)
 
 ## [Contribuer](CONTRIBUTING.md)
-
-## [Auteurs](CODEOWNERS)
 
 ## [Licence](LICENSE)

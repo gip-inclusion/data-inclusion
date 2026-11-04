@@ -1,23 +1,17 @@
 # Contributing
 
-## Local prerequisites
-
-### os dependencies
+## Common setup
 
 ```bash
-# required for psycopg2 (postgres)
-sudo apt-get update -y && sudo apt-get install -y libpq-dev python3-dev
-```
+# Clone this repository
+git clone git@github.com:gip-inclusion/data-inclusion.git && cd data-inclusion
 
-### `vscode` (Recommended)
+# Open workspace in vscode
+code .vscode/data-inclusion.code-workspace
 
-Support for vscode is provided, with a sensible configuration.
+# Install precommit hooks
+uvx pre-commit install
 
-### `docker`
-
-A `docker-compose.yml` file is provided for development.
-
-```bash
 # Copy the template .env
 cp .template.env .env
 
@@ -25,53 +19,27 @@ cp .template.env .env
 # It should work as is, except for the `AIRFLOW_UID=` variable that must be set
 # to the value returned by `echo $(id -u)`
 
-# Start the stack
+# Start the stack (or just part of it)
 docker compose up -d
 ```
 
-After a few seconds, the services should be avaible as follow:
+After a few seconds, the services should be available as follows:
 
-|                 | default location                                           | default credentials                     |
-| --------------- | ---------------------------------------------------------- | --------------------------------------- |
-| airflow UI      | [http://localhost:8080](http://localhost:8080)             | user: `airflow` pass: `airflow`         |
-| data.inclusion  | [http://localhost:8000](http://localhost:8000/api/v0/docs) | token must be generated                 |
+|                 | default location                                        | default credentials                               |
+| --------------- | ------------------------------------------------------- | ------------------------------------------------- |
+| airflow UI      | [http://localhost:8080](http://localhost:8080)          | none (all users are admins)                       |
+| api             | [http://localhost:8000](http://localhost:8000/api/docs) | token must be generated                           |
+| datawarehouse (pg)   | `localhost:5433`                                        | user: `data-inclusion` pass: `data-inclusion`     |
+| datalake (minio)| `localhost:9000`                                        | user: `minioadmin` pass: `minioadmin`             |
+| mlflow          | [http://localhost:5000](http://localhost:5000)          | none                                              |
 
+The airflow, api and datawarehouse ports can be overridden in `.env` (`AIRFLOW_UI_PORT`, `API_PORT`, `TARGET_POSTGRES_PORT`).
 
-### `minio` Client
+## Subdir specific setups
 
-This is optional but allows you to interact with the datalake locally from the command line.
+Each subdirectory (`./api`, etc.) has its own contributing guidelines on how to setup an environment for development.
 
-Cf [DEPLOYMENT.md](DEPLOYMENT.md) if you also wich to interact with staging and prod bucket.
+## Deployment
 
-See installation instructions [here](https://min.io/docs/minio/linux/reference/minio-mc.html).
-
-### `python`
-
-Project uses `python3.11`
-
-[`pyenv`](https://github.com/pyenv/pyenv) is a clean and easy way to manage multiple python versions on your computer. Installation instructions are available [here](https://github.com/pyenv/pyenv-installer).
-
-### `pre-commit`
-
-```bash
-pipx install pre-commit
-```
-
-## Global setup
-
-```bash
-# Clone this repository
-git clone git@github.com:gip-inclusion/data-inclusion.git
-
-# Setup code quality tools
-pre-commit install
-
-# Open workspace in vscode
-code -n data-inclusion
-```
-
-Each subdirectory (`./pipeline`, `./api`, etc.) has its own contributing guidelines on how to setup an environment for development.
-
-## Contribution
-
-Issues and PRs are welcome.
+* The pipeline is deployed on Scaleway using terraform in a github workflow.
+* The api is deployed on Scalingo, from sources, using the Scalingo github integration and [`PROJECT_DIR`](https://doc.scalingo.com/platform/getting-started/common-deployment-errors#project-in-a-subdirectory).

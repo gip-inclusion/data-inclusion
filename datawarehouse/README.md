@@ -1,14 +1,10 @@
 # `datawarehouse`
 
-This subdirectory holds datawarehouse docker image.
+Custom postgresql image with `plpython3u` enabled.
 
-The image:
+`plpython3u` is used to embed python transformations within dbt models.
 
-* extends the official `postgres` image
-* installs `postgis` and `plpython3u` extensions
-* installs extra python requirements in a dedicated virtualenv
-* makes this virtualenv available to `plpython3u`
-* creates `pg_trgm`, `unaccent`, `postgis` and `plpython3u` extensions on the DB target by the `POSTGRES_DB` env variable
+It is generally considered unsafe therefore not available on managed databases.
 
 ## compiling the python requirements
 
@@ -19,15 +15,5 @@ For the sake of simplicity, this will be the target python version.
 The `requirements.txt` should therefore be compiled in a python3.11 environment.
 
 ```bash
-pyenv shell 3.11
-pipx run --spec pip-tools --python=$(which python) pip-compile requirements/requirements.in
+uv pip compile --python-version 3.11 requirements.in --output-file requirements.txt
 ```
-
-## about `plpython3u`
-
-`plpython3u`:
-
-* enables the use of python in postgres
-* can be leverage to do complex task (geocoding, validation) that can be orchestrated with dbt
-* does not restrict what user can do with it in a postgres database
-* is therefore not available in managed databases on cloud platforms
