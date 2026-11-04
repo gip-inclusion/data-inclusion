@@ -1,0 +1,13 @@
+{
+    "permissions": {
+        "allow": [],
+        "deny": [
+            "Read(./**/*.env)",
+            "Read(./**/*.tfvars.json)"
+        ],
+        "ask": [
+            "Bash(git push *)",
+            "Bash(git commit *)"
+        ]
+    }
+}
