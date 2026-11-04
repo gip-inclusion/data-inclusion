@@ -1,4 +1,4 @@
-FROM postgres:18-bookworm@sha256:bbf83594798e144bff365a9c191c5d779f181fb3135902064ab8ff11918020fc
+FROM postgres:18-trixie@sha256:3a4264520e121176619f54ff867d12774bc81e95e7b84db58d63bccdb6144b81
 
 ENV VIRTUAL_ENV=/app/venv
 ENV PATH="${VIRTUAL_ENV}/bin:${PATH}"
@@ -30,7 +30,7 @@ ENV SSL_CERT_FILE=/etc/ssl/certs/ca-certificates.crt
 ENV REQUESTS_CA_BUNDLE=/etc/ssl/certs/ca-certificates.crt
 ENV CURL_CA_BUNDLE=/etc/ssl/certs/ca-certificates.crt
 
-RUN python3.11 -m venv ${VIRTUAL_ENV}
+RUN python3 -m venv ${VIRTUAL_ENV}
 RUN pip install --no-cache-dir --upgrade pip setuptools wheel
 
 COPY ./docker-entrypoint-initdb.d /docker-entrypoint-initdb.d
