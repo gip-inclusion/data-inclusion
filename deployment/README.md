@@ -10,7 +10,7 @@ The api and metabase are deployed on scalingo, from sources, using the scalingo 
 
 ### prerequisites
 
-* `terraform==1.5.x` (can be installed with an `asdf` plugin)
+* `terraform`, at the version pinned in `.tool-versions` (can be installed with `asdf install`)
 
 #### for the state backend
 
