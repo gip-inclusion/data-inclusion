@@ -3,27 +3,18 @@
 ## Setup
 
 ```bash
-uv venv
-uv pip install -r requirements/dev/requirements.txt
-uv pip install dbt-postgres dbt-core==1.*
+make setup
+make dbt-init  # requires running datawarehouse
 ```
 
-## Running `dbt`
-
-* dbt is configured to target the `datawarehouse` postgres container (see the root `docker-compose.yml`).
+## Running `dbt` against the datawarehouse
 
 ```bash
 # run dbt commands in the dbt project dir
-cd ./dbt
+cd dbt
 
-# install extra dbt packages (e.g. dbt_utils)
-uv dbt deps
-# load seeds
-uv dbt seed
-# create user defined functions
-uv dbt run-operation create_udfs
-# run commands
-uv dbt ls
+uv run dbt ls
+uv run dbt build --select <model>
 ```
 
 ## Updating schema in dbt seeds
@@ -34,13 +25,14 @@ uv dbt ls
 ./scripts/update_schema_seeds.py
 ```
 
-## Managing the pipeline requirements
+## Managing requirements
 
 In order to prevent conflicts:
 
 * tasks requirements are compiled separately
 * python tasks run in dedicated virtual envs using `task.virtualenv`
 * python tasks requirements must comply to airflow constraints
+* dbt tasks have their own separate requirements
 
 
 ```bash
@@ -51,14 +43,4 @@ make all
 
 # to upgrade dependencies
 make upgrade all
-```
-
-## Running the test suite
-
-```bash
-# Copy (and optionally edit) the template .env
-cp .template.env .env
-
-# simply use tox (for reproducible environnement, packaging errors, etc.)
-tox
 ```

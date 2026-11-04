@@ -50,9 +50,9 @@ The **marts** layer can be thought as a presentational layer. Data that will be 
 
 ## Orchestration
 
-In production, airflow run the dbt project, using the `main` dag especially. Related dbt models are grouped and built in dedicated airflow tasks. For instance, the staging layer models are grouped by source.
+In production, airflow run the dbt project, using the `run_main_pipeline` dag especially. Related dbt models are grouped and built in dedicated airflow tasks. For instance, the staging layer models are grouped by source.
 
-The `main` dag is designed to prevent corrupted sources to block the entire pipeline execution. Some models are first ran and built in temporary database schema with a dedicated (non-blocking) airflow task. This way, when a task fails, the last known data will remain in use for downstream models and the pipeline continues to run.
+The `run_main_pipeline` dag is designed to prevent corrupted sources to block the entire pipeline execution. Some models are first ran and built in temporary database schema with a dedicated (non-blocking) airflow task. This way, when a task fails, the last known data will remain in use for downstream models and the pipeline continues to run.
 
 ## Testing models
 
