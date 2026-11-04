@@ -71,7 +71,22 @@ def _generate_token_for_user(
     allowed_hosts: list[str],
     expires_in: int | None,
 ):
-    """Generate a token associated with the given email."""
+    """Generate a token associated with the given email.
+
+    Scopes are `api`, `admin` and `widget`. Without `--scope`, the token gets
+    the `widget` scope if `--allowed-host` is given, `api` otherwise.
+
+    \b
+    Examples:
+        # basic token
+        data-inclusion-api generate-token user@example.com
+        # admin token (explicit scopes replace the default)
+        data-inclusion-api generate-token admin@example.com --scope api --scope admin
+        # widget token for a given host (or "*" for all hosts)
+        data-inclusion-api generate-token widget@example.com --allowed-host example.com
+        # token expiring after 30 days
+        data-inclusion-api generate-token user@example.com --expires-in 30
+    """
     scopes_list = list(scopes) if scopes else None
     allowed_hosts_list = list(allowed_hosts) if allowed_hosts else None
     click.echo(

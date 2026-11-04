@@ -2,10 +2,11 @@
 All of our CI checks and deployments are managed through Github actions.
 
 ## Automatic checks
-Every pull request gets first checked through the jobs in `pipeline.yml`.
+Every pull request is checked by the `test` job of `deploy_staging.yml`, which runs
+the linters and test suites of the pipeline and the api (see `_test.yml`).
 
-Depending on the sub-directory you were working on, a series of linters
-and test suites will be run and verify that no assertion is broken.
+Pull requests are also reviewed by relecteur (`review.yml`). Comment `@relecteur` on a
+pull request to request a new review.
 
 Of course, this does not ensure that your changes do not have an impact
 on the data or features of the product; our coverage can't be very high
