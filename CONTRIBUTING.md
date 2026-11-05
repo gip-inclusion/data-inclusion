@@ -30,8 +30,14 @@ After a few seconds, the services should be available as follows:
 | airflow UI      | [http://localhost:8080](http://localhost:8080)          | none (all users are admins)                       |
 | api             | [http://localhost:8000](http://localhost:8000/api/docs) | token must be generated                           |
 | datawarehouse (pg)   | `localhost:5433`                                        | user: `data-inclusion` pass: `data-inclusion`     |
-| datalake (minio)| `localhost:9000`                                        | user: `minioadmin` pass: `minioadmin`             |
+| datalake (seaweedfs) | s3: `localhost:8333`, ui: [http://localhost:8888](http://localhost:8888) | user: `datalake` pass: `datalake` |
 | mlflow          | [http://localhost:5000](http://localhost:5000)          | none                                              |
+
+To interact with the datalake from your host (list, upload, sync...), use the aws cli without installing it. Credentials and endpoint are read from `.env` (using `direnv`):
+
+```bash
+uvx --from awscli aws s3 ls s3://$DATALAKE_BUCKET_NAME
+```
 
 The airflow, api and datawarehouse ports can be overridden in `.env` (`AIRFLOW_UI_PORT`, `API_PORT`, `TARGET_POSTGRES_PORT`).
 

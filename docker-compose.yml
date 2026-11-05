@@ -23,7 +23,7 @@ x-airflow-common:
     AIRFLOW__SCHEDULER__MAX_TIS_PER_QUERY: 0
     # Connections
     AIRFLOW_CONN_PG: postgresql://data-inclusion:data-inclusion@datawarehouse:5432/data-inclusion
-    AIRFLOW_CONN_S3: '{"conn_type": "aws", "extra": {"endpoint_url": "http://minio:9000", "aws_access_key_id": "minioadmin", "aws_secret_access_key": "minioadmin", "service_config": {"s3": {"bucket_name": "data-inclusion-lake"}}}}'
+    AIRFLOW_CONN_S3: '{"conn_type": "aws", "extra": {"endpoint_url": "http://datalake:8333", "aws_access_key_id": "${AWS_ACCESS_KEY_ID}", "aws_secret_access_key": "${AWS_SECRET_ACCESS_KEY}", "service_config": {"s3": {"bucket_name": "${DATALAKE_BUCKET_NAME}"}}}}'
 
     # Variables
     AIRFLOW_VAR_ANTHROPIC_API_KEY: ${AIRFLOW_VAR_ANTHROPIC_API_KEY}
@@ -112,30 +112,19 @@ services:
       airflow-db:
         condition: service_healthy
 
-  minio:
-    image: minio/minio:RELEASE.2025-07-23T15-54-02Z
-    command: server /data
+  datalake:
+    image: chrislusf/seaweedfs:4.52
+    command: mini -dir=/data
     restart: no
     ports:
-      - 9000:9000
-      - 9001:9001
+      - 8333:8333  # s3 api
+      - 8888:8888  # filer ui
     environment:
-      - MINIO_CONSOLE_ADDRESS=:9001
-      - MINIO_ROOT_USER=minioadmin
-      - MINIO_ROOT_PASSWORD=minioadmin
+      - AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID}
+      - AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY}
+      - S3_BUCKET=${DATALAKE_BUCKET_NAME}
     volumes:
-      - minio-data:/data
-
-  minio-init:
-    image: minio/mc:RELEASE.2025-07-21T05-28-08Z
-    entrypoint: /bin/bash -c
-    command:
-      - |
-        mc alias set tmp http://minio:9000 minioadmin minioadmin
-        mc admin update --yes tmp
-        mc mb --ignore-existing tmp/data-inclusion-lake
-    depends_on:
-      - minio
+      - datalake-data:/data
 
   datawarehouse:
     image: data-inclusion/datawarehouse
@@ -172,10 +161,10 @@ services:
       - DATABASE_URL=postgresql://data-inclusion:data-inclusion@datawarehouse:5432/diapi
       - BASE_URL=http://127.0.0.1:8000
       - SECRET_KEY=USE_IN_DEVELOPMENT_ONLY
-      - AWS_ENDPOINT_URL=http://minio:9000
-      - DATALAKE_BUCKET_NAME=data-inclusion-lake
-      - AWS_SECRET_ACCESS_KEY=minioadmin
-      - AWS_ACCESS_KEY_ID=minioadmin
+      - AWS_ENDPOINT_URL=http://datalake:8333
+      - DATALAKE_BUCKET_NAME=${DATALAKE_BUCKET_NAME}
+      - AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY}
+      - AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID}
 
   mlflow-db:
     image: postgres:18
@@ -206,7 +195,7 @@ services:
 
 volumes:
   pg-data:
-  minio-data:
+  datalake-data:
 
 networks:
   default:
