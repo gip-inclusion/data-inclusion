@@ -27,6 +27,8 @@ uv run data-inclusion-api generate-token --help
 
 ### Load data
 
+To load inclusion data, you can either use the local or the actual prod datalake (with RO creds).
+
 ```bash
 uv run data-inclusion-api import-communes
 uv run data-inclusion-api load-inclusion-data
