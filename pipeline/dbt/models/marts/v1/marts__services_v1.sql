@@ -45,18 +45,9 @@ final AS (
                 ]
             )
         }},
-        CASE
-            WHEN services._is_contact_public IS FALSE THEN NULL
-            ELSE services.contact_nom_prenom
-        END                                             AS "contact_nom_prenom",
-        CASE
-            WHEN services._is_contact_public IS FALSE THEN NULL
-            ELSE services.courriel
-        END                                             AS "courriel",
-        CASE
-            WHEN services._is_contact_public IS FALSE THEN NULL
-            ELSE services.telephone
-        END                                             AS "telephone",
+        services.contact_nom_prenom                     AS "contact_nom_prenom",
+        services.courriel                               AS "courriel",
+        services.telephone                              AS "telephone",
         scores.score                                    AS "score_qualite",
         COALESCE(adresses._has_valid_address, FALSE)    AS "_has_valid_address",
         (

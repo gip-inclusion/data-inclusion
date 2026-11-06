@@ -92,8 +92,7 @@ SELECT
     adresses.adresse                     AS "adresse",
     adresses.code_postal                 AS "code_postal",
     adresses.code_insee                  AS "code_insee",
-    services._extra                      AS "_extra",
-    services._is_contact_public          AS "_is_contact_public"
+    services._extra                      AS "_extra"
 FROM services
 LEFT JOIN contacts
     ON services.id = contacts.id

@@ -52,12 +52,12 @@ final AS (
         services.contact_nom_prenom             AS "contact_nom_prenom",
         services.courriel                       AS "courriel",
         services.telephone                      AS "telephone",
-        services.contact_public                 AS "_is_contact_public",
         CASE
             WHEN LENGTH(services.nom) <= 150 THEN services.nom
             ELSE LEFT(services.nom, 149) || '…'
         END                                     AS "nom",
         JSONB_BUILD_OBJECT(
+            'contact_public', services.contact_public,
             'funding_labels', services.labels_financement,
             'forms', forms.forms,
             'online_form', services.formulaire_en_ligne_a_completer
