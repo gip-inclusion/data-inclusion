@@ -84,7 +84,7 @@ services:
     command: dag-processor
     restart: no
     healthcheck:
-      test: airflow jobs check --job-type DagFileProcessorJob --local
+      test: airflow jobs check --job-type DagProcessorJob --local
       interval: 10s
       timeout: 20s
       retries: 5
