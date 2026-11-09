@@ -53,6 +53,10 @@ class Service(schema.Service):
         """Show the extra field only if the context flag is set."""
 
         if info.context is not None and info.context.get("is_extra_visible", False):
+            if v is not None and not info.context.get(
+                "is_contact_email_visible", False
+            ):
+                return {k: val for k, val in v.items() if k != "contact_email"}
             return v
 
         return MISSING

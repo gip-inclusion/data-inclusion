@@ -58,6 +58,8 @@ final AS (
             ELSE LEFT(services.nom, 149) || '…'
         END                                     AS "nom",
         JSONB_BUILD_OBJECT(
+            'is_contact_public', services.contact_public,
+            'contact_email', services.courriel,
             'funding_labels', services.labels_financement,
             'forms', forms.forms,
             'online_form', services.formulaire_en_ligne_a_completer
