@@ -1,25 +1,54 @@
-AIRFLOW_VERSION := 3.3.1
-PYTHON_VERSION := 3.13
+# airflow and python versions come from the base image tag, kept up to date by dependabot
+AIRFLOW_IMAGE := $(shell sed -nE 's|^FROM apache/airflow:([^@ ]+).*|\1|p' ../Dockerfile)
+AIRFLOW_VERSION := $(firstword $(subst -python, ,$(AIRFLOW_IMAGE)))
+PYTHON_VERSION := $(word 2,$(subst -python, ,$(AIRFLOW_IMAGE)))
+PYPROJECT_PYTHON_VERSION := $(shell sed -nE 's|^requires-python = ">=([0-9.]+)"|\1|p' ../pyproject.toml)
 
-PIP_COMPILE := uv pip compile --quiet --constraint airflow/constraints.txt --python-version $(PYTHON_VERSION)
-
-ifeq ($(filter upgrade,$(MAKECMDGOALS)),upgrade)
-PIP_COMPILE += --upgrade
+ifeq ($(AIRFLOW_VERSION)$(PYTHON_VERSION),$(AIRFLOW_VERSION))
+$(error could not read the airflow and python versions from ../Dockerfile)
+endif
+ifneq ($(PYPROJECT_PYTHON_VERSION),$(PYTHON_VERSION))
+$(error requires-python >=$(PYPROJECT_PYTHON_VERSION) in ../pyproject.toml does not match python $(PYTHON_VERSION) in ../Dockerfile)
 endif
 
-.PHONY: all airflow tasks dev dbt upgrade
+CONSTRAINTS_URL := https://raw.githubusercontent.com/apache/airflow/constraints-$(AIRFLOW_VERSION)/constraints-$(PYTHON_VERSION).txt
 
-all: airflow tasks dev dbt
+UV_COMPILE := uv pip compile --quiet --python-version $(PYTHON_VERSION)
 
-airflow: airflow/requirements.in
-	$(PIP_COMPILE) airflow/requirements.in --output-file=airflow/requirements.txt
+# `make upgrade all` recompiles with --upgrade
+ifeq ($(filter upgrade,$(MAKECMDGOALS)),upgrade)
+UV_COMPILE += --upgrade
+endif
 
-tasks: airflow tasks/requirements.in
-	$(PIP_COMPILE) tasks/requirements.in --output-file=tasks/requirements.txt
+PIP_COMPILE := $(UV_COMPILE) --constraint airflow/constraints.txt
 
-dev: tasks dev/requirements.in
-	$(PIP_COMPILE) dev/requirements.in --output-file=dev/requirements.txt
+# regenerated on every run: git does not preserve mtimes, so they cannot be trusted
+# (stale-looking lock files after checkout, hand-edited requirements.txt).
+# constraints.txt stays mtime-based to avoid fetching it on every run (CI refetches it).
+.PHONY: all upgrade ../.python-version airflow/requirements.txt tasks/requirements.txt dev/requirements.txt dbt/requirements.txt
 
-# dbt runs in a separate environment (uvx), hence no airflow constraints so no PIP_COMPILE
-dbt: dbt/requirements.in
-	uv pip compile --quiet --python-version $(PYTHON_VERSION) $(if $(filter upgrade,$(MAKECMDGOALS)),--upgrade) dbt/requirements.in --output-file=dbt/requirements.txt
+all: ../.python-version airflow/requirements.txt tasks/requirements.txt dev/requirements.txt dbt/requirements.txt
+
+# generated for uv (venvs, `uv run`)
+../.python-version:
+	echo $(PYTHON_VERSION) > $@
+
+# refetched when the python or airflow version changes
+# upstream constraints do not pin airflow itself, hence the appended pin
+airflow/constraints.txt: ../Dockerfile Makefile
+	curl --fail --silent --show-error --location $(CONSTRAINTS_URL) --output $@.tmp
+	printf '\n# from ../Dockerfile\napache-airflow==%s\n' $(AIRFLOW_VERSION) >> $@.tmp
+	mv $@.tmp $@
+
+airflow/requirements.txt: airflow/requirements.in airflow/constraints.txt
+	$(PIP_COMPILE) $< --output-file=$@
+
+tasks/requirements.txt: tasks/requirements.in airflow/constraints.txt
+	$(PIP_COMPILE) $< --output-file=$@
+
+dev/requirements.txt: dev/requirements.in airflow/constraints.txt
+	$(PIP_COMPILE) $< --output-file=$@
+
+# dbt runs in a separate environment (uvx), hence no airflow constraints
+dbt/requirements.txt: dbt/requirements.in
+	$(UV_COMPILE) $< --output-file=$@

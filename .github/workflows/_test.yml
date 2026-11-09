@@ -21,6 +21,21 @@ jobs:
       - name: Ruff check
         run: uvx ruff check .
 
+      - name: Check requirements and .python-version are up to date
+        run: |
+          # --always-make forces refetching constraints.txt (the lock files are always recompiled).
+          # a diff in constraints.txt can come from upstream: airflow maintainers sometimes
+          # update the constraints of already released versions, so this step can fail on PRs
+          # that do not touch the pipeline. fix: run `make -C pipeline/requirements all` and commit.
+          make -C requirements --always-make all
+          # porcelain also reports untracked files (e.g. a leftover constraints.txt.tmp)
+          drift=$(git status --porcelain -- requirements .python-version)
+          if [ -n "$drift" ]; then
+            echo "$drift"
+            git diff -- requirements .python-version
+            exit 1
+          fi
+
       - name: Test pipeline UDF functions
         env:
           DEDUPLICATE_MODEL_PATH: ${{ github.workspace }}/datawarehouse/deduplicate-model.bin

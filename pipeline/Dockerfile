@@ -1,4 +1,5 @@
-FROM apache/airflow:3.3.2-python3.13@sha256:e9982ad3f49a60418622e1baf80c34b0daf3fa5091a336cb5ee61f0cdd189371 AS runtime-image
+# single source of truth for the airflow and python versions
+FROM apache/airflow:3.4.0-python3.14@sha256:ad364d4b02364d8a425405e4a52214dd557ee02e16617371758ca88fd8537743 AS runtime-image
 
 ENV PYTHONUNBUFFERED=1
 ENV PYTHONDONTWRITEBYTECODE=1

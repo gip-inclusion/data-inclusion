@@ -2,7 +2,7 @@
 
 ## Stack
 
-- orchestration: airflow 2
+- orchestration: airflow 3
 - data warehouse: postgresql
 - transformation: dbt
 - monitoring: sentry
