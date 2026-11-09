@@ -109,11 +109,18 @@ def list_services_endpoint(
     )
 
     is_extra_visible = request.query_params.get("extra", "false").lower() == "true"
+    # FIXME(vperron): les emplois should instead use the S3 parquet files
+    is_contact_email_visible = request.user.is_authenticated and (
+        request.user.username.startswith("les-emplois")
+    )
 
     # manually serialize to pass context for extra field visibility
     return pagination.Page[schemas.Service].model_validate(
         page,
-        context={"is_extra_visible": is_extra_visible},
+        context={
+            "is_extra_visible": is_extra_visible,
+            "is_contact_email_visible": is_contact_email_visible,
+        },
     )
 
 
