@@ -33,6 +33,7 @@ In order to prevent conflicts:
 * python tasks run in dedicated virtual envs using `task.virtualenv`
 * python tasks requirements must comply to airflow constraints
 * dbt tasks have their own separate requirements
+* the airflow and python versions come from the base image tag in `Dockerfile` (bumped by dependabot): after a change, run `make all` (regenerates requirements and `.python-version`, CI fails when they are out of date) and `make -C .. setup` (recreates local venvs). `requires-python` in `pyproject.toml` must match, enforced by `make`
 
 
 ```bash

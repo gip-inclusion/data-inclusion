@@ -71,3 +71,14 @@ repos:
           - dbt-postgres
         args:
           - --config=./pipeline/pyproject.toml
+
+  - repo: local
+    hooks:
+      # lock files are always recompiled (needs PyPI access); constraints.txt is only
+      # refetched when Dockerfile/Makefile look newer, CI (--always-make) is the authoritative check
+      - id: pipeline-requirements
+        name: pipeline|requirements
+        entry: make -C pipeline/requirements all
+        language: system
+        pass_filenames: false
+        files: ^pipeline/(Dockerfile|\.python-version|pyproject\.toml|requirements/)
