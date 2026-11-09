@@ -225,10 +225,52 @@ def search_endpoint(
     db_session=fastapi.Depends(db.get_session),
 ):
     """
-    Recherche **expérimentale** par mots-clés dans les champs suivants :
-        1. nom structure et service
-        2. thématiques et publics
-        3. description service et structure
+    ## Recherche par mots-clés (expérimentale)
+
+    ⚠️ Ce point d'accès est **expérimental** : son comportement et le format de ses
+    réponses peuvent évoluer sans préavis.
+
+    ### Recherche textuelle (`q`)
+
+    Les services sont recherchés dans les champs suivants, par ordre d'importance
+    décroissante :
+
+    1. thématiques (libellés et synonymes) et nom du service
+    2. réseaux porteurs, nom de la structure, descriptions du service et de la
+    structure
+    3. publics et précisions sur les publics
+
+    La recherche :
+
+    * est insensible à la casse, aux accents et aux formes des mots (pluriels,
+    conjugaisons, etc.).
+    * exige que tous les mots de la requête soient présents.
+    * tolère les fautes de frappe sur les mots d'au moins 4 caractères.
+    * reconnaît les synonymes de thématiques composés de plusieurs mots.
+
+    Le champ `score_recherche` (entre 0 et 1) mesure la pertinence du résultat. Il
+    est vide lorsque `q` n'est pas fourni.
+
+    ### Filtres géographiques
+
+    * `code_commune` : services situés dans la commune.
+    * `code_departement`/`slug_departement` : services situés dans le département.
+    * `code_region`/`slug_region` : services situés dans la région.
+    * `lat`/`lon` : services situés à moins de `distance` km (50 par défaut) du
+    point de recherche. Si `q` est fourni, les services à distance dont la zone
+    d'éligibilité couvre le point de recherche sont également inclus.
+
+    Le champ `distance` (en km) est rempli pour les services situés dans le rayon
+    de recherche, et vide sinon.
+
+    ### Tri des résultats
+
+    * avec `lat`/`lon` : par score décroissant, combinant à parts égales la
+    pertinence (si `q` est fourni) et la proximité. Les services à distance
+    reçoivent un score de proximité fixe de 0,5.
+    * sans `lat`/`lon`, avec `q` : par pertinence, puis par score de qualité
+    décroissant.
+    * sinon : par score de qualité décroissant.
     """
     query, mapping = services.search_query(
         db_session=db_session,
