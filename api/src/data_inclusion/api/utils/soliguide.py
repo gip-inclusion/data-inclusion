@@ -1,7 +1,7 @@
 import logging
 from typing import Annotated
 
-import httpx
+import httpx2
 import sqlalchemy as sqla
 
 import fastapi
@@ -16,14 +16,14 @@ logger = logging.getLogger(__name__)
 def log_error(response):
     try:
         response.raise_for_status()
-    except httpx.HTTPError as err:
+    except httpx2.HTTPError as err:
         logger.error(response.json())
         logger.error(err)
 
 
 class SoliguideAPIClient:
     def __init__(self) -> None:
-        self.client = httpx.Client(
+        self.client = httpx2.Client(
             base_url=settings.SOLIGUIDE_API_URL,
             headers={"Authorization": f"JWT {settings.SOLIGUIDE_API_TOKEN}"},
             event_hooks={"response": [log_error]},
