@@ -1,8 +1,14 @@
 from textwrap import dedent
 from typing import Annotated
 
-from pydantic import BaseModel, ConfigDict, Field, ValidationInfo, field_validator
-from pydantic.experimental.missing_sentinel import MISSING
+from pydantic import (
+    MISSING,
+    BaseModel,
+    ConfigDict,
+    Field,
+    ValidationInfo,
+    field_validator,
+)
 from pydantic.json_schema import SkipJsonSchema
 
 from data_inclusion.schema import v1 as schema

@@ -41,7 +41,7 @@ def paginate(
     limit, offset = size, size * (page - 1)
 
     count_query = sa.select(sa.func.count()).select_from(
-        query.order_by(None).options(orm.noload("*")).subquery()
+        query.order_by(None).subquery()
     )
 
     query = query.limit(limit).offset(offset)
