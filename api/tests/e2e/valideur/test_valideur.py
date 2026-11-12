@@ -1,6 +1,8 @@
+import io
 from pathlib import Path
 from unittest import mock
 
+import openpyxl
 import pytest
 from playwright import sync_api as pw
 
@@ -45,6 +47,31 @@ def test_upload_files(api_client, filename, fixture_path: Path, expected_status_
         "/valideur/fragments/analyze", files={"dataset": (filename, content)}
     )
     assert response.status_code == expected_status_code
+
+
+@pytest.mark.parametrize(
+    "sheet_names",
+    [["Structures"], ["Services"], ["Feuil1"]],
+)
+def test_upload_missing_sheets(api_client, sheet_names):
+    wb = openpyxl.Workbook(write_only=True)
+    for sheet_name in sheet_names:
+        wb.create_sheet(sheet_name)
+    buf = io.BytesIO()
+    wb.save(buf)
+
+    response = api_client.post(
+        "/valideur/fragments/analyze",
+        files={"dataset": ("dataset.xlsx", buf.getvalue())},
+    )
+
+    assert response.status_code == 200
+    text = " ".join(response.text.split())
+    assert "Onglet(s) manquant(s)" in text
+    assert (
+        "Votre fichier doit contenir un onglet « Structures » "
+        "et un onglet « Services »." in text
+    )
 
 
 def test_upload_too_large_is_rejected_before_reading(api_client, monkeypatch):
