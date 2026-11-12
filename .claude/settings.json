@@ -3,7 +3,8 @@
         "allow": [],
         "deny": [
             "Read(./**/.env)",
-            "Read(./**/*.tfvars.json)"
+            "Read(./**/*.tfvars.json)",
+            "Read(./**/.terraform/**)"
         ],
         "ask": [
             "Bash(git push *)",
