@@ -17,7 +17,7 @@ dependencies = [
     "cryptography>=44.0.2",
     "data-inclusion-schema==1.0.11",
     "defusedxml>=0.7.1",  # protects openpyxl against malicious xml
-    "fastapi>=0.115.12",
+    "fastapi>=0.162.2",
     "furl>=2.1.4",
     "geoalchemy2>=0.17.1",
     "geopandas>=1.0.1",
@@ -41,7 +41,8 @@ dependencies = [
     "requests>=2.32.3",
     "s3fs>=2025.5.1",
     "sentry-sdk[fastapi]>=2.25.1",
-    "sqlalchemy>=2.0.40",
+    "sqlalchemy>=2.1",
+    "starlette>=1.10.0",  # test client built on httpx2
     "ua-parser[regex]>=1.0",
     "uvicorn[standard]>=0.34.0",
 ]
@@ -58,7 +59,7 @@ test = [
     "pytest-dotenv>=0.5.2",
     "pytest-playwright>=0.7.1",
     "pytest-xdist>=3.5.0",
-    "syrupy>=4.9.1",
+    "syrupy>=6.0",
 ]
 
 [project.urls]
