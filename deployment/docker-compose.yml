@@ -61,7 +61,7 @@ x-airflow-common:
 
 services:
   airflow-db:
-    image: postgres:18@sha256:3a4264520e121176619f54ff867d12774bc81e95e7b84db58d63bccdb6144b81
+    image: postgres:18@sha256:e3d24f6906d0760bf4da0dae872415391ededefad23fd471c47dc53b0ddf3c42
     restart: always
     healthcheck:
       test: pg_isready
@@ -146,7 +146,7 @@ services:
       - datawarehouse-data:/var/lib/postgresql
 
   reverse-proxy:
-    image: traefik:v3.7.16@sha256:1336e85aaed293bd63d005086e0dd013b04078b26aaeb1c18b26a2f928af7e65
+    image: traefik:v3.7.17@sha256:f4bb143d1135a579b630ed491e17ec50f6f7c9c6a30585ff3d385471d2a86f5a
     restart: always
     ports:
       - 80:80
@@ -165,7 +165,7 @@ services:
       - letsencrypt-data:/letsencrypt
 
   mlflow-db:
-    image: postgres:18@sha256:3a4264520e121176619f54ff867d12774bc81e95e7b84db58d63bccdb6144b81
+    image: postgres:18@sha256:e3d24f6906d0760bf4da0dae872415391ededefad23fd471c47dc53b0ddf3c42
     restart: no
     healthcheck:
       test: pg_isready
