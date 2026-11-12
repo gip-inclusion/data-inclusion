@@ -1,4 +1,12 @@
 # keeps the pinned versions and digests up to date
+#
+# not covered on purpose:
+# - pipeline python deps (uv/pip): `pipeline/requirements/*.txt` are generated
+#   from `uv.lock` and CI fails on drift, so dependabot PRs would always fail.
+# - `data-inclusion-schema` in the api: bumped manually with the schema releases.
+# - root `docker-compose.yml`: dev only, tags are not pinned.
+#
+# major bumps are kept out of the groups to get their own PR.
 version: 2
 
 updates:
@@ -9,6 +17,7 @@ updates:
     groups:
       docker:
         patterns: ["*"]
+        update-types: ["minor", "patch"]
 
   - package-ecosystem: docker-compose
     directory: /deployment
@@ -17,6 +26,7 @@ updates:
     groups:
       docker-compose:
         patterns: ["*"]
+        update-types: ["minor", "patch"]
 
   - package-ecosystem: github-actions
     directory: /
@@ -25,3 +35,36 @@ updates:
     groups:
       github-actions:
         patterns: ["*"]
+        update-types: ["minor", "patch"]
+
+  - package-ecosystem: uv
+    directory: /api
+    schedule:
+      interval: weekly
+    # raise the floors in `pyproject.toml` along with `uv.lock`
+    versioning-strategy: increase
+    ignore:
+      # bumped manually with the schema releases
+      - dependency-name: data-inclusion-schema
+    groups:
+      api:
+        patterns: ["*"]
+        update-types: ["minor", "patch"]
+
+  - package-ecosystem: pre-commit
+    directory: /
+    schedule:
+      interval: weekly
+    groups:
+      pre-commit:
+        patterns: ["*"]
+        update-types: ["minor", "patch"]
+
+  - package-ecosystem: terraform
+    directory: /deployment
+    schedule:
+      interval: weekly
+    groups:
+      terraform:
+        patterns: ["*"]
+        update-types: ["minor", "patch"]
