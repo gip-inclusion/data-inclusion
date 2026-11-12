@@ -26,11 +26,13 @@ repos:
     rev: v1.49.10
     hooks:
       - id: djlint-reformat-jinja
-        args: [--config=api/pyproject.toml]
+        args: [--configuration=api/pyproject.toml]
         files: ^api
+        types_or: [html]
       - id: djlint-jinja
-        args: [--config=api/pyproject.toml]
+        args: [--configuration=api/pyproject.toml]
         files: ^api
+        types_or: [html]
 
   # deployment
   - repo: https://github.com/antonbabenko/pre-commit-terraform

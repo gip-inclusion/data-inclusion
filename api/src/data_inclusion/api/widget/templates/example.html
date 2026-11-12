@@ -1,10 +1,14 @@
 {% extends "base.html" %}
 {% block content %}
     <main>
+        {# snippet meant to be copied as-is on partner sites, without our stylesheet #}
+        {# djlint:off H021 #}
         <iframe src="/widget?token=foobar&code_commune=59350&score_qualite_minimum=0.9&size=3&display_form=false&x=2&y=1"
+                title="Services d'insertion data·inclusion"
                 width="600"
                 height="450"
                 style="border:0"
                 loading="lazy"></iframe>
+        {# djlint:on #}
     </main>
 {% endblock %}
