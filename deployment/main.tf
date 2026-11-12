@@ -61,6 +61,24 @@ resource "random_pet" "datalake_bucket_suffix" {}
 
 resource "scaleway_object_bucket" "main" {
   name = "data-inclusion-datalake-${var.environment}-${random_pet.datalake_bucket_suffix.id}"
+
+  versioning {
+    enabled = true
+  }
+
+  lifecycle_rule {
+    id      = "expire-noncurrent-versions-after-30-days"
+    enabled = true
+
+    noncurrent_version_expiration {
+      noncurrent_days = 30
+    }
+
+    expiration {
+      expired_object_delete_marker = true
+    }
+  }
+
   lifecycle_rule {
     id      = "archive-raw-data-after-90-days"
     prefix  = "data/raw"
