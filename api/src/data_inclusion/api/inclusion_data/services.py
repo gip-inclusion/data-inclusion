@@ -6,7 +6,7 @@ from pathlib import Path
 import geoalchemy2
 import sqlalchemy as sqla
 from sqlalchemy import orm
-from sqlalchemy.dialects.postgresql import TSQUERY
+from sqlalchemy.dialects.postgresql import TSQUERY, distinct_on
 
 from data_inclusion.api.decoupage_administratif import constants
 from data_inclusion.api.decoupage_administratif.models import Commune
@@ -336,7 +336,7 @@ def list_structures_query(
             models.Structure._cluster_id,
             models.Structure.id,
         )
-        query = query.distinct(cluster_key).order_by(
+        query = query.ext(distinct_on(cluster_key)).order_by(
             cluster_key,
             models.Structure.score_qualite.desc(),
             models.Structure.date_maj.desc().nulls_last(),
@@ -735,7 +735,7 @@ def build_thematique_aliases(db_session: orm.Session) -> None:
                     :alias,
                     tsvector_to_array(to_tsvector('public.french', :alias))
                 )
-            """),
+            """).bindparams(sqla.bindparam("alias", type_=sqla.String)),
             {"thematique_code": thematique_code, "alias": alias},
         )
     db_session.commit()

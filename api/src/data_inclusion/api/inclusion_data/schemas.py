@@ -1,8 +1,14 @@
 from textwrap import dedent
 from typing import Annotated
 
-from pydantic import BaseModel, ConfigDict, Field, ValidationInfo, field_validator
-from pydantic.experimental.missing_sentinel import MISSING
+from pydantic import (
+    MISSING,
+    BaseModel,
+    ConfigDict,
+    Field,
+    ValidationInfo,
+    field_validator,
+)
 from pydantic.json_schema import SkipJsonSchema
 
 from data_inclusion.schema import v1 as schema
@@ -53,6 +59,10 @@ class Service(schema.Service):
         """Show the extra field only if the context flag is set."""
 
         if info.context is not None and info.context.get("is_extra_visible", False):
+            if v is not None and not info.context.get(
+                "is_contact_email_visible", False
+            ):
+                return {k: val for k, val in v.items() if k != "contact_email"}
             return v
 
         return MISSING

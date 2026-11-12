@@ -1601,6 +1601,36 @@ def test_show_extra_data_if_flag_provided(
         assert service_data["extra"] == expected["extra"]
 
 
+@pytest.mark.parametrize(
+    ("is_contact_email_visible",),
+    [
+        pytest.param(True, marks=pytest.mark.with_token("les-emplois-2025-04-10")),
+        pytest.param(True, marks=pytest.mark.with_token("les-emplois-demo")),
+        pytest.param(False, marks=pytest.mark.with_token("dora-test")),
+        pytest.param(False, marks=pytest.mark.with_token("some_user")),
+    ],
+)
+def test_show_extra_contact_email(api_client, is_contact_email_visible):
+    factories.ServiceFactory(
+        id="src--1",
+        source="src",
+        extra={"foo": "bar", "contact_email": "contact@example.com"},
+    )
+
+    response = api_client.get(SERVICES_ENDPOINT.url, params={"extra": True})
+
+    assert response.status_code == 200
+    service_data = response.json()["items"][0]
+
+    if is_contact_email_visible:
+        assert service_data["extra"] == {
+            "foo": "bar",
+            "contact_email": "contact@example.com",
+        }
+    else:
+        assert service_data["extra"] == {"foo": "bar"}
+
+
 @pytest.mark.with_token
 @pytest.mark.parametrize(
     ("nom_structure", "q", "expected"),
