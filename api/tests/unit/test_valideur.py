@@ -211,6 +211,31 @@ def test_read_file_rejects_high_compression_ratio():
         readers.read_file(file=buf, filename="dataset.xlsx")
 
 
+def _xlsx(sheet_names: list[str]) -> io.BytesIO:
+    wb = openpyxl.Workbook(write_only=True)
+    for sheet_name in sheet_names:
+        wb.create_sheet(sheet_name).append(["__ignore__"])
+    buf = io.BytesIO()
+    wb.save(buf)
+    buf.seek(0)
+    return buf
+
+
+@pytest.mark.parametrize(
+    ("sheet_names", "expected_missing_sheet_names"),
+    [
+        (["Structures"], ["Services"]),
+        (["Services"], ["Structures"]),
+        (["Feuil1"], ["Structures", "Services"]),
+    ],
+)
+def test_read_file_rejects_missing_sheets(sheet_names, expected_missing_sheet_names):
+    with pytest.raises(readers.MissingSheetsException) as exc_info:
+        readers.read_file(file=_xlsx(sheet_names=sheet_names), filename="dataset.xlsx")
+
+    assert exc_info.value.sheet_names == expected_missing_sheet_names
+
+
 @pytest.mark.parametrize(
     ("n_rows", "n_columns"),
     [(10_001, 1), (1, 501)],

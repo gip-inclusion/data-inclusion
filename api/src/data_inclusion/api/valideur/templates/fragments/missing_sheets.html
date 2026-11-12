@@ -1,0 +1,10 @@
+<div class="fr-alert fr-alert--error fr-mb-3w">
+    <h2 class="fr-alert__title">Onglet(s) manquant(s)</h2>
+    <p>
+        Votre fichier doit contenir
+        {% for name in expected_sheet_names %}
+            {%- if not loop.first %} et {% endif -%}
+            un onglet « {{ name }} »
+        {%- endfor %}.
+    </p>
+</div>

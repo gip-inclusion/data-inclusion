@@ -25,7 +25,19 @@ analyze_lock = threading.Lock()
 @app.exception_handler(readers.ValideurException)
 def valideur_exception_handler(
     request: fastapi.Request, exc: readers.ValideurException
-) -> fastapi.responses.JSONResponse:
+) -> fastapi.Response:
+    if isinstance(exc, readers.MissingSheetsException):
+        # 200 so that htmx swaps the fragment in
+        return templates.TemplateResponse(
+            request=request,
+            name="fragments/missing_sheets.html",
+            context={
+                "request": request,
+                "expected_sheet_names": readers.SHEET_NAMES,
+                "missing_sheet_names": exc.sheet_names,
+            },
+        )
+
     return fastapi.responses.JSONResponse(
         status_code=422,
         content={"detail": str(exc)},

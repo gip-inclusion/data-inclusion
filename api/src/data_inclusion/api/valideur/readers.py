@@ -18,6 +18,15 @@ class ValideurException(Exception):
     pass
 
 
+class MissingSheetsException(ValideurException):
+    def __init__(self, sheet_names: list[str]):
+        super().__init__(f"Missing sheets: {', '.join(sheet_names)}")
+        self.sheet_names = sheet_names
+
+
+SHEET_NAMES = ["Structures", "Services"]
+
+
 class SupportedFileTypes(enum.StrEnum):
     XLSX = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
 
@@ -71,15 +80,15 @@ def read_xlsx(file: BinaryIO | Path) -> tuple[pd.DataFrame, pd.DataFrame]:
         raise ValideurException("Invalid xlsx file")
 
     def _read(
+        excel_file: pd.ExcelFile,
         sheet_name: str,
         model: type[v1.Structure] | type[v1.Service],
     ) -> pd.DataFrame:
         df = pd.read_excel(
-            file,
+            excel_file,
             sheet_name=sheet_name,
             dtype=str,
             header=None,
-            engine="openpyxl",
             nrows=10_001,  # one more than allowed, to detect larger sheets
         )
         if len(df) > 10_000 or len(df.columns) > 500:
@@ -105,7 +114,27 @@ def read_xlsx(file: BinaryIO | Path) -> tuple[pd.DataFrame, pd.DataFrame]:
 
         return df
 
-    return _read("Structures", v1.Structure), _read("Services", v1.Service)
+    with pd.ExcelFile(file, engine="openpyxl") as excel_file:
+        missing_sheet_names = [
+            sheet_name
+            for sheet_name in SHEET_NAMES
+            if sheet_name not in excel_file.sheet_names
+        ]
+        if missing_sheet_names:
+            raise MissingSheetsException(sheet_names=missing_sheet_names)
+
+        return (
+            _read(
+                excel_file=excel_file,
+                sheet_name="Structures",
+                model=v1.Structure,
+            ),
+            _read(
+                excel_file=excel_file,
+                sheet_name="Services",
+                model=v1.Service,
+            ),
+        )
 
 
 _READ_FN_BY_FILETYPE = {
