@@ -18,6 +18,8 @@ venv/
 *.drawio.bkp
 data/
 build/
+.playwright/
+.uv/
 
 #pyenv
 *.python-version
