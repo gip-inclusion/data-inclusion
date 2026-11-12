@@ -43,7 +43,7 @@ dependencies = [
     "sentry-sdk[fastapi]>=2.25.1",
     "sqlalchemy>=2.1",
     "starlette>=1.10.0",  # test client built on httpx2
-    "ua-parser[regex]>=1.0",
+    "ua-parser[regex]>=1.0.2",
     "uvicorn[standard]>=0.34.0",
 ]
 
