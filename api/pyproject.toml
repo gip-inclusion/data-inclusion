@@ -44,7 +44,7 @@ dependencies = [
     "sqlalchemy>=2.1",
     "starlette>=1.10.0",  # test client built on httpx2
     "ua-parser[regex]>=1.0",
-    "uvicorn[standard]>=0.34.0",
+    "uvicorn[standard]>=0.54.0",
 ]
 
 [dependency-groups]
