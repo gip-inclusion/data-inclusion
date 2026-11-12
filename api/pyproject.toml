@@ -48,7 +48,12 @@ dependencies = [
 ]
 
 [dependency-groups]
-dev = ["fastapi-debug-toolbar>=0.6.3", "pre-commit>=4.2.0", "ruff>=0.16.3"]
+dev = [
+    "djlint>=1.50.0",
+    "fastapi-debug-toolbar>=0.6.3",
+    "pre-commit>=4.2.0",
+    "ruff>=0.16.3",
+]
 test = [
     "factory-boy>=3.3.3",
     "faker>=37.1.0",

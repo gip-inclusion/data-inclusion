@@ -61,7 +61,7 @@ updates:
   - package-ecosystem: pre-commit
     directory: /
     schedule:
-      interval: weekly
+      interval: monthly
     groups:
       pre-commit:
         patterns: ["*"]

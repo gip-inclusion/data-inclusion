@@ -968,6 +968,8 @@ rpds-py==2026.9.1
     #   -c airflow/constraints.txt
     #   jsonschema
     #   referencing
+ruff==0.17.4
+    # via -r dev/requirements.in
 s3fs==2026.9.0
     # via
     #   -c airflow/constraints.txt

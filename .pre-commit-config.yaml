@@ -6,31 +6,30 @@ repos:
         exclude: \.ambr$
 
   # api
-  - repo: https://github.com/astral-sh/ruff-pre-commit
-    rev: v0.17.4
+  - repo: local
     hooks:
-      - id: ruff-format
+      - id: api-ruff-format
         name: api|ruff-format
-        args: [--config=api/pyproject.toml]
+        entry: uv run --project api --frozen ruff format --config=api/pyproject.toml
+        language: system
         files: ^api
         types_or: [python]
-      - id: ruff
+      - id: api-ruff-check
         name: api|ruff-check
-        args:
-          - --config=api/pyproject.toml
-          - --fix
-          - --fixable=I
+        entry: uv run --project api --frozen ruff check --config=api/pyproject.toml --fix --fixable=I
+        language: system
         files: ^api
         types_or: [python]
-  - repo: https://github.com/djlint/djLint
-    rev: v1.49.10
-    hooks:
-      - id: djlint-reformat-jinja
-        args: [--configuration=api/pyproject.toml]
+      - id: api-djlint-reformat
+        name: api|djlint-reformat
+        entry: uv run --project api --frozen djlint --configuration=api/pyproject.toml --profile=jinja --reformat
+        language: system
         files: ^api
         types_or: [html]
-      - id: djlint-jinja
-        args: [--configuration=api/pyproject.toml]
+      - id: api-djlint-lint
+        name: api|djlint-lint
+        entry: uv run --project api --frozen djlint --configuration=api/pyproject.toml --profile=jinja --lint
+        language: system
         files: ^api
         types_or: [html]
 
@@ -43,20 +42,18 @@ repos:
         files: ^deployment/
 
   # pipeline
-  - repo: https://github.com/astral-sh/ruff-pre-commit
-    rev: v0.17.4
+  - repo: local
     hooks:
-      - id: ruff-format
+      - id: pipeline-ruff-format
         name: pipeline|ruff-format
-        args: [--config=pipeline/pyproject.toml]
+        entry: uv run --project pipeline --no-sync ruff format --config=pipeline/pyproject.toml
+        language: system
         files: ^pipeline
         types_or: [python,json]
-      - id: ruff
+      - id: pipeline-ruff-check
         name: pipeline|ruff-check
-        args:
-          - --config=pipeline/pyproject.toml
-          - --fix
-          - --fixable=I
+        entry: uv run --project pipeline --no-sync ruff check --config=pipeline/pyproject.toml --fix --fixable=I
+        language: system
         files: ^pipeline
         types_or: [python]
 
