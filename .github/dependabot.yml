@@ -4,6 +4,13 @@
 # - pipeline python deps (uv/pip): `pipeline/requirements/*.txt` are generated
 #   from `uv.lock` and CI fails on drift, so dependabot PRs would always fail.
 # - `data-inclusion-schema` in the api: bumped manually with the schema releases.
+# - `datawarehouse/requirements.txt`: compiled with `uv pip compile` for the
+#   python of the base image (3.13). dependabot support for these files is
+#   undocumented and may ignore `--python-version`. recompile manually (see
+#   `datawarehouse/README.md`).
+# - `mlflow/requirements.txt`: the `mlflow[auth]` extras must match the mlflow
+#   version of the base image, which dependabot cannot check. on each mlflow
+#   bump, update them manually (the build runs `pip check`).
 # - root `docker-compose.yml`: dev only, tags are not pinned.
 #
 # major bumps are kept out of the groups to get their own PR.
