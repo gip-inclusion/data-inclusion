@@ -11,6 +11,9 @@ version = "0.1.0"
 where = ["dags"]
 namespaces = true
 
+[tool.ruff]
+src = ["dags", "tests"]
+
 [tool.ruff.lint]
 # see prefixes in https://beta.ruff.rs/docs/rules/
 select = [

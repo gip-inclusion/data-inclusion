@@ -28,7 +28,7 @@ def import_prenoms(schema: str):
         url = constants.INSEE_URL.format(year=year)
         print("👉 Using URL:", url)
         df = pd.read_parquet(url)
-    except (FileNotFoundError, urllib.error.HTTPError):
+    except FileNotFoundError, urllib.error.HTTPError:
         print("❌ Failed")
         url = constants.INSEE_URL.format(year=year_before)
         print("👉 Fallback to URL:", url)
