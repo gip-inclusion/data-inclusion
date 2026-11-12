@@ -9,26 +9,40 @@
             <div class="di-card-location-row">
                 {% if result.service.commune %}
                     {% if result.service.latitude and result.service.longitude %}
-                    <a class="di-card-location" href="https://www.google.com/maps/place/{{ (result.service.adresse ~ ', ' ~ result.service.code_postal ~ ' ' ~ result.service.commune)|urlencode }}/@{{ result.service.latitude }},{{ result.service.longitude }},17z" target="_blank">
-                        <img src="/widget/static/icons/map-pin-line.svg" alt="" class="di-icon" aria-hidden="true">
-                        {{ result.service.commune }}
-                    </a>
+                        <a class="di-card-location"
+                           href="https://www.google.com/maps/place/{{ (result.service.adresse ~ ', ' ~ result.service.code_postal ~ ' ' ~ result.service.commune)|urlencode }}/@{{ result.service.latitude }},{{ result.service.longitude }},17z"
+                           target="_blank">
+                            <img src="/widget/static/icons/map-pin-line.svg"
+                                 alt=""
+                                 class="di-icon"
+                                 aria-hidden="true">
+                            {{ result.service.commune }}
+                        </a>
                     {% else %}
-                    <span class="di-card-location">
-                        <img src="/widget/static/icons/map-pin-line.svg" alt="" class="di-icon" aria-hidden="true">
-                        {{ result.service.commune }}
-                    </span>
+                        <span class="di-card-location">
+                            <img src="/widget/static/icons/map-pin-line.svg"
+                                 alt=""
+                                 class="di-icon"
+                                 aria-hidden="true">
+                            {{ result.service.commune }}
+                        </span>
                     {% endif %}
                     {% if result.distance is not none %}
                         <span class="di-card-spacer" aria-hidden="true"></span>
                         <span class="di-card-distance">
-                            <img src="/widget/static/icons/route-line.svg" alt="" class="di-icon" aria-hidden="true">
+                            <img src="/widget/static/icons/route-line.svg"
+                                 alt=""
+                                 class="di-icon"
+                                 aria-hidden="true">
                             {{ (result.distance) | round(0) | int }} km
                         </span>
                     {% endif %}
                 {% else %}
                     <span class="di-card-location">
-                        <img src="/widget/static/icons/global-line.svg" alt="" class="di-icon" aria-hidden="true">
+                        <img src="/widget/static/icons/global-line.svg"
+                             alt=""
+                             class="di-icon"
+                             aria-hidden="true">
                         À distance
                     </span>
                 {% endif %}

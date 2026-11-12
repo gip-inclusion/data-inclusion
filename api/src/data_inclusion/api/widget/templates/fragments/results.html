@@ -3,22 +3,25 @@
 <output id="results">
     {% if results %}
         {% if inline_mode %}
-        <ul class="di-cards-inline"
-            id="results-grid"
-            aria-live="polite"
-            aria-atomic="true">
-            {% for result in results %}{{ card(result) }}{% endfor %}
-        </ul>
+            <ul class="di-cards-inline"
+                id="results-grid"
+                aria-live="polite"
+                aria-atomic="true">
+                {% for result in results %}{{ card(result) }}{% endfor %}
+            </ul>
         {% else %}
-        <ul class="di-cards-grid"
-            id="results-grid"
-            style="grid-template-columns: repeat({{ x }}, 1fr)"
-            aria-live="polite"
-            aria-atomic="true">
-            {% for row in results | batch(x) %}
-                {% for result in row %}{{ card(result) }}{% endfor %}
-            {% endfor %}
-        </ul>
+            {# column count comes from the `x` query param #}
+            {# djlint:off H021 #}
+            <ul class="di-cards-grid"
+                id="results-grid"
+                style="grid-template-columns: repeat({{ x }}, 1fr)"
+                aria-live="polite"
+                aria-atomic="true">
+                {# djlint:on #}
+                {% for row in results | batch(x) %}
+                    {% for result in row %}{{ card(result) }}{% endfor %}
+                {% endfor %}
+            </ul>
         {% endif %}
     {% else %}
         <div class="di-empty-results">
