@@ -23,7 +23,7 @@ repos:
         files: ^api
         types_or: [python]
   - repo: https://github.com/djlint/djLint
-    rev: v1.44.2
+    rev: v1.49.10
     hooks:
       - id: djlint-reformat-jinja
         args: [--config=api/pyproject.toml]
