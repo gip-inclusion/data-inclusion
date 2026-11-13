@@ -34,6 +34,7 @@ resource "scaleway_instance_server" "main" {
 
   cloud_init = <<-EOF
     #cloud-config
+    timezone: Europe/Paris
     package_update: true
     package_upgrade: true
     package_reboot_if_required: true
@@ -372,8 +373,16 @@ resource "terraform_data" "up" {
     destination = "/etc/systemd/system"
   }
 
+  provisioner "file" {
+    source      = "${path.root}/apt/apt.conf.d/"
+    destination = "/etc/apt/apt.conf.d"
+  }
+
   provisioner "remote-exec" {
     inline = [
+      "apt-get -o DPkg::Lock::Timeout=300 install -y unattended-upgrades",
+      "systemctl daemon-reload",
+      "systemctl enable --now apt-daily.timer apt-daily-upgrade.timer",
       "systemctl enable cleanup.service",
       "systemctl enable cleanup.timer",
       "systemctl start cleanup.timer",
