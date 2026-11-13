@@ -6,14 +6,21 @@ on:
 
 jobs:
   test:
+    permissions:
+      contents: read
     uses: ./.github/workflows/_test.yml
 
   build:
     needs: test
+    permissions:
+      contents: read
+      packages: write
     uses: ./.github/workflows/_build_images.yml
 
   deploy_prod:
     needs: build
+    permissions:
+      contents: read
     uses: ./.github/workflows/_terraform_deploy.yml
     secrets: inherit
     with:
