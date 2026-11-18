@@ -9,16 +9,18 @@ furl
 
 # deduplicate
 dedupe
+# btrees 6.5 removed Bucket.byValue, still used by dedupe's canopy index
+btrees<6.5
 dedupe-variable-datetime
 unidecode
 
 # geocode
-numpy~=2.0
-pandas~=2.2
-requests~=2.31
+numpy
+pandas
+requests
 
 # html_to_markdown
-markdownify>=1.2.2
+markdownify
 
 # phonenumbers
 phonenumbers
@@ -27,7 +29,7 @@ phonenumbers
 python-slugify
 
 # score / model_validate
-data-inclusion-schema==1.0.9
+data-inclusion-schema==1.0.11
 
 # testing
 pytest

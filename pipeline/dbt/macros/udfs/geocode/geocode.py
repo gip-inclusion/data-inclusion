@@ -172,10 +172,15 @@ def geocode(
         ~df["commune"].eq(df["commune_original"]), None, df["code_postal"]
     )
 
-    df["commune"] = df["commune"].apply(lambda x: x.strip(" -") if x else x)
+    # missing values are NaN (truthy) with the pandas 3 string dtype, not None
+    df["commune"] = df["commune"].apply(
+        lambda x: x.strip(" -") if isinstance(x, str) else x
+    )
     if df["adresse"].notna().any():
         df["adresse"] = df["adresse"].replace(get_street_abbreviations(), regex=True)
-    df["adresse"] = df["adresse"].apply(lambda x: x.strip(" -") if x else x)
+    df["adresse"] = df["adresse"].apply(
+        lambda x: x.strip(" -") if isinstance(x, str) else x
+    )
 
     logger.info(f"Only {len(df)} rows can be geocoded.")
 
