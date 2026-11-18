@@ -6,7 +6,7 @@ CREATE OR REPLACE FUNCTION processings.html_to_markdown(input TEXT)
 RETURNS TEXT
 AS $$
 
-#INLINE#
+#INLINE html_to_markdown.py#
 
 return html_to_markdown(input)
 

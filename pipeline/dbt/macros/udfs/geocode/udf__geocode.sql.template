@@ -20,7 +20,7 @@ AS $$
 
 import json
 
-#INLINE#
+#INLINE geocode.py#
 
 return (
     geocode(data=json.loads(data))

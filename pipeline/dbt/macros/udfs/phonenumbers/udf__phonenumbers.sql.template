@@ -6,7 +6,7 @@ CREATE OR REPLACE FUNCTION processings.format_phone_number(phone TEXT)
 RETURNS TEXT
 AS $$
 
-#INLINE#
+#INLINE format_phone_number.py#
 
 return format_phone_number(phone)
 

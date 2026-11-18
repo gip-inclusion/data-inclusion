@@ -6,7 +6,7 @@ CREATE OR REPLACE FUNCTION processings.reseau_alpha_opening_hours(data JSONB)
 RETURNS TEXT
 AS $$
 
-#INLINE#
+#INLINE opening_hours.py#
 
 return to_osm(data)
 

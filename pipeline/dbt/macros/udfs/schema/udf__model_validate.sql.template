@@ -13,7 +13,7 @@ RETURNS
     )
 AS $$
 
-#INLINE#
+#INLINE model_validate.py#
 
 return model_validate(model=model_class, data=data)
 

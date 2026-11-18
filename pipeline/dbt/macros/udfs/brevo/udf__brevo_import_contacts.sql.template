@@ -11,7 +11,7 @@ RETURNS
     )
 AS $$
 
-#INLINE#
+#INLINE brevo_import_contacts.py#
 
 return brevo_import_contacts()
 
