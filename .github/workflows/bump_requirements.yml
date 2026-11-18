@@ -30,11 +30,11 @@ jobs:
         include:
           - area: pipeline
             # --always-make also refetches the airflow constraints
-            command: make -C pipeline/requirements --always-make upgrade all
+            command: make -C pipeline/requirements --always-make upgrade
             path: pipeline
             lock_files: pipeline/requirements/*/requirements.txt
           - area: datawarehouse
-            command: make -C datawarehouse upgrade all
+            command: make -C datawarehouse upgrade
             path: datawarehouse
             lock_files: datawarehouse/requirements.txt
     concurrency:

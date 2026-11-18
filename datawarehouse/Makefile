@@ -4,7 +4,7 @@ PYTHON_VERSION := 3.13
 
 UV_COMPILE := uv pip compile --quiet --python-version $(PYTHON_VERSION)
 
-# `make upgrade all` recompiles with --upgrade
+# `make upgrade` recompiles with --upgrade
 ifeq ($(filter upgrade,$(MAKECMDGOALS)),upgrade)
 UV_COMPILE += --upgrade
 endif
@@ -13,6 +13,8 @@ endif
 .PHONY: all upgrade requirements.txt
 
 all: requirements.txt
+
+upgrade: requirements.txt
 
 requirements.txt: requirements.in
 	$(UV_COMPILE) $< --output-file=$@

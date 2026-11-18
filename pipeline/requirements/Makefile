@@ -15,7 +15,7 @@ CONSTRAINTS_URL := https://raw.githubusercontent.com/apache/airflow/constraints-
 
 UV_COMPILE := uv pip compile --quiet --python-version $(PYTHON_VERSION)
 
-# `make upgrade all` recompiles with --upgrade
+# `make upgrade` recompiles with --upgrade
 ifeq ($(filter upgrade,$(MAKECMDGOALS)),upgrade)
 UV_COMPILE += --upgrade
 endif
@@ -28,6 +28,8 @@ PIP_COMPILE := $(UV_COMPILE) --constraint airflow/constraints.txt
 .PHONY: all upgrade ../.python-version airflow/requirements.txt tasks/requirements.txt dev/requirements.txt dbt/requirements.txt
 
 all: ../.python-version airflow/requirements.txt tasks/requirements.txt dev/requirements.txt dbt/requirements.txt
+
+upgrade: all
 
 # generated for uv (venvs, `uv run`)
 ../.python-version:
