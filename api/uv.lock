@@ -641,7 +641,7 @@ requires-dist = [
     { name = "pytz", specifier = ">=2025.2" },
     { name = "requests", specifier = ">=2.32.3" },
     { name = "s3fs", specifier = ">=2025.5.1" },
-    { name = "sentry-sdk", extras = ["fastapi"], specifier = ">=2.25.1" },
+    { name = "sentry-sdk", extras = ["fastapi"], specifier = ">=2.75.0" },
     { name = "sqlalchemy", specifier = ">=2.1" },
     { name = "starlette", specifier = ">=1.10.0" },
     { name = "ua-parser", extras = ["regex"], specifier = ">=1.0" },
