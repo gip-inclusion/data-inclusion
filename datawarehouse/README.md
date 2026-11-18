@@ -10,10 +10,9 @@ It is generally considered unsafe therefore not available on managed databases.
 
 The base image is based on debian `trixie` which ships with python3.13.
 
-For the sake of simplicity, this will be the target python version.
-
-The `requirements.txt` should therefore be compiled in a python3.13 environment.
+For the sake of simplicity, this will be the target python version. It is set in the `Makefile` and must be updated when the base image moves to another debian release.
 
 ```bash
-uv pip compile --python-version 3.13 requirements.in --output-file requirements.txt
+make -C datawarehouse              # compile requirements.txt
+make -C datawarehouse upgrade all  # compile with --upgrade
 ```
