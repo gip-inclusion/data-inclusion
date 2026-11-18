@@ -39,8 +39,20 @@ STRUCTURES = [
 ]
 
 
-def test_deduplicate():
-    result_df = deduplicate(data=STRUCTURES)
+@pytest.mark.parametrize(
+    "telephones",
+    [
+        pytest.param(["", ""], id="empty"),
+        pytest.param([None, "03 85 39 00 00"], id="mixed-null"),
+    ],
+)
+def test_deduplicate(telephones):
+    structures = [
+        {**structure, "telephone": telephone}
+        for structure, telephone in zip(STRUCTURES, telephones, strict=True)
+    ]
+
+    result_df = deduplicate(data=structures)
 
     assert result_df == [
         {

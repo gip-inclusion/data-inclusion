@@ -4,9 +4,8 @@ import pytest
 
 from geocode.geocode import geocode
 
-pytestmark = pytest.mark.integration
 
-
+@pytest.mark.integration
 @pytest.mark.parametrize(
     ("adresse", "expected"),
     [
@@ -345,6 +344,32 @@ def test_geocode_batch_with_only_null_addresses(monkeypatch):
     assert all(row["adresse"] is None for row in result)
 
 
+def test_geocode_batch_with_some_null_values(monkeypatch):
+    monkeypatch.setattr("geocode.geocode._geocode", lambda df: df)
+    addresses = [
+        {
+            "id": "0",
+            "adresse": "17 rue Malus",
+            "code_postal": "59000",
+            "code_insee": "59350",
+            "commune": None,
+        },
+        {
+            "id": "1",
+            "adresse": None,
+            "code_postal": "59000",
+            "code_insee": "59350",
+            "commune": "Lille",
+        },
+    ]
+
+    result = geocode(data=addresses)
+
+    assert [row["id"] for row in result] == ["0", "1"]
+    assert result[0]["adresse"] == "17 rue Malus"
+    assert result[1]["commune"] == "Lille"
+
+
 @pytest.mark.parametrize(
     ("raw", "cleaned"),
     [
@@ -494,6 +519,7 @@ def test_geocode_batch_with_only_null_addresses(monkeypatch):
         ),
     ],
 )
+@pytest.mark.integration
 @pytest.mark.skip(reason="This test is currently disabled")
 def test_ban_cleaning_cedex(raw: dict, cleaned: dict):
     result_df_raw = geocode(data=raw)

@@ -32,7 +32,8 @@ class DeduplicateInput:
 
 
 def _format_phonenumber(s):
-    if not s:
+    # missing values are NaN with the pandas 3 string dtype, not None
+    if not isinstance(s, str) or not s:
         return None
     try:
         p = phonenumbers.parse(s, "FR")
