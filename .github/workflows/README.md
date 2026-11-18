@@ -8,6 +8,17 @@ the linters and test suites of the pipeline and the api (see `_test.yml`).
 Pull requests are also reviewed by relecteur (`review.yml`). Comment `@relecteur` on a
 pull request to request a new review.
 
+## Dependency updates
+Dependabot bumps the docker images, actions, api deps, pre-commit hooks and terraform
+providers (see `../dependabot.yml`).
+
+The python lock files dependabot cannot recompile, the airflow requirements
+(`pipeline/requirements`) and the datawarehouse ones (`datawarehouse/requirements.txt`),
+are bumped every monday by `bump_requirements.yml`, which recompiles them with `--upgrade`
+and opens (or updates) one pull request for each. The PRs are opened with `GITHUB_TOKEN`,
+so the tests do not run on them automatically: close and reopen them to run the tests.
+The workflow can also be run manually from the Actions tab.
+
 Of course, this does not ensure that your changes do not have an impact
 on the data or features of the product; our coverage can't be very high
 as, being a data project, we can't test our changes at scale, on real data,

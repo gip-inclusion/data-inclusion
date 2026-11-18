@@ -1,13 +1,15 @@
 # keeps the pinned versions and digests up to date
 #
 # not covered on purpose:
-# - pipeline python deps (uv/pip): `pipeline/requirements/*.txt` are generated
-#   from `uv.lock` and CI fails on drift, so dependabot PRs would always fail.
+# - pipeline python deps (uv/pip): `pipeline/requirements/*.txt` are compiled
+#   against the airflow constraints by `pipeline/requirements/Makefile` and CI
+#   fails on drift, so dependabot PRs would always fail. bumped weekly by
+#   `.github/workflows/bump_requirements.yml` instead.
 # - `data-inclusion-schema` in the api: bumped manually with the schema releases.
 # - `datawarehouse/requirements.txt`: compiled with `uv pip compile` for the
 #   python of the base image (3.13). dependabot support for these files is
-#   undocumented and may ignore `--python-version`. recompile manually (see
-#   `datawarehouse/README.md`).
+#   undocumented and may ignore `--python-version`. bumped weekly by
+#   `.github/workflows/bump_requirements.yml` instead.
 # - `mlflow/requirements.txt`: the `mlflow[auth]` extras must match the mlflow
 #   version of the base image, which dependabot cannot check. on each mlflow
 #   bump, update them manually (the build runs `pip check`).
