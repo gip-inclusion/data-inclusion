@@ -13,7 +13,7 @@ AS $$
 
 import json
 
-#INLINE#
+#INLINE deduplicate.py#
 
 return (
     deduplicate(data=json.loads(data))

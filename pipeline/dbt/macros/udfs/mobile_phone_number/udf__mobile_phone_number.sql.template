@@ -6,7 +6,7 @@ CREATE OR REPLACE FUNCTION processings.is_french_mobile_phone_number(phone TEXT)
 RETURNS BOOLEAN
 AS $$
 
-#INLINE#
+#INLINE is_french_mobile_phone_number.py#
 
 return is_french_mobile_phone_number(phone)
 

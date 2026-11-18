@@ -14,7 +14,7 @@ AS $$
 
 import json
 
-#INLINE#
+#INLINE check_urls.py#
 
 return (
     check_urls(data=json.loads(data))

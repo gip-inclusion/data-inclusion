@@ -7,25 +7,30 @@
 # ///
 
 
+import re
 from pathlib import Path
 
 UDFS_DIR = Path(__file__).parent
 
-MARKER = "#INLINE#"
+# e.g. `#INLINE deduplicate.py#`, path relative to the template
+MARKER = re.compile(r"#INLINE (?P<path>\S+)#")
 WARNING = "{# !!! THIS FILE IS AUTO-GENERATED. DO NOT EDIT MANUALLY. !!! #}"
 
 
-def process_udf(udf_dir: Path):
-    template_path = next(udf_dir.glob("*.sql.template"))
+def process_template(template_path: Path):
     template_content = template_path.read_text()
-    python = next(
-        f for f in udf_dir.glob("*.py") if not f.name.startswith("test_")
-    ).read_text()
-    sql = template_content.replace(MARKER, python)
-    output_path = udf_dir / template_path.name.replace(".template", "")
+
+    if MARKER.search(template_content) is None:
+        raise ValueError(f"no `#INLINE <module>#` marker in {template_path}")
+
+    sql = MARKER.sub(
+        lambda match: (template_path.parent / match["path"]).read_text(),
+        template_content,
+    )
+    output_path = template_path.with_name(template_path.name.removesuffix(".template"))
     output_path.write_text(WARNING + "\n" * 2 + sql)
 
 
 if __name__ == "__main__":
-    for udf_dir in UDFS_DIR.glob("**/*.sql.template"):
-        process_udf(udf_dir=udf_dir.parent)
+    for template_path in UDFS_DIR.glob("**/*.sql.template"):
+        process_template(template_path=template_path)
