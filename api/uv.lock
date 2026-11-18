@@ -1,5 +1,5 @@
 version = 1
-revision = 3
+revision = 5
 requires-python = ">=3.14"
 resolution-markers = [
     "sys_platform == 'win32'",
@@ -631,7 +631,7 @@ requires-dist = [
     { name = "pandas", specifier = ">=2.2.3" },
     { name = "pendulum", specifier = ">=3.1.0" },
     { name = "polars", specifier = ">=1.40.1" },
-    { name = "psycopg", extras = ["binary"], specifier = ">=3.2.0" },
+    { name = "psycopg", extras = ["binary"], specifier = ">=3.3.9" },
     { name = "pyarrow", specifier = ">=19.0.1" },
     { name = "pydantic", extras = ["email"], specifier = ">=2.14.0" },
     { name = "pydantic-settings", specifier = ">=2.8.1" },
