@@ -1,0 +1,86 @@
+name: Bump python requirements
+
+# dependabot cannot recompile these lock files (see `.github/dependabot.yml`):
+# - `pipeline/requirements`: compiled against the airflow constraints
+# - `datawarehouse/requirements.txt`: compiled for the python of the base image
+# recompile them with --upgrade and open (or update) one PR per area.
+#
+# the PRs are opened with GITHUB_TOKEN, which does not trigger other workflows: to run the
+# tests, close and reopen the PR (or push to its branch).
+# requires "Allow GitHub Actions to create and approve pull requests" in the repo settings.
+
+on:
+  schedule:
+    - cron: "0 6 * * 1"  # mondays, 6am UTC
+  workflow_dispatch:
+
+permissions: {}
+
+jobs:
+  bump:
+    name: bump ${{ matrix.area }}
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: write
+    strategy:
+      # one area failing to compile must not prevent the other PR
+      fail-fast: false
+      matrix:
+        include:
+          - area: pipeline
+            # --always-make also refetches the airflow constraints
+            command: make -C pipeline/requirements --always-make upgrade all
+            path: pipeline
+            lock_files: pipeline/requirements/*/requirements.txt
+          - area: datawarehouse
+            command: make -C datawarehouse upgrade all
+            path: datawarehouse
+            lock_files: datawarehouse/requirements.txt
+    concurrency:
+      group: bump-requirements-${{ matrix.area }}
+    env:
+      BRANCH: github-actions/chore/bump-${{ matrix.area }}-requirements
+      TITLE: "chore(deps): bump ${{ matrix.area }} requirements"
+      AREA_PATH: ${{ matrix.path }}
+      LOCK_FILES: ${{ matrix.lock_files }}
+      COMMAND: ${{ matrix.command }}
+      GH_TOKEN: ${{ github.token }}
+
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1  # v7.0.1
+      - uses: astral-sh/setup-uv@68559e99cc807c1eb7e9238fd43a15bba460eec2  # v10.3.3
+
+      - name: Recompile requirements with --upgrade
+        run: $COMMAND
+
+      - name: Open or update the pull request
+        run: |
+          if [ -z "$(git status --porcelain -- "$AREA_PATH")" ]; then
+            echo "requirements are up to date"
+            exit 0
+          fi
+
+          # pins changed across the lock files, deduplicated, old/new next to each other
+          # shellcheck disable=SC2086  # LOCK_FILES is a pathspec glob for git
+          changes=$(git diff --unified=0 -- $LOCK_FILES \
+            | grep -E '^[+-][a-z0-9]' | sort -u \
+            | awk -F'==' '{ print substr($1, 2) "\t" (substr($0, 1, 1) == "-" ? 0 : 1) "\t" $0 }' \
+            | sort -s -k1,1 -k2,2n | cut -f3 || true)
+
+          body=$(printf 'Recompiled by `%s` (%s).\n\n```diff\n%s\n```\n\n%s\n' \
+            "$COMMAND" "$GITHUB_WORKFLOW" "$changes" \
+            "CI does not run on PRs opened by GITHUB_TOKEN: close and reopen this PR to run the tests.")
+
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git switch --create "$BRANCH"
+          git add "$AREA_PATH"
+          git commit --message "$TITLE"
+          git push --force origin "$BRANCH"
+
+          if gh pr view "$BRANCH" --json state --jq .state 2>/dev/null | grep -q OPEN; then
+            gh pr edit "$BRANCH" --body "$body"
+          else
+            gh pr create --base main --head "$BRANCH" --title "$TITLE" --body "$body"
+          fi
