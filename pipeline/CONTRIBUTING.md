@@ -43,5 +43,5 @@ In order to prevent conflicts:
 make all
 
 # to upgrade dependencies
-make upgrade all
+make upgrade
 ```

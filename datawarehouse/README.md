@@ -14,5 +14,5 @@ For the sake of simplicity, this will be the target python version. It is set in
 
 ```bash
 make -C datawarehouse              # compile requirements.txt
-make -C datawarehouse upgrade all  # compile with --upgrade
+make -C datawarehouse upgrade      # compile with --upgrade
 ```
