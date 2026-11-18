@@ -58,7 +58,7 @@ def _geocode(df: pd.DataFrame) -> pd.DataFrame:
             )
             response.raise_for_status()
         except requests.RequestException as e:
-            logger.info("Error while fetching `%s`: %s", e.request.url, e)
+            logger.warning(e)
             return pd.DataFrame()
 
     with io.StringIO() as f:
@@ -110,21 +110,42 @@ class GeocodeInput:
     commune: str
 
 
+# abbreviations found in the FINESS "typvoie" column
 STREET_ABBREVIATIONS = {
-    r"(?i) all ": " allée ",
-    r"(?i) av ": " avenue ",
-    r"(?i) bd ": " boulevard ",
-    r"(?i) bvd ": " boulevard ",
-    r"(?i) che ": " chemin ",
-    r"(?i) crs ": " cours ",
-    r"(?i) esp ": " esplanade ",
-    r"(?i) imp ": " impasse ",
-    r"(?i) pl ": " place ",
-    r"(?i) pro ": " promenade ",
-    r"(?i) rd pt ": " rond point ",
-    r"(?i) rte ": " route ",
-    r"(?i) sq ": " square ",
+    "all": "allée",
+    "av": "avenue",
+    "bd": "boulevard",
+    "bld": "boulevard",
+    "bvd": "boulevard",
+    "che": "chemin",
+    "chem": "chemin",
+    "crs": "cours",
+    "esp": "esplanade",
+    "fg": "faubourg",
+    "ham": "hameau",
+    "imp": "impasse",
+    "ld": "lieu-dit",
+    "mte": "montée",
+    "pas": "passage",
+    "pl": "place",
+    "pro": "promenade",
+    "prom": "promenade",
+    "pte": "porte",
+    "qu": "quai",
+    "qua": "quartier",
+    "r": "rue",
+    "rd pt": "rond point",
+    "rle": "ruelle",
+    "rpt": "rond point",
+    "rte": "route",
+    "sq": "square",
+    "tra": "traverse",
+    "voi": "voie",
 }
+
+
+def get_street_abbreviations() -> dict[str, str]:
+    return {rf"(?i)\b{abbrev}\b": full for abbrev, full in STREET_ABBREVIATIONS.items()}
 
 
 def geocode(
@@ -177,7 +198,7 @@ def geocode(
 
     df["commune"] = df["commune"].apply(lambda x: x.strip(" -") if x else x)
     if df["adresse"].notna().any():
-        df["adresse"] = df["adresse"].replace(STREET_ABBREVIATIONS, regex=True)
+        df["adresse"] = df["adresse"].replace(get_street_abbreviations(), regex=True)
     df["adresse"] = df["adresse"].apply(lambda x: x.strip(" -") if x else x)
 
     logger.info(f"Only {len(df)} rows can be geocoded.")

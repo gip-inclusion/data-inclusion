@@ -130,6 +130,7 @@ def format_phone_number(value: str | None) -> str | None:
                     parsed, phonenumbers.PhoneNumberFormat.E164
                 )
 
+
 return format_phone_number(phone)
 
 $$ LANGUAGE plpython3u;
