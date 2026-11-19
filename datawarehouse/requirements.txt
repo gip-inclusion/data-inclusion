@@ -64,7 +64,6 @@ narwhals==2.29.0
     # via scikit-learn
 numpy==2.5.5
     # via
-    #   -r requirements.in
     #   categorical-distance
     #   dedupe
     #   highered
