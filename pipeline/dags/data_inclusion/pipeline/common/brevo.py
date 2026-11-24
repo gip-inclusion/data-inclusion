@@ -64,6 +64,67 @@ def _get_client():
                 request_contact_import=import_params
             )
 
+        # brevo only returns statistics for the last 90 days by default, and
+        # possibly limits date ranges to 90 days : walk back in time by windows.
+        STATS_WINDOW_DAYS = 90
+        # date of the first data·inclusion campaign
+        STATS_START_DATE = pendulum.date(2023, 11, 1)
+
+        def get_blocklist_motif(self, email) -> str:
+            # most recent windows first : the latest event is the relevant one
+            end_date = pendulum.today().date()
+            while end_date >= self.STATS_START_DATE:
+                start_date = max(
+                    end_date.subtract(days=self.STATS_WINDOW_DAYS - 1),
+                    self.STATS_START_DATE,
+                )
+                stats = self.contacts_api.get_contact_info(
+                    identifier=email,
+                    start_date=start_date.to_date_string(),
+                    end_date=end_date.to_date_string(),
+                ).statistics
+                if stats.hard_bounces:
+                    return "hardbounce"
+                if stats.complaints:
+                    return "spam"
+                if stats.unsubscriptions and stats.unsubscriptions.user_unsubscription:
+                    return "desinscription"
+                end_date = start_date.subtract(days=1)
+            return "autre"
+
+        def set_blocklist_motif(self, email, motif: str | None) -> None:
+            self.contacts_api.update_contact(
+                identifier=email,
+                update_contact=sib_api_v3_sdk.UpdateContact(
+                    attributes={"MOTIF_BLOCKLIST": motif}
+                ),
+            )
+
+        def classify_blocklisted_contacts(self, list_id) -> None:
+            """Store the blocklisting reason in the MOTIF_BLOCKLIST attribute.
+
+            Brevo only exposes a boolean `emailBlacklisted`, which mixes hardbounces,
+            unsubscriptions, spam complaints and admin blocklisting.
+            """
+            for contact in self.list_contacts(list_id=list_id):
+                motif = contact["attributes"].get("MOTIF_BLOCKLIST")
+
+                if not contact["emailBlacklisted"]:
+                    # the contact left the blocklist : the motif is outdated, and
+                    # would be wrong if the contact is blocklisted again later.
+                    if motif:
+                        logger.info("clearing outdated blocklist motif")
+                        self.set_blocklist_motif(email=contact["email"], motif=None)
+                    continue
+
+                # `autre` means no signal was found yet : it can still change
+                if motif and motif != "autre":
+                    continue
+
+                new_motif = self.get_blocklist_motif(email=contact["email"])
+                if new_motif != motif:
+                    self.set_blocklist_motif(email=contact["email"], motif=new_motif)
+
         def create_and_send_email_campaign(
             self,
             subject,

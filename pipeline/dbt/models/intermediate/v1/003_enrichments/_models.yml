@@ -109,7 +109,9 @@ models:
           - has unsubscribed, or
           - has marked the campaign email as spam, or
           - we, data⋅inclusion, have blocklisted them.
-          It has been discussed internally in 2024 and we assumed that in all these cases, we would hide the e-mail in data⋅inclusion.
+          The reason is stored by the `classify_brevo_contacts` DAG in the MOTIF_BLOCKLIST attribute.
+          A mere unsubscription does not mean the contact refuses to be contacted: the e-mail is hidden
+          in all cases, except when MOTIF_BLOCKLIST is `desinscription`.
         data_tests:
           - accepted_values:
               arguments:

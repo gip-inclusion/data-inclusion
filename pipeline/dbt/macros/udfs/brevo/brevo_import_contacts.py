@@ -50,7 +50,11 @@ def brevo_import_contacts() -> list[dict[str, Any]]:
     return [
         {
             "courriel": contact["email"],
-            "has_hardbounced": contact["emailBlacklisted"],
+            # unsubscribing from our emails does not mean refusing to be contacted
+            "has_hardbounced": (
+                contact["emailBlacklisted"]
+                and contact["attributes"].get("MOTIF_BLOCKLIST") != "desinscription"
+            ),
             "was_objected_to": "DATE_DI_RGPD_OPPOSITION" in contact["attributes"],
         }
         for contact in contacts
