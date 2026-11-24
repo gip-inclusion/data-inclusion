@@ -12,11 +12,10 @@ dedupe
 # btrees 6.5 removed Bucket.byValue, still used by dedupe's canopy index
 btrees<6.5
 dedupe-variable-datetime
+pandas
 unidecode
 
 # geocode
-numpy
-pandas
 requests
 
 # html_to_markdown
