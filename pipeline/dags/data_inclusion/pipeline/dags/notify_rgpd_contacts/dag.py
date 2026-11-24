@@ -9,8 +9,6 @@ from data_inclusion.pipeline.common import dags
     venv_cache_path="/tmp/",
 )
 def send_rgpd_notice():
-    import time
-
     from airflow.providers.postgres.hooks import postgres
     from airflow.sdk import Variable
 
@@ -33,9 +31,6 @@ def send_rgpd_notice():
     new_emails = [c[0] for c in contacts if c[1] is None]
     brevo_client.empty_list(CURRENT_CONTACTS_LIST_ID)
     brevo_client.import_to_list(CURRENT_CONTACTS_LIST_ID, new_emails)
-
-    # sleep a bit: be sure that the new contacts list is finalized.
-    time.sleep(60)
 
     brevo_client.create_and_send_email_campaign(
         subject="[data·inclusion] Notification RGPD",
