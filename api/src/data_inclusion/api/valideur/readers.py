@@ -61,6 +61,14 @@ def _get_array_fields(model: type[pydantic.BaseModel]) -> list[str]:
     ]
 
 
+FALSY_STRINGS = {"", "false", "faux", "0"}
+
+
+def _is_truthy(value: str | None) -> bool:
+    # cells are read as strings: boolean FALSE becomes "False", which is truthy
+    return value is not None and value.strip().lower() not in FALSY_STRINGS
+
+
 def read_xlsx(file: BinaryIO | Path) -> tuple[pd.DataFrame, pd.DataFrame]:
     # xlsx files are zip archives: check their metadata before decompressing
     try:
@@ -101,7 +109,8 @@ def read_xlsx(file: BinaryIO | Path) -> tuple[pd.DataFrame, pd.DataFrame]:
         # create a line column from the index
         df = df.reset_index(drop=False, names=["line"])
         # drop description and example rows
-        df = df.iloc[~df["__ignore__"].map(bool).fillna(False)]
+        if "__ignore__" in df.columns:
+            df = df[~df["__ignore__"].map(_is_truthy)]
 
         # convert array-like fields from comma-separated strings to lists
         for fieldname in _get_array_fields(model):

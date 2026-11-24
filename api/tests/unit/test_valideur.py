@@ -252,3 +252,48 @@ def test_read_file_rejects_large_sheets(n_rows, n_columns):
 
     with pytest.raises(readers.ValideurException, match="too large"):
         readers.read_file(file=buf, filename="dataset.xlsx")
+
+
+@pytest.mark.parametrize(
+    ("ignore_value", "expected_n_rows"),
+    [
+        (None, 1),
+        (False, 1),
+        ("FALSE", 1),
+        ("faux", 1),
+        (0, 1),
+        (True, 0),
+        ("VRAI", 0),
+        ("x", 0),
+    ],
+)
+def test_read_file_ignore_column(ignore_value, expected_n_rows):
+    wb = openpyxl.Workbook(write_only=True)
+    for sheet_name in ["Structures", "Services"]:
+        ws = wb.create_sheet(sheet_name)
+        ws.append(["__ignore__", "id"])
+        ws.append([ignore_value, "foo"])
+    buf = io.BytesIO()
+    wb.save(buf)
+    buf.seek(0)
+
+    structures_df, services_df = readers.read_file(file=buf, filename="dataset.xlsx")
+
+    assert len(structures_df) == expected_n_rows
+    assert len(services_df) == expected_n_rows
+
+
+def test_read_file_without_ignore_column():
+    wb = openpyxl.Workbook(write_only=True)
+    for sheet_name in ["Structures", "Services"]:
+        ws = wb.create_sheet(sheet_name)
+        ws.append(["id"])
+        ws.append(["foo"])
+    buf = io.BytesIO()
+    wb.save(buf)
+    buf.seek(0)
+
+    structures_df, services_df = readers.read_file(file=buf, filename="dataset.xlsx")
+
+    assert len(structures_df) == 1
+    assert len(services_df) == 1
