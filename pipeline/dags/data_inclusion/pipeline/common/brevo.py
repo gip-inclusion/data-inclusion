@@ -12,6 +12,7 @@ def _get_client():
 
     class BrevoClient:
         CONTACT_LIST_PAGE_SIZE = 500  # the maximum
+        IMPORT_BATCH_SIZE = 2000
 
         def __init__(self, token: str) -> None:
             self.token = token
@@ -56,16 +57,19 @@ def _get_client():
                 )
             return responses
 
-        def import_to_list(self, list_id, emails):
-            import_params = sib_api_v3_sdk.RequestContactImport()
+        def import_to_list(self, list_id, contacts: list[dict]):
             # Ensure we have no invalid emails in the list, it would
             # make the whole import fail
-            import_params.json_body = [{"email": email} for email in emails if email]
-            import_params.list_ids = [int(list_id)]
-            response = self.contacts_api.import_contacts(
-                request_contact_import=import_params
-            )
-            self.wait_for_process(process_id=response.process_id)
+            contacts = [c for c in contacts if c["email"]]
+            # keep request bodies small, brevo rejects oversized ones
+            for i in range(0, len(contacts), self.IMPORT_BATCH_SIZE):
+                import_params = sib_api_v3_sdk.RequestContactImport()
+                import_params.json_body = contacts[i : i + self.IMPORT_BATCH_SIZE]
+                import_params.list_ids = [int(list_id)]
+                response = self.contacts_api.import_contacts(
+                    request_contact_import=import_params
+                )
+                self.wait_for_process(process_id=response.process_id)
 
         def wait_for_process(self, process_id, timeout=300) -> None:
             # Brevo processes are queued: their duration depends on brevo's load,
