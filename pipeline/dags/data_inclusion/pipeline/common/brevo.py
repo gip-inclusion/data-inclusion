@@ -57,7 +57,7 @@ def _get_client():
                 )
             return responses
 
-        def import_to_list(self, list_id, contacts: list[dict]):
+        def import_to_list(self, list_id, contacts: list[dict], wait=True):
             # Ensure we have no invalid emails in the list, it would
             # make the whole import fail
             contacts = [c for c in contacts if c["email"]]
@@ -69,7 +69,8 @@ def _get_client():
                 response = self.contacts_api.import_contacts(
                     request_contact_import=import_params
                 )
-                self.wait_for_process(process_id=response.process_id)
+                if wait:
+                    self.wait_for_process(process_id=response.process_id)
 
         def wait_for_process(self, process_id, timeout=300) -> None:
             # Brevo processes are queued: their duration depends on brevo's load,

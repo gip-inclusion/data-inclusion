@@ -7,6 +7,8 @@ from data_inclusion.pipeline.common import dags
     requirements="requirements/tasks/requirements.txt",
     system_site_packages=False,
     venv_cache_path="/tmp/",
+    # never retry : the campaign could be sent twice
+    retries=0,
 )
 def send_rgpd_notice():
     import html
@@ -34,7 +36,6 @@ def send_rgpd_notice():
         sql="""
             SELECT
                 courriels.courriel,
-                courriels.has_hardbounced IS NOT NULL AS is_known,
                 ARRAY_REMOVE(
                     ARRAY_AGG(DISTINCT services.nom ORDER BY services.nom),
                     NULL
@@ -52,16 +53,23 @@ def send_rgpd_notice():
                     contacts.source = services.source
                     AND contacts.id = services.id
                     AND services._is_valid
-            GROUP BY 1, 2
+            WHERE NOT COALESCE(courriels.was_objected_to, FALSE)
+            GROUP BY 1
         """,
     )
 
-    # new contacts : all those for which we don't even know if they bounced or not
+    # rely on brevo rather than on the datawarehouse, which can be outdated
+    notified_emails = {
+        contact["email"]
+        for contact in brevo_client.list_contacts(list_id=ALL_CONTACTS_LIST_ID)
+    }
     new_contacts = [
         {"email": courriel, "attributes": {"SERVICES": format_services(noms=noms)}}
-        for courriel, is_known, noms in rows
-        if not is_known
+        for courriel, noms in rows
+        if courriel and courriel not in notified_emails
     ]
+    if len(new_contacts) == 0:
+        return
 
     brevo_client.empty_list(list_id=CURRENT_CONTACTS_LIST_ID)
     brevo_client.import_to_list(
@@ -83,7 +91,10 @@ def send_rgpd_notice():
     # contacts would be considered as notified and never be notified.
     brevo_client.import_to_list(
         list_id=ALL_CONTACTS_LIST_ID,
-        contacts=[{"email": courriel} for courriel, _, _ in rows],
+        contacts=[{"email": contact["email"]} for contact in new_contacts],
+        # the campaign is sent : a timeout must not fail the task and invite a
+        # manual rerun, which would notify contacts again.
+        wait=False,
     )
 
 
