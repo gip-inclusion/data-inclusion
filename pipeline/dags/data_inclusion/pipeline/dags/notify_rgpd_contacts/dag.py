@@ -24,9 +24,6 @@ def send_rgpd_notice():
         sql="SELECT * FROM public_intermediate.int__courriels_verifies_v1",
     )
 
-    all_emails = [c[0] for c in contacts]
-    brevo_client.import_to_list(ALL_CONTACTS_LIST_ID, all_emails)
-
     # new contacts : all those for which we don't even know if they bounced or not
     new_emails = [c[0] for c in contacts if c[1] is None]
     brevo_client.empty_list(CURRENT_CONTACTS_LIST_ID)
@@ -41,6 +38,11 @@ def send_rgpd_notice():
         from_name="L'équipe data inclusion",
         reply_to="ne-pas-repondre@data.inclusion.gouv.fr",
     )
+
+    # only once the campaign is sent : otherwise, if sending fails,
+    # contacts would be considered as notified and never be notified.
+    all_emails = [c[0] for c in contacts]
+    brevo_client.import_to_list(ALL_CONTACTS_LIST_ID, all_emails)
 
 
 @dag(
