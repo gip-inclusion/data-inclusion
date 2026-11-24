@@ -16,6 +16,7 @@ def send_rgpd_notice():
 
     ALL_CONTACTS_LIST_ID = 6
     CURRENT_CONTACTS_LIST_ID = 5
+    TEMPLATE_ID = 56
 
     brevo_client = brevo.BrevoClient(token=Variable.get("BREVO_API_KEY"))
 
@@ -30,13 +31,13 @@ def send_rgpd_notice():
     brevo_client.import_to_list(CURRENT_CONTACTS_LIST_ID, new_emails)
 
     brevo_client.create_and_send_email_campaign(
-        subject="[data·inclusion] Notification RGPD",
-        template_id=2,
+        subject="Vos services d'insertion sur La plateforme de l'inclusion",
+        template_id=TEMPLATE_ID,
         to_list_id=CURRENT_CONTACTS_LIST_ID,
         tag="di-rgpd-notice",
-        from_email="bonjour@data.inclusion.gouv.fr",
-        from_name="L'équipe data inclusion",
-        reply_to="ne-pas-repondre@data.inclusion.gouv.fr",
+        from_email="data-inclusion@inclusion.gouv.fr",
+        from_name="La plateforme de l'inclusion",
+        reply_to="data-inclusion@inclusion.gouv.fr",
     )
 
     # only once the campaign is sent : otherwise, if sending fails,
