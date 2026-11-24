@@ -5,6 +5,8 @@ logger = logging.getLogger(__name__)
 
 
 def _get_client():
+    import time
+
     import pendulum
     import sib_api_v3_sdk
 
@@ -60,9 +62,24 @@ def _get_client():
             # make the whole import fail
             import_params.json_body = [{"email": email} for email in emails if email]
             import_params.list_ids = [int(list_id)]
-            return self.contacts_api.import_contacts(
+            response = self.contacts_api.import_contacts(
                 request_contact_import=import_params
             )
+            self.wait_for_process(process_id=response.process_id)
+
+        def wait_for_process(self, process_id, timeout=300) -> None:
+            # Brevo processes are queued: their duration depends on brevo's load,
+            # not only on the import size. Timing out does not cancel the process,
+            # it only stops waiting for it.
+            processes_api = sib_api_v3_sdk.ProcessApi(self.client)
+            deadline = time.monotonic() + timeout
+            while True:
+                status = processes_api.get_process(process_id=process_id).status
+                if status == "completed":
+                    return
+                if time.monotonic() > deadline:
+                    raise TimeoutError(f"process {process_id} is still {status}")
+                time.sleep(10)
 
         # brevo only returns statistics for the last 90 days by default, and
         # possibly limits date ranges to 90 days : walk back in time by windows.
