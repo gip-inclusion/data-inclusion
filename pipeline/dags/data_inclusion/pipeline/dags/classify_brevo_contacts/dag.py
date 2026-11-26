@@ -1,4 +1,4 @@
-from airflow.sdk import Variable, dag, task
+from airflow.sdk import dag, task
 
 from data_inclusion.pipeline.common import dags
 
@@ -9,6 +9,8 @@ from data_inclusion.pipeline.common import dags
     venv_cache_path="/tmp/",
 )
 def classify_blocklisted_contacts():
+    from airflow.sdk import Variable
+
     from data_inclusion.pipeline.common import brevo
 
     ALL_CONTACTS_LIST_ID = 6
