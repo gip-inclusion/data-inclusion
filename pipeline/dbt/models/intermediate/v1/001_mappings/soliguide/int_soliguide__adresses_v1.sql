@@ -9,7 +9,25 @@ final AS (
         lieux.position__coordinates__x         AS "longitude",
         lieux.position__coordinates__y         AS "latitude",
         lieux.position__additional_information AS "complement_adresse",
-        lieux.position__address                AS "adresse",
+        CASE
+            -- the address field sometimes holds little more than the city and its postal code
+            WHEN
+                LENGTH(
+                    TRIM(
+                        REPLACE(
+                            REPLACE(
+                                LOWER(lieux.position__address),
+                                LOWER(COALESCE(TRIM(lieux.position__city), '')),
+                                ''
+                            ),
+                            COALESCE(TRIM(lieux.position__postal_code), ''),
+                            ''
+                        )
+                    )
+                ) < 5
+                THEN NULL
+            ELSE lieux.position__address
+        END                                    AS "adresse",
         lieux.position__city                   AS "commune",
         lieux.position__postal_code            AS "code_postal",
         NULL                                   AS "code_insee"
