@@ -6,7 +6,7 @@ lieux AS (
 ),
 
 -- Iterate over each dimension of publics
-{% for dimension in ['administrative', 'familiale', 'gender', 'other'] %}
+{% for dimension in ['administrative', 'familialle', 'gender', 'other'] %}
     {{ dimension }} AS (
         SELECT
             data ->> 'lieu_id'                                                      AS "lieu_id",
@@ -27,7 +27,7 @@ lieux AS (
 final AS (
     SELECT * FROM administrative
     UNION ALL
-    SELECT * FROM familiale
+    SELECT * FROM familialle
     UNION ALL
     SELECT * FROM gender
     UNION ALL
